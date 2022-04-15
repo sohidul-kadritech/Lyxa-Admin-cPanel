@@ -48,13 +48,15 @@ const CreateAdmin = () => {
         const findAdmin = admins.find(admin => admin._id == id);
         console.log({findAdmin})
         if(findAdmin){
-           const {email,name, number, status} = findAdmin();
+           const {email,name, number, status} = findAdmin;
            setName(name);
            setEmail(email);
-           setPassword()
+          //  setPassword()
+          setPhoneNumber(number);
+          
         }
     }else{
-      history.push('/admin/list', { replace: true })
+      // history.push('/admin/list', { replace: true })
     }
   },[id])
 
