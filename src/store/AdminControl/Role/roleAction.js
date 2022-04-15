@@ -11,7 +11,7 @@ import {
 
 // ADD ADMIN ROLE
 
-export const addAdmin = roleData => async dispatch => {
+export const addAdminRole = roleData => async dispatch => {
   try {
     dispatch({
       type: actionType.CREATE_ADMIN_ROLE_REQUEST_SEND

@@ -22,22 +22,22 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   updateCreatedByKey,
   updateSearchKey,
+  updateSortKey,
   updateStatusKey,
   usersList,
 } from "../../../store/Users/UsersAction";
 import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
 
-const BlankPage = () => {
+const UsersList = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const {
     loading,
     users,
-    statusKey,
+    sortByKey,
     searchKey,
-    createdByKey,
     paging,
     hasNextPage,
     hasPreviousPage,
@@ -45,12 +45,12 @@ const BlankPage = () => {
   } = useSelector((state) => state.usersReducer);
 
   useEffect(() => {
-    if (statusKey || searchKey || createdByKey) {
+    if (!!sortByKey || !!searchKey) {
       callUsersList(true);
     } else {
       callUsersList();
     }
-  }, [statusKey, searchKey, createdByKey]);
+  }, [sortByKey, searchKey,]);
 
   // CALL USERS LIST
 
@@ -58,7 +58,7 @@ const BlankPage = () => {
     dispatch(usersList(refresh));
   };
 
-  // UPDATE SEARCH KEY
+  // // UPDATE SEARCH KEY
 
   const searchKeyListener = (value) => {
     dispatch(updateSearchKey(value));
@@ -88,23 +88,19 @@ const BlankPage = () => {
                     <div>
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
-                          Status
+                          Sort By
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          value={statusKey}
+                          value={sortByKey}
                           label="Status"
                           onChange={(event) =>
-                            dispatch(updateStatusKey(event.target.value))
+                            dispatch(updateSortKey(event.target.value))
                           }
                         >
-                          <MenuItem value={"all"}>All</MenuItem>
-                          <MenuItem value={"pending"}>Pending</MenuItem>
-                          <MenuItem value={"block"}>Block</MenuItem>
-                          <MenuItem value={"permanent-block"}>
-                            Permanent Block
-                          </MenuItem>
+                          <MenuItem value={"asc"}>A-Z</MenuItem>
+                          <MenuItem value={"desc"}>Z-A</MenuItem>
                         </Select>
                       </FormControl>
                     </div>
@@ -125,27 +121,6 @@ const BlankPage = () => {
                         />
                       </div>
                     </SearchWrapper>
-                  </Col>
-                  <Col md={3}>
-                    <div>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Created By
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={createdByKey}
-                          label="CreatedBy"
-                          onChange={(event) =>
-                            dispatch(updateCreatedByKey(event.target.value))
-                          }
-                        >
-                          <MenuItem value={"admin"}>Admin</MenuItem>
-                          <MenuItem value={"self"}>Self</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
                   </Col>
                 </Row>
               </CardBody>
@@ -307,4 +282,4 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-export default BlankPage;
+export default UsersList;

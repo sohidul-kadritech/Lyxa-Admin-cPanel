@@ -23,7 +23,7 @@ import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { restoreRole } from "./../../../store/AdminControl/Role/roleAction";
 import {
-  addAdmin,
+  addAdminRole,
   deleteRole,
   editRole,
   getAllRoles
@@ -74,7 +74,7 @@ const Role = () => {
     }
 
     if (!roleId) {
-      dispatch(addAdmin({ name: role }));
+      dispatch(addAdminRole({ name: role }));
     }
   };
 

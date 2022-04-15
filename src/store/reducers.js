@@ -18,6 +18,7 @@ import folderCreateReducer from "./reducer/image/folderCreate.reducer";
 import bannerReducer from "./banner/bannerReducer";
 import { roleReducer } from "./AdminControl/Role/roleReducer";
 import usersReducer from "./Users/UsersReducer";
+import adminReducer from './AdminControl/Admin/adminReducer';
 
 
 const rootReducer = combineReducers({
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   bannerReducer,
   roleReducer,
   usersReducer,
+  adminReducer
 });
 
 export default rootReducer;

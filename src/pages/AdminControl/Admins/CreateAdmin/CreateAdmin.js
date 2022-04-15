@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import Breadcrumb from "../../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../../components/GlobalWrapper";
 import {
@@ -13,14 +13,86 @@ import {
   Spinner,
 } from "reactstrap";
 import {
+
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   TextField,
 } from "@mui/material";
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { addAdmin } from "../../../../store/AdminControl/Admin/adminAction";
+import { useSelector } from 'react-redux';
+import { useHistory, useParams } from "react-router-dom";
+
 
 const CreateAdmin = () => {
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const {id} = useParams();
+
+  const {status, loading, admins } = useSelector(state => state.adminReducer)
+
+  const [name,setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState(null);
+
+
+  useEffect(()=>{
+    if(id){
+        const findAdmin = admins.find(admin => admin._id == id);
+        console.log({findAdmin})
+        if(findAdmin){
+           const {email,name, number, status} = findAdmin();
+           setName(name);
+           setEmail(email);
+           setPassword()
+        }
+    }else{
+      history.push('/admin/list', { replace: true })
+    }
+  },[id])
+
+
+  const handleSubmit = () => {
+    if(name == "" || email == "" || password == "" || phoneNumber == ""){
+      return toast.warn('Please Fill Up All Fields', {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    
+    dispatch(addAdmin({
+      name,
+      email,
+      number: phoneNumber,
+      password,
+      role
+    }))
+
+  }
+
+  // SUCCESS 
+  useEffect(()=>{
+    if(status){
+      setName("");
+      setEmail("");
+      setPhoneNumber("");
+      setPassword("");
+    }
+  },[status])
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -49,6 +121,8 @@ const CreateAdmin = () => {
                       variant="outlined"
                       style={{ width: "100%" }}
                       autoComplete="off"
+                      value={name}
+                      onChange = {(event) => setName(event.target.value)}
                       required
                     />
                   </Col>
@@ -58,6 +132,9 @@ const CreateAdmin = () => {
                       label="Email"
                       variant="outlined"
                       style={{ width: "100%" }}
+                      value={email}
+                      type="gmail"
+                      onChange = {(event) => setEmail(event.target.value)}
                       required
                     />
                   </Col>
@@ -69,10 +146,24 @@ const CreateAdmin = () => {
                       label="Password"
                       variant="outlined"
                       style={{ width: "100%" }}
+                      value={password}
+                      onChange = {(event) => setPassword(event.target.value)}
                       required
                     />
                   </Col>
                   <Col xl={6} className="mt-3 mt-xl-0">
+                    <TextField
+                      // id="password"
+                      label="Phone Number"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      type="number"
+                      value= {phoneNumber}
+                      onChange = {event => setPhoneNumber((event.target.value).toString())}
+                      required
+                    />
+                  </Col>
+                  {/* <Col xl={6} className="mt-3 mt-xl-0">
                     <FormControl fullWidth required>
                       <InputLabel id="demo-simple-select-label">Role</InputLabel>
                       <Select
@@ -87,12 +178,12 @@ const CreateAdmin = () => {
                         <MenuItem value={30}>Delivery Man</MenuItem>
                       </Select>
                     </FormControl>
-                  </Col>
+                  </Col> */}
                 </Row>
 
                 <div className="pt-3 mt-3 d-flex justify-content-center">
-                  <Button color="primary" className="px-5">
-                    Create
+                  <Button color="primary" className="px-5" onClick={handleSubmit}>
+                    {loading ? <Spinner border="animation" variant="info" size="sm"></Spinner> : "Create"}
                   </Button>
                 </div>
               </CardBody>

@@ -5,9 +5,8 @@ const initialState = {
   users: [],
   message: null,
   error: null,
-  statusKey: "all",
+  sortByKey: "desc",
   searchKey: "",
-  createdByKey: "",
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -52,15 +51,15 @@ const usersReducer = (state = initialState, action) => {
         errro: payload,
       };
 
-    //   UPDATE STATUS KEY
+    //   UPDATE SORT BY KEY
 
-    case actionType.UPDATE_USERS_STATUS_KEY:
+    case actionType.UPDATE_USERS_SORT_KEY:
       return {
         ...state,
         loading: false,
         message: null,
-        errro: payload,
-        statusKey: payload,
+        error: null,
+        sortByKey: payload,
       };
 
     //   UPDATE SEARCH KEY
@@ -74,16 +73,7 @@ const usersReducer = (state = initialState, action) => {
         searchKey: payload,
       };
 
-    //   UPDATE CREATED BY KEY
 
-    case actionType.UPDATE_USERS_CREATED_BY_KEY:
-      return {
-        ...state,
-        loading: false,
-        message: null,
-        errro: null,
-        createdByKey: payload,
-      };
 
       // ADD USER 
 

@@ -9,6 +9,7 @@ import {
   API_ERROR
 } from "./actionTypes";
 import requestApi from "../../../network/httpRequest";
+import { toast } from "react-toastify";
 
 export const loginUser = () => {
   // console.log("request", user);
@@ -52,21 +53,37 @@ export const logoutAdmin = () => dispatch => {
 };
 
 export const adminAuth = user => async (dispatch, getState) => {
+  // console.log({user})
   try {
-    dispatch(loginUser(user));
+    dispatch(loginUser());
 
-    const { data } = await requestApi().request(LOGIN, {
+    const { data: {status, message , error, data } } = await requestApi().request(LOGIN, {
       method: "POST",
       data: user
     });
 
-    const { status, accessToken, admin, message, error } = data;
+    // console.log({data})
+    // const { status, message, error} = data;
     if (status) {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("admin", JSON.stringify(admin));
+      // const {name , token, email, status, number} = admin;
+      // const adminInfo = {name, email, status, number}
 
-      dispatch(loginSuccess(admin, accessToken, message));
+      localStorage.setItem("accessToken", data.admin.token);
+      localStorage.setItem("admin", JSON.stringify(data.admin));
+      
+
+      dispatch(loginSuccess(data.admin, data.admin.token, message));
     } else {
+      toast.warn(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       dispatch(apiError(error));
     }
   } catch (error) {

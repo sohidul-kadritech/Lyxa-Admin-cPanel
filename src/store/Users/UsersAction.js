@@ -2,14 +2,13 @@ import { toast } from "react-toastify";
 import { ADD_USER, ALL_USERS, EDIT_USER } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
-import usersReducer from "./UsersReducer";
 
 // USERS LIST
 
 export const usersList =
   (refresh = false, page = 1) =>
   async (dispatch, getState) => {
-    const { users, searchKey, statusKey, createdByKey } =
+    const { users, searchKey, sortByKey} =
       getState().usersReducer;
 
     try {
@@ -23,12 +22,11 @@ export const usersList =
             searchKey: searchKey,
             page: page,
             pageSize: 20,
-            status: statusKey,
-            createdBy: createdByKey,
+            sortBy: sortByKey,
           },
         });
 
-        // console.log("users-----", data);
+        console.log("users-----", data);
 
         if (data.status) {
           dispatch({
@@ -55,14 +53,14 @@ export const usersList =
 
 // UPDATE STATUS KEY
 
-export const updateStatusKey = (status) => (dispatch) => {
+export const updateSortKey = (sortBy) => (dispatch) => {
   dispatch({
-    type: actionType.UPDATE_USERS_STATUS_KEY,
-    payload: status,
+    type: actionType.UPDATE_USERS_SORT_KEY,
+    payload: sortBy,
   });
 };
 
-// UPDATE SEARCH KEY
+// // UPDATE SEARCH KEY
 
 export const updateSearchKey = (value) => (dispatch) => {
   dispatch({
@@ -71,14 +69,7 @@ export const updateSearchKey = (value) => (dispatch) => {
   });
 };
 
-// UPDATE CREATED BY KEY
 
-export const updateCreatedByKey = (key) => (dispatch) => {
-  dispatch({
-    type: actionType.UPDATE_USERS_CREATED_BY_KEY,
-    payload: key,
-  });
-};
 
 
 // ADD USER

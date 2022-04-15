@@ -1,20 +1,28 @@
-import React from 'react';
-import { Container } from 'reactstrap';
-import GlobalWrapper from '../../../components/GlobalWrapper';
+import React from "react";
+import { Container } from "reactstrap";
+import Breadcrumb from "../../../components/Common/Breadcrumb";
+import GlobalWrapper from "../../../components/GlobalWrapper";
 
 const PercentageSetting = () => {
-    return (
-        <React.Fragment>
+  return (
+    <React.Fragment>
       <GlobalWrapper>
-
-      <div className="page-content" >
-        <Container fluid={true}>
-            <h2>Percentage setting</h2>
-        </Container>
-      </div>
+        <div className="page-content">
+          <Container fluid={true}>
+            <Breadcrumb
+              maintitle="Drop"
+              breadcrumbItem={"Percentage Setting"}
+              // loading={loading}
+              // callList={callCarList}
+              isRefresh={false}
+            />
+          </Container>
+        </div>
       </GlobalWrapper>
     </React.Fragment>
-    );
+  );
 };
+
+
 
 export default PercentageSetting;

@@ -223,6 +223,7 @@ const userRoutes = [
 
   { path: "/admin/list", component: AdminList },
   { path: "/admin/create", component: CreateAdmin },
+  { path: "/admin/edit/:id", component: CreateAdmin },
   { path: "/admin/role", component: Role },
 
 

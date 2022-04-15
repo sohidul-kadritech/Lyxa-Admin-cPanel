@@ -1,13 +1,13 @@
 // export const API_URL = "http://localhost:5000";
 // export const FTP_URL = "http://localhost:1000";
 
-export const API_URL = "https://api.codepadding.com";
+export const API_URL = "http://34.133.244.127/";
 export const FTP_URL = "https://ftp.codepadding.com";
 
 // FTP SERVER API
 export const MULTIPLE_IMAGE_UPLOAD = FTP_URL + "/api/upload/image/multitples";
 
-const ADMIN_ENDPOINT = "/api/v1/admin";
+const ADMIN_ENDPOINT = "admin";
 
 // ADMIN API
 
@@ -55,7 +55,13 @@ export const ADD_YEAR = ADMIN_ENDPOINT + "/year/add";
 export const GET_ALL_YEARS = ADMIN_ENDPOINT + "/year/getAll";
 export const EDIT_YEAR = ADMIN_ENDPOINT + "/year/update";
 
-// ADMIN ROLE
+// ADMIN 
+
+export const ADD_ADMIN = ADMIN_ENDPOINT + "/admins/add-admin";
+export const GET_ALL_ADMIN = ADMIN_ENDPOINT + "/admins";
+export const DELETE_ADMIN = ADMIN_ENDPOINT + "/admins/delete";
+
+// ROLE
 
 export const ADD_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/add";
 export const GET_ALL_ADMIN_ROLE = ADMIN_ENDPOINT + "/role";
@@ -115,7 +121,7 @@ export const ADD_RIDE = ADMIN_ENDPOINT + "/ride/add";
 
 // USERS
 
-export const ALL_USERS = ADMIN_ENDPOINT + "/user";
+export const ALL_USERS =  "user";
 export const ADD_USER = ADMIN_ENDPOINT + "/user/add";
 export const EDIT_USER = ADMIN_ENDPOINT + "/user/update";
 export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
