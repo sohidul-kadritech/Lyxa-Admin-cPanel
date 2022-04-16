@@ -215,6 +215,7 @@ const userRoutes = [
 
   {path: "/categories/list", component: CategoryList},
   {path: "/categories/add", component: CategoryAdd},
+  {path: "/categories/edit/:id", component: CategoryAdd},
 
   {path: "/tags/list", component: TagsList},
   {path: "/tags/add", component: TagAdd},

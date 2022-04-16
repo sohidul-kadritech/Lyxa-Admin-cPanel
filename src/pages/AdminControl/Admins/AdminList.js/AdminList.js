@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteAdmin,
   getAllAdmin,
+  setStatusFalse,
 } from "../../../../store/AdminControl/Admin/adminAction";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from 'react-router-dom';
@@ -31,7 +32,10 @@ const AdminList = () => {
   // const [dynamic_description, setdynamic_description] = useState("")
 
   useEffect(() => {
-    callAdminList();
+   
+      callAdminList();
+      dispatch(setStatusFalse())
+    
   }, []);
 
   const callAdminList = (refresh = false) => {
@@ -59,6 +63,8 @@ const AdminList = () => {
             title="Admin"
             loading={loading}
             callList={callAdminList}
+            isAddNew={true}
+            addNewRoute={"admin/create"}
           />
           <Card>
             <CardBody>
