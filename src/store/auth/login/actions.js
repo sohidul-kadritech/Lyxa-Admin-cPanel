@@ -53,9 +53,9 @@ export const logoutAdmin = () => dispatch => {
 };
 
 export const adminAuth = user => async (dispatch, getState) => {
-  // console.log({user})
+  console.log({user})
   try {
-    dispatch(loginUser());
+    dispatch(loginUser(user));
 
     const { data: {status, message , error, data } } = await requestApi().request(LOGIN, {
       method: "POST",
@@ -74,19 +74,10 @@ export const adminAuth = user => async (dispatch, getState) => {
 
       dispatch(loginSuccess(data.admin, data.admin.token, message));
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      dispatch(apiError(error));
+      dispatch(apiError(message));
     }
   } catch (error) {
+    
     dispatch(apiError(error.message));
   }
 };
