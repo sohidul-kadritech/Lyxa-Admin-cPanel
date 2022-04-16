@@ -48,7 +48,7 @@ const adminReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        status: true,
+        status: false,
         admins: payload,
         error: null
       };

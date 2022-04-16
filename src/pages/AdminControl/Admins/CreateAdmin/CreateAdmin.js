@@ -41,6 +41,7 @@ const CreateAdmin = () => {
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState(null);
+  const [activeStatus, setActiveStatus] = useState("")
 
 
   useEffect(()=>{
@@ -49,10 +50,12 @@ const CreateAdmin = () => {
         console.log({findAdmin})
         if(findAdmin){
            const {email,name, number, status} = findAdmin;
+          //  console.log({adminEmail})
            setName(name);
            setEmail(email);
-          //  setPassword()
+          // //  setPassword()
           setPhoneNumber(number);
+          setActiveStatus(status)
           
         }
     }else{
@@ -141,7 +144,7 @@ const CreateAdmin = () => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-xl-4 mt-3">
+                <Row className=" mt-4">
                   <Col xl={6}>
                     <TextField
                       // id="password"
@@ -181,6 +184,23 @@ const CreateAdmin = () => {
                       </Select>
                     </FormControl>
                   </Col> */}
+                </Row>
+                <Row className="mt-4">
+                  {activeStatus && <Col xl={6}>
+                    <FormControl fullWidth required>
+                      <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={activeStatus}
+                        label="Role"
+                        onChange={event => setActiveStatus(event.target.value)}
+                      >
+                        <MenuItem value="active">Active</MenuItem>
+                        <MenuItem value="deactive">Deactive</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Col>}
                 </Row>
 
                 <div className="pt-3 mt-3 d-flex justify-content-center">
