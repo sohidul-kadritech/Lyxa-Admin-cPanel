@@ -129,7 +129,7 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/banner-add">
+                  <Link to="/banner/add">
                     <i className="fas fa-plus-circle" />
                     <span>{props.t("Add")}</span>
                   </Link>

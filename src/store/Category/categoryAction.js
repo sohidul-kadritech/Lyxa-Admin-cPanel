@@ -131,7 +131,7 @@ export const editCategory = (values) => async (dispatch) => {
             type: actionType.EDIT_CATEGORY_REQUEST_SUCCESS,
             payload: data.data.category,
           });
-        }, 350);
+        }, 400);
       } else {
         toast.warn(data.message, {
           // position: "bottom-right",

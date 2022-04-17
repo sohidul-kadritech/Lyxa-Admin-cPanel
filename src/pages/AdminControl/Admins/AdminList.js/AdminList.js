@@ -97,11 +97,11 @@ const AdminList = () => {
                           fontWeight: "500",
                         }}
                       >
-                        <Th>{item.name}</Th>
+                        <Th>{item?.name}</Th>
 
-                        <Td>{item.email}</Td>
-                        <Td>{item.number}</Td>
-                        <Td>{item.status}</Td>
+                        <Td>{item?.email}</Td>
+                        <Td>{item?.number}</Td>
+                        <Td>{item?.status}</Td>
                         <Td>{"role"}</Td>
                         <Td>
                           <div>
@@ -123,28 +123,7 @@ const AdminList = () => {
                             >
                               <i className="fa fa-trash" />
                             </button>
-                            {/* {confirm_alert ? (
-                              <SweetAlert
-                                title="Are you sure?"
-                                warning
-                                showCancel
-                                confirmButtonText="Yes, delete it!"
-                                confirmBtnBsStyle="success"
-                                cancelBtnBsStyle="danger"
-                                onConfirm={() => {
-                                  setconfirm_alert(false);
-                                  setsuccess_dlg(true);
-                                  
-                                  setdynamic_title("Deleted");
-                                  setdynamic_description(
-                                    "Your file has been deleted."
-                                  );
-                                }}
-                                onCancel={() => setconfirm_alert(false)}
-                              >
-                                Are You Sure You Want to Delete This Admin?
-                              </SweetAlert>
-                            ) : null} */}
+
                           </div>
                         </Td>
                       </Tr>

@@ -28,7 +28,7 @@ export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
 export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";
 export const DELETE_BANNER = ADMIN_ENDPOINT + "/banner/delete";
 export const GET_SINGLE_BANNER = ADMIN_ENDPOINT + "/banner/";
-export const EDIT_BANNER = ADMIN_ENDPOINT + "/banner/edit";
+export const EDIT_BANNER = ADMIN_ENDPOINT + "/banner/update";
 
 
 

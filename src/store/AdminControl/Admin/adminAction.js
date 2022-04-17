@@ -37,7 +37,7 @@ export const addAdmin = (adminData) => async (dispatch) => {
       });
       dispatch({
         type: actionType.ADD_ADMIN_REQUEST_SUCCESS,
-        payload: data.data.addAdmin,
+        payload: data.data.admin,
       });
     } else {
       toast.warn(data.message, {

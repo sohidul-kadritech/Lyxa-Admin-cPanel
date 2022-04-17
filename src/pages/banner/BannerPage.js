@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteBanner,
   getBannerListAction,
-  filterSelect
+  filterSelect,
 } from "../../store/banner/bannerAction";
 import {
   Button,
@@ -14,7 +14,8 @@ import {
   Spinner,
   CardBody,
   Card,
-  CardTitle
+  CardTitle,
+  Label,
 } from "reactstrap";
 import BreadcrumbsBanner from "./BreadcrumbsBanner";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -27,6 +28,8 @@ import Select from "@mui/material/Select";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from "styled-components";
+import { FormControl } from "@mui/material";
+import Lightbox from "react-image-lightbox";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
@@ -58,47 +61,31 @@ const BannerPage = () => {
     error,
     type,
     activeStatus: status,
-    sortBy
-  } = useSelector(state => state.bannerReducer);
+  } = useSelector((state) => state.bannerReducer);
+
+  const [isZoom, setIsZoom] = useState(false);
+  const [bannerImg, setBannerImg] = useState("");
 
   useEffect(() => {
-    callBanner();
-  }, []);
+    if (type) {
+      callBanner(true);
+    } else {
+      callBanner();
+    }
+  }, [type]);
 
   function callBanner(refresh = false) {
-    dispatch(getBannerListAction({ refresh }));
+    dispatch(getBannerListAction( refresh ));
   }
 
-  const filter = (option, value) => {
-    if (option === "type") {
-      dispatch(
-        filterSelect({
-          type: value
-        })
-      );
-    } else if (option === "status") {
-      dispatch(
-        filterSelect({
-          activeStatus: value
-        })
-      );
-    } else if (option === "sortBy") {
-      dispatch(
-        filterSelect({
-          sortBy: value
-        })
-      );
-    }
-  };
-
-  const handleEdit = id => {
+  const handleEdit = (id) => {
     // console.log(id)
-    route.push(`/banner-edit/${id}`);
+    route.push(`/banner/edit/${id}`);
   };
 
   // DELETE BANNER
 
-  const handleDelete = id => {
+  const handleDelete = (id) => {
     // console.log(bannerId)
     dispatch(deleteBanner(bannerId));
   };
@@ -106,6 +93,15 @@ const BannerPage = () => {
   const listViewBanner = () => {
     return (
       <Col xl={12}>
+        {isZoom ? (
+          <Lightbox
+            mainSrc={bannerImg}
+            enableZoom={true}
+            onCloseRequest={() => {
+              setIsZoom(!isZoom);
+            }}
+          />
+        ) : null}
         <div className="table-rep-plugin">
           <div
             className="table-responsive mb-0"
@@ -116,12 +112,12 @@ const BannerPage = () => {
                 <CardTitle className="h4"> Banner List</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table-striped table-bordered"
+                  className="table table-striped table-bordered table-hover text-center"
                 >
                   <Thead>
                     <Tr>
                       <Th>Serial No</Th>
-                      <Th data-priority="1">title</Th>
+                      <Th data-priority="1">Type</Th>
                       <Th data-priority="1">Images</Th>
                       <Th data-priority="3">Created At</Th>
                     </Tr>
@@ -131,14 +127,19 @@ const BannerPage = () => {
                     {list.map((item, index) => {
                       return (
                         <Tr key={index}>
-                          <Th>
-                            {index + 1}
-                          </Th>
+                          <Th>{index + 1}</Th>
+                          <Td>{item.type}</Td>
                           <Td>
-                            {item.title}
-                          </Td>
-                          <Td>
-                            <img src={item.image} style={{ width: "100px" }} />
+                            <img
+                              src={item.image}
+                              style={{ width: "100px" }}
+                              alt="Banner"
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setIsZoom(true);
+                                setBannerImg(item.image);
+                              }}
+                            />
                           </Td>
                           <Td>
                             {moment(item.createdAt)
@@ -147,43 +148,42 @@ const BannerPage = () => {
                           </Td>
                           <Td>
                             <button
-                              className="btn btn-info "
-                              onClick={() => handleEdit(item.id)}
+                              className="btn btn-info button me-2"
+                              onClick={() => handleEdit(item._id)}
                             >
                               <i className="fa fa-edit" />
                             </button>
                             <button
-                              className="btn btn-danger "
-                              // onClick={() => handleDelete(item.id)}
+                              className="btn btn-danger button"
                               onClick={() => {
                                 setconfirm_alert(true);
-                                setBannerId(item.id);
+                                setBannerId(item._id);
                               }}
                             >
                               <i className="fa fa-trash" />
                             </button>
-                            {confirm_alert
-                              ? <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete();
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  You won't be able to revert this!
-                                </SweetAlert>
-                              : null}
+                            {confirm_alert ? (
+                              <SweetAlert
+                                title="Are you sure?"
+                                warning
+                                showCancel
+                                confirmButtonText="Yes, delete it!"
+                                confirmBtnBsStyle="success"
+                                cancelBtnBsStyle="danger"
+                                onConfirm={() => {
+                                  handleDelete();
+                                  setconfirm_alert(false);
+                                  setsuccess_dlg(true);
+                                  setdynamic_title("Deleted");
+                                  setdynamic_description(
+                                    "Your file has been deleted."
+                                  );
+                                }}
+                                onCancel={() => setconfirm_alert(false)}
+                              >
+                                You won't be able to revert this!
+                              </SweetAlert>
+                            ) : null}
                           </Td>
                         </Tr>
                       );
@@ -191,10 +191,17 @@ const BannerPage = () => {
                   </Tbody>
                 </Table>
 
-                {/* {loading &&
+                {loading && (
                   <div className="d-flex justify-content-center">
                     <Spinner animation="border" variant="info" />
-                  </div>} */}
+                  </div>
+                )}
+
+                {!loading && list.length < 1 && (
+                  <div className="text-center">
+                    <h5>No Data</h5>
+                  </div>
+                )}
               </CardBody>
             </Card>
           </div>
@@ -214,7 +221,12 @@ const BannerPage = () => {
             <Card>
               <CardBody>
                 <CardTitle className="h4"> Banner List</CardTitle>
-
+                <hr />
+                {loading && (
+                  <div className="d-flex justify-content-center">
+                    <Spinner animation="border" variant="info" />
+                  </div>
+                )}
                 <Row>
                   {list.map((item, index) => {
                     return (
@@ -222,30 +234,31 @@ const BannerPage = () => {
                         <Card className="align-items-center">
                           <ImageView>
                             <>
-                            <img
-                              src={item.image}
-                              className="img-thumbnail img__view"
-                              style={{ width: "100%", height: "100%" }}
-                            />
-                            <div className="button__wrapper">
-                            <button
-                              className="btn btn-info me-2"
-                              onClick={() => handleEdit(item.id)}
-                            >
-                              <i className="fa fa-edit" />
-                            </button>
-                            <button
-                              className="btn btn-danger "
-                              // onClick={() => handleDelete(item.id)}
-                              onClick={() => {
-                                setconfirm_alert(true);
-                                setBannerId(item.id);
-                              }}
-                            ><i className="fa fa-trash" /></button>
-                            
-                            </div>
-                            {confirm_alert
-                              ? <SweetAlert
+                              <img
+                                src={item.image}
+                                className="img-thumbnail img__view"
+                                style={{ width: "100%", height: "100%" }}
+                              />
+                              <div className="button__wrapper">
+                                <button
+                                  className="btn btn-info me-2"
+                                  onClick={() => handleEdit(item._id)}
+                                >
+                                  <i className="fa fa-edit" />
+                                </button>
+                                <button
+                                  className="btn btn-danger "
+                                  // onClick={() => handleDelete(item.id)}
+                                  onClick={() => {
+                                    setconfirm_alert(true);
+                                    setBannerId(item._id);
+                                  }}
+                                >
+                                  <i className="fa fa-trash" />
+                                </button>
+                              </div>
+                              {confirm_alert ? (
+                                <SweetAlert
                                   title="Are you sure?"
                                   warning
                                   showCancel
@@ -265,22 +278,21 @@ const BannerPage = () => {
                                 >
                                   You won't be able to revert this!
                                 </SweetAlert>
-                              : null}
+                              ) : null}
                             </>
                           </ImageView>
-                          <h4>
-                            {item.title}
-                          </h4>
+                          <h4>{item.title}</h4>
                         </Card>
                       </Col>
                     );
                   })}
                 </Row>
 
-                {loading &&
-                  <div className="d-flex justify-content-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>}
+                {!loading && list.length < 1 && (
+                  <div className="text-center">
+                    <h5>No Data</h5>
+                  </div>
+                )}
               </CardBody>
             </Card>
           </div>
@@ -293,76 +305,48 @@ const BannerPage = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          {success_dlg
-            ? <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            : null}
+          {success_dlg ? (
+            <SweetAlert
+              success
+              title={dynamic_title}
+              onConfirm={() => {
+                setsuccess_dlg(false);
+              }}
+            >
+              {dynamic_description}
+            </SweetAlert>
+          ) : null}
           <Row>
             <BreadcrumbsBanner
               maintitle="Banner"
               breadcrumbItem="Banner list"
               callBanner={callBanner}
               loading={loading}
-              lisener={vStyle => {
+              lisener={(vStyle) => {
                 setViewStyle(vStyle);
               }}
             />
-            <Row xl={12} className="d-flex justify-content-between">
-              <Col sx={{ minWidth: 200 }}>
+
+            <Col lg={6} className="mb-3">
+              <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Type</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={type}
-                  label="Type"
-                  onChange={e => filter("type", e.target.value)}
-                  style={{ width: "100%" }}
+                  label="Age"
+                  onChange={(event) =>
+                    dispatch(filterSelect(event.target.value))
+                  }
                 >
-                  <MenuItem value={1}>User</MenuItem>
-                  <MenuItem value={2}>Partner</MenuItem>
+                  <MenuItem value="all">All</MenuItem>
+                  <MenuItem value="food">Food</MenuItem>
+                  <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                  <MenuItem value="grocery">Grocery</MenuItem>
+                  <MenuItem value="home">Home</MenuItem>
                 </Select>
-              </Col>
-              <Col sx={{ minWidth: 200 }}>
-                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={status}
-                  label="Type"
-                  onChange={e => {
-                    filter("status", e.target.value);
-                  }}
-                  style={{ width: "100%" }}
-                >
-                  <MenuItem value={1}>Active</MenuItem>
-                  <MenuItem value={2}>DeActive</MenuItem>
-                </Select>
-              </Col>
-
-              <Col sx={{ minWidth: 200 }}>
-                <InputLabel id="demo-simple-select-label">SortBy</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={sortBy}
-                  label="Type"
-                  onChange={e => {
-                    filter("sortBy", e.target.value);
-                  }}
-                  style={{ width: "100%" }}
-                >
-                  <MenuItem value="ASC">ASC</MenuItem>
-                  <MenuItem value="DESC">DESC</MenuItem>
-                </Select>
-              </Col>
-            </Row>
+              </FormControl>
+            </Col>
 
             {viewStyle == "list" ? listViewBanner() : girdViewBanner()}
           </Row>
@@ -378,14 +362,13 @@ const ImageView = styled.div`
   position: relative;
 
   .img__view {
-    
     opacity: 1;
-    transition: .5s ease;
+    transition: 0.5s ease;
     backface-visibility: hidden;
   }
 
   .button__wrapper {
-    transition: .5s ease;
+    transition: 0.5s ease;
     opacity: 0;
     position: absolute;
     top: 50%;

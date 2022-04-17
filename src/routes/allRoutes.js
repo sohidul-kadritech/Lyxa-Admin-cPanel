@@ -163,8 +163,8 @@ const userRoutes = [
 
   // Banner
   { path: "/banner", component: BannerPage },
-  { path: "/banner-add", component: AddBanner },
-  { path: "/banner-edit/:id", component: AddBanner },
+  { path: "/banner/add", component: AddBanner },
+  { path: "/banner/edit/:id", component: AddBanner },
   // { path: "/banner-add", component: Texteditor },
 
   // Users
