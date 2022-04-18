@@ -149,6 +149,7 @@ import CategoryList from './../pages/Categories&Tags/Category/CategoryList/Categ
 import CategoryAdd from './../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
 import TagsList from './../pages/Categories&Tags/Tags/TagsList/TagsList';
 import TagAdd from './../pages/Categories&Tags/Tags/TagAdd/TagAdd';
+import CategoryDetails from "../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails";
 
 
 const userRoutes = [
@@ -216,6 +217,7 @@ const userRoutes = [
   {path: "/categories/list", component: CategoryList},
   {path: "/categories/add", component: CategoryAdd},
   {path: "/categories/edit/:id", component: CategoryAdd},
+  {path: "/category/details/:id", component: CategoryDetails},
 
   {path: "/tags/list", component: TagsList},
   {path: "/tags/add", component: TagAdd},

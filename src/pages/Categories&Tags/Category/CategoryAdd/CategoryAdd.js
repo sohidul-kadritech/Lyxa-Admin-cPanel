@@ -65,7 +65,7 @@ const CategoryAdd = () => {
   const callApi = async (id) => {
     const { data } = await requestApi().request(SINGLE_CATEGORY, {
       params: {
-        id,
+        id
       },
     });
     // console.log("from api", data);
@@ -78,7 +78,7 @@ const CategoryAdd = () => {
       setType(findTypeObj);
       setSlug(slug);
     } else {
-      history.push("/admin/list", { replace: true });
+      history.push("/categories/list", { replace: true });
     }
   };
 

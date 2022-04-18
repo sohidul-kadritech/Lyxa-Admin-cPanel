@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../../components/GlobalWrapper";
 import {
@@ -12,14 +12,17 @@ import {
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { useDispatch, useSelector } from "react-redux";
+import Tooltip from '@mui/material/Tooltip';
 
-import { getAllCategory, setCatStatusFalse } from "../../../../store/Category/categoryAction";
+import {
+  getAllCategory,
+  setCatStatusFalse,
+} from "../../../../store/Category/categoryAction";
 import AppPagination from "./../../../../components/AppPagination";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 
 const CategoryList = () => {
-
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -37,7 +40,7 @@ const CategoryList = () => {
 
   useEffect(() => {
     callCategoryList();
-    dispatch(setCatStatusFalse())
+    dispatch(setCatStatusFalse());
   }, []);
 
   const callCategoryList = (refresh = false) => {
@@ -125,24 +128,25 @@ const CategoryList = () => {
                           <Td>{item.status}</Td>
                           <Td>
                             <div>
+                            <Tooltip title="Edit">
                               <button
-                                className="btn btn-info me-3 button"
+                                className="btn btn-success me-3 button"
                                 onClick={() =>
                                   history.push(`/categories/edit/${item._id}`)
                                 }
                               >
                                 <i className="fa fa-edit" />
                               </button>
-                              {/* <button
-                                className="btn btn-danger button"
-                                // onClick={() =>
-                                //   //
-                                //   // setconfirm_alert(true)
-                                //   dispatch(deleteAdmin({ id: item._id }))
-                                // }
+                              </Tooltip>
+                              <Tooltip title="Details">
+                              <button
+                                className="btn btn-info button"
+                                onClick={() =>history.push(`/category/details/${item._id}`) }
                               >
-                                <i className="fa fa-trash" />
-                              </button> */}
+                                <i className="fa fa-eye" />
+                              </button>
+                              </Tooltip>
+                              
                             </div>
                           </Td>
                         </Tr>
