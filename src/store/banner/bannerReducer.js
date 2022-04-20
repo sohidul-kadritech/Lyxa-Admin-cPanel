@@ -4,32 +4,32 @@ import {
   DELETE_BANNER_REQUEST_SUCCESS,
   GET_DELETED_BANNER_DATA,
   DELETE_BANNER_REQUEST_FAIL,
-  EDIT_BANNER_REQUEST_SEND
+  EDIT_BANNER_REQUEST_SEND,
 } from "./../actionType";
 
 const initialState = {
   loading: false,
   list: [],
   error: null,
-  type: 1,
-  activeStatus: 1,
-  sortBy: "DESC"
+  type: "all"
+
 };
 
 const bannerReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+
     case actionTypes.BANNER_FILTER_SELECT:
       return {
         ...state,
-        ...payload
+        type: payload
       };
 
     case actionTypes.BANNER_REQUEST_SEND:
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
     case actionTypes.BANNER_REQUEST_SUCCESS:
       return {
@@ -37,21 +37,21 @@ const bannerReducer = (state = initialState, action) => {
         loading: false,
         list: payload,
         error: null,
-        message: null
+        status: false
       };
 
     case actionTypes.BANNER_REQUEST_ADD:
       return {
         ...state,
         list: [...state.list, payload],
-        error: null
+        error: null,
       };
 
     case actionTypes.BANNER_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
       };
 
     // DELETE BANNER
@@ -59,24 +59,24 @@ const bannerReducer = (state = initialState, action) => {
     case DELETE_BANNER_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case DELETE_BANNER_REQUEST_SUCCESS:
-      const filtered = state.list.filter(banner => banner.id !== payload);
+      const filtered = state.list.filter((banner) => banner._id != payload);
       return {
         ...state,
         loading: false,
         message: null,
         list: filtered,
-        error: null
+        error: null,
       };
     case DELETE_BANNER_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
         message: null,
-        error: payload
+        error: payload,
       };
     //  EDIT BANNER
 
@@ -84,21 +84,21 @@ const bannerReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        message: null,
-        error: null
+        status: false,
+        error: null,
       };
 
     case actionTypes.GET_EDITED_BANNER:
-      const updateData = state.list.map(
-        item => (item.id === payload.banner.id ? payload.banner : item)
+      const updateData = state.list.map((item) =>
+        item._id === payload._id ? payload : item
       );
 
       return {
         ...state,
         loading: false,
-        message: payload.message,
+        status: true,
         error: null,
-        list: updateData
+        list: updateData,
       };
 
     // case actionTypes.OPEN_EDIT_PAGE:
@@ -112,16 +112,9 @@ const bannerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         message: null,
-        error: payload
+        error: payload,
       };
 
-    case actionTypes.BANNER_MESSAGE_CLEAR:
-      return {
-        ...state,
-        loading: false,
-        message: null,
-        error: null
-      };
 
     // BANNER ADD
 
@@ -129,27 +122,24 @@ const bannerReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        message: null
+        status: false
       };
 
     case actionTypes.BANNER_ADD_REQUEST_SUCCESS:
-      const filter = payload.filter ? payload.filter : {};
-
       return {
         ...state,
-        list: filter ? [] : [...state.list, payload.banner],
+        list: [...state.list, payload],
         loading: false,
-        message: payload.message,
         error: null,
-        ...filter
+        status: true,
       };
 
     case actionTypes.BANNER_ADD_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        message: null,
-        error: payload
+        status: false,
+        error: payload,
       };
 
     default:

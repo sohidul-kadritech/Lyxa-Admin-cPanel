@@ -19,7 +19,7 @@ import bannerReducer from "./banner/bannerReducer";
 import { roleReducer } from "./AdminControl/Role/roleReducer";
 import usersReducer from "./Users/UsersReducer";
 import adminReducer from './AdminControl/Admin/adminReducer';
-
+import categoryReducer from "./Category/categoryReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -36,7 +36,8 @@ const rootReducer = combineReducers({
   bannerReducer,
   roleReducer,
   usersReducer,
-  adminReducer
+  adminReducer,
+  categoryReducer
 });
 
 export default rootReducer;
