@@ -29,13 +29,17 @@ import {
   getAllSubCategory,
   editSubCategory,
 } from "../../../../store/Category/categoryAction";
+import AppPagination from "../../../../components/AppPagination";
 
 const CategoryDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { loading, categories, subCategories, status } = useSelector(
+  const { loading, categories, subCategories, status, subPaging,
+    subHasNextPage,
+    subHasPreviousPage,
+    subCurrentPage} = useSelector(
     (state) => state.categoryReducer
   );
 
@@ -87,6 +91,7 @@ const CategoryDetails = () => {
   //   GET ALL SUB CATEGORY
 
   useEffect(() => {
+    // console.log("call----------");
  
       callSubCategoryList(true, 1, id);
     
@@ -536,6 +541,19 @@ const CategoryDetails = () => {
                 )}
               </CardBody>
             </Card>
+            <Row>
+              <Col xl={12}>
+                <div className="d-flex justify-content-center">
+                  <AppPagination
+                    paging={subPaging}
+                    hasNextPage={subHasNextPage}
+                    hasPreviousPage={subHasPreviousPage}
+                    currentPage={subCurrentPage}
+                    lisener={(page) => dispatch(callSubCategoryList(true, page, id))}
+                  />
+                </div>
+              </Col>
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

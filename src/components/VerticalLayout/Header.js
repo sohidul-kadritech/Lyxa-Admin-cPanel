@@ -102,99 +102,14 @@ const Header = props => {
             >
               <i className="mdi mdi-menu"></i>
             </button>
-
-            <div className="d-none d-sm-block">
-
-              <Dropdown
-                isOpen={singlebtn}
-                toggle={() => setSinglebtn(!singlebtn)}
-                className="pt-3 d-inline-block"
-              >
-                <DropdownToggle className="btn btn-secondary" caret>
-                  Create <i className="mdi mdi-chevron-down"></i>
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem>Action</DropdownItem>
-                  <DropdownItem>Another action</DropdownItem>
-                  <DropdownItem>Something else here</DropdownItem>
-                  <div className="dropdown-divider"></div>
-                  <DropdownItem>Separated link</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-
-            </div>
           </div>
 
           <div className="d-flex">
-            <form className="app-search d-none d-lg-block">
-              <div className="position-relative">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder={props.t("Search") + "..."}
-                />
-                <span className="fa fa-search"></span>
-              </div>
-            </form>
 
-            <Dropdown
-              className="d-inline-block d-lg-none ms-2"
-              onClick={() => {
-                setsearch(!search)
-              }}
-              type="button"
-            >
-              <DropdownToggle
-                className="btn header-item noti-icon waves-effect"
-                id="page-header-search-dropdown"
-                tag="button"
-              > <i className="mdi mdi-magnify"></i>
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu-lg dropdown-menu-end p-0">
-                <Form className="p-3">
-                  <div className="form-group m-0">
-                    <div className="input-group">
-                      <Input type="text" className="form-control" placeholder="Search ..." aria-label="Recipient's username" />
-                      <div className="input-group-append">
-                        <Button className="btn btn-primary" type="submit"><i className="mdi mdi-magnify"></i></Button>
-                      </div>
-                    </div>
-                  </div>
-                </Form>
-              </DropdownMenu>
-            </Dropdown>
 
-            <LanguageDropdown />
-
-            <div className="dropdown d-none d-lg-inline-block">
-              <button
-                type="button"
-                onClick={() => {
-                  toggleFullscreen()
-                }}
-                className="btn header-item noti-icon waves-effect"
-                data-toggle="fullscreen"
-              >
-                <i className="mdi mdi-fullscreen"></i>
-              </button>
-            </div>
 
             <NotificationDropdown />
             <ProfileMenu />
-
-            <div
-              onClick={() => {
-                props.showRightSidebarAction(!props.showRightSidebar)
-              }}
-              className="dropdown d-inline-block"
-            >
-              <button
-                type="button"
-                className="btn header-item noti-icon right-bar-toggle waves-effect"
-              >
-                <i className="mdi mdi-cog-outline"></i>
-              </button>
-            </div>
           </div>
         </div>
       </header>

@@ -89,33 +89,9 @@ const Header = props => {
               </button>
               </div>
             <div className="d-flex">
-            <form className="app-search d-none d-lg-block">
-                <div className="position-relative">
-                    <input type="text" className="form-control" placeholder="Search..." />
-                    <span className="fa fa-search"></span>
-                </div>
-            </form>
-            <LanguageDropdown />
-            <div className="dropdown d-none d-lg-inline-block">
-                <button type="button" className="btn header-item noti-icon waves-effect" onClick={() => {
-                    toggleFullscreen()
-                  }} data-bs-toggle="fullscreen">
-                    <i className="mdi mdi-fullscreen"></i>
-                </button>
-            </div>
+
             <NotificationDropdown />      
             <ProfileMenu />        
-            <div className="dropdown d-inline-block">
-                <button
-                  onClick={() => {
-                    props.showRightSidebarAction(!props.showRightSidebar)
-                  }}
-                  type="button"
-                  className="btn header-item noti-icon right-bar-toggle waves-effect"
-                >
-                  <i className="mdi mdi-cog-outline"></i>
-                </button>
-              </div>
             </div>
           </div>
       </header>

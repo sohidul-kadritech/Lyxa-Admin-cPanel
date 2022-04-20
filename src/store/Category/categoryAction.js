@@ -71,7 +71,7 @@ export const getAllCategory =(refresh = false, page=1) => async (dispatch, getSt
         const { data } = await requestApi().request(GET_ALL_CATEGORY,{
             params: {
                 page: page,
-                pageSize: 10,
+                pageSize: 3,
             }
         });
 
@@ -225,7 +225,7 @@ export const setCatStatusFalse = () => (dispatch) => {
 // GET ALL SUB CATEGORY BY CATEGORY 
 
 export const getAllSubCategory =(refresh = false, page=1, CatId) => async (dispatch, getState) => {
-  console.log({CatId})
+  // console.log({CatId})
   const { subCategories } = getState().categoryReducer;
 
   if (subCategories.length < 1 || refresh) {
@@ -325,5 +325,7 @@ export const editSubCategory = (values) => async (dispatch) => {
     });
   }
 };
+
+
 
   
