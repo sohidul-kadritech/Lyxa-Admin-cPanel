@@ -178,6 +178,7 @@ const userRoutes = [
 
   {path: "/seller/list", component: SellerList},
   {path: "/seller/add", component: SellerAdd},
+  {path: "/seller/edit/:id", component: SellerAdd},
 
   // SHOPS
 
