@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -9,75 +9,276 @@ import {
   Input,
   Label,
   Row,
+  Spinner,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Select from "react-select";
 import Switch from "react-switch";
 import Dropzone from "react-dropzone";
-import { styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
-
-
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllSeller } from "../../../store/Seller/sellerAction";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import { toast } from "react-toastify";
+import { addShop, editShop } from "../../../store/Shop/shopAction";
+import { useHistory, useParams } from "react-router-dom";
 
 const ShopAdd = () => {
+  const shopTypeOptions = [
+    { label: "Food", value: "food" },
+    { label: "Grocery", value: "grocery" },
+    { label: "Pharmacy", value: "pharmacy" },
+  ];
 
+  const shopStatusOptions = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+    { label: "Block", value: "block" },
+  ];
+
+  const shopDeliveryOptions = [
+    { label: "Pickup", value: "pickup" },
+    { label: "Drop", value: "drop" },
+  ];
+
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const history = useHistory();
+
+  const { sellers } = useSelector((state) => state.sellerReducer);
+  const { loading, status, shops } = useSelector((state) => state.shopReducer);
 
   const [tags, setTags] = useState({
     items: [],
-    value: ""
-  })
+    value: "",
+  });
 
-  const handleTagAdd = evt => {
-    console.log(evt)
+  const [seller, setSeller] = useState(null);
+  const [searchSellerKey, setSearchSellerKey] = useState("");
+  const [shopType, setShopType] = useState(null);
+  const [shopStartTime, setShopStartTime] = useState("");
+  const [shopEndTime, setShopEndTime] = useState("");
+  const [shopName, setShopName] = useState("");
+  const [shopLogo, setShopLogo] = useState("");
+  const [shopBanner, setShopBanner] = useState("");
+  const [shopPhotos, setShopPhotos] = useState("");
+  const [shopStatus, setShopStatus] = useState(null);
+  const [shopDescription, setShopDescription] = useState("");
+  const [delivery, setDelivery] = useState(null);
+  const [minOrderAmount, setMinOrderAmount] = useState(0);
+
+  // GET SELLER
+
+  useEffect(() => {
+    if (sellers.length < 1) {
+      dispatch(getAllSeller(true));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sellers.length > 0) {
+      if (id) {
+        const findShop = shops.find((item) => item._id == id);
+        if (findShop) {
+          console.log({ findShop });
+          const {
+            delivery_type,
+            seller,
+            minOrderAmount,
+            shopBanner,
+            shopDescription,
+            shopEndTimeText,
+            shopLogo,
+            shopName,
+            shopPhotos,
+            shopStartTimeText,
+            shopStatus,
+            shopType,
+            tags,
+          } = findShop;
+
+          const findSeller = sellers.find((s) => s._id == seller);
+          const findDeliveryType = shopDeliveryOptions.find(
+            (op) => op.value == delivery_type
+          );
+          const findShopStatus = shopStatusOptions.find(
+            (x) => x.value == shopStatus
+          );
+          const findShopType = shopTypeOptions.find((x) => x.value == shopType);
+          // console.log({ findShopType });
+
+          setSeller(findSeller);
+          setShopType(findShopType);
+          setShopStartTime(shopStartTimeText);
+          setShopEndTime(shopEndTimeText);
+          setShopName(shopName);
+          setShopStatus(findShopStatus);
+          setShopDescription(shopDescription);
+          setDelivery(findDeliveryType);
+          setMinOrderAmount(minOrderAmount);
+          setTags({
+            items: tags,
+            value: "",
+          });
+        } else {
+          console.log("call api-------");
+        }
+      }
+    }
+  }, [id]);
+
+  // TAGS
+
+  const handleTagAdd = (evt) => {
+    // console.log(evt.key);
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
-      var value = tags.value.trim();
+      let value = tags.value.trim();
 
       if (value) {
         setTags({
           items: [...tags.items, tags.value],
-          value: ""
+          value: "",
         });
       }
     }
   };
 
-  const handleTagChange = evt => {
-
+  const handleTagChange = (evt) => {
     setTags({
       ...tags,
       value: evt.target.value,
     });
-    console.log(tags)
+    // console.log(tags);
   };
 
-//  const handleTagDelete = item => {
-//     this.setState({
-//       items: this.state.items.filter(i => i !== item)
-//     });
-//   };
+  const handleTagDelete = (item) => {
+    setTags({
+      items: tags.items.filter((i) => i != item),
+    });
+  };
 
-  const optionGroup = [
-    {
-      label: "Picnic",
-      options: [
-        { label: "Mustard", value: "Mustard" },
-        { label: "Ketchup", value: "Ketchup" },
-        { label: "Relish", value: "Relish" },
-      ],
-    },
-    {
-      label: "Camping",
-      options: [
-        { label: "Tent", value: "Tent" },
-        { label: "Flashlight", value: "Flashlight" },
-        { label: "Toilet Paper", value: "Toilet Paper" },
-      ],
-    },
-  ];
+  // SUBMIT SELLER
+
+  const submitShop = () => {
+    if (!seller) {
+      return toast.warn("Select a Seller", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (
+      !shopType ||
+      !shopStartTime ||
+      !shopEndTime ||
+      !shopName ||
+      !shopStatus ||
+      !shopDescription ||
+      !delivery ||
+      minOrderAmount <= 0 ||
+      tags.items.length < 1
+    ) {
+      return toast.warn("Please Fillup All Fields", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    submitData();
+  };
+
+  // DISPACTH DATA
+
+  const submitData = () => {
+    if (id) {
+      dispatch(
+        editShop({
+          id,
+          seller: seller._id,
+          shopName,
+          shopType: shopType.value,
+          shopStartTime,
+          shopEndTime,
+          shopStatus: shopStatus.value,
+          shopDescription,
+          delivery: delivery.value,
+          minOrderAmount,
+          tags: tags.items,
+          shopLogo:
+            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          shopBanner:
+            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          shopPhotos: [
+            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          ],
+          foodType: "restaurants",
+        })
+      );
+    } else {
+      dispatch(
+        addShop({
+          seller: seller._id,
+          shopName,
+          shopType: shopType.value,
+          shopStartTime,
+          shopEndTime,
+          shopStatus: shopStatus.value,
+          shopDescription,
+          delivery: delivery.value,
+          minOrderAmount,
+          tags: tags.items,
+          shopLogo:
+            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          shopBanner:
+            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          shopPhotos: [
+            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          ],
+          foodType: "restaurants",
+        })
+      );
+    }
+  };
+
+  // SUCCESS
+
+  useEffect(() => {
+    if (status) {
+      if (id) {
+        history.push("/shops/list");
+      } else {
+        setSeller(null);
+        setShopType(null);
+        setShopStartTime("");
+        setShopEndTime("");
+        setShopName("");
+        setShopStatus(null);
+        setShopDescription("");
+        setDelivery(null);
+        setMinOrderAmount(0);
+        setTags({
+          items: [],
+          value: "",
+        });
+      }
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -86,7 +287,7 @@ const ShopAdd = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={"Add"}
+              breadcrumbItem={id ? "Edit" : "Add"}
               title="Shop"
               // loading={loading}
               // callList={callCarList}
@@ -97,17 +298,46 @@ const ShopAdd = () => {
               <CardBody>
                 <Row>
                   <Col lg={6}>
-                    <div className="mb-3">
-                      <Label>Seller</Label>
-                      <Select
-                        // value={selectedGroup}
-                        // onChange={() => {
-                        //   handleSelectGroup()
-                        // }}
-                        options={optionGroup}
-                        classNamePrefix="select2-selection"
-                      />
-                    </div>
+                    <Autocomplete
+                      className="cursor-pointer"
+                      value={seller}
+                      onChange={(event, newValue) => {
+                        setSeller(newValue);
+                        // console.log("new", newValue);
+                      }}
+                      getOptionLabel={(option) =>
+                        option.name ? option.name : ""
+                      }
+                      isOptionEqualToValue={(option, value) =>
+                        option.id == value.id
+                      }
+                      inputValue={searchSellerKey}
+                      onInputChange={(event, newInputValue) => {
+                        setSearchSellerKey(newInputValue);
+                        // console.log("input value", newInputValue);
+                      }}
+                      id="controllable-states-demo"
+                      options={sellers.length > 0 ? sellers : []}
+                      sx={{ width: "100%" }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select a Seller" />
+                      )}
+                      renderOption={(props, option) => (
+                        <Box
+                          component="li"
+                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                          {...props}
+                        >
+                          <img
+                            loading="lazy"
+                            width="60"
+                            src={option.profile_photo}
+                            alt=""
+                          />
+                          {option.name}
+                        </Box>
+                      )}
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -128,6 +358,8 @@ const ShopAdd = () => {
                         type="text"
                         placeholder="Enter Shop Name"
                         required
+                        value={shopName}
+                        onChange={(e) => setShopName(e.target.value)}
                       />
                     </div>
 
@@ -136,9 +368,10 @@ const ShopAdd = () => {
                       <input
                         className="form-control"
                         type="time"
-                        defaultValue="13:45:00"
                         id="example-time-input"
                         required
+                        value={shopStartTime}
+                        onChange={(e) => setShopStartTime(e.target.value)}
                       />
                     </div>
 
@@ -147,56 +380,56 @@ const ShopAdd = () => {
                       <input
                         className="form-control"
                         type="time"
-                        defaultValue="13:45:00"
                         id="example-time-input"
                         required
+                        value={shopEndTime}
+                        onChange={(e) => setShopEndTime(e.target.value)}
                       />
                     </div>
 
                     <div className="mb-4">
                       <label className="control-label">Status</label>
                       <Select
-                        // value={selectedMulti}
-                        isMulti={true}
-                        // onChange={() => {
-                        //   handleMulti()
-                        // }}
-                        options={optionGroup}
+                        palceholder="Select Status"
+                        options={shopStatusOptions}
                         classNamePrefix="select2-selection"
                         required
+                        value={shopStatus}
+                        onChange={(e) => setShopStatus(e)}
+                        defaultValue={""}
                       />
                     </div>
 
                     <div>
-                      {/* {tags.items.length > 0 && tags.items.map((item) => (
-                        <div className="tag-item" key={item}>
-                          {item}
-                          <button
-                            type="button"
-                            className="button"
-                            // onClick={() => handleTagDelete(item)}
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))} */}
-
-                      <input
-                        // className={
-                        //   "input " + (this.state.error && " has-error")
-                        // }
-                        value={tags.value}
-                        placeholder="Type or paste email addresses and press `Enter`..."
-                        onKeyDown={handleTagAdd}
-                        onChange={handleTagChange}
-                      />
-
-                      {/* {this.state.error && (
-                        <p className="error">{this.state.error}</p>
-                      )} */}
+                      <div>
+                        <Label>Tags</Label>
+                        <input
+                          value={tags.value}
+                          placeholder="Type Tag Name and press `Enter`..."
+                          onKeyDown={handleTagAdd}
+                          onChange={handleTagChange}
+                          className="form-control"
+                        />
+                      </div>
+                      {tags.items.length > 0 && (
+                        <Paper className="mt-4 p-3">
+                          {tags.items.map((item, index) => (
+                            <TagWrapper className="tag-item" key={index}>
+                              {item}
+                              <button
+                                type="button"
+                                className="button"
+                                onClick={() => handleTagDelete(item)}
+                              >
+                                &times;
+                              </button>
+                            </TagWrapper>
+                          ))}
+                        </Paper>
+                      )}
                     </div>
                   </Col>
-                  <Col lg={6}>
+                  <Col lg={6} className="mt-4 mt-lg-0">
                     <div className="mb-4">
                       <Label>Minimum Order</Label>
                       <input
@@ -204,33 +437,33 @@ const ShopAdd = () => {
                         type="number"
                         placeholder="Enter Minimum Order Amount"
                         required
+                        value={minOrderAmount}
+                        onChange={(e) => setMinOrderAmount(e.target.value)}
                       />
                     </div>
                     <div className="mb-4">
                       <Label>Type</Label>
                       <Select
-                        // value={country}
-                        // onChange={() => {
-                        //   handleSelectGroup()
-                        // }}
                         palceholder="Select Country"
-                        options={optionGroup}
+                        options={shopTypeOptions}
                         classNamePrefix="select2-selection"
                         required
+                        value={shopType}
+                        onChange={(e) => setShopType(e)}
+                        defaultValue={""}
                       />
                     </div>
 
                     <div className="mb-4">
                       <Label>Delivery Type</Label>
                       <Select
-                        // value={country}
-                        // onChange={() => {
-                        //   handleSelectGroup()
-                        // }}
                         palceholder="Select Country"
-                        options={optionGroup}
+                        options={shopDeliveryOptions}
                         classNamePrefix="select2-selection"
                         required
+                        value={delivery}
+                        onChange={(e) => setDelivery(e)}
+                        defaultValue={""}
                       />
                     </div>
 
@@ -239,13 +472,12 @@ const ShopAdd = () => {
                       <Input
                         type="textarea"
                         id="textarea"
-                        // onChange={e => {
-                        //   textareachange(e)
-                        // }}
                         maxLength="350"
                         rows="3"
                         placeholder="Enter Descriptonons"
                         required
+                        value={shopDescription}
+                        onChange={(e) => setShopDescription(e.target.value)}
                       />
                     </div>
                   </Col>
@@ -525,9 +757,18 @@ const ShopAdd = () => {
                 </Row>
 
                 <div className="my-5 d-flex justify-content-center">
-                  <Button type="submit" color="primary" className="px-5">
-                    {" "}
-                    Add{" "}
+                  <Button onClick={submitShop} color="primary" className="px-5">
+                    {loading ? (
+                      <Spinner
+                        animation="border"
+                        variant="info"
+                        size="sm"
+                      ></Spinner>
+                    ) : id ? (
+                      "Edit"
+                    ) : (
+                      "Add"
+                    )}
                   </Button>
                 </div>
               </CardBody>
@@ -538,5 +779,34 @@ const ShopAdd = () => {
     </React.Fragment>
   );
 };
+
+const TagWrapper = styled.div`
+  background-color: #d4d5d6;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 30px;
+  height: 30px;
+  padding: 0 4px 0 1rem;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.3rem 0.3rem 0;
+
+  .button {
+    background-color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    margin-left: 10px;
+    font-weight: bold;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
 
 export default ShopAdd;

@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import {
@@ -13,17 +13,26 @@ import {
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Tooltip from "@mui/material/Tooltip";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteSeller, getAllSeller, setSellerStatusFalse } from "../../../store/Seller/sellerAction";
+import {
+  deleteSeller,
+  getAllSeller,
+  setSellerStatusFalse,
+} from "../../../store/Seller/sellerAction";
 import AppPagination from "../../../components/AppPagination";
-import  Lightbox  from 'react-image-lightbox';
+import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const SellerList = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  
+
   const [isZoom, setIsZoom] = useState(false);
   const [sellerImg, setSellerImg] = useState("");
+  const [confirm_alert, setconfirm_alert] = useState(false);
+  const [success_dlg, setsuccess_dlg] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState("");
+  const [dynamic_description, setdynamic_description] = useState("");
 
   const {
     loading,
@@ -36,11 +45,17 @@ const SellerList = () => {
 
   useEffect(() => {
     callSellerList();
-    dispatch(setSellerStatusFalse())
+    dispatch(setSellerStatusFalse());
   }, []);
 
   const callSellerList = (refresh = false) => {
     dispatch(getAllSeller(refresh));
+  };
+
+  // DELETE
+
+  const handleDelete = (id) => {
+    dispatch(deleteSeller(id));
   };
 
   return (
@@ -57,6 +72,18 @@ const SellerList = () => {
               isAddNew={true}
               addNewRoute="seller/add"
             />
+
+            {success_dlg ? (
+              <SweetAlert
+                success
+                title={dynamic_title}
+                onConfirm={() => {
+                  setsuccess_dlg(false);
+                }}
+              >
+                {dynamic_description}
+              </SweetAlert>
+            ) : null}
 
             {isZoom ? (
               <Lightbox
@@ -147,13 +174,33 @@ const SellerList = () => {
                               <Tooltip title="Delete">
                                 <button
                                   className="btn btn-danger button"
-                                  onClick={() =>
-                                    dispatch(deleteSeller(item._id))
-                                  }
+                                  onClick={() => setconfirm_alert(true)}
                                 >
                                   <i className="fa fa-trash" />
                                 </button>
                               </Tooltip>
+                              {confirm_alert ? (
+                                <SweetAlert
+                                  title="Are you sure?"
+                                  warning
+                                  showCancel
+                                  confirmButtonText="Yes, delete it!"
+                                  confirmBtnBsStyle="success"
+                                  cancelBtnBsStyle="danger"
+                                  onConfirm={() => {
+                                    handleDelete(item._id);
+                                    setconfirm_alert(false);
+                                    setsuccess_dlg(true);
+                                    setdynamic_title("Deleted");
+                                    setdynamic_description(
+                                      "Your file has been deleted."
+                                    );
+                                  }}
+                                  onCancel={() => setconfirm_alert(false)}
+                                >
+                                  Are You Sure! You want to delete this Seller.
+                                </SweetAlert>
+                              ) : null}
                             </div>
                           </Td>
                         </Tr>

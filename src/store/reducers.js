@@ -21,6 +21,7 @@ import usersReducer from "./Users/UsersReducer";
 import adminReducer from './AdminControl/Admin/adminReducer';
 import categoryReducer from "./Category/categoryReducer";
 import sellerReducer from './Seller/sellerReducer';
+import shopReducer from "./Shop/shopReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -39,7 +40,8 @@ const rootReducer = combineReducers({
   usersReducer,
   adminReducer,
   categoryReducer,
-  sellerReducer
+  sellerReducer,
+  shopReducer
 });
 
 export default rootReducer;

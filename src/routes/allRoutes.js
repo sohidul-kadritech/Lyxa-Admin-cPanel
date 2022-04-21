@@ -184,6 +184,7 @@ const userRoutes = [
 
   {path: "/shops/list", component: ShopList},
   {path: "/shops/add", component: ShopAdd},
+  {path: "/shops/edit/:id", component: ShopAdd},
 
 
   // DELIVERY MAN

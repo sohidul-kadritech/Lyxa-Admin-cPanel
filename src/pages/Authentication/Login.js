@@ -15,7 +15,7 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import { adminAuth, apiError } from "../../store/actions";
 
 // import images
-import logoSm from "../../assets/images/logo-sm.png";
+import logoSm from "../../assets/images/drop_logo.png";
 import { toast } from "react-toastify";
 import GlobalWrapper from "./../../components/GlobalWrapper";
 import styled from "styled-components";
@@ -69,7 +69,7 @@ const Login = props => {
                         Welcome Back !
                       </h5>
                       <p className="text-white-50">
-                        Sign in to continue to Veltrix.
+                        Sign in to continue to Drop.
                       </p>
                       <Link to="/" className="logo logo-admin">
                         <img src={logoSm} height="24" alt="logo" />
@@ -130,8 +130,8 @@ const Login = props => {
                 </Card>
                 <div className="mt-5 text-center">
                   <p>
-                    © {new Date().getFullYear()} Quicar Crafted with{" "}
-                    <i className="mdi mdi-heart text-danger" /> by CODEPADDING
+                    © {new Date().getFullYear()} Drop Crafted with{" "}
+                    <i className="mdi mdi-heart text-danger" /> by drop.com
                   </p>
                 </div>
               </Col>

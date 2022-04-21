@@ -50,11 +50,11 @@ const ProfileMenu = props => {
     [props.success]
   );
 
-  // const logout = () => {
-  //   localStorage.removeItem("accessToken");
-  //   localStorage.removeItem("admin");
-  //   history.push("/login", {replace: true})
-  // };
+  const logout = () => {
+    // localStorage.removeItem("accessToken");
+    // localStorage.removeItem("admin");
+    // history.push("/login", {replace: true})
+  };
 
   return (
     <React.Fragment>
@@ -80,7 +80,7 @@ const ProfileMenu = props => {
             {props.t("Profile")}{" "}
           </DropdownItem>
           <div className="dropdown-divider" />
-          <p className="dropdown-item cursor-pointer" >
+          <p className="dropdown-item cursor-pointer" onClick={logout}>
             <i className="bx bx-power-off font-size-16 align-middle me-1 text-danger" />
             <span>Logout</span>
           </p>
