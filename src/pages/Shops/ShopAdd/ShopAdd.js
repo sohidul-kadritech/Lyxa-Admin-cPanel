@@ -158,6 +158,7 @@ const ShopAdd = () => {
 
   const handleTagDelete = (item) => {
     setTags({
+      ...tags,
       items: tags.items.filter((i) => i != item),
     });
   };

@@ -68,6 +68,7 @@ export const EDIT_CATEGORY = ADMIN_ENDPOINT + "/category/update";
 export const ADD_SUB_CATEGORY = ADMIN_ENDPOINT + "/sub-category/add";
 export const EDIT_SUB_CATEGORY = ADMIN_ENDPOINT + "/sub-category/update";
 export const GET_ALL_SUB_CATEGORY = ADMIN_ENDPOINT + "/sub-category/get-all-subcategory-by-category-id"
+export const DELETE_SUB_CAT = ADMIN_ENDPOINT + "/sub-category/delete"
 
 // SELLER 
 export const ADD_SELLER = ADMIN_ENDPOINT + "/seller/add";
@@ -82,6 +83,8 @@ export const EDIT_SHOP = ADMIN_ENDPOINT + "/shop/update"
 export const ALL_SHOP = ADMIN_ENDPOINT + "/shop"
 export const DELETE_SHOP = ADMIN_ENDPOINT + "/shop/delete"
 
+// PRODUCT 
 
+export const ADD_PRODUCT = ADMIN_ENDPOINT + "/product/add"
 
 // END ADMIN API

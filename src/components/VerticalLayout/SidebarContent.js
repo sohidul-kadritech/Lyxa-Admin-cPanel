@@ -194,6 +194,29 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
+            {/* PRODUCT */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="fa fa-cube" />
+                <span>{props.t("Products")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/products/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/products/add">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
             {/* DELIVERY MANS */}
 
             <li>
