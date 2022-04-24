@@ -231,9 +231,9 @@ export const addSubCategory = (values) => async (dispatch) => {
 // GET ALL SUB CATEGORY BY CATEGORY
 
 export const getAllSubCategory =
-  (refresh = false, page = 1, CatId) =>
+  (refresh = false,  CatId, page = 1) =>
   async (dispatch, getState) => {
-    console.log({ refresh, page, CatId });
+    // console.log({ refresh, page, CatId });
     const { subCategories, subStatusKey, subSearchKey } = getState().categoryReducer;
 
     if (subCategories.length < 1 || refresh) {

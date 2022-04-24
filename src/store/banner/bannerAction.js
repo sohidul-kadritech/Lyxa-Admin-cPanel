@@ -102,7 +102,7 @@ export const addBanner = (addData) => async (dispatch, getState) => {
       data: addData,
     });
 
-    console.log({ data });
+    // console.log({ data });
 
     if (data.status) {
       toast.success(data.message, {
@@ -145,7 +145,7 @@ export const addBanner = (addData) => async (dispatch, getState) => {
 };
 
 export const filterSelect = (filter) => async (dispatch) => {
-  console.log({ filter });
+  // console.log({ filter });
   dispatch({
     type: actionType.BANNER_FILTER_SELECT,
     payload: filter,

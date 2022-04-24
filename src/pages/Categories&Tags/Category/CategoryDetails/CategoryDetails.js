@@ -99,7 +99,7 @@ const CategoryDetails = () => {
   useEffect(() => {
     if (id) {
       if (subSearchKey || subStatusKey) {
-        callSubCategoryList(true, 1, id);
+        callSubCategoryList(true, id);
       }
     }
   }, [id, subSearchKey, subStatusKey]);
@@ -121,8 +121,8 @@ const CategoryDetails = () => {
     }
   };
 
-  const callSubCategoryList = (refresh = false, page = 1, catId) => {
-    dispatch(getAllSubCategory(refresh, page, catId));
+  const callSubCategoryList = (refresh = false,  catId) => {
+    dispatch(getAllSubCategory(refresh, catId));
   };
 
   // EDIT SUB CATEGORY
@@ -219,28 +219,25 @@ const CategoryDetails = () => {
 
     const newSlug = slug.split(" ").join("");
 
-    if (subCatId) {
-      dispatch(
-        editSubCategory({
-          id: subCatId,
-          name,
-          status: activeStatus.value,
-          slug: newSlug,
-          image:
-            "https://media.istockphoto.com/photos/table-top-view-of-spicy-food-picture-id1316145932?b=1&k=20&m=1316145932&s=170667a&w=0&h=feyrNSTglzksHoEDSsnrG47UoY_XX4PtayUPpSMunQI=",
-          category: id,
-        })
-      );
-    } else {
-      dispatch(
-        addSubCategory({
-          name,
+    const data = {
+      name,
           status: activeStatus.value,
           slug: newSlug,
           image:
             "https://media.istockphoto.com/photos/table-top-view-of-spicy-food-picture-id1316145932?b=1&k=20&m=1316145932&s=170667a&w=0&h=feyrNSTglzksHoEDSsnrG47UoY_XX4PtayUPpSMunQI=",
           categoryId: id,
+    }
+
+    if (subCatId) {
+      dispatch(
+        editSubCategory({
+          ...data,
+          id: subCatId,
         })
+      );
+    } else {
+      dispatch(
+        addSubCategory(data)
       );
     }
   };
@@ -674,7 +671,7 @@ const CategoryDetails = () => {
                     hasPreviousPage={subHasPreviousPage}
                     currentPage={subCurrentPage}
                     lisener={(page) =>
-                      dispatch(callSubCategoryList(true, page, id))
+                      dispatch(callSubCategoryList(true, id,page))
                     }
                   />
                 </div>

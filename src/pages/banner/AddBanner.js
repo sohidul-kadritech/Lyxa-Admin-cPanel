@@ -26,7 +26,7 @@ import { convertToHTML } from "draft-convert";
 // import { convertToHTML } from 'draft-convert';
 import requestApi from "../../network/httpRequest";
 import { ADD_BANNER } from "../../network/Api";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { GET_SINGLE_BANNER } from "./../../network/Api";
 import { addBanner, editBanner } from "../../store/banner/bannerAction";
 import htmlToDraft from "html-to-draftjs";
@@ -34,9 +34,9 @@ import { OPEN_EDIT_PAGE } from "../../store/actionType";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import Dropzone from "react-dropzone";
 import Select from "react-select";
+import { imageUpload } from "../../store/ImageUpload/imageUploadAction";
 
 const AddBanner = () => {
-
   const options = [
     { label: "Food", value: "food" },
     { label: "Home", value: "home" },
@@ -45,8 +45,7 @@ const AddBanner = () => {
   ];
   const activeOptions = [
     { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" }
-
+    { label: "Inactive", value: "inactive" },
   ];
 
   const [editorState, setEditorState] = useState(() =>
@@ -68,10 +67,10 @@ const AddBanner = () => {
     if (id) {
       const findBanner = list.find((item) => item?._id === id);
       if (findBanner) {
-        console.log({findBanner})
+        console.log({ findBanner });
         const { image, type, status, description } = findBanner;
-        const findType = options.find( op => op.value == type);
-        const fineStatus = activeOptions.find(st => st.value == status)
+        const findType = options.find((op) => op.value == type);
+        const fineStatus = activeOptions.find((st) => st.value == status);
         setImage(image);
         // setTitle(title);
         setType(findType);
@@ -86,7 +85,7 @@ const AddBanner = () => {
         }
       } else {
         callApi(id);
-        console.log("Call Api")
+        console.log("Call Api");
       }
     }
   }, [id]);
@@ -98,20 +97,20 @@ const AddBanner = () => {
     // console.log(banner)
     if (data.status) {
       const { type, title, image, description, status } = data.data.banner;
-        const findType = options.find( op => op.value == type);
-        const fineStatus = activeOptions.find(st => st.value == status)
-        setImage(image);
-        setTitle(title);
-        setType(findType);
-        setActiveStatus(fineStatus);
-        const contentBlock = htmlToDraft(description);
-        if (contentBlock) {
-          const contentState = ContentState.createFromBlockArray(
-            contentBlock.contentBlocks
-          );
-          const outputEditorState = EditorState.createWithContent(contentState);
-          setEditorState(outputEditorState);
-        }
+      const findType = options.find((op) => op.value == type);
+      const fineStatus = activeOptions.find((st) => st.value == status);
+      setImage(image);
+      setTitle(title);
+      setType(findType);
+      setActiveStatus(fineStatus);
+      const contentBlock = htmlToDraft(description);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(
+          contentBlock.contentBlocks
+        );
+        const outputEditorState = EditorState.createWithContent(contentState);
+        setEditorState(outputEditorState);
+      }
       //   setDescriptionText(convertToText)
     } else {
       route.push("/banner", { replace: true });
@@ -153,62 +152,93 @@ const AddBanner = () => {
       });
     }
 
-
-    // if (!image) {
-    //   return toast.warn("add a image ", {
-    //     // position: "bottom-right",
-    //     position: toast.POSITION.TOP_RIGHT,
-    //     autoClose: 3000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //   });
-    // }
-
-    if (id) {
-      dispatch(
-        editBanner({
-          id,
-          title,
-          description,
-          image:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-          type: type.value,
-          status: activeStatus.value
-        })
-      );
-    } else {
-      dispatch(
-        addBanner({
-          title,
-          type: type.value,
-          description,
-          image:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-        })
-      );
+    if (!image) {
+      return toast.warn("add a image ", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
+
+    console.log({image})
+
+    dispatch(imageUpload({
+      imageName: image.name,
+      image: image.preview,
+      file: "user"
+    }))
+
+    // if (id) {
+    //   dispatch(
+    //     editBanner({
+    //       id,
+    //       title,
+    //       description,
+    //       image:
+    //         "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+    //       type: type.value,
+    //       status: activeStatus.value
+    //     })
+    //   );
+    // } else {
+    //   dispatch(
+    //     addBanner({
+    //       title,
+    //       type: type.value,
+    //       description,
+    //       image:
+    //         "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+    //     })
+    //   );
+    // }
   };
 
   // SUCCESS
 
   useEffect(() => {
     if (status) {
-      if(id){
+      if (id) {
         route.goBack();
-      }else{
+      } else {
         setImage(null);
-      setTitle("");
-      setType(null);
-      setActiveStatus("");
-      setEditorState(EditorState.createEmpty());
+        setTitle("");
+        setType(null);
+        setActiveStatus("");
+        setEditorState(EditorState.createEmpty());
       }
-      
-
     }
   }, [status]);
+
+   /**
+   * Formats the size
+   */
+    function formatBytes(bytes, decimals = 2) {
+      if (bytes === 0) return "0 Bytes";
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    }
+
+  // IMAGE
+
+  const handleAcceptedFiles = (files) => {
+    files.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    );
+
+    setImage(files[0])
+  };
 
   return (
     <React.Fragment>
@@ -259,21 +289,23 @@ const AddBanner = () => {
                       />
                     </Col>
 
-                    {id && <Col xl={6} className="mt-3 mt-xl-0">
-                      <Label>Status</Label>
-                      <Select
-                        // value={country}
-                        onChange={(event) => {
-                          setActiveStatus(event);
-                        }}
-                        value={activeStatus}
-                        defaultValue={""}
-                        palceholder="Select"
-                        options={activeOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                      />
-                    </Col>}
+                    {id && (
+                      <Col xl={6} className="mt-3 mt-xl-0">
+                        <Label>Status</Label>
+                        <Select
+                          // value={country}
+                          onChange={(event) => {
+                            setActiveStatus(event);
+                          }}
+                          value={activeStatus}
+                          defaultValue={""}
+                          palceholder="Select"
+                          options={activeOptions}
+                          classNamePrefix="select2-selection"
+                          required
+                        />
+                      </Col>
+                    )}
                   </Row>
 
                   <Row className="mb-3">
@@ -302,7 +334,7 @@ const AddBanner = () => {
                 <Form>
                   <Dropzone
                     onDrop={(acceptedFiles) => {
-                      // handleAcceptedFiles(acceptedFiles);
+                      handleAcceptedFiles(acceptedFiles);
                     }}
                   >
                     {({ getRootProps, getInputProps }) => (
@@ -322,76 +354,70 @@ const AddBanner = () => {
                     )}
                   </Dropzone>
                   <div className="dropzone-previews mt-3" id="file-previews">
-                    {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {f.name}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
-                                    </p>
-                                  </Col>
+                    {image && (
+                      <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                        <div className="p-2">
+                          <Row className="align-items-center position-relative">
+                            <Col className="col-auto">
+                              <img
+                                data-dz-thumbnail=""
+                                // height="80"
+                                style={{
+                                  maxWidth: "80px",
+                                }}
+                                className=" bg-light"
+                                src={image.preview}
+                                alt=""
+                              />
+                            </Col>
+                            <Col>
+                              <Link
+                                to="#"
+                                className="text-muted font-weight-bold"
+                              >
+                                {image.name}
+                              </Link>
+                              <p className="mb-0">
+                                <strong>{image.formattedSize}</strong>
+                              </p>
+                            </Col>
 
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      // onClick={() => removeSelection(i)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          );
-                        })} */}
+                            <div
+                              className="position-absolute"
+                              style={{
+                                left: "0px",
+                                top: "0px",
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "flex-end",
+                              }}
+                            >
+                              <i
+                                onClick={() => setImage(null)}
+                                className="mdi mdi-delete text-danger "
+                                style={{
+                                  fontSize: "25px",
+                                  cursor: "pointer",
+                                }}
+                              ></i>
+                            </div>
+                          </Row>
+                        </div>
+                      </Card>
+                    )}
                   </div>
                 </Form>
               </div>
             </Col>
           </Row>
-          <div className='d-flex justify-content-center'>
-          <Button
-            disabled={loading}
-            color="primary w-50"
-            onClick={submitBanner}
-          >
-
-            {!loading ? "Submit" : "loading...."}
-          </Button>
+          <div className="d-flex justify-content-center">
+            <Button
+              disabled={loading}
+              color="primary w-50"
+              onClick={submitBanner}
+            >
+              {!loading ? "Submit" : "loading...."}
+            </Button>
           </div>
         </Container>
       </div>

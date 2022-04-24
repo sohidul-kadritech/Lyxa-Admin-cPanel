@@ -17,8 +17,8 @@ import {
   getAllAdmin,
   setStatusFalse,
 } from "../../../../store/AdminControl/Admin/adminAction";
-import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from 'react-router-dom';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const AdminList = () => {
   const dispatch = useDispatch();
@@ -26,10 +26,10 @@ const AdminList = () => {
 
   const { loading, admins } = useSelector((state) => state.adminReducer);
 
-  // const [confirm_alert, setconfirm_alert] = useState(false);
-  // const [success_dlg, setsuccess_dlg] = useState(false);
-  // const [dynamic_title, setdynamic_title] = useState("");
-  // const [dynamic_description, setdynamic_description] = useState("")
+  const [confirm_alert, setconfirm_alert] = useState(false);
+  const [success_dlg, setsuccess_dlg] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState("");
+  const [dynamic_description, setdynamic_description] = useState("");
 
   useEffect(() => {
    
@@ -42,11 +42,15 @@ const AdminList = () => {
     dispatch(getAllAdmin(refresh));
   };
 
+  const handleDelete = (id) =>{
+    dispatch(deleteAdmin({ id}))
+  }
+
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
-          {/* {success_dlg ? (
+          {success_dlg ? (
             <SweetAlert
               success
               title={dynamic_title}
@@ -56,7 +60,7 @@ const AdminList = () => {
             >
               {dynamic_description}
             </SweetAlert>
-          ) : null} */}
+          ) : null}
           <Breadcrumb
             maintitle="Drop"
             breadcrumbItem={"List"}
@@ -117,13 +121,34 @@ const AdminList = () => {
                               className="btn btn-danger button"
                               onClick={() =>
                                 // 
-                                // setconfirm_alert(true)
-                                dispatch(deleteAdmin({ id: item._id }))
+                                setconfirm_alert(true)
+                                // 
                               }
                             >
                               <i className="fa fa-trash" />
                             </button>
-
+                            {confirm_alert ? (
+                                <SweetAlert
+                                  title="Are you sure?"
+                                  warning
+                                  showCancel
+                                  confirmButtonText="Yes, delete it!"
+                                  confirmBtnBsStyle="success"
+                                  cancelBtnBsStyle="danger"
+                                  onConfirm={() => {
+                                    handleDelete(item._id);
+                                    setconfirm_alert(false);
+                                    setsuccess_dlg(true);
+                                    setdynamic_title("Deleted");
+                                    setdynamic_description(
+                                      "Your file has been deleted."
+                                    );
+                                  }}
+                                  onCancel={() => setconfirm_alert(false)}
+                                >
+                                  Are You Sure! You want to delete this Shop.
+                                </SweetAlert>
+                              ) : null}
                           </div>
                         </Td>
                       </Tr>

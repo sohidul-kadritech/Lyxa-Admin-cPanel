@@ -34,29 +34,26 @@ import {
 import styled from "styled-components";
 import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
-import { addProduct } from "../../../store/Product/productAction";
+import { addProduct, editProduct } from "../../../store/Product/productAction";
 import { getAllShop } from "../../../store/Shop/shopAction";
+import { useParams, useHistory } from "react-router-dom";
+import requestApi from "../../../network/httpRequest";
+import { SINGLE_PRODUCT } from "../../../network/Api";
 
 const ProductAdd = () => {
-  const shopTypeOptions = [
-    { label: "Food", value: "food" },
-    { label: "Grocery", value: "grocery" },
-    { label: "Pharmacy", value: "pharmacy" },
-  ];
-
   const dispatch = useDispatch();
+  const { id } = useParams();
+  const history = useHistory();
 
-  const { sellers } = useSelector((state) => state.sellerReducer);
   const { categories, subCategories } = useSelector(
     (state) => state.categoryReducer
   );
-  const {
-    shops,
+  const { shops } = useSelector((state) => state.shopReducer);
 
-  } = useSelector((state) => state.shopReducer);
+  const { loading, products, status } = useSelector(
+    (state) => state.productReducer
+  );
 
-  const [seller, setSeller] = useState(null);
-  const [searchSellerKey, setSearchSellerKey] = useState("");
   const [shop, setShop] = useState(null);
   const [searchShopKey, setSearchShopKey] = useState("");
   const [category, setCategory] = useState(null);
@@ -75,16 +72,92 @@ const ProductAdd = () => {
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
+  const [foodType, setFoodType] = useState("");
+  const [minQty, setMinQty] = useState(0);
+  const [minDeliveryTime, setMinDeliveryTime] = useState(0);
+  const [maxDeliveryTime, setMaxDeliveryTime] = useState(0);
 
   useEffect(() => {
-    dispatch(getAllSeller(true));
+    if (id) {
+      const findProduct = products.find((item) => item._id == id);
+
+      if (findProduct) {
+        console.log({ findProduct });
+        setProductValue(findProduct);
+      } else {
+        callApi(id);
+      }
+    }
+  }, [id]);
+
+  // CALL API FOR SINGLE PRODUCT
+
+  const callApi = async (pId) => {
+    if (pId) {
+      const { data } = await requestApi().request(SINGLE_PRODUCT, {
+        params: {
+          id: pId,
+        },
+      });
+
+      if (data.status) {
+        setProductValue(data.data.product);
+      }
+    } else {
+      history.push("/products/list", { replace: true });
+    }
+  };
+
+  const setProductValue = (product) => {
+    const {
+      category,
+      name,
+      orderQuantityMinimum,
+      images,
+      maxDeliveryTime,
+      minDeliveryTime,
+      previousPrice,
+      price,
+      productVisibility,
+      seoDescription,
+      seoTags,
+      seoTitle,
+      shop,
+      sku,
+      slug,
+      subCategory,
+      type,
+    } = product;
+
+    setShop(shop);
+    setCategory(category);
+    setSubCategory(subCategory);
+    setName(name);
+    setSlug(slug);
+    setSku(sku);
+    setPreviousPrice(previousPrice);
+    setPrice(price);
+    setType(type);
+    setSeoTitle(seoTitle);
+    setSeoDescription(seoDescription);
+    setFoodType("");
+    setMinQty(orderQuantityMinimum);
+    setMinDeliveryTime(minDeliveryTime == null ? 0 : minDeliveryTime);
+    setMaxDeliveryTime(maxDeliveryTime == null ? 0 : maxDeliveryTime);
+    setTags({
+      ...tags,
+      items: seoTags,
+    });
+  };
+
+  useEffect(() => {
     dispatch(getAllCategory(true));
     dispatch(getAllShop(true));
   }, []);
 
   useEffect(() => {
     if (category) {
-      dispatch(getAllSubCategory(true, 0, category._id));
+      dispatch(getAllSubCategory(true, category._id));
     }
   }, [category]);
 
@@ -123,18 +196,21 @@ const ProductAdd = () => {
 
   const submitProduct = () => {
     if (
-      !seller ||
       !category ||
       !subCategory ||
       !name ||
       !slug ||
       !sku ||
-      !previousPrice ||
-      !price ||
+      previousPrice <= 0 ||
+      price <= 0 ||
       !type ||
       !seoTitle ||
       !seoDescription ||
-      tags.items.length < 1 || !shop
+      tags.items.length < 1 ||
+      !shop ||
+      minQty <= 0 ||
+      minDeliveryTime <= 0 ||
+      maxDeliveryTime <= 0
     ) {
       return toast.warn("Please Fillup All Fields", {
         // position: "bottom-right",
@@ -148,37 +224,87 @@ const ProductAdd = () => {
       });
     }
 
+    if (type == "food" && !foodType) {
+      return toast.warn("Please Select Food Type", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
+
     submitData();
   };
 
   const submitData = () => {
-
-
-
     const data = {
       name,
-      slug : slug.split(" ").join(""),
+      slug: slug.split(" ").join(""),
       sku,
       previousPrice,
       price,
       type,
-      seller: seller._id,
       shop: shop._id,
-    //   orderQuantityMinimum: 200,
+      orderQuantityMinimum: parseInt(minQty),
       images: [
         "https://productionservices.jumia.co.ke/wp-content/uploads/2018/01/product1.jpeg",
       ],
       category: category._id,
       subCategory: subCategory._id,
-    //   minDeliveryTime: 30,
-    //   maxDeliveryTime: 80,
+      minDeliveryTime: parseInt(minDeliveryTime),
+      maxDeliveryTime: parseInt(maxDeliveryTime),
       seoTitle,
       seoDescription,
       seoTags: tags.items,
+      foodType: type == "food" ? foodType : null,
     };
 
-    dispatch(addProduct(data));
+    // console.log({data})
+    if (id) {
+      dispatch(
+        editProduct({
+          ...data,
+          id,
+        })
+      );
+    } else {
+      dispatch(addProduct(data));
+    }
   };
+
+  useEffect(() => {
+    if(status){
+      if (id) {
+        history.push("/products/list");
+      } else {
+        setShop(null);
+        setCategory(null);
+        setSubCategory(null);
+        setName("");
+        setSlug("");
+        setSku("");
+        setPreviousPrice(0);
+        setPrice(0);
+        setType("");
+        setSeoTitle("");
+        setSeoDescription("");
+        setFoodType("");
+        setMinQty(0);
+        setMinDeliveryTime(0);
+        setMaxDeliveryTime(0);
+        setTags({
+          items: [],
+          value: "",
+        });
+      }
+    }
+  },[status]);
 
   return (
     <React.Fragment>
@@ -187,7 +313,7 @@ const ProductAdd = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={"Add"}
+              breadcrumbItem={id ? "Edit" :"Add"}
               title="Product"
               //   loading={loading}
               //   callList={callShopList}
@@ -220,9 +346,7 @@ const ProductAdd = () => {
                         style={{ width: "100%" }}
                         autoComplete="off"
                         value={slug}
-                        onChange={(event) =>
-                          setSlug(event.target.value)
-                        }
+                        onChange={(event) => setSlug(event.target.value)}
                         required
                       />
                     </div>
@@ -266,6 +390,7 @@ const ProductAdd = () => {
                         type="number"
                       />
                     </div>
+
                     <div className="mb-4">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
@@ -276,9 +401,7 @@ const ProductAdd = () => {
                           id="demo-simple-select"
                           value={type}
                           label="Type"
-                          onChange={(event) =>
-                            setType(event.target.value)
-                          }
+                          onChange={(event) => setType(event.target.value)}
                         >
                           <MenuItem value="food">Food</MenuItem>
                           <MenuItem value="grocery">Grocery</MenuItem>
@@ -286,50 +409,66 @@ const ProductAdd = () => {
                         </Select>
                       </FormControl>
                     </div>
+                    {type == "food" && (
+                      <>
+                        <div className="mb-4">
+                          <FormControl fullWidth required>
+                            <InputLabel id="demo-simple-select-label">
+                              Food Type
+                            </InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={foodType}
+                              label="Type"
+                              onChange={(event) =>
+                                setFoodType(event.target.value)
+                              }
+                            >
+                              <MenuItem value="restaurants">
+                                Restaurants
+                              </MenuItem>
+                              <MenuItem value="foodCut">Food Cut</MenuItem>
+                              <MenuItem value="supermarkets">
+                                Supermarkets
+                              </MenuItem>
+                            </Select>
+                          </FormControl>
+                        </div>
+                        <div className="mb-4">
+                          <TextField
+                            id="delivery Time"
+                            label="Minimum Delivery Time(minute)"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={minDeliveryTime}
+                            onChange={(event) =>
+                              setMinDeliveryTime(event.target.value)
+                            }
+                            required
+                            type="number"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <TextField
+                            id="delivery Time"
+                            label="Maximum Delivery Time(minute)"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={maxDeliveryTime}
+                            onChange={(event) =>
+                              setMaxDeliveryTime(event.target.value)
+                            }
+                            required
+                            type="number"
+                          />
+                        </div>
+                      </>
+                    )}
                   </Col>
                   <Col lg={6}>
-                    <div className="mb-4">
-                      <Autocomplete
-                        className="cursor-pointer"
-                        value={seller}
-                        onChange={(event, newValue) => {
-                          setSeller(newValue);
-                          // console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) =>
-                          option.name ? option.name : ""
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchSellerKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchSellerKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={sellers.length > 0 ? sellers : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Seller" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.profile_photo}
-                              alt=""
-                            />
-                            {option.name}
-                          </Box>
-                        )}
-                      />
-                    </div>
                     <div className="mb-4">
                       <Autocomplete
                         className="cursor-pointer"
@@ -464,6 +603,21 @@ const ProductAdd = () => {
                         />
                       </div>
                     )}
+
+                    <div className="mb-4">
+                      <TextField
+                        id="minQty"
+                        label="Minimum Order Quantity"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        autoComplete="off"
+                        value={minQty}
+                        onChange={(event) => setMinQty(event.target.value)}
+                        required
+                        type="number"
+                      />
+                    </div>
+
                     <div className="mb-4">
                       <TextField
                         id="seo"
@@ -624,18 +778,18 @@ const ProductAdd = () => {
                     color="primary"
                     className="px-5"
                   >
-                    {/* {loading ? (
+                    {loading ? (
                       <Spinner
                         animation="border"
                         variant="info"
                         size="sm"
                       ></Spinner>
-                    ) : id ? (
-                      "Edit"
-                    ) : (
+                    ) 
+                       : id ? (
+                        "Edit"
+                      ) :
                       "Add"
-                    )} */}
-                    Add
+                    }
                   </Button>
                 </div>
               </CardBody>

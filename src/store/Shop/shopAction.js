@@ -243,7 +243,7 @@ export const updateShopStatusKey = (value) => (dispatch) => {
   });
 };
 
-// UPDATE CREATED BY KEY
+// UPDATE SORT BY KEY
 
 export const updateSortByKey = (value) => (dispatch) => {
   dispatch({
@@ -252,7 +252,7 @@ export const updateSortByKey = (value) => (dispatch) => {
   });
 };
 
-// SELECT CAR TYPE
+// type key
 
 export const updateShopType = (selectedType) => (dispatch) => {
   // console.log("selected car type", selectedType);

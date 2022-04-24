@@ -112,10 +112,10 @@ export const editSeller = (values) => async (dispatch) => {
         data: values,
       });
   
-      console.log({ data });
+      // console.log({ data });
   
       if (data.status) {
-        toast.warn(data.message, {
+        toast.success(data.message, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
@@ -126,10 +126,12 @@ export const editSeller = (values) => async (dispatch) => {
           progress: undefined,
         });
   
-        dispatch({
-          type: actionType.EDIT_SELLER_REQUEST_SUCCESS,
-          payload: data.data.seller,
-        });
+        setTimeout(()=>{
+          dispatch({
+            type: actionType.EDIT_SELLER_REQUEST_SUCCESS,
+            payload: data.data.seller,
+          });
+        },450)
       } else {
         toast.warn(data.message, {
           // position: "bottom-right",

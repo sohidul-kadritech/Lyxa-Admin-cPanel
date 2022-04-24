@@ -103,7 +103,7 @@ const shopReducer = (state = initialState, action) => {
           status: false,
           error: payload,
         };
-
+        // DELETE
         case actionType.DELETE_SHOP_REQUEST_SEND:
       return {
         ...state,

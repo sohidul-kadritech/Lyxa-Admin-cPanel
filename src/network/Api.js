@@ -15,10 +15,6 @@ const ADMIN_ENDPOINT = "admin";
 
 export const LOGIN = ADMIN_ENDPOINT + "/auth/login";
 
-// IMAGE UPLOAD
-export const IMAGE_UPLOAD = ADMIN_ENDPOINT + "/image/upload";
-export const LIST_IMAGE_FOLDER = ADMIN_ENDPOINT + "/image-folder/";
-export const CREATE_IMAGE_FOLDER = ADMIN_ENDPOINT + "/image-folder/create";
 
 // GET IMAGE
 export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
@@ -86,5 +82,13 @@ export const DELETE_SHOP = ADMIN_ENDPOINT + "/shop/delete"
 // PRODUCT 
 
 export const ADD_PRODUCT = ADMIN_ENDPOINT + "/product/add"
+export const ALL_PRODUCT = ADMIN_ENDPOINT + "/product"
+export const EDIT_PRODUCT = ADMIN_ENDPOINT + "/product/update"
+export const SINGLE_PRODUCT = ADMIN_ENDPOINT + "/product/product-details"
+export const DELETE_PRODUCT = ADMIN_ENDPOINT + "/product/delete"
+
+// IMAGE UPLOAD 
+
+export const IMAGE_UPLOAD = "image/single-image-upload"
 
 // END ADMIN API

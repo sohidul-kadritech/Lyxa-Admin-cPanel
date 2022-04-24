@@ -28,26 +28,10 @@ import AppPagination from "../../../components/AppPagination";
 import { useHistory } from "react-router-dom";
 import Lightbox from "react-image-lightbox";
 import SweetAlert from "react-bootstrap-sweetalert";
+import { shopStatusOptions, shopTypeOptions, sortByOptions } from "../../../assets/staticData";
 
 const ShopList = () => {
-  const sortByOptions = [
-    { label: "Asc", value: "asc" },
-    { label: "Desc", value: "desc" },
-  ];
 
-  const shopTypeOptions = [
-    { label: "All", value: "all" },
-    { label: "Food", value: "food" },
-    { label: "Grocery", value: "grocery" },
-    { label: "Pharmacy", value: "pharmacy" },
-  ];
-
-  const shopStatusOptions = [
-    { label: "All", value: "all" },
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-    { label: "Block", value: "blocked" },
-  ];
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -313,7 +297,7 @@ const ShopList = () => {
                                   }}
                                   onCancel={() => setconfirm_alert(false)}
                                 >
-                                  Are You Sure! You want to delete this Shop.
+                                  You want to delete this Shop.
                                 </SweetAlert>
                               ) : null}
                             </div>

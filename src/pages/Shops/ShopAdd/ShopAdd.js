@@ -25,6 +25,13 @@ import { Autocomplete, Box, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 import { addShop, editShop } from "../../../store/Shop/shopAction";
 import { useHistory, useParams } from "react-router-dom";
+import PlacesAutocomplete from "react-places-autocomplete";
+import {
+  geocodeByAddress,
+  geocodeByPlaceId,
+  getLatLng,
+} from "react-places-autocomplete";
+import { foodTypeOptions } from "../../../assets/staticData";
 
 const ShopAdd = () => {
   const shopTypeOptions = [
@@ -69,6 +76,12 @@ const ShopAdd = () => {
   const [shopDescription, setShopDescription] = useState("");
   const [delivery, setDelivery] = useState(null);
   const [minOrderAmount, setMinOrderAmount] = useState(0);
+  const [foodType, setFoodType] = useState(null)
+
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [address, setAddress] = useState({});
+  const [latLng, setLatLng] = useState({});
+  const [fullAddress, setFullAddress] = useState("");
 
   // GET SELLER
 
@@ -201,61 +214,127 @@ const ShopAdd = () => {
       });
     }
 
+    if (Object.keys(address).length < 1) {
+      return toast.warn("Please Select a Address", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     submitData();
   };
 
   // DISPACTH DATA
 
   const submitData = () => {
+
+    if (Object.keys(address).length > 0) {
+      const {
+        geometry: { location },
+        address_components,
+      } = address;
+      // console.log("placeId",place_id)
+      // setPickupFullAddress(formatted_address);
+      // setPickupPlaceId(place_id)
+      var country_long_name;
+      var country_short_name;
+      var locality_long_name;
+      var sub_locality_long_name;
+
+      address_components.forEach((address_component) => {
+        if (address_component.types.includes("country")) {
+          country_long_name = address_component.long_name;
+          country_short_name = address_component.short_name;
+        } else if (address_component.types.includes("locality")) {
+          locality_long_name = address_component.long_name;
+        } else if (address_component.types.includes("sublocality")) {
+          sub_locality_long_name = address_component.long_name;
+        }
+      });
+    }
+
+    const data = {
+      shopAddress: {
+        address: fullAddress,
+        latitude: latLng.lat,
+        longitude: latLng.lng,
+        city: locality_long_name,
+        state: sub_locality_long_name,
+        country: country_long_name,
+        pin: country_short_name,
+        primary: true,
+        note: ""
+      },
+      seller: seller._id,
+      shopName,
+      shopType: shopType.value,
+      shopStartTime,
+      shopEndTime,
+      shopStatus: shopStatus.value,
+      shopDescription,
+      delivery: delivery.value,
+      minOrderAmount,
+      tags: tags.items,
+      shopLogo:
+        "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+      shopBanner:
+        "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+      shopPhotos: [
+        "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+      ],
+      foodType: shopType.value == 'food' ? foodType.value : null
+    };
+
+    console.log(data)
+
     if (id) {
       dispatch(
         editShop({
+          ...data,
           id,
-          seller: seller._id,
-          shopName,
-          shopType: shopType.value,
-          shopStartTime,
-          shopEndTime,
-          shopStatus: shopStatus.value,
-          shopDescription,
-          delivery: delivery.value,
-          minOrderAmount,
-          tags: tags.items,
-          shopLogo:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-          shopBanner:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-          shopPhotos: [
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-          ],
-          foodType: "restaurants",
         })
       );
     } else {
-      dispatch(
-        addShop({
-          seller: seller._id,
-          shopName,
-          shopType: shopType.value,
-          shopStartTime,
-          shopEndTime,
-          shopStatus: shopStatus.value,
-          shopDescription,
-          delivery: delivery.value,
-          minOrderAmount,
-          tags: tags.items,
-          shopLogo:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-          shopBanner:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-          shopPhotos: [
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-          ],
-          foodType: "restaurants",
-        })
-      );
+      dispatch(addShop(data));
     }
   };
+
+  const handleAddressChange = (address) => {
+    // console.log("address", address);
+    setSelectedAddress(address);
+  };
+
+  const handleAddressSelect = (address, placeId) => {
+    // console.log("select-------------", address);
+    setSelectedAddress(address);
+    geocodeByAddress(address);
+    geocodeByPlaceId(placeId)
+      .then((results) => setAddress(results[0]))
+      .catch((error) => console.error("Error", error));
+  };
+
+  // GET LAT LNG
+
+  useEffect(() => {
+    if (Object.keys(address).length > 0) {
+      getLatLng(address).then((latlng) => setLatLng(latlng));
+      const {
+        geometry: { location },
+        formatted_address,
+        address_components,
+        place_id,
+      } = address;
+      // console.log("placeId",place_id)
+      setFullAddress(formatted_address);
+      // setPickupPlaceId(place_id);
+    }
+  }, [address]);
 
   // SUCCESS
 
@@ -277,6 +356,7 @@ const ShopAdd = () => {
           items: [],
           value: "",
         });
+        setSelectedAddress("")
       }
     }
   }, [status]);
@@ -401,7 +481,7 @@ const ShopAdd = () => {
                       />
                     </div>
 
-                    <div>
+                    <div className="mb-4">
                       <div>
                         <Label>Tags</Label>
                         <input
@@ -455,6 +535,19 @@ const ShopAdd = () => {
                       />
                     </div>
 
+                    {shopType && shopType.value == 'food' && <div className="mb-4">
+                      <Label>Food Type</Label>
+                      <Select
+                        palceholder="Select Country"
+                        options={foodTypeOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={foodType}
+                        onChange={(e) => setFoodType(e)}
+                        defaultValue={""}
+                      />
+                    </div>}
+
                     <div className="mb-4">
                       <Label>Delivery Type</Label>
                       <Select
@@ -466,6 +559,85 @@ const ShopAdd = () => {
                         onChange={(e) => setDelivery(e)}
                         defaultValue={""}
                       />
+                    </div>
+
+                    <div className="mb-4">
+                      <Label>Address</Label>
+                      <PlacesAutocomplete
+                        value={selectedAddress}
+                        onChange={handleAddressChange}
+                        onSelect={handleAddressSelect}
+                        onError={(error) => {
+                          console.log(error);
+                        }}
+                        clearItemsOnError={true}
+                        shouldFetchSuggestions={selectedAddress.length > 3}
+                      >
+                        {({
+                          getInputProps,
+                          suggestions,
+                          getSuggestionItemProps,
+                          loading,
+                        }) => (
+                          <div>
+                            <input
+                              {...getInputProps({
+                                placeholder: "Search Places ...",
+                                className: "location-search-input",
+                                //
+                              })}
+                              type="text"
+                              required
+                              id="outlined-required"
+                              label="Pickup Location"
+                              className="form-control"
+                              value={selectedAddress}
+                            />
+                            <div
+                              className="autocomplete-dropdown-container"
+                              style={{
+                                fontSize: "14px",
+                                fontFamily: "emoji",
+                                color: "black",
+                              }}
+                            >
+                              {loading && <div>Loading...</div>}
+                              {suggestions.map((suggestion, index) => {
+                                const className = suggestion.active
+                                  ? "suggestion-item--active"
+                                  : "suggestion-item";
+
+                                // inline style for demonstration purpose
+                                const style = suggestion.active
+                                  ? {
+                                      backgroundColor: "#fafafa",
+                                      cursor: "pointer",
+                                    }
+                                  : {
+                                      backgroundColor: "#ffffff",
+                                      cursor: "pointer",
+                                    };
+                                return (
+                                  <div
+                                    // style={{padding: "20px 0px !important"}}
+                                    {...getSuggestionItemProps(suggestion, {
+                                      className,
+                                      style,
+                                    })}
+                                    key={index}
+                                  >
+                                    <i
+                                      className="ti-location-pin me-1"
+                                      style={{ color: "black" }}
+                                    />
+                                    <span>{suggestion.description}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </PlacesAutocomplete>
                     </div>
 
                     <div className="mb-4">

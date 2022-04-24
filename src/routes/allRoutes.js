@@ -192,6 +192,7 @@ const userRoutes = [
 
   {path: '/products/list', component: ProductList},
   {path: '/products/add', component: ProductAdd},
+  {path: '/products/edit/:id', component: ProductAdd},
 
 
   // DELIVERY MAN
