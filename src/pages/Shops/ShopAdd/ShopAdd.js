@@ -24,7 +24,7 @@ import { getAllSeller } from "../../../store/Seller/sellerAction";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 import { addShop, editShop } from "../../../store/Shop/shopAction";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams,Link } from "react-router-dom";
 import PlacesAutocomplete from "react-places-autocomplete";
 import {
   geocodeByAddress,
@@ -32,6 +32,10 @@ import {
   getLatLng,
 } from "react-places-autocomplete";
 import { foodTypeOptions } from "../../../assets/staticData";
+import requestApi from "../../../network/httpRequest";
+import { SINGLE_SHOP } from "../../../network/Api";
+
+import { imageUpload } from "../../../store/ImageUpload/imageUploadAction";
 
 const ShopAdd = () => {
   const shopTypeOptions = [
@@ -57,6 +61,9 @@ const ShopAdd = () => {
 
   const { sellers } = useSelector((state) => state.sellerReducer);
   const { loading, status, shops } = useSelector((state) => state.shopReducer);
+  const { image: uploadImage, imageStatus } = useSelector(
+    (state) => state.imageUploadReducer
+  );
 
   const [tags, setTags] = useState({
     items: [],
@@ -73,15 +80,15 @@ const ShopAdd = () => {
   const [shopBanner, setShopBanner] = useState("");
   const [shopPhotos, setShopPhotos] = useState("");
   const [shopStatus, setShopStatus] = useState(null);
-  const [shopDescription, setShopDescription] = useState("");
   const [delivery, setDelivery] = useState(null);
   const [minOrderAmount, setMinOrderAmount] = useState(0);
-  const [foodType, setFoodType] = useState(null)
+  const [foodType, setFoodType] = useState(null);
 
   const [selectedAddress, setSelectedAddress] = useState("");
   const [address, setAddress] = useState({});
   const [latLng, setLatLng] = useState({});
   const [fullAddress, setFullAddress] = useState("");
+  const [pinCode, setPinCode] = useState("");
 
   // GET SELLER
 
@@ -89,7 +96,7 @@ const ShopAdd = () => {
     if (sellers.length < 1) {
       dispatch(getAllSeller(true));
     }
-  }, []);
+  }, [sellers]);
 
   useEffect(() => {
     if (sellers.length > 0) {
@@ -97,51 +104,75 @@ const ShopAdd = () => {
         const findShop = shops.find((item) => item._id == id);
         if (findShop) {
           console.log({ findShop });
-          const {
-            delivery_type,
-            seller,
-            minOrderAmount,
-            shopBanner,
-            shopDescription,
-            shopEndTimeText,
-            shopLogo,
-            shopName,
-            shopPhotos,
-            shopStartTimeText,
-            shopStatus,
-            shopType,
-            tags,
-          } = findShop;
-
-          const findSeller = sellers.find((s) => s._id == seller);
-          const findDeliveryType = shopDeliveryOptions.find(
-            (op) => op.value == delivery_type
-          );
-          const findShopStatus = shopStatusOptions.find(
-            (x) => x.value == shopStatus
-          );
-          const findShopType = shopTypeOptions.find((x) => x.value == shopType);
-          // console.log({ findShopType });
-
-          setSeller(findSeller);
-          setShopType(findShopType);
-          setShopStartTime(shopStartTimeText);
-          setShopEndTime(shopEndTimeText);
-          setShopName(shopName);
-          setShopStatus(findShopStatus);
-          setShopDescription(shopDescription);
-          setDelivery(findDeliveryType);
-          setMinOrderAmount(minOrderAmount);
-          setTags({
-            items: tags,
-            value: "",
-          });
+          updateData(findShop);
         } else {
           console.log("call api-------");
+          callApi(id);
         }
       }
     }
   }, [id]);
+
+  const callApi = async (shopId) => {
+    const { data } = await requestApi().request(SINGLE_SHOP, {
+      params: {
+        id: shopId,
+      },
+    });
+    // console.log(banner)
+    if (data.status) {
+      updateData(data.data.shop);
+    } else {
+      history.push("/shop/list", { replace: true });
+    }
+  };
+
+  const updateData = (values) => {
+    const {
+      delivery,
+      seller,
+      minOrderAmount,
+      shopBanner,
+      shopEndTimeText,
+      shopLogo,
+      shopName,
+      shopPhotos,
+      shopStartTimeText,
+      shopStatus,
+      shopType,
+      foodType,
+      tags,
+      address,
+    } = values;
+
+    const findSeller = sellers.find((s) => s._id == seller._id);
+
+    const findDeliveryType = shopDeliveryOptions.find(
+      (op) => op.value == delivery
+    );
+    const findShopStatus = shopStatusOptions.find((x) => x.value == shopStatus);
+    const findShopType = shopTypeOptions.find((x) => x.value == shopType);
+    // console.log({ findShopType });
+    const findFoodType = foodTypeOptions.find((type) => type.value == foodType);
+
+    setSeller(findSeller);
+    setFoodType(findFoodType);
+    setShopType(findShopType);
+    setShopStartTime(shopStartTimeText);
+    setShopEndTime(shopEndTimeText);
+    setShopName(shopName);
+    setShopStatus(findShopStatus);
+    setDelivery(findDeliveryType);
+    setMinOrderAmount(minOrderAmount);
+    // setSelectedAddress(address.address);
+    handleAddressSelect(address.address);
+
+    setPinCode(address.pin);
+    setTags({
+      items: tags,
+      value: "",
+    });
+  };
 
   // TAGS
 
@@ -192,15 +223,15 @@ const ShopAdd = () => {
       });
     }
     if (
-      !shopType ||
-      !shopStartTime ||
-      !shopEndTime ||
-      !shopName ||
-      !shopStatus ||
-      !shopDescription ||
-      !delivery ||
-      minOrderAmount <= 0 ||
-      tags.items.length < 1
+      (!shopType ||
+        !shopStartTime ||
+        !shopEndTime ||
+        !shopName ||
+        !shopStatus ||
+        !delivery ||
+        minOrderAmount <= 0 ||
+        tags.items.length < 1,
+      !pinCode)
     ) {
       return toast.warn("Please Fillup All Fields", {
         // position: "bottom-right",
@@ -227,13 +258,31 @@ const ShopAdd = () => {
       });
     }
 
+    // uploadImage()
+
+    // let formData = new FormData();
+    //     formData.append('image', value)
+    //     console.log({formData})
+    //     const {data} = await requestApi().request(IMAGE_UPLOAD,{
+    //         method: "POST",
+    //         data: formData
+            
+    //     })
+    
+    // dispatch(imageUpload(shopLogo));
+
+    // if (imageStatus) {
+    //   dispatch(imageUpload(shop));
+    // }
+
     submitData();
   };
+
+
 
   // DISPACTH DATA
 
   const submitData = () => {
-
     if (Object.keys(address).length > 0) {
       const {
         geometry: { location },
@@ -267,9 +316,9 @@ const ShopAdd = () => {
         city: locality_long_name,
         state: sub_locality_long_name,
         country: country_long_name,
-        pin: country_short_name,
+        pin: pinCode,
         primary: true,
-        note: ""
+        note: "",
       },
       seller: seller._id,
       shopName,
@@ -277,7 +326,6 @@ const ShopAdd = () => {
       shopStartTime,
       shopEndTime,
       shopStatus: shopStatus.value,
-      shopDescription,
       delivery: delivery.value,
       minOrderAmount,
       tags: tags.items,
@@ -288,10 +336,11 @@ const ShopAdd = () => {
       shopPhotos: [
         "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
       ],
-      foodType: shopType.value == 'food' ? foodType.value : null
+      foodType: shopType.value == "food" ? foodType.value : "",
+      shopDescription: "desrcriptions",
     };
 
-    console.log(data)
+    console.log("given data---", data);
 
     if (id) {
       dispatch(
@@ -311,7 +360,7 @@ const ShopAdd = () => {
   };
 
   const handleAddressSelect = (address, placeId) => {
-    // console.log("select-------------", address);
+    console.log("select-------------", address, placeId);
     setSelectedAddress(address);
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
@@ -349,17 +398,49 @@ const ShopAdd = () => {
         setShopEndTime("");
         setShopName("");
         setShopStatus(null);
-        setShopDescription("");
         setDelivery(null);
         setMinOrderAmount(0);
         setTags({
           items: [],
           value: "",
         });
-        setSelectedAddress("")
+        setSelectedAddress("");
       }
     }
   }, [status]);
+
+  /**
+   * Formats the size
+   */
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  // IMAGE
+
+  const handleAcceptedFiles = (files, type) => {
+    files.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    );
+
+    if (type == "logo") {
+      setShopLogo(files[0]);
+    }
+    if (type == "banner") {
+      setShopBanner(files[0]);
+    } else {
+      setShopPhotos(files[0]);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -389,8 +470,9 @@ const ShopAdd = () => {
                       getOptionLabel={(option) =>
                         option.name ? option.name : ""
                       }
-                      isOptionEqualToValue={(option, value) =>
-                        option.id == value.id
+                      isOptionEqualToValue={
+                        (option, value) => option._id == value._id
+                        // console.log({value})
                       }
                       inputValue={searchSellerKey}
                       onInputChange={(event, newInputValue) => {
@@ -535,18 +617,20 @@ const ShopAdd = () => {
                       />
                     </div>
 
-                    {shopType && shopType.value == 'food' && <div className="mb-4">
-                      <Label>Food Type</Label>
-                      <Select
-                        palceholder="Select Country"
-                        options={foodTypeOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={foodType}
-                        onChange={(e) => setFoodType(e)}
-                        defaultValue={""}
-                      />
-                    </div>}
+                    {shopType && shopType.value == "food" && (
+                      <div className="mb-4">
+                        <Label>Food Type</Label>
+                        <Select
+                          palceholder="Select Country"
+                          options={foodTypeOptions}
+                          classNamePrefix="select2-selection"
+                          required
+                          value={foodType}
+                          onChange={(e) => setFoodType(e)}
+                          defaultValue={""}
+                        />
+                      </div>
+                    )}
 
                     <div className="mb-4">
                       <Label>Delivery Type</Label>
@@ -641,16 +725,14 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <Label>Descriptions</Label>
-                      <Input
-                        type="textarea"
-                        id="textarea"
-                        maxLength="350"
-                        rows="3"
-                        placeholder="Enter Descriptonons"
+                      <Label>Pin Code</Label>
+                      <input
+                        className="form-control"
+                        type="number"
+                        placeholder="Enter Pin Code"
                         required
-                        value={shopDescription}
-                        onChange={(e) => setShopDescription(e.target.value)}
+                        value={pinCode}
+                        onChange={(e) => setPinCode(e.target.value)}
                       />
                     </div>
                   </Col>
@@ -663,7 +745,7 @@ const ShopAdd = () => {
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles, "logo");
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -686,12 +768,8 @@ const ShopAdd = () => {
                           className="dropzone-previews mt-3"
                           id="file-previews"
                         >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
+                          {shopLogo && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
@@ -702,8 +780,8 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      src={shopLogo.preview}
+                                      alt=""
                                     />
                                   </Col>
                                   <Col>
@@ -711,10 +789,10 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {f.name}
+                                      {shopLogo.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>{shopLogo.formattedSize}</strong>
                                     </p>
                                   </Col>
 
@@ -729,7 +807,7 @@ const ShopAdd = () => {
                                     }}
                                   >
                                     <i
-                                      // onClick={() => removeSelection(i)}
+                                      onClick={() => setShopLogo(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
                                         fontSize: "25px",
@@ -740,8 +818,7 @@ const ShopAdd = () => {
                                 </Row>
                               </div>
                             </Card>
-                          );
-                        })} */}
+                          )}
                         </div>
                       </Form>
                     </div>
@@ -752,7 +829,7 @@ const ShopAdd = () => {
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles, "banner");
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -775,12 +852,8 @@ const ShopAdd = () => {
                           className="dropzone-previews mt-3"
                           id="file-previews"
                         >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
+                          {shopBanner && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
@@ -791,8 +864,8 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      src={shopBanner.preview}
+                                      alt=""
                                     />
                                   </Col>
                                   <Col>
@@ -800,10 +873,10 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {f.name}
+                                      {shopBanner.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>{shopBanner.formattedSize}</strong>
                                     </p>
                                   </Col>
 
@@ -818,7 +891,7 @@ const ShopAdd = () => {
                                     }}
                                   >
                                     <i
-                                      // onClick={() => removeSelection(i)}
+                                      onClick={() => setShopBanner(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
                                         fontSize: "25px",
@@ -829,8 +902,7 @@ const ShopAdd = () => {
                                 </Row>
                               </div>
                             </Card>
-                          );
-                        })} */}
+                          )}
                         </div>
                       </Form>
                     </div>
@@ -844,7 +916,7 @@ const ShopAdd = () => {
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles, "photos");
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -867,12 +939,8 @@ const ShopAdd = () => {
                           className="dropzone-previews mt-3"
                           id="file-previews"
                         >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
+                          {shopPhotos && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
@@ -883,8 +951,8 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      src={shopPhotos.preview}
+                                      alt=""
                                     />
                                   </Col>
                                   <Col>
@@ -892,10 +960,10 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {f.name}
+                                      {shopPhotos.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>{shopPhotos.formattedSize}</strong>
                                     </p>
                                   </Col>
 
@@ -910,7 +978,7 @@ const ShopAdd = () => {
                                     }}
                                   >
                                     <i
-                                      // onClick={() => removeSelection(i)}
+                                      onClick={() => setShopPhotos(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
                                         fontSize: "25px",
@@ -921,8 +989,7 @@ const ShopAdd = () => {
                                 </Row>
                               </div>
                             </Card>
-                          );
-                        })} */}
+                          )}
                         </div>
                       </Form>
                     </div>

@@ -2,7 +2,7 @@ import * as actionType from '../actionType'
 
 const initialState = {
     loading: false,
-    image: null,
+    bannerImage: null,
     imageStatus: false,
     error: null
 }
@@ -19,12 +19,17 @@ const imageUploadReducer = (state = initialState, action) =>{
                 error: null
             }
             case actionType.IMAGE_UPLOAD_REQUEST_SUCCESS:
+                // if(payload.type == 'banner'){
+
+                //     state.bannerImage = payload.image
+                    
+                // }
                 return{
                     ...state,
                     loading: false,
                     imageStatus: true,
-                    image: payload,
-                    error: null
+                    error: null,
+                    bannerImage: payload.image
                 }
                 case actionType.IMAGE_UPLOAD_REQUEST_FAIL:
                     return{

@@ -9,6 +9,14 @@ export const sortByOptions = [
     { label: "Pharmacy", value: "pharmacy" },
   ];
 
+
+  export const bannerOptions = [
+    { label: "Home", value: "home" },
+    { label: "Food", value: "food" },
+    { label: "Grocery", value: "grocery" },
+    { label: "Pharmacy", value: "pharmacy" },
+  ];
+
  export const shopStatusOptions = [
     { label: "All", value: "all" },
     { label: "Active", value: "active" },
@@ -26,8 +34,6 @@ export const sortByOptions = [
   export const foodTypeOptions = [
     { label: "Restaurants", value: "restaurants" },
     { label: "Food Cut", value: "foodCut" },
-    { label: "Supermarkets", value: "supermarkets" },
-
   ];
 
 
@@ -36,3 +42,8 @@ export const sortByOptions = [
     { label: "True", value: true },
     { label: "False", value: false },
   ]
+
+  export const activeOptions = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+  ];

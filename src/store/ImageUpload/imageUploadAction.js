@@ -3,16 +3,18 @@ import requestApi from '../../network/httpRequest'
 import * as actionType from '../actionType'
 
 
-export const imageUpload = (values) => async (dispatch) =>{
-    console.log({values})
+export const imageUpload = (value, type) => async (dispatch) =>{
+    console.log({value})
     try {
         dispatch({
             type: actionType.IMAGE_UPLOAD_REQUEST_SEND
         })
-
+        let formData = new FormData();
+        formData.append('image', value)
+        console.log({formData})
         const {data} = await requestApi().request(IMAGE_UPLOAD,{
             method: "POST",
-            data: values
+            data: formData
             
         })
 
@@ -21,7 +23,7 @@ export const imageUpload = (values) => async (dispatch) =>{
         if(data.status){
             dispatch({
                 type: actionType.IMAGE_UPLOAD_REQUEST_SUCCESS,
-                payload: data.data
+                payload: {image: data.data, type}
             })
         }else{
             dispatch({

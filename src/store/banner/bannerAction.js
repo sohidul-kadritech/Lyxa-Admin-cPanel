@@ -102,7 +102,7 @@ export const addBanner = (addData) => async (dispatch, getState) => {
       data: addData,
     });
 
-    // console.log({ data });
+    console.log({ data });
 
     if (data.status) {
       toast.success(data.message, {

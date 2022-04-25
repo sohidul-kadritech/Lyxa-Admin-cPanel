@@ -35,18 +35,12 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 import Dropzone from "react-dropzone";
 import Select from "react-select";
 import { imageUpload } from "../../store/ImageUpload/imageUploadAction";
+import { activeOptions, bannerOptions } from "../../assets/staticData";
 
 const AddBanner = () => {
-  const options = [
-    { label: "Food", value: "food" },
-    { label: "Home", value: "home" },
-    { label: "Pharmacy", value: "pharmacy" },
-    { label: "Grocery", value: "grocery" },
-  ];
-  const activeOptions = [
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-  ];
+  const { bannerImage, imageStatus } = useSelector(
+    (state) => state.imageUploadReducer
+  );
 
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -69,7 +63,7 @@ const AddBanner = () => {
       if (findBanner) {
         console.log({ findBanner });
         const { image, type, status, description } = findBanner;
-        const findType = options.find((op) => op.value == type);
+        const findType = bannerOptions.find((op) => op.value == type);
         const fineStatus = activeOptions.find((st) => st.value == status);
         setImage(image);
         // setTitle(title);
@@ -85,7 +79,7 @@ const AddBanner = () => {
         }
       } else {
         callApi(id);
-        console.log("Call Api");
+        // console.log("Call Api");
       }
     }
   }, [id]);
@@ -97,7 +91,7 @@ const AddBanner = () => {
     // console.log(banner)
     if (data.status) {
       const { type, title, image, description, status } = data.data.banner;
-      const findType = options.find((op) => op.value == type);
+      const findType = bannerOptions.find((op) => op.value == type);
       const fineStatus = activeOptions.find((st) => st.value == status);
       setImage(image);
       setTitle(title);
@@ -165,37 +159,37 @@ const AddBanner = () => {
       });
     }
 
-    console.log({image})
+    console.log({ image });
 
-    dispatch(imageUpload({
-      imageName: image.name,
-      image: image.preview,
-      file: "user"
-    }))
+    dispatch(imageUpload(image, "banner"));
 
-    // if (id) {
-    //   dispatch(
-    //     editBanner({
-    //       id,
-    //       title,
-    //       description,
-    //       image:
-    //         "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-    //       type: type.value,
-    //       status: activeStatus.value
-    //     })
-    //   );
-    // } else {
-    //   dispatch(
-    //     addBanner({
-    //       title,
-    //       type: type.value,
-    //       description,
-    //       image:
-    //         "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-    //     })
-    //   );
-    // }
+    if (imageStatus) {
+      submitData();
+    }
+
+    
+  };
+
+  const submitData = () => {
+    const data = {
+      title,
+      type: type.value,
+      description,
+      image: bannerImage?.url,
+    };
+    if (id) {
+      dispatch(
+        editBanner({
+          ...data,
+          id,
+         
+        })
+      );
+    } else {
+      dispatch(
+        addBanner(data)
+      );
+    }
   };
 
   // SUCCESS
@@ -214,18 +208,18 @@ const AddBanner = () => {
     }
   }, [status]);
 
-   /**
+  /**
    * Formats the size
    */
-    function formatBytes(bytes, decimals = 2) {
-      if (bytes === 0) return "0 Bytes";
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-    }
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
 
   // IMAGE
 
@@ -237,7 +231,7 @@ const AddBanner = () => {
       })
     );
 
-    setImage(files[0])
+    setImage(files[0]);
   };
 
   return (
@@ -283,7 +277,7 @@ const AddBanner = () => {
                         value={type}
                         defaultValue={""}
                         palceholder="Select Shop Type"
-                        options={options}
+                        options={bannerOptions}
                         classNamePrefix="select2-selection"
                         required
                       />
