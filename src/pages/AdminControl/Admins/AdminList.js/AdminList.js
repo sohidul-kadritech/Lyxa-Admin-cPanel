@@ -33,7 +33,7 @@ const AdminList = () => {
 
   useEffect(() => {
    
-      callAdminList();
+      callAdminList(true);
       dispatch(setStatusFalse())
     
   }, []);
@@ -91,7 +91,7 @@ const AdminList = () => {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: "relative" }}>
-                  {admins.map((item, index) => {
+                  {admins && admins.length > 0 && admins.map((item, index) => {
                     return (
                       <Tr
                         key={index}
@@ -163,6 +163,11 @@ const AdminList = () => {
                       variant="info"
                     />
                   )} */}
+                  {!loading && admins?.length < 1 && (
+                  <div className="text-center">
+                    <h4>No Data</h4>
+                  </div>
+                )}
             </CardBody>
           </Card>
         </div>

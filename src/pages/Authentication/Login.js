@@ -21,10 +21,7 @@ import GlobalWrapper from "./../../components/GlobalWrapper";
 import styled from "styled-components";
 
 const Login = props => {
-  // handleValidSubmit
-  const handleValidSubmit = (event, values) => {
-    props.adminAuth(values, props.history);
-  };
+  
 
   const history = useHistory();
 
@@ -50,6 +47,11 @@ const Login = props => {
     },
     [accessToken]
   );
+
+  // handleValidSubmit
+  const handleValidSubmit = (event, values) => {
+    props.adminAuth(values, props.history);
+  };
 
   return (
     <React.Fragment>

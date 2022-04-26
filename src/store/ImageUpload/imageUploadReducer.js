@@ -20,8 +20,10 @@ const imageUploadReducer = (state = initialState, action) =>{
             }
             case actionType.IMAGE_UPLOAD_REQUEST_SUCCESS:
                 // if(payload.type == 'banner'){
-
-                //     state.bannerImage = payload.image
+                //    return{
+                //     ...state,
+                //     bannerImage: payload.image
+                //    }
                     
                 // }
                 return{

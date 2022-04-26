@@ -338,6 +338,27 @@ const SidebarContent = (props) => {
 
             <li>
               <Link to="/#" className="has-arrow waves-effect">
+                <i className="fas fa-user-friends" />
+                <span>{props.t("Admins")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/admin/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/admin/create">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* <li>
+              <Link to="/#" className="has-arrow waves-effect">
                 <i className="ti-user" />
                 <span>{props.t("Admin Control")}</span>
               </Link>
@@ -369,7 +390,7 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* CATEGORIES AND TAGS */}
 
