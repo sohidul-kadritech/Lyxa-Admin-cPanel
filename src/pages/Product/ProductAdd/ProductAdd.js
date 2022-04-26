@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 
@@ -36,7 +36,7 @@ import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
 import { addProduct, editProduct } from "../../../store/Product/productAction";
 import { getAllShop } from "../../../store/Shop/shopAction";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { SINGLE_PRODUCT } from "../../../network/Api";
 
@@ -44,6 +44,9 @@ const ProductAdd = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
+  const { search, pathname } = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { categories, subCategories } = useSelector(
     (state) => state.categoryReducer
@@ -72,7 +75,8 @@ const ProductAdd = () => {
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
-  const [foodType, setFoodType] = useState("");
+  const [visibility, setVisibility] = useState(false)
+
   const [minQty, setMinQty] = useState(0);
   const [minDeliveryTime, setMinDeliveryTime] = useState(0);
   const [maxDeliveryTime, setMaxDeliveryTime] = useState(0);
@@ -89,6 +93,17 @@ const ProductAdd = () => {
       }
     }
   }, [id]);
+
+  useEffect(()=>{
+    
+    if(searchParams){
+      const shopId = searchParams.get("shopId");
+      if(shopId){
+        const findShop = shops.find(item => item._id == shopId)
+        setShop(findShop)
+      }
+    }
+  },[searchParams])
 
   // CALL API FOR SINGLE PRODUCT
 
@@ -140,8 +155,8 @@ const ProductAdd = () => {
     setType(type);
     setSeoTitle(seoTitle);
     setSeoDescription(seoDescription);
-    setFoodType("");
     setMinQty(orderQuantityMinimum);
+    setVisibility(productVisibility)
     setMinDeliveryTime(minDeliveryTime == null ? 0 : minDeliveryTime);
     setMaxDeliveryTime(maxDeliveryTime == null ? 0 : maxDeliveryTime);
     setTags({
@@ -208,9 +223,8 @@ const ProductAdd = () => {
       !seoDescription ||
       tags.items.length < 1 ||
       !shop ||
-      minQty <= 0 ||
-      minDeliveryTime <= 0 ||
-      maxDeliveryTime <= 0
+      minQty <= 0 
+      
     ) {
       return toast.warn("Please Fillup All Fields", {
         // position: "bottom-right",
@@ -224,8 +238,8 @@ const ProductAdd = () => {
       });
     }
 
-    if (type == "food" && !foodType) {
-      return toast.warn("Please Select Food Type", {
+    if(type == 'food' && (minDeliveryTime <= 0 || maxDeliveryTime <= 0)){
+      return toast.warn("Please Add Min And Max Delivery Time", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -236,6 +250,8 @@ const ProductAdd = () => {
         progress: undefined,
       });
     }
+
+
 
     // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
 
@@ -262,7 +278,7 @@ const ProductAdd = () => {
       seoTitle,
       seoDescription,
       seoTags: tags.items,
-      foodType: type == "food" ? foodType : null,
+
     };
 
     // console.log({data})
@@ -271,6 +287,7 @@ const ProductAdd = () => {
         editProduct({
           ...data,
           id,
+          productVisibility: visibility
         })
       );
     } else {
@@ -294,7 +311,6 @@ const ProductAdd = () => {
         setType("");
         setSeoTitle("");
         setSeoDescription("");
-        setFoodType("");
         setMinQty(0);
         setMinDeliveryTime(0);
         setMaxDeliveryTime(0);
@@ -412,30 +428,6 @@ const ProductAdd = () => {
                     {type == "food" && (
                       <>
                         <div className="mb-4">
-                          <FormControl fullWidth required>
-                            <InputLabel id="demo-simple-select-label">
-                              Food Type
-                            </InputLabel>
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              value={foodType}
-                              label="Type"
-                              onChange={(event) =>
-                                setFoodType(event.target.value)
-                              }
-                            >
-                              <MenuItem value="restaurants">
-                                Restaurants
-                              </MenuItem>
-                              <MenuItem value="foodCut">Food Cut</MenuItem>
-                              <MenuItem value="supermarkets">
-                                Supermarkets
-                              </MenuItem>
-                            </Select>
-                          </FormControl>
-                        </div>
-                        <div className="mb-4">
                           <TextField
                             id="delivery Time"
                             label="Minimum Delivery Time(minute)"
@@ -467,6 +459,24 @@ const ProductAdd = () => {
                         </div>
                       </>
                     )}
+                    {id && <div className="mb-4">
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">
+                          Visibility
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={visibility}
+                          label="Type"
+                          onChange={(event) => setVisibility(event.target.value)}
+                        >
+                          <MenuItem value="true">True</MenuItem>
+                          <MenuItem value="false">False</MenuItem>
+
+                        </Select>
+                      </FormControl>
+                    </div>}
                   </Col>
                   <Col lg={6}>
                     <div className="mb-4">

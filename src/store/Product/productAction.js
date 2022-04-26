@@ -62,9 +62,9 @@ export const addProduct = (values) => async (dispatch) => {
   // GET ALL
 
 export const getAllProduct =
-(refresh = false, page = 1) =>
+(refresh = false, shopId = null, page = 1) =>
 async (dispatch, getState) => {
-  // console.log({adminData})
+  console.log({shopId})
   const { products, searchKey, statusKey, typeKey, sortByKey,productVisibilityKey } =
     getState().productReducer;
 
@@ -82,11 +82,12 @@ async (dispatch, getState) => {
           searchKey,
           type: typeKey.value,
           status: statusKey.value,
-          productVisibility: productVisibilityKey.value
+          productVisibility: productVisibilityKey.value,
+          shop: shopId
         },
       });
 
-      console.log({ data });
+      console.log("product list from shop", data);
 
       if (data.status) {
         dispatch({
@@ -111,7 +112,7 @@ async (dispatch, getState) => {
 // EDIT
 
 export const editProduct = (values) => async (dispatch) => {
-  // console.log({ values });
+  console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_PRODUCT_REQUEST_SEND,

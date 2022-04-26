@@ -157,7 +157,7 @@ const ShopAdd = () => {
     setDelivery(findDeliveryType);
     setMinOrderAmount(minOrderAmount);
     // setSelectedAddress(address.address);
-    handleAddressSelect(address.address);
+    handleAddressSelect(address.address,"ChIJgWsCh7C4VTcRwgRZ3btjpY8");
 
     setPinCode(address.pin);
     setTags({
@@ -264,11 +264,10 @@ const ShopAdd = () => {
 
     uploadImages();
 
-    
     // submitData();
   };
 
-  const uploadImages = async() =>{
+  const uploadImages = async () => {
     let logoUrl = null;
     let bannerUrl = null;
     let photosUrl = null;
@@ -316,8 +315,8 @@ const ShopAdd = () => {
       }
     }
     // console.log({logoUrl,bannerUrl,photosUrl})
-    submitData(logoUrl, bannerUrl, photosUrl)
-  }
+    submitData(logoUrl, bannerUrl, photosUrl);
+  };
 
   // DISPACTH DATA
 
@@ -326,6 +325,7 @@ const ShopAdd = () => {
       const {
         geometry: { location },
         address_components,
+  
       } = address;
       // console.log("placeId",place_id)
       // setPickupFullAddress(formatted_address);
@@ -355,6 +355,7 @@ const ShopAdd = () => {
         city: locality_long_name,
         state: sub_locality_long_name,
         country: country_long_name,
+        placeId: address?.place_id,
         pin: pinCode,
         primary: true,
         note: "",
@@ -368,8 +369,8 @@ const ShopAdd = () => {
       delivery: delivery.value,
       minOrderAmount,
       tags: tags.items,
-      shopLogo:logoUrl,
-      shopBanner:bannerUrl,
+      shopLogo: logoUrl,
+      shopBanner: bannerUrl,
       shopPhotos: photosUrl,
       foodType: shopType.value == "food" ? foodType.value : "",
       shopDescription: "desrcriptions",
@@ -600,7 +601,10 @@ const ShopAdd = () => {
 
                     <div className="mb-4">
                       <div>
-                        <Label>Tags</Label>
+                        <div className='d-flex justify-content-between'>
+                          <Label>Tags</Label>
+                          {foodType?.value == 'restaurants' && <span style={{color: 'red'}}>add one cuisines</span> }
+                        </div>
                         <input
                           value={tags.value}
                           placeholder="Type Tag Name and press `Enter`..."

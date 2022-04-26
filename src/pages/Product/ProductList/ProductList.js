@@ -241,14 +241,14 @@ const ProductList = () => {
                     <Tr>
                       <Th>Image</Th>
                       <Th>Name</Th>
-                      <Th>Type</Th>
+                      <Th>Shop Name</Th>
                       <Th>Price</Th>
                       <Th>Status</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {products.map((item, index) => {
+                    {products && products.length > 0 && products.map((item, index) => {
                       return (
                         <Tr
                           key={index}
@@ -263,11 +263,11 @@ const ProductList = () => {
                               <img
                                 onClick={() => {
                                   setIsZoom(true);
-                                  setProImg(item.images[0]);
+                                  setProImg(item?.images[0]);
                                 }}
                                 className="img-fluid cursor-pointer"
                                 alt=""
-                                src={item.images[0]}
+                                src={item?.images[0]}
                                 style={{
                                   width: "100%",
                                   height: "100%",
@@ -277,20 +277,20 @@ const ProductList = () => {
                             </div>
                           </Th>
 
-                          <Td>{item.name}</Td>
-                          <Td>{item.type}</Td>
+                          <Td>{item?.name}</Td>
+                          <Td>{item?.shop?.shopName}</Td>
                           <Td>
-                            <p>{item.price}</p>
-                            <p>{item.shopEndTimeText}</p>
+                            <p>{item?.price}</p>
+                            <p>{item?.shopEndTimeText}</p>
                           </Td>
-                          <Td>{item.status}</Td>
+                          <Td>{item?.status}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">
                                 <button
                                   className="btn btn-success me-3 button"
                                   onClick={() =>
-                                    history.push(`/products/edit/${item._id}`)
+                                    history.push(`/products/edit/${item?._id}`)
                                   }
                                 >
                                   <i className="fa fa-edit" />
@@ -315,7 +315,7 @@ const ProductList = () => {
                                   confirmBtnBsStyle="success"
                                   cancelBtnBsStyle="danger"
                                   onConfirm={() => {
-                                    handleDelete(item._id);
+                                    handleDelete(item?._id);
                                     setconfirm_alert(false);
                                     setsuccess_dlg(true);
                                     setdynamic_title("Deleted");
@@ -355,7 +355,7 @@ const ProductList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllProduct(true, page))}
+                    lisener={(page) => dispatch(getAllProduct(true, null,page))}
                   />
                 </div>
               </Col>
