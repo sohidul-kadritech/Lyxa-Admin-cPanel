@@ -50,6 +50,7 @@ const Login = props => {
 
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
+    // console.log(props.history)
     props.adminAuth(values, props.history);
   };
 

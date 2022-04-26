@@ -51,8 +51,9 @@ const ProfileMenu = props => {
   );
 
   const logout = () => {
-    // localStorage.removeItem("accessToken");
-    // localStorage.removeItem("admin");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("admin");
+    window.location.reload(true);
     // history.push("/login", {replace: true})
   };
 
@@ -92,7 +93,7 @@ const ProfileMenu = props => {
 
 ProfileMenu.propTypes = {
   success: PropTypes.any,
-  t: PropTypes.any
+  t: PropTypes.any,
 };
 
 const mapStatetoProps = state => {
