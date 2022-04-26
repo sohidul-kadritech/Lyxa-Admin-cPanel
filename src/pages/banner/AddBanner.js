@@ -25,7 +25,7 @@ import { ContentState, convertToRaw, EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
 // import { convertToHTML } from 'draft-convert';
 import requestApi from "../../network/httpRequest";
-import { ADD_BANNER } from "../../network/Api";
+import { ADD_BANNER, IMAGE_UPLOAD } from "../../network/Api";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { GET_SINGLE_BANNER } from "./../../network/Api";
 import { addBanner, editBanner } from "../../store/banner/bannerAction";
@@ -62,11 +62,11 @@ const AddBanner = () => {
       const findBanner = list.find((item) => item?._id === id);
       if (findBanner) {
         console.log({ findBanner });
-        const { image, type, status, description } = findBanner;
+        const { image, type, title, status, description } = findBanner;
         const findType = bannerOptions.find((op) => op.value == type);
         const fineStatus = activeOptions.find((st) => st.value == status);
         setImage(image);
-        // setTitle(title);
+        setTitle(title);
         setType(findType);
         setActiveStatus(fineStatus);
         const contentBlock = htmlToDraft(description);
@@ -159,36 +159,43 @@ const AddBanner = () => {
       });
     }
 
-    console.log({ image });
+    // console.log(typeof image);
 
-    dispatch(imageUpload(image, "banner"));
+    // dispatch(imageUpload(image, "banner"));
 
-    if (imageStatus) {
-      submitData();
+    if (typeof image == "string") {
+      submitData(image);
+    } else {
+      let formData = new FormData();
+      formData.append("image", image);
+      // console.log({formData})
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+      // console.log("image upload", data)
+      if (data.status) {
+        submitData(data.data.url);
+      }
     }
-
-    
   };
 
-  const submitData = () => {
+  const submitData = (url) => {
     const data = {
       title,
       type: type.value,
       description,
-      image: bannerImage?.url,
+      image: url,
     };
     if (id) {
       dispatch(
         editBanner({
           ...data,
           id,
-         
         })
       );
     } else {
-      dispatch(
-        addBanner(data)
-      );
+      dispatch(addBanner(data));
     }
   };
 
@@ -360,7 +367,7 @@ const AddBanner = () => {
                                   maxWidth: "80px",
                                 }}
                                 className=" bg-light"
-                                src={image.preview}
+                                src={image.preview ? image.preview : image}
                                 alt=""
                               />
                             </Col>
@@ -369,7 +376,7 @@ const AddBanner = () => {
                                 to="#"
                                 className="text-muted font-weight-bold"
                               >
-                                {image.name}
+                                {image.name ? image.name : title}
                               </Link>
                               <p className="mb-0">
                                 <strong>{image.formattedSize}</strong>

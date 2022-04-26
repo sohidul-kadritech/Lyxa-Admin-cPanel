@@ -260,12 +260,22 @@ const ShopList = () => {
                             <div>
                               <Tooltip title="Edit">
                                 <button
-                                  className="btn btn-success me-3 button"
+                                  className="btn btn-success me-2 button"
                                   onClick={() =>
                                     history.push(`/shops/edit/${item._id}`)
                                   }
                                 >
                                   <i className="fa fa-edit" />
+                                </button>
+                              </Tooltip>
+                              <Tooltip title="Details">
+                                <button
+                                  className="btn btn-info button me-2"
+                                  onClick={() => {
+                                    history.push(`/shops/details/${item._id}`)
+                                  }}
+                                >
+                                  <i className="fa fa-eye" />
                                 </button>
                               </Tooltip>
                               <Tooltip title="Delete">

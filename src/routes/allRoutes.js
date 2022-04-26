@@ -152,6 +152,7 @@ import TagAdd from './../pages/Categories&Tags/Tags/TagAdd/TagAdd';
 import CategoryDetails from "../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails";
 import ProductList from "../pages/Product/ProductList/ProductList";
 import ProductAdd from "../pages/Product/ProductAdd/ProductAdd";
+import ShopDetails from "../pages/Shops/ShopDetails/ShopDetails";
 
 
 const userRoutes = [
@@ -187,6 +188,7 @@ const userRoutes = [
   {path: "/shops/list", component: ShopList},
   {path: "/shops/add", component: ShopAdd},
   {path: "/shops/edit/:id", component: ShopAdd},
+  {path: "/shops/details/:id", component: ShopDetails},
 
   // PRODUCT 
 

@@ -11,7 +11,7 @@ export const imageUpload = (value, type) => async (dispatch) =>{
         })
         let formData = new FormData();
         formData.append('image', value)
-        console.log({formData})
+        // console.log({formData})
         const {data} = await requestApi().request(IMAGE_UPLOAD,{
             method: "POST",
             data: formData

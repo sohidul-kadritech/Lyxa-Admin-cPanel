@@ -24,37 +24,25 @@ import { getAllSeller } from "../../../store/Seller/sellerAction";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 import { addShop, editShop } from "../../../store/Shop/shopAction";
-import { useHistory, useParams,Link } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import PlacesAutocomplete from "react-places-autocomplete";
 import {
   geocodeByAddress,
   geocodeByPlaceId,
   getLatLng,
 } from "react-places-autocomplete";
-import { foodTypeOptions } from "../../../assets/staticData";
+import {
+  foodTypeOptions,
+  shopDeliveryOptions,
+  shopStatusOptions2,
+  shopTypeOptions2,
+} from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
-import { SINGLE_SHOP } from "../../../network/Api";
+import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
 
 import { imageUpload } from "../../../store/ImageUpload/imageUploadAction";
 
 const ShopAdd = () => {
-  const shopTypeOptions = [
-    { label: "Food", value: "food" },
-    { label: "Grocery", value: "grocery" },
-    { label: "Pharmacy", value: "pharmacy" },
-  ];
-
-  const shopStatusOptions = [
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-    { label: "Block", value: "block" },
-  ];
-
-  const shopDeliveryOptions = [
-    { label: "Pickup", value: "pickup" },
-    { label: "Drop", value: "drop" },
-  ];
-
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
@@ -76,9 +64,9 @@ const ShopAdd = () => {
   const [shopStartTime, setShopStartTime] = useState("");
   const [shopEndTime, setShopEndTime] = useState("");
   const [shopName, setShopName] = useState("");
-  const [shopLogo, setShopLogo] = useState("");
-  const [shopBanner, setShopBanner] = useState("");
-  const [shopPhotos, setShopPhotos] = useState("");
+  const [shopLogo, setShopLogo] = useState(null);
+  const [shopBanner, setShopBanner] = useState(null);
+  const [shopPhotos, setShopPhotos] = useState(null);
   const [shopStatus, setShopStatus] = useState(null);
   const [delivery, setDelivery] = useState(null);
   const [minOrderAmount, setMinOrderAmount] = useState(0);
@@ -93,10 +81,8 @@ const ShopAdd = () => {
   // GET SELLER
 
   useEffect(() => {
-    if (sellers.length < 1) {
-      dispatch(getAllSeller(true));
-    }
-  }, [sellers]);
+    dispatch(getAllSeller(true));
+  }, []);
 
   useEffect(() => {
     if (sellers.length > 0) {
@@ -110,6 +96,9 @@ const ShopAdd = () => {
           callApi(id);
         }
       }
+    } else {
+      console.log("not found sellers");
+      history.goBack();
     }
   }, [id]);
 
@@ -121,6 +110,7 @@ const ShopAdd = () => {
     });
     // console.log(banner)
     if (data.status) {
+      console.log("single shop from api", data.data.shop);
       updateData(data.data.shop);
     } else {
       history.push("/shop/list", { replace: true });
@@ -150,8 +140,10 @@ const ShopAdd = () => {
     const findDeliveryType = shopDeliveryOptions.find(
       (op) => op.value == delivery
     );
-    const findShopStatus = shopStatusOptions.find((x) => x.value == shopStatus);
-    const findShopType = shopTypeOptions.find((x) => x.value == shopType);
+    const findShopStatus = shopStatusOptions2.find(
+      (x) => x.value == shopStatus
+    );
+    const findShopType = shopTypeOptions2.find((x) => x.value == shopType);
     // console.log({ findShopType });
     const findFoodType = foodTypeOptions.find((type) => type.value == foodType);
 
@@ -257,32 +249,79 @@ const ShopAdd = () => {
         progress: undefined,
       });
     }
+    if (!shopLogo || !shopBanner || !shopPhotos) {
+      return toast.warn("Please Select Images", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
 
-    // uploadImage()
+    uploadImages();
 
-    // let formData = new FormData();
-    //     formData.append('image', value)
-    //     console.log({formData})
-    //     const {data} = await requestApi().request(IMAGE_UPLOAD,{
-    //         method: "POST",
-    //         data: formData
-            
-    //     })
     
-    // dispatch(imageUpload(shopLogo));
-
-    // if (imageStatus) {
-    //   dispatch(imageUpload(shop));
-    // }
-
-    submitData();
+    // submitData();
   };
 
+  const uploadImages = async() =>{
+    let logoUrl = null;
+    let bannerUrl = null;
+    let photosUrl = null;
 
+    if (shopLogo) {
+      let formData = new FormData();
+      formData.append("image", shopLogo);
+      // console.log({formData})
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+      // console.log("image upload", data)
+      if (data.status) {
+        // submitData(data.data.url);
+        logoUrl = data.data.url;
+      }
+    }
+    if (shopBanner) {
+      let formData = new FormData();
+      formData.append("image", shopBanner);
+      // console.log({formData})
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+      // console.log("image upload", data)
+      if (data.status) {
+        // submitData(data.data.url);
+        bannerUrl = data.data.url;
+      }
+    }
+    if (shopPhotos) {
+      let formData = new FormData();
+      formData.append("image", shopPhotos);
+      // console.log({formData})
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+      // console.log("image upload", data)
+      if (data.status) {
+        // submitData(data.data.url);
+        photosUrl = data.data.url;
+      }
+    }
+    // console.log({logoUrl,bannerUrl,photosUrl})
+    submitData(logoUrl, bannerUrl, photosUrl)
+  }
 
   // DISPACTH DATA
 
-  const submitData = () => {
+  const submitData = (logoUrl, bannerUrl, photosUrl) => {
     if (Object.keys(address).length > 0) {
       const {
         geometry: { location },
@@ -329,13 +368,9 @@ const ShopAdd = () => {
       delivery: delivery.value,
       minOrderAmount,
       tags: tags.items,
-      shopLogo:
-        "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-      shopBanner:
-        "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-      shopPhotos: [
-        "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
-      ],
+      shopLogo:logoUrl,
+      shopBanner:bannerUrl,
+      shopPhotos: photosUrl,
       foodType: shopType.value == "food" ? foodType.value : "",
       shopDescription: "desrcriptions",
     };
@@ -554,7 +589,7 @@ const ShopAdd = () => {
                       <label className="control-label">Status</label>
                       <Select
                         palceholder="Select Status"
-                        options={shopStatusOptions}
+                        options={shopStatusOptions2}
                         classNamePrefix="select2-selection"
                         required
                         value={shopStatus}
@@ -608,7 +643,7 @@ const ShopAdd = () => {
                       <Label>Type</Label>
                       <Select
                         palceholder="Select Country"
-                        options={shopTypeOptions}
+                        options={shopTypeOptions2}
                         classNamePrefix="select2-selection"
                         required
                         value={shopType}
@@ -876,7 +911,9 @@ const ShopAdd = () => {
                                       {shopBanner.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{shopBanner.formattedSize}</strong>
+                                      <strong>
+                                        {shopBanner.formattedSize}
+                                      </strong>
                                     </p>
                                   </Col>
 
@@ -963,7 +1000,9 @@ const ShopAdd = () => {
                                       {shopPhotos.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{shopPhotos.formattedSize}</strong>
+                                      <strong>
+                                        {shopPhotos.formattedSize}
+                                      </strong>
                                     </p>
                                   </Col>
 
