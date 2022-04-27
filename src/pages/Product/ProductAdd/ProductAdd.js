@@ -479,8 +479,9 @@ const ProductAdd = () => {
                     </div>}
                   </Col>
                   <Col lg={6}>
-                    <div className="mb-4">
+                    <div className="mb-4" disabled={id}>
                       <Autocomplete
+                      disabled={id} 
                         className="cursor-pointer"
                         value={shop}
                         onChange={(event, newValue) => {
@@ -787,6 +788,7 @@ const ProductAdd = () => {
                     onClick={submitProduct}
                     color="primary"
                     className="px-5"
+                    disabled={loading}
                   >
                     {loading ? (
                       <Spinner

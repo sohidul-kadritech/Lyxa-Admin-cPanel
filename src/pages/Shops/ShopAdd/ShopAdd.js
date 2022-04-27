@@ -121,16 +121,15 @@ const ShopAdd = () => {
     }
   };
 
-  useEffect(()=>{
-    
-    if(searchParams){
+  useEffect(() => {
+    if (searchParams) {
       const sellerId = searchParams.get("sellerId");
-      if(sellerId){
-        const findSeller = sellers.find(item => item._id == sellerId)
-        setSeller(findSeller)
+      if (sellerId) {
+        const findSeller = sellers.find((item) => item._id == sellerId);
+        setSeller(findSeller);
       }
     }
-  },[searchParams])
+  }, [searchParams]);
 
   const updateData = (values) => {
     const {
@@ -161,7 +160,9 @@ const ShopAdd = () => {
     const findShopType = shopTypeOptions2.find((x) => x.value == shopType);
     // console.log({ findShopType });
     const findFoodType = foodTypeOptions.find((type) => type.value == foodType);
-
+    setShopLogo(shopLogo);
+    setShopBanner(shopBanner);
+    setShopPhotos(shopPhotos[0]);
     setSeller(findSeller);
     setFoodType(findFoodType);
     setShopType(findShopType);
@@ -172,7 +173,7 @@ const ShopAdd = () => {
     setDelivery(findDeliveryType);
     setMinOrderAmount(minOrderAmount);
     // setSelectedAddress(address.address);
-    handleAddressSelect(address.address,"ChIJgWsCh7C4VTcRwgRZ3btjpY8");
+    handleAddressSelect(address.address, "ChIJgWsCh7C4VTcRwgRZ3btjpY8");
 
     setPinCode(address.pin);
     setTags({
@@ -230,15 +231,15 @@ const ShopAdd = () => {
       });
     }
     if (
-      (!shopType ||
-        !shopStartTime ||
-        !shopEndTime ||
-        !shopName ||
-        !shopStatus ||
-        !delivery ||
-        minOrderAmount <= 0 ||
-        tags.items.length < 1,
-      !pinCode)
+      !shopType ||
+      !shopStartTime ||
+      !shopEndTime ||
+      !shopName ||
+      !shopStatus ||
+      !delivery ||
+      minOrderAmount <= 0 ||
+      tags.items.length < 1 ||
+      !pinCode
     ) {
       return toast.warn("Please Fillup All Fields", {
         // position: "bottom-right",
@@ -283,54 +284,61 @@ const ShopAdd = () => {
   };
 
   const uploadImages = async () => {
-    let logoUrl = null;
-    let bannerUrl = null;
-    let photosUrl = null;
-
-    if (shopLogo) {
-      let formData = new FormData();
-      formData.append("image", shopLogo);
-      // console.log({formData})
-      const { data } = await requestApi().request(IMAGE_UPLOAD, {
-        method: "POST",
-        data: formData,
-      });
-      // console.log("image upload", data)
-      if (data.status) {
-        // submitData(data.data.url);
-        logoUrl = data.data.url;
+    if (
+      typeof shopLogo == "string" ||
+      typeof shopBanner == "string" ||
+      typeof shopLogo == "string"
+    ) {
+      submitData(shopLogo, shopBanner, shopLogo);
+    } else {
+      let logoUrl = null;
+      let bannerUrl = null;
+      let photosUrl = null;
+      if (shopLogo) {
+        let formData = new FormData();
+        formData.append("image", shopLogo);
+        // console.log({formData})
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: "POST",
+          data: formData,
+        });
+        // console.log("image upload", data)
+        if (data.status) {
+          // submitData(data.data.url);
+          logoUrl = data.data.url;
+        }
       }
-    }
-    if (shopBanner) {
-      let formData = new FormData();
-      formData.append("image", shopBanner);
-      // console.log({formData})
-      const { data } = await requestApi().request(IMAGE_UPLOAD, {
-        method: "POST",
-        data: formData,
-      });
-      // console.log("image upload", data)
-      if (data.status) {
-        // submitData(data.data.url);
-        bannerUrl = data.data.url;
+      if (shopBanner) {
+        let formData = new FormData();
+        formData.append("image", shopBanner);
+        // console.log({formData})
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: "POST",
+          data: formData,
+        });
+        // console.log("image upload", data)
+        if (data.status) {
+          // submitData(data.data.url);
+          bannerUrl = data.data.url;
+        }
       }
-    }
-    if (shopPhotos) {
-      let formData = new FormData();
-      formData.append("image", shopPhotos);
-      // console.log({formData})
-      const { data } = await requestApi().request(IMAGE_UPLOAD, {
-        method: "POST",
-        data: formData,
-      });
-      // console.log("image upload", data)
-      if (data.status) {
-        // submitData(data.data.url);
-        photosUrl = data.data.url;
+      if (shopPhotos) {
+        let formData = new FormData();
+        formData.append("image", shopPhotos);
+        // console.log({formData})
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: "POST",
+          data: formData,
+        });
+        // console.log("image upload", data)
+        if (data.status) {
+          // submitData(data.data.url);
+          photosUrl = data.data.url;
+        }
       }
+      submitData(logoUrl, bannerUrl, photosUrl);
     }
     // console.log({logoUrl,bannerUrl,photosUrl})
-    submitData(logoUrl, bannerUrl, photosUrl);
   };
 
   // DISPACTH DATA
@@ -340,7 +348,6 @@ const ShopAdd = () => {
       const {
         geometry: { location },
         address_components,
-  
       } = address;
       // console.log("placeId",place_id)
       // setPickupFullAddress(formatted_address);
@@ -456,6 +463,11 @@ const ShopAdd = () => {
           value: "",
         });
         setSelectedAddress("");
+        setPinCode("");
+        setShopLogo(null);
+        setShopBanner(null);
+        setShopPhotos(null);
+        window.scroll(0, 0);
       }
     }
   }, [status]);
@@ -615,91 +627,6 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <div>
-                        <div className='d-flex justify-content-between'>
-                          <Label>Tags</Label>
-                          {foodType?.value == 'restaurants' && <span style={{color: 'red'}}>add one cuisines</span> }
-                        </div>
-                        <input
-                          value={tags.value}
-                          placeholder="Type Tag Name and press `Enter`..."
-                          onKeyDown={handleTagAdd}
-                          onChange={handleTagChange}
-                          className="form-control"
-                        />
-                      </div>
-                      {tags.items.length > 0 && (
-                        <Paper className="mt-4 p-3">
-                          {tags.items.map((item, index) => (
-                            <TagWrapper className="tag-item" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() => handleTagDelete(item)}
-                              >
-                                &times;
-                              </button>
-                            </TagWrapper>
-                          ))}
-                        </Paper>
-                      )}
-                    </div>
-                  </Col>
-                  <Col lg={6} className="mt-4 mt-lg-0">
-                    <div className="mb-4">
-                      <Label>Minimum Order</Label>
-                      <input
-                        className="form-control"
-                        type="number"
-                        placeholder="Enter Minimum Order Amount"
-                        required
-                        value={minOrderAmount}
-                        onChange={(e) => setMinOrderAmount(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <Label>Type</Label>
-                      <Select
-                        palceholder="Select Country"
-                        options={shopTypeOptions2}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={shopType}
-                        onChange={(e) => setShopType(e)}
-                        defaultValue={""}
-                      />
-                    </div>
-
-                    {shopType && shopType.value == "food" && (
-                      <div className="mb-4">
-                        <Label>Food Type</Label>
-                        <Select
-                          palceholder="Select Country"
-                          options={foodTypeOptions}
-                          classNamePrefix="select2-selection"
-                          required
-                          value={foodType}
-                          onChange={(e) => setFoodType(e)}
-                          defaultValue={""}
-                        />
-                      </div>
-                    )}
-
-                    <div className="mb-4">
-                      <Label>Delivery Type</Label>
-                      <Select
-                        palceholder="Select Country"
-                        options={shopDeliveryOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={delivery}
-                        onChange={(e) => setDelivery(e)}
-                        defaultValue={""}
-                      />
-                    </div>
-
-                    <div className="mb-4">
                       <Label>Address</Label>
                       <PlacesAutocomplete
                         value={selectedAddress}
@@ -790,6 +717,97 @@ const ShopAdd = () => {
                       />
                     </div>
                   </Col>
+                  <Col lg={6} className="mt-4 mt-lg-0">
+                    <div className="mb-4">
+                      <Label>Minimum Order</Label>
+                      <input
+                        className="form-control"
+                        type="number"
+                        placeholder="Enter Minimum Order Amount"
+                        required
+                        value={minOrderAmount}
+                        onChange={(e) => setMinOrderAmount(e.target.value)}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <Label>Type</Label>
+                      <Select
+                        palceholder="Select Country"
+                        options={shopTypeOptions2}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={shopType}
+                        onChange={(e) => setShopType(e)}
+                        defaultValue={""}
+                      />
+                    </div>
+
+                    {shopType && shopType.value == "food" && (
+                      <div className="mb-4">
+                        <Label>Food Type</Label>
+                        <Select
+                          palceholder="Select Country"
+                          options={foodTypeOptions}
+                          classNamePrefix="select2-selection"
+                          required
+                          value={foodType}
+                          onChange={(e) => setFoodType(e)}
+                          defaultValue={""}
+                        />
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <div>
+                        <div className="d-flex justify-content-between">
+                          <Label>Tags</Label>
+                          {foodType?.value == "restaurants" && (
+                            <span style={{ color: "red" }}>
+                              add one cuisines
+                            </span>
+                          )}
+                        </div>
+                        <input
+                          value={tags.value}
+                          placeholder="Type Tag Name and press `Enter`..."
+                          onKeyDown={handleTagAdd}
+                          onChange={handleTagChange}
+                          className="form-control"
+                        />
+                      </div>
+                      {tags.items.length > 0 && (
+                        <Paper className="mt-4 p-3">
+                          {tags.items.map((item, index) => (
+                            <TagWrapper className="tag-item" key={index}>
+                              {item}
+                              <button
+                                type="button"
+                                className="button"
+                                onClick={() => handleTagDelete(item)}
+                              >
+                                &times;
+                              </button>
+                            </TagWrapper>
+                          ))}
+                        </Paper>
+                      )}
+                    </div>
+
+                    <div className="mb-4">
+                      <Label>Delivery Type</Label>
+                      <Select
+                        palceholder="Select Country"
+                        options={shopDeliveryOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={delivery}
+                        onChange={(e) => setDelivery(e)}
+                        defaultValue={""}
+                      />
+                    </div>
+
+                    
+                  </Col>
                 </Row>
 
                 <Row className="mt-4">
@@ -834,7 +852,7 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={shopLogo.preview}
+                                      src={id ? shopLogo : shopLogo.preview}
                                       alt=""
                                     />
                                   </Col>
@@ -843,10 +861,12 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {shopLogo.name}
+                                      {id ? "" : shopLogo.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{shopLogo.formattedSize}</strong>
+                                      <strong>
+                                        {id ? "" : shopLogo.formattedSize}
+                                      </strong>
                                     </p>
                                   </Col>
 
@@ -918,7 +938,7 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={shopBanner.preview}
+                                      src={id ? shopBanner : shopBanner.preview}
                                       alt=""
                                     />
                                   </Col>
@@ -927,11 +947,11 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {shopBanner.name}
+                                      {id ? "" : shopBanner.name}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {shopBanner.formattedSize}
+                                        {id ? "" : shopBanner.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -1007,7 +1027,7 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={shopPhotos.preview}
+                                      src={id ? shopPhotos : shopPhotos.preview}
                                       alt=""
                                     />
                                   </Col>
@@ -1016,11 +1036,11 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {shopPhotos.name}
+                                      {id ? "" : shopPhotos.name}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {shopPhotos.formattedSize}
+                                        {id ? "" : shopPhotos.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -1055,7 +1075,12 @@ const ShopAdd = () => {
                 </Row>
 
                 <div className="my-5 d-flex justify-content-center">
-                  <Button onClick={submitShop} color="primary" className="px-5">
+                  <Button
+                    disabled={loading}
+                    onClick={submitShop}
+                    color="primary"
+                    className="px-5"
+                  >
                     {loading ? (
                       <Spinner
                         animation="border"

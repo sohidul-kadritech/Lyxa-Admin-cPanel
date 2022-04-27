@@ -536,7 +536,7 @@ const CategoryDetails = () => {
                         <input
                           className="form-control"
                           type="search"
-                          placeholder="Search Shop..."
+                          placeholder="Search Subcategory..."
                           id="search"
                           onChange={searchKeyListener}
                         />
