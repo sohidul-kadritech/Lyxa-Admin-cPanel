@@ -15,10 +15,6 @@ const ADMIN_ENDPOINT = "admin";
 
 export const LOGIN = ADMIN_ENDPOINT + "/auth/login";
 
-// IMAGE UPLOAD
-export const IMAGE_UPLOAD = ADMIN_ENDPOINT + "/image/upload";
-export const LIST_IMAGE_FOLDER = ADMIN_ENDPOINT + "/image-folder/";
-export const CREATE_IMAGE_FOLDER = ADMIN_ENDPOINT + "/image-folder/create";
 
 // GET IMAGE
 export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
@@ -35,7 +31,7 @@ export const EDIT_BANNER = ADMIN_ENDPOINT + "/banner/update";
 // ADMIN 
 
 export const ADD_ADMIN = ADMIN_ENDPOINT + "/admins/add-admin";
-export const GET_ALL_ADMIN = ADMIN_ENDPOINT + "/admins";
+export const GET_ALL_ADMIN = ADMIN_ENDPOINT + "/admins/";
 export const DELETE_ADMIN = ADMIN_ENDPOINT + "/admins/delete";
 export const EDIT_ADMIN = ADMIN_ENDPOINT + "/admins/update";
 export const SINGLE_ADMIN = ADMIN_ENDPOINT + "/admins/get-single-admin-details";
@@ -68,7 +64,32 @@ export const EDIT_CATEGORY = ADMIN_ENDPOINT + "/category/update";
 export const ADD_SUB_CATEGORY = ADMIN_ENDPOINT + "/sub-category/add";
 export const EDIT_SUB_CATEGORY = ADMIN_ENDPOINT + "/sub-category/update";
 export const GET_ALL_SUB_CATEGORY = ADMIN_ENDPOINT + "/sub-category/get-all-subcategory-by-category-id"
+export const DELETE_SUB_CAT = ADMIN_ENDPOINT + "/sub-category/delete"
 
+// SELLER 
+export const ADD_SELLER = ADMIN_ENDPOINT + "/seller/add";
+export const ALL_SELLER = ADMIN_ENDPOINT + "/seller";
+export const EDIT_SELLER = ADMIN_ENDPOINT + "/seller/update";
+export const DELETE_SELLER = ADMIN_ENDPOINT + "/seller/delete";
 
+// SHOP 
+
+export const ADD_SHOP = ADMIN_ENDPOINT + "/shop/add"
+export const EDIT_SHOP = ADMIN_ENDPOINT + "/shop/update"
+export const ALL_SHOP = ADMIN_ENDPOINT + "/shop"
+export const DELETE_SHOP = ADMIN_ENDPOINT + "/shop/delete"
+export const SINGLE_SHOP = ADMIN_ENDPOINT + "/shop/get-shop-details"
+
+// PRODUCT 
+
+export const ADD_PRODUCT = ADMIN_ENDPOINT + "/product/add"
+export const ALL_PRODUCT = ADMIN_ENDPOINT + "/product"
+export const EDIT_PRODUCT = ADMIN_ENDPOINT + "/product/update"
+export const SINGLE_PRODUCT = ADMIN_ENDPOINT + "/product/product-details"
+export const DELETE_PRODUCT = ADMIN_ENDPOINT + "/product/delete"
+
+// IMAGE UPLOAD 
+
+export const IMAGE_UPLOAD = "image/single-image-upload"
 
 // END ADMIN API

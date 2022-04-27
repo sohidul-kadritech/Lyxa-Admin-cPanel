@@ -150,6 +150,10 @@ import CategoryAdd from './../pages/Categories&Tags/Category/CategoryAdd/Categor
 import TagsList from './../pages/Categories&Tags/Tags/TagsList/TagsList';
 import TagAdd from './../pages/Categories&Tags/Tags/TagAdd/TagAdd';
 import CategoryDetails from "../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails";
+import ProductList from "../pages/Product/ProductList/ProductList";
+import ProductAdd from "../pages/Product/ProductAdd/ProductAdd";
+import ShopDetails from "../pages/Shops/ShopDetails/ShopDetails";
+import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
 
 
 const userRoutes = [
@@ -178,11 +182,21 @@ const userRoutes = [
 
   {path: "/seller/list", component: SellerList},
   {path: "/seller/add", component: SellerAdd},
+  {path: "/seller/edit/:id", component: SellerAdd},
+  {path: "/seller/details/:id", component: SellerDetails},
 
   // SHOPS
 
   {path: "/shops/list", component: ShopList},
   {path: "/shops/add", component: ShopAdd},
+  {path: "/shops/edit/:id", component: ShopAdd},
+  {path: "/shops/details/:id", component: ShopDetails},
+
+  // PRODUCT 
+
+  {path: '/products/list', component: ProductList},
+  {path: '/products/add', component: ProductAdd},
+  {path: '/products/edit/:id', component: ProductAdd},
 
 
   // DELIVERY MAN
@@ -319,7 +333,7 @@ const userRoutes = [
 ];
 
 const authRoutes = [
-  { path: "/logout", component: Logout },
+  // { path: "/logout", component: Logout },
   { path: "/login", component: Login },
   { path: "/forgot-password", component: ForgetPwd },
   { path: "/register", component: Register },

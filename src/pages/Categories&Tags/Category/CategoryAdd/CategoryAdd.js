@@ -194,7 +194,7 @@ const CategoryAdd = () => {
                       <input
                         className="form-control"
                         type="text"
-                        placeholder="Enter Category Name"
+                        placeholder="Enter Category Slug"
                         value={slug}
                         onChange={(event) => setSlug(event.target.value)}
                       />
@@ -202,97 +202,7 @@ const CategoryAdd = () => {
                   </Col>
                 </Row>
 
-                <Row className="pt-3">
-                  <Col className="col-12">
-                    <Label>Upload Image</Label>
-                    <div className="mb-5">
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
-                            </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {f.name}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
-                                    </p>
-                                  </Col>
 
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      // onClick={() => removeSelection(i)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          );
-                        })} */}
-                        </div>
-                      </Form>
-                    </div>
-                  </Col>
-                </Row>
 
                 <div className="my-4 d-flex justify-content-center">
                   <Button

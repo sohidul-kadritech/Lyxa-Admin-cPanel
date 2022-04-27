@@ -11,9 +11,9 @@ import LanguageDropdown from "../CommonForBoth/TopbarDropdown/LanguageDropdown"
 import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDropdown"
 import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 
-import logodarkImg from "../../assets/images/logo-dark.png";
-import logosmImg from "../../assets/images/logo-sm.png";
-import logolightImg from "../../assets/images/logo-light.png";
+import logodarkImg from "../../assets/images/drop_logo.png";
+import logosmImg from "../../assets/images/drop_logo.png";
+import logolightImg from "../../assets/images/drop_logo.png";
 
 
 //i18n

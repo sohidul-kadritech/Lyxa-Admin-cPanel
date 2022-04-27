@@ -44,7 +44,7 @@ const CreateAdmin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
 
   useEffect(() => {
@@ -92,7 +92,7 @@ const CreateAdmin = () => {
       email == "" ||
       (!password && !id) ||
       phoneNumber == "" ||
-      (!activeStatus && id)
+      (!activeStatus && id) || !role
     ) {
       return toast.warn("Please Fill Up All Fields", {
         // position: "bottom-right",
@@ -114,6 +114,7 @@ const CreateAdmin = () => {
           email,
           number: phoneNumber,
           status: activeStatus,
+          role
         })
       );
     } else {
@@ -139,6 +140,7 @@ const CreateAdmin = () => {
         setEmail("");
         setPhoneNumber("");
         setPassword("");
+        setRole("")
       }
     }
   }, [status]);
@@ -237,16 +239,16 @@ const CreateAdmin = () => {
                     />
                   </Col>
                 </Row>
-                {/* <Row className="mt-4">
+                <Row className="mt-4">
                   <Col xl={6} className="mt-3 mt-xl-0">
                     <FormControl fullWidth required>
                       <InputLabel id="demo-simple-select-label">Role</InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={age}
+                        value={role}
                         label="Role"
-                        // onChange={handleChange}
+                        onChange={e => setRole(e.target.value)}
                       >
                         <MenuItem value={10}>Admin</MenuItem>
                         <MenuItem value={20}>Seller</MenuItem>
@@ -254,7 +256,7 @@ const CreateAdmin = () => {
                       </Select>
                     </FormControl>
                   </Col>
-                </Row> */}
+                </Row>
 
                 <div className="pt-3 mt-3 d-flex justify-content-center">
                   <Button

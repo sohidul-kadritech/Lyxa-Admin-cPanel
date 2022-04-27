@@ -30,6 +30,8 @@ const ProfileMenu = props => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  
+
   useEffect(
     () => {
       if (localStorage.getItem("authUser")) {
@@ -49,12 +51,10 @@ const ProfileMenu = props => {
   );
 
   const logout = () => {
-    // if (accessToken) {
-    //   dispatch(logoutAdmin);
-    //   localStorage.removeItem("accessToken");
-    //   // history.push("login");
-    // }
-    console.log("clicked");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("admin");
+    window.location.reload(true);
+    // history.push("/login", {replace: true})
   };
 
   return (
@@ -80,12 +80,8 @@ const ProfileMenu = props => {
             {" "}<i className="bx bx-user font-size-16 align-middle me-1" />
             {props.t("Profile")}{" "}
           </DropdownItem>
-          <DropdownItem tag="a" href="auth-lock-screen">
-            <i className="bx bx-lock-open font-size-16 align-middle me-1" />
-            {props.t("Lock screen")}
-          </DropdownItem>
           <div className="dropdown-divider" />
-          <p className="dropdown-item" onClick={logout}>
+          <p className="dropdown-item cursor-pointer" onClick={logout}>
             <i className="bx bx-power-off font-size-16 align-middle me-1 text-danger" />
             <span>Logout</span>
           </p>
@@ -97,7 +93,7 @@ const ProfileMenu = props => {
 
 ProfileMenu.propTypes = {
   success: PropTypes.any,
-  t: PropTypes.any
+  t: PropTypes.any,
 };
 
 const mapStatetoProps = state => {

@@ -8,9 +8,11 @@ const Authmiddleware = ({
   isAuthProtected,
   ...rest
 }) =>
+
   <Route
     {...rest}
     render={props => {
+      // console.log({isAuthProtected})
       if (isAuthProtected && !localStorage.getItem("accessToken")) {
         return (
           <Redirect

@@ -20,6 +20,10 @@ import { roleReducer } from "./AdminControl/Role/roleReducer";
 import usersReducer from "./Users/UsersReducer";
 import adminReducer from './AdminControl/Admin/adminReducer';
 import categoryReducer from "./Category/categoryReducer";
+import sellerReducer from './Seller/sellerReducer';
+import shopReducer from "./Shop/shopReducer";
+import imageUploadReducer from "./ImageUpload/imageUploadReducer";
+import productReducer from "./Product/productReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -37,7 +41,11 @@ const rootReducer = combineReducers({
   roleReducer,
   usersReducer,
   adminReducer,
-  categoryReducer
+  categoryReducer,
+  sellerReducer,
+  shopReducer,
+  imageUploadReducer,
+  productReducer
 });
 
 export default rootReducer;

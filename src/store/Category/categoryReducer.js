@@ -16,6 +16,8 @@ const initialState = {
   subHasNextPage: true,
   subCurrentPage: 1,
   subHasPreviousPage: false,
+  subSearchKey: "",
+  subStatusKey: { label: "All", value: "all" },
 };
 
 const categoryReducer = (state = initialState, action) => {
@@ -200,6 +202,48 @@ const categoryReducer = (state = initialState, action) => {
         loading: false,
         status: false,
         error: payload,
+      };
+
+      // DELETE 
+      case actionType.DELETE_SUB_CATEGORY_REQUEST_SEND:
+        return {
+          ...state,
+          loading: true,
+          status: false,
+        };
+  
+      case actionType.DELETE_SUB_CATEGORY_REQUEST_SUCCESS:
+        const filered = state.subCategories.filter((item) =>
+          item._id != payload._id 
+        );
+  
+        return {
+          ...state,
+          loading: false,
+          status: true,
+          subCategories: filered,
+          error: null,
+        };
+      case actionType.DELETE_SUB_CATEGORY_REQUEST_FAIL:
+        return {
+          ...state,
+          loading: false,
+          status: false,
+          error: payload,
+        };
+
+      case actionType.UPDATE_SEARCH_KEY:
+      return {
+        ...state,
+        loading: false,
+        subSearchKey: payload,
+      };
+
+      case actionType.UPDATE_STATUS_KEY:
+      return {
+        ...state,
+        loading: false,
+        subStatusKey: payload,
       };
 
     default:

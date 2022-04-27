@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import GlobalWrapper from "./../../../components/GlobalWrapper";
-import { Card, CardBody, Col, Container, Row, Button } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Row,
+  Button,
+  Label,
+  Form,
+  Spinner,
+} from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import { TextField } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
@@ -9,8 +19,166 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Flatpickr from "react-flatpickr";
 import styled from "styled-components";
+import Dropzone from "react-dropzone";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { addSeller, editSeller } from "../../../store/Seller/sellerAction";
+import { useParams,useHistory } from "react-router-dom";
 
 const SellerAdd = () => {
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const history = useHistory();
+
+  const { loading, status, sellers } = useSelector(
+    (state) => state.sellerReducer
+  );
+
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [address, setAddress] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [accountNum, setAccountNum] = useState("");
+
+  useEffect(() => {
+    if (id) {
+      const findSeller = sellers.find((item) => item._id == id);
+      console.log({ findSeller });
+      if (findSeller) {
+        const {
+          account_name,
+          account_number,
+          bank_name,
+          company_name,
+          dob,
+          email,
+          gender,
+          name,
+          phone_number,
+        } = findSeller;
+
+        setName(name);
+        setGender(gender);
+        setEmail(email);
+        setPassword(password);
+        setDateOfBirth(dob);
+        setCompanyName(company_name);
+        setPhoneNum(phone_number);
+        // setAddress("");
+        setBankName(bank_name);
+        setAccountName(account_name);
+        setAccountNum(account_number);
+      } else {
+        console.log("call api---");
+      }
+    }
+  }, [id]);
+
+  // SUBMIT SELLER
+
+  const submitSeller = () => {
+    if (
+      !name ||
+      !gender ||
+      !email ||
+      (!id && !password) ||
+      !dateOfBirth ||
+      !companyName ||
+      !phoneNum ||
+      !bankName ||
+      !accountName ||
+      !accountNum ||
+      (!id && !address)
+    ) {
+      return toast.warn("Please Fill Up All Fields", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    submitDate();
+  };
+
+  const submitDate = () => {
+    if (id) {
+      dispatch(
+        editSeller({
+          id,
+          name,
+          gender,
+          phone_number: phoneNum,
+          company_name: companyName,
+          email,
+          profile_photo:
+            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          dob: dateOfBirth,
+          account_type: "seller",
+          bank_name: bankName,
+          account_name: accountName,
+          account_number: accountNum,
+          certificate_of_incorporation:
+            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          national_id:
+            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+        })
+      );
+    } else {
+      dispatch(
+        addSeller({
+          name,
+          gender,
+          phone_number: phoneNum,
+          company_name: companyName,
+          email,
+          password,
+          profile_photo:
+            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          dob: dateOfBirth,
+          account_type: "seller",
+          bank_name: bankName,
+          account_name: accountName,
+          account_number: accountNum,
+          certificate_of_incorporation:
+            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          national_id:
+            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (status) {
+      if (id) {
+        history.push("/seller/list");
+      } else {
+        setName("");
+        setGender("");
+        setEmail("");
+        setPassword("");
+        setDateOfBirth("");
+        setCompanyName("");
+        setPhoneNum("");
+        setAddress("");
+        setBankName("");
+        setAccountName("");
+        setAccountNum("");
+      }
+    }
+  }, [status]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -18,7 +186,7 @@ const SellerAdd = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={"Add"}
+              breadcrumbItem={id ? "Edit" : "Add"}
               title="Seller"
               // loading={loading}
               // callList={callCarList}
@@ -39,27 +207,53 @@ const SellerAdd = () => {
                       label="Name"
                       variant="outlined"
                       placeholder="Enter Full Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
                     />
                   </Col>
                   <Col xl={6} className="mt-4 mt-xl-0">
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Gender
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        // value={age}
-                        label="Gender"
-                        // onChange={handleChange}
-                      >
-                        <MenuItem value={10}>Men </MenuItem>
-                        <MenuItem value={20}>Woman</MenuItem>
-                        <MenuItem value={30}>Other</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Email"
+                      variant="outlined"
+                      placeholder="Enter a Email Id"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
                   </Col>
                 </Row>
+
+                {!id && (
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <TextField
+                        id="outlined-textarea"
+                        label="Address"
+                        placeholder="Enter Address"
+                        multiline
+                        style={{ width: "100%" }}
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        required
+                      />
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Password"
+                        variant="outlined"
+                        placeholder="Enter a Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </Col>
+                  </Row>
+                )}
 
                 <Row className="mt-4">
                   <Col xl={6}>
@@ -68,10 +262,10 @@ const SellerAdd = () => {
                         className="form-control d-block"
                         id="dateOfBirth"
                         placeholder="Select  Date of Birth"
-                        // value={dateOfBirth}
-                        // onChange={(selectedDates, dateStr, instance) =>
-                        //   setDateOfBirth(dateStr)
-                        // }
+                        value={dateOfBirth}
+                        onChange={(selectedDates, dateStr, instance) =>
+                          setDateOfBirth(dateStr)
+                        }
                         options={{
                           altInput: true,
                           altFormat: "F j, Y",
@@ -87,107 +281,51 @@ const SellerAdd = () => {
                       label="Company Name"
                       variant="outlined"
                       placeholder="Enter Companay Name"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      required
                     />
                   </Col>
                 </Row>
 
                 <Row className="mt-4">
                   <Col xl={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Type
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        // value={age}
-                        label="Gender"
-                        // onChange={handleChange}
-                      >
-                        <MenuItem value={10}>Pharmacy </MenuItem>
-                        <MenuItem value={20}>Grocery</MenuItem>
-                        <MenuItem value={30}>Resturant</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Tags
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        // value={age}
-                        label="Gender"
-                        // onChange={handleChange}
-                      >
-                        <MenuItem value={10}>Tags 1 </MenuItem>
-                        <MenuItem value={20}>Tags 2</MenuItem>
-                        <MenuItem value={30}>Tags 3</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                </Row>
-
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Delivery Type
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        // value={age}
-                        label="Gender"
-                        // onChange={handleChange}
-                      >
-                        <MenuItem value={10}>Self </MenuItem>
-                        <MenuItem value={20}>Drop</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Email"
-                      variant="outlined"
-                      placeholder="Enter a Email Id"
-                    />
-                  </Col>
-                </Row>
-
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Password"
-                      variant="outlined"
-                      placeholder="Enter a Password"
-                    />
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
                     <TextField
                       id="outlined-textarea"
-                      label="Address"
-                      placeholder="Enter Address"
-                      multiline
+                      label="Phone Number"
+                      placeholder="Enter Phone Number"
                       style={{ width: "100%" }}
+                      type="number"
+                      value={phoneNum}
+                      onChange={(e) => setPhoneNum(e.target.value.toString())}
+                      required
                     />
                   </Col>
-                </Row>
-
-                <Row className="mt-4">
-                  <Col xl={6}>
+                  <Col xl={6} className="mt-4 mt-xl-0">
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
                       label="Bank Name"
                       variant="outlined"
                       placeholder="Enter Bank Name"
+                      value={bankName}
+                      onChange={(e) => setBankName(e.target.value)}
+                      required
+                    />
+                  </Col>
+                </Row>
+
+                <Row className="mt-4">
+                  <Col xl={6}>
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Account Name"
+                      variant="outlined"
+                      placeholder="Enter Account Name"
+                      value={accountName}
+                      onChange={(e) => setAccountName(e.target.value)}
+                      required
                     />
                   </Col>
                   <Col xl={6} className="mt-4 mt-xl-0">
@@ -197,232 +335,325 @@ const SellerAdd = () => {
                       label="Account Number"
                       variant="outlined"
                       placeholder="Enter Account Number"
+                      value={accountNum}
+                      onChange={(e) => setAccountNum(e.target.value)}
+                      required
                     />
                   </Col>
                 </Row>
 
                 <Row className="mt-4">
                   <Col xl={6}>
-                    <div className="d-flex justify-content-center flex-column">
-                      <h6>Upload Seller Image</h6>
-                      <Card className="cursor-pointer">
-                        <div
-                          className="d-flex justify-content-center align-content-center"
-                          style={{
-                            border: "1px solid rgb(207 207 207)",
-                            height: "145px",
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Gender
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={gender}
+                        label="Gender"
+                        onChange={(e) => setGender(e.target.value)}
+                        required
+                      >
+                        <MenuItem value="male">Mele </MenuItem>
+                        <MenuItem value="female">Female</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Col>
+                </Row>
+
+                <Row className="mt-4">
+                  <Col xl={6}>
+                    <Label>Profile Photo</Label>
+                    <div className="mb-5">
+                      <Form>
+                        <Dropzone
+                          onDrop={(acceptedFiles) => {
+                            // handleAcceptedFiles(acceptedFiles);
                           }}
                         >
-                          {/* {licenseFrontImage ? (
-                                <ImageView>
-                                  <>
-                                    <img
-                                      // src={licenseFrontImage}
-                                      className="img-thumbnail img__view"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "contain",
-                                      }}
-                                      alt=""
-                                    />
-                                    <div className="button__wrapper">
-                                      <button
-                                        className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setLicenseFrontImage("")}
-                                      >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </div>
-                                  </>
-                                </ImageView>
-                              ) : (
-                                <div
-                                  style={{ width: "100%", height: "100%" }}
-                                  className="d-flex justify-content-center align-items-center"
-                                  // onClick={() => handleImage(4)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ width: "50px" }}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
+                          {({ getRootProps, getInputProps }) => (
+                            <div className="dropzone">
+                              <div
+                                className="dz-message needsclick"
+                                {...getRootProps()}
+                                // onClick={() => setmodal_fullscreen(true)}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="mb-3">
+                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
-                              )} */}
-                          <div
-                            style={{ width: "100%", height: "100%" }}
-                            className="d-flex justify-content-center align-items-center"
-                            // onClick={() => handleImage(4)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ width: "50px" }}
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
+                                <h4>Drop files here or click to upload.</h4>
+                              </div>
+                            </div>
+                          )}
+                        </Dropzone>
+                        <div
+                          className="dropzone-previews mt-3"
+                          id="file-previews"
+                        >
+                          {/* {selectedFiles.map((f, i) => {
+                          return (
+                            <Card
+                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                              key={i + "-file"}
                             >
-                              <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                          </div>
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
+                                      style={{
+                                        maxWidth: "80px",
+                                      }}
+                                      className=" bg-light"
+                                      alt={f.name}
+                                      src={f.preview}
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {f.name}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>{f.formattedSize}</strong>
+                                    </p>
+                                  </Col>
+
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      // onClick={() => removeSelection(i)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          );
+                        })} */}
                         </div>
-                      </Card>
+                      </Form>
                     </div>
                   </Col>
                   <Col xl={6}>
-                    <div className="d-flex justify-content-center flex-column">
-                      <h6>Upload Certification Of Incorporation</h6>
-                      <Card className="cursor-pointer">
-                        <div
-                          className="d-flex justify-content-center align-content-center"
-                          style={{
-                            border: "1px solid rgb(207 207 207)",
-                            height: "145px",
+                    <Label>Certificate Of Incorporation</Label>
+                    <div className="mb-5">
+                      <Form>
+                        <Dropzone
+                          onDrop={(acceptedFiles) => {
+                            // handleAcceptedFiles(acceptedFiles);
                           }}
                         >
-                          {/* {licenseFrontImage ? (
-                                <ImageView>
-                                  <>
-                                    <img
-                                      // src={licenseFrontImage}
-                                      className="img-thumbnail img__view"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "contain",
-                                      }}
-                                      alt=""
-                                    />
-                                    <div className="button__wrapper">
-                                      <button
-                                        className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setLicenseFrontImage("")}
-                                      >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </div>
-                                  </>
-                                </ImageView>
-                              ) : (
-                                <div
-                                  style={{ width: "100%", height: "100%" }}
-                                  className="d-flex justify-content-center align-items-center"
-                                  // onClick={() => handleImage(4)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ width: "50px" }}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
+                          {({ getRootProps, getInputProps }) => (
+                            <div className="dropzone">
+                              <div
+                                className="dz-message needsclick"
+                                {...getRootProps()}
+                                // onClick={() => setmodal_fullscreen(true)}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="mb-3">
+                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
-                              )} */}
-                          <div
-                            style={{ width: "100%", height: "100%" }}
-                            className="d-flex justify-content-center align-items-center"
-                            // onClick={() => handleImage(4)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ width: "50px" }}
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
+                                <h4>Drop files here or click to upload.</h4>
+                              </div>
+                            </div>
+                          )}
+                        </Dropzone>
+                        <div
+                          className="dropzone-previews mt-3"
+                          id="file-previews"
+                        >
+                          {/* {selectedFiles.map((f, i) => {
+                          return (
+                            <Card
+                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                              key={i + "-file"}
                             >
-                              <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                          </div>
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
+                                      style={{
+                                        maxWidth: "80px",
+                                      }}
+                                      className=" bg-light"
+                                      alt={f.name}
+                                      src={f.preview}
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {f.name}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>{f.formattedSize}</strong>
+                                    </p>
+                                  </Col>
+
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      // onClick={() => removeSelection(i)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          );
+                        })} */}
                         </div>
-                      </Card>
+                      </Form>
                     </div>
                   </Col>
                 </Row>
 
                 <Row>
                   <Col xl={6}>
-                    <div className="d-flex justify-content-center flex-column">
-                      <h6>Upload National ID</h6>
-                      <Card className="cursor-pointer">
-                        <div
-                          className="d-flex justify-content-center align-content-center"
-                          style={{
-                            border: "1px solid rgb(207 207 207)",
-                            height: "145px",
+                    <Label>National ID</Label>
+                    <div className="mb-5">
+                      <Form>
+                        <Dropzone
+                          onDrop={(acceptedFiles) => {
+                            // handleAcceptedFiles(acceptedFiles);
                           }}
                         >
-                          {/* {licenseFrontImage ? (
-                                <ImageView>
-                                  <>
-                                    <img
-                                      // src={licenseFrontImage}
-                                      className="img-thumbnail img__view"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "contain",
-                                      }}
-                                      alt=""
-                                    />
-                                    <div className="button__wrapper">
-                                      <button
-                                        className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setLicenseFrontImage("")}
-                                      >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </div>
-                                  </>
-                                </ImageView>
-                              ) : (
-                                <div
-                                  style={{ width: "100%", height: "100%" }}
-                                  className="d-flex justify-content-center align-items-center"
-                                  // onClick={() => handleImage(4)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ width: "50px" }}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
+                          {({ getRootProps, getInputProps }) => (
+                            <div className="dropzone">
+                              <div
+                                className="dz-message needsclick"
+                                {...getRootProps()}
+                                // onClick={() => setmodal_fullscreen(true)}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="mb-3">
+                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
-                              )} */}
-                          <div
-                            style={{ width: "100%", height: "100%" }}
-                            className="d-flex justify-content-center align-items-center"
-                            // onClick={() => handleImage(4)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ width: "50px" }}
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
+                                <h4>Drop files here or click to upload.</h4>
+                              </div>
+                            </div>
+                          )}
+                        </Dropzone>
+                        <div
+                          className="dropzone-previews mt-3"
+                          id="file-previews"
+                        >
+                          {/* {selectedFiles.map((f, i) => {
+                          return (
+                            <Card
+                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                              key={i + "-file"}
                             >
-                              <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                          </div>
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
+                                      style={{
+                                        maxWidth: "80px",
+                                      }}
+                                      className=" bg-light"
+                                      alt={f.name}
+                                      src={f.preview}
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {f.name}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>{f.formattedSize}</strong>
+                                    </p>
+                                  </Col>
+
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      // onClick={() => removeSelection(i)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          );
+                        })} */}
                         </div>
-                      </Card>
+                      </Form>
                     </div>
                   </Col>
                 </Row>
 
-                <div className="d-flex justify-content-center">
-                  <Button color="primary" className="px-5">
-                    Add
+                <div className="d-flex justify-content-center mt-4">
+                  <Button
+                    color="primary"
+                    onClick={submitSeller}
+                    className="px-5"
+                  >
+                    {loading ? (
+                      <Spinner
+                        animation="border"
+                        variant="info"
+                        size="sm"
+                      ></Spinner>
+                    ) : id ? (
+                      "Edit"
+                    ) : (
+                      "Add"
+                    )}
                   </Button>
                 </div>
               </CardBody>

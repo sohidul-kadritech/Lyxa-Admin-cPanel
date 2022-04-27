@@ -28,20 +28,30 @@ import {
   addSubCategory,
   getAllSubCategory,
   editSubCategory,
+  updateSubCatStatusKey,
+  updateSubCatSearchKey,
+  deleteSubCategory,
 } from "../../../../store/Category/categoryAction";
 import AppPagination from "../../../../components/AppPagination";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const CategoryDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { loading, categories, subCategories, status, subPaging,
+  const {
+    loading,
+    categories,
+    subCategories,
+    status,
+    subPaging,
     subHasNextPage,
     subHasPreviousPage,
-    subCurrentPage} = useSelector(
-    (state) => state.categoryReducer
-  );
+    subCurrentPage,
+    subStatusKey,
+    subSearchKey,
+  } = useSelector((state) => state.categoryReducer);
 
   const [category, setCategory] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -52,8 +62,19 @@ const CategoryDetails = () => {
   const [activeStatus, setActiveStatus] = useState("");
   const [image, setImage] = useState("");
   const [subCatId, setSubCatId] = useState(null);
+  const [confirm_alert, setconfirm_alert] = useState(false);
+  const [success_dlg, setsuccess_dlg] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState("");
+  const [dynamic_description, setdynamic_description] = useState("");
+
 
   const options = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+  ];
+
+  const filterOptions = [
+    { label: "All", value: "all" },
     { label: "Active", value: "active" },
     { label: "Inactive", value: "inactive" },
   ];
@@ -65,11 +86,23 @@ const CategoryDetails = () => {
       if (findCategory) {
         setCategory(findCategory);
       } else {
-        console.log("api------------");
+        // console.log("api------------");
         callApi(id);
       }
+      //   GET ALL SUB CATEGORY
+      // callSubCategoryList(true, 1, id);
     }
   }, [id]);
+
+  // GET SUB CATEGORY LIST
+
+  useEffect(() => {
+    if (id) {
+      if (subSearchKey || subStatusKey) {
+        callSubCategoryList(true, id);
+      }
+    }
+  }, [id, subSearchKey, subStatusKey]);
 
   // Call Api for single Category
 
@@ -79,7 +112,7 @@ const CategoryDetails = () => {
         id: catId,
       },
     });
-    console.log("from api", data);
+    // console.log("from api", data);
 
     if (data.status) {
       setCategory(data.data.category);
@@ -88,17 +121,8 @@ const CategoryDetails = () => {
     }
   };
 
-  //   GET ALL SUB CATEGORY
-
-  useEffect(() => {
-    // console.log("call----------");
- 
-      callSubCategoryList(true, 1, id);
-    
-  }, []);
-
-  const callSubCategoryList = (refresh = false, page = 1, catId) => {
-    dispatch(getAllSubCategory(refresh, page, catId));
+  const callSubCategoryList = (refresh = false,  catId) => {
+    dispatch(getAllSubCategory(refresh, catId));
   };
 
   // EDIT SUB CATEGORY
@@ -108,21 +132,38 @@ const CategoryDetails = () => {
     setSubCatId(subId);
     const findSubCategory = subCategories.find((sub) => sub._id == subId);
     // console.log({findSubCategory})
-    const {
-      name,
-      slug,
-      status,
-      image
-    } = findSubCategory;
+    const { name, slug, status, image } = findSubCategory;
     const findStatus = options.find((op) => op.value == status);
     // console.log({ name });
     setName(name);
     setSlug(slug);
     setImage(image);
     setActiveStatus(findStatus);
-    
+
     window.scroll(0, 0);
   };
+
+  // DEBOUNCE SEARCH
+
+  const debounce = (func, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      // const context = this;
+      timer = setTimeout(() => {
+        func(args[0]);
+      }, delay);
+    };
+    // console.log("yes....");
+  };
+
+  const handleSearchChange = (event) => {
+    // console.log("event", event.target.value)
+    // setOpen(true);
+    dispatch(updateSubCatSearchKey(event.target.value));
+  };
+
+  const searchKeyListener = debounce(handleSearchChange, 300);
 
   //   SUBMIT SUB CATEGORY
 
@@ -178,27 +219,25 @@ const CategoryDetails = () => {
 
     const newSlug = slug.split(" ").join("");
 
-    if (subCatId) {
-      dispatch(
-        editSubCategory({
-          id: subCatId,
-          name,
-          status: activeStatus.value,
-          slug: newSlug,
-          image:"https://media.istockphoto.com/photos/table-top-view-of-spicy-food-picture-id1316145932?b=1&k=20&m=1316145932&s=170667a&w=0&h=feyrNSTglzksHoEDSsnrG47UoY_XX4PtayUPpSMunQI=",
-          category: id,
-        })
-      );
-    } else {
-      dispatch(
-        addSubCategory({
-          name,
+    const data = {
+      name,
           status: activeStatus.value,
           slug: newSlug,
           image:
             "https://media.istockphoto.com/photos/table-top-view-of-spicy-food-picture-id1316145932?b=1&k=20&m=1316145932&s=170667a&w=0&h=feyrNSTglzksHoEDSsnrG47UoY_XX4PtayUPpSMunQI=",
           categoryId: id,
+    }
+
+    if (subCatId) {
+      dispatch(
+        editSubCategory({
+          ...data,
+          id: subCatId,
         })
+      );
+    } else {
+      dispatch(
+        addSubCategory(data)
       );
     }
   };
@@ -214,7 +253,12 @@ const CategoryDetails = () => {
     }
   }, [status]);
 
-  
+
+  // DELETE SUB CATEGORY 
+
+  const handleDelete = (subId) =>{
+    dispatch(deleteSubCategory(subId))
+  }
 
   return (
     <React.Fragment>
@@ -239,6 +283,18 @@ const CategoryDetails = () => {
                 }}
               />
             )}
+
+            {success_dlg ? (
+              <SweetAlert
+                success
+                title={dynamic_title}
+                onConfirm={() => {
+                  setsuccess_dlg(false);
+                }}
+              >
+                {dynamic_description}
+              </SweetAlert>
+            ) : null}
 
             <Row>
               <Col xl={6}>
@@ -301,6 +357,7 @@ const CategoryDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
+
               <Col xl={6}>
                 <Card>
                   <CardBody>
@@ -457,6 +514,41 @@ const CategoryDetails = () => {
 
             <Card>
               <CardBody>
+                <Row>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Status</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={filterOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={subStatusKey}
+                        onChange={(e) => dispatch(updateSubCatStatusKey(e))}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={8}>
+                    <label className="control-label">Search</label>
+                    <SearchWrapper>
+                      <div className="search__wrapper">
+                        <i className="fa fa-search" />
+                        <input
+                          className="form-control"
+                          type="search"
+                          placeholder="Search Subcategory..."
+                          id="search"
+                          onChange={searchKeyListener}
+                        />
+                      </div>
+                    </SearchWrapper>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardBody>
                 <CardTitle className="h4 mb-2">Sub Category List</CardTitle>
 
                 <Table
@@ -488,8 +580,8 @@ const CategoryDetails = () => {
                             <div style={{ height: "50px" }}>
                               <img
                                 onClick={() => {
-                                  //   setIsZoom(true);
-                                  //   setCatImg(item.image);
+                                  setSelectedImg(item?.image);
+                                  setIsOpen(true);
                                 }}
                                 className="img-fluid cursor-pointer"
                                 alt=""
@@ -514,7 +606,9 @@ const CategoryDetails = () => {
                               <Tooltip title="Edit">
                                 <button
                                   className="btn btn-success me-3 button"
-                                  onClick={() => handleEditSubCategory(item._id)}
+                                  onClick={() =>
+                                    handleEditSubCategory(item._id)
+                                  }
                                 >
                                   <i className="fa fa-edit" />
                                 </button>
@@ -522,11 +616,33 @@ const CategoryDetails = () => {
                               <Tooltip title="Delete">
                                 <button
                                   className="btn btn-danger button"
-                                  // onClick={() => handleEditSubCategory(item._id)}
+                                  onClick={() =>  setconfirm_alert(true)}
                                 >
                                   <i className="fa fa-trash" />
                                 </button>
                               </Tooltip>
+                              {confirm_alert ? (
+                                <SweetAlert
+                                  title="Are you sure?"
+                                  warning
+                                  showCancel
+                                  confirmButtonText="Yes, delete it!"
+                                  confirmBtnBsStyle="success"
+                                  cancelBtnBsStyle="danger"
+                                  onConfirm={() => {
+                                    handleDelete(item._id);
+                                    setconfirm_alert(false);
+                                    setsuccess_dlg(true);
+                                    setdynamic_title("Deleted");
+                                    setdynamic_description(
+                                      "Your file has been deleted."
+                                    );
+                                  }}
+                                  onCancel={() => setconfirm_alert(false)}
+                                >
+                                  Are You Sure! You want to delete this Shop.
+                                </SweetAlert>
+                              ) : null}
                             </div>
                           </Td>
                         </Tr>
@@ -534,6 +650,11 @@ const CategoryDetails = () => {
                     })}
                   </Tbody>
                 </Table>
+                {!loading && subCategories.length < 1 && (
+                  <div className="text-center">
+                    <h4>No Data...</h4>
+                  </div>
+                )}
                 {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="info" />
@@ -549,7 +670,9 @@ const CategoryDetails = () => {
                     hasNextPage={subHasNextPage}
                     hasPreviousPage={subHasPreviousPage}
                     currentPage={subCurrentPage}
-                    lisener={(page) => dispatch(callSubCategoryList(true, page, id))}
+                    lisener={(page) =>
+                      dispatch(callSubCategoryList(true, id,page))
+                    }
                   />
                 </div>
               </Col>
@@ -572,6 +695,26 @@ const Value = styled.h5`
   font-weight: 500;
   margin-left: 4px;
   /* padding-left: 5px; */
+`;
+
+const SearchWrapper = styled.div`
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  width: 100%;
+  padding: 2px 7px;
+
+  .search__wrapper {
+    /* padding: 7px 10px; */
+    display: flex;
+    align-items: center;
+    i {
+      font-size: 15px;
+    }
+    input {
+      border: none;
+      color: black !important;
+    }
+  }
 `;
 
 export default CategoryDetails;

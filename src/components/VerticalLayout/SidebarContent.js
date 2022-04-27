@@ -8,7 +8,7 @@ import SimpleBar from "simplebar-react";
 import MetisMenu from "metismenujs";
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+// sdlf
 //i18n
 import { withTranslation } from "react-i18next";
 
@@ -194,6 +194,29 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
+            {/* PRODUCT */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="fa fa-cube" />
+                <span>{props.t("Products")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/products/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/products/add">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
             {/* DELIVERY MANS */}
 
             <li>
@@ -315,6 +338,27 @@ const SidebarContent = (props) => {
 
             <li>
               <Link to="/#" className="has-arrow waves-effect">
+                <i className="fas fa-user-friends" />
+                <span>{props.t("Admins")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/admin/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/admin/create">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* <li>
+              <Link to="/#" className="has-arrow waves-effect">
                 <i className="ti-user" />
                 <span>{props.t("Admin Control")}</span>
               </Link>
@@ -346,7 +390,7 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* CATEGORIES AND TAGS */}
 

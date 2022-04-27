@@ -24,10 +24,10 @@ export const deleteBanner = (id) => async (dispatch) => {
     } = await requestApi().request(DELETE_BANNER, {
       method: "POST",
       data: {
-         id,
+        id,
       },
     });
-    console.log({status})
+    console.log({ status });
 
     if (status) {
       dispatch({
@@ -49,7 +49,7 @@ export const deleteBanner = (id) => async (dispatch) => {
 };
 
 export const getBannerListAction =
-  ( refresh = false ) =>
+  (refresh = false) =>
   async (dispatch, getState) => {
     try {
       const { list, type } = getState().bannerReducer;
@@ -145,7 +145,7 @@ export const addBanner = (addData) => async (dispatch, getState) => {
 };
 
 export const filterSelect = (filter) => async (dispatch) => {
-  console.log({ filter });
+  // console.log({ filter });
   dispatch({
     type: actionType.BANNER_FILTER_SELECT,
     payload: filter,
@@ -180,10 +180,12 @@ export const editBanner = (bannerData) => async (dispatch) => {
         draggable: true,
         progress: undefined,
       });
-      dispatch({
-        type: actionType.GET_EDITED_BANNER,
-        payload: data.data.banner,
-      });
+      setTimeout(() => {
+        dispatch({
+          type: actionType.GET_EDITED_BANNER,
+          payload: data.data.banner,
+        });
+      }, [450]);
     } else {
       dispatch({
         type: actionType.EDIT_BANNER_REQUEST_FAIL,
