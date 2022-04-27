@@ -57,7 +57,7 @@ const Login = props => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Login | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
+        <title>Login | Drop</title>
       </MetaTags>
 
       <GlobalWrapper>

@@ -58,7 +58,7 @@ const Dashboard = props => {
         <GlobalWrapper>
 
           <MetaTags>
-            <title>Dashboard | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
+            <title>Drop</title>
           </MetaTags>
           <Container fluid>
             <div className="page-title-box">
@@ -66,7 +66,7 @@ const Dashboard = props => {
                 <Col md={8}>
                   <h6 className="page-title">Dashboard</h6>
                   <ol className="breadcrumb m-0">
-                    <li className="breadcrumb-item active">Welcome to Veltrix Dashboard</li>
+                    <li className="breadcrumb-item active">Welcome to Drop Dashboard</li>
                   </ol>
                 </Col>
 
