@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@dev
+        uses: actions/checkout@main
 
       - name: Setup Node.js (NPM)
         uses: actions/setup-node@master
