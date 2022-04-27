@@ -33,8 +33,10 @@ const AdminList = () => {
 
   useEffect(() => {
    
-      callAdminList(true);
+    callAdminList(true);
       dispatch(setStatusFalse())
+
+  
     
   }, []);
 
@@ -61,6 +63,7 @@ const AdminList = () => {
               {dynamic_description}
             </SweetAlert>
           ) : null}
+
           <Breadcrumb
             maintitle="Drop"
             breadcrumbItem={"List"}

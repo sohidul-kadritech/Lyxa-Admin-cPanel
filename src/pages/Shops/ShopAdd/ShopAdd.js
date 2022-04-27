@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -24,7 +24,7 @@ import { getAllSeller } from "../../../store/Seller/sellerAction";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 import { addShop, editShop } from "../../../store/Shop/shopAction";
-import { useHistory, useParams, Link } from "react-router-dom";
+import { useHistory, useParams, Link, useLocation } from "react-router-dom";
 import PlacesAutocomplete from "react-places-autocomplete";
 import {
   geocodeByAddress,
@@ -46,6 +46,10 @@ const ShopAdd = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
+
+  const { search, pathname } = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { sellers } = useSelector((state) => state.sellerReducer);
   const { loading, status, shops } = useSelector((state) => state.shopReducer);
@@ -116,6 +120,17 @@ const ShopAdd = () => {
       history.push("/shop/list", { replace: true });
     }
   };
+
+  useEffect(()=>{
+    
+    if(searchParams){
+      const sellerId = searchParams.get("sellerId");
+      if(sellerId){
+        const findSeller = sellers.find(item => item._id == sellerId)
+        setSeller(findSeller)
+      }
+    }
+  },[searchParams])
 
   const updateData = (values) => {
     const {

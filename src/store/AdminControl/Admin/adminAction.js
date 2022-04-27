@@ -71,7 +71,7 @@ export const getAllAdmin =
     // console.log({adminData})
     const { admins } = getState().adminReducer;
 
-    if (admins.length < 1 || refresh) {
+    if ((admins && admins.length < 1 )|| refresh) {
       try {
         dispatch({
           type: actionType.GET_ALL_ADMIN_REQUEST_SEND,
@@ -84,7 +84,7 @@ export const getAllAdmin =
         if (data.status) {
           dispatch({
             type: actionType.GET_ALL_ADMIN_REQUEST_SUCCESS,
-            payload: data.data.admins,
+            payload: data.data.Admins,
           });
         } else {
           dispatch({

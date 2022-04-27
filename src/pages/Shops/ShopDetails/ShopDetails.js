@@ -17,7 +17,10 @@ import {
   Spinner,
 } from "reactstrap";
 import Lightbox from "react-image-lightbox";
-import { deleteProduct, getAllProduct } from "../../../store/Product/productAction";
+import {
+  deleteProduct,
+  getAllProduct,
+} from "../../../store/Product/productAction";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Tooltip } from "@mui/material";
@@ -29,7 +32,6 @@ const ShopDetails = () => {
   const dispatch = useDispatch();
   const { shops } = useSelector((state) => state.shopReducer);
   const {
-
     paging,
     hasNextPage,
     hasPreviousPage,
@@ -46,7 +48,6 @@ const ShopDetails = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
-
 
   useEffect(() => {
     if (id) {
@@ -76,19 +77,19 @@ const ShopDetails = () => {
     }
   };
 
-  const handleDelete = (id) =>{
-    dispatch(deleteProduct(id))
-  }
+  const handleDelete = (id) => {
+    dispatch(deleteProduct(id));
+  };
 
-  // ADD PRODUCT 
+  // ADD PRODUCT
 
-  const addProduct = () =>{
+  const addProduct = () => {
     history.push({
       pathname: "/products/add",
       search: `?shopId=${id}`,
       // state: { detail: 'some_value' }
     });
-  }
+  };
 
   return (
     <React.Fragment>
@@ -115,6 +116,18 @@ const ShopDetails = () => {
                 }}
               />
             )}
+
+            {success_dlg ? (
+              <SweetAlert
+                success
+                title={dynamic_title}
+                onConfirm={() => {
+                  setsuccess_dlg(false);
+                }}
+              >
+                {dynamic_description}
+              </SweetAlert>
+            ) : null}
 
             <Row>
               <Col xl={6}>
@@ -199,7 +212,9 @@ const ShopDetails = () => {
                       <div className="d-flex justify-content-between align-items-center w-100 pb-1">
                         <h4>Seller</h4>
                         <button
-                          //   onClick={() => history.push(`/shops/edit/${id}`)}
+                          onClick={() =>
+                            history.push(`/seller/details/${shop?.seller?._id}`)
+                          }
                           className="btn btn-success"
                         >
                           Details
@@ -306,12 +321,13 @@ const ShopDetails = () => {
 
             <Card>
               <CardBody>
-                <div className='d-flex justify-content-between align-items-center '>
+                <div className="d-flex justify-content-between align-items-center ">
                   <CardTitle className="h4"> Product List</CardTitle>
-                  <Button color="success" onClick={addProduct}>Add Product</Button>
-                  
+                  <Button color="success" onClick={addProduct}>
+                    Add Product
+                  </Button>
                 </div>
-                <hr className='my-2' />
+                <hr className="my-2" />
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -390,27 +406,27 @@ const ShopDetails = () => {
                                   </button>
                                 </Tooltip>
                                 {confirm_alert ? (
-                                <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item?._id);
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  You want to delete this Product.
-                                </SweetAlert>
-                              ) : null}
+                                  <SweetAlert
+                                    title="Are you sure?"
+                                    warning
+                                    showCancel
+                                    confirmButtonText="Yes, delete it!"
+                                    confirmBtnBsStyle="success"
+                                    cancelBtnBsStyle="danger"
+                                    onConfirm={() => {
+                                      handleDelete(item?._id);
+                                      setconfirm_alert(false);
+                                      setsuccess_dlg(true);
+                                      setdynamic_title("Deleted");
+                                      setdynamic_description(
+                                        "Your file has been deleted."
+                                      );
+                                    }}
+                                    onCancel={() => setconfirm_alert(false)}
+                                  >
+                                    You want to delete this Product.
+                                  </SweetAlert>
+                                ) : null}
                               </div>
                             </Td>
                           </Tr>
@@ -438,9 +454,7 @@ const ShopDetails = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) =>
-                      dispatch(getAllProduct(true, id, page))
-                    }
+                    lisener={(page) => dispatch(getAllProduct(true, id, page))}
                   />
                 </div>
               </Col>

@@ -166,7 +166,7 @@ const SellerList = () => {
                               <Tooltip title="Details">
                                 <button
                                   className="btn btn-info button me-0 me-lg-2"
-                                  // onClick={() =>history.push(`/category/details/${item._id}`) }
+                                  onClick={() =>history.push(`/seller/details/${item._id}`) }
                                 >
                                   <i className="fa fa-eye" />
                                 </button>

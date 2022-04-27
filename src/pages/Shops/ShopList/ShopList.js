@@ -337,7 +337,7 @@ const ShopList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllShop(true, page))}
+                    lisener={(page) => dispatch(getAllShop(true,null, page))}
                   />
                 </div>
               </Col>

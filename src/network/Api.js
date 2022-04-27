@@ -31,7 +31,7 @@ export const EDIT_BANNER = ADMIN_ENDPOINT + "/banner/update";
 // ADMIN 
 
 export const ADD_ADMIN = ADMIN_ENDPOINT + "/admins/add-admin";
-export const GET_ALL_ADMIN = ADMIN_ENDPOINT + "/admins";
+export const GET_ALL_ADMIN = ADMIN_ENDPOINT + "/admins/";
 export const DELETE_ADMIN = ADMIN_ENDPOINT + "/admins/delete";
 export const EDIT_ADMIN = ADMIN_ENDPOINT + "/admins/update";
 export const SINGLE_ADMIN = ADMIN_ENDPOINT + "/admins/get-single-admin-details";

@@ -60,7 +60,7 @@ export const addShop = (values) => async (dispatch) => {
 // GET ALL
 
 export const getAllShop =
-  (refresh = false, page = 1) =>
+  (refresh = false,seller = null, page = 1) =>
   async (dispatch, getState) => {
     // console.log({adminData})
     const { shops, searchKey, statusKey, typeKey, sortByKey } =
@@ -80,6 +80,7 @@ export const getAllShop =
             searchKey,
             type: typeKey.value,
             shopStatus: statusKey.value,
+            sellerId: seller
           },
         });
 
