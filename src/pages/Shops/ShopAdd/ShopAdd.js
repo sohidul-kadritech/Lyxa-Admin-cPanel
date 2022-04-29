@@ -398,7 +398,7 @@ const ShopAdd = () => {
       shopDescription: "desrcriptions",
     };
 
-    console.log("given data---", data);
+    // console.log("given data---", data);
 
     if (id) {
       dispatch(
@@ -430,7 +430,8 @@ const ShopAdd = () => {
 
   useEffect(() => {
     if (Object.keys(address).length > 0) {
-      getLatLng(address).then((latlng) => setLatLng(latlng));
+      getLatLng(address)
+      .then((latlng) => setLatLng(latlng));
       const {
         geometry: { location },
         formatted_address,

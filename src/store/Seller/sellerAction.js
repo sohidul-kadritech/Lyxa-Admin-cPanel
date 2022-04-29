@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 // ADD
 export const addSeller = (values) => async (dispatch) => {
-  console.log({ values });
+  // console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SELLER_REQUEST_SEND,
@@ -47,7 +47,7 @@ export const addSeller = (values) => async (dispatch) => {
       });
       dispatch({
         type: actionType.ADD_SELLER_REQUEST_FAIL,
-        payload: data.message,
+        payload: data.error,
       });
     }
   } catch (error) {

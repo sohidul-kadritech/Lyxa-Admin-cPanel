@@ -33,9 +33,14 @@ import htmlToDraft from "html-to-draftjs";
 import { OPEN_EDIT_PAGE } from "../../store/actionType";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import Dropzone from "react-dropzone";
-import Select from "react-select";
 import { imageUpload } from "../../store/ImageUpload/imageUploadAction";
 import { activeOptions, bannerOptions } from "../../assets/staticData";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { getAllShop } from "../../store/Shop/shopAction";
 
 const AddBanner = () => {
   const { bannerImage, imageStatus } = useSelector(
@@ -46,6 +51,7 @@ const AddBanner = () => {
     EditorState.createEmpty()
   );
   const { list, status, loading } = useSelector((state) => state.bannerReducer);
+  const { shops } = useSelector((state) => state.shopReducer);
 
   const dispatch = useDispatch();
   const route = useHistory();
@@ -53,22 +59,27 @@ const AddBanner = () => {
 
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
-  const [type, setType] = useState(null);
+  const [type, setType] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
   const [description, setDescription] = useState("");
+  const [shop, setShop] = useState(null);
+  const [searchShopKey, setSearchShopKey] = useState("");
+
+  useEffect(() => {
+    dispatch(getAllShop(true));
+  }, []);
 
   useEffect(() => {
     if (id) {
       const findBanner = list.find((item) => item?._id === id);
       if (findBanner) {
-        console.log({ findBanner });
-        const { image, type, title, status, description } = findBanner;
-        const findType = bannerOptions.find((op) => op.value == type);
-        const fineStatus = activeOptions.find((st) => st.value == status);
+        // console.log({ findBanner });
+        const { image, type, title, status, description, shop } = findBanner;
         setImage(image);
         setTitle(title);
-        setType(findType);
-        setActiveStatus(fineStatus);
+        setType(type);
+        setActiveStatus(status);
+        setShop(shop)
         const contentBlock = htmlToDraft(description);
         if (contentBlock) {
           const contentState = ContentState.createFromBlockArray(
@@ -90,13 +101,13 @@ const AddBanner = () => {
     const { data } = await requestApi().request(GET_SINGLE_BANNER + id);
     // console.log(banner)
     if (data.status) {
-      const { type, title, image, description, status } = data.data.banner;
-      const findType = bannerOptions.find((op) => op.value == type);
-      const fineStatus = activeOptions.find((st) => st.value == status);
+      // console.log("banner", data.data.banner)
+      const { type, title, image, description, status, shop } = data.data.banner;
       setImage(image);
       setTitle(title);
-      setType(findType);
-      setActiveStatus(fineStatus);
+      setType(type);
+      setActiveStatus(status);
+      setShop(shop)
       const contentBlock = htmlToDraft(description);
       if (contentBlock) {
         const contentState = ContentState.createFromBlockArray(
@@ -119,7 +130,7 @@ const AddBanner = () => {
     setDescription(currentContentAsHTML);
   };
 
-  const submitBanner = async () => {
+  const submitBanner =  () => {
     if (!title || title == "") {
       return toast.warn("Enter a title ", {
         // position: "bottom-right",
@@ -135,6 +146,19 @@ const AddBanner = () => {
 
     if (!type) {
       return toast.warn("Select a Type", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    if (type == "shop" && !shop) {
+      return toast.warn("Select a Shop", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -163,17 +187,22 @@ const AddBanner = () => {
 
     // dispatch(imageUpload(image, "banner"));
 
+     uploadImage();
+  };
+
+  const uploadImage = async() => {
+    console.log({image})
     if (typeof image == "string") {
       submitData(image);
     } else {
       let formData = new FormData();
       formData.append("image", image);
       // console.log({formData})
-      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+      const  {data}  = await requestApi().request(IMAGE_UPLOAD, {
         method: "POST",
         data: formData,
       });
-      // console.log("image upload", data)
+      console.log("image upload", data)
       if (data.status) {
         submitData(data.data.url);
       }
@@ -183,9 +212,10 @@ const AddBanner = () => {
   const submitData = (url) => {
     const data = {
       title,
-      type: type.value,
+      type: type,
       description,
       image: url,
+      shopId: shop._id
     };
     if (id) {
       dispatch(
@@ -208,7 +238,7 @@ const AddBanner = () => {
       } else {
         setImage(null);
         setTitle("");
-        setType(null);
+        setType("");
         setActiveStatus("");
         setEditorState(EditorState.createEmpty());
       }
@@ -254,80 +284,133 @@ const AddBanner = () => {
             isRefresh={false}
           />
 
-          <Row>
-            <Col>
-              <Card className="mt-5">
-                <CardBody>
-                  {/* <CardTitle className="h4">Add Banner</CardTitle> */}
+          <Card className="mt-5">
+            <CardBody>
+              {/* <CardTitle className="h4">Add Banner</CardTitle> */}
 
-                  <Row className="mb-4">
-                    <Col xl={6}>
-                      <div>
-                        <Label>Name</Label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          placeholder="Enter a Title"
-                          // onError={true}
-                        />
-                      </div>
-                    </Col>
-                    <Col xl={6} className="mt-3 mt-xl-0">
-                      <Label>Shop Type</Label>
-                      <Select
-                        // value={country}
-                        onChange={(event) => {
-                          setType(event);
-                        }}
-                        value={type}
-                        defaultValue={""}
-                        palceholder="Select Shop Type"
-                        options={bannerOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                      />
-                    </Col>
+              <Row className="mb-4">
+                <Col xl={6}>
+                  <TextField
+                    style={{ width: "100%" }}
+                    id="outlined-basic"
+                    label="Title"
+                    variant="outlined"
+                    placeholder="Enter Banner Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                </Col>
+                <Col xl={6} className="mt-3 mt-xl-0">
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Shop Type
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={type}
+                      label="Shop Type"
+                      onChange={(event) => {
+                        setType(event.target.value);
+                      }}
+                      required
+                    >
+                      <MenuItem value="home">Home</MenuItem>
+                      <MenuItem value="food">Food</MenuItem>
+                      <MenuItem value="grocery">Grocery</MenuItem>
+                      <MenuItem value="shop">Shop</MenuItem>
+                      <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Col>
+              </Row>
 
-                    {id && (
-                      <Col xl={6} className="mt-3 mt-xl-0">
-                        <Label>Status</Label>
-                        <Select
-                          // value={country}
-                          onChange={(event) => {
-                            setActiveStatus(event);
-                          }}
-                          value={activeStatus}
-                          defaultValue={""}
-                          palceholder="Select"
-                          options={activeOptions}
-                          classNamePrefix="select2-selection"
-                          required
-                        />
-                      </Col>
-                    )}
-                  </Row>
+              <Row className="mb-4">
+                {type == "shop" && (
+                  <Col xl={6}>
+                    <Autocomplete
+                      className="cursor-pointer"
+                      value={shop}
+                      onChange={(event, newValue) => {
+                        setShop(newValue);
+                        // console.log("new", newValue);
+                      }}
+                      getOptionLabel={(option) =>
+                        option.shopName ? option.shopName : ""
+                      }
+                      isOptionEqualToValue={(option, value) =>
+                        option._id == value._id
+                      }
+                      inputValue={searchShopKey}
+                      onInputChange={(event, newInputValue) => {
+                        setSearchShopKey(newInputValue);
+                        // console.log("input value", newInputValue);
+                      }}
+                      id="controllable-states-demo"
+                      options={shops.length > 0 ? shops : []}
+                      sx={{ width: "100%" }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select a Shop" />
+                      )}
+                      renderOption={(props, option) => (
+                        <Box
+                          component="li"
+                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                          {...props}
+                        >
+                          <img
+                            loading="lazy"
+                            width="60"
+                            src={option.shopBanner}
+                            alt=""
+                          />
+                          {option.shopName}
+                        </Box>
+                      )}
+                    />
+                  </Col>
+                )}
+                {id && (
+                  <Col xl={6} className="mt-3 mt-xl-0">
+                    <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Status
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={activeStatus}
+                      label="Status"
+                      onChange={(event) => {
+                        setActiveStatus(event.target.value);
+                      }}
+                      required
+                    >
+                      <MenuItem value="active">Active</MenuItem>
+                      <MenuItem value="inactive">Inactive</MenuItem>
+                    </Select>
+                  </FormControl>
+                  </Col>
+                )}
+              </Row>
 
-                  <Row className="mb-3">
-                    <label className="col-md-2 col-form-label">
-                      Description
-                    </label>
-                    <div className="col-md-10">
-                      <Editor
-                        toolbarClassName="toolbarClassName"
-                        wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
-                        editorState={editorState}
-                        defaultEditorState={editorState}
-                        onEditorStateChange={handleEditorChange}
-                      />
-                    </div>
-                  </Row>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
+              <Row className="mb-3">
+                <label className="col-md-2 col-form-label">Description</label>
+                <div className="col-md-10">
+                  <Editor
+                    toolbarClassName="toolbarClassName"
+                    wrapperClassName="wrapperClassName"
+                    editorClassName="editorClassName"
+                    editorState={editorState}
+                    defaultEditorState={editorState}
+                    onEditorStateChange={handleEditorChange}
+                  />
+                </div>
+              </Row>
+            </CardBody>
+          </Card>
+
           <Row>
             <Col className="col-12">
               <Label>Upload Image</Label>

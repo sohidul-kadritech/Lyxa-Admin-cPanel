@@ -340,6 +340,7 @@ const BannerPage = () => {
                   }
                 >
                   <MenuItem value="all">All</MenuItem>
+                  <MenuItem value="shop">Shop</MenuItem>
                   <MenuItem value="food">Food</MenuItem>
                   <MenuItem value="pharmacy">Pharmacy</MenuItem>
                   <MenuItem value="grocery">Grocery</MenuItem>
