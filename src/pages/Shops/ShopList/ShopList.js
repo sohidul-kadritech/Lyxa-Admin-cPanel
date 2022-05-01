@@ -17,6 +17,7 @@ import {
   deleteShop,
   getAllShop,
   setShopStatusFalse,
+  updateShopLiveStatus,
   updateShopSearchKey,
   updateShopStatusKey,
   updateShopType,
@@ -28,11 +29,14 @@ import AppPagination from "../../../components/AppPagination";
 import { useHistory } from "react-router-dom";
 import Lightbox from "react-image-lightbox";
 import SweetAlert from "react-bootstrap-sweetalert";
-import { shopStatusOptions, shopTypeOptions, sortByOptions } from "../../../assets/staticData";
+import {
+  liveStatusFilterOptions,
+  shopStatusOptions,
+  shopTypeOptions,
+  sortByOptions,
+} from "../../../assets/staticData";
 
 const ShopList = () => {
-
-
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -47,6 +51,7 @@ const ShopList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    liveStatus
   } = useSelector((state) => state.shopReducer);
 
   const [isZoom, setIsZoom] = useState(false);
@@ -61,12 +66,12 @@ const ShopList = () => {
   }, []);
 
   useEffect(() => {
-    if (statusKey || typeKey || sortByKey || searchKey) {
+    if (statusKey || typeKey || sortByKey || searchKey || liveStatus) {
       callShopList(true);
     } else {
       callShopList();
     }
-  }, [statusKey, typeKey, sortByKey, searchKey]);
+  }, [statusKey, typeKey, sortByKey, searchKey,liveStatus]);
 
   const callShopList = (refresh = false) => {
     dispatch(getAllShop(refresh));
@@ -94,11 +99,11 @@ const ShopList = () => {
 
   const searchKeyListener = debounce(handleSearchChange, 300);
 
-  // DELETE SHOP 
+  // DELETE SHOP
 
-  const handleDelete = (id) =>{
-    dispatch(deleteShop(id))
-  }
+  const handleDelete = (id) => {
+    dispatch(deleteShop(id));
+  };
 
   return (
     <React.Fragment>
@@ -183,18 +188,35 @@ const ShopList = () => {
                   </Col>
                 </Row>
                 <Row className="d-flex justify-content-center">
-                  <SearchWrapper>
-                    <div className="search__wrapper">
-                      <i className="fa fa-search" />
-                      <input
-                        className="form-control"
-                        type="search"
-                        placeholder="Search Shop..."
-                        id="search"
-                        onChange={searchKeyListener}
+                  <Col lg={4}>
+                  <div className="mb-4">
+                      <label className="control-label">Live Status</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={liveStatusFilterOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={liveStatus}
+                        onChange={(e) => dispatch(updateShopLiveStatus(e))}
+                        defaultValue={""}
                       />
                     </div>
-                  </SearchWrapper>
+                  </Col>
+                  <Col lg={8}>
+                  <label className="control-label">Search</label>
+                    <SearchWrapper>
+                      <div className="search__wrapper">
+                        <i className="fa fa-search" />
+                        <input
+                          className="form-control"
+                          type="search"
+                          placeholder="Search Shop..."
+                          id="search"
+                          onChange={searchKeyListener}
+                        />
+                      </div>
+                    </SearchWrapper>
+                  </Col>
                 </Row>
               </CardBody>
             </Card>
@@ -272,7 +294,7 @@ const ShopList = () => {
                                 <button
                                   className="btn btn-info button me-2"
                                   onClick={() => {
-                                    history.push(`/shops/details/${item._id}`)
+                                    history.push(`/shops/details/${item._id}`);
                                   }}
                                 >
                                   <i className="fa fa-eye" />
@@ -337,7 +359,7 @@ const ShopList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllShop(true,null, page))}
+                    lisener={(page) => dispatch(getAllShop(true, null, page))}
                   />
                 </div>
               </Col>
@@ -352,11 +374,8 @@ const ShopList = () => {
 const SearchWrapper = styled.div`
   border: 1px solid lightgray;
   border-radius: 6px;
-  width: 50%;
+  width: 100%;
   padding: 2px 7px;
-  @media (max-width: 1200px) {
-    width: 100%;
-  }
   .search__wrapper {
     /* padding: 7px 10px; */
     display: flex;

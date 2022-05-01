@@ -79,6 +79,7 @@ export const EDIT_SHOP = ADMIN_ENDPOINT + "/shop/update"
 export const ALL_SHOP = ADMIN_ENDPOINT + "/shop"
 export const DELETE_SHOP = ADMIN_ENDPOINT + "/shop/delete"
 export const SINGLE_SHOP = ADMIN_ENDPOINT + "/shop/get-shop-details"
+export const SHOP_LIVE_STATUS = ADMIN_ENDPOINT + "/shop/shop-visibility-change"
 
 // PRODUCT 
 

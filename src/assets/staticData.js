@@ -2,6 +2,18 @@ export const sortByOptions = [
     { label: "Asc", value: "asc" },
     { label: "Desc", value: "desc" },
   ];
+
+  export const liveStatusFilterOptions = [
+    { label: "All", value: "all" },
+    { label: "Live", value: "live" },
+    { label: "Offline", value: "offline" },
+  ];
+
+  export const liveStatusOptions = [
+    { label: "Live", value: "live" },
+    { label: "Offline", value: "offline" },
+  ];
+
  export const shopTypeOptions = [
     { label: "All", value: "all" },
     { label: "Food", value: "food" },
@@ -87,3 +99,14 @@ export const sortByOptions = [
     { label: "Pickup", value: "pickup" },
     { label: "Drop", value: "drop" },
   ];
+
+  export const cuisinesList = [
+    { label: "Indian", value: "indian" },
+    { label: "Chinese", value: "chinese" },
+    { label: "Thai", value: "thai" },
+    { label: "Italian", value: "italian" },
+    { label: "Mexican", value: "mexican" },
+    { label: "American", value: "american" },
+    { label: "Russain", value: "russain" },
+    { label: "French", value: "french" },
+  ]

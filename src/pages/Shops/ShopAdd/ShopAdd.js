@@ -32,15 +32,15 @@ import {
   getLatLng,
 } from "react-places-autocomplete";
 import {
+  cuisinesList,
   foodTypeOptions,
+  liveStatusOptions,
   shopDeliveryOptions,
   shopStatusOptions2,
   shopTypeOptions2,
 } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
-
-import { imageUpload } from "../../../store/ImageUpload/imageUploadAction";
 
 const ShopAdd = () => {
   const dispatch = useDispatch();
@@ -53,9 +53,7 @@ const ShopAdd = () => {
 
   const { sellers } = useSelector((state) => state.sellerReducer);
   const { loading, status, shops } = useSelector((state) => state.shopReducer);
-  const { image: uploadImage, imageStatus } = useSelector(
-    (state) => state.imageUploadReducer
-  );
+  
 
   const [tags, setTags] = useState({
     items: [],
@@ -81,6 +79,9 @@ const ShopAdd = () => {
   const [latLng, setLatLng] = useState({});
   const [fullAddress, setFullAddress] = useState("");
   const [pinCode, setPinCode] = useState("");
+  const [isCuisine, setIsCuisine] = useState(false);
+  const [cuisineType, setCuisineType] = useState(null);
+  const [liveStatus, setLiveStatus] = useState("");
 
   // GET SELLER
 
@@ -96,12 +97,12 @@ const ShopAdd = () => {
           console.log({ findShop });
           updateData(findShop);
         } else {
-          console.log("call api-------");
+          // console.log("call api-------");
           callApi(id);
         }
       }
     } else {
-      console.log("not found sellers");
+      // console.log("not found sellers");
       history.goBack();
     }
   }, [id]);
@@ -147,6 +148,7 @@ const ShopAdd = () => {
       foodType,
       tags,
       address,
+      liveStatus
     } = values;
 
     const findSeller = sellers.find((s) => s._id == seller._id);
@@ -160,6 +162,7 @@ const ShopAdd = () => {
     const findShopType = shopTypeOptions2.find((x) => x.value == shopType);
     // console.log({ findShopType });
     const findFoodType = foodTypeOptions.find((type) => type.value == foodType);
+    const findLiveStatus = liveStatusOptions.find(item => item.value == liveStatus)
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
@@ -180,6 +183,7 @@ const ShopAdd = () => {
       items: tags,
       value: "",
     });
+    setLiveStatus(findLiveStatus)
   };
 
   // TAGS
@@ -239,7 +243,8 @@ const ShopAdd = () => {
       !delivery ||
       minOrderAmount <= 0 ||
       tags.items.length < 1 ||
-      !pinCode
+      !pinCode ||
+      !liveStatus
     ) {
       return toast.warn("Please Fillup All Fields", {
         // position: "bottom-right",
@@ -278,6 +283,19 @@ const ShopAdd = () => {
       });
     }
 
+    if (isCuisine && !cuisineType) {
+      return toast.warn("Please Select Cuisine Type", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     uploadImages();
 
     // submitData();
@@ -295,50 +313,39 @@ const ShopAdd = () => {
       let bannerUrl = null;
       let photosUrl = null;
       if (shopLogo) {
-        let formData = new FormData();
-        formData.append("image", shopLogo);
-        // console.log({formData})
-        const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
-          data: formData,
-        });
-        // console.log("image upload", data)
-        if (data.status) {
-          // submitData(data.data.url);
-          logoUrl = data.data.url;
-        }
+        logoUrl = await imageUploadToServer(shopLogo);
       }
       if (shopBanner) {
-        let formData = new FormData();
-        formData.append("image", shopBanner);
-        // console.log({formData})
-        const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
-          data: formData,
-        });
-        // console.log("image upload", data)
-        if (data.status) {
-          // submitData(data.data.url);
-          bannerUrl = data.data.url;
-        }
+        bannerUrl = await imageUploadToServer(shopBanner);
       }
       if (shopPhotos) {
-        let formData = new FormData();
-        formData.append("image", shopPhotos);
-        // console.log({formData})
-        const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
-          data: formData,
-        });
-        // console.log("image upload", data)
-        if (data.status) {
-          // submitData(data.data.url);
-          photosUrl = data.data.url;
-        }
+        bannerUrl = await imageUploadToServer(shopPhotos);
       }
       submitData(logoUrl, bannerUrl, photosUrl);
     }
-    // console.log({logoUrl,bannerUrl,photosUrl})
+  };
+
+  //  UPLAOD IMAGE TO SERVER
+
+  const imageUploadToServer = async (image) => {
+    try {
+      let formData = new FormData();
+      formData.append("image", image);
+      // console.log({formData})
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+      // console.log("image upload", data)
+      if (data.status) {
+        // submitData(data.data.url);
+        return data.data.url;
+      } else {
+        console.log(data.error);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   // DISPACTH DATA
@@ -369,6 +376,8 @@ const ShopAdd = () => {
       });
     }
 
+    const cuisineTypeData = cuisineType?.map((item) => item.value);
+
     const data = {
       shopAddress: {
         address: fullAddress,
@@ -396,6 +405,9 @@ const ShopAdd = () => {
       shopPhotos: photosUrl,
       foodType: shopType.value == "food" ? foodType.value : "",
       shopDescription: "desrcriptions",
+      isCuisine,
+      cuisineType: cuisineTypeData,
+      liveStatus: liveStatus.value,
     };
 
     // console.log("given data---", data);
@@ -430,8 +442,7 @@ const ShopAdd = () => {
 
   useEffect(() => {
     if (Object.keys(address).length > 0) {
-      getLatLng(address)
-      .then((latlng) => setLatLng(latlng));
+      getLatLng(address).then((latlng) => setLatLng(latlng));
       const {
         geometry: { location },
         formatted_address,
@@ -496,10 +507,9 @@ const ShopAdd = () => {
       })
     );
 
-    if (type == "logo") {
+    if (type === "logo") {
       setShopLogo(files[0]);
-    }
-    if (type == "banner") {
+    } else if (type === "banner") {
       setShopBanner(files[0]);
     } else {
       setShopPhotos(files[0]);
@@ -526,12 +536,13 @@ const ShopAdd = () => {
                   <Col lg={6}>
                     <Autocomplete
                       className="cursor-pointer"
+                      disabled={id ? true : false}
                       value={seller}
                       onChange={(event, newValue) => {
                         setSeller(newValue);
                         // console.log("new", newValue);
                       }}
-                      getOptionLabel={(option) =>
+                      getOptionLabel={(option, index) =>
                         option.name ? option.name : ""
                       }
                       isOptionEqualToValue={
@@ -546,7 +557,7 @@ const ShopAdd = () => {
                       id="controllable-states-demo"
                       options={sellers.length > 0 ? sellers : []}
                       sx={{ width: "100%" }}
-                      renderInput={(params) => (
+                      renderInput={(params, index) => (
                         <TextField {...params} label="Select a Seller" />
                       )}
                       renderOption={(props, option) => (
@@ -554,6 +565,7 @@ const ShopAdd = () => {
                           component="li"
                           sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                           {...props}
+                          key={option._id}
                         >
                           <img
                             loading="lazy"
@@ -630,6 +642,7 @@ const ShopAdd = () => {
                     <div className="mb-4">
                       <Label>Address</Label>
                       <PlacesAutocomplete
+                        
                         value={selectedAddress}
                         onChange={handleAddressChange}
                         onSelect={handleAddressSelect}
@@ -650,8 +663,9 @@ const ShopAdd = () => {
                               {...getInputProps({
                                 placeholder: "Search Places ...",
                                 className: "location-search-input",
-                                //
+                                
                               })}
+                              disabled={id ? true : false}
                               type="text"
                               required
                               id="outlined-required"
@@ -717,8 +731,6 @@ const ShopAdd = () => {
                         onChange={(e) => setPinCode(e.target.value)}
                       />
                     </div>
-                  </Col>
-                  <Col lg={6} className="mt-4 mt-lg-0">
                     <div className="mb-4">
                       <Label>Minimum Order</Label>
                       <input
@@ -730,8 +742,11 @@ const ShopAdd = () => {
                         onChange={(e) => setMinOrderAmount(e.target.value)}
                       />
                     </div>
+                  </Col>
+                  <Col lg={6} className="mt-4 mt-lg-0">
+                    
                     <div className="mb-4">
-                      <Label>Type</Label>
+                      <Label>Shop Type</Label>
                       <Select
                         palceholder="Select Country"
                         options={shopTypeOptions2}
@@ -758,13 +773,47 @@ const ShopAdd = () => {
                       </div>
                     )}
 
+                    {(foodType?.value == "restaurants" && !id) && (
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value={isCuisine}
+                          id="flexCheckDefault"
+                          onChange={(e) => setIsCuisine(e.target.checked)}
+                        />
+                        <label
+                          className="form-check-label ms-1"
+                          style={{ fontSize: "16px" }}
+                          htmlFor="flexCheckDefault"
+                        >
+                          Is Cuisine?
+                        </label>
+                      </div>
+                    )}
+
+                    {isCuisine && (
+                      <div className="mb-3">
+                        <label className="control-label">Cuisines</label>
+                        <Select
+                          value={cuisineType}
+                          isMulti={true}
+                          onChange={(e) => {
+                            setCuisineType(e);
+                          }}
+                          options={cuisinesList}
+                          classNamePrefix="select2-selection"
+                        />
+                      </div>
+                    )}
+
                     <div className="mb-4">
                       <div>
                         <div className="d-flex justify-content-between">
                           <Label>Tags</Label>
                           {foodType?.value == "restaurants" && (
                             <span style={{ color: "red" }}>
-                              add one cuisines
+                              Must add one cuisine
                             </span>
                           )}
                         </div>
@@ -807,7 +856,18 @@ const ShopAdd = () => {
                       />
                     </div>
 
-                    
+                    <div className="mb-4">
+                      <Label>Live Status</Label>
+                      <Select
+                        palceholder="Select Country"
+                        options={liveStatusOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={liveStatus}
+                        onChange={(e) => setLiveStatus(e)}
+                        defaultValue={""}
+                      />
+                    </div>
                   </Col>
                 </Row>
 

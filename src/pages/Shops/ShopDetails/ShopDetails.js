@@ -15,7 +15,10 @@ import {
   Container,
   Row,
   Spinner,
+  Form,
+  Label,
 } from "reactstrap";
+
 import Lightbox from "react-image-lightbox";
 import {
   deleteProduct,
@@ -23,8 +26,9 @@ import {
 } from "../../../store/Product/productAction";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { Tooltip } from "@mui/material";
+import { FormControlLabel, Switch, Tooltip } from "@mui/material";
 import SweetAlert from "react-bootstrap-sweetalert";
+import { ShopLiveStatus } from "../../../store/Shop/shopAction";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -48,6 +52,7 @@ const ShopDetails = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
+  const [activeStatus, setActiveStatus] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -55,6 +60,8 @@ const ShopDetails = () => {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
         console.log({ findShop });
+        const activeStatus = findShop.liveStatus == 'live' ? true : false
+        setActiveStatus(activeStatus)
         setShop(findShop);
       } else {
         callApi(id);
@@ -73,6 +80,8 @@ const ShopDetails = () => {
     // console.log(banner)
     if (data.status) {
       console.log(data.data.shop);
+      const activeStatus = data.data.shop.liveStatus == 'live' ? true : false
+        setActiveStatus(activeStatus)
       setShop(data.data.shop);
     }
   };
@@ -89,6 +98,19 @@ const ShopDetails = () => {
       search: `?shopId=${id}`,
       // state: { detail: 'some_value' }
     });
+  };
+
+  // CHANGE LIVE STATUS
+
+  const changeLiveStatus = (e) => {
+    setActiveStatus(e.target.checked);
+    const status = e.target.checked;
+    dispatch(
+      ShopLiveStatus({
+        id: shop._id,
+        liveStatus: status ? "live" : "offline",
+      })
+    );
   };
 
   return (
@@ -136,12 +158,14 @@ const ShopDetails = () => {
                     <Row>
                       <div className="d-flex justify-content-between align-items-center w-100 pb-1">
                         <h4>Shop</h4>
-                        <button
-                          onClick={() => history.push(`/shops/edit/${id}`)}
-                          className="btn btn-success"
-                        >
-                          Edit
-                        </button>
+                        <div>
+                          <Switch
+                            checked={activeStatus}
+                            onChange={changeLiveStatus}
+                            inputProps={{ "aria-label": "controlled" }}
+                          />
+                          <Label>{activeStatus  ? "Live" : "Offline"  }</Label>
+                        </div>
                       </div>
                       <hr />
                     </Row>
