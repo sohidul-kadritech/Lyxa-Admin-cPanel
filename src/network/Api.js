@@ -71,7 +71,7 @@ export const ADD_SELLER = ADMIN_ENDPOINT + "/seller/add";
 export const ALL_SELLER = ADMIN_ENDPOINT + "/seller";
 export const EDIT_SELLER = ADMIN_ENDPOINT + "/seller/update";
 export const DELETE_SELLER = ADMIN_ENDPOINT + "/seller/delete";
-
+export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details"
 // SHOP 
 
 export const ADD_SHOP = ADMIN_ENDPOINT + "/shop/add"

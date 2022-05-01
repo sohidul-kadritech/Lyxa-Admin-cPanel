@@ -10,6 +10,11 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  sortByKey: { label: "Desc", value: "desc" },
+  searchKey: "",
+  statusKey: { label: "All", value: "all" },
+  typeKey: { label: "All", value: "all" },
+  subTypeKey: { label: "All", value: "all" },
 };
 
 const sellerReducer = (state = initialState, action) => {
@@ -102,7 +107,7 @@ const sellerReducer = (state = initialState, action) => {
         error: payload,
       };
 
-    //   DELETE 
+    //   DELETE
 
     case actionType.DELETE_SELLER_REQUEST_SEND:
       return {
@@ -112,9 +117,7 @@ const sellerReducer = (state = initialState, action) => {
       };
 
     case actionType.DELETE_SELLER_REQUEST_SUCCESS:
-      const filered = state.sellers.filter((item) =>
-        item._id != payload._id 
-      );
+      const filered = state.sellers.filter((item) => item._id != payload._id);
 
       return {
         ...state,
@@ -135,6 +138,38 @@ const sellerReducer = (state = initialState, action) => {
       return {
         ...state,
         status: false,
+      };
+
+    // FILTER OPTIONS
+
+    case actionType.UPDATE_SORT_BY_KEY:
+      return {
+        ...state,
+        sortByKey: payload,
+      };
+
+    case actionType.UPDATE_TYPE_KEY:
+      return {
+        ...state,
+        typeKey: payload,
+      };
+
+    case actionType.UPDATE_STATUS_KEY:
+      return {
+        ...state,
+        statusKey: payload,
+      };
+
+    case actionType.UPDATE_SELLER_SUB_TYPE:
+      return {
+        ...state,
+        subTypeKey: payload,
+      };
+
+    case actionType.UPDATE_SEARCH_KEY:
+      return {
+        ...state,
+        searchKey: payload,
       };
 
     default:

@@ -31,7 +31,7 @@ import {
   getLatLng,
 } from "react-places-autocomplete";
 import requestApi from "../../../network/httpRequest";
-import { IMAGE_UPLOAD } from "../../../network/Api";
+import { IMAGE_UPLOAD, SINGLE_SELLER } from "../../../network/Api";
 
 const SellerAdd = () => {
   const dispatch = useDispatch();
@@ -60,44 +60,75 @@ const SellerAdd = () => {
   const [selectedAddress, setSelectedAddress] = useState("");
   const [latLng, setLatLng] = useState({});
   const [fullAddress, setFullAddress] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState("");
-  const [certificate, setCertificate] = useState("");
-  const [nid, setNid] = useState("");
-  const [contactPaper, setContactPaper] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [certificate, setCertificate] = useState(null);
+  const [nid, setNid] = useState(null);
+  const [contactPaper, setContactPaper] = useState(null);
 
   useEffect(() => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
       console.log({ findSeller });
       if (findSeller) {
-        const {
-          account_name,
-          account_number,
-          bank_name,
-          company_name,
-          dob,
-          email,
-          gender,
-          name,
-          phone_number,
-        } = findSeller;
-
-        setName(name);
-        setGender(gender);
-        setEmail(email);
-        setPassword(password);
-        setDateOfBirth(dob);
-        setCompanyName(company_name);
-        setPhoneNum(phone_number);
-        // setAddress("");
-        setBankName(bank_name);
-        setAccountName(account_name);
-        setAccountNum(account_number);
+        updateSellerData(findSeller);
       } else {
-        console.log("call api---");
+        // console.log("call api---");
+        callApi(id);
       }
     }
   }, [id]);
+
+  const callApi = async (sellerId) => {
+    try {
+      const { data } = await requestApi().request(SINGLE_SELLER, {
+        params: {
+          id: sellerId,
+        },
+      });
+
+      if (data.status) {
+        updateSellerData(data.data.seller);
+      } else {
+        console.log(data.error);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  // SET SELLER DATA
+  const updateSellerData = (sellerData) => {
+    const {
+      account_name,
+      account_number,
+      bank_name,
+      company_name,
+      dob,
+      email,
+      gender,
+      name,
+      phone_number,
+      certificate_of_incorporation,
+      national_id,
+      profile_photo,
+      sellerContractPaper,
+    } = sellerData;
+    setProfilePhoto(profile_photo);
+    setCertificate(certificate_of_incorporation);
+    setNid(national_id);
+    setContactPaper(sellerContractPaper);
+    setName(name);
+    setGender(gender);
+    setEmail(email);
+    setPassword(password);
+    setDateOfBirth(dob);
+    setCompanyName(company_name);
+    setPhoneNum(phone_number);
+    // setAddress("");
+    setBankName(bank_name);
+    setAccountName(account_name);
+    setAccountNum(account_number);
+  };
 
   /**
    * Formats the size
@@ -393,7 +424,7 @@ const SellerAdd = () => {
         setProfilePhoto(null);
         setCertificate(null);
         setNid(null);
-        setContactPaper(null)
+        setContactPaper(null);
       }
     }
   }, [status]);
@@ -784,7 +815,7 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="profile"
-                                      src={profilePhoto.preview}
+                                      src={id ? profilePhoto :  profilePhoto.preview}
                                     />
                                   </Col>
                                   <Col>
@@ -792,11 +823,11 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {profilePhoto.name}
+                                      {id ? "profile photo" : profilePhoto.name}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {profilePhoto.formattedSize}
+                                        {id ? '' : profilePhoto.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -870,7 +901,7 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="certificate"
-                                      src={certificate.preview}
+                                      src={id ?certificate :  certificate.preview}
                                     />
                                   </Col>
                                   <Col>
@@ -878,11 +909,11 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {certificate.name}
+                                      {id ? "Certificate" : certificate.name}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {certificate.formattedSize}
+                                        {id ? "" :certificate.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -959,7 +990,7 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="Nid"
-                                      src={nid.preview}
+                                      src={id ? nid : nid.preview}
                                     />
                                   </Col>
                                   <Col>
@@ -967,10 +998,10 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {nid.name}
+                                      {id ? "NID" : nid.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{nid.formattedSize}</strong>
+                                      <strong>{id ? "" : nid.formattedSize}</strong>
                                     </p>
                                   </Col>
 
@@ -1043,7 +1074,7 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="contactPaper"
-                                      src={contactPaper.preview}
+                                      src={id ?contactPaper : contactPaper.preview}
                                     />
                                   </Col>
                                   <Col>
@@ -1051,11 +1082,11 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {contactPaper.name}
+                                      {id ? "Contact Paper" : contactPaper.name}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {contactPaper.formattedSize}
+                                        {id ? "" : contactPaper.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
