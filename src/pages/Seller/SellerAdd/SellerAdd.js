@@ -64,6 +64,9 @@ const SellerAdd = () => {
   const [certificate, setCertificate] = useState(null);
   const [nid, setNid] = useState(null);
   const [contactPaper, setContactPaper] = useState(null);
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -112,6 +115,7 @@ const SellerAdd = () => {
       national_id,
       profile_photo,
       sellerContractPaper,
+      sellerStatus,
     } = sellerData;
     setProfilePhoto(profile_photo);
     setCertificate(certificate_of_incorporation);
@@ -128,6 +132,7 @@ const SellerAdd = () => {
     setBankName(bank_name);
     setAccountName(account_name);
     setAccountNum(account_number);
+    setSellerStatus(sellerStatus);
   };
 
   /**
@@ -183,16 +188,23 @@ const SellerAdd = () => {
 
   useEffect(() => {
     if (address) {
-      getLatLng(address).then((latlng) => setLatLng(latlng));
       const {
         geometry: { location },
-        formatted_address,
         address_components,
-        place_id,
+        formatted_address,
       } = address;
-      // console.log("placeId",place_id)
+      getLatLng(address).then((latlng) => setLatLng(latlng));
       setFullAddress(formatted_address);
-      // setPickupPlaceId(place_id);
+
+      address_components.forEach((address_component) => {
+        if (address_component.types.includes("country")) {
+          setCountry(address_component.long_name);
+        } else if (address_component.types.includes("locality")) {
+          setCountry(address_component.long_name);
+        } else if (address_component.types.includes("sublocality")) {
+          setState(address_component.long_name);
+        }
+      });
     }
   }, [address]);
 
@@ -210,9 +222,10 @@ const SellerAdd = () => {
       !bankName ||
       !accountName ||
       !accountNum ||
-      !sellerType ||
+      (!id && !sellerType) ||
       !sellerStatus ||
-      ((sellerType == "food" || sellerType == "grocery") && !subType)
+      (!id && !pin) ||
+      (!id && (sellerType == "food" || sellerType == "grocery") && !subType)
     ) {
       return toast.warn("Please Fill Up All Fields", {
         // position: "bottom-right",
@@ -259,31 +272,44 @@ const SellerAdd = () => {
 
   // Upload Image
   const uploadImage = async () => {
-    if (
-      typeof profilePhoto == "string" ||
-      typeof certificate == "string" ||
-      typeof nid == "string" ||
-      typeof contactPaper == "string"
-    ) {
-      submitData(profilePhoto, certificate, nid, contactPaper);
-    } else {
-      let profileUrl = null;
-      let certificateUrl = null;
-      let nidUrl = null;
-      let contactUrl = null;
+    let profileUrl = null;
+    let certificateUrl = null;
+    let nidUrl = null;
+    let contactUrl = null;
 
-      if (profilePhoto) {
+    if (profilePhoto) {
+      if (typeof profilePhoto == "string") {
+        profileUrl = profilePhoto;
+      } else {
         profileUrl = await imageUploadToServer(profilePhoto);
       }
-      if (certificate) {
+    }
+    if (certificate) {
+      if (typeof certificate == "string") {
+        certificateUrl = certificate;
+      } else {
         certificateUrl = await imageUploadToServer(certificate);
       }
-      if (nid) {
+    }
+
+    if (nid) {
+      if (typeof nid == "string") {
+        nidUrl = nid;
+      } else {
         nidUrl = await imageUploadToServer(nid);
       }
-      if (contactPaper) {
+    }
+
+    if (contactPaper) {
+      if (typeof contactPaper == "string") {
+        contactUrl = contactPaper;
+        // submitData(profilePhoto, certificate, nid, contactPaper);
+      } else {
         contactUrl = await imageUploadToServer(contactPaper);
       }
+    }
+
+    if(profileUrl &&  certificateUrl && nidUrl && contactUrl){
       submitData(profileUrl, certificateUrl, nidUrl, contactUrl);
     }
   };
@@ -312,64 +338,6 @@ const SellerAdd = () => {
   };
 
   const submitData = (profileUrl, certificateUrl, nidUrl, contactUrl) => {
-    if (address) {
-      const {
-        geometry: { location },
-        address_components,
-      } = address;
-      // console.log("placeId",place_id)
-      // setPickupFullAddress(formatted_address);
-      // setPickupPlaceId(place_id)
-      var country_long_name;
-      var country_short_name;
-      var locality_long_name;
-      var sub_locality_long_name;
-
-      address_components.forEach((address_component) => {
-        if (address_component.types.includes("country")) {
-          country_long_name = address_component.long_name;
-          country_short_name = address_component.short_name;
-        } else if (address_component.types.includes("locality")) {
-          locality_long_name = address_component.long_name;
-        } else if (address_component.types.includes("sublocality")) {
-          sub_locality_long_name = address_component.long_name;
-        }
-      });
-    }
-
-    const data = {
-      name,
-      gender,
-      phone_number: phoneNum,
-      company_name: companyName,
-      email,
-      password,
-      profile_photo: profileUrl,
-      dob: dateOfBirth,
-      account_type: "seller",
-      bank_name: bankName,
-      account_name: accountName,
-      account_number: accountNum,
-      certificate_of_incorporation: certificateUrl,
-      national_id: nidUrl,
-      sellerContractPaper: contactUrl,
-      sellerAddress: {
-        address: fullAddress,
-        latitude: latLng.lat,
-        longitude: latLng.lng,
-        city: locality_long_name,
-        state: sub_locality_long_name,
-        country: country_long_name,
-        placeId: address?.place_id,
-        pin,
-        primary: true,
-        note: "",
-      },
-      sellerType,
-      subType,
-      sellerStatus,
-    };
-
     // console.log({ data });
 
     if (id) {
@@ -381,21 +349,51 @@ const SellerAdd = () => {
           phone_number: phoneNum,
           company_name: companyName,
           email,
-          profile_photo:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          profile_photo: profileUrl,
+          dob: dateOfBirth,
+          bank_name: bankName,
+          account_name: accountName,
+          account_number: accountNum,
+          certificate_of_incorporation: certificateUrl,
+          national_id: nidUrl,
+          sellerContractPaper: contactUrl,
+        })
+      );
+    } else {
+      dispatch(
+        addSeller({
+          name,
+          gender,
+          phone_number: phoneNum,
+          company_name: companyName,
+          email,
+          password,
+          profile_photo: profileUrl,
           dob: dateOfBirth,
           account_type: "seller",
           bank_name: bankName,
           account_name: accountName,
           account_number: accountNum,
-          certificate_of_incorporation:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
-          national_id:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          certificate_of_incorporation: certificateUrl,
+          national_id: nidUrl,
+          sellerContractPaper: contactUrl,
+          sellerAddress: {
+            address: fullAddress,
+            latitude: latLng.lat,
+            longitude: latLng.lng,
+            city,
+            state,
+            country,
+            placeId: address?.place_id,
+            pin,
+            primary: true,
+            note: "",
+          },
+          sellerType,
+          subType,
+          sellerStatus,
         })
       );
-    } else {
-      dispatch(addSeller(data));
     }
   };
 
@@ -418,7 +416,7 @@ const SellerAdd = () => {
         setAddress(null);
         setSelectedAddress("");
         setPin("");
-        sellerType("");
+        setSellerType("");
         setSellerStatus("");
         setSubType("");
         setProfilePhoto(null);
@@ -677,42 +675,6 @@ const SellerAdd = () => {
                     </FormControl>
                   </Col>
                   <Col xl={6} className="mt-4 mt-xl-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Pin Code"
-                      variant="outlined"
-                      placeholder="Enter Pin Code"
-                      value={pin}
-                      onChange={(e) => setPin(e.target.value)}
-                      required
-                    />
-                  </Col>
-                </Row>
-
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <FormControl fullWidth required>
-                      <InputLabel id="demo-simple-select-label">
-                        Seller Type
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={sellerType}
-                        label="Gender"
-                        onChange={(e) => {
-                          setSellerType(e.target.value);
-                          setSubType("");
-                        }}
-                      >
-                        <MenuItem value="food">Food</MenuItem>
-                        <MenuItem value="grocery">Grocery</MenuItem>
-                        <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
                     <FormControl fullWidth required>
                       <InputLabel id="demo-simple-select-label">
                         Status
@@ -731,6 +693,44 @@ const SellerAdd = () => {
                     </FormControl>
                   </Col>
                 </Row>
+
+                {!id && (
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">
+                          Seller Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={sellerType}
+                          label="Gender"
+                          onChange={(e) => {
+                            setSellerType(e.target.value);
+                            setSubType("");
+                          }}
+                        >
+                          <MenuItem value="food">Food</MenuItem>
+                          <MenuItem value="grocery">Grocery</MenuItem>
+                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Pin Code"
+                        variant="outlined"
+                        placeholder="Enter Pin Code"
+                        value={pin}
+                        onChange={(e) => setPin(e.target.value)}
+                        required
+                      />
+                    </Col>
+                  </Row>
+                )}
 
                 <Row className="mt-4">
                   <Col xl={6}>
@@ -815,7 +815,11 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="profile"
-                                      src={id ? profilePhoto :  profilePhoto.preview}
+                                      src={
+                                        profilePhoto.preview
+                                          ? profilePhoto.preview
+                                          : profilePhoto
+                                      }
                                     />
                                   </Col>
                                   <Col>
@@ -823,11 +827,15 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {id ? "profile photo" : profilePhoto.name}
+                                      {profilePhoto.name
+                                        ? profilePhoto.name
+                                        : "Profile Photo"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {id ? '' : profilePhoto.formattedSize}
+                                        {profilePhoto.formattedSize
+                                          ? profilePhoto.formattedSize
+                                          : ""}
                                       </strong>
                                     </p>
                                   </Col>
@@ -901,7 +909,11 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="certificate"
-                                      src={id ?certificate :  certificate.preview}
+                                      src={
+                                        certificate.preview
+                                          ? certificate.preview
+                                          : certificate
+                                      }
                                     />
                                   </Col>
                                   <Col>
@@ -909,11 +921,14 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {id ? "Certificate" : certificate.name}
+                                      {certificate.name
+                                        ? certificate.name
+                                        : "Certificate"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {id ? "" :certificate.formattedSize}
+                                        {certificate.formattedSize &&
+                                          certificate.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -990,7 +1005,7 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="Nid"
-                                      src={id ? nid : nid.preview}
+                                      src={nid.preview ? nid.preview : nid}
                                     />
                                   </Col>
                                   <Col>
@@ -998,10 +1013,12 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {id ? "NID" : nid.name}
+                                      {nid.name ? nid.name : "NID"}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{id ? "" : nid.formattedSize}</strong>
+                                      <strong>
+                                        {nid.formattedSize && nid.formattedSize}
+                                      </strong>
                                     </p>
                                   </Col>
 
@@ -1074,7 +1091,11 @@ const SellerAdd = () => {
                                       }}
                                       className=" bg-light"
                                       alt="contactPaper"
-                                      src={id ?contactPaper : contactPaper.preview}
+                                      src={
+                                        contactPaper.preview
+                                          ? contactPaper.preview
+                                          : contactPaper
+                                      }
                                     />
                                   </Col>
                                   <Col>
@@ -1082,11 +1103,14 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {id ? "Contact Paper" : contactPaper.name}
+                                      {contactPaper.name
+                                        ? contactPaper.name
+                                        : "Contact Paper"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {id ? "" : contactPaper.formattedSize}
+                                        {contactPaper.formattedSize &&
+                                          contactPaper.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>

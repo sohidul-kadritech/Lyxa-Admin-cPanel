@@ -203,6 +203,7 @@ const userRoutes = [
 
   {path: "/deliveryman/list", component: DeliverymanList},
   {path: "/deliveryman/add", component: DeliverymanAdd},
+  {path: "/deliveryman/edit/:id", component: DeliverymanAdd},
 
   {path: "/deals/list", component: DealsList},
   {path: "/deals/add", component: DealsAdd},

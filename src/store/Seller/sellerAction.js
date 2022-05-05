@@ -124,7 +124,7 @@ export const editSeller = (values) => async (dispatch) => {
       data: values,
     });
 
-    // console.log({ data });
+    console.log({ data });
 
     if (data.status) {
       toast.success(data.message, {

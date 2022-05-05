@@ -75,8 +75,8 @@ const UsersList = () => {
               hideSettingBtn={true}
               loading={loading}
               callList={callUsersList}
-              isAddNew={true}
-              addNewRoute="users/add"
+              // isAddNew={true}
+              // addNewRoute="users/add"
             />
 
             {/* FILTER OPTIONS */}

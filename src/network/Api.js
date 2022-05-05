@@ -89,6 +89,13 @@ export const EDIT_PRODUCT = ADMIN_ENDPOINT + "/product/update"
 export const SINGLE_PRODUCT = ADMIN_ENDPOINT + "/product/product-details"
 export const DELETE_PRODUCT = ADMIN_ENDPOINT + "/product/delete"
 
+// DELIVERY MAN 
+
+export const ADD_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/add"
+export const ALL_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy"
+export const SINGLE_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/get-single-delivery-boy"
+export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update"
+
 // IMAGE UPLOAD 
 
 export const IMAGE_UPLOAD = "image/single-image-upload"
