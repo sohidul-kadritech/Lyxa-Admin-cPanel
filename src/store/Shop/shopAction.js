@@ -177,7 +177,7 @@ export const deleteShop = (id) => async (dispatch) => {
         data: {id},
       });
   
-      console.log({ data });
+      // console.log({ data });
   
       if (data.status) {
         toast.warn(data.message, {
@@ -193,7 +193,7 @@ export const deleteShop = (id) => async (dispatch) => {
   
         dispatch({
           type: actionType.DELETE_SHOP_REQUEST_SUCCESS,
-          payload: data.data.shop,
+          payload: id,
         });
       } else {
         toast.warn(data.message, {

@@ -38,6 +38,7 @@ import {
   shopDeliveryOptions,
   shopStatusOptions2,
   shopTypeOptions2,
+  productVisibility,
 } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
@@ -53,7 +54,6 @@ const ShopAdd = () => {
 
   const { sellers } = useSelector((state) => state.sellerReducer);
   const { loading, status, shops } = useSelector((state) => state.shopReducer);
-  
 
   const [tags, setTags] = useState({
     items: [],
@@ -75,13 +75,17 @@ const ShopAdd = () => {
   const [foodType, setFoodType] = useState(null);
 
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [address, setAddress] = useState({});
+  const [address, setAddress] = useState(null);
   const [latLng, setLatLng] = useState({});
   const [fullAddress, setFullAddress] = useState("");
   const [pinCode, setPinCode] = useState("");
   const [isCuisine, setIsCuisine] = useState(false);
   const [cuisineType, setCuisineType] = useState(null);
   const [liveStatus, setLiveStatus] = useState("");
+  const [freeDelivery, setFreeDelivery] = useState(false);
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
   // GET SELLER
 
@@ -90,20 +94,15 @@ const ShopAdd = () => {
   }, []);
 
   useEffect(() => {
-    if (sellers.length > 0) {
-      if (id) {
-        const findShop = shops.find((item) => item._id == id);
-        if (findShop) {
-          console.log({ findShop });
-          updateData(findShop);
-        } else {
-          // console.log("call api-------");
-          callApi(id);
-        }
+    if (id) {
+      const findShop = shops.find((item) => item._id == id);
+      if (findShop) {
+        console.log({ findShop });
+        updateData(findShop);
+      } else {
+        // console.log("call api-------");
+        callApi(id);
       }
-    } else {
-      // console.log("not found sellers");
-      history.goBack();
     }
   }, [id]);
 
@@ -147,8 +146,8 @@ const ShopAdd = () => {
       shopType,
       foodType,
       tags,
-      address,
-      liveStatus
+      liveStatus,
+      freeDelivery,
     } = values;
 
     const findSeller = sellers.find((s) => s._id == seller._id);
@@ -160,9 +159,15 @@ const ShopAdd = () => {
       (x) => x.value == shopStatus
     );
     const findShopType = shopTypeOptions2.find((x) => x.value == shopType);
-    // console.log({ findShopType });
     const findFoodType = foodTypeOptions.find((type) => type.value == foodType);
-    const findLiveStatus = liveStatusOptions.find(item => item.value == liveStatus)
+    const findLiveStatus = liveStatusOptions.find(
+      (item) => item.value == liveStatus
+    );
+
+    const findFreeDelivery = productVisibility.find(
+      (item) => item.value == freeDelivery
+    );
+
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
@@ -175,15 +180,12 @@ const ShopAdd = () => {
     setShopStatus(findShopStatus);
     setDelivery(findDeliveryType);
     setMinOrderAmount(minOrderAmount);
-    // setSelectedAddress(address.address);
-    handleAddressSelect(address.address, "ChIJgWsCh7C4VTcRwgRZ3btjpY8");
-
-    setPinCode(address.pin);
     setTags({
       items: tags,
       value: "",
     });
-    setLiveStatus(findLiveStatus)
+    setLiveStatus(findLiveStatus);
+    setFreeDelivery(findFreeDelivery);
   };
 
   // TAGS
@@ -243,7 +245,7 @@ const ShopAdd = () => {
       !delivery ||
       minOrderAmount <= 0 ||
       tags.items.length < 1 ||
-      !pinCode ||
+      (!id && !pinCode) ||
       !liveStatus
     ) {
       return toast.warn("Please Fillup All Fields", {
@@ -258,7 +260,7 @@ const ShopAdd = () => {
       });
     }
 
-    if (Object.keys(address).length < 1) {
+    if (!id && !address) {
       return toast.warn("Please Select a Address", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -302,25 +304,33 @@ const ShopAdd = () => {
   };
 
   const uploadImages = async () => {
-    if (
-      typeof shopLogo == "string" ||
-      typeof shopBanner == "string" ||
-      typeof shopLogo == "string"
-    ) {
-      submitData(shopLogo, shopBanner, shopLogo);
-    } else {
-      let logoUrl = null;
-      let bannerUrl = null;
-      let photosUrl = null;
-      if (shopLogo) {
+    let logoUrl = null;
+    let bannerUrl = null;
+    let photosUrl = null;
+
+    if (shopLogo) {
+      if (typeof shopLogo == "string") {
+        logoUrl = shopLogo;
+      } else {
         logoUrl = await imageUploadToServer(shopLogo);
       }
-      if (shopBanner) {
+    }
+    if (shopBanner) {
+      if (typeof shopBanner == "string") {
+        bannerUrl = shopBanner;
+      } else {
         bannerUrl = await imageUploadToServer(shopBanner);
       }
-      if (shopPhotos) {
-        bannerUrl = await imageUploadToServer(shopPhotos);
+    }
+    if (shopPhotos) {
+      if (typeof shopPhotos == "string") {
+        photosUrl = shopPhotos;
+      } else {
+        photosUrl = await imageUploadToServer(shopPhotos);
       }
+    }
+
+    if (logoUrl && bannerUrl && photosUrl) {
       submitData(logoUrl, bannerUrl, photosUrl);
     }
   };
@@ -351,76 +361,72 @@ const ShopAdd = () => {
   // DISPACTH DATA
 
   const submitData = (logoUrl, bannerUrl, photosUrl) => {
-    if (Object.keys(address).length > 0) {
-      const {
-        geometry: { location },
-        address_components,
-      } = address;
-      // console.log("placeId",place_id)
-      // setPickupFullAddress(formatted_address);
-      // setPickupPlaceId(place_id)
-      var country_long_name;
-      var country_short_name;
-      var locality_long_name;
-      var sub_locality_long_name;
-
-      address_components.forEach((address_component) => {
-        if (address_component.types.includes("country")) {
-          country_long_name = address_component.long_name;
-          country_short_name = address_component.short_name;
-        } else if (address_component.types.includes("locality")) {
-          locality_long_name = address_component.long_name;
-        } else if (address_component.types.includes("sublocality")) {
-          sub_locality_long_name = address_component.long_name;
-        }
-      });
-    }
-
-    const cuisineTypeData = cuisineType?.map((item) => item.value);
-
-    const data = {
-      shopAddress: {
-        address: fullAddress,
-        latitude: latLng.lat,
-        longitude: latLng.lng,
-        city: locality_long_name,
-        state: sub_locality_long_name,
-        country: country_long_name,
-        placeId: address?.place_id,
-        pin: pinCode,
-        primary: true,
-        note: "",
-      },
-      seller: seller._id,
-      shopName,
-      shopType: shopType.value,
-      shopStartTime,
-      shopEndTime,
-      shopStatus: shopStatus.value,
-      delivery: delivery.value,
-      minOrderAmount,
-      tags: tags.items,
-      shopLogo: logoUrl,
-      shopBanner: bannerUrl,
-      shopPhotos: photosUrl,
-      foodType: shopType.value == "food" ? foodType.value : "",
-      shopDescription: "desrcriptions",
-      isCuisine,
-      cuisineType: cuisineTypeData,
-      liveStatus: liveStatus.value,
-    };
-
     // console.log("given data---", data);
-
     if (id) {
       dispatch(
         editShop({
-          ...data,
           id,
+          shopType: shopType.value,
+          foodType: shopType.value == "food"
+              ? foodType.value
+              : shopType.value == "grocery"
+              ? "food cut"
+              : "food cut",
+          shopStartTime,
+          shopEndTime,
+          shopName,
+          shopLogo: logoUrl,
+          shopBanner: bannerUrl,
+          shopPhotos: photosUrl,
+          shopStatus: shopStatus.value,
+          shopDescription: "desrcriptions",
+          delivery: delivery.value,
+          tags: tags.items,
+          minOrderAmount,
+          liveStatus: liveStatus.value,
+          freeDelivery: freeDelivery.value,
         })
       );
     } else {
-      dispatch(addShop(data));
+      const cuisineTypeData = cuisineType?.map((item) => item.value);
+      dispatch(
+        addShop({
+          shopAddress: {
+            address: fullAddress,
+            latitude: latLng.lat,
+            longitude: latLng.lng,
+            city,
+            state,
+            country,
+            placeId: address?.place_id,
+            pin: pinCode,
+            primary: true,
+            note: "",
+          },
+          seller: seller._id,
+          shopName,
+          shopType: shopType.value,
+          shopStartTime,
+          shopEndTime,
+          shopStatus: shopStatus.value,
+          delivery: delivery.value,
+          minOrderAmount,
+          tags: tags.items,
+          shopLogo: logoUrl,
+          shopBanner: bannerUrl,
+          shopPhotos: photosUrl,
+          foodType:
+            shopType.value == "food"
+              ? foodType.value
+              : shopType.value == "grocery"
+              ? "supermarkets"
+              : "supermarkets",
+          shopDescription: "desrcriptions",
+          isCuisine,
+          cuisineType: cuisineTypeData,
+          liveStatus: liveStatus.value,
+        })
+      );
     }
   };
 
@@ -430,7 +436,7 @@ const ShopAdd = () => {
   };
 
   const handleAddressSelect = (address, placeId) => {
-    console.log("select-------------", address, placeId);
+    // console.log("select-------------", address, placeId);
     setSelectedAddress(address);
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
@@ -441,17 +447,24 @@ const ShopAdd = () => {
   // GET LAT LNG
 
   useEffect(() => {
-    if (Object.keys(address).length > 0) {
-      getLatLng(address).then((latlng) => setLatLng(latlng));
+    if (address) {
       const {
         geometry: { location },
-        formatted_address,
         address_components,
-        place_id,
+        formatted_address,
       } = address;
-      // console.log("placeId",place_id)
+      getLatLng(address).then((latlng) => setLatLng(latlng));
       setFullAddress(formatted_address);
-      // setPickupPlaceId(place_id);
+
+      address_components.forEach((address_component) => {
+        if (address_component.types.includes("country")) {
+          setCountry(address_component.long_name);
+        } else if (address_component.types.includes("locality")) {
+          setCity(address_component.long_name);
+        } else if (address_component.types.includes("sublocality")) {
+          setState(address_component.long_name);
+        }
+      });
     }
   }, [address]);
 
@@ -640,98 +653,6 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <Label>Address</Label>
-                      <PlacesAutocomplete
-                        
-                        value={selectedAddress}
-                        onChange={handleAddressChange}
-                        onSelect={handleAddressSelect}
-                        onError={(error) => {
-                          console.log(error);
-                        }}
-                        clearItemsOnError={true}
-                        shouldFetchSuggestions={selectedAddress.length > 3}
-                      >
-                        {({
-                          getInputProps,
-                          suggestions,
-                          getSuggestionItemProps,
-                          loading,
-                        }) => (
-                          <div>
-                            <input
-                              {...getInputProps({
-                                placeholder: "Search Places ...",
-                                className: "location-search-input",
-                                
-                              })}
-                              disabled={id ? true : false}
-                              type="text"
-                              required
-                              id="outlined-required"
-                              label="Pickup Location"
-                              className="form-control"
-                              value={selectedAddress}
-                            />
-                            <div
-                              className="autocomplete-dropdown-container"
-                              style={{
-                                fontSize: "14px",
-                                fontFamily: "emoji",
-                                color: "black",
-                              }}
-                            >
-                              {loading && <div>Loading...</div>}
-                              {suggestions.map((suggestion, index) => {
-                                const className = suggestion.active
-                                  ? "suggestion-item--active"
-                                  : "suggestion-item";
-
-                                // inline style for demonstration purpose
-                                const style = suggestion.active
-                                  ? {
-                                      backgroundColor: "#fafafa",
-                                      cursor: "pointer",
-                                    }
-                                  : {
-                                      backgroundColor: "#ffffff",
-                                      cursor: "pointer",
-                                    };
-                                return (
-                                  <div
-                                    // style={{padding: "20px 0px !important"}}
-                                    {...getSuggestionItemProps(suggestion, {
-                                      className,
-                                      style,
-                                    })}
-                                    key={index}
-                                  >
-                                    <i
-                                      className="ti-location-pin me-1"
-                                      style={{ color: "black" }}
-                                    />
-                                    <span>{suggestion.description}</span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </PlacesAutocomplete>
-                    </div>
-
-                    <div className="mb-4">
-                      <Label>Pin Code</Label>
-                      <input
-                        className="form-control"
-                        type="number"
-                        placeholder="Enter Pin Code"
-                        required
-                        value={pinCode}
-                        onChange={(e) => setPinCode(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-4">
                       <Label>Minimum Order</Label>
                       <input
                         className="form-control"
@@ -742,9 +663,116 @@ const ShopAdd = () => {
                         onChange={(e) => setMinOrderAmount(e.target.value)}
                       />
                     </div>
+
+                    {!id ? (
+                      <>
+                        <div className="mb-4">
+                          <Label>Address</Label>
+                          <PlacesAutocomplete
+                            value={selectedAddress}
+                            onChange={handleAddressChange}
+                            onSelect={handleAddressSelect}
+                            onError={(error) => {
+                              console.log(error);
+                            }}
+                            clearItemsOnError={true}
+                            shouldFetchSuggestions={selectedAddress.length > 3}
+                          >
+                            {({
+                              getInputProps,
+                              suggestions,
+                              getSuggestionItemProps,
+                              loading,
+                            }) => (
+                              <div>
+                                <input
+                                  {...getInputProps({
+                                    placeholder: "Search Places ...",
+                                    className: "location-search-input",
+                                  })}
+                                  disabled={id ? true : false}
+                                  type="text"
+                                  required
+                                  id="outlined-required"
+                                  label="Pickup Location"
+                                  className="form-control"
+                                  value={selectedAddress}
+                                />
+                                <div
+                                  className="autocomplete-dropdown-container"
+                                  style={{
+                                    fontSize: "14px",
+                                    fontFamily: "emoji",
+                                    color: "black",
+                                  }}
+                                >
+                                  {loading && <div>Loading...</div>}
+                                  {suggestions.map((suggestion, index) => {
+                                    const className = suggestion.active
+                                      ? "suggestion-item--active"
+                                      : "suggestion-item";
+
+                                    // inline style for demonstration purpose
+                                    const style = suggestion.active
+                                      ? {
+                                          backgroundColor: "#fafafa",
+                                          cursor: "pointer",
+                                        }
+                                      : {
+                                          backgroundColor: "#ffffff",
+                                          cursor: "pointer",
+                                        };
+                                    return (
+                                      <div
+                                        // style={{padding: "20px 0px !important"}}
+                                        {...getSuggestionItemProps(suggestion, {
+                                          className,
+                                          style,
+                                        })}
+                                        key={index}
+                                      >
+                                        <i
+                                          className="ti-location-pin me-1"
+                                          style={{ color: "black" }}
+                                        />
+                                        <span>{suggestion.description}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </PlacesAutocomplete>
+                        </div>
+
+                        <div className="mb-4">
+                          <Label>Pin Code</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            placeholder="Enter Pin Code"
+                            required
+                            value={pinCode}
+                            onChange={(e) => setPinCode(e.target.value)}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mb-4">
+                        <label className="control-label">Free Delivery</label>
+                        <Select
+                          palceholder="Select Status"
+                          options={productVisibility}
+                          classNamePrefix="select2-selection"
+                          required
+                          value={freeDelivery}
+                          onChange={(e) => setFreeDelivery(e)}
+                          defaultValue={""}
+                        />
+                      </div>
+                    )}
                   </Col>
                   <Col lg={6} className="mt-4 mt-lg-0">
-                    
                     <div className="mb-4">
                       <Label>Shop Type</Label>
                       <Select
@@ -773,7 +801,7 @@ const ShopAdd = () => {
                       </div>
                     )}
 
-                    {(foodType?.value == "restaurants" && !id) && (
+                    {foodType?.value == "restaurants" && !id && (
                       <div className="form-check">
                         <input
                           className="form-check-input"

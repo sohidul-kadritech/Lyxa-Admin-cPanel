@@ -75,11 +75,28 @@ const ProductAdd = () => {
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
-  const [visibility, setVisibility] = useState(false)
+  const [visibility, setVisibility] = useState(false);
 
   const [minQty, setMinQty] = useState(0);
   const [minDeliveryTime, setMinDeliveryTime] = useState(0);
   const [maxDeliveryTime, setMaxDeliveryTime] = useState(0);
+
+  const [variantName, setVariantName] = useState("");
+  const [variantPrice, setVariantPrice] = useState(0);
+  const [variants, setVariants] = useState([]);
+
+  const [attributeName, setAttributeName] = useState("");
+  const [attributes, setAttributes] = useState([]);
+  const [choiceName, setChoiceName] = useState("")
+  const [choiceItems, setChoiceItems] = useState([
+    {
+      name: "",
+      extraPrice: 0,
+    },
+  ]);
+
+
+  // console.log({ choiceItems });
 
   useEffect(() => {
     if (id) {
@@ -94,16 +111,15 @@ const ProductAdd = () => {
     }
   }, [id]);
 
-  useEffect(()=>{
-    
-    if(searchParams){
+  useEffect(() => {
+    if (searchParams) {
       const shopId = searchParams.get("shopId");
-      if(shopId){
-        const findShop = shops.find(item => item._id == shopId)
-        setShop(findShop)
+      if (shopId) {
+        const findShop = shops.find((item) => item._id == shopId);
+        setShop(findShop);
       }
     }
-  },[searchParams])
+  }, [searchParams]);
 
   // CALL API FOR SINGLE PRODUCT
 
@@ -156,7 +172,7 @@ const ProductAdd = () => {
     setSeoTitle(seoTitle);
     setSeoDescription(seoDescription);
     setMinQty(orderQuantityMinimum);
-    setVisibility(productVisibility)
+    setVisibility(productVisibility);
     setMinDeliveryTime(minDeliveryTime == null ? 0 : minDeliveryTime);
     setMaxDeliveryTime(maxDeliveryTime == null ? 0 : maxDeliveryTime);
     setTags({
@@ -223,8 +239,7 @@ const ProductAdd = () => {
       !seoDescription ||
       tags.items.length < 1 ||
       !shop ||
-      minQty <= 0 
-      
+      minQty <= 0
     ) {
       return toast.warn("Please Fillup All Fields", {
         // position: "bottom-right",
@@ -238,7 +253,7 @@ const ProductAdd = () => {
       });
     }
 
-    if(type == 'food' && (minDeliveryTime <= 0 || maxDeliveryTime <= 0)){
+    if (type == "food" && (minDeliveryTime <= 0 || maxDeliveryTime <= 0)) {
       return toast.warn("Please Add Min And Max Delivery Time", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -250,8 +265,6 @@ const ProductAdd = () => {
         progress: undefined,
       });
     }
-
-
 
     // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
 
@@ -278,7 +291,6 @@ const ProductAdd = () => {
       seoTitle,
       seoDescription,
       seoTags: tags.items,
-
     };
 
     // console.log({data})
@@ -287,7 +299,7 @@ const ProductAdd = () => {
         editProduct({
           ...data,
           id,
-          productVisibility: visibility
+          productVisibility: visibility,
         })
       );
     } else {
@@ -295,8 +307,84 @@ const ProductAdd = () => {
     }
   };
 
+  // ADD VARIANTS
+
+  const addVariant = () => {
+    if (!variantName || !variantPrice) {
+      return toast.warn("Please Add Variant Name and Price", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    setVariants([
+      ...variants,
+      { name: variantName, extraPrice: parseFloat(variantPrice) },
+    ]);
+  };
+
+  // REMOVE VARIANT
+
+  const removeVariant = (i) => {
+    let list = [...variants];
+    list.splice(i, 1);
+    setVariants(list);
+  };
+
+  // ADD CHOICE ITEM SINGLE
+
+  const addChoiceItem = () => {
+    setChoiceItems([
+      ...choiceItems,
+      {
+        name: "",
+        extraPrice: 0,
+      },
+    ]);
+  };
+
+  // REMOVE CHOICE ITEM FROM
+
+  const removeChoiceItem = (i) => {
+    let list = [...choiceItems];
+    list.splice(i, 1);
+    setChoiceItems(list);
+  };
+
+  // HANDLE CHOICE ITEM INPUT CHANGE
+
+  const choiceItemChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...choiceItems];
+    list[index][name] = value;
+    setChoiceItems(list);
+  };
+
+  // ADD CHOICE 
+
+  const addChoice = () =>{
+    if(!choiceName){
+      return toast.warn("Please Fillup Choice Input Fields", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
   useEffect(() => {
-    if(status){
+    if (status) {
       if (id) {
         history.push("/products/list");
       } else {
@@ -320,7 +408,7 @@ const ProductAdd = () => {
         });
       }
     }
-  },[status]);
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -329,7 +417,7 @@ const ProductAdd = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={id ? "Edit" :"Add"}
+              breadcrumbItem={id ? "Edit" : "Add"}
               title="Product"
               //   loading={loading}
               //   callList={callShopList}
@@ -459,29 +547,32 @@ const ProductAdd = () => {
                         </div>
                       </>
                     )}
-                    {id && <div className="mb-4">
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Visibility
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={visibility}
-                          label="Type"
-                          onChange={(event) => setVisibility(event.target.value)}
-                        >
-                          <MenuItem value="true">True</MenuItem>
-                          <MenuItem value="false">False</MenuItem>
-
-                        </Select>
-                      </FormControl>
-                    </div>}
+                    {id && (
+                      <div className="mb-4">
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Visibility
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={visibility}
+                            label="Type"
+                            onChange={(event) =>
+                              setVisibility(event.target.value)
+                            }
+                          >
+                            <MenuItem value="true">True</MenuItem>
+                            <MenuItem value="false">False</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                    )}
                   </Col>
                   <Col lg={6}>
                     <div className="mb-4" disabled={id}>
                       <Autocomplete
-                      disabled={id} 
+                        disabled={id}
                         className="cursor-pointer"
                         value={shop}
                         onChange={(event, newValue) => {
@@ -692,7 +783,7 @@ const ProductAdd = () => {
                 </Row>
 
                 <Row>
-                  <Col>
+                  <Col lg={6}>
                     <Label>Product Images</Label>
                     <div className="mb-5">
                       <Form>
@@ -781,6 +872,165 @@ const ProductAdd = () => {
                       </Form>
                     </div>
                   </Col>
+                  <Col lg={6}>
+                    <div className="mb-4">
+                      <div className="d-flex justify-content-between">
+                        <h5>Variant(s)(If Needed)</h5>
+                        <Button color="primary" onClick={addVariant}>
+                          Add
+                        </Button>
+                      </div>
+                      <Row className="mt-3">
+                        <Col sm={6}>
+                          <TextField
+                            id="variant name"
+                            label="Name"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={variantName}
+                            onChange={(event) =>
+                              setVariantName(event.target.value)
+                            }
+                            type="text"
+                          />
+                        </Col>
+                        <Col sm={6} className="mt-3 mt-sm-0">
+                          <TextField
+                            id="variant name"
+                            label="Extra Price"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={variantPrice}
+                            onChange={(event) =>
+                              setVariantPrice(event.target.value)
+                            }
+                            type="number"
+                          />
+                        </Col>
+                      </Row>
+                      {variants.length > 0 && (
+                        <div>
+                          <ListWrapper>
+                            {/* <h4 className="title">Variants List</h4> */}
+                            <div className="item__wrapper">
+                              {variants.length > 0 &&
+                                variants.map((item, index) => (
+                                  <div key={index} className="list__item">
+                                    <div>
+                                      <span>{item?.name}-</span>
+                                      <span>{item?.extraPrice}</span>
+                                    </div>
+                                    <i
+                                      className="ti-close ms-1 cursor-pointer"
+                                      onClick={() => removeVariant(index)}
+                                    ></i>
+                                  </div>
+                                ))}
+                            </div>
+                          </ListWrapper>
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col lg={6}>
+                    <div className="mb-4">
+                      <div className="d-flex justify-content-between">
+                        <h5>Choice(s)(If Needed)</h5>
+                        <Button color="primary" onClick={addChoice}>Add</Button>
+                      </div>
+                      <Row className="mt-2">
+                        <Col>
+                          <TextField
+                            id="Choice name"
+                            label="Name"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={attributeName}
+                            onChange={(event) =>
+                              setAttributeName(event.target.value)
+                            }
+                            type="text"
+                          />
+                        </Col>
+                      </Row>
+                      {choiceItems.map((item, index) => (
+                        <Row className="mt-3" key={index}>
+                          <Col sm={6}>
+                            <TextField
+                              id="variant name"
+                              label="Name"
+                              name="name"
+                              variant="outlined"
+                              style={{ width: "100%" }}
+                              autoComplete="off"
+                              value={item.name}
+                              onChange={(event) =>
+                                choiceItemChange(event, index)
+                              }
+                              type="text"
+                            />
+                          </Col>
+                          <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                            <TextField
+                              id="variant extra price"
+                              name="extraPrice"
+                              label="Extra Price"
+                              variant="outlined"
+                              style={{ width: "100%" }}
+                              autoComplete="off"
+                              value={item.extraPrice}
+                              onChange={(event) =>
+                                choiceItemChange(event, index)
+                              }
+                              type="number"
+                            />
+                            {choiceItems.length > 1 && (
+                              <i
+                                className="fas fa-trash cursor-pointer ms-1"
+                                style={{ color: "red", fontSize: "18px" }}
+                                onClick={() => removeChoiceItem(index)}
+                              ></i>
+                            )}
+                          </Col>
+                          {choiceItems.length - 1 === index && (
+                            <div>
+                              <Button
+                                outline={true}
+                                color="primary"
+                                className="mt-2"
+                                onClick={addChoiceItem}
+                              >
+                                Add New Item
+                              </Button>
+                            </div>
+                          )}
+                        </Row>
+                      ))}
+                      {/* {attributes.length > 0 && (
+                        <div>
+                          <ListWrapper>
+                            <div className="item__wrapper">
+                              {attributes.length > 0 && attributes.map((item, index) => (
+                                <div key={index} className="list__item">
+                                  <div>
+                                    <span>{item?.name}-</span>
+                                    <span>{item?.extraPrice}</span>
+                                  </div>
+                                  <i className="ti-close ms-1 cursor-pointer" onClick={()=> removeVariant(index)}></i> 
+                                </div>
+                              ))}
+                            </div>
+                          </ListWrapper>
+                        </div>
+                      )} */}
+                    </div>
+                  </Col>
                 </Row>
 
                 <div className="my-5 d-flex justify-content-center">
@@ -796,12 +1046,11 @@ const ProductAdd = () => {
                         variant="info"
                         size="sm"
                       ></Spinner>
-                    ) 
-                       : id ? (
-                        "Edit"
-                      ) :
+                    ) : id ? (
+                      "Edit"
+                    ) : (
                       "Add"
-                    }
+                    )}
                   </Button>
                 </div>
               </CardBody>
@@ -839,6 +1088,42 @@ const TagWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+`;
+
+const ListWrapper = styled.div`
+  max-height: 200px;
+  padding: 10px;
+  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow-y: scroll !important;
+  overflow: hidden !important;
+  box-shadow: 0px 1px 1px 1px lightgray;
+  margin-top: 10px;
+  .title {
+    color: green;
+    font-weight: 500;
+    text-align: left;
+    padding-bottom: 7px;
+    font-size: 18px;
+  }
+
+  .item__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    .list__item {
+      border-bottom: 1px solid lightgrey;
+      // width: 175px;
+      display: flex;
+      align-items: center;
+      margin: 0px 5px;
+      margin-bottom: 3px;
+      span {
+        font-size: 16px;
+      }
+    }
   }
 `;
 

@@ -200,7 +200,7 @@ const SellerAdd = () => {
         if (address_component.types.includes("country")) {
           setCountry(address_component.long_name);
         } else if (address_component.types.includes("locality")) {
-          setCountry(address_component.long_name);
+          setCity(address_component.long_name);
         } else if (address_component.types.includes("sublocality")) {
           setState(address_component.long_name);
         }

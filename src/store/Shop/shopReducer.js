@@ -114,7 +114,7 @@ const shopReducer = (state = initialState, action) => {
 
     case actionType.DELETE_SHOP_REQUEST_SUCCESS:
       const filered = state.shops.filter((item) =>
-        item._id != payload._id 
+        item._id != payload
       );
 
       return {
