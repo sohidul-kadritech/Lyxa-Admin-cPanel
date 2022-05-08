@@ -120,7 +120,7 @@ const ShopAdd = () => {
       history.push("/shop/list", { replace: true });
     }
   };
-
+// FIND SELLER 
   useEffect(() => {
     if (searchParams) {
       const sellerId = searchParams.get("sellerId");
@@ -131,6 +131,7 @@ const ShopAdd = () => {
     }
   }, [searchParams]);
 
+  // UPDATE DATA
   const updateData = (values) => {
     const {
       delivery,
@@ -941,7 +942,7 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={id ? shopLogo : shopLogo.preview}
+                                      src={shopLogo.preview ? shopLogo.preview: shopLogo}
                                       alt=""
                                     />
                                   </Col>
@@ -950,11 +951,11 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {id ? "" : shopLogo.name}
+                                      {shopLogo.name ? shopLogo.name : "Shop Logo"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {id ? "" : shopLogo.formattedSize}
+                                        {shopLogo.formattedSize && shopLogo.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -1027,7 +1028,7 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={id ? shopBanner : shopBanner.preview}
+                                      src={shopBanner.preview ? shopBanner.preview : shopBanner}
                                       alt=""
                                     />
                                   </Col>
@@ -1036,11 +1037,11 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {id ? "" : shopBanner.name}
+                                      {shopBanner.name ? shopBanner.name : "Shop Banner"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {id ? "" : shopBanner.formattedSize}
+                                        {shopBanner.formattedSize && shopBanner.formattedSize }
                                       </strong>
                                     </p>
                                   </Col>
@@ -1116,7 +1117,7 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={id ? shopPhotos : shopPhotos.preview}
+                                      src={shopPhotos.preview ? shopPhotos.preview : shopPhotos}
                                       alt=""
                                     />
                                   </Col>
@@ -1125,11 +1126,11 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {id ? "" : shopPhotos.name}
+                                      {shopPhotos.name ? shopPhotos.name : "Shop Photos"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {id ? "" : shopPhotos.formattedSize}
+                                        { shopPhotos.formattedSize && shopPhotos.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>

@@ -1,11 +1,10 @@
 // export const API_URL = "http://localhost:5000";
 // export const FTP_URL = "http://localhost:1000";
 
-export const API_URL = "http://34.133.244.127/";
-export const FTP_URL = "https://ftp.codepadding.com";
+export const API_URL = "http://35.224.78.137/";
 
-// FTP SERVER API
-export const MULTIPLE_IMAGE_UPLOAD = FTP_URL + "/api/upload/image/multitples";
+
+
 
 const ADMIN_ENDPOINT = "admin";
 

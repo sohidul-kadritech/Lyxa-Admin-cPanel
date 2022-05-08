@@ -34,11 +34,16 @@ import {
 import styled from "styled-components";
 import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
-import { addProduct, editProduct, getAllProduct } from "../../../store/Product/productAction";
+import {
+  addProduct,
+  editProduct,
+  getAllProduct,
+} from "../../../store/Product/productAction";
 import { getAllShop } from "../../../store/Shop/shopAction";
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import { useParams, useHistory, useLocation, Link } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
-import { SINGLE_PRODUCT } from "../../../network/Api";
+import { IMAGE_UPLOAD, SINGLE_PRODUCT } from "../../../network/Api";
+import { cuisinesList } from "../../../assets/staticData";
 
 const ProductAdd = () => {
   const dispatch = useDispatch();
@@ -76,31 +81,27 @@ const ProductAdd = () => {
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [visibility, setVisibility] = useState(false);
-
+  const [activeStatus, setActiveStatus] = useState('')
   const [minQty, setMinQty] = useState(0);
   const [minDeliveryTime, setMinDeliveryTime] = useState(0);
   const [maxDeliveryTime, setMaxDeliveryTime] = useState(0);
-
+  const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
+  const [addons, setAddons] = useState([]);
+  const [productSearchKey, setProductSearchKey] = useState("");
 
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
   const [attributeName, setAttributeName] = useState("");
   const [isRequiredAttribute, setIsRequiredAttribute] = useState(false);
-  const [attributes, setAttributes] = useState([
-    {
-      name: "",
-      required: false,
-      items: [],
-    },
-  ]);
-  const [choiceItems, setChoiceItems] = useState([
+  const [attributes, setAttributes] = useState([]);
+  const [attributeItems, setAttributeItems] = useState([
     {
       name: "",
       extraPrice: 0,
     },
   ]);
 
-  console.log({ attributes });
+  // console.log({ attributes });
 
   useEffect(() => {
     if (id) {
@@ -143,6 +144,7 @@ const ProductAdd = () => {
     }
   };
 
+  // SET PRODUCT VALUE
   const setProductValue = (product) => {
     const {
       category,
@@ -155,13 +157,16 @@ const ProductAdd = () => {
       price,
       productVisibility,
       seoDescription,
-      seoTags,
+      tags,
       seoTitle,
       shop,
       sku,
       slug,
       subCategory,
       type,
+      addons,
+      attributes,
+      status
     } = product;
 
     setShop(shop);
@@ -181,8 +186,12 @@ const ProductAdd = () => {
     setMaxDeliveryTime(maxDeliveryTime == null ? 0 : maxDeliveryTime);
     setTags({
       ...tags,
-      items: seoTags,
+      items: tags,
     });
+    setImage(images[0])
+    setAddons(addons);
+    setAttributes(attributes);
+    setActiveStatus(status)
   };
 
   useEffect(() => {
@@ -196,11 +205,11 @@ const ProductAdd = () => {
     }
   }, [category]);
 
-  useEffect(()=>{
-    if(shop){
+  useEffect(() => {
+    if (shop) {
       dispatch(getAllProduct(true, shop._id));
     }
-  },[shop])
+  }, [shop]);
 
   // TAGS
 
@@ -275,13 +284,50 @@ const ProductAdd = () => {
         progress: undefined,
       });
     }
+    if (!image) {
+      return toast.warn("Select Product image", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
 
     // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
-
-    submitData();
+    uploadImage();
   };
 
-  const submitData = () => {
+  const uploadImage = async () => {
+    if(typeof image === 'string') {
+      submitData(image);
+    }else{
+      try {
+        let formData = new FormData();
+        formData.append("image", image);
+        // console.log({formData})
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: "POST",
+          data: formData,
+        });
+        // console.log("image upload", data)
+        if (data.status) {
+          // submitData(data.data.url);
+          submitData(data.data.url);
+        } else {
+          console.log(data.error);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+  };
+
+  const submitData = (url) => {
+    const addonsData = addons.map(item => item._id)
     const data = {
       name,
       slug: slug.split(" ").join(""),
@@ -291,16 +337,16 @@ const ProductAdd = () => {
       type,
       shop: shop._id,
       orderQuantityMinimum: parseInt(minQty),
-      images: [
-        "https://productionservices.jumia.co.ke/wp-content/uploads/2018/01/product1.jpeg",
-      ],
+      images: [url],
       category: category._id,
       subCategory: subCategory._id,
       minDeliveryTime: parseInt(minDeliveryTime),
       maxDeliveryTime: parseInt(maxDeliveryTime),
       seoTitle,
       seoDescription,
-      seoTags: tags.items,
+      tags: tags.items,
+      attributes,
+      addons:addonsData,
     };
 
     // console.log({data})
@@ -310,6 +356,7 @@ const ProductAdd = () => {
           ...data,
           id,
           productVisibility: visibility,
+          status: activeStatus
         })
       );
     } else {
@@ -317,40 +364,10 @@ const ProductAdd = () => {
     }
   };
 
-  // ADD VARIANTS
-
-  // const addVariant = () => {
-  //   if (!variantName || !variantPrice) {
-  //     return toast.warn("Please Add Variant Name and Price", {
-  //       // position: "bottom-right",
-  //       position: toast.POSITION.TOP_RIGHT,
-  //       autoClose: 3000,
-  //       hideProgressBar: true,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //   }
-
-  //   setVariants([
-  //     ...variants,
-  //     { name: variantName, extraPrice: parseFloat(variantPrice) },
-  //   ]);
-  // };
-
-  // REMOVE VARIANT
-
-  // const removeVariant = (i) => {
-  //   let list = [...variants];
-  //   list.splice(i, 1);
-  //   setVariants(list);
-  // };
-
   // ADD CHOICE ITEM SINGLE
 
-  const addChoiceItem = () => {
-    if (choiceItems[choiceItems.length - 1].name == "") {
+  const addAttributeItem = () => {
+    if (attributeItems[attributeItems.length - 1].name == "") {
       return toast.warn("Please Fillup Previous Input Fields", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -362,8 +379,8 @@ const ProductAdd = () => {
         progress: undefined,
       });
     }
-    setChoiceItems([
-      ...choiceItems,
+    setAttributeItems([
+      ...attributeItems,
       {
         name: "",
         extraPrice: 0,
@@ -373,66 +390,73 @@ const ProductAdd = () => {
 
   // REMOVE CHOICE ITEM FROM
 
-  const removeChoiceItem = (i) => {
-    let list = [...choiceItems];
+  const removeAttributeItem = (i) => {
+    let list = [...attributeItems];
     list.splice(i, 1);
-    setChoiceItems(list);
+    setAttributeItems(list);
   };
 
   // HANDLE CHOICE ITEM INPUT CHANGE
 
-  const choiceItemChange = (e, index) => {
+  const attributeItemChange = (e, index) => {
     const { name, value } = e.target;
-    const list = [...choiceItems];
+    const list = [...attributeItems];
     list[index][name] = value;
-    setChoiceItems(list);
+    setAttributeItems(list);
   };
 
   // ADD CHOICE
 
   const addAttribute = () => {
-    // if () {
-    //   return toast.warn("Please Fillup Choice Input Fields", {
-    //     // position: "bottom-right",
-    //     position: toast.POSITION.TOP_RIGHT,
-    //     autoClose: 3000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //   });
-    // }
+    if (!attributeName) {
+      return toast.warn("Please add attribute name", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (attributeItems[0].name == "") {
+      return toast.warn("Please add atleast one item", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    const data = {
+      name: attributeName,
+      required: isRequiredAttribute,
+      items: attributeItems,
+    };
+    setAttributes([...attributes, data]);
+    setAttributeName("");
+    setIsRequiredAttribute(false);
+    setAttributeItems([
+      {
+        name: "",
+        extraPrice: 0,
+      },
+    ]);
   };
 
-  const changeAttribute = (e, index) => {
-    const { name, value, checked } = e;
-    const list = [...attributes];
-    list[index][name] = value || checked;
+  // REMOVE ATTRIBUTE
+
+  const removeAttribute = (i) => {
+    let list = [...attributes];
+    list.splice(i, 1);
     setAttributes(list);
   };
 
-  // ADD NEW 
-
-  // const addNewAttribute = (name, required, items) =>{
-  //   if (attributes[attributes.length - 1].name == "") {
-  //     return toast.warn("Please Fillup Previous Input Fields", {
-  //       // position: "bottom-right",
-  //       position: toast.POSITION.TOP_RIGHT,
-  //       autoClose: 3000,
-  //       hideProgressBar: true,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //   }
-    
-  //   setAttributes([...attributes,{
-  //     name: ''
-  //   }])
-  // }
-
+  // SUCCESS
   useEffect(() => {
     if (status) {
       if (id) {
@@ -456,9 +480,57 @@ const ProductAdd = () => {
           items: [],
           value: "",
         });
+
+        setAttributes([]);
+        setAddons([])
+        setImage(null);
+        window.scroll(0, 0);
       }
     }
   }, [status]);
+
+  /**
+   * Formats the size
+   */
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  // IMAGE
+
+  const handleAcceptedFiles = (files, type) => {
+    files.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    );
+
+    setImage(files[0]);
+  };
+
+  // ADD ADDON
+
+  const addAddonProduct = (item) => {
+    console.log(item);
+    if (item) {
+      setAddons([...addons, item]);
+    }
+  };
+
+  // REMOVE ADDON
+
+  const removeAddon = (i) => {
+    let list = [...addons];
+    list.splice(i, 1);
+    setAddons(list);
+  };
 
   return (
     <React.Fragment>
@@ -478,6 +550,7 @@ const ProductAdd = () => {
               <CardBody>
                 <CardTitle>Product Informations</CardTitle>
                 <hr />
+
                 <Row>
                   <Col lg={6}>
                     <div className="mb-4">
@@ -618,156 +691,37 @@ const ProductAdd = () => {
                         </FormControl>
                       </div>
                     )}
-
-                    <div className="mb-4">
-                      {/* <Button color="primary" onClick={addAttribute}>
-                          Add
-                        </Button> */}
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={isNeedAttribute}
-                            id="flexCheckDefault"
-                            onChange={(e) =>
-                              setIsNeedAttribute(e.target.checked)
+                    {id && (
+                      <div className="mb-4">
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Status
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={activeStatus}
+                            label="Type"
+                            onChange={(event) =>
+                              setActiveStatus(event.target.value)
                             }
-                          />
-                          <label
-                            className="form-check-label ms-1"
-                            style={{ fontSize: "16px" }}
-                            htmlFor="flexCheckDefault"
                           >
-                            Attribute(s)
-                          </label>
-                        </div>
-                        {isNeedAttribute && (
-                          <Button outline={true}  color="success">
-                            Add New
-                          </Button>
-                        )}
+                            <MenuItem value="active">Active</MenuItem>
+                            <MenuItem value="inactive">Inactive</MenuItem>
+                          </Select>
+                        </FormControl>
                       </div>
-
-                      {attributes.map((item, index) => {
-                        <div key={index}>
-                          <Row className="mt-2">
-                            <Col sm={8}>
-                              <TextField
-                                id="Choice name"
-                                label="Attribute Name"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                                autoComplete="off"
-                                value={item.name}
-                                onChange={(event) =>
-                                  changeAttribute(event, index)
-                                }
-                                type="text"
-                              />
-                            </Col>
-                            <Col sm={4}>
-                              <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value={item.required}
-                                  id="flexCheckDefault"
-                                  onChange={(e) => changeAttribute(e, index)}
-                                />
-                                <label
-                                  className="form-check-label ms-1"
-                                  style={{ fontSize: "16px" }}
-                                  htmlFor="flexCheckDefault"
-                                >
-                                  Required
-                                </label>
-                              </div>
-                            </Col>
-                          </Row>
-                          {choiceItems.map((item, index) => (
-                            <Row className="mt-3" key={index}>
-                              <Col sm={6}>
-                                <TextField
-                                  id="variant name"
-                                  label="Name"
-                                  name="name"
-                                  variant="outlined"
-                                  style={{ width: "100%" }}
-                                  autoComplete="off"
-                                  value={item.name}
-                                  onChange={(event) =>
-                                    choiceItemChange(event, index)
-                                  }
-                                  type="text"
-                                />
-                              </Col>
-                              <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                                <TextField
-                                  id="variant extra price"
-                                  name="extraPrice"
-                                  label="Extra Price"
-                                  variant="outlined"
-                                  style={{ width: "100%" }}
-                                  autoComplete="off"
-                                  value={item.extraPrice}
-                                  onChange={(event) =>
-                                    choiceItemChange(event, index)
-                                  }
-                                  type="number"
-                                />
-                                {choiceItems.length > 1 && (
-                                  <i
-                                    className="fas fa-trash cursor-pointer ms-1"
-                                    style={{ color: "red", fontSize: "18px" }}
-                                    onClick={() => removeChoiceItem(index)}
-                                  ></i>
-                                )}
-                              </Col>
-                              {choiceItems.length - 1 === index && (
-                                <div>
-                                  <Button
-                                    outline={true}
-                                    color="primary"
-                                    className="mt-2"
-                                    onClick={addChoiceItem}
-                                  >
-                                    Add New Item
-                                  </Button>
-                                </div>
-                              )}
-                            </Row>
-                          ))}
-                        </div>;
-                      })}
-
-                      {/* {attributes.length > 0 && (
-                        <div>
-                          <ListWrapper>
-                            <div className="item__wrapper">
-                              {attributes.length > 0 && attributes.map((item, index) => (
-                                <div key={index} className="list__item">
-                                  <div>
-                                    <span>{item?.name}-</span>
-                                    <span>{item?.extraPrice}</span>
-                                  </div>
-                                  <i className="ti-close ms-1 cursor-pointer" onClick={()=> removeVariant(index)}></i> 
-                                </div>
-                              ))}
-                            </div>
-                          </ListWrapper>
-                        </div>
-                      )} */}
-                    </div>
+                    )}
                   </Col>
                   <Col lg={6}>
-                    <div className="mb-4" disabled={id}>
+                    <div className="mb-4">
                       <Autocomplete
-                        disabled={id}
+                        disabled={id ? true : false}
                         className="cursor-pointer"
                         value={shop}
                         onChange={(event, newValue) => {
-                          setShop(newValue);
+                          setShop(newValue)
+                          setAddons([])
                           // console.log("new", newValue);
                         }}
                         getOptionLabel={(option) =>
@@ -928,11 +882,12 @@ const ProductAdd = () => {
                         id="seoTag"
                         label="SEO Tags"
                         variant="outlined"
+                        placeholder="type tag name then press enter"
                         style={{ width: "100%" }}
                         autoComplete="off"
                         onKeyDown={handleTagAdd}
                         onChange={handleTagChange}
-                        value={tags.value}
+                        value={tags?.value}
                         //   onChange={(event) => setName(event.target.value)}
                         required
                       />
@@ -957,7 +912,7 @@ const ProductAdd = () => {
                     <div className="mb-4">
                       <TextField
                         id="seo"
-                        label="SEO Drescription"
+                        label="SEO Description"
                         variant="outlined"
                         style={{ width: "100%" }}
                         autoComplete="off"
@@ -967,14 +922,196 @@ const ProductAdd = () => {
                         }
                         required
                         multiline
-                        rows={4}
+                        rows={2}
                       />
                     </div>
 
+                    
+                  </Col>
+                </Row>
+
+                {/* ATTRIBUTE */}
+                <Row className="mt-3">
+                  <Col lg={6}>
                     <div className="mb-4">
-                      {/* <Button color="primary" onClick={addAttribute}>
-                          Add
-                        </Button> */}
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value={isNeedAttribute}
+                            id="flexCheckDefault"
+                            onChange={(e) =>
+                              setIsNeedAttribute(e.target.checked)
+                            }
+                          />
+                          <label
+                            className="form-check-label ms-1"
+                            style={{ fontSize: "16px" }}
+                            htmlFor="flexCheckDefault"
+                          >
+                            Attribute(s)
+                          </label>
+                        </div>
+                      </div>
+
+                      {isNeedAttribute && (
+                        <div>
+                          <Row className="mt-2">
+                            <Col sm={8}>
+                              <TextField
+                                id="Attribute name"
+                                label="Attribute Name"
+                                variant="outlined"
+                                style={{ width: "100%" }}
+                                autoComplete="off"
+                                value={attributeName}
+                                onChange={(e) =>
+                                  setAttributeName(e.target.value)
+                                }
+                                type="text"
+                              />
+                            </Col>
+                            <Col sm={4}>
+                              <div className="form-check">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  value={isRequiredAttribute}
+                                  id="flexCheckDefault"
+                                  onChange={(e) =>
+                                    setIsRequiredAttribute(e.target.checked)
+                                  }
+                                />
+                                <label
+                                  className="form-check-label ms-1"
+                                  style={{ fontSize: "16px" }}
+                                  htmlFor="flexCheckDefault"
+                                >
+                                  Required
+                                </label>
+                              </div>
+                            </Col>
+                          </Row>
+                          {attributeItems.map((item, index) => (
+                            <Row className="mt-3" key={index}>
+                              <Col sm={6}>
+                                <TextField
+                                  id="variant name"
+                                  label="Name"
+                                  name="name"
+                                  variant="outlined"
+                                  style={{ width: "100%" }}
+                                  autoComplete="off"
+                                  value={item?.name}
+                                  onChange={(event) =>
+                                    attributeItemChange(event, index)
+                                  }
+                                  type="text"
+                                />
+                              </Col>
+                              <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                                <TextField
+                                  id="variant extra price"
+                                  name="extraPrice"
+                                  label="Extra Price"
+                                  variant="outlined"
+                                  style={{ width: "100%" }}
+                                  autoComplete="off"
+                                  value={item?.extraPrice}
+                                  onChange={(event) =>
+                                    attributeItemChange(event, index)
+                                  }
+                                  type="number"
+                                />
+                                {attributeItems.length > 1 && (
+                                  <i
+                                    className="fas fa-trash cursor-pointer ms-1"
+                                    style={{ color: "red", fontSize: "18px" }}
+                                    onClick={() => removeAttributeItem(index)}
+                                  ></i>
+                                )}
+                              </Col>
+                              {attributeItems.length - 1 === index && (
+                                <div>
+                                  <Button
+                                    outline={true}
+                                    color="primary"
+                                    className="mt-2"
+                                    onClick={addAttributeItem}
+                                  >
+                                    Add Item
+                                  </Button>
+                                </div>
+                              )}
+                            </Row>
+                          ))}
+
+                          <div className="mt-3 text-center">
+                            <Button
+                              outline={true}
+                              color="success"
+                              size="lg"
+                              className="px-5"
+                              onClick={addAttribute}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    {attributes.length > 0 && (
+                      <div className="mb-4">
+                        <Paper className="py-2">
+                          <h5 className="text-center">Attributes List</h5>
+                          <hr />
+                          {attributes.length > 0 &&
+                            attributes.map((attribute, index) => (
+                              <ul
+                                key={index}
+                                style={{ listStyleType: "square" }}
+                              >
+                                <li>
+                                  <div className="d-flex justify-content-between">
+                                    <span
+                                      style={{
+                                        fontSize: "15px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
+                                      {attribute.name}
+                                    </span>
+                                    <i
+                                      className="fas fa-trash cursor-pointer me-3"
+                                      style={{ color: "red", fontSize: "15px" }}
+                                      onClick={() => removeAttribute(index)}
+                                    ></i>
+                                  </div>
+                                </li>
+                                {attribute.items.map((item, index) => (
+                                  <ul key={index}>
+                                    <li>
+                                      <span>{item.name}-</span>
+                                      <span className="ms-1">
+                                        {item.extraPrice}
+                                      </span>
+                                    </li>
+                                  </ul>
+                                ))}
+                              </ul>
+                            ))}
+                        </Paper>
+                      </div>
+                    )}
+                  </Col>
+                </Row>
+
+                <Row className="mt-4">
+                  <Col lg={6}>
+                    <div className="mb-4">
                       <div className="d-flex justify-content-between align-items-center">
                         <div className="form-check">
                           <input
@@ -982,9 +1119,7 @@ const ProductAdd = () => {
                             type="checkbox"
                             value={isNeedAddon}
                             id="flexCheckDefault"
-                            onChange={(e) =>
-                              setIsNeedAddon(e.target.checked)
-                            }
+                            onChange={(e) => setIsNeedAddon(e.target.checked)}
                           />
                           <label
                             className="form-check-label ms-1"
@@ -996,66 +1131,92 @@ const ProductAdd = () => {
                         </div>
                       </div>
 
-                      {/* {isNeedAddon && <Autocomplete
-                     
-                        className="cursor-pointer"
-                        value={addon}
-                        onChange={(event, newValue) => {
-                          setAddon(newValue);
-                          // console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) =>
-                          option.name ? option.name : ""
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={productSearchKey}
-                        onInputChange={(event, newInputValue) => {
-                          setProductSearchKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={shops.length > 0 ? shops : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Shop" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.images[0]}
-                              alt=""
-                            />
-                            {option.name}
-                          </Box>
-                        )}
-                      />} */}
-
-                      {/* {attributes.length > 0 && (
-                        <div>
-                          <ListWrapper>
-                            <div className="item__wrapper">
-                              {attributes.length > 0 && attributes.map((item, index) => (
-                                <div key={index} className="list__item">
-                                  <div>
-                                    <span>{item?.name}-</span>
-                                    <span>{item?.extraPrice}</span>
-                                  </div>
-                                  <i className="ti-close ms-1 cursor-pointer" onClick={()=> removeVariant(index)}></i> 
-                                </div>
-                              ))}
-                            </div>
-                          </ListWrapper>
-                        </div>
-                      )} */}
+                      {isNeedAddon && (
+                        <Autocomplete
+                          className="cursor-pointer"
+                          // value={addon}
+                          onChange={(event, newValue) =>
+                            addAddonProduct(newValue)
+                          }
+                          getOptionLabel={(option) =>
+                            option.name ? option.name : ""
+                          }
+                          isOptionEqualToValue={(option, value) =>
+                            option._id == value._id
+                          }
+                          inputValue={productSearchKey}
+                          onInputChange={(event, newInputValue) => {
+                            setProductSearchKey(newInputValue);
+                            // console.log("input value", newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={products.length > 0 ? products : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select Products" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                            >
+                              <img
+                                loading="lazy"
+                                width="60"
+                                src={option.images[0]}
+                                alt=""
+                              />
+                              {option.name}
+                            </Box>
+                          )}
+                        />
+                      )}
                     </div>
+                  </Col>
+                  <Col lg={6}>
+                    {addons.length > 0 && (
+                      <div className="mb-4">
+                        <Paper className="py-2">
+                          <h5 className="text-center">Addons List</h5>
+                          <hr />
+                          {addons.length > 0 &&
+                            addons.map((item, index) => (
+                              <ul
+                                key={index}
+                                style={{ listStyleType: "square" }}
+                              >
+                                <li>
+                                  <div className="d-flex justify-content-between">
+                                    <div>
+                                      <img
+                                        loading="lazy"
+                                        width="60"
+                                        src={item.images[0]}
+                                        alt=""
+                                      />
+                                      <span
+                                        style={{
+                                          fontSize: "15px",
+                                          fontWeight: "500",
+                                          marginLeft: "10px",
+                                        }}
+                                      >
+                                        {item.name}
+                                      </span>
+                                    </div>
+                                    <i
+                                      className="fas fa-trash cursor-pointer me-3"
+                                      style={{ color: "red", fontSize: "15px" }}
+                                      onClick={() => removeAddon(index)}
+                                    ></i>
+                                  </div>
+                                </li>
+                              </ul>
+                            ))}
+                        </Paper>
+                      </div>
+                    )}
                   </Col>
                 </Row>
 
@@ -1066,7 +1227,7 @@ const ProductAdd = () => {
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles);
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -1089,12 +1250,8 @@ const ProductAdd = () => {
                           className="dropzone-previews mt-3"
                           id="file-previews"
                         >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
+                          {image && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
@@ -1105,8 +1262,10 @@ const ProductAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      src={
+                                        image.preview ? image.preview : image
+                                      }
+                                      alt=""
                                     />
                                   </Col>
                                   <Col>
@@ -1114,10 +1273,15 @@ const ProductAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {f.name}
+                                      {image.name
+                                        ? image.name
+                                        : "Product Image"}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>
+                                        {image.formattedSize &&
+                                          image.formattedSize}
+                                      </strong>
                                     </p>
                                   </Col>
 
@@ -1132,7 +1296,7 @@ const ProductAdd = () => {
                                     }}
                                   >
                                     <i
-                                      // onClick={() => removeSelection(i)}
+                                      onClick={() => setImage(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
                                         fontSize: "25px",
@@ -1143,73 +1307,11 @@ const ProductAdd = () => {
                                 </Row>
                               </div>
                             </Card>
-                          );
-                        })} */}
+                          )}
                         </div>
                       </Form>
                     </div>
                   </Col>
-                  {/* <Col lg={6}>
-                    <div className="mb-4">
-                      <div className="d-flex justify-content-between">
-                        <h5>Variant(s)(If Needed)</h5>
-                        <Button color="primary" onClick={addVariant}>
-                          Add
-                        </Button>
-                      </div>
-                      <Row className="mt-3">
-                        <Col sm={6}>
-                          <TextField
-                            id="variant name"
-                            label="Name"
-                            variant="outlined"
-                            style={{ width: "100%" }}
-                            autoComplete="off"
-                            value={variantName}
-                            onChange={(event) =>
-                              setVariantName(event.target.value)
-                            }
-                            type="text"
-                          />
-                        </Col>
-                        <Col sm={6} className="mt-3 mt-sm-0">
-                          <TextField
-                            id="variant name"
-                            label="Extra Price"
-                            variant="outlined"
-                            style={{ width: "100%" }}
-                            autoComplete="off"
-                            value={variantPrice}
-                            onChange={(event) =>
-                              setVariantPrice(event.target.value)
-                            }
-                            type="number"
-                          />
-                        </Col>
-                      </Row>
-                      {variants.length > 0 && (
-                        <div>
-                          <ListWrapper>
-                            <div className="item__wrapper">
-                              {variants.length > 0 &&
-                                variants.map((item, index) => (
-                                  <div key={index} className="list__item">
-                                    <div>
-                                      <span>{item?.name}-</span>
-                                      <span>{item?.extraPrice}</span>
-                                    </div>
-                                    <i
-                                      className="ti-close ms-1 cursor-pointer"
-                                      onClick={() => removeVariant(index)}
-                                    ></i>
-                                  </div>
-                                ))}
-                            </div>
-                          </ListWrapper>
-                        </div>
-                      )}
-                    </div>
-                  </Col> */}
                 </Row>
 
                 <div className="my-5 d-flex justify-content-center">
@@ -1270,40 +1372,5 @@ const TagWrapper = styled.div`
   }
 `;
 
-const ListWrapper = styled.div`
-  max-height: 200px;
-  padding: 10px;
-  flex-wrap: wrap;
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  overflow-y: scroll !important;
-  overflow: hidden !important;
-  box-shadow: 0px 1px 1px 1px lightgray;
-  margin-top: 10px;
-  .title {
-    color: green;
-    font-weight: 500;
-    text-align: left;
-    padding-bottom: 7px;
-    font-size: 18px;
-  }
-
-  .item__wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    .list__item {
-      border-bottom: 1px solid lightgrey;
-      // width: 175px;
-      display: flex;
-      align-items: center;
-      margin: 0px 5px;
-      margin-bottom: 3px;
-      span {
-        font-size: 16px;
-      }
-    }
-  }
-`;
 
 export default ProductAdd;

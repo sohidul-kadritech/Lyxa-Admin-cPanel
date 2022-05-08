@@ -139,6 +139,8 @@ const DeliverymanAdd = () => {
     }
   }, [address]);
 
+  // VALIDATIONS
+
   const submitDeliveryman = () => {
     if (
       !name ||
@@ -177,16 +179,17 @@ const DeliverymanAdd = () => {
     submitData();
   };
 
-  // FATCH DATA
+  // SUBMIT DATA
 
   const submitData = () => {
     if (id) {
       dispatch(
         editDeliveryMan({
+          id,
           name,
           email,
           number,
-          status: activeStatus,
+          status: activeStatus.value,
         })
       );
     } else {

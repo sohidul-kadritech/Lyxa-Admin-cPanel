@@ -191,7 +191,7 @@ const AddBanner = () => {
   };
 
   const uploadImage = async() => {
-    console.log({image})
+    // console.log({image})
     if (typeof image == "string") {
       submitData(image);
     } else {

@@ -1,5 +1,9 @@
 import { toast } from "react-toastify";
-import { ADD_DELIVERY_MAN, ALL_DELIVERY_MAN, EDIT_DELIVERY_MAN } from "../../network/Api";
+import {
+  ADD_DELIVERY_MAN,
+  ALL_DELIVERY_MAN,
+  EDIT_DELIVERY_MAN,
+} from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
@@ -87,7 +91,7 @@ export const allDeliveryMan =
         });
 
         if (status) {
-        //   console.log({ data });
+          //   console.log({ data });
           dispatch({
             type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
             payload: data,
@@ -107,64 +111,65 @@ export const allDeliveryMan =
     }
   };
 
-//   EDIT 
+//   EDIT
 
 export const editDeliveryMan = (values) => async (dispatch) => {
-    // console.log({ values });
-    try {
-      dispatch({
-        type: actionType.EDIT_DELIVERY_MAN_REQUEST_SEND,
+  // console.log({ values });
+  try {
+    dispatch({
+      type: actionType.EDIT_DELIVERY_MAN_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, message, data = null },
+    } = await requestApi().request(EDIT_DELIVERY_MAN, {
+      method: "POST",
+      data: values,
+    });
+
+    if (status) {
+      // console.log({ data });
+      toast.warn(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
-  
-      const {
-        data: { status, error, message, data = null },
-      } = await requestApi().request(EDIT_DELIVERY_MAN, {
-        method: "POST",
-        data: values,
-      });
-  
-      if (status) {
-        console.log({ data });
-        toast.warn(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-  
+
+      setTimeout(() => {
         dispatch({
           type: actionType.EDIT_DELIVERY_MAN_REQUEST_SUCCESS,
           payload: data.delivery,
         });
-      } else {
-        toast.warn(error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-  
-        dispatch({
-          type: actionType.EDIT_DELIVERY_MAN_REQUEST_FAIL,
-          payload: error,
-        });
-      }
-    } catch (error) {
+      }, [450]);
+    } else {
+      toast.warn(error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
       dispatch({
-        type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
-        payload: error.message,
+        type: actionType.EDIT_DELIVERY_MAN_REQUEST_FAIL,
+        payload: error,
       });
     }
-  };
-  
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 //   SORT BY KEY
 
