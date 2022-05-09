@@ -17,11 +17,12 @@ import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addCategory } from "../../../../store/Category/categoryAction";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import requestApi from "./../../../../network/httpRequest";
 
 import { SINGLE_CATEGORY } from "../../../../network/Api";
 import { editCategory } from "./../../../../store/Category/categoryAction";
+import { IMAGE_UPLOAD } from './../../../../network/Api';
 
 const CategoryAdd = () => {
   const options = [
@@ -41,6 +42,8 @@ const CategoryAdd = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState(null);
   const [slug, setSlug] = useState("");
+  const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -54,6 +57,7 @@ const CategoryAdd = () => {
         setName(name);
         setType(findTypeObj);
         setSlug(slug);
+        setImage(image)
       } else {
         callApi(id);
       }
@@ -77,6 +81,7 @@ const CategoryAdd = () => {
       setName(name);
       setType(findTypeObj);
       setSlug(slug);
+      setImage(image)
     } else {
       history.push("/categories/list", { replace: true });
     }
@@ -98,16 +103,50 @@ const CategoryAdd = () => {
       });
     }
 
-    const newSlug = slug.split(" ").join("");
+    uploadImage()
 
+    
+  };
+
+  const uploadImage = async () => {
+    
+    if(typeof image === 'string') {
+      submitData(image);
+    }else{
+      try {
+        setIsLoading(true)
+        let formData = new FormData();
+        formData.append("image", image);
+        // console.log({formData})
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: "POST",
+          data: formData,
+        });
+        // console.log("image upload", data)
+        if (data.status) {
+          // submitData(data.data.url);
+          setIsLoading(false)
+          submitData(data.data.url);
+        } else {
+          console.log(data.error);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+  };
+
+  // SUBMIT DATA 
+
+  const submitData = (url) =>{
+    const newSlug = slug.split(" ").join("");
     if (id) {
       dispatch(
         editCategory({
           id,
           name,
           slug: newSlug,
-          image:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          image: url,
           type: type.value,
         })
       );
@@ -116,12 +155,37 @@ const CategoryAdd = () => {
         addCategory({
           name,
           slug: newSlug,
-          image:
-            "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?cs=srgb&dl=pexels-pixabay-270348.jpg&fm=jpg",
+          image: url,
           type: type.value,
         })
       );
     }
+  }
+
+  /**
+   * Formats the size
+   */
+   function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  // IMAGE
+
+  const handleAcceptedFiles = (files, type) => {
+    files.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    );
+
+    setImage(files[0]);
   };
 
   useEffect(() => {
@@ -132,6 +196,7 @@ const CategoryAdd = () => {
         setName("");
         setSlug("");
         setType(null);
+        setImage(null)
         window.scroll(0, 0);
       }
     }
@@ -202,15 +267,108 @@ const CategoryAdd = () => {
                   </Col>
                 </Row>
 
+                <Row className="my-4">
+                  <Col>
+                    <Label>Category Image</Label>
+                    <div >
+                      <Form>
+                        <Dropzone
+                          onDrop={(acceptedFiles) => {
+                            handleAcceptedFiles(acceptedFiles);
+                          }}
+                        >
+                          {({ getRootProps, getInputProps }) => (
+                            <div className="dropzone">
+                              <div
+                                className="dz-message needsclick"
+                                {...getRootProps()}
+                                // onClick={() => setmodal_fullscreen(true)}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="mb-3">
+                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                </div>
+                                <h4>Drop files here or click to upload.</h4>
+                              </div>
+                            </div>
+                          )}
+                        </Dropzone>
+                        <div
+                          className="dropzone-previews mt-3"
+                          id="file-previews"
+                        >
+                          {image && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
+                                      style={{
+                                        maxWidth: "80px",
+                                      }}
+                                      className=" bg-light"
+                                      src={
+                                        image.preview ? image.preview : image
+                                      }
+                                      alt=""
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {image.name
+                                        ? image.name
+                                        : "Product Image"}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>
+                                        {image.formattedSize &&
+                                          image.formattedSize}
+                                      </strong>
+                                    </p>
+                                  </Col>
 
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      onClick={() => setImage(null)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          )}
+                        </div>
+                      </Form>
+                    </div>
+                  </Col>
+                </Row>
 
                 <div className="my-4 d-flex justify-content-center">
                   <Button
                     color="primary"
                     className="px-5"
                     onClick={handleSubmit}
+                    disabled={loading || isLoading}
                   >
-                    {loading ? (
+                    {loading || isLoading ? (
                       <Spinner
                         animation="border"
                         variant="info"

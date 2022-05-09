@@ -67,6 +67,7 @@ const SellerAdd = () => {
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -276,7 +277,7 @@ const SellerAdd = () => {
     let certificateUrl = null;
     let nidUrl = null;
     let contactUrl = null;
-
+    setIsLoading(true)
     if (profilePhoto) {
       if (typeof profilePhoto == "string") {
         profileUrl = profilePhoto;
@@ -310,6 +311,7 @@ const SellerAdd = () => {
     }
 
     if(profileUrl &&  certificateUrl && nidUrl && contactUrl){
+      setIsLoading(false)
       submitData(profileUrl, certificateUrl, nidUrl, contactUrl);
     }
   };
@@ -765,7 +767,7 @@ const SellerAdd = () => {
                           onChange={(e) => setSubType(e.target.value)}
                           defaultValue={""}
                         >
-                          <MenuItem value="supermarket">Supermarket</MenuItem>
+                          <MenuItem value="supermarkets">Supermarkets</MenuItem>
                         </Select>
                       </FormControl>
                     )}
@@ -1149,9 +1151,9 @@ const SellerAdd = () => {
                     color="primary"
                     onClick={submitSeller}
                     className="px-5"
-                    disabled={loading}
+                    disabled={loading || isLoading}
                   >
-                    {loading ? (
+                    {loading || isLoading ? (
                       <Spinner
                         animation="border"
                         variant="info"

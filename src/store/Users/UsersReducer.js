@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   sortByKey: "desc",
   searchKey: "",
+  statusKey: "all",
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -56,9 +57,6 @@ const usersReducer = (state = initialState, action) => {
     case actionType.UPDATE_USERS_SORT_KEY:
       return {
         ...state,
-        loading: false,
-        message: null,
-        error: null,
         sortByKey: payload,
       };
 
@@ -67,64 +65,18 @@ const usersReducer = (state = initialState, action) => {
     case actionType.UPDATE_USERS_SEARCH_KEY:
       return {
         ...state,
-        loading: false,
-        message: null,
-        errro: payload,
         searchKey: payload,
       };
 
+      // UPDATE USER STATUS KEY 
+
+      case actionType.UPDATE_STATUS_KEY:
+      return {
+        ...state,
+        statusKey: payload,
+      };
 
 
-      // ADD USER 
-
-      case actionType.ADD_USER_REQUEST_SEND:
-        return{
-          ...state,
-          loading: true,
-          error: null,
-          status: false
-        }
-
-        case actionType.ADD_USER_REQUEST_SUCCESS:
-          return{
-            ...state,
-            loading: false,
-            users: [...state.users, payload],
-            status: true
-          }
-
-          case actionType.ADD_USER_REQUEST_FAIL:
-            return{
-              ...state,
-              loading: false,
-              error: payload,
-              status: false
-            }
-
-        // EDIT USER 
-
-        case actionType.EDIT_USER_REQUEST_SEND:
-        return{
-          ...state,
-          loading: true,
-          error: null,
-          status: false
-        }
-
-        case actionType.EDIT_USER_REQUEST_SUCCESS:
-          return{
-            ...state,
-            loading: false,
-            status: payload
-          }
-
-          case actionType.EDIT_USER_REQUEST_FAIL:
-            return{
-              ...state,
-              loading: false,
-              error: payload,
-              status: false
-            }
 
     default:
       return state;

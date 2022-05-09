@@ -250,9 +250,9 @@ const CreateAdmin = () => {
                         label="Role"
                         onChange={e => setRole(e.target.value)}
                       >
-                        <MenuItem value={10}>Admin</MenuItem>
-                        <MenuItem value={20}>Seller</MenuItem>
-                        <MenuItem value={30}>Delivery Man</MenuItem>
+                        <MenuItem value={'admin'}>Admin</MenuItem>
+                        <MenuItem value={'seller'}>Seller</MenuItem>
+                        <MenuItem value={'deliveryman'}>Delivery Man</MenuItem>
                       </Select>
                     </FormControl>
                   </Col>
@@ -263,6 +263,7 @@ const CreateAdmin = () => {
                     color="primary"
                     className="px-5"
                     onClick={handleSubmit}
+                    disabled={loading}
                   >
                     {loading ? (
                       <Spinner

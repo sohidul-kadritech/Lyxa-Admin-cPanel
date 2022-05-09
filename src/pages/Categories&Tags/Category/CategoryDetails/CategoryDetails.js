@@ -14,10 +14,10 @@ import {
   Label,
   Form,
 } from "reactstrap";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import requestApi from "../../../../network/httpRequest";
-import { SINGLE_CATEGORY } from "../../../../network/Api";
+import { IMAGE_UPLOAD, SINGLE_CATEGORY } from "../../../../network/Api";
 import Lightbox from "react-image-lightbox";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Tooltip from "@mui/material/Tooltip";
@@ -66,7 +66,7 @@ const CategoryDetails = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const options = [
     { label: "Active", value: "active" },
@@ -121,20 +121,20 @@ const CategoryDetails = () => {
     }
   };
 
-  const callSubCategoryList = (refresh = false,  catId) => {
+  const callSubCategoryList = (refresh = false, catId) => {
     dispatch(getAllSubCategory(refresh, catId));
   };
 
   // EDIT SUB CATEGORY
 
   const handleEditSubCategory = (subId) => {
-    // console.log({subId})
+
     setSubCatId(subId);
     const findSubCategory = subCategories.find((sub) => sub._id == subId);
-    // console.log({findSubCategory})
+
     const { name, slug, status, image } = findSubCategory;
     const findStatus = options.find((op) => op.value == status);
-    // console.log({ name });
+
     setName(name);
     setSlug(slug);
     setImage(image);
@@ -204,42 +204,104 @@ const CategoryDetails = () => {
         progress: undefined,
       });
     }
-    // if(!image) {
-    //     return toast.warn("Please  Select Image", {
-    //         // position: "bottom-right",
-    //         position: toast.POSITION.TOP_RIGHT,
-    //         autoClose: 3000,
-    //         hideProgressBar: true,
-    //         closeOnClick: true,
-    //         pauseOnHover: true,
-    //         draggable: true,
-    //         progress: undefined,
-    //       });
-    // }
-
-    const newSlug = slug.split(" ").join("");
-
-    const data = {
-      name,
-          status: activeStatus.value,
-          slug: newSlug,
-          image:
-            "https://media.istockphoto.com/photos/table-top-view-of-spicy-food-picture-id1316145932?b=1&k=20&m=1316145932&s=170667a&w=0&h=feyrNSTglzksHoEDSsnrG47UoY_XX4PtayUPpSMunQI=",
-          categoryId: id,
+    if (!image) {
+      return toast.warn("Please  Select Image", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
+
+    uploadImage();
+  };
+
+  // UPLOAD IMAGE
+
+  const uploadImage = async () => {
+    if (typeof image === "string") {
+      submitData(image);
+    } else {
+      try {
+        setIsLoading(true);
+        let formData = new FormData();
+        formData.append("image", image);
+        // console.log({formData})
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: "POST",
+          data: formData,
+        });
+        // console.log("image upload", data)
+        if (data.status) {
+          // submitData(data.data.url);
+          setIsLoading(false);
+          submitData(data.data.url);
+        } else {
+          console.log(data.error);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+  };
+
+  // SUBMIT DATA
+
+  const submitData = (url) => {
+    const newSlug = slug.split(" ").join("");
 
     if (subCatId) {
       dispatch(
         editSubCategory({
-          ...data,
           id: subCatId,
+          name,
+          status: activeStatus.value,
+          slug: newSlug,
+          image: url,
+          category: id,
         })
       );
     } else {
       dispatch(
-        addSubCategory(data)
+        addSubCategory({
+          name,
+          status: activeStatus.value,
+          slug: newSlug,
+          image: url,
+          categoryId: id,
+        })
       );
     }
+  };
+
+  /**
+   * Formats the size
+   */
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  // IMAGE
+
+  const handleAcceptedFiles = (files, type) => {
+    files.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    );
+
+    setImage(files[0]);
   };
 
   // SUCCESS
@@ -250,15 +312,15 @@ const CategoryDetails = () => {
       setSlug("");
       setActiveStatus("");
       setSubCatId(null);
+      setImage(null)
     }
   }, [status]);
 
+  // DELETE SUB CATEGORY
 
-  // DELETE SUB CATEGORY 
-
-  const handleDelete = (subId) =>{
-    dispatch(deleteSubCategory(subId))
-  }
+  const handleDelete = (subId) => {
+    dispatch(deleteSubCategory(subId));
+  };
 
   return (
     <React.Fragment>
@@ -297,7 +359,7 @@ const CategoryDetails = () => {
             ) : null}
 
             <Row>
-              <Col xl={6}>
+              <Col lg={7}>
                 <Card>
                   <CardBody>
                     <div
@@ -314,11 +376,7 @@ const CategoryDetails = () => {
                     </div>
 
                     <Row className="pt-3">
-                      <Col
-                        md={6}
-
-                        // style={{  borderRight: width > 1200 ?  "1px solid lightgray" : "none"}}
-                      >
+                      <Col md={6}>
                         {category ? (
                           <div className="d-flex justify-content-center align-items-center flex-wrap ">
                             <img
@@ -357,7 +415,9 @@ const CategoryDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
+            </Row>
 
+            <Row>
               <Col xl={6}>
                 <Card>
                   <CardBody>
@@ -398,13 +458,13 @@ const CategoryDetails = () => {
                           required
                         />
                       </div>
-                      <div>
+                      <div className="mb-3">
                         <Label>Upload Image</Label>
-                        <div className="mb-5">
+                        <div>
                           <Form>
                             <Dropzone
                               onDrop={(acceptedFiles) => {
-                                // handleAcceptedFiles(acceptedFiles);
+                                handleAcceptedFiles(acceptedFiles);
                               }}
                             >
                               {({ getRootProps, getInputProps }) => (
@@ -427,62 +487,66 @@ const CategoryDetails = () => {
                               className="dropzone-previews mt-3"
                               id="file-previews"
                             >
-                              {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {f.name}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
-                                    </p>
-                                  </Col>
+                              {image && (
+                                <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                  <div className="p-2">
+                                    <Row className="align-items-center position-relative">
+                                      <Col className="col-auto">
+                                        <img
+                                          data-dz-thumbnail=""
+                                          // height="80"
+                                          style={{
+                                            maxWidth: "80px",
+                                          }}
+                                          className=" bg-light"
+                                          src={
+                                            image.preview
+                                              ? image.preview
+                                              : image
+                                          }
+                                          alt=""
+                                        />
+                                      </Col>
+                                      <Col>
+                                        <Link
+                                          to="#"
+                                          className="text-muted font-weight-bold"
+                                        >
+                                          {image.name
+                                            ? image.name
+                                            : "Product Image"}
+                                        </Link>
+                                        <p className="mb-0">
+                                          <strong>
+                                            {image.formattedSize &&
+                                              image.formattedSize}
+                                          </strong>
+                                        </p>
+                                      </Col>
 
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      // onClick={() => removeSelection(i)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
+                                      <div
+                                        className="position-absolute"
+                                        style={{
+                                          left: "0px",
+                                          top: "0px",
+                                          width: "100%",
+                                          display: "flex",
+                                          justifyContent: "flex-end",
+                                        }}
+                                      >
+                                        <i
+                                          onClick={() => setImage(null)}
+                                          className="mdi mdi-delete text-danger "
+                                          style={{
+                                            fontSize: "25px",
+                                            cursor: "pointer",
+                                          }}
+                                        ></i>
+                                      </div>
+                                    </Row>
                                   </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          );
-                        })} */}
+                                </Card>
+                              )}
                             </div>
                           </Form>
                         </div>
@@ -510,158 +574,155 @@ const CategoryDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
+              <Col xl={6}>
+                <Card>
+                  <CardBody>
+                    <Row>
+                      <Col lg={4}>
+                        <div className="mb-4">
+                          <label className="control-label">Status</label>
+                          <Select
+                            palceholder="Select Status"
+                            options={filterOptions}
+                            classNamePrefix="select2-selection"
+                            required
+                            value={subStatusKey}
+                            onChange={(e) => dispatch(updateSubCatStatusKey(e))}
+                          />
+                        </div>
+                      </Col>
+                      <Col lg={8}>
+                        <label className="control-label">Search</label>
+                        <SearchWrapper>
+                          <div className="search__wrapper">
+                            <i className="fa fa-search" />
+                            <input
+                              className="form-control"
+                              type="search"
+                              placeholder="Search Subcategory..."
+                              id="search"
+                              onChange={searchKeyListener}
+                            />
+                          </div>
+                        </SearchWrapper>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+
+                <Card>
+                  <CardBody>
+                    <CardTitle className="h4 mb-2">Sub Category List</CardTitle>
+
+                    <Table
+                      id="tech-companies-1"
+                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                    >
+                      <Thead>
+                        <Tr>
+                          <Th>Image</Th>
+                          <Th>Name</Th>
+                          <Th>Status</Th>
+                          <Th>Action</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody style={{ position: "relative" }}>
+                        {subCategories.map((item, index) => {
+                          return (
+                            <Tr
+                              key={index}
+                              className="align-middle"
+                              style={{
+                                fontSize: "15px",
+                                fontWeight: "500",
+                              }}
+                            >
+                              <Th>
+                                <div style={{ height: "50px" }}>
+                                  <img
+                                    onClick={() => {
+                                      setSelectedImg(item?.image);
+                                      setIsOpen(true);
+                                    }}
+                                    className="img-fluid cursor-pointer"
+                                    alt=""
+                                    src={item.image}
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "contain",
+                                    }}
+                                  />
+                                </div>
+                              </Th>
+
+                              <Td>{item.name}</Td>
+                              <Td>{item.status}</Td>
+                              <Td>
+                                <div>
+                                  <Tooltip title="Edit">
+                                    <button
+                                      className="btn btn-success me-3 button"
+                                      onClick={() =>
+                                        handleEditSubCategory(item._id)
+                                      }
+                                    >
+                                      <i className="fa fa-edit" />
+                                    </button>
+                                  </Tooltip>
+                                  <Tooltip title="Delete">
+                                    <button
+                                      className="btn btn-danger button"
+                                      onClick={() => setconfirm_alert(true)}
+                                    >
+                                      <i className="fa fa-trash" />
+                                    </button>
+                                  </Tooltip>
+                                  {confirm_alert ? (
+                                    <SweetAlert
+                                      title="Are you sure?"
+                                      warning
+                                      showCancel
+                                      confirmButtonText="Yes, delete it!"
+                                      confirmBtnBsStyle="success"
+                                      cancelBtnBsStyle="danger"
+                                      onConfirm={() => {
+                                        handleDelete(item._id);
+                                        setconfirm_alert(false);
+                                        setsuccess_dlg(true);
+                                        setdynamic_title("Deleted");
+                                        setdynamic_description(
+                                          "Your file has been deleted."
+                                        );
+                                      }}
+                                      onCancel={() => setconfirm_alert(false)}
+                                    >
+                                      Are You Sure! You want to delete this
+                                      Shop.
+                                    </SweetAlert>
+                                  ) : null}
+                                </div>
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                      </Tbody>
+                    </Table>
+                    {!loading && subCategories.length < 1 && (
+                      <div className="text-center">
+                        <h4>No Data...</h4>
+                      </div>
+                    )}
+                    {loading && (
+                      <div className="text-center">
+                        <Spinner animation="border" variant="info" />
+                      </div>
+                    )}
+                  </CardBody>
+                </Card>
+              </Col>
             </Row>
 
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Status</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={filterOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={subStatusKey}
-                        onChange={(e) => dispatch(updateSubCatStatusKey(e))}
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={8}>
-                    <label className="control-label">Search</label>
-                    <SearchWrapper>
-                      <div className="search__wrapper">
-                        <i className="fa fa-search" />
-                        <input
-                          className="form-control"
-                          type="search"
-                          placeholder="Search Subcategory..."
-                          id="search"
-                          onChange={searchKeyListener}
-                        />
-                      </div>
-                    </SearchWrapper>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardBody>
-                <CardTitle className="h4 mb-2">Sub Category List</CardTitle>
-
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Image</Th>
-                      <Th>Name</Th>
-                      <Th>Slug</Th>
-                      <Th>Status</Th>
-                      <Th>Created At</Th>
-                      <Th>Action</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {subCategories.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th>
-                            <div style={{ height: "50px" }}>
-                              <img
-                                onClick={() => {
-                                  setSelectedImg(item?.image);
-                                  setIsOpen(true);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item.image}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                }}
-                              />
-                            </div>
-                          </Th>
-
-                          <Td>{item.name}</Td>
-                          <Td>{item.slug}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>
-                            {new Date(item.createdAt).toLocaleDateString()}
-                          </Td>
-                          <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-3 button"
-                                  onClick={() =>
-                                    handleEditSubCategory(item._id)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Delete">
-                                <button
-                                  className="btn btn-danger button"
-                                  onClick={() =>  setconfirm_alert(true)}
-                                >
-                                  <i className="fa fa-trash" />
-                                </button>
-                              </Tooltip>
-                              {confirm_alert ? (
-                                <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item._id);
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  Are You Sure! You want to delete this Shop.
-                                </SweetAlert>
-                              ) : null}
-                            </div>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-                {!loading && subCategories.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Data...</h4>
-                  </div>
-                )}
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>
-                )}
-              </CardBody>
-            </Card>
             <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
@@ -671,7 +732,7 @@ const CategoryDetails = () => {
                     hasPreviousPage={subHasPreviousPage}
                     currentPage={subCurrentPage}
                     lisener={(page) =>
-                      dispatch(callSubCategoryList(true, id,page))
+                      dispatch(callSubCategoryList(true, id, page))
                     }
                   />
                 </div>

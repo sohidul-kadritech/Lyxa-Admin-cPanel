@@ -47,9 +47,7 @@ export const RESTORE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/restore";
 
 // USERS
 
-export const ALL_USERS =  "user";
-export const ADD_USER = ADMIN_ENDPOINT + "/user/add";
-export const EDIT_USER = ADMIN_ENDPOINT + "/user/update";
+export const ALL_USERS = ADMIN_ENDPOINT +  "/user";
 export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
 
 

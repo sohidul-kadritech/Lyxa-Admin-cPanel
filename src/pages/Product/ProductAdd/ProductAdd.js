@@ -89,7 +89,7 @@ const ProductAdd = () => {
   const [isNeedAddon, setIsNeedAddon] = useState(false);
   const [addons, setAddons] = useState([]);
   const [productSearchKey, setProductSearchKey] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
   const [attributeName, setAttributeName] = useState("");
   const [isRequiredAttribute, setIsRequiredAttribute] = useState(false);
@@ -100,6 +100,7 @@ const ProductAdd = () => {
       extraPrice: 0,
     },
   ]);
+
 
   // console.log({ attributes });
 
@@ -302,10 +303,12 @@ const ProductAdd = () => {
   };
 
   const uploadImage = async () => {
+    
     if(typeof image === 'string') {
       submitData(image);
     }else{
       try {
+        setIsLoading(true)
         let formData = new FormData();
         formData.append("image", image);
         // console.log({formData})
@@ -316,6 +319,7 @@ const ProductAdd = () => {
         // console.log("image upload", data)
         if (data.status) {
           // submitData(data.data.url);
+          setIsLoading(false)
           submitData(data.data.url);
         } else {
           console.log(data.error);
@@ -1319,9 +1323,9 @@ const ProductAdd = () => {
                     onClick={submitProduct}
                     color="primary"
                     className="px-5"
-                    disabled={loading}
+                    disabled={loading || isLoading}
                   >
-                    {loading ? (
+                    {loading || isLoading ? (
                       <Spinner
                         animation="border"
                         variant="info"

@@ -192,46 +192,16 @@ const DeliverymanList = () => {
                                   <i className="fa fa-edit" />
                                 </button>
                               </Tooltip>
-                              {/* <Tooltip title="Details">
+                              <Tooltip title="Details">
                                 <button
                                   className="btn btn-info button me-0 me-lg-2"
-                                  // onClick={() =>
-                                  //   history.push(`/seller/details/${item._id}`)
-                                  // }
+                                  onClick={() =>
+                                    history.push(`/deliveryman/details/${item._id}`)
+                                  }
                                 >
                                   <i className="fa fa-eye" />
                                 </button>
                               </Tooltip>
-                              <Tooltip title="Delete">
-                                <button
-                                  className="btn btn-danger button"
-                                  // onClick={() => setconfirm_alert(true)}
-                                >
-                                  <i className="fa fa-trash" />
-                                </button>
-                              </Tooltip> */}
-                              {/* {confirm_alert ? (
-                                <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item._id);
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  Are You Sure! You want to delete this Seller.
-                                </SweetAlert>
-                              ) : null} */}
                             </div>
                           </Td>
                         </Tr>

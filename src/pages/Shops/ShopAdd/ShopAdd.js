@@ -86,6 +86,7 @@ const ShopAdd = () => {
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
 
   // GET SELLER
 
@@ -308,7 +309,7 @@ const ShopAdd = () => {
     let logoUrl = null;
     let bannerUrl = null;
     let photosUrl = null;
-
+    setIsLoading(true);
     if (shopLogo) {
       if (typeof shopLogo == "string") {
         logoUrl = shopLogo;
@@ -332,6 +333,7 @@ const ShopAdd = () => {
     }
 
     if (logoUrl && bannerUrl && photosUrl) {
+      setIsLoading(false);
       submitData(logoUrl, bannerUrl, photosUrl);
     }
   };
@@ -430,6 +432,8 @@ const ShopAdd = () => {
       );
     }
   };
+
+  // ADDRESS CHANGE
 
   const handleAddressChange = (address) => {
     // console.log("address", address);
@@ -1166,12 +1170,12 @@ const ShopAdd = () => {
 
                 <div className="my-5 d-flex justify-content-center">
                   <Button
-                    disabled={loading}
+                    disabled={loading || isLoading}
                     onClick={submitShop}
                     color="primary"
                     className="px-5"
                   >
-                    {loading ? (
+                    {loading || isLoading ? (
                       <Spinner
                         animation="border"
                         variant="info"

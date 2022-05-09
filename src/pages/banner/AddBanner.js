@@ -64,6 +64,7 @@ const AddBanner = () => {
   const [description, setDescription] = useState("");
   const [shop, setShop] = useState(null);
   const [searchShopKey, setSearchShopKey] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     dispatch(getAllShop(true));
@@ -195,17 +196,24 @@ const AddBanner = () => {
     if (typeof image == "string") {
       submitData(image);
     } else {
-      let formData = new FormData();
+      setIsLoading(true);
+      try {
+        let formData = new FormData();
       formData.append("image", image);
       // console.log({formData})
       const  {data}  = await requestApi().request(IMAGE_UPLOAD, {
         method: "POST",
         data: formData,
       });
-      console.log("image upload", data)
+      // console.log("image upload", data)
       if (data.status) {
+        setIsLoading(false)
         submitData(data.data.url);
       }
+      } catch (error) {
+        console.log(error)
+      }
+      
     }
   };
 
@@ -496,11 +504,11 @@ const AddBanner = () => {
           </Row>
           <div className="d-flex justify-content-center">
             <Button
-              disabled={loading}
+              disabled={loading || isLoading}
               color="primary w-50"
               onClick={submitBanner}
             >
-              {!loading ? "Submit" : "loading...."}
+              {!loading || !isLoading ? "Submit" : "loading...."}
             </Button>
           </div>
         </Container>
