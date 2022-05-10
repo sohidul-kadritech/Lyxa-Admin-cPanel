@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import {
@@ -10,45 +10,227 @@ import {
   Input,
   Label,
   Row,
+  Spinner,
 } from "reactstrap";
 import Select from "react-select";
 import Switch from "react-switch";
-import  Flatpickr  from "react-flatpickr";
+import Flatpickr from "react-flatpickr";
+import PlacesAutocomplete from "react-places-autocomplete";
+import {
+  geocodeByAddress,
+  geocodeByPlaceId,
+  getLatLng,
+} from "react-places-autocomplete";
+import { toast } from "react-toastify";
+import {
+  addDeliveryMan,
+  editDeliveryMan,
+} from "../../../store/DeliveryMan/DeliveryManAction";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { activeOptions } from "../../../assets/staticData";
+import requestApi from "../../../network/httpRequest";
+import { SINGLE_DELIVERY_MAN } from "../../../network/Api";
+import {useHistory} from "react-router-dom"
 
 const DeliverymanAdd = () => {
-  const [country, setCountry] = useState(undefined);
-  const [switch3, setswitch3] = useState(true);
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const history = useHistory();
 
-  const optionGroup = [
-    {
-      label: "Picnic",
-      options: [
-        { label: "Mustard", value: "Mustard" },
-        { label: "Ketchup", value: "Ketchup" },
-        { label: "Relish", value: "Relish" },
-      ],
-    },
-    {
-      label: "Camping",
-      options: [
-        { label: "Tent", value: "Tent" },
-        { label: "Flashlight", value: "Flashlight" },
-        { label: "Toilet Paper", value: "Toilet Paper" },
-      ],
-    },
-  ];
+  const { loading, deliveryMans, status } = useSelector(
+    (state) => state.deliveryManReducer
+  );
 
-  const genders = [
-    {
-      label: "Gender",
-      options: [
-        { label: "Male", value: "male" },
-        { label: "Female", value: "female" },
-        { label: "Others", value: "others" },
-      ],
-    },
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [address, setAddress] = useState(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [number, setNumber] = useState("");
+  const [pin, setPin] = useState("");
+  const [latLng, setLatLng] = useState(null);
+  const [fullAddress, setFullAddress] = useState("");
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [activeStatus, setActiveStatus] = useState("");
 
-  ];
+  // ID FROM PARAMS
+
+  useEffect(() => {
+    if (id) {
+      const findDeliveryMan = deliveryMans.find((man) => man._id == id);
+      if (findDeliveryMan) {
+        updateData(findDeliveryMan);
+        // handleAddressSelect()
+      } else {
+        callApi(id);
+      }
+    }
+  }, [id]);
+
+  const callApi = async (manId) => {
+    try {
+      const {
+        data: { status, error, data = null },
+      } = await requestApi().request(SINGLE_DELIVERY_MAN, {
+        params: {
+          id: manId,
+        },
+      });
+      if (status) {
+        updateData(data.delivery);
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // UPDATE DATA
+
+  const updateData = ({ name, email, number, status }) => {
+    const findStatus = activeOptions.find((option) => option.value === status);
+
+    setName(name);
+    setEmail(email);
+    setNumber(number);
+    setActiveStatus(findStatus);
+    setPin(pin);
+  };
+
+  // ADDRESS CHANGE
+
+  const handleAddressChange = (address) => {
+    // console.log("address", address);
+    setSelectedAddress(address);
+  };
+
+  const handleAddressSelect = (address, placeId) => {
+    setSelectedAddress(address);
+    geocodeByAddress(address);
+    geocodeByPlaceId(placeId)
+      .then((results) => setAddress(results[0]))
+      .catch((error) => console.error("Error", error));
+  };
+
+  // ADDRESS
+
+  useEffect(() => {
+    if (address) {
+      const {
+        geometry: { location },
+        address_components,
+        formatted_address,
+      } = address;
+      getLatLng(address).then((latlng) => setLatLng(latlng));
+      setFullAddress(formatted_address);
+
+      address_components.forEach((address_component) => {
+        if (address_component.types.includes("country")) {
+          setCountry(address_component.long_name);
+        } else if (address_component.types.includes("locality")) {
+          setCity(address_component.long_name);
+        } else if (address_component.types.includes("sublocality")) {
+          setState(address_component.long_name);
+        }
+      });
+    }
+  }, [address]);
+
+  // VALIDATIONS
+
+  const submitDeliveryman = () => {
+    if (
+      !name ||
+      (!id && (!password || !address || !pin)) ||
+      !email ||
+      !number
+    ) {
+      return toast.warn("Please Fill Up All Fields", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    let re = /\S+@\S+\.\S+/;
+    const isValid = re.test(email);
+
+    if (!isValid) {
+      return toast.warn("Please Enter Valid Email Address", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    submitData();
+  };
+
+  // SUBMIT DATA
+
+  const submitData = () => {
+    if (id) {
+      dispatch(
+        editDeliveryMan({
+          id,
+          name,
+          email,
+          number,
+          status: activeStatus.value,
+        })
+      );
+    } else {
+      dispatch(
+        addDeliveryMan({
+          name,
+          email,
+          password,
+          number,
+          deliveryBoyAddress: {
+            address: fullAddress,
+            latitude: latLng.lat,
+            longitude: latLng.lng,
+            city,
+            state,
+            country,
+            placeId: address?.place_id,
+            pin,
+            primary: true,
+            note: "",
+          },
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (status) {
+      if (id) {
+        history.goBack();
+      } else {
+        setName("");
+        setEmail("");
+        setPassword("");
+        setNumber("");
+        setPin("");
+        setActiveStatus("");
+        window.scrollTo(0,0)
+      }
+    }
+  }, [status]);
 
   return (
     <div>
@@ -58,7 +240,7 @@ const DeliverymanAdd = () => {
             <Container fluid={true}>
               <Breadcrumb
                 maintitle="Drop"
-                breadcrumbItem={"Add"}
+                breadcrumbItem={id ? "Edit" : "Add"}
                 title="Deliveryman"
                 // loading={loading}
                 // callList={callCarList}
@@ -67,78 +249,36 @@ const DeliverymanAdd = () => {
 
               <Card>
                 <CardBody>
-                  <form>
-                    <Row className="pb-3 ">
-                      <div className="mb-3">
-                        <h5>Delivery Man Informations</h5>
-                        <hr />
+                  <Row className="pb-3 ">
+                    <div className="mb-3">
+                      <h5>Delivery Man Informations</h5>
+                      <hr />
+                    </div>
+                    <Col lg={6}>
+                      <div className="mb-4">
+                        <Label>Name</Label>
+                        <input
+                          className="form-control"
+                          type="text"
+                          placeholder="Enter  Name"
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                        />
                       </div>
-                      <Col lg={6}>
-                        <div className="mb-4">
-                          <Label>Name</Label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            placeholder="Enter Shop Name"
-                            required
-                          />
-                        </div>
 
-                        <div className="mb-4">
-                        <Label>Date of Birth</Label>
-                          <Flatpickr
-                            className="form-control d-block"
-                            id="dateOfBirth"
-                            placeholder="Select Date of Birth"
-                            // value={dateOfBirth}
-                            // onChange={(selectedDates, dateStr, instance) =>
-                            //   setDateOfBirth(dateStr)
-                            // }
-                            options={{
-                              altInput: true,
-                              altFormat: "F j, Y",
-                              dateFormat: "Y-m-d",
-                            }}
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <Label>Country</Label>
-                          <Select
-                            value={country}
-                            // onChange={() => {
-                            //   handleSelectGroup()
-                            // }}
-                            palceholder="Select Country"
-                            options={optionGroup}
-                            classNamePrefix="select2-selection"
-                            required
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <Label>Region</Label>
-                          <Select
-                            // value={selectedGroup}
-                            // onChange={() => {
-                            //   handleSelectGroup()
-                            // }}
-                            palceholder="Select Region"
-                            options={optionGroup}
-                            classNamePrefix="select2-selection"
-                            required
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <Label>City</Label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            placeholder="Enter City Name"
-                            required
-                          />
-                        </div>
-
+                      <div className="mb-4">
+                        <Label>Phone Number</Label>
+                        <input
+                          className="form-control"
+                          type="number"
+                          placeholder="Enter Phone Number"
+                          required
+                          value={number}
+                          onChange={(e) => setNumber(e.target.value)}
+                        />
+                      </div>
+                      {!id && (
                         <div className="mb-4">
                           <Label>Pin Code</Label>
                           <input
@@ -146,420 +286,155 @@ const DeliverymanAdd = () => {
                             type="number"
                             placeholder="Enter Pin Code"
                             required
+                            value={pin}
+                            onChange={(e) => setPin(e.target.value)}
                           />
                         </div>
+                      )}
+                    </Col>
 
+                    <Col lg={6}>
+                      <div className="mb-4">
+                        <Label>Email</Label>
+                        <input
+                          className="form-control"
+                          type="email"
+                          placeholder="Enter Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+
+                      {id ? (
                         <div className="mb-4">
-                          <Label>Phone Number</Label>
-                          <input
-                            className="form-control"
-                            type="number"
-                            placeholder="Enter Phone Number"
+                          <label className="control-label">Status</label>
+                          <Select
+                            palceholder="Select Status"
+                            options={activeOptions}
+                            classNamePrefix="select2-selection"
                             required
+                            value={activeStatus}
+                            onChange={(e) => setActiveStatus(e)}
+                            defaultValue={""}
                           />
                         </div>
-
-                        <div className="mb-4">
-                          <Label>Address</Label>
-                          <Input
-                            type="textarea"
-                            id="textarea"
-                            // onChange={e => {
-                            //   textareachange(e)
-                            // }}
-                            maxLength="225"
-                            rows="3"
-                            placeholder="Enter Shop Address"
-                            requried
-                          />
-                        </div>
-                      </Col>
-
-                      <Col lg={6}>
-                        <div className="mb-4">
-                          <Label>Email</Label>
-                          <input
-                            className="form-control"
-                            type="email"
-                         
-                            placeholder="Enter Email"
-                            required
-                          />
-                        </div>
-
+                      ) : (
                         <div className="mb-4">
                           <Label>Password</Label>
                           <input
                             className="form-control"
                             type="text"
                             placeholder="Enter Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                           />
                         </div>
-
+                      )}
+                      {!id && (
                         <div className="mb-4">
-                          <Label>Gender</Label>
-                          <Select
-                            // value={country}
-                            // onChange={() => {
-                            //   handleSelectGroup()
-                            // }}
-                            palceholder="Select Gender"
-                            options={genders}
-                            classNamePrefix="select2-selection"
-                            required
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <Label>Vahicle Number</Label>
-                          <input
-                            className="form-control"
-                            type="number"
-                            placeholder="Enter Vahicle Number"
-                            required
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <Label>Vahicle Type</Label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            placeholder="Enter Vahicle Type"
-                            required
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <Label>Bank Name</Label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            placeholder="Enter Bank Name"
-                            required
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <Label>Account Name</Label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            placeholder="Enter Account Name"
-                            required
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <Label>Account Number</Label>
-                          <input
-                            className="form-control"
-                            type="number"
-                            placeholder="Enter Account Number"
-                            required
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-
-                    <Row>
-                      <Col xl={6}>
-                        <div className="d-flex justify-content-center flex-column">
-                          <h6>Profile Photo</h6>
-                          <Card className="cursor-pointer">
-                            <div
-                              className="d-flex justify-content-center align-content-center"
-                              style={{
-                                border: "1px solid rgb(207 207 207)",
-                                height: "145px",
-                              }}
-                            >
-                              {/* {licenseFrontImage ? (
-                                <ImageView>
-                                  <>
-                                    <img
-                                      // src={licenseFrontImage}
-                                      className="img-thumbnail img__view"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "contain",
-                                      }}
-                                      alt=""
-                                    />
-                                    <div className="button__wrapper">
-                                      <button
-                                        className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setLicenseFrontImage("")}
-                                      >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </div>
-                                  </>
-                                </ImageView>
-                              ) : (
+                          <Label>Address</Label>
+                          <PlacesAutocomplete
+                            value={selectedAddress}
+                            onChange={handleAddressChange}
+                            onSelect={handleAddressSelect}
+                            onError={(error) => {
+                              console.log(error);
+                            }}
+                            clearItemsOnError={true}
+                            shouldFetchSuggestions={selectedAddress.length > 3}
+                          >
+                            {({
+                              getInputProps,
+                              suggestions,
+                              getSuggestionItemProps,
+                              loading,
+                            }) => (
+                              <div>
+                                <input
+                                  {...getInputProps({
+                                    placeholder: "Search Places ...",
+                                    className: "location-search-input",
+                                    //
+                                  })}
+                                  type="text"
+                                  required
+                                  id="outlined-required"
+                                  label="Address"
+                                  className="form-control"
+                                  value={selectedAddress}
+                                />
                                 <div
-                                  style={{ width: "100%", height: "100%" }}
-                                  className="d-flex justify-content-center align-items-center"
-                                  // onClick={() => handleImage(4)}
+                                  className="autocomplete-dropdown-container"
+                                  style={{
+                                    fontSize: "14px",
+                                    fontFamily: "emoji",
+                                    color: "black",
+                                  }}
                                 >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ width: "50px" }}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
-                                </div>
-                              )} */}
-                              <div
-                                style={{ width: "100%", height: "100%" }}
-                                className="d-flex justify-content-center align-items-center"
-                                // onClick={() => handleImage(4)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  style={{ width: "50px" }}
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                              </div>
-                            </div>
-                          </Card>
-                        </div>
-                      </Col>
-                      <Col xl={6}>
-                        <div className="d-flex justify-content-center flex-column">
-                          <h6>Vahicle Photo</h6>
-                          <Card className="cursor-pointer">
-                            <div
-                              className="d-flex justify-content-center align-content-center"
-                              style={{
-                                border: "1px solid rgb(207 207 207)",
-                                height: "145px",
-                              }}
-                            >
-                              {/* {licenseFrontImage ? (
-                                <ImageView>
-                                  <>
-                                    <img
-                                      // src={licenseFrontImage}
-                                      className="img-thumbnail img__view"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "contain",
-                                      }}
-                                      alt=""
-                                    />
-                                    <div className="button__wrapper">
-                                      <button
-                                        className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setLicenseFrontImage("")}
-                                      >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </div>
-                                  </>
-                                </ImageView>
-                              ) : (
-                                <div
-                                  style={{ width: "100%", height: "100%" }}
-                                  className="d-flex justify-content-center align-items-center"
-                                  // onClick={() => handleImage(4)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ width: "50px" }}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
-                                </div>
-                              )} */}
-                              <div
-                                style={{ width: "100%", height: "100%" }}
-                                className="d-flex justify-content-center align-items-center"
-                                // onClick={() => handleImage(4)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  style={{ width: "50px" }}
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                              </div>
-                            </div>
-                          </Card>
-                        </div>
-                      </Col>
-                    </Row>
+                                  {loading && <div>Loading...</div>}
+                                  {suggestions.map((suggestion, index) => {
+                                    const className = suggestion.active
+                                      ? "suggestion-item--active"
+                                      : "suggestion-item";
 
-                    <Row>
-                      <Col xl={6}>
-                        <div className="d-flex justify-content-center flex-column">
-                          <h6>Vehicle Registration Document</h6>
-                          <Card className="cursor-pointer">
-                            <div
-                              className="d-flex justify-content-center align-content-center"
-                              style={{
-                                border: "1px solid rgb(207 207 207)",
-                                height: "145px",
-                              }}
-                            >
-                              {/* {licenseFrontImage ? (
-                                <ImageView>
-                                  <>
-                                    <img
-                                      // src={licenseFrontImage}
-                                      className="img-thumbnail img__view"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "contain",
-                                      }}
-                                      alt=""
-                                    />
-                                    <div className="button__wrapper">
-                                      <button
-                                        className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setLicenseFrontImage("")}
+                                    // inline style for demonstration purpose
+                                    const style = suggestion.active
+                                      ? {
+                                          backgroundColor: "#fafafa",
+                                          cursor: "pointer",
+                                        }
+                                      : {
+                                          backgroundColor: "#ffffff",
+                                          cursor: "pointer",
+                                        };
+                                    return (
+                                      <div
+                                        // style={{padding: "20px 0px !important"}}
+                                        {...getSuggestionItemProps(suggestion, {
+                                          className,
+                                          style,
+                                        })}
+                                        key={index}
                                       >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </div>
-                                  </>
-                                </ImageView>
-                              ) : (
-                                <div
-                                  style={{ width: "100%", height: "100%" }}
-                                  className="d-flex justify-content-center align-items-center"
-                                  // onClick={() => handleImage(4)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ width: "50px" }}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
+                                        <i
+                                          className="ti-location-pin me-1"
+                                          style={{ color: "black" }}
+                                        />
+                                        <span>{suggestion.description}</span>
+                                      </div>
+                                    );
+                                  })}
                                 </div>
-                              )} */}
-                              <div
-                                style={{ width: "100%", height: "100%" }}
-                                className="d-flex justify-content-center align-items-center"
-                                // onClick={() => handleImage(4)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  style={{ width: "50px" }}
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                </svg>
                               </div>
-                            </div>
-                          </Card>
+                            )}
+                          </PlacesAutocomplete>
                         </div>
-                      </Col>
-                      <Col xl={6}>
-                        <div className="d-flex justify-content-center flex-column">
-                          <h6>National id</h6>
-                          <Card className="cursor-pointer">
-                            <div
-                              className="d-flex justify-content-center align-content-center"
-                              style={{
-                                border: "1px solid rgb(207 207 207)",
-                                height: "145px",
-                              }}
-                            >
-                              {/* {licenseFrontImage ? (
-                                <ImageView>
-                                  <>
-                                    <img
-                                      // src={licenseFrontImage}
-                                      className="img-thumbnail img__view"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "contain",
-                                      }}
-                                      alt=""
-                                    />
-                                    <div className="button__wrapper">
-                                      <button
-                                        className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setLicenseFrontImage("")}
-                                      >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </div>
-                                  </>
-                                </ImageView>
-                              ) : (
-                                <div
-                                  style={{ width: "100%", height: "100%" }}
-                                  className="d-flex justify-content-center align-items-center"
-                                  // onClick={() => handleImage(4)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{ width: "50px" }}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
-                                </div>
-                              )} */}
-                              <div
-                                style={{ width: "100%", height: "100%" }}
-                                className="d-flex justify-content-center align-items-center"
-                                // onClick={() => handleImage(4)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  style={{ width: "50px" }}
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                              </div>
-                            </div>
-                          </Card>
-                        </div>
-                      </Col>
-                    </Row>
+                      )}
+                    </Col>
+                  </Row>
 
-                    <div className="my-5 d-flex justify-content-center">
-                      <Button type="submit" color="primary" className="px-5">
-                        {" "}
-                        Add{" "}
-                      </Button>
-                    </div>
-                  </form>
+                  <div className="my-5 d-flex justify-content-center">
+                    <Button
+                      color="primary"
+                      className="px-5"
+                      onClick={submitDeliveryman}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <Spinner
+                          animation="border"
+                          size="sm"
+                          variant="success"
+                        ></Spinner>
+                      ) : id ? (
+                        "Edit"
+                      ) : (
+                        "Add"
+                      )}
+                    </Button>
+                  </div>
                 </CardBody>
               </Card>
             </Container>

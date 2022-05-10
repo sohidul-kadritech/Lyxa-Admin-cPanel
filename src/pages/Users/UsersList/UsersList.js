@@ -20,11 +20,10 @@ import Lightbox from "react-image-lightbox";
 import InputLabel from "@mui/material/InputLabel";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  updateCreatedByKey,
   updateSearchKey,
   updateSortKey,
   updateStatusKey,
-  usersList,
+  userList,
 } from "../../../store/Users/UsersAction";
 import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
@@ -42,20 +41,19 @@ const UsersList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    statusKey
   } = useSelector((state) => state.usersReducer);
 
   useEffect(() => {
-    if (!!sortByKey || !!searchKey) {
+    if (sortByKey || searchKey || statusKey) {
       callUsersList(true);
-    } else {
-      callUsersList();
-    }
-  }, [sortByKey, searchKey,]);
+    } 
+  }, [sortByKey, searchKey]);
 
   // CALL USERS LIST
 
   const callUsersList = (refresh = false) => {
-    dispatch(usersList(refresh));
+    dispatch(userList(refresh));
   };
 
   // // UPDATE SEARCH KEY
@@ -75,8 +73,8 @@ const UsersList = () => {
               hideSettingBtn={true}
               loading={loading}
               callList={callUsersList}
-              isAddNew={true}
-              addNewRoute="users/add"
+              // isAddNew={true}
+              // addNewRoute="users/add"
             />
 
             {/* FILTER OPTIONS */}
@@ -105,7 +103,7 @@ const UsersList = () => {
                       </FormControl>
                     </div>
                   </Col>
-                  <Col md={6} className="d-flex align-items-center">
+                  <Col md={6} className="d-flex align-items-center my-3 my-md-0">
                     <SearchWrapper>
                       <div className="search__wrapper">
                         <i className="fa fa-search" />
@@ -121,6 +119,31 @@ const UsersList = () => {
                         />
                       </div>
                     </SearchWrapper>
+                  </Col>
+
+                  <Col md={3}>
+                    <div>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Status
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={statusKey}
+                          label="Status"
+                          onChange={(event) =>
+                            dispatch(updateStatusKey(event.target.value))
+                          }
+                        >
+                          <MenuItem value={"all"}>All</MenuItem>
+                          <MenuItem value={"pending"}>Pending</MenuItem>
+                          <MenuItem value={"approved"}>Approved</MenuItem>
+                          <MenuItem value={"rejected"}>Rejected</MenuItem>
+                          <MenuItem value={"blocked"}>Blocked</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
                   </Col>
                 </Row>
               </CardBody>
@@ -238,7 +261,7 @@ const UsersList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(usersList(true, page))}
+                    lisener={(page) => dispatch(userList(true, page))}
                   />
                 </div>
               </Col>

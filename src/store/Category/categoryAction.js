@@ -11,8 +11,11 @@ import {
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
+
+// ADD CATEGORY 
+
 export const addCategory = (values) => async (dispatch) => {
-  console.log({ values });
+  // console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_CATEGORY_REQUEST_SEND,
@@ -23,7 +26,7 @@ export const addCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+    // console.log({ data });
 
     if (data.status) {
       toast.success(data.message, {
@@ -79,7 +82,7 @@ export const getAllCategory =
         const { data } = await requestApi().request(GET_ALL_CATEGORY, {
           params: {
             page: page,
-            pageSize: 3,
+            pageSize: 30,
           },
         });
 
@@ -176,7 +179,7 @@ export const setCatStatusFalse = () => (dispatch) => {
 // ADD SUB CATGEGORY
 
 export const addSubCategory = (values) => async (dispatch) => {
-  console.log({ values });
+  // console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SUB_CATEGORY_REQUEST_SEND,
@@ -277,7 +280,7 @@ export const getAllSubCategory =
 // EDIT SUB CATEGORY
 
 export const editSubCategory = (values) => async (dispatch) => {
-  // console.log({ values });
+  console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_SUB_CATEGORY_REQUEST_SEND,
@@ -288,7 +291,7 @@ export const editSubCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-    // console.log({ data });
+    console.log({ data });
 
     if (data.status) {
       // console.log("success-----------")
@@ -303,12 +306,11 @@ export const editSubCategory = (values) => async (dispatch) => {
         progress: undefined,
       });
 
-      setTimeout(() => {
-        dispatch({
-          type: actionType.EDIT_SUB_CATEGORY_REQUEST_SUCCESS,
-          payload: data.data.category,
-        });
-      }, 400);
+      dispatch({
+        type: actionType.EDIT_SUB_CATEGORY_REQUEST_SUCCESS,
+        payload: data.data.category,
+      });
+
     } else {
       toast.warn(data.message, {
         // position: "bottom-right",

@@ -154,6 +154,7 @@ import ProductList from "../pages/Product/ProductList/ProductList";
 import ProductAdd from "../pages/Product/ProductAdd/ProductAdd";
 import ShopDetails from "../pages/Shops/ShopDetails/ShopDetails";
 import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
+import DeliverymanDetails from "../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails.js";
 
 
 const userRoutes = [
@@ -203,6 +204,10 @@ const userRoutes = [
 
   {path: "/deliveryman/list", component: DeliverymanList},
   {path: "/deliveryman/add", component: DeliverymanAdd},
+  {path: "/deliveryman/edit/:id", component: DeliverymanAdd},
+  {path: "/deliveryman/details/:id", component: DeliverymanDetails},
+
+  // DEALS
 
   {path: "/deals/list", component: DealsList},
   {path: "/deals/add", component: DealsAdd},

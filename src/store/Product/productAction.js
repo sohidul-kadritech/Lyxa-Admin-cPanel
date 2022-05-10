@@ -87,7 +87,7 @@ async (dispatch, getState) => {
         },
       });
 
-      console.log("product list from shop", data);
+      console.log("product list", data);
 
       if (data.status) {
         dispatch({

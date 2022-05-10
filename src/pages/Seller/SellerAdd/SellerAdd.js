@@ -23,7 +23,15 @@ import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addSeller, editSeller } from "../../../store/Seller/sellerAction";
-import { useParams,useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
+import PlacesAutocomplete from "react-places-autocomplete";
+import {
+  geocodeByAddress,
+  geocodeByPlaceId,
+  getLatLng,
+} from "react-places-autocomplete";
+import requestApi from "../../../network/httpRequest";
+import { IMAGE_UPLOAD, SINGLE_SELLER } from "../../../network/Api";
 
 const SellerAdd = () => {
   const dispatch = useDispatch();
@@ -41,44 +49,165 @@ const SellerAdd = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(null);
   const [bankName, setBankName] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountNum, setAccountNum] = useState("");
+  const [pin, setPin] = useState("");
+  const [sellerStatus, setSellerStatus] = useState("");
+  const [sellerType, setSellerType] = useState("");
+  const [subType, setSubType] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [latLng, setLatLng] = useState({});
+  const [fullAddress, setFullAddress] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [certificate, setCertificate] = useState(null);
+  const [nid, setNid] = useState(null);
+  const [contactPaper, setContactPaper] = useState(null);
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
       console.log({ findSeller });
       if (findSeller) {
-        const {
-          account_name,
-          account_number,
-          bank_name,
-          company_name,
-          dob,
-          email,
-          gender,
-          name,
-          phone_number,
-        } = findSeller;
-
-        setName(name);
-        setGender(gender);
-        setEmail(email);
-        setPassword(password);
-        setDateOfBirth(dob);
-        setCompanyName(company_name);
-        setPhoneNum(phone_number);
-        // setAddress("");
-        setBankName(bank_name);
-        setAccountName(account_name);
-        setAccountNum(account_number);
+        updateSellerData(findSeller);
       } else {
-        console.log("call api---");
+        // console.log("call api---");
+        callApi(id);
       }
     }
   }, [id]);
+
+  const callApi = async (sellerId) => {
+    try {
+      const { data } = await requestApi().request(SINGLE_SELLER, {
+        params: {
+          id: sellerId,
+        },
+      });
+
+      if (data.status) {
+        updateSellerData(data.data.seller);
+      } else {
+        console.log(data.error);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  // SET SELLER DATA
+  const updateSellerData = (sellerData) => {
+    const {
+      account_name,
+      account_number,
+      bank_name,
+      company_name,
+      dob,
+      email,
+      gender,
+      name,
+      phone_number,
+      certificate_of_incorporation,
+      national_id,
+      profile_photo,
+      sellerContractPaper,
+      sellerStatus,
+    } = sellerData;
+    setProfilePhoto(profile_photo);
+    setCertificate(certificate_of_incorporation);
+    setNid(national_id);
+    setContactPaper(sellerContractPaper);
+    setName(name);
+    setGender(gender);
+    setEmail(email);
+    setPassword(password);
+    setDateOfBirth(dob);
+    setCompanyName(company_name);
+    setPhoneNum(phone_number);
+    // setAddress("");
+    setBankName(bank_name);
+    setAccountName(account_name);
+    setAccountNum(account_number);
+    setSellerStatus(sellerStatus);
+  };
+
+  /**
+   * Formats the size
+   */
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  // IMAGE
+
+  const handleAcceptedFiles = (files, type) => {
+    files.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    );
+
+    if (type == "profile") {
+      setProfilePhoto(files[0]);
+    } else if (type == "certificate") {
+      setCertificate(files[0]);
+    } else if (type == "nid") {
+      setNid(files[0]);
+    } else {
+      setContactPaper(files[0]);
+    }
+  };
+
+  // ADDRESS CHANGE
+
+  const handleAddressChange = (address) => {
+    // console.log("address", address);
+    setSelectedAddress(address);
+  };
+
+  const handleAddressSelect = (address, placeId) => {
+    setSelectedAddress(address);
+    geocodeByAddress(address);
+    geocodeByPlaceId(placeId)
+      .then((results) => setAddress(results[0]))
+      .catch((error) => console.error("Error", error));
+  };
+
+  // GET LAT LNG
+
+  useEffect(() => {
+    if (address) {
+      const {
+        geometry: { location },
+        address_components,
+        formatted_address,
+      } = address;
+      getLatLng(address).then((latlng) => setLatLng(latlng));
+      setFullAddress(formatted_address);
+
+      address_components.forEach((address_component) => {
+        if (address_component.types.includes("country")) {
+          setCountry(address_component.long_name);
+        } else if (address_component.types.includes("locality")) {
+          setCity(address_component.long_name);
+        } else if (address_component.types.includes("sublocality")) {
+          setState(address_component.long_name);
+        }
+      });
+    }
+  }, [address]);
 
   // SUBMIT SELLER
 
@@ -94,7 +223,10 @@ const SellerAdd = () => {
       !bankName ||
       !accountName ||
       !accountNum ||
-      (!id && !address)
+      (!id && !sellerType) ||
+      !sellerStatus ||
+      (!id && !pin) ||
+      (!id && (sellerType == "food" || sellerType == "grocery") && !subType)
     ) {
       return toast.warn("Please Fill Up All Fields", {
         // position: "bottom-right",
@@ -108,10 +240,108 @@ const SellerAdd = () => {
       });
     }
 
-    submitDate();
+    if (!id && !address) {
+      return toast.warn("Please Select a Address", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    if (!profilePhoto || !certificate || !nid || !contactPaper) {
+      return toast.warn("Please Select Images", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    //  submitDate();
+
+    uploadImage();
   };
 
-  const submitDate = () => {
+  // Upload Image
+  const uploadImage = async () => {
+    let profileUrl = null;
+    let certificateUrl = null;
+    let nidUrl = null;
+    let contactUrl = null;
+    setIsLoading(true)
+    if (profilePhoto) {
+      if (typeof profilePhoto == "string") {
+        profileUrl = profilePhoto;
+      } else {
+        profileUrl = await imageUploadToServer(profilePhoto);
+      }
+    }
+    if (certificate) {
+      if (typeof certificate == "string") {
+        certificateUrl = certificate;
+      } else {
+        certificateUrl = await imageUploadToServer(certificate);
+      }
+    }
+
+    if (nid) {
+      if (typeof nid == "string") {
+        nidUrl = nid;
+      } else {
+        nidUrl = await imageUploadToServer(nid);
+      }
+    }
+
+    if (contactPaper) {
+      if (typeof contactPaper == "string") {
+        contactUrl = contactPaper;
+        // submitData(profilePhoto, certificate, nid, contactPaper);
+      } else {
+        contactUrl = await imageUploadToServer(contactPaper);
+      }
+    }
+
+    if(profileUrl &&  certificateUrl && nidUrl && contactUrl){
+      setIsLoading(false)
+      submitData(profileUrl, certificateUrl, nidUrl, contactUrl);
+    }
+  };
+
+  //  UPLAOD IMAGE TO SERVER
+
+  const imageUploadToServer = async (image) => {
+    try {
+      let formData = new FormData();
+      formData.append("image", image);
+      // console.log({formData})
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+      // console.log("image upload", data)
+      if (data.status) {
+        // submitData(data.data.url);
+        return data.data.url;
+      } else {
+        console.log(data.error);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const submitData = (profileUrl, certificateUrl, nidUrl, contactUrl) => {
+    // console.log({ data });
+
     if (id) {
       dispatch(
         editSeller({
@@ -121,17 +351,14 @@ const SellerAdd = () => {
           phone_number: phoneNum,
           company_name: companyName,
           email,
-          profile_photo:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          profile_photo: profileUrl,
           dob: dateOfBirth,
-          account_type: "seller",
           bank_name: bankName,
           account_name: accountName,
           account_number: accountNum,
-          certificate_of_incorporation:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
-          national_id:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          certificate_of_incorporation: certificateUrl,
+          national_id: nidUrl,
+          sellerContractPaper: contactUrl,
         })
       );
     } else {
@@ -143,17 +370,30 @@ const SellerAdd = () => {
           company_name: companyName,
           email,
           password,
-          profile_photo:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          profile_photo: profileUrl,
           dob: dateOfBirth,
           account_type: "seller",
           bank_name: bankName,
           account_name: accountName,
           account_number: accountNum,
-          certificate_of_incorporation:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
-          national_id:
-            "https://miro.medium.com/max/1187/1*0FqDC0_r1f5xFz3IywLYRA.jpeg",
+          certificate_of_incorporation: certificateUrl,
+          national_id: nidUrl,
+          sellerContractPaper: contactUrl,
+          sellerAddress: {
+            address: fullAddress,
+            latitude: latLng.lat,
+            longitude: latLng.lng,
+            city,
+            state,
+            country,
+            placeId: address?.place_id,
+            pin,
+            primary: true,
+            note: "",
+          },
+          sellerType,
+          subType,
+          sellerStatus,
         })
       );
     }
@@ -175,6 +415,16 @@ const SellerAdd = () => {
         setBankName("");
         setAccountName("");
         setAccountNum("");
+        setAddress(null);
+        setSelectedAddress("");
+        setPin("");
+        setSellerType("");
+        setSellerStatus("");
+        setSubType("");
+        setProfilePhoto(null);
+        setCertificate(null);
+        setNid(null);
+        setContactPaper(null);
       }
     }
   }, [status]);
@@ -229,16 +479,81 @@ const SellerAdd = () => {
                 {!id && (
                   <Row className="mt-4">
                     <Col xl={6}>
-                      <TextField
-                        id="outlined-textarea"
-                        label="Address"
-                        placeholder="Enter Address"
-                        multiline
-                        style={{ width: "100%" }}
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                      />
+                      <PlacesAutocomplete
+                        value={selectedAddress}
+                        onChange={handleAddressChange}
+                        onSelect={handleAddressSelect}
+                        onError={(error) => {
+                          console.log(error);
+                        }}
+                        clearItemsOnError={true}
+                        shouldFetchSuggestions={selectedAddress.length > 3}
+                      >
+                        {({
+                          getInputProps,
+                          suggestions,
+                          getSuggestionItemProps,
+                          loading,
+                        }) => (
+                          <div>
+                            <TextField
+                              {...getInputProps({
+                                placeholder: "Search Places ...",
+                                className: "location-search-input",
+                                //
+                              })}
+                              type="text"
+                              required
+                              id="outlined-required"
+                              label="Address"
+                              className="form-control"
+                              value={selectedAddress}
+                            />
+                            <div
+                              className="autocomplete-dropdown-container"
+                              style={{
+                                fontSize: "14px",
+                                fontFamily: "emoji",
+                                color: "black",
+                              }}
+                            >
+                              {loading && <div>Loading...</div>}
+                              {suggestions.map((suggestion, index) => {
+                                const className = suggestion.active
+                                  ? "suggestion-item--active"
+                                  : "suggestion-item";
+
+                                // inline style for demonstration purpose
+                                const style = suggestion.active
+                                  ? {
+                                      backgroundColor: "#fafafa",
+                                      cursor: "pointer",
+                                    }
+                                  : {
+                                      backgroundColor: "#ffffff",
+                                      cursor: "pointer",
+                                    };
+                                return (
+                                  <div
+                                    // style={{padding: "20px 0px !important"}}
+                                    {...getSuggestionItemProps(suggestion, {
+                                      className,
+                                      style,
+                                    })}
+                                    key={index}
+                                  >
+                                    <i
+                                      className="ti-location-pin me-1"
+                                      style={{ color: "black" }}
+                                    />
+                                    <span>{suggestion.description}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </PlacesAutocomplete>
                     </Col>
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <TextField
@@ -344,7 +659,7 @@ const SellerAdd = () => {
 
                 <Row className="mt-4">
                   <Col xl={6}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth required>
                       <InputLabel id="demo-simple-select-label">
                         Gender
                       </InputLabel>
@@ -354,13 +669,108 @@ const SellerAdd = () => {
                         value={gender}
                         label="Gender"
                         onChange={(e) => setGender(e.target.value)}
-                        required
                       >
                         <MenuItem value="male">Mele </MenuItem>
                         <MenuItem value="female">Female</MenuItem>
                         <MenuItem value="other">Other</MenuItem>
                       </Select>
                     </FormControl>
+                  </Col>
+                  <Col xl={6} className="mt-4 mt-xl-0">
+                    <FormControl fullWidth required>
+                      <InputLabel id="demo-simple-select-label">
+                        Status
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={sellerStatus}
+                        label="Status"
+                        onChange={(e) => setSellerStatus(e.target.value)}
+                      >
+                        <MenuItem value="active">Active</MenuItem>
+                        <MenuItem value="inactive">Inactive</MenuItem>
+                        <MenuItem value="archive">Archive</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Col>
+                </Row>
+
+                {!id && (
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">
+                          Seller Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={sellerType}
+                          label="Gender"
+                          onChange={(e) => {
+                            setSellerType(e.target.value);
+                            setSubType("");
+                          }}
+                        >
+                          <MenuItem value="food">Food</MenuItem>
+                          <MenuItem value="grocery">Grocery</MenuItem>
+                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Pin Code"
+                        variant="outlined"
+                        placeholder="Enter Pin Code"
+                        value={pin}
+                        onChange={(e) => setPin(e.target.value)}
+                        required
+                      />
+                    </Col>
+                  </Row>
+                )}
+
+                <Row className="mt-4">
+                  <Col xl={6}>
+                    {sellerType && sellerType == "food" && (
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">
+                          Sub Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={subType}
+                          label="Sub Type"
+                          onChange={(e) => setSubType(e.target.value)}
+                          defaultValue={""}
+                        >
+                          <MenuItem value="restaurants">Restaurants</MenuItem>
+                          <MenuItem value="foodcart">Food Cart</MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
+                    {sellerType && sellerType == "grocery" && (
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">
+                          Sub Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={subType}
+                          label="Sub Type"
+                          onChange={(e) => setSubType(e.target.value)}
+                          defaultValue={""}
+                        >
+                          <MenuItem value="supermarkets">Supermarkets</MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
                   </Col>
                 </Row>
 
@@ -371,7 +781,7 @@ const SellerAdd = () => {
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles, "profile");
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -394,12 +804,8 @@ const SellerAdd = () => {
                           className="dropzone-previews mt-3"
                           id="file-previews"
                         >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
+                          {profilePhoto && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
@@ -410,8 +816,12 @@ const SellerAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      alt="profile"
+                                      src={
+                                        profilePhoto.preview
+                                          ? profilePhoto.preview
+                                          : profilePhoto
+                                      }
                                     />
                                   </Col>
                                   <Col>
@@ -419,10 +829,16 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {f.name}
+                                      {profilePhoto.name
+                                        ? profilePhoto.name
+                                        : "Profile Photo"}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>
+                                        {profilePhoto.formattedSize
+                                          ? profilePhoto.formattedSize
+                                          : ""}
+                                      </strong>
                                     </p>
                                   </Col>
 
@@ -437,7 +853,7 @@ const SellerAdd = () => {
                                     }}
                                   >
                                     <i
-                                      // onClick={() => removeSelection(i)}
+                                      onClick={() => setProfilePhoto(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
                                         fontSize: "25px",
@@ -448,8 +864,7 @@ const SellerAdd = () => {
                                 </Row>
                               </div>
                             </Card>
-                          );
-                        })} */}
+                          )}
                         </div>
                       </Form>
                     </div>
@@ -460,7 +875,7 @@ const SellerAdd = () => {
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles, "certificate");
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -483,12 +898,8 @@ const SellerAdd = () => {
                           className="dropzone-previews mt-3"
                           id="file-previews"
                         >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
+                          {certificate && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
@@ -499,8 +910,12 @@ const SellerAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      alt="certificate"
+                                      src={
+                                        certificate.preview
+                                          ? certificate.preview
+                                          : certificate
+                                      }
                                     />
                                   </Col>
                                   <Col>
@@ -508,10 +923,15 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {f.name}
+                                      {certificate.name
+                                        ? certificate.name
+                                        : "Certificate"}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>
+                                        {certificate.formattedSize &&
+                                          certificate.formattedSize}
+                                      </strong>
                                     </p>
                                   </Col>
 
@@ -526,7 +946,7 @@ const SellerAdd = () => {
                                     }}
                                   >
                                     <i
-                                      // onClick={() => removeSelection(i)}
+                                      onClick={() => setCertificate(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
                                         fontSize: "25px",
@@ -537,8 +957,7 @@ const SellerAdd = () => {
                                 </Row>
                               </div>
                             </Card>
-                          );
-                        })} */}
+                          )}
                         </div>
                       </Form>
                     </div>
@@ -552,7 +971,7 @@ const SellerAdd = () => {
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
-                            // handleAcceptedFiles(acceptedFiles);
+                            handleAcceptedFiles(acceptedFiles, "nid");
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
@@ -575,12 +994,8 @@ const SellerAdd = () => {
                           className="dropzone-previews mt-3"
                           id="file-previews"
                         >
-                          {/* {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
+                          {nid && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
@@ -591,8 +1006,8 @@ const SellerAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      alt="Nid"
+                                      src={nid.preview ? nid.preview : nid}
                                     />
                                   </Col>
                                   <Col>
@@ -600,10 +1015,12 @@ const SellerAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {f.name}
+                                      {nid.name ? nid.name : "NID"}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>
+                                        {nid.formattedSize && nid.formattedSize}
+                                      </strong>
                                     </p>
                                   </Col>
 
@@ -618,7 +1035,7 @@ const SellerAdd = () => {
                                     }}
                                   >
                                     <i
-                                      // onClick={() => removeSelection(i)}
+                                      onClick={() => setNid(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
                                         fontSize: "25px",
@@ -629,8 +1046,100 @@ const SellerAdd = () => {
                                 </Row>
                               </div>
                             </Card>
-                          );
-                        })} */}
+                          )}
+                        </div>
+                      </Form>
+                    </div>
+                  </Col>
+                  <Col xl={6}>
+                    <Label>Contact Paper</Label>
+                    <div className="mb-5">
+                      <Form>
+                        <Dropzone
+                          onDrop={(acceptedFiles) => {
+                            handleAcceptedFiles(acceptedFiles, "contact");
+                          }}
+                        >
+                          {({ getRootProps, getInputProps }) => (
+                            <div className="dropzone">
+                              <div
+                                className="dz-message needsclick"
+                                {...getRootProps()}
+                                // onClick={() => setmodal_fullscreen(true)}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="mb-3">
+                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                </div>
+                                <h4>Drop files here or click to upload.</h4>
+                              </div>
+                            </div>
+                          )}
+                        </Dropzone>
+                        <div
+                          className="dropzone-previews mt-3"
+                          id="file-previews"
+                        >
+                          {contactPaper && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
+                                      style={{
+                                        maxWidth: "80px",
+                                      }}
+                                      className=" bg-light"
+                                      alt="contactPaper"
+                                      src={
+                                        contactPaper.preview
+                                          ? contactPaper.preview
+                                          : contactPaper
+                                      }
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {contactPaper.name
+                                        ? contactPaper.name
+                                        : "Contact Paper"}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>
+                                        {contactPaper.formattedSize &&
+                                          contactPaper.formattedSize}
+                                      </strong>
+                                    </p>
+                                  </Col>
+
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      onClick={() => setContactPaper(null)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          )}
                         </div>
                       </Form>
                     </div>
@@ -642,8 +1151,9 @@ const SellerAdd = () => {
                     color="primary"
                     onClick={submitSeller}
                     className="px-5"
+                    disabled={loading || isLoading}
                   >
-                    {loading ? (
+                    {loading || isLoading ? (
                       <Spinner
                         animation="border"
                         variant="info"

@@ -8,6 +8,7 @@ import {
   Card,
   CardBody,
   CardTitle,
+  Carousel,
   Col,
   Container,
   Row,
@@ -58,14 +59,14 @@ const SellerDetails = () => {
     dispatch(deleteShop(shopId));
   };
 
-//   ADD PRODUCT 
+  //   ADD PRODUCT
 
-const addNewProduct = () =>{
+  const addNewProduct = () => {
     history.push({
-        pathname: '/shops/add',
-        search: `?sellerId=${id}`
-    })
-}
+      pathname: "/shops/add",
+      search: `?sellerId=${id}`,
+    });
+  };
 
   return (
     <React.Fragment>
@@ -104,156 +105,163 @@ const addNewProduct = () =>{
               </SweetAlert>
             ) : null}
 
+            <Row>
+              <Col xl={6}>
+                <Card>
+                  <CardBody>
+                    <div className="d-flex justify-content-between">
+                      <CardTitle>Seller Informations</CardTitle>
+                      <Button
+                        color="primary"
+                        onClick={() => history.push(`/seller/edit/${id}`)}
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                    <hr className="my-2" />
+                    <Row>
+                      <Col
+                        lg={5}
+                        className="d-flex justify-content-center align-items-center"
+                      >
+                        <div>
+                          <img
+                            className="rounded-circle avatar-xl cursor-pointer"
+                            alt="seller"
+                            src={seller?.profile_photo}
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(seller?.profile_photo);
+                            }}
+                          />
+                        </div>
+                      </Col>
+                      <Col
+                        lg={7}
+                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
+                      >
+                        <div className="ps-4">
+                          <Details>
+                            <h5>Name:</h5>
+                            <Value>{seller?.name}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Email:</h5>
+                            <Value>{seller?.email}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Gender:</h5>
+                            <Value>{seller?.gender}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Birth Date:</h5>
+                            <Value>
+                              {new Date(seller?.dob).toLocaleDateString()}
+                            </Value>
+                          </Details>
+                          <Details>
+                            <h5>Company:</h5>
+                            <Value>{seller?.company_name}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Bank:</h5>
+                            <Value>{seller?.bank_name}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Account Name:</h5>
+                            <Value>{seller?.account_name}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Account No:</h5>
+                            <Value>{seller?.account_number}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Phone:</h5>
+                            <Value>{seller?.phone_number}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Status:</h5>
+                            <Value>{seller?.status}.</Value>
+                          </Details>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xl={6}>
+                {seller?.certificate_of_incorporation || seller?.national_id ? (
+                  <Card>
+                    <CardBody>
+                      <div>
+                        <CardTitle>Seller Photos</CardTitle>
+                        <hr />
+                      </div>
+                      <Row>
+                        <Col md={6}>
+                          {seller?.certificate_of_incorporation ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(
+                                    seller?.certificate_of_incorporation
+                                  );
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="Veltrix"
+                                src={seller?.certificate_of_incorporation}
+                                width="100%"
+                              />
+                              <small>Certificate of incorporation</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                        <Col md={6}>
+                          {seller?.national_id ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(seller?.national_id);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="Veltrix"
+                                src={seller?.national_id}
+                                width="100%"
+                              />
+                              <small>National Id</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Card>
+                ) : null}
+              </Col>
+            </Row>
+
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between">
-                  <CardTitle>Seller Informations</CardTitle>
-                  <Button
-                    color="primary"
-                    onClick={() => history.push(`/seller/edit/${id}`)}
-                  >
-                    Edit
+                  <CardTitle className="h4"> Shop List</CardTitle>
+                  <Button color="success" onClick={addNewProduct}>
+                    Add Shop
                   </Button>
                 </div>
-                <hr className="my-2" />
-                <Row>
-                  <Col
-                    lg={5}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-                    <div>
-                      <img
-                        className="rounded-circle avatar-xl cursor-pointer"
-                        alt="seller"
-                        src={seller?.profile_photo}
-                        onClick={() => {
-                          setIsOpen(true);
-                          setSelectedImg(seller?.profile_photo);
-                        }}
-                      />
-                    </div>
-                  </Col>
-                  <Col
-                    lg={7}
-                    className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                  >
-                    <div className="ps-4">
-                      <Details>
-                        <h5>Name:</h5>
-                        <Value>{seller?.name}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Email:</h5>
-                        <Value>{seller?.email}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Gender:</h5>
-                        <Value>{seller?.gender}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>DoB:</h5>
-                        <Value>
-                          {new Date(seller?.dob).toLocaleDateString()}
-                        </Value>
-                      </Details>
-                      <Details>
-                        <h5>Company:</h5>
-                        <Value>{seller?.company_name}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Bank:</h5>
-                        <Value>{seller?.bank_name}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Account Name:</h5>
-                        <Value>{seller?.account_name}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Account No:</h5>
-                        <Value>{seller?.account_number}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Phone:</h5>
-                        <Value>{seller?.phone_number}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Status:</h5>
-                        <Value>{seller?.status}.</Value>
-                      </Details>
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-
-            {seller?.certificate_of_incorporation || seller?.national_id ? (
-              <Card>
-                <CardBody>
-                  <div>
-                    <CardTitle>Seller Photos</CardTitle>
-                    <hr />
-                  </div>
-                  <Row>
-                    <Col md={6}>
-                      {seller?.certificate_of_incorporation ? (
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(
-                                seller?.certificate_of_incorporation
-                              );
-                            }}
-                            className="img-fluid cursor-pointer"
-                            alt="Veltrix"
-                            src={seller?.certificate_of_incorporation}
-                            width="100%"
-                          />
-                          <small>Certificate of incorporation</small>
-                        </ImageWrapper>
-                      ) : null}
-                    </Col>
-                    <Col md={6}>
-                      {seller?.national_id ? (
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(seller?.national_id);
-                            }}
-                            className="img-fluid cursor-pointer"
-                            alt="Veltrix"
-                            src={seller?.national_id}
-                            width="100%"
-                          />
-                          <small>National Id</small>
-                        </ImageWrapper>
-                      ) : null}
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
-            ) : null}
-
-            <Card>
-              <CardBody>
-                <div className='d-flex justify-content-between'>
-                  <CardTitle className="h4"> Shop List</CardTitle>
-                  <Button color='success' onClick={addNewProduct}>Add Shop</Button>
-                </div>
-                  <hr className='my-3' />          
+                <hr className="my-3" />
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"

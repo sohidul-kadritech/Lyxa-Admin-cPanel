@@ -55,9 +55,9 @@ export const logoutAdmin = () => dispatch => {
 export const adminAuth = user => async (dispatch, getState) => {
   console.log({user})
   try {
-    dispatch(loginUser(user));
+    // dispatch(loginUser(user));
 
-    const { data: {status, message , error, data } } = await requestApi().request(LOGIN, {
+    const { data: {status, message , error, data = null } } = await requestApi().request(LOGIN, {
       method: "POST",
       data: user
     });

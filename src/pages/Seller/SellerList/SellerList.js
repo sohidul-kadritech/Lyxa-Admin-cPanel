@@ -17,11 +17,25 @@ import {
   deleteSeller,
   getAllSeller,
   setSellerStatusFalse,
+  updateSellerSearchKey,
+  updateSellerSortByKey,
+  updateSellerStatusKey,
+  updateSellerSubTypeKey,
+  updateSellerType,
 } from "../../../store/Seller/sellerAction";
 import AppPagination from "../../../components/AppPagination";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
+import styled from "styled-components";
+import {
+  sellerStatusOptions,
+  sellerSubTypeOptions,
+  sellerTypeOptions,
+  shopTypeOptions,
+  sortByOptions,
+} from "../../../assets/staticData";
+import Select from "react-select";
 
 const SellerList = () => {
   const dispatch = useDispatch();
@@ -41,16 +55,51 @@ const SellerList = () => {
     hasPreviousPage,
     currentPage,
     sellers,
+    sortByKey,
+    searchKey,
+    statusKey,
+    typeKey,
+    subTypeKey,
   } = useSelector((state) => state.sellerReducer);
 
   useEffect(() => {
-    callSellerList();
     dispatch(setSellerStatusFalse());
   }, []);
+
+  useEffect(() => {
+    if(sortByKey || searchKey || statusKey || typeKey || subTypeKey){
+      
+    callSellerList(true);
+    }else{
+      callSellerList()
+    }
+  },[sortByKey, searchKey, statusKey, typeKey, subTypeKey]);
 
   const callSellerList = (refresh = false) => {
     dispatch(getAllSeller(refresh));
   };
+
+  // DEBOUNCE SEARCH
+
+  const debounce = (func, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      // const context = this;
+      timer = setTimeout(() => {
+        func(args[0]);
+      }, delay);
+    };
+    // console.log("yes....");
+  };
+
+  const handleSearchChange = (event) => {
+    // console.log("event", event.target.value)
+    // setOpen(true);
+    dispatch(updateSellerSearchKey(event.target.value));
+  };
+
+  const searchKeyListener = debounce(handleSearchChange, 300);
 
   // DELETE
 
@@ -94,6 +143,85 @@ const SellerList = () => {
                 }}
               />
             ) : null}
+
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Sort By</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sortByOptions}
+                        classNamePrefix="select2-selection"
+                        value={sortByKey}
+                        onChange={(e) => dispatch(updateSellerSortByKey(e))}
+                      />
+                    </div>
+                  </Col>
+
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sellerTypeOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={typeKey}
+                        onChange={(e) => dispatch(updateSellerType(e))}
+                        defaultValue={""}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Status</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sellerStatusOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={statusKey}
+                        onChange={(e) => dispatch(updateSellerStatusKey(e))}
+                        defaultValue={""}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+                <Row className="d-flex justify-content-center">
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Sub Type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sellerSubTypeOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={subTypeKey}
+                        onChange={(e) => dispatch(updateSellerSubTypeKey(e))}
+                        defaultValue={""}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={8}>
+                    <label className="control-label">Search</label>
+                    <SearchWrapper>
+                      <div className="search__wrapper">
+                        <i className="fa fa-search" />
+                        <input
+                          className="form-control"
+                          type="search"
+                          placeholder="Search Seller..."
+                          id="search"
+                          onChange={searchKeyListener}
+                        />
+                      </div>
+                    </SearchWrapper>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
             <Card>
               <CardBody>
@@ -166,7 +294,9 @@ const SellerList = () => {
                               <Tooltip title="Details">
                                 <button
                                   className="btn btn-info button me-0 me-lg-2"
-                                  onClick={() =>history.push(`/seller/details/${item._id}`) }
+                                  onClick={() =>
+                                    history.push(`/seller/details/${item._id}`)
+                                  }
                                 >
                                   <i className="fa fa-eye" />
                                 </button>
@@ -208,13 +338,16 @@ const SellerList = () => {
                     })}
                   </Tbody>
                 </Table>
-                {/* {loading && (
-                    <Spinner
-                      style={{ position: "fixed", left: "50%", top: "50%" }}
-                      animation="border"
-                      variant="info"
-                    />
-                  )} */}
+                {loading && (
+                  <div className="text-center">
+                    <Spinner animation="border" variant="info" />
+                  </div>
+                )}
+                {!loading && sellers.length < 1 && (
+                  <div className="text-center">
+                    <h4>No Data!</h4>
+                  </div>
+                )}
               </CardBody>
             </Card>
 
@@ -237,5 +370,27 @@ const SellerList = () => {
     </React.Fragment>
   );
 };
+
+const SearchWrapper = styled.div`
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  width: 100%;
+  padding: 2px 7px;
+  @media (max-width: 1200px) {
+    width: 100%;
+  }
+  .search__wrapper {
+    /* padding: 7px 10px; */
+    display: flex;
+    align-items: center;
+    i {
+      font-size: 15px;
+    }
+    input {
+      border: none;
+      color: black !important;
+    }
+  }
+`;
 
 export default SellerList;

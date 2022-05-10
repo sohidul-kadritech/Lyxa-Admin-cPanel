@@ -1,7 +1,7 @@
 import * as actionType from "../actionType";
 import { toast } from "react-toastify";
 import requestApi from "../../network/httpRequest";
-import { ADD_SHOP, ALL_SHOP, DELETE_SHOP, EDIT_SHOP } from "../../network/Api";
+import { ADD_SHOP, ALL_SHOP, DELETE_SHOP, EDIT_SHOP, SHOP_LIVE_STATUS } from "../../network/Api";
 
 // ADD
 export const addShop = (values) => async (dispatch) => {
@@ -63,7 +63,7 @@ export const getAllShop =
   (refresh = false,seller = null, page = 1) =>
   async (dispatch, getState) => {
     // console.log({adminData})
-    const { shops, searchKey, statusKey, typeKey, sortByKey } =
+    const { shops, searchKey, statusKey, typeKey, sortByKey,liveStatus } =
       getState().shopReducer;
 
     if (shops.length < 1 || refresh) {
@@ -80,6 +80,7 @@ export const getAllShop =
             searchKey,
             type: typeKey.value,
             shopStatus: statusKey.value,
+            liveStatus: liveStatus.value,
             sellerId: seller
           },
         });
@@ -176,7 +177,7 @@ export const deleteShop = (id) => async (dispatch) => {
         data: {id},
       });
   
-      console.log({ data });
+      // console.log({ data });
   
       if (data.status) {
         toast.warn(data.message, {
@@ -192,7 +193,7 @@ export const deleteShop = (id) => async (dispatch) => {
   
         dispatch({
           type: actionType.DELETE_SHOP_REQUEST_SUCCESS,
-          payload: data.data.shop,
+          payload: id,
         });
       } else {
         toast.warn(data.message, {
@@ -219,8 +220,59 @@ export const deleteShop = (id) => async (dispatch) => {
   };
 
 
+// CHANGE LIVE STATUS
+export const ShopLiveStatus = (value) => async (dispatch) => {
+ 
+  try {
+    dispatch({
+      type: actionType.SHOP_LIVE_STATUS_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(SHOP_LIVE_STATUS, {
+      method: "POST",
+      data: value
+    });
 
+    console.log({ data });
 
+    if (data.status) {
+      toast.warn(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      dispatch({
+        type: actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS,
+        payload: data.data.shop,
+      });
+    } else {
+      toast.warn(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.SHOP_LIVE_STATUS_REQUEST_FAIL,
+        payload: data.data.shop,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.SHOP_LIVE_STATUS_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 // SET STATUS FALSE
 
@@ -264,5 +316,13 @@ export const updateShopType = (selectedType) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_TYPE_KEY,
     payload: selectedType,
+  });
+};
+
+export const updateShopLiveStatus = (value) => (dispatch) => {
+  // console.log("selected car type", selectedType);
+  dispatch({
+    type: actionType.UPDATE_SHOP_LIVE_STATUS,
+    payload: value,
   });
 };

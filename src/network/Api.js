@@ -1,11 +1,10 @@
 // export const API_URL = "http://localhost:5000";
 // export const FTP_URL = "http://localhost:1000";
 
-export const API_URL = "http://34.133.244.127/";
-export const FTP_URL = "https://ftp.codepadding.com";
+export const API_URL = "https://node.drop-deliveryapp.com/";
 
-// FTP SERVER API
-export const MULTIPLE_IMAGE_UPLOAD = FTP_URL + "/api/upload/image/multitples";
+
+
 
 const ADMIN_ENDPOINT = "admin";
 
@@ -48,9 +47,7 @@ export const RESTORE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/restore";
 
 // USERS
 
-export const ALL_USERS =  "user";
-export const ADD_USER = ADMIN_ENDPOINT + "/user/add";
-export const EDIT_USER = ADMIN_ENDPOINT + "/user/update";
+export const ALL_USERS = ADMIN_ENDPOINT +  "/user";
 export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
 
 
@@ -71,7 +68,7 @@ export const ADD_SELLER = ADMIN_ENDPOINT + "/seller/add";
 export const ALL_SELLER = ADMIN_ENDPOINT + "/seller";
 export const EDIT_SELLER = ADMIN_ENDPOINT + "/seller/update";
 export const DELETE_SELLER = ADMIN_ENDPOINT + "/seller/delete";
-
+export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details"
 // SHOP 
 
 export const ADD_SHOP = ADMIN_ENDPOINT + "/shop/add"
@@ -79,6 +76,7 @@ export const EDIT_SHOP = ADMIN_ENDPOINT + "/shop/update"
 export const ALL_SHOP = ADMIN_ENDPOINT + "/shop"
 export const DELETE_SHOP = ADMIN_ENDPOINT + "/shop/delete"
 export const SINGLE_SHOP = ADMIN_ENDPOINT + "/shop/get-shop-details"
+export const SHOP_LIVE_STATUS = ADMIN_ENDPOINT + "/shop/shop-visibility-change"
 
 // PRODUCT 
 
@@ -87,6 +85,13 @@ export const ALL_PRODUCT = ADMIN_ENDPOINT + "/product"
 export const EDIT_PRODUCT = ADMIN_ENDPOINT + "/product/update"
 export const SINGLE_PRODUCT = ADMIN_ENDPOINT + "/product/product-details"
 export const DELETE_PRODUCT = ADMIN_ENDPOINT + "/product/delete"
+
+// DELIVERY MAN 
+
+export const ADD_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/add"
+export const ALL_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy"
+export const SINGLE_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/get-single-delivery-boy"
+export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update"
 
 // IMAGE UPLOAD 
 

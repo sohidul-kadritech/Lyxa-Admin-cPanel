@@ -27,7 +27,7 @@ export const deleteBanner = (id) => async (dispatch) => {
         id,
       },
     });
-    console.log({ status });
+    // console.log({ status });
 
     if (status) {
       dispatch({
@@ -102,7 +102,7 @@ export const addBanner = (addData) => async (dispatch, getState) => {
       data: addData,
     });
 
-    console.log({ data });
+    // console.log({ data });
 
     if (data.status) {
       toast.success(data.message, {
@@ -167,7 +167,7 @@ export const editBanner = (bannerData) => async (dispatch) => {
       method: "POST",
       data: bannerData,
     });
-    console.log({ data });
+    // console.log({ data });
 
     if (data.status) {
       toast.success(data.message, {

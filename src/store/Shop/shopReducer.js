@@ -14,6 +14,7 @@ const initialState = {
   statusKey: { label: "All", value: "all" },
   typeKey: { label: "All", value: "all" },
   sortByKey: { label: "Desc", value: "desc" },
+  liveStatus: { label: "All", value: "all" }
 };
 
 const shopReducer = (state = initialState, action) => {
@@ -113,7 +114,7 @@ const shopReducer = (state = initialState, action) => {
 
     case actionType.DELETE_SHOP_REQUEST_SUCCESS:
       const filered = state.shops.filter((item) =>
-        item._id != payload._id 
+        item._id != payload
       );
 
       return {
@@ -131,6 +132,35 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
+      // CHANGE LIVE STATUS 
+
+      case actionType.SHOP_LIVE_STATUS_REQUEST_SEND:
+        return {
+          ...state,
+          loading: true,
+          status: false,
+        };
+  
+      case actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS:
+        const data = state.shops.map((item) =>
+          item._id == payload._id ? payload : item
+        );
+  
+        return {
+          ...state,
+          loading: false,
+          status: true,
+          shops: data,
+          error: null,
+        };
+      case actionType.SHOP_LIVE_STATUS_REQUEST_FAIL:
+        return {
+          ...state,
+          loading: false,
+          status: false,
+          error: payload,
+        };
+
 
     case actionType.UPDATE_STATUS_KEY:
       return {
@@ -142,28 +172,30 @@ const shopReducer = (state = initialState, action) => {
     case actionType.UPDATE_SORT_BY_KEY:
       return {
         ...state,
-        loading: false,
         sortByKey: payload,
       };
 
     case actionType.UPDATE_TYPE_KEY:
       return {
         ...state,
-        loading: false,
         typeKey: payload,
       };
 
     case actionType.UPDATE_SEARCH_KEY:
       return {
         ...state,
-        loading: false,
         searchKey: payload,
+      };
+
+      case actionType.UPDATE_SHOP_LIVE_STATUS:
+      return {
+        ...state,
+        liveStatus: payload
       };
 
       case actionType.SET_STATUS_FALSE:
       return {
         ...state,
-        loading: false,
         status: false
       };
 
