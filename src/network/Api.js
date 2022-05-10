@@ -1,7 +1,7 @@
 // export const API_URL = "http://localhost:5000";
 // export const FTP_URL = "http://localhost:1000";
 
-export const API_URL = "http://35.224.78.137/";
+export const API_URL = "https://node.drop-deliveryapp.com/";
 
 
 

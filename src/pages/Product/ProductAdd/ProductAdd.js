@@ -424,7 +424,7 @@ const ProductAdd = () => {
         progress: undefined,
       });
     }
-    if (attributeItems[0].name == "") {
+    if (attributeItems[attributeItems.length - 1].name == "") {
       return toast.warn("Please add atleast one item", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -1086,11 +1086,11 @@ const ProductAdd = () => {
                                         fontWeight: "500",
                                       }}
                                     >
-                                      {attribute.name}
+                                      {attribute.name}{attribute.required ? '(Required)' : ""}
                                     </span>
                                     <i
                                       className="fas fa-trash cursor-pointer me-3"
-                                      style={{ color: "red", fontSize: "15px" }}
+                                      style={{ color: "#BD381C", fontSize: "15px" }}
                                       onClick={() => removeAttribute(index)}
                                     ></i>
                                   </div>
@@ -1112,6 +1112,8 @@ const ProductAdd = () => {
                     )}
                   </Col>
                 </Row>
+
+                {/* ADDON */}
 
                 <Row className="mt-4">
                   <Col lg={6}>
@@ -1211,7 +1213,7 @@ const ProductAdd = () => {
                                     </div>
                                     <i
                                       className="fas fa-trash cursor-pointer me-3"
-                                      style={{ color: "red", fontSize: "15px" }}
+                                      style={{ color: "#BD381C", fontSize: "15px" }}
                                       onClick={() => removeAddon(index)}
                                     ></i>
                                   </div>
