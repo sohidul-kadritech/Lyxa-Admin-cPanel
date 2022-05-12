@@ -25,6 +25,7 @@ import shopReducer from "./Shop/shopReducer";
 import imageUploadReducer from "./ImageUpload/imageUploadReducer";
 import productReducer from "./Product/productReducer";
 import deliveryManReducer from "./DeliveryMan/DeliveryManReducer";
+import adminSettingsReducer from './AdminSettings/adminSettingsReducer';
 
 const rootReducer = combineReducers({
   // public
@@ -47,7 +48,8 @@ const rootReducer = combineReducers({
   shopReducer,
   imageUploadReducer,
   productReducer,
-  deliveryManReducer
+  deliveryManReducer,
+  adminSettingsReducer
 });
 
 export default rootReducer;

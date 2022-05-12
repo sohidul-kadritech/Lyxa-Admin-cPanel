@@ -283,7 +283,7 @@ const SellerList = () => {
                             <div>
                               <Tooltip title="Edit">
                                 <button
-                                  className="btn btn-success me-0 me-lg-2 button"
+                                  className="btn btn-success me-0 me-xl-2 button"
                                   onClick={() =>
                                     history.push(`/seller/edit/${item._id}`)
                                   }
@@ -293,7 +293,7 @@ const SellerList = () => {
                               </Tooltip>
                               <Tooltip title="Details">
                                 <button
-                                  className="btn btn-info button me-0 me-lg-2"
+                                  className="btn btn-info button me-0 me-xl-2"
                                   onClick={() =>
                                     history.push(`/seller/details/${item._id}`)
                                   }

@@ -230,6 +230,8 @@ const ProductAdd = () => {
     }
   };
 
+  // TAG CHANGE
+
   const handleTagChange = (evt) => {
     setTags({
       ...tags,
@@ -244,6 +246,8 @@ const ProductAdd = () => {
       items: tags.items.filter((i) => i != item),
     });
   };
+
+  // VALIDATION
 
   const submitProduct = () => {
     if (

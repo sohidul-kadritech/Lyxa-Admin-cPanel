@@ -137,8 +137,6 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
-
-
             {/* USERS MENU */}
 
             <li>
@@ -325,15 +323,6 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
-            {/* CHAT */}
-
-            <li>
-              <Link to="/chats" className="waves-effect">
-                <i className="fab fa-rocketchat" />
-                <span>{props.t("Chat")}</span>
-              </Link>
-            </li>
-
             {/* Admin Controls */}
 
             <li>
@@ -356,41 +345,6 @@ const SidebarContent = (props) => {
                 </li>
               </ul>
             </li>
-
-            {/* <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-user" />
-                <span>{props.t("Admin Control")}</span>
-              </Link>
-              <ul className="sub-menu " aria-expanded="false">
-                <li>
-                  <Link to="/#" className="has-arrow waves-effect">
-                    <i className="fas fa-user-friends" />
-                    <span>{props.t("Admins")}</span>
-                  </Link>
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/admin/list">
-                        <i className="fas fa-clipboard-list" />
-                        <span>{props.t("List")} </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/create">
-                        <i className="fas fa-plus-circle" />
-                        <span>{props.t("Create")}</span>
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <Link to="/admin/role">
-                    <i className="fas fa-user-tie" />
-                    <span>{props.t("Role")}</span>
-                  </Link>
-                </li>
-              </ul>
-            </li> */}
 
             {/* CATEGORIES AND TAGS */}
 
@@ -436,6 +390,31 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
+            {/* SETTINGS */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-settings" />
+                <span>{props.t("Settings")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/#" className="has-arrow waves-effect">
+                    <i className="fas fa-user" />
+                    <span>{props.t("Admin")}</span>
+                  </Link>
+
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/admin/cuisines">
+                        <i className="fas fa-clipboard-list" />
+                        <span>{props.t("Cuisines")}</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
       </SimpleBar>

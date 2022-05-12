@@ -155,6 +155,8 @@ import ProductAdd from "../pages/Product/ProductAdd/ProductAdd";
 import ShopDetails from "../pages/Shops/ShopDetails/ShopDetails";
 import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
 import DeliverymanDetails from "../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails.js";
+import Cuisine from "../pages/AdminSettings/Cuisine";
+import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
 
 
 const userRoutes = [
@@ -198,6 +200,7 @@ const userRoutes = [
   {path: '/products/list', component: ProductList},
   {path: '/products/add', component: ProductAdd},
   {path: '/products/edit/:id', component: ProductAdd},
+  {path: '/products/details/:id', component: ProductDetails},
 
 
   // DELIVERY MAN
@@ -247,6 +250,10 @@ const userRoutes = [
   { path: "/admin/create", component: CreateAdmin },
   { path: "/admin/edit/:id", component: CreateAdmin },
   { path: "/admin/role", component: Role },
+
+  // ADMIN SETTINGS 
+
+  {path: '/admin/cuisines', component: Cuisine },
 
 
 

@@ -93,6 +93,11 @@ export const ALL_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy"
 export const SINGLE_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/get-single-delivery-boy"
 export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update"
 
+
+// ADMINS SETTINGS 
+
+export const ADD_CUISINE = ADMIN_ENDPOINT + "/cuisines/add";
+
 // IMAGE UPLOAD 
 
 export const IMAGE_UPLOAD = "image/single-image-upload"
