@@ -155,8 +155,8 @@ import ProductAdd from "../pages/Product/ProductAdd/ProductAdd";
 import ShopDetails from "../pages/Shops/ShopDetails/ShopDetails";
 import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
 import DeliverymanDetails from "../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails.js";
-import Cuisine from "../pages/AdminSettings/Cuisine";
 import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
+import Cuisine from "../pages/Shops/Cuisine";
 
 
 const userRoutes = [
@@ -194,6 +194,7 @@ const userRoutes = [
   {path: "/shops/add", component: ShopAdd},
   {path: "/shops/edit/:id", component: ShopAdd},
   {path: "/shops/details/:id", component: ShopDetails},
+  {path: '/shops/cuisines', component: Cuisine },
 
   // PRODUCT 
 
@@ -201,6 +202,7 @@ const userRoutes = [
   {path: '/products/add', component: ProductAdd},
   {path: '/products/edit/:id', component: ProductAdd},
   {path: '/products/details/:id', component: ProductDetails},
+  
 
 
   // DELIVERY MAN
@@ -253,7 +255,7 @@ const userRoutes = [
 
   // ADMIN SETTINGS 
 
-  {path: '/admin/cuisines', component: Cuisine },
+  
 
 
 

@@ -14,13 +14,14 @@ import GlobalWrapper from "../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { toast } from "react-toastify";
 import { useDispatch,useSelector } from "react-redux";
-import { addCuisine } from "../../store/AdminSettings/adminSettingsAction";
+import { addCuisine } from "../../store/Shop/shopAction";
+
 
 const Cuisine = () => {
 
     const dispatch = useDispatch();
 
-    const {loading, cuisines} = useSelector(state => state.adminSettingsReducer);
+    
 
   const [name, setName] = useState("");
 
@@ -49,8 +50,8 @@ const Cuisine = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={"Cuisine"}
-              title="Admin Settings"
+              breadcrumbItem={"Cuisines"}
+              title="Product"
               //   loading={loading}
               //   callList={callSellerList}
             />

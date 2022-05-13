@@ -189,6 +189,12 @@ const SidebarContent = (props) => {
                     <span>{props.t("Add")}</span>
                   </Link>
                 </li>
+                <li>
+                  <Link to="/shops/cuisines">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("Cuisines")}</span>
+                  </Link>
+                </li>
               </ul>
             </li>
 
@@ -212,6 +218,7 @@ const SidebarContent = (props) => {
                     <span>{props.t("Add")}</span>
                   </Link>
                 </li>
+                
               </ul>
             </li>
 
@@ -398,20 +405,11 @@ const SidebarContent = (props) => {
                 <span>{props.t("Settings")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/#" className="has-arrow waves-effect">
-                    <i className="fas fa-user" />
+              <li>
+                  <Link to="/admin/settings">
+                    <i className="ti-settings" />
                     <span>{props.t("Admin")}</span>
                   </Link>
-
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/admin/cuisines">
-                        <i className="fas fa-clipboard-list" />
-                        <span>{props.t("Cuisines")}</span>
-                      </Link>
-                    </li>
-                  </ul>
                 </li>
               </ul>
             </li>

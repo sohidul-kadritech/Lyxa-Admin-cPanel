@@ -1,7 +1,7 @@
 import * as actionType from "../actionType";
 import { toast } from "react-toastify";
 import requestApi from "../../network/httpRequest";
-import { ADD_SHOP, ALL_SHOP, DELETE_SHOP, EDIT_SHOP, SHOP_LIVE_STATUS } from "../../network/Api";
+import { ADD_CUISINE, ADD_SHOP, ALL_SHOP, DELETE_SHOP, EDIT_SHOP, SHOP_LIVE_STATUS } from "../../network/Api";
 
 // ADD
 export const addShop = (values) => async (dispatch) => {
@@ -325,4 +325,61 @@ export const updateShopLiveStatus = (value) => (dispatch) => {
     type: actionType.UPDATE_SHOP_LIVE_STATUS,
     payload: value,
   });
+};
+
+// ADD CUISINES
+
+export const addCuisine = (name) => async (dispatch) => {
+  console.log({name})
+  try {
+    dispatch({
+      type: actionType.ADD_CUISINE_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, message, error, data = null },
+    } = await requestApi().request(ADD_CUISINE, {
+      method: "POST",
+      data: { name },
+    });
+
+    console.log({data})
+
+    if (status) {
+      toast.warn(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.ADD_CUISINE_REQUEST_SUCCESS,
+        payload: data.cuisines,
+      });
+    } else {
+      toast.warn(error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.ADD_CUISINE_REQUEST_FAIL,
+        paylaod: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_CUISINE_REQUEST_FAIL,
+      paylaod: error.message,
+    });
+  }
 };
