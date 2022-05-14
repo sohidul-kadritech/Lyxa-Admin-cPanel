@@ -48,7 +48,7 @@ export const RESTORE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/restore";
 // USERS
 
 export const ALL_USERS = ADMIN_ENDPOINT +  "/user";
-export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
+export const SINGLE_USER = ADMIN_ENDPOINT + "/user/get-user-details";
 
 
 // CATEGORY 
@@ -69,6 +69,7 @@ export const ALL_SELLER = ADMIN_ENDPOINT + "/seller";
 export const EDIT_SELLER = ADMIN_ENDPOINT + "/seller/update";
 export const DELETE_SELLER = ADMIN_ENDPOINT + "/seller/delete";
 export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details"
+
 // SHOP 
 
 export const ADD_SHOP = ADMIN_ENDPOINT + "/shop/add"
@@ -77,6 +78,9 @@ export const ALL_SHOP = ADMIN_ENDPOINT + "/shop"
 export const DELETE_SHOP = ADMIN_ENDPOINT + "/shop/delete"
 export const SINGLE_SHOP = ADMIN_ENDPOINT + "/shop/get-shop-details"
 export const SHOP_LIVE_STATUS = ADMIN_ENDPOINT + "/shop/shop-visibility-change"
+export const ADD_CUISINE = ADMIN_ENDPOINT + "/cuisines/add";
+export const ALL_CUISINE = ADMIN_ENDPOINT + "/cuisines";
+export const EDIT_CUISINE = ADMIN_ENDPOINT + "/cuisines/update";
 
 // PRODUCT 
 
@@ -96,7 +100,8 @@ export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update"
 
 // ADMINS SETTINGS 
 
-export const ADD_CUISINE = ADMIN_ENDPOINT + "/cuisines/add";
+export const ADMINS_SETTINGS = '/admin/setting/admin-setting'
+export const UPDATE_ADMINS_SETTINGS = '/admin/setting/admin-setting/edit'
 
 // IMAGE UPLOAD 
 

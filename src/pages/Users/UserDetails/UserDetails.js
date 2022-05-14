@@ -16,8 +16,7 @@ const UserDetails = () => {
   const { loading, users } = useSelector((state) => state.usersReducer);
 
   const [user, setUser] = useState({});
-  const [selectedImg, setSelectedImg] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
+
 
   useEffect(() => {
     if (id) {
@@ -44,6 +43,7 @@ const UserDetails = () => {
       });
 
       if (data.status) {
+        // console.log(data.data.user);
         setUser(data.data.user);
       }
 
@@ -59,14 +59,15 @@ const UserDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumbs
-              maintitle="User"
+              maintitle="Drop"
               breadcrumbItem="Details"
+              title="User"
               isRefresh={false}
               //   loading={loading}
               //   callList={callColorList}
             />
 
-            {isOpen && (
+            {/* {isOpen && (
               <Lightbox
                 mainSrc={selectedImg}
                 enableZoom={true}
@@ -75,67 +76,39 @@ const UserDetails = () => {
                   setIsOpen(!isOpen);
                 }}
               />
-            )}
+            )} */}
 
-            <Card>
-              <CardBody>
-                <Row>
-                  <div className="d-flex justify-content-end w-100">
-                    <button
-                      onClick={() => history.push(`/users/edit/${id}`)}
-                      className="btn btn-success"
-                    >
-                      Edit
-                    </button>
-                  </div>
-                </Row>
-                <Row>
-                  <Col xl={6}>
-                    {user.img ? (
-                      <ImageWrapper
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          padding: "10px 0px",
-                        }}
-                      >
-                        <img
-                          onClick={() => {
-                            setIsOpen(true);
-                            setSelectedImg(user.img);
-                          }}
-                          className="img-fluid cursor-pointer"
-                          alt="Veltrix"
-                          src={user.img}
-                          width="100%"
-                        />
-                        <small>User Image</small>
-                      </ImageWrapper>
-                    ) : null}
-                  </Col>
-                  <Col xl={6}>
+            <Row>
+              <Col md={6}>
+                <Card>
+                  <CardBody>
                     <Details>
                       <h5 className="title">Name:</h5>
                       <h4 className="value">{user.name}</h4>
                     </Details>
-                    <Details>
-                      <h5 className="title">Phone:</h5>
-                      <h4 className="value">{user.phoneNumber}</h4>
-                    </Details>
+
                     <Details>
                       <h5 className="title">Gmail:</h5>
                       <h4 className="value">{user.email}</h4>
                     </Details>
                     <Details>
-                      <h5 className="title">Date of Birth:</h5>
+                      <h5 className="title">Gender:</h5>
+                      <h4 className="value">{user.gender}</h4>
+                    </Details>
+                    <Details>
+                      <h5 className="title">Birth Date:</h5>
                       <h4 className="value">
                         {new Date(user.dob).toDateString()}
                       </h4>
                     </Details>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
+                    <Details>
+                      <h5 className="title">status:</h5>
+                      <h4 className="value">{user.status}</h4>
+                    </Details>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>
@@ -160,9 +133,9 @@ const Details = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  @media (max-width: 1200px) {
+  /* @media (max-width: 1200px) {
     justify-content: center;
-  }
+  } */
 
   .title {
     color: black;

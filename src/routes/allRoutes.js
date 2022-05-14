@@ -157,6 +157,7 @@ import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
 import DeliverymanDetails from "../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails.js";
 import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
 import Cuisine from "../pages/Shops/Cuisine";
+import AdminSettings from "../pages/AdminSettings/AdminSettings";
 
 
 const userRoutes = [
@@ -179,7 +180,7 @@ const userRoutes = [
 
   { path: "/users/list", component: UsersList },
 
-  { path: "/user/details/:id", component: UserDetails },
+  { path: "/users/details/:id", component: UserDetails },
 
   // SELLER
 
@@ -256,7 +257,7 @@ const userRoutes = [
   // ADMIN SETTINGS 
 
   
-
+  { path: "/admin/settings", component: AdminSettings },
 
 
   // //calendar
