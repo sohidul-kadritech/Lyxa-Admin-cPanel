@@ -4,14 +4,14 @@ import { Button, Card, CardBody, CardTitle, Col, Container, Row,Spinner } from "
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllAdminSettings, updateAdminSettings, updateGoogleMapApiKey } from "../../store/AdminSettings/adminSettingsAction";
+import { getAllAdminSettings, updateAdminSettings, updateGoogleMapApiKey } from "../../store/Settings/settingsAction";
 import { toast } from "react-toastify";
 
 const AdminSettings = () => {
 
   const dispatch = useDispatch();
 
-  const {googleMapKey, loading} = useSelector(state => state.adminSettingsReducer)
+  const {googleMapKey, loading} = useSelector(state => state.settingsReducer)
 
 
   useEffect(()=>{
@@ -45,6 +45,7 @@ const AdminSettings = () => {
               breadcrumbItem={"Admin Settings"}
               // loading={loading}
               // callList={callCuisineList}
+              isRefresh={false}
             />
 
 

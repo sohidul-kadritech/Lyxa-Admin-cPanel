@@ -93,7 +93,11 @@ const ProductDetails = () => {
               <CardBody>
                 <div className="d-flex justify-content-between">
                   <CardTitle>Product Informations</CardTitle>
-                  <Button outline={true} color="success" onClick={()=>history.push(`/products/edit/${id}`)}>
+                  <Button
+                    outline={true}
+                    color="success"
+                    onClick={() => history.push(`/products/edit/${id}`)}
+                  >
                     Edit
                   </Button>
                 </div>
@@ -243,7 +247,7 @@ const ProductDetails = () => {
                         </Link>
                       </div>
                     </Details>
-                    <Details className='mt-1'>
+                    <Details className="mt-1">
                       <h5>Shop:</h5>
                       <div className="ms-2">
                         <img
@@ -314,6 +318,44 @@ const ProductDetails = () => {
                     </Paper>
                   </div>
                 )}
+              </Col>
+              <Col lg={4}>
+                {product?.addons?.length > 0 && (
+                  <div className="mb-4">
+                    <Paper className="py-2">
+                      <h5 className="text-center">Addons List</h5>
+                      <hr />
+                      {product?.addons?.length > 0 &&
+                        product?.addons?.map((item, index) => (
+                          <ul key={index} style={{ listStyleType: "square" }}>
+                            <li>
+                              <div className="d-flex justify-content-between">
+                                <div>
+                                  <img
+                                    loading="lazy"
+                                    width="60"
+                                    src={item.images[0]}
+                                    alt=""
+                                  />
+                                  <span
+                                    style={{
+                                      fontSize: "15px",
+                                      fontWeight: "500",
+                                      marginLeft: "10px",
+                                    }}
+                                  >
+                                    {item.name}
+                                  </span>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        ))}
+                    </Paper>
+                  </div>
+                )}
+              </Col>
+              <Col>
               </Col>
             </Row>
           </Container>

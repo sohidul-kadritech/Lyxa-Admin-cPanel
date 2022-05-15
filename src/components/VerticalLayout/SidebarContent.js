@@ -218,7 +218,6 @@ const SidebarContent = (props) => {
                     <span>{props.t("Add")}</span>
                   </Link>
                 </li>
-                
               </ul>
             </li>
 
@@ -405,10 +404,16 @@ const SidebarContent = (props) => {
                 <span>{props.t("Settings")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
-              <li>
+                <li>
                   <Link to="/admin/settings">
                     <i className="ti-settings" />
                     <span>{props.t("Admin")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/app/settings">
+                    <i className="ti-settings" />
+                    <span>{props.t("App")}</span>
                   </Link>
                 </li>
               </ul>

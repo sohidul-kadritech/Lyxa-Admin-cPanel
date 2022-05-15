@@ -13,7 +13,6 @@ import {
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import Select from "react-select";
 import Switch from "react-switch";
 import Dropzone from "react-dropzone";
 import Chip from "@mui/material/Chip";
@@ -21,9 +20,22 @@ import Paper from "@mui/material/Paper";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSeller } from "../../../store/Seller/sellerAction";
-import { Autocomplete, Box, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { toast } from "react-toastify";
-import { addShop, editShop } from "../../../store/Shop/shopAction";
+import {
+  addCuisine,
+  addShop,
+  editShop,
+  getAllCuisine,
+} from "../../../store/Shop/shopAction";
 import { useHistory, useParams, Link, useLocation } from "react-router-dom";
 import PlacesAutocomplete from "react-places-autocomplete";
 import {
@@ -53,7 +65,9 @@ const ShopAdd = () => {
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { sellers } = useSelector((state) => state.sellerReducer);
-  const { loading, status, shops } = useSelector((state) => state.shopReducer);
+  const { loading, status, shops, cuisines } = useSelector(
+    (state) => state.shopReducer
+  );
 
   const [tags, setTags] = useState({
     items: [],
@@ -62,37 +76,46 @@ const ShopAdd = () => {
 
   const [seller, setSeller] = useState(null);
   const [searchSellerKey, setSearchSellerKey] = useState("");
-  const [shopType, setShopType] = useState(null);
+  const [shopType, setShopType] = useState("");
   const [shopStartTime, setShopStartTime] = useState("");
   const [shopEndTime, setShopEndTime] = useState("");
   const [shopName, setShopName] = useState("");
   const [shopLogo, setShopLogo] = useState(null);
   const [shopBanner, setShopBanner] = useState(null);
   const [shopPhotos, setShopPhotos] = useState(null);
-  const [shopStatus, setShopStatus] = useState(null);
-  const [delivery, setDelivery] = useState(null);
+  const [shopStatus, setShopStatus] = useState("");
+  const [delivery, setDelivery] = useState("");
   const [minOrderAmount, setMinOrderAmount] = useState(0);
-  const [foodType, setFoodType] = useState(null);
+  const [foodType, setFoodType] = useState("");
 
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [address, setAddress] = useState(null);
+  const [address, setAddress] = useState("");
   const [latLng, setLatLng] = useState({});
   const [fullAddress, setFullAddress] = useState("");
   const [pinCode, setPinCode] = useState("");
   const [isCuisine, setIsCuisine] = useState(false);
-  const [cuisineType, setCuisineType] = useState(null);
   const [liveStatus, setLiveStatus] = useState("");
-  const [freeDelivery, setFreeDelivery] = useState(false);
+  const [freeDelivery, setFreeDelivery] = useState("");
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCuisines, setSelectedCuisines] = useState([]);
+  const [searchCuisineKey, setSearchCuisineKey] = useState("");
 
   // GET SELLER
 
   useEffect(() => {
     dispatch(getAllSeller(true));
   }, []);
+
+  // GET CUISINES
+
+  useEffect(() => {
+    if (isCuisine) {
+      dispatch(getAllCuisine(true));
+    }
+  }, [isCuisine]);
 
   useEffect(() => {
     if (id) {
@@ -121,7 +144,7 @@ const ShopAdd = () => {
       history.push("/shop/list", { replace: true });
     }
   };
-// FIND SELLER 
+  // FIND SELLER
   useEffect(() => {
     if (searchParams) {
       const sellerId = searchParams.get("sellerId");
@@ -150,44 +173,30 @@ const ShopAdd = () => {
       tags,
       liveStatus,
       freeDelivery,
+      address
     } = values;
 
-    const findSeller = sellers.find((s) => s._id == seller._id);
-
-    const findDeliveryType = shopDeliveryOptions.find(
-      (op) => op.value == delivery
-    );
-    const findShopStatus = shopStatusOptions2.find(
-      (x) => x.value == shopStatus
-    );
-    const findShopType = shopTypeOptions2.find((x) => x.value == shopType);
-    const findFoodType = foodTypeOptions.find((type) => type.value == foodType);
-    const findLiveStatus = liveStatusOptions.find(
-      (item) => item.value == liveStatus
-    );
-
-    const findFreeDelivery = productVisibility.find(
-      (item) => item.value == freeDelivery
-    );
+    // const findSeller = sellers.find((s) => s._id == seller._id);
 
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
-    setSeller(findSeller);
-    setFoodType(findFoodType);
-    setShopType(findShopType);
+    setSeller(seller);
+    setFoodType(foodType);
+    setShopType(shopType);
     setShopStartTime(shopStartTimeText);
     setShopEndTime(shopEndTimeText);
     setShopName(shopName);
-    setShopStatus(findShopStatus);
-    setDelivery(findDeliveryType);
+    setShopStatus(shopStatus);
+    setDelivery(delivery);
     setMinOrderAmount(minOrderAmount);
     setTags({
       items: tags,
       value: "",
     });
-    setLiveStatus(findLiveStatus);
-    setFreeDelivery(findFreeDelivery);
+    setLiveStatus(liveStatus);
+    setFreeDelivery(freeDelivery);
+    setPinCode(address.pin)
   };
 
   // TAGS
@@ -287,18 +296,18 @@ const ShopAdd = () => {
       });
     }
 
-    if (isCuisine && !cuisineType) {
-      return toast.warn("Please Select Cuisine Type", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
+    // if (isCuisine && !cuisineType) {
+    //   return toast.warn("Please Select Cuisine Type", {
+    //     // position: "bottom-right",
+    //     position: toast.POSITION.TOP_RIGHT,
+    //     autoClose: 3000,
+    //     hideProgressBar: true,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //   });
+    // }
 
     uploadImages();
 
@@ -365,15 +374,17 @@ const ShopAdd = () => {
 
   const submitData = (logoUrl, bannerUrl, photosUrl) => {
     // console.log("given data---", data);
+    const cuisinesList = selectedCuisines?.map(item => item?._id)
     if (id) {
       dispatch(
         editShop({
           id,
-          shopType: shopType.value,
-          foodType: shopType.value == "food"
-              ? foodType.value
-              : shopType.value == "grocery"
-              ? "food cut"
+          shopType: shopType,
+          foodType:
+            shopType == "food"
+              ? foodType
+              : shopType == "grocery"
+              ? "supermarkets"
               : "food cut",
           shopStartTime,
           shopEndTime,
@@ -381,17 +392,30 @@ const ShopAdd = () => {
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
           shopPhotos: photosUrl,
-          shopStatus: shopStatus.value,
+          shopStatus: shopStatus,
           shopDescription: "desrcriptions",
-          delivery: delivery.value,
+          delivery: delivery,
           tags: tags.items,
           minOrderAmount,
-          liveStatus: liveStatus.value,
+          liveStatus: liveStatus,
           freeDelivery: freeDelivery.value,
+          isCuisine,
+          cuisineType: cuisinesList,
+          shopAddress: {
+            address: fullAddress,
+            latitude: latLng.lat,
+            longitude: latLng.lng,
+            city,
+            state,
+            country,
+            placeId: address?.place_id,
+            pin: pinCode,
+            primary: true,
+            note: "",
+          }
         })
       );
     } else {
-      const cuisineTypeData = cuisineType?.map((item) => item.value);
       dispatch(
         addShop({
           shopAddress: {
@@ -408,26 +432,26 @@ const ShopAdd = () => {
           },
           seller: seller._id,
           shopName,
-          shopType: shopType.value,
+          shopType: shopType,
           shopStartTime,
           shopEndTime,
-          shopStatus: shopStatus.value,
-          delivery: delivery.value,
+          shopStatus: shopStatus,
+          delivery: delivery,
           minOrderAmount,
           tags: tags.items,
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
           shopPhotos: photosUrl,
           foodType:
-            shopType.value == "food"
-              ? foodType.value
-              : shopType.value == "grocery"
+            shopType == "food"
+              ? foodType
+              : shopType == "grocery"
               ? "supermarkets"
-              : "supermarkets",
+              : "",
           shopDescription: "desrcriptions",
           isCuisine,
-          cuisineType: cuisineTypeData,
-          liveStatus: liveStatus.value,
+          cuisineType: cuisinesList,
+          liveStatus: liveStatus,
         })
       );
     }
@@ -481,12 +505,12 @@ const ShopAdd = () => {
         history.push("/shops/list");
       } else {
         setSeller(null);
-        setShopType(null);
+        setShopType("");
         setShopStartTime("");
         setShopEndTime("");
         setShopName("");
-        setShopStatus(null);
-        setDelivery(null);
+        setShopStatus("");
+        setDelivery("");
         setMinOrderAmount(0);
         setTags({
           items: [],
@@ -497,6 +521,11 @@ const ShopAdd = () => {
         setShopLogo(null);
         setShopBanner(null);
         setShopPhotos(null);
+        setFoodType("");
+        setSelectedCuisines([]);
+        setSearchCuisineKey("");
+        setLiveStatus("");
+        setIsCuisine(false)
         window.scroll(0, 0);
       }
     }
@@ -532,6 +561,22 @@ const ShopAdd = () => {
     } else {
       setShopPhotos(files[0]);
     }
+  };
+
+
+  // CUISINES ADD
+
+  const addNewCuisine = (item) => {
+    // console.log({ item });
+    setSelectedCuisines([...selectedCuisines, item]);
+  };
+
+  // CUISINE REMOVE
+
+  const handleCuisineDelete = (index) => {
+    let list = [...selectedCuisines];
+    list.splice(index,1)
+    setSelectedCuisines(list)
   };
 
   return (
@@ -609,35 +654,35 @@ const ShopAdd = () => {
                   </div>
                   <Col lg={6}>
                     <div className="mb-4">
-                      <Label>Name</Label>
-                      <input
-                        className="form-control"
+                      <TextField
                         type="text"
+                        className="form-control"
                         placeholder="Enter Shop Name"
                         required
+                        label="Name"
                         value={shopName}
                         onChange={(e) => setShopName(e.target.value)}
                       />
                     </div>
 
                     <div className="mb-4">
-                      <Label>Opens At</Label>
-                      <input
+                      <TextField
                         className="form-control"
                         type="time"
                         id="example-time-input"
                         required
                         value={shopStartTime}
+                        label="Open At"
                         onChange={(e) => setShopStartTime(e.target.value)}
                       />
                     </div>
 
                     <div className="mb-4">
-                      <Label>Close At</Label>
-                      <input
-                        className="form-control"
+                      <TextField
                         type="time"
+                        className="form-control"
                         id="example-time-input"
+                        label="Close At"
                         required
                         value={shopEndTime}
                         onChange={(e) => setShopEndTime(e.target.value)}
@@ -645,34 +690,39 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <label className="control-label">Status</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={shopStatusOptions2}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={shopStatus}
-                        onChange={(e) => setShopStatus(e)}
-                        defaultValue={""}
-                      />
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Status
+                        </InputLabel>
+                        <Select
+                          id="demo-simple-select"
+                          value={shopStatus}
+                          onChange={(e) => setShopStatus(e.target.value)}
+                          label="Status"
+                        >
+                          {shopStatusOptions2.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                              {item.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </div>
 
                     <div className="mb-4">
-                      <Label>Minimum Order</Label>
-                      <input
+                      <TextField
                         className="form-control"
                         type="number"
                         placeholder="Enter Minimum Order Amount"
                         required
+                        label="Minimum Order"
                         value={minOrderAmount}
                         onChange={(e) => setMinOrderAmount(e.target.value)}
                       />
                     </div>
 
-                    {!id ? (
-                      <>
+          
                         <div className="mb-4">
-                          <Label>Address</Label>
                           <PlacesAutocomplete
                             value={selectedAddress}
                             onChange={handleAddressChange}
@@ -690,16 +740,15 @@ const ShopAdd = () => {
                               loading,
                             }) => (
                               <div>
-                                <input
+                                <TextField
                                   {...getInputProps({
                                     placeholder: "Search Places ...",
                                     className: "location-search-input",
                                   })}
-                                  disabled={id ? true : false}
                                   type="text"
                                   required
                                   id="outlined-required"
-                                  label="Pickup Location"
+                                  label="Address"
                                   className="form-control"
                                   value={selectedAddress}
                                 />
@@ -751,111 +800,103 @@ const ShopAdd = () => {
                         </div>
 
                         <div className="mb-4">
-                          <Label>Pin Code</Label>
-                          <input
+                          <TextField
                             className="form-control"
                             type="number"
                             placeholder="Enter Pin Code"
                             required
+                            label="Pin Code"
                             value={pinCode}
                             onChange={(e) => setPinCode(e.target.value)}
                           />
                         </div>
-                      </>
-                    ) : (
-                      <div className="mb-4">
-                        <label className="control-label">Free Delivery</label>
-                        <Select
-                          palceholder="Select Status"
-                          options={productVisibility}
-                          classNamePrefix="select2-selection"
-                          required
-                          value={freeDelivery}
-                          onChange={(e) => setFreeDelivery(e)}
-                          defaultValue={""}
-                        />
-                      </div>
-                    )}
+                  
+             
+                      {!id && <div className="mb-4">
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            Free Delivery
+                          </InputLabel>
+                          <Select
+                            id="demo-simple-select"
+                            requird
+                            value={freeDelivery}
+                            onChange={(e) => setFreeDelivery(e.target.value)}
+                            label="Free Delivery"
+                          >
+                            {productVisibility.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>}
+                 
                   </Col>
                   <Col lg={6} className="mt-4 mt-lg-0">
                     <div className="mb-4">
-                      <Label>Shop Type</Label>
-                      <Select
-                        palceholder="Select Country"
-                        options={shopTypeOptions2}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={shopType}
-                        onChange={(e) => setShopType(e)}
-                        defaultValue={""}
-                      />
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Shop Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          required
+                          value={shopType}
+                          onChange={(e) => setShopType(e.target.value)}
+                          label="Shop Type"
+                        >
+                          {shopTypeOptions2.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                              {item.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </div>
 
-                    {shopType && shopType.value == "food" && (
+                    {shopType == "food" && (
                       <div className="mb-4">
-                        <Label>Food Type</Label>
-                        <Select
-                          palceholder="Select Country"
-                          options={foodTypeOptions}
-                          classNamePrefix="select2-selection"
-                          required
-                          value={foodType}
-                          onChange={(e) => setFoodType(e)}
-                          defaultValue={""}
-                        />
-                      </div>
-                    )}
-
-                    {foodType?.value == "restaurants" && !id && (
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          value={isCuisine}
-                          id="flexCheckDefault"
-                          onChange={(e) => setIsCuisine(e.target.checked)}
-                        />
-                        <label
-                          className="form-check-label ms-1"
-                          style={{ fontSize: "16px" }}
-                          htmlFor="flexCheckDefault"
-                        >
-                          Is Cuisine?
-                        </label>
-                      </div>
-                    )}
-
-                    {isCuisine && (
-                      <div className="mb-3">
-                        <label className="control-label">Cuisines</label>
-                        <Select
-                          value={cuisineType}
-                          isMulti={true}
-                          onChange={(e) => {
-                            setCuisineType(e);
-                          }}
-                          options={cuisinesList}
-                          classNamePrefix="select2-selection"
-                        />
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            Food Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            required
+                            value={foodType}
+                            onChange={(e) => setFoodType(e.target.value)}
+                            label="Food Type"
+                          >
+                            {foodTypeOptions.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </div>
                     )}
 
                     <div className="mb-4">
                       <div>
-                        <div className="d-flex justify-content-between">
-                          <Label>Tags</Label>
+                        <div className="d-flex justify-content-end">
                           {foodType?.value == "restaurants" && (
                             <span style={{ color: "red" }}>
                               Must add one cuisine
                             </span>
                           )}
                         </div>
-                        <input
+                        <TextField
                           value={tags.value}
                           placeholder="Type Tag Name and press `Enter`..."
                           onKeyDown={handleTagAdd}
                           onChange={handleTagChange}
                           className="form-control"
+                          label="tag"
                         />
                       </div>
                       {tags.items.length > 0 && (
@@ -877,30 +918,124 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <Label>Delivery Type</Label>
-                      <Select
-                        palceholder="Select Country"
-                        options={shopDeliveryOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={delivery}
-                        onChange={(e) => setDelivery(e)}
-                        defaultValue={""}
-                      />
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Delivery Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          required
+                          value={delivery}
+                          onChange={(e) => setDelivery(e.target.value)}
+                          label="Delivery  Type"
+                        >
+                          {shopDeliveryOptions.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                              {item.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </div>
 
                     <div className="mb-4">
-                      <Label>Live Status</Label>
-                      <Select
-                        palceholder="Select Country"
-                        options={liveStatusOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={liveStatus}
-                        onChange={(e) => setLiveStatus(e)}
-                        defaultValue={""}
-                      />
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Live Status
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          required
+                          value={liveStatus}
+                          onChange={(e) => setLiveStatus(e.target.value)}
+                          label="Live Status"
+                        >
+                          {liveStatusOptions.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                              {item.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </div>
+
+                    {(foodType == "restaurants" && !id) && (
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value={isCuisine}
+                          id="flexCheckDefault"
+                          onChange={(e) => setIsCuisine(e.target.checked)}
+                        />
+                        <label
+                          className="form-check-label ms-1"
+                          style={{ fontSize: "16px" }}
+                          htmlFor="flexCheckDefault"
+                        >
+                          Is Cuisine?
+                        </label>
+                      </div>
+                    )}
+
+                    {isCuisine && (
+                      <div className="mb-3">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          onChange={(event, newValue) => {
+                            addNewCuisine(newValue);
+                            // console.log("new", newValue);
+                          }}
+                          getOptionLabel={(option, index) =>
+                            option.name ? option.name : ""
+                          }
+                          isOptionEqualToValue={
+                            (option, value) => option._id == value._id
+                            // console.log({value})
+                          }
+                          inputValue={searchCuisineKey}
+                          onInputChange={(event, newInputValue) => {
+                            setSearchCuisineKey(newInputValue);
+                            // console.log("input value", newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={cuisines.length > 0 ? cuisines : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params, index) => (
+                            <TextField {...params} label="Select Cuisine" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option._id}
+                            >
+                              {option.name}
+                            </Box>
+                          )}
+                        />
+
+                        {selectedCuisines.length > 0 && (
+                          <Paper className="mt-4 p-3">
+                            {selectedCuisines.map((item, index) => (
+                              <TagWrapper className="tag-item" key={index}>
+                                {item.name}
+                                <button
+                                  type="button"
+                                  className="button"
+                                  onClick={() => handleCuisineDelete(index)}
+                                >
+                                  &times;
+                                </button>
+                              </TagWrapper>
+                            ))}
+                          </Paper>
+                        )}
+                      </div>
+                    )}
                   </Col>
                 </Row>
 
@@ -946,7 +1081,11 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={shopLogo.preview ? shopLogo.preview: shopLogo}
+                                      src={
+                                        shopLogo.preview
+                                          ? shopLogo.preview
+                                          : shopLogo
+                                      }
                                       alt=""
                                     />
                                   </Col>
@@ -955,11 +1094,14 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {shopLogo.name ? shopLogo.name : "Shop Logo"}
+                                      {shopLogo.name
+                                        ? shopLogo.name
+                                        : "Shop Logo"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {shopLogo.formattedSize && shopLogo.formattedSize}
+                                        {shopLogo.formattedSize &&
+                                          shopLogo.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -1032,7 +1174,11 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={shopBanner.preview ? shopBanner.preview : shopBanner}
+                                      src={
+                                        shopBanner.preview
+                                          ? shopBanner.preview
+                                          : shopBanner
+                                      }
                                       alt=""
                                     />
                                   </Col>
@@ -1041,11 +1187,14 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {shopBanner.name ? shopBanner.name : "Shop Banner"}
+                                      {shopBanner.name
+                                        ? shopBanner.name
+                                        : "Shop Banner"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        {shopBanner.formattedSize && shopBanner.formattedSize }
+                                        {shopBanner.formattedSize &&
+                                          shopBanner.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>
@@ -1121,7 +1270,11 @@ const ShopAdd = () => {
                                         maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      src={shopPhotos.preview ? shopPhotos.preview : shopPhotos}
+                                      src={
+                                        shopPhotos.preview
+                                          ? shopPhotos.preview
+                                          : shopPhotos
+                                      }
                                       alt=""
                                     />
                                   </Col>
@@ -1130,11 +1283,14 @@ const ShopAdd = () => {
                                       to="#"
                                       className="text-muted font-weight-bold"
                                     >
-                                      {shopPhotos.name ? shopPhotos.name : "Shop Photos"}
+                                      {shopPhotos.name
+                                        ? shopPhotos.name
+                                        : "Shop Photos"}
                                     </Link>
                                     <p className="mb-0">
                                       <strong>
-                                        { shopPhotos.formattedSize && shopPhotos.formattedSize}
+                                        {shopPhotos.formattedSize &&
+                                          shopPhotos.formattedSize}
                                       </strong>
                                     </p>
                                   </Col>

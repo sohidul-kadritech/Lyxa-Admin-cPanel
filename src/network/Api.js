@@ -98,10 +98,13 @@ export const SINGLE_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/get-single-de
 export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update"
 
 
-// ADMINS SETTINGS 
+//  SETTINGS 
 
 export const ADMINS_SETTINGS = '/admin/setting/admin-setting'
-export const UPDATE_ADMINS_SETTINGS = '/admin/setting/admin-setting/edit'
+export const UPDATE_ADMINS_SETTINGS = '/admin/setting/admin-setting/edit';
+
+export const UPDATE_APP_SETTINGS = '/admin/setting/app-setting/edit'
+export const APP_SETTINGS = '/admin/setting/app-setting'
 
 // IMAGE UPLOAD 
 

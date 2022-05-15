@@ -10,7 +10,7 @@ export const sortByOptions = [
   ];
 
   export const liveStatusOptions = [
-    { label: "Live", value: "live" },
+    { label: "Online", value: "online" },
     { label: "Offline", value: "offline" },
   ];
 
@@ -86,8 +86,8 @@ export const sortByOptions = [
 
 
   export const productVisibility = [
-    { label: "True", value: true },
-    { label: "False", value: false },
+    { label: "Yes", value: true },
+    { label: "NO", value: false },
   ]
 
   export const activeOptions = [

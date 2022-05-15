@@ -5,12 +5,15 @@ const initialState = {
   status: false,
   error: null,
   googleMapKey: "",
+  nearByShopKm: 0
 };
 
-const adminSettingsReducer = (state = initialState, action) => {
+const settingsReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
+
+    // ADMIN
     case actionType.UPDATE_GOOGLE_KEY:
       return {
         ...state,
@@ -59,9 +62,58 @@ const adminSettingsReducer = (state = initialState, action) => {
         error: payload
       };
 
+      // APP 
+
+      case actionType.UPDATE_NEAR_BY_SHOP:
+      return {
+        ...state,
+        nearByShopKm: payload,
+      };
+
+      case actionType.UPDATE_APP_SETTINGS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+      case actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true 
+      };
+
+      case actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload
+      };
+
+      case actionType.ALL_APP_SETTINGS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+      case actionType.ALL_APP_SETTINGS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        nearByShopKm:  payload.nearByShopKm 
+      };
+
+      case actionType.ALL_APP_SETTINGS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload
+      };
+
+
     default:
       return state;
   }
 };
 
-export default adminSettingsReducer;
+export default settingsReducer;

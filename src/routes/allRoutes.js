@@ -158,6 +158,7 @@ import DeliverymanDetails from "../pages/Deliveryman/DeliverymanDetails/Delivery
 import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
 import Cuisine from "../pages/Shops/Cuisine";
 import AdminSettings from "../pages/AdminSettings/AdminSettings";
+import AppSettings from "../pages/AppSettings/AppSettings";
 
 
 const userRoutes = [
@@ -254,10 +255,11 @@ const userRoutes = [
   { path: "/admin/edit/:id", component: CreateAdmin },
   { path: "/admin/role", component: Role },
 
-  // ADMIN SETTINGS 
+  //  SETTINGS 
 
   
   { path: "/admin/settings", component: AdminSettings },
+  { path: "/app/settings", component: AppSettings },
 
 
   // //calendar
