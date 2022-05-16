@@ -60,8 +60,8 @@ const ShopDetails = () => {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
         console.log({ findShop });
-        const activeStatus = findShop.liveStatus == 'live' ? true : false
-        setActiveStatus(activeStatus)
+        const activeStatus = findShop.liveStatus == "live" ? true : false;
+        setActiveStatus(activeStatus);
         setShop(findShop);
       } else {
         callApi(id);
@@ -80,8 +80,8 @@ const ShopDetails = () => {
     // console.log(banner)
     if (data.status) {
       console.log(data.data.shop);
-      const activeStatus = data.data.shop.liveStatus == 'live' ? true : false
-        setActiveStatus(activeStatus)
+      const activeStatus = data.data.shop.liveStatus == "live" ? true : false;
+      setActiveStatus(activeStatus);
       setShop(data.data.shop);
     }
   };
@@ -108,10 +108,11 @@ const ShopDetails = () => {
     dispatch(
       ShopLiveStatus({
         id: shop._id,
-        liveStatus: status ? "live" : "offline",
+        liveStatus: status ? "online" : "offline",
       })
     );
   };
+
 
   return (
     <React.Fragment>
@@ -122,10 +123,8 @@ const ShopDetails = () => {
               maintitle="Drop"
               breadcrumbItem={"Details"}
               title="Shop"
-              //   loading={loading}
-              //   callList={callShopList}
-              //   isAddNew={true}
-              //   addNewRoute="shops/add"
+              loading={loading}
+              isRefresh={false}
             />
 
             {isOpen && (
@@ -164,7 +163,7 @@ const ShopDetails = () => {
                             onChange={changeLiveStatus}
                             inputProps={{ "aria-label": "controlled" }}
                           />
-                          <Label>{activeStatus  ? "Live" : "Offline"  }</Label>
+                          <Label>{activeStatus ? "Online" : "Offline"}</Label>
                         </div>
                       </div>
                       <hr />
@@ -212,16 +211,26 @@ const ShopDetails = () => {
                             <Value>{shop?.delivery}</Value>
                           </Details>
                           <Details>
-                            <h5>Address:</h5>
-                            <Value>{shop?.address.address}</Value>
-                          </Details>
-                          <Details>
                             <h5>Minimum Order:</h5>
                             <Value>{shop?.minOrderAmount}</Value>
                           </Details>
                           <Details>
                             <h5>Status:</h5>
                             <Value>{shop?.shopStatus}</Value>
+                          </Details>
+                          <Details>
+                            <h5>Free Delivery:</h5>
+                            <Value>{shop?.freeDelivery ? "Yes" : "No"}</Value>
+                          </Details>
+                          {shop?.foodType && (
+                            <Details>
+                              <h5>Food Type:</h5>
+                              <Value>{shop?.foodType}</Value>
+                            </Details>
+                          )}
+                          <Details>
+                            <h5>Address:</h5>
+                            <Value>{shop?.address.address}</Value>
                           </Details>
                         </div>
                       </Col>
