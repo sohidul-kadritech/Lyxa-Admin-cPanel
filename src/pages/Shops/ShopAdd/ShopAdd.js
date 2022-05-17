@@ -525,7 +525,8 @@ const ShopAdd = () => {
         setSelectedCuisines([]);
         setSearchCuisineKey("");
         setLiveStatus("");
-        setIsCuisine(false)
+        setIsCuisine(false);
+        setFreeDelivery("")
         window.scroll(0, 0);
       }
     }
@@ -819,7 +820,7 @@ const ShopAdd = () => {
                           </InputLabel>
                           <Select
                             id="demo-simple-select"
-                            requird
+                            requird={true}
                             value={freeDelivery}
                             onChange={(e) => setFreeDelivery(e.target.value)}
                             label="Free Delivery"
@@ -843,7 +844,7 @@ const ShopAdd = () => {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          required
+                          required={true}
                           value={shopType}
                           onChange={(e) => setShopType(e.target.value)}
                           label="Shop Type"
@@ -866,7 +867,7 @@ const ShopAdd = () => {
                           <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            required
+                            required={true}
                             value={foodType}
                             onChange={(e) => setFoodType(e.target.value)}
                             label="Food Type"
@@ -925,7 +926,7 @@ const ShopAdd = () => {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          required
+                          required={true}
                           value={delivery}
                           onChange={(e) => setDelivery(e.target.value)}
                           label="Delivery  Type"
@@ -947,7 +948,7 @@ const ShopAdd = () => {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          required
+                          required={true}
                           value={liveStatus}
                           onChange={(e) => setLiveStatus(e.target.value)}
                           label="Live Status"

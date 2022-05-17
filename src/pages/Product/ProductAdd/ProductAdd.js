@@ -75,7 +75,7 @@ const ProductAdd = () => {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [sku, setSku] = useState("");
-  const [previousPrice, setPreviousPrice] = useState(0);
+  const [discount, setDiscount] = useState(0);
   const [price, setPrice] = useState(0);
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
@@ -176,7 +176,7 @@ const ProductAdd = () => {
     setName(name);
     setSlug(slug);
     setSku(sku);
-    setPreviousPrice(previousPrice);
+    setDiscount(discount);
     setPrice(price);
     setType(type);
     setSeoTitle(seoTitle);
@@ -256,7 +256,6 @@ const ProductAdd = () => {
       !name ||
       !slug ||
       !sku ||
-      previousPrice <= 0 ||
       price <= 0 ||
       !type ||
       !seoTitle ||
@@ -340,7 +339,7 @@ const ProductAdd = () => {
       name,
       slug: slug.split(" ").join(""),
       sku,
-      previousPrice,
+      discount,
       price,
       type,
       shop: shop._id,
@@ -476,7 +475,7 @@ const ProductAdd = () => {
         setName("");
         setSlug("");
         setSku("");
-        setPreviousPrice(0);
+        setDiscount(0);
         setPrice(0);
         setType("");
         setSeoTitle("");
@@ -491,6 +490,14 @@ const ProductAdd = () => {
 
         setAttributes([]);
         setAddons([])
+        setIsRequiredAttribute(false);
+        setIsNeedAddon(false)
+        setAttributeItems([
+          {
+            name: "",
+            extraPrice: 0,
+          },
+        ]);
         setImage(null);
         window.scroll(0, 0);
       }
@@ -599,21 +606,6 @@ const ProductAdd = () => {
                     </div>
                     <div className="mb-4">
                       <TextField
-                        id="previousPrice"
-                        label="Previous Price"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={previousPrice}
-                        onChange={(event) =>
-                          setPreviousPrice(event.target.value)
-                        }
-                        required
-                        type="number"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <TextField
                         id="netPrice"
                         label="Net Price"
                         variant="outlined"
@@ -625,6 +617,23 @@ const ProductAdd = () => {
                         type="number"
                       />
                     </div>
+                    <div className="mb-4">
+                      <TextField
+                        id="previousPrice"
+                        label="Discount"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        placeholder="Ender Discount Percentage"
+                        autoComplete="off"
+                        value={discount}
+                        onChange={(event) =>
+                          setDiscount(event.target.value)
+                        }
+                        required
+                        type="number"
+                      />
+                    </div>
+                    
 
                     <div className="mb-4">
                       <FormControl fullWidth required>
