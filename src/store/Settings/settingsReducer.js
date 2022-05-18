@@ -30,7 +30,7 @@ const settingsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        googleMapKey: payload && payload.googleApiKey ? payload.googleApiKey: ""
+        googleMapKey:  payload.googleApiKey
       };
 
       case actionType.ALL_ADMIN_SETTINGS_REQUEST_FAIL:

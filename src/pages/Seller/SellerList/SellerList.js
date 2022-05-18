@@ -101,11 +101,7 @@ const SellerList = () => {
 
   const searchKeyListener = debounce(handleSearchChange, 300);
 
-  // DELETE
 
-  const handleDelete = (id) => {
-    dispatch(deleteSeller(id));
-  };
 
   return (
     <React.Fragment>
@@ -121,18 +117,6 @@ const SellerList = () => {
               isAddNew={true}
               addNewRoute="seller/add"
             />
-
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
 
             {isZoom ? (
               <Lightbox
@@ -301,36 +285,6 @@ const SellerList = () => {
                                   <i className="fa fa-eye" />
                                 </button>
                               </Tooltip>
-                              <Tooltip title="Delete">
-                                <button
-                                  className="btn btn-danger button"
-                                  onClick={() => setconfirm_alert(true)}
-                                >
-                                  <i className="fa fa-trash" />
-                                </button>
-                              </Tooltip>
-                              {confirm_alert ? (
-                                <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item._id);
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  Are You Sure! You want to delete this Seller.
-                                </SweetAlert>
-                              ) : null}
                             </div>
                           </Td>
                         </Tr>

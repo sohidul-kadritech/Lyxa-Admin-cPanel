@@ -176,12 +176,13 @@ const ShopAdd = () => {
       address
     } = values;
 
-    // const findSeller = sellers.find((s) => s._id == seller._id);
+    const findSeller = sellers.find((s) => s._id == seller._id);
+    // console.log({findSeller})
 
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
-    setSeller(seller);
+    setSeller(findSeller);
     setFoodType(foodType);
     setShopType(shopType);
     setShopStartTime(shopStartTimeText);
@@ -610,7 +611,7 @@ const ShopAdd = () => {
                         option.name ? option.name : ""
                       }
                       isOptionEqualToValue={
-                        (option, value) => option._id == value._id
+                        (option, value) => option?._id == value?._id
                         // console.log({value})
                       }
                       inputValue={searchSellerKey}

@@ -47,8 +47,10 @@ export const getAllAdminSettings = () =>async dispatch =>{
 // UPDATE ADMIN SETTINGS 
 
 export const updateAdminSettings = () =>async (dispatch, getState) =>{
+    
 
-    const {googleApiKey} = getState().settingsReducer;
+    const {googleMapKey} = getState().settingsReducer;
+
     try {
         dispatch({
             type: actionType.UPDATE_ADMIN_SETTINGS_REQUEST_SEND
@@ -57,7 +59,7 @@ export const updateAdminSettings = () =>async (dispatch, getState) =>{
         const {data:{status, error, message, data }} = await requestApi().request(UPDATE_ADMINS_SETTINGS,{
             method: 'POST',
             data:{
-                googleApiKey
+                googleApiKey: googleMapKey
             }
         })
 
