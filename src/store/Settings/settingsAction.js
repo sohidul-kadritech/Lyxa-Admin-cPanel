@@ -12,6 +12,33 @@ export const updateGoogleMapApiKey = (key) =>dispatch =>{
     })
 }
 
+// UPDATE DELIVERY FEE PER/KM
+export const updateDeliveryFee = (fee) =>dispatch =>{
+
+    dispatch({
+        type: actionType.UPDATE_DELIVERY_FEE,
+        payload: fee
+    })
+}
+
+// SEARCH DELIVERY BOY DISTANCE KM
+export const updateSearchDeliveryBoyKm = (km) =>dispatch =>{
+
+    dispatch({
+        type: actionType.UPDATE_SEARCH_DELIVERY_BOY_KM,
+        payload: km
+    })
+}
+
+export const removeSearchDeliveryBoyKm = (index) =>dispatch =>{
+    
+    dispatch({
+        type: actionType.REMOVE_SEARCH_DELIVERY_BOY_KM,
+        payload: index
+    })
+}
+
+
 // GET ALL ADMIN SETTINGS VALUE 
 
 export const getAllAdminSettings = () =>async dispatch =>{
@@ -49,7 +76,7 @@ export const getAllAdminSettings = () =>async dispatch =>{
 export const updateAdminSettings = () =>async (dispatch, getState) =>{
     
 
-    const {googleMapKey} = getState().settingsReducer;
+    const {googleMapKey,deliveryFeePerKm,searchDeliveryBoyKm} = getState().settingsReducer;
 
     try {
         dispatch({
@@ -59,7 +86,9 @@ export const updateAdminSettings = () =>async (dispatch, getState) =>{
         const {data:{status, error, message, data }} = await requestApi().request(UPDATE_ADMINS_SETTINGS,{
             method: 'POST',
             data:{
-                googleApiKey: googleMapKey
+                googleApiKey: googleMapKey,
+                deliveryFeePerKm,
+                searchDeliveryBoyKm
             }
         })
 

@@ -5,19 +5,40 @@ const initialState = {
   status: false,
   error: null,
   googleMapKey: "",
-  nearByShopKm: 0
+  nearByShopKm: 0,
+  deliveryFeePerKm: "",
+  searchDeliveryBoyKm: [],
 };
 
 const settingsReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
-
     // ADMIN
     case actionType.UPDATE_GOOGLE_KEY:
       return {
         ...state,
         googleMapKey: payload,
+      };
+
+    case actionType.UPDATE_DELIVERY_FEE:
+      return {
+        ...state,
+        deliveryFeePerKm: payload,
+      };
+
+    case actionType.UPDATE_SEARCH_DELIVERY_BOY_KM:
+      return {
+        ...state,
+        searchDeliveryBoyKm: [...state.searchDeliveryBoyKm, payload],
+      };
+
+    case actionType.REMOVE_SEARCH_DELIVERY_BOY_KM:
+      let list = [...state.searchDeliveryBoyKm];
+      list.splice(payload, 1);
+      return {
+        ...state,
+        searchDeliveryBoyKm: list,
       };
 
     case actionType.ALL_ADMIN_SETTINGS_REQUEST_SEND:
@@ -26,90 +47,91 @@ const settingsReducer = (state = initialState, action) => {
         loading: true,
       };
 
-      case actionType.ALL_ADMIN_SETTINGS_REQUEST_SUCCESS:
+    case actionType.ALL_ADMIN_SETTINGS_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
-        googleMapKey:  payload.googleApiKey
+        googleMapKey: payload.googleApiKey,
+        searchDeliveryBoyKm: payload.searchDeliveryBoyKm
+
       };
 
-      case actionType.ALL_ADMIN_SETTINGS_REQUEST_FAIL:
+    case actionType.ALL_ADMIN_SETTINGS_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
       };
 
-      // EDIT 
+    // EDIT
 
-      case actionType.UPDATE_ADMIN_SETTINGS_REQUEST_SEND:
+    case actionType.UPDATE_ADMIN_SETTINGS_REQUEST_SEND:
       return {
         ...state,
         loading: true,
       };
 
-      case actionType.UPDATE_ADMIN_SETTINGS_REQUEST_SUCCESS:
+    case actionType.UPDATE_ADMIN_SETTINGS_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
-        status: true 
+        status: true,
       };
 
-      case actionType.UPDATE_ADMIN_SETTINGS_REQUEST_FAIL:
+    case actionType.UPDATE_ADMIN_SETTINGS_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
       };
 
-      // APP 
+    // APP
 
-      case actionType.UPDATE_NEAR_BY_SHOP:
+    case actionType.UPDATE_NEAR_BY_SHOP:
       return {
         ...state,
         nearByShopKm: payload,
       };
 
-      case actionType.UPDATE_APP_SETTINGS_REQUEST_SEND:
+    case actionType.UPDATE_APP_SETTINGS_REQUEST_SEND:
       return {
         ...state,
         loading: true,
       };
 
-      case actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS:
+    case actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
-        status: true 
+        status: true,
       };
 
-      case actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL:
+    case actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
       };
 
-      case actionType.ALL_APP_SETTINGS_REQUEST_SEND:
+    case actionType.ALL_APP_SETTINGS_REQUEST_SEND:
       return {
         ...state,
         loading: true,
       };
 
-      case actionType.ALL_APP_SETTINGS_REQUEST_SUCCESS:
+    case actionType.ALL_APP_SETTINGS_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
-        nearByShopKm:  payload.nearByShopKm 
+        nearByShopKm: payload.nearByShopKm,
       };
 
-      case actionType.ALL_APP_SETTINGS_REQUEST_FAIL:
+    case actionType.ALL_APP_SETTINGS_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
       };
-
 
     default:
       return state;

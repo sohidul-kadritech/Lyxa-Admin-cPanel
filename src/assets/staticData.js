@@ -110,3 +110,15 @@ export const sortByOptions = [
     { label: "Russain", value: "russain" },
     { label: "French", value: "french" },
   ]
+
+  export const resturantDeals = [
+    { label: "Percentage", value: "percentage" },
+    { label: "Double Deal", value: "double deal" },
+    { label: "Free Delivery", value: "free delivery" },
+    { label: "Others", value: "others" },
+  ]
+
+  export const pharmacyAndGroceryDeals = [
+    { label: "Percentage", value: "percentage" },
+    { label: "Free Delivery", value: "free delivery" },
+  ]

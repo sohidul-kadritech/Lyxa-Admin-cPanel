@@ -106,6 +106,10 @@ export const UPDATE_ADMINS_SETTINGS = '/admin/setting/admin-setting/edit';
 export const UPDATE_APP_SETTINGS = '/admin/setting/app-setting/edit'
 export const APP_SETTINGS = '/admin/setting/app-setting'
 
+// DEAL 
+
+export const ADD_DEAL = ADMIN_ENDPOINT + "/deal/add"
+
 // IMAGE UPLOAD 
 
 export const IMAGE_UPLOAD = "image/single-image-upload"

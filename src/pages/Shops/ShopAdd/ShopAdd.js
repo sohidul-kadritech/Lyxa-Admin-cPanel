@@ -399,7 +399,7 @@ const ShopAdd = () => {
           tags: tags.items,
           minOrderAmount,
           liveStatus: liveStatus,
-          freeDelivery: freeDelivery.value,
+           freeDelivery,
           isCuisine,
           cuisineType: cuisinesList,
           shopAddress: {
@@ -904,7 +904,7 @@ const ShopAdd = () => {
                       {tags.items.length > 0 && (
                         <Paper className="mt-4 p-3">
                           {tags.items.map((item, index) => (
-                            <TagWrapper className="tag-item" key={index}>
+                            <div className="tag__wrapper" key={index}>
                               {item}
                               <button
                                 type="button"
@@ -913,7 +913,7 @@ const ShopAdd = () => {
                               >
                                 &times;
                               </button>
-                            </TagWrapper>
+                            </div>
                           ))}
                         </Paper>
                       )}
@@ -1023,7 +1023,7 @@ const ShopAdd = () => {
                         {selectedCuisines.length > 0 && (
                           <Paper className="mt-4 p-3">
                             {selectedCuisines.map((item, index) => (
-                              <TagWrapper className="tag-item" key={index}>
+                              <div className="tag__wrapper" key={index}>
                                 {item.name}
                                 <button
                                   type="button"
@@ -1032,7 +1032,7 @@ const ShopAdd = () => {
                                 >
                                   &times;
                                 </button>
-                              </TagWrapper>
+                              </div>
                             ))}
                           </Paper>
                         )}
@@ -1355,33 +1355,6 @@ const ShopAdd = () => {
   );
 };
 
-const TagWrapper = styled.div`
-  background-color: #d4d5d6;
-  display: inline-block;
-  font-size: 14px;
-  border-radius: 30px;
-  height: 30px;
-  padding: 0 4px 0 1rem;
-  display: inline-flex;
-  align-items: center;
-  margin: 0 0.3rem 0.3rem 0;
 
-  .button {
-    background-color: white;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    font: inherit;
-    margin-left: 10px;
-    font-weight: bold;
-    padding: 0;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`;
 
 export default ShopAdd;
