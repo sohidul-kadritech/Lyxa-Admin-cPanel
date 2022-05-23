@@ -218,6 +218,7 @@ const userRoutes = [
 
   {path: "/deals/list", component: DealsList},
   {path: "/deals/add", component: DealsAdd},
+  {path: "/deals/edit/:id", component: DealsAdd},
 
   // DROP PAY
   {path: "/drop-pay", component: DropPayList},

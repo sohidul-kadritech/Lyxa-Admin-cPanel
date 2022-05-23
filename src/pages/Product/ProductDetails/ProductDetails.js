@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useParams } from "react-router-dom";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -10,24 +10,34 @@ import {
   Card,
   CardBody,
   CardTitle,
-  Carousel,
   Col,
   Container,
   Row,
   Spinner,
+  Modal,
 } from "reactstrap";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
-import { Paper, Tooltip } from "@mui/material";
+import { Autocomplete, Box, Paper, TextField, Tooltip } from "@mui/material";
+import { getAllDeal } from "../../../store/Deal/dealAction";
+import { addProductDeal } from "../../../store/Product/productAction";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const history = useHistory();
-  const { products } = useSelector((state) => state.productReducer);
+  const dispatch = useDispatch();
+
+  const { products, loading, status } = useSelector(
+    (state) => state.productReducer
+  );
+  const { deals } = useSelector((state) => state.dealReducer);
 
   const [product, setProduct] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
+  const [modalCenter, setModalCenter] = useState(false);
+  const [searchDealKey, setSearchDealKey] = useState("");
+  const [deal, setDeal] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -64,6 +74,30 @@ const ProductDetails = () => {
     }
   };
 
+  useEffect(() => {
+    if (modalCenter) {
+      dispatch(getAllDeal(true));
+    }
+  }, [modalCenter]);
+
+  // ADD DEAL
+
+  const addDeal = () => {
+    dispatch(
+      addProductDeal({
+        productId: id,
+        dealId: deal._id,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (status) {
+      setModalCenter(false);
+      setDeal(null);
+    }
+  }, [status]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -93,13 +127,26 @@ const ProductDetails = () => {
               <CardBody>
                 <div className="d-flex justify-content-between">
                   <CardTitle>Product Informations</CardTitle>
-                  <Button
-                    outline={true}
-                    color="success"
-                    onClick={() => history.push(`/products/edit/${id}`)}
-                  >
-                    Edit
-                  </Button>
+                  <div>
+                    <Button
+                      outline={true}
+                      color="success"
+                      onClick={() => {
+                        setModalCenter(!modalCenter);
+                        document.body.classList.add("no_padding");
+                      }}
+                    >
+                      Add Deal
+                    </Button>
+                    <Button
+                      className="ms-3"
+                      outline={true}
+                      color="success"
+                      onClick={() => history.push(`/products/edit/${id}`)}
+                    >
+                      Edit
+                    </Button>
+                  </div>
                 </div>
                 <hr />
                 <div className="d-flex justify-content-center pb-3">
@@ -179,7 +226,7 @@ const ProductDetails = () => {
                         <img
                           src={product?.category?.image}
                           className="avatar-xs rounded-circle me-2 cursor-pointer"
-                          alt="ride"
+                          alt="category"
                           onClick={() => {
                             setIsOpen(true);
                             setSelectedImg(product?.category?.image);
@@ -202,7 +249,7 @@ const ProductDetails = () => {
                         <img
                           src={product?.subCategory?.image}
                           className="avatar-xs rounded-circle me-2 cursor-pointer"
-                          alt="product"
+                          alt="subCategory"
                           onClick={() => {
                             setIsOpen(true);
                             setSelectedImg(product?.subCategory?.image);
@@ -253,7 +300,7 @@ const ProductDetails = () => {
                         <img
                           src={product?.shop?.shopLogo}
                           className="avatar-xs rounded-circle me-2 cursor-pointer"
-                          alt="product"
+                          alt="Shop"
                           onClick={() => {
                             setIsOpen(true);
                             setSelectedImg(product?.shop?.shopLogo);
@@ -281,8 +328,8 @@ const ProductDetails = () => {
             </Card>
 
             <Row>
-              <Col lg={4}>
-                {product?.attributes.length > 0 && (
+              {product?.attributes.length > 0 && (
+                <Col lg={4}>
                   <div className="mb-4">
                     <Paper className="py-2">
                       <h5 className="text-center">Attributes List</h5>
@@ -317,10 +364,10 @@ const ProductDetails = () => {
                         ))}
                     </Paper>
                   </div>
-                )}
-              </Col>
-              <Col lg={4}>
-                {product?.addons?.length > 0 && (
+                </Col>
+              )}
+              {product?.addons?.length > 0 && (
+                <Col lg={4}>
                   <div className="mb-4">
                     <Paper className="py-2">
                       <h5 className="text-center">Addons List</h5>
@@ -353,13 +400,111 @@ const ProductDetails = () => {
                         ))}
                     </Paper>
                   </div>
-                )}
-              </Col>
-              <Col>
-              </Col>
+                </Col>
+              )}
+              {product?.deals.length > 0 && (
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <Paper className="py-2">
+                      <h5 className="text-center">Deals List</h5>
+                      <hr />
+                      {product.deals.length > 0 &&
+                        product.deals.map((deal, index) => (
+                          <ul key={index} style={{ listStyleType: "square" }}>
+                            <li>
+                              <div className="d-flex justify-content-between">
+                                <span
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "500",
+                                  }}
+                                >
+                                  {deal.name}
+                                  {`-(${deal.status})`}
+                                </span>
+                              </div>
+                            </li>
+
+                              <ul>
+                                <li>
+                                  <span>{deal.type}-</span>
+                                  <span className="ms-1">
+                                    {deal.option}{deal.percentage && `(${deal.percentage}%)`}
+                                  </span>
+                                </li>
+                              </ul>
+                            
+                          </ul>
+                        ))}
+                    </Paper>
+                  </div>
+                </Col>
+              )}
             </Row>
           </Container>
         </div>
+
+        {/* DEAL */}
+
+        <Modal
+          isOpen={modalCenter}
+          toggle={() => {
+            setModalCenter(!modalCenter);
+          }}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">Add Deal</h5>
+            <button
+              type="button"
+              onClick={() => {
+                setModalCenter(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <Autocomplete
+              className="cursor-pointer"
+              onChange={(event, newValue) => {
+                console.log(newValue);
+                setDeal(newValue);
+              }}
+              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option._id == value._id}
+              inputValue={searchDealKey}
+              onInputChange={(event, newInputValue) => {
+                setSearchDealKey(newInputValue);
+                // console.log("input value", newInputValue);
+              }}
+              id="controllable-states-demo"
+              options={deals.length > 0 ? deals : []}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Select a Deal" />
+              )}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                  {...props}
+                  key={option._id}
+                >
+                  {option.option}
+                </Box>
+              )}
+            />
+            <div className="d-flex justify-content-center mt-3">
+              <Button color="primary" className="px-4" onClick={addDeal}>
+                {loading ? "Loading..." : "Add"}
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </GlobalWrapper>
     </React.Fragment>
   );

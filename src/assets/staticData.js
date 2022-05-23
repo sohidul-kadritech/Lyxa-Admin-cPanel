@@ -113,12 +113,12 @@ export const sortByOptions = [
 
   export const resturantDeals = [
     { label: "Percentage", value: "percentage" },
-    { label: "Double Deal", value: "double deal" },
-    { label: "Free Delivery", value: "free delivery" },
+    { label: "Double Deal", value: "double_deal" },
+    { label: "Free Delivery", value: "free_delivery" },
     { label: "Others", value: "others" },
   ]
 
   export const pharmacyAndGroceryDeals = [
     { label: "Percentage", value: "percentage" },
-    { label: "Free Delivery", value: "free delivery" },
+    { label: "Free Delivery", value: "free_delivery" },
   ]

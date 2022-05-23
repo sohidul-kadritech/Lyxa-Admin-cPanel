@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import {
   Button,
@@ -16,7 +16,7 @@ import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import ImageSelectionDialog from "../../Utility/ImageSelectionDialog";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FormControl,
   InputLabel,
@@ -28,14 +28,19 @@ import {
   pharmacyAndGroceryDeals,
   resturantDeals,
 } from "../../../assets/staticData";
-import { Link } from "react-router-dom";
+import { Link,useHistory,useParams } from "react-router-dom";
 import { IMAGE_UPLOAD } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
-import { addDeal } from './../../../store/Deal/dealAction';
+import { addDeal, editDeal } from "../../../store/Deal/dealAction"
+
 
 const DealsAdd = () => {
   const dispatch = useDispatch();
+  const {id} = useParams();
+  const history = useHistory();
+
+  const { loading, deals, status } = useSelector((state) => state.dealReducer);
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [shopType, setShopType] = useState("");
@@ -44,8 +49,36 @@ const DealsAdd = () => {
   const [image, setImage] = useState(null);
   const [percentage, setPercentage] = useState("");
   const [name, setName] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
+  const [activeStatus, setActiveStatus] = useState("");
+
+
+
+  useEffect(()=>{
+    if(id){
+      const findDeal = deals.find(item => item._id === id)
+      if(findDeal){
+        updateData(findDeal)
+      }else{
+        console.log("call Api")
+      }
+      
+    }
+  },[id])
+
+
+  // UPDATE DATA 
+
+  const updateData = (data) =>{
+    const {name,image,option,percentage,status,type} = data;
+    setName(name);
+    setImage(image);
+    setShopType(type);
+    setDealType(option);
+    setActiveStatus(status);
+    setPercentage(percentage ?? "")
+  }
+
 
   /**
    * Formats the size
@@ -91,6 +124,7 @@ const DealsAdd = () => {
           // console.log("image upload", data)
           if (data.status) {
             // submitData(data.data.url);
+            setIsLoading(false)
             url = data.data.url;
           } else {
             console.log(data.error);
@@ -157,7 +191,7 @@ const DealsAdd = () => {
         progress: undefined,
       });
     }
-    if (dealType === "percentage" && !percentage) {
+    if (dealType === "percentage" && (!percentage || percentage <= 0)) {
       return toast.warn("Enter Percentage", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -182,21 +216,51 @@ const DealsAdd = () => {
       });
     }
 
-    uploadImage();
+    if(shopType === 'restaurant'){
+      uploadImage();
+    }else{
+      submitData();
+    }
   };
 
   // SUBMIT DATA
 
-  const submitData = (image) => {
+  const submitData = (image = null) => {
+    
     const data = {
       name,
       type: shopType,
       option: dealType,
       percentage,
-      image,
+      image: shopType === 'restaurant' ? image : null,
     };
-    dispatch(addDeal(data))
+    if(id){
+      dispatch(editDeal({
+        ...data,
+        id,
+        activeStatus
+      }))
+    }else{
+      dispatch(addDeal(data));
+    }
+    
   };
+
+  // SUCCESS
+
+  useEffect(() => {
+    if (status) {
+      if(id){
+        history.goBack()
+      }else{
+        setName("");
+      setShopType("");
+      setDealType("");
+      setPercentage("")
+      window.scroll(0, 0);
+      }
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -205,10 +269,8 @@ const DealsAdd = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={"Add"}
+              breadcrumbItem={id ? "Edit" :"Add"}
               title="Deal"
-              // loading={loading}
-              // callList={callCarList}
               isRefresh={false}
             />
 
@@ -227,7 +289,7 @@ const DealsAdd = () => {
                     />
                   </Col>
                   <Col lg={4}>
-                    <div className="mb-3">
+                    <div className="my-3 my-lg-0">
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
                           Shop Type
@@ -242,7 +304,7 @@ const DealsAdd = () => {
                           label="Shop Type"
                         >
                           <MenuItem value="restaurant">Restaurant</MenuItem>
-                          <MenuItem value="Pharmacy">pharmacy</MenuItem>
+                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
                           <MenuItem value="grocery">Grocery</MenuItem>
                         </Select>
                       </FormControl>
@@ -250,7 +312,7 @@ const DealsAdd = () => {
                   </Col>
                   {shopType && (
                     <Col lg={4}>
-                      <div className="mb-3">
+                      <div>
                         <FormControl fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Deal Type
@@ -260,6 +322,7 @@ const DealsAdd = () => {
                             value={dealType}
                             onChange={(e) => setDealType(e.target.value)}
                             label="Deal Type"
+                            
                           >
                             {shopType === "restaurant"
                               ? resturantDeals.map((item, index) => (
@@ -278,9 +341,9 @@ const DealsAdd = () => {
                     </Col>
                   )}
                 </Row>
-                <Row>
+                <Row className="mt-0 mt-lg-3">
                   {dealType === "others" && (
-                    <Col lg={4}>
+                    <Col lg={4} className="mt-3 my-lg-0">
                       <TextField
                         type="text"
                         className="form-control"
@@ -293,7 +356,7 @@ const DealsAdd = () => {
                     </Col>
                   )}
                   {dealType === "percentage" && (
-                    <Col lg={4}>
+                    <Col lg={4} className="mt-3 my-lg-0">
                       <TextField
                         type="number"
                         className="form-control"
@@ -305,6 +368,26 @@ const DealsAdd = () => {
                       />
                     </Col>
                   )}
+                  {id && <Col lg={4}>
+                    <div className="mt-3 my-lg-0">
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Status
+                        </InputLabel>
+                        <Select
+                          id="demo-simple-select"
+                          value={activeStatus}
+                          onChange={(e) => {
+                            setActiveStatus(e.target.value);
+                          }}
+                          label="Status"
+                        >
+                          <MenuItem value="active">Active</MenuItem>
+                          <MenuItem value="inactive">Inactive</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </Col>}
                 </Row>
               </CardBody>
             </Card>
@@ -397,19 +480,20 @@ const DealsAdd = () => {
                       </div>
                     </Form>
                   </div>
-
-                  <div className="d-flex justify-content-center">
-                    <Button
-                      color="success"
-                      className="px-5"
-                      onClick={submitDeal}
-                    >
-                      Add
-                    </Button>
-                  </div>
                 </CardBody>
               </Card>
             )}
+
+            <div className="d-flex justify-content-center mb-3">
+              <Button
+                disabled={isLoading || loading}
+                color="success"
+                className="px-5"
+                onClick={submitDeal}
+              >
+                {isLoading || loading ? "Loading..." : id ? "Update" : "Add"}
+              </Button>
+            </div>
           </Container>
         </div>
 

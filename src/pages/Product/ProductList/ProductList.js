@@ -234,7 +234,7 @@ const ProductList = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Shop List</CardTitle>
+                <CardTitle className="h4"> Product List</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"

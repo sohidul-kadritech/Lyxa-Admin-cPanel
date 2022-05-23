@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { ADD_PRODUCT, ALL_PRODUCT,DELETE_PRODUCT,EDIT_PRODUCT } from "../../network/Api";
+import { ADD_PRODUCT, ALL_PRODUCT,DELETE_PRODUCT,EDIT_PRODUCT,ADD_PRODUCT_DEAL } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
@@ -33,7 +33,7 @@ export const addProduct = (values) => async (dispatch) => {
         });
         dispatch({
           type: actionType.ADD_PRODUCT_REQUEST_SUCCESS,
-          payload: data.data.category,
+          payload: data.data.product,
         });
       } else {
         toast.warn(data.message, {
@@ -222,6 +222,60 @@ export const deleteProduct = (id) => async (dispatch) => {
 };
 
 
+// ADD PRODUCT DEAL 
+
+export const addProductDeal = (values) => async (dispatch) => {
+  console.log({ values });
+  try {
+    dispatch({
+      type: actionType.ADD_PRODUCT_DEAL_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(ADD_PRODUCT_DEAL, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data });
+
+    if (data.status) {
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.ADD_PRODUCT_DEAL_REQUEST_SUCCESS,
+        payload: data.data.product,
+      });
+    } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.ADD_PRODUCT_DEAL_REQUEST_FAIL,
+        payload: data.message,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_PRODUCT_DEAL_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 
  // UPDATE SEARCH KEY

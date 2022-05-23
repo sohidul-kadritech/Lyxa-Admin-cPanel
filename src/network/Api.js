@@ -89,6 +89,7 @@ export const ALL_PRODUCT = ADMIN_ENDPOINT + "/product"
 export const EDIT_PRODUCT = ADMIN_ENDPOINT + "/product/update"
 export const SINGLE_PRODUCT = ADMIN_ENDPOINT + "/product/product-details"
 export const DELETE_PRODUCT = ADMIN_ENDPOINT + "/product/delete"
+export const ADD_PRODUCT_DEAL = ADMIN_ENDPOINT + "/product/add-deal"
 
 // DELIVERY MAN 
 
@@ -109,6 +110,10 @@ export const APP_SETTINGS = '/admin/setting/app-setting'
 // DEAL 
 
 export const ADD_DEAL = ADMIN_ENDPOINT + "/deal/add"
+export const GET_ALL_DEAL = ADMIN_ENDPOINT + "/deal"
+export const EDIT_DEAL = ADMIN_ENDPOINT + "/deal/edit"
+export const DELETE_DEAL = ADMIN_ENDPOINT + "/deal/delete"
+
 
 // IMAGE UPLOAD 
 

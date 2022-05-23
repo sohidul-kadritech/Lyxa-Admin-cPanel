@@ -1179,6 +1179,7 @@ const ProductAdd = () => {
                               component="li"
                               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                               {...props}
+                              
                             >
                               <img
                                 loading="lazy"
