@@ -29,7 +29,7 @@ import {
   resturantDeals,
 } from "../../../assets/staticData";
 import { Link,useHistory,useParams } from "react-router-dom";
-import { IMAGE_UPLOAD } from "../../../network/Api";
+import { IMAGE_UPLOAD, SINGLE_DEAL } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
 import { addDeal, editDeal } from "../../../store/Deal/dealAction"
@@ -60,11 +60,32 @@ const DealsAdd = () => {
       if(findDeal){
         updateData(findDeal)
       }else{
-        console.log("call Api")
+        // console.log("call Api")
+        callApi(id)
       }
       
     }
   },[id])
+
+  // CALL API 
+
+  const callApi = async(dealId) =>{
+    if(dealId){
+      try {
+        const {data: {status, error, data = null}} = await requestApi().request(SINGLE_DEAL + dealId)
+        if(status){
+          updateData(data.deal)
+        }else{
+          console.log(error)
+        }
+        
+      } catch (error) {
+        console.log(error.message)
+      }
+    }else{
+      history.push('/deals/list', {replace: true})
+    }
+  }
 
 
   // UPDATE DATA 

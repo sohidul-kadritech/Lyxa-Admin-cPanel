@@ -27,6 +27,7 @@ import productReducer from "./Product/productReducer";
 import deliveryManReducer from "./DeliveryMan/DeliveryManReducer";
 import settingsReducer from './Settings/settingsReducer';
 import dealReducer from './Deal/dealReducer';
+import dropPayReducer from './DropPay/dropPayReducer';
 
 const rootReducer = combineReducers({
   // public
@@ -51,7 +52,8 @@ const rootReducer = combineReducers({
   productReducer,
   deliveryManReducer,
   settingsReducer,
-  dealReducer
+  dealReducer,
+  dropPayReducer
 });
 
 export default rootReducer;

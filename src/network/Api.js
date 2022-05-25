@@ -113,6 +113,13 @@ export const ADD_DEAL = ADMIN_ENDPOINT + "/deal/add"
 export const GET_ALL_DEAL = ADMIN_ENDPOINT + "/deal"
 export const EDIT_DEAL = ADMIN_ENDPOINT + "/deal/edit"
 export const DELETE_DEAL = ADMIN_ENDPOINT + "/deal/delete"
+export const SINGLE_DEAL = ADMIN_ENDPOINT + "/deal/"
+
+// DROP PAY
+
+export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay"
+export const ADD_USER_BALANCE = ADMIN_ENDPOINT + "/user/add-balance"
+export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance"
 
 
 // IMAGE UPLOAD 

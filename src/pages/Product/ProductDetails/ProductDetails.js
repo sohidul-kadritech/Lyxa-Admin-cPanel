@@ -76,7 +76,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (modalCenter) {
-      dispatch(getAllDeal(true));
+      dispatch(getAllDeal(true,product?.type));
     }
   }, [modalCenter]);
 

@@ -281,12 +281,12 @@ const SidebarContent = (props) => {
 
             {/* TRANSACTIONS */}
 
-            <li>
+            {/* <li>
               <Link to="/transactions" className="waves-effect">
                 <i className="fas fa-exchange-alt" />
                 <span>{props.t("Transactions")}</span>
               </Link>
-            </li>
+            </li> */}
 
             {/* APP WALLET */}
 

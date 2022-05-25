@@ -60,7 +60,7 @@ export const addDeal = (values) => async (dispatch) => {
 
   // GET ALL
 
-  export const getAllDeal = (refresh = false) => async (dispatch,getState) => {
+  export const getAllDeal = (refresh = false, type) => async (dispatch,getState) => {
     const {deals} = getState().dealReducer;
 
     if(deals.length < 1 || refresh) {
@@ -69,7 +69,11 @@ export const addDeal = (values) => async (dispatch) => {
         dispatch({
           type: actionType.ALL_DEAL_REQUEST_SEND,
         });
-        const { data } = await requestApi().request(GET_ALL_DEAL);
+        const { data } = await requestApi().request(GET_ALL_DEAL,{
+          params:{
+            type : type === 'food' ? 'all' : type
+          }
+        });
     
         console.log({ data });
     
