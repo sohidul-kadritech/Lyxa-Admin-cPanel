@@ -129,7 +129,8 @@ const BannerPage = () => {
                         <Tr key={index}>
                           <Th>{index + 1}</Th>
                           <Td>{item.type}</Td>
-                          <Td>
+                          <Td style={{ height: "50px",maxWidth: '150px' }}>
+             
                             <img
                               src={item.image}
                               style={{ width: "100px" }}
@@ -140,6 +141,7 @@ const BannerPage = () => {
                                 setBannerImg(item.image);
                               }}
                             />
+              
                           </Td>
                           <Td>
                             {moment(item.createdAt)

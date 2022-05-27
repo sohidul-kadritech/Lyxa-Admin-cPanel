@@ -155,6 +155,10 @@ import ProductAdd from "../pages/Product/ProductAdd/ProductAdd";
 import ShopDetails from "../pages/Shops/ShopDetails/ShopDetails";
 import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
 import DeliverymanDetails from "../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails.js";
+import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
+import Cuisine from "../pages/Shops/Cuisine";
+import AdminSettings from "../pages/AdminSettings/AdminSettings";
+import AppSettings from "../pages/AppSettings/AppSettings";
 
 
 const userRoutes = [
@@ -177,7 +181,7 @@ const userRoutes = [
 
   { path: "/users/list", component: UsersList },
 
-  { path: "/user/details/:id", component: UserDetails },
+  { path: "/users/details/:id", component: UserDetails },
 
   // SELLER
 
@@ -192,12 +196,15 @@ const userRoutes = [
   {path: "/shops/add", component: ShopAdd},
   {path: "/shops/edit/:id", component: ShopAdd},
   {path: "/shops/details/:id", component: ShopDetails},
+  {path: '/shops/cuisines', component: Cuisine },
 
   // PRODUCT 
 
   {path: '/products/list', component: ProductList},
   {path: '/products/add', component: ProductAdd},
   {path: '/products/edit/:id', component: ProductAdd},
+  {path: '/products/details/:id', component: ProductDetails},
+  
 
 
   // DELIVERY MAN
@@ -211,6 +218,7 @@ const userRoutes = [
 
   {path: "/deals/list", component: DealsList},
   {path: "/deals/add", component: DealsAdd},
+  {path: "/deals/edit/:id", component: DealsAdd},
 
   // DROP PAY
   {path: "/drop-pay", component: DropPayList},
@@ -248,6 +256,11 @@ const userRoutes = [
   { path: "/admin/edit/:id", component: CreateAdmin },
   { path: "/admin/role", component: Role },
 
+  //  SETTINGS 
+
+  
+  { path: "/admin/settings", component: AdminSettings },
+  { path: "/app/settings", component: AppSettings },
 
 
   // //calendar

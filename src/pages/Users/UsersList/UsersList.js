@@ -27,6 +27,7 @@ import {
 } from "../../../store/Users/UsersAction";
 import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
+import { Tooltip } from "@mui/material";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -41,13 +42,13 @@ const UsersList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
-    statusKey
+    statusKey,
   } = useSelector((state) => state.usersReducer);
 
   useEffect(() => {
     if (sortByKey || searchKey || statusKey) {
       callUsersList(true);
-    } 
+    }
   }, [sortByKey, searchKey]);
 
   // CALL USERS LIST
@@ -56,11 +57,29 @@ const UsersList = () => {
     dispatch(userList(refresh));
   };
 
-  // // UPDATE SEARCH KEY
 
-  const searchKeyListener = (value) => {
-    dispatch(updateSearchKey(value));
+
+  // DEBOUNCE SEARCH
+
+  const debounce = (func, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      // const context = this;
+      timer = setTimeout(() => {
+        func(args[0]);
+      }, delay);
+    };
+    // console.log("yes....");
   };
+
+  const handleSearchChange = (event) => {
+    // console.log("event", event.target.value)
+    // setOpen(true);
+    dispatch(updateSearchKey(event.target.value));
+  };
+
+  const searchKeyListener = debounce(handleSearchChange, 300);
 
   return (
     <React.Fragment>
@@ -103,19 +122,20 @@ const UsersList = () => {
                       </FormControl>
                     </div>
                   </Col>
-                  <Col md={6} className="d-flex align-items-center my-3 my-md-0">
+                  <Col
+                    md={6}
+                    className="d-flex align-items-center my-3 my-md-0"
+                  >
                     <SearchWrapper>
                       <div className="search__wrapper">
                         <i className="fa fa-search" />
                         <input
                           className="form-control"
                           type="search"
-                          placeholder="Search here"
+                          placeholder="Search by name"
                           id="search"
-                          value={searchKey}
-                          onChange={(event) =>
-                            searchKeyListener(event.target.value)
-                          }
+
+                          onChange={searchKeyListener}
                         />
                       </div>
                     </SearchWrapper>
@@ -163,10 +183,10 @@ const UsersList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image</Th>
                       <Th>Name</Th>
                       <Th>Email</Th>
-                      <Th>Phone</Th>
+                      <Th>Gender</Th>
+                      <Th>Status</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -182,46 +202,22 @@ const UsersList = () => {
                               fontWeight: "500",
                             }}
                           >
-                            <Th>
-                              <div style={{ width: "50px", height: "50px" }}>
-                                <img
-                                  // onClick={() => {
-                                  //   setIsZoom(true);
-                                  //   setPartnerImage(partner.img);
-                                  // }}
-                                  className="img-fluid cursor-pointer"
-                                  alt=""
-                                  src={user.img}
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "contain",
-                                  }}
-                                />
-                              </div>
-                            </Th>
-
-                            <Td>{user.name}</Td>
+                            <Th>{user.name}</Th>
                             <Td>{user.email}</Td>
-                            <Td>{user.phoneNumber}</Td>
+                            <Td>{user.gender}</Td>
+                            <Td>{user.status}</Td>
                             <Td>
                               <ButtonWrapper>
+                                <Tooltip title='Details'>
                                 <button
                                   className="btn btn-info me-xl-3"
                                   onClick={() =>
-                                    history.push(`/users/edit/${user.id}`)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                                <button
-                                  className="btn btn-success "
-                                  onClick={() =>
-                                    history.push(`/user/details/${user.id}`)
+                                    history.push(`/users/details/${user._id}`)
                                   }
                                 >
                                   <i className="fa fa-eye" />
                                 </button>
+                                </Tooltip>
                               </ButtonWrapper>
                             </Td>
                           </Tr>

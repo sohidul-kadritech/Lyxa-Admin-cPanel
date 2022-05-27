@@ -10,7 +10,7 @@ export const sortByOptions = [
   ];
 
   export const liveStatusOptions = [
-    { label: "Live", value: "live" },
+    { label: "Online", value: "online" },
     { label: "Offline", value: "offline" },
   ];
 
@@ -86,8 +86,8 @@ export const sortByOptions = [
 
 
   export const productVisibility = [
-    { label: "True", value: true },
-    { label: "False", value: false },
+    { label: "Yes", value: true },
+    { label: "NO", value: false },
   ]
 
   export const activeOptions = [
@@ -109,4 +109,16 @@ export const sortByOptions = [
     { label: "American", value: "american" },
     { label: "Russain", value: "russain" },
     { label: "French", value: "french" },
+  ]
+
+  export const resturantDeals = [
+    { label: "Percentage", value: "percentage" },
+    { label: "Double Deal", value: "double_deal" },
+    { label: "Free Delivery", value: "free_delivery" },
+    { label: "Others", value: "others" },
+  ]
+
+  export const pharmacyAndGroceryDeals = [
+    { label: "Percentage", value: "percentage" },
+    { label: "Free Delivery", value: "free_delivery" },
   ]

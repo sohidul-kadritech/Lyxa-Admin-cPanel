@@ -14,7 +14,8 @@ const initialState = {
   statusKey: { label: "All", value: "all" },
   typeKey: { label: "All", value: "all" },
   sortByKey: { label: "Desc", value: "desc" },
-  liveStatus: { label: "All", value: "all" }
+  liveStatus: { label: "All", value: "all" },
+  cuisines: [],
 };
 
 const shopReducer = (state = initialState, action) => {
@@ -44,7 +45,7 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
-    //   GET ALL SHOPS 
+    //   GET ALL SHOPS
 
     case actionType.GET_ALL_SHOP_REQUEST_SEND:
       return {
@@ -76,36 +77,36 @@ const shopReducer = (state = initialState, action) => {
         loading: false,
       };
 
-      // EDIT
+    // EDIT
 
     case actionType.EDIT_SHOP_REQUEST_SEND:
-        return {
-          ...state,
-          loading: true,
-          status: false,
-        };
-  
-      case actionType.EDIT_SHOP_REQUEST_SUCCESS:
-        const updateData = state.shops.map((item) =>
-          item._id == payload._id ? payload : item
-        );
-  
-        return {
-          ...state,
-          loading: false,
-          status: true,
-          shops: updateData,
-          error: null,
-        };
-      case actionType.EDIT_SHOP_REQUEST_FAIL:
-        return {
-          ...state,
-          loading: false,
-          status: false,
-          error: payload,
-        };
-        // DELETE
-        case actionType.DELETE_SHOP_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.EDIT_SHOP_REQUEST_SUCCESS:
+      const updateData = state.shops.map((item) =>
+        item._id == payload._id ? payload : item
+      );
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shops: updateData,
+        error: null,
+      };
+    case actionType.EDIT_SHOP_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+    // DELETE
+    case actionType.DELETE_SHOP_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -113,9 +114,7 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case actionType.DELETE_SHOP_REQUEST_SUCCESS:
-      const filered = state.shops.filter((item) =>
-        item._id != payload
-      );
+      const filered = state.shops.filter((item) => item._id != payload);
 
       return {
         ...state,
@@ -132,35 +131,102 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // CHANGE LIVE STATUS 
+    // CHANGE LIVE STATUS
 
-      case actionType.SHOP_LIVE_STATUS_REQUEST_SEND:
-        return {
-          ...state,
-          loading: true,
-          status: false,
-        };
-  
-      case actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS:
-        const data = state.shops.map((item) =>
-          item._id == payload._id ? payload : item
-        );
-  
-        return {
-          ...state,
-          loading: false,
-          status: true,
-          shops: data,
-          error: null,
-        };
-      case actionType.SHOP_LIVE_STATUS_REQUEST_FAIL:
-        return {
-          ...state,
-          loading: false,
-          status: false,
-          error: payload,
-        };
+    case actionType.SHOP_LIVE_STATUS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
 
+    case actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS:
+      const data = state.shops.map((item) =>
+        item._id == payload._id ? payload : item
+      );
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shops: data,
+        error: null,
+      };
+    case actionType.SHOP_LIVE_STATUS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
+    // CUISINE
+
+    case actionType.ADD_CUISINE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case actionType.ADD_CUISINE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        cuisines: [...state.cuisines, payload],
+      };
+
+    case actionType.ADD_CUISINE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+      case actionType.ALL_CUISINES_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case actionType.ALL_CUISINES_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        cuisines: payload,
+      };
+
+    case actionType.ALL_CUISINES_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+      case actionType.EDIT_CUISINE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case actionType.EDIT_CUISINE_REQUEST_SUCCESS:
+      const update = state.cuisines.map((item) =>
+        item._id == payload._id ? payload : item
+      );
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        cuisines: update,
+      };
+
+    case actionType.EDIT_CUISINE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
 
     case actionType.UPDATE_STATUS_KEY:
       return {
@@ -187,16 +253,16 @@ const shopReducer = (state = initialState, action) => {
         searchKey: payload,
       };
 
-      case actionType.UPDATE_SHOP_LIVE_STATUS:
+    case actionType.UPDATE_SHOP_LIVE_STATUS:
       return {
         ...state,
-        liveStatus: payload
+        liveStatus: payload,
       };
 
-      case actionType.SET_STATUS_FALSE:
+    case actionType.SET_STATUS_FALSE:
       return {
         ...state,
-        status: false
+        status: false,
       };
 
     default:

@@ -80,7 +80,7 @@ const AddBanner = () => {
         setTitle(title);
         setType(type);
         setActiveStatus(status);
-        setShop(shop)
+        setShop(shop);
         const contentBlock = htmlToDraft(description);
         if (contentBlock) {
           const contentState = ContentState.createFromBlockArray(
@@ -103,12 +103,13 @@ const AddBanner = () => {
     // console.log(banner)
     if (data.status) {
       // console.log("banner", data.data.banner)
-      const { type, title, image, description, status, shop } = data.data.banner;
+      const { type, title, image, description, status, shop } =
+        data.data.banner;
       setImage(image);
       setTitle(title);
       setType(type);
       setActiveStatus(status);
-      setShop(shop)
+      setShop(shop);
       const contentBlock = htmlToDraft(description);
       if (contentBlock) {
         const contentState = ContentState.createFromBlockArray(
@@ -130,8 +131,8 @@ const AddBanner = () => {
     // console.log(currentContentAsHTML);
     setDescription(currentContentAsHTML);
   };
-
-  const submitBanner =  () => {
+  // VALIDATION
+  const submitBanner = () => {
     if (!title || title == "") {
       return toast.warn("Enter a title ", {
         // position: "bottom-right",
@@ -188,10 +189,12 @@ const AddBanner = () => {
 
     // dispatch(imageUpload(image, "banner"));
 
-     uploadImage();
+    uploadImage();
   };
 
-  const uploadImage = async() => {
+  // UPLOAD IMAGE TO SERVER
+
+  const uploadImage = async () => {
     // console.log({image})
     if (typeof image == "string") {
       submitData(image);
@@ -199,21 +202,20 @@ const AddBanner = () => {
       setIsLoading(true);
       try {
         let formData = new FormData();
-      formData.append("image", image);
-      // console.log({formData})
-      const  {data}  = await requestApi().request(IMAGE_UPLOAD, {
-        method: "POST",
-        data: formData,
-      });
-      // console.log("image upload", data)
-      if (data.status) {
-        setIsLoading(false)
-        submitData(data.data.url);
-      }
+        formData.append("image", image);
+        // console.log({formData})
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: "POST",
+          data: formData,
+        });
+        // console.log("image upload", data)
+        if (data.status) {
+          setIsLoading(false);
+          submitData(data.data.url);
+        }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-      
     }
   };
 
@@ -223,7 +225,7 @@ const AddBanner = () => {
       type: type,
       description,
       image: url,
-      shopId: shop._id
+      shopId: shop._id,
     };
     if (id) {
       dispatch(
@@ -382,23 +384,23 @@ const AddBanner = () => {
                 {id && (
                   <Col xl={6} className="mt-3 mt-xl-0">
                     <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">
-                      Status
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={activeStatus}
-                      label="Status"
-                      onChange={(event) => {
-                        setActiveStatus(event.target.value);
-                      }}
-                      required
-                    >
-                      <MenuItem value="active">Active</MenuItem>
-                      <MenuItem value="inactive">Inactive</MenuItem>
-                    </Select>
-                  </FormControl>
+                      <InputLabel id="demo-simple-select-label">
+                        Status
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={activeStatus}
+                        label="Status"
+                        onChange={(event) => {
+                          setActiveStatus(event.target.value);
+                        }}
+                        required
+                      >
+                        <MenuItem value="active">Active</MenuItem>
+                        <MenuItem value="inactive">Inactive</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Col>
                 )}
               </Row>

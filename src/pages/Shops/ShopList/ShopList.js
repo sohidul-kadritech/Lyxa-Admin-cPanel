@@ -252,8 +252,8 @@ const ShopList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
-                            <div style={{ height: "50px" }}>
+                          <Th style={{ height: "50px",maxWidth: '150px' }}>
+           
                               <img
                                 onClick={() => {
                                   setIsZoom(true);
@@ -268,7 +268,7 @@ const ShopList = () => {
                                   objectFit: "contain",
                                 }}
                               />
-                            </div>
+                     
                           </Th>
 
                           <Td>{item.shopName}</Td>

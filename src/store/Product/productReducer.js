@@ -14,7 +14,7 @@ const initialState = {
   statusKey: { label: "All", value: "all" },
   typeKey: { label: "All", value: "all" },
   sortByKey: { label: "Desc", value: "desc" },
-  productVisibilityKey: { label: "True", value: true },
+  productVisibilityKey: { label: "Yes", value: true },
 
 };
 
@@ -134,6 +134,35 @@ const productReducer = (state = initialState, action) => {
         status: false,
         error: payload,
       };
+
+      // ADD PRODUCT DEAL 
+
+      case actionType.ADD_PRODUCT_DEAL_REQUEST_SEND:
+        return {
+          ...state,
+          loading: true,
+          status: false,
+        };
+  
+      case actionType.ADD_PRODUCT_DEAL_REQUEST_SUCCESS:
+        const filterd = state.products.map((item) =>
+          item._id == payload._id ? payload : item
+        );
+  
+        return {
+          ...state,
+          loading: false,
+          status: true,
+          products: filterd,
+          error: null,
+        };
+      case actionType.ADD_PRODUCT_DEAL_REQUEST_FAIL:
+        return {
+          ...state,
+          loading: false,
+          status: false,
+          error: payload,
+        };
 
       case actionType.UPDATE_SEARCH_KEY:
         return{

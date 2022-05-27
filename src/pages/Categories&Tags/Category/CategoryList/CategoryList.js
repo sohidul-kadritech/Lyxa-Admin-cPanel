@@ -103,8 +103,8 @@ const CategoryList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
-                            <div style={{ height: "50px" }}>
+                          <Th style={{ height: "50px",maxWidth: '150px' }}>
+                       
                               <img
                                 onClick={() => {
                                   setIsZoom(true);
@@ -119,7 +119,7 @@ const CategoryList = () => {
                                   objectFit: "contain",
                                 }}
                               />
-                            </div>
+                  
                           </Th>
 
                           <Td>{item.name}</Td>

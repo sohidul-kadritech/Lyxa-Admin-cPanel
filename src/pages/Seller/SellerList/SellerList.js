@@ -101,11 +101,7 @@ const SellerList = () => {
 
   const searchKeyListener = debounce(handleSearchChange, 300);
 
-  // DELETE
 
-  const handleDelete = (id) => {
-    dispatch(deleteSeller(id));
-  };
 
   return (
     <React.Fragment>
@@ -121,18 +117,6 @@ const SellerList = () => {
               isAddNew={true}
               addNewRoute="seller/add"
             />
-
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
 
             {isZoom ? (
               <Lightbox
@@ -255,8 +239,8 @@ const SellerList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
-                            <div style={{ height: "50px" }}>
+                          <Th style={{ height: "50px",maxWidth: '150px' }}>
+                   
                               <img
                                 onClick={() => {
                                   setIsZoom(true);
@@ -271,7 +255,7 @@ const SellerList = () => {
                                   objectFit: "contain",
                                 }}
                               />
-                            </div>
+                  
                           </Th>
 
                           <Td>{item?.name}</Td>
@@ -283,7 +267,7 @@ const SellerList = () => {
                             <div>
                               <Tooltip title="Edit">
                                 <button
-                                  className="btn btn-success me-0 me-lg-2 button"
+                                  className="btn btn-success me-0 me-xl-2 button"
                                   onClick={() =>
                                     history.push(`/seller/edit/${item._id}`)
                                   }
@@ -293,7 +277,7 @@ const SellerList = () => {
                               </Tooltip>
                               <Tooltip title="Details">
                                 <button
-                                  className="btn btn-info button me-0 me-lg-2"
+                                  className="btn btn-info button me-0 me-xl-2"
                                   onClick={() =>
                                     history.push(`/seller/details/${item._id}`)
                                   }
@@ -301,36 +285,6 @@ const SellerList = () => {
                                   <i className="fa fa-eye" />
                                 </button>
                               </Tooltip>
-                              <Tooltip title="Delete">
-                                <button
-                                  className="btn btn-danger button"
-                                  onClick={() => setconfirm_alert(true)}
-                                >
-                                  <i className="fa fa-trash" />
-                                </button>
-                              </Tooltip>
-                              {confirm_alert ? (
-                                <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item._id);
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  Are You Sure! You want to delete this Seller.
-                                </SweetAlert>
-                              ) : null}
                             </div>
                           </Td>
                         </Tr>
