@@ -51,7 +51,7 @@ const ShopList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
-    liveStatus
+    liveStatus,
   } = useSelector((state) => state.shopReducer);
 
   const [isZoom, setIsZoom] = useState(false);
@@ -63,6 +63,7 @@ const ShopList = () => {
 
   useEffect(() => {
     dispatch(setShopStatusFalse());
+    dispatch(updateShopType({ label: "All", value: "all" }));
   }, []);
 
   useEffect(() => {
@@ -71,7 +72,7 @@ const ShopList = () => {
     } else {
       callShopList();
     }
-  }, [statusKey, typeKey, sortByKey, searchKey,liveStatus]);
+  }, [statusKey, typeKey, sortByKey, searchKey, liveStatus]);
 
   const callShopList = (refresh = false) => {
     dispatch(getAllShop(refresh));
@@ -189,7 +190,7 @@ const ShopList = () => {
                 </Row>
                 <Row className="d-flex justify-content-center">
                   <Col lg={4}>
-                  <div className="mb-4">
+                    <div className="mb-4">
                       <label className="control-label">Live Status</label>
                       <Select
                         palceholder="Select Status"
@@ -203,7 +204,7 @@ const ShopList = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-                  <label className="control-label">Search</label>
+                    <label className="control-label">Search</label>
                     <SearchWrapper>
                       <div className="search__wrapper">
                         <i className="fa fa-search" />
@@ -252,23 +253,21 @@ const ShopList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th style={{ height: "50px",maxWidth: '150px' }}>
-           
-                              <img
-                                onClick={() => {
-                                  setIsZoom(true);
-                                  setShopImg(item.shopLogo);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item.shopLogo}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                }}
-                              />
-                     
+                          <Th style={{ height: "50px", maxWidth: "150px" }}>
+                            <img
+                              onClick={() => {
+                                setIsZoom(true);
+                                setShopImg(item.shopLogo);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt=""
+                              src={item.shopLogo}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                              }}
+                            />
                           </Th>
 
                           <Td>{item.shopName}</Td>

@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { ADD_DEAL, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
+import { ADD_DEAL, ALL_DEAL_FOR_ADD, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
 import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType';
 
@@ -60,8 +60,8 @@ export const addDeal = (values) => async (dispatch) => {
 
   // GET ALL
 
-  export const getAllDeal = (refresh = false, type) => async (dispatch,getState) => {
-    const {deals} = getState().dealReducer;
+  export const getAllDeal = (refresh = false) => async (dispatch,getState) => {
+    const {deals,type} = getState().dealReducer;
 
     if(deals.length < 1 || refresh) {
 
@@ -71,7 +71,7 @@ export const addDeal = (values) => async (dispatch) => {
         });
         const { data } = await requestApi().request(GET_ALL_DEAL,{
           params:{
-            type : type === 'food' ? 'all' : type
+            type,
           }
         });
     
@@ -212,3 +212,52 @@ export const addDeal = (values) => async (dispatch) => {
       });
     }
   };
+
+  // GET ALL FOR SHOP AND PRODUCCT
+
+  export const getAllDealForAdd = (type, shopType) => async (dispatch,getState) => {
+    console.log({type, shopType})
+      try {
+        dispatch({
+          type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND,
+        });
+        const { data } = await requestApi().request(ALL_DEAL_FOR_ADD,{
+          params:{
+            type,
+            shopType: shopType === "food" ? "restaurant" : shopType,
+          }
+        });
+    
+        console.log({ data });
+    
+        if (data.status) {
+
+          dispatch({
+            type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SUCCESS,
+            payload: data.data.deals,
+          });
+        } else {
+          dispatch({
+            type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
+            payload: data.error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+
+    
+  };
+
+
+  // FILTER UPDATE r
+
+  export const updateShopFilter = (value) =>dispatch =>{
+    dispatch({
+      type: actionType.UPDATE_TYPE_KEY,
+      payload: value
+    })
+  }

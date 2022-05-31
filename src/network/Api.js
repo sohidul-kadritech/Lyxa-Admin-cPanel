@@ -72,6 +72,7 @@ export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details"
 
 // SHOP 
 
+export const ADD_SHOP_DEAL = ADMIN_ENDPOINT + "/shop/add-deal"
 export const ADD_SHOP = ADMIN_ENDPOINT + "/shop/add"
 export const EDIT_SHOP = ADMIN_ENDPOINT + "/shop/update"
 export const ALL_SHOP = ADMIN_ENDPOINT + "/shop"
@@ -114,6 +115,7 @@ export const GET_ALL_DEAL = ADMIN_ENDPOINT + "/deal"
 export const EDIT_DEAL = ADMIN_ENDPOINT + "/deal/edit"
 export const DELETE_DEAL = ADMIN_ENDPOINT + "/deal/delete"
 export const SINGLE_DEAL = ADMIN_ENDPOINT + "/deal/"
+export const ALL_DEAL_FOR_ADD = ADMIN_ENDPOINT + "/deal/get-deals-for-add"
 
 // DROP PAY
 

@@ -19,8 +19,10 @@ import {
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
 import { Autocomplete, Box, Paper, TextField, Tooltip } from "@mui/material";
-import { getAllDeal } from "../../../store/Deal/dealAction";
+import { getAllDeal, getAllDealForAdd } from "../../../store/Deal/dealAction";
 import { addProductDeal } from "../../../store/Product/productAction";
+import { toast } from "react-toastify";
+import DealForAdd from "../../../components/DealForAdd";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -30,14 +32,14 @@ const ProductDetails = () => {
   const { products, loading, status } = useSelector(
     (state) => state.productReducer
   );
-  const { deals } = useSelector((state) => state.dealReducer);
+  
 
   const [product, setProduct] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [modalCenter, setModalCenter] = useState(false);
-  const [searchDealKey, setSearchDealKey] = useState("");
-  const [deal, setDeal] = useState(null);
+  
+ 
 
   useEffect(() => {
     if (id) {
@@ -76,25 +78,18 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (modalCenter) {
-      dispatch(getAllDeal(true,product?.type));
+      
     }
   }, [modalCenter]);
 
   // ADD DEAL
 
-  const addDeal = () => {
-    dispatch(
-      addProductDeal({
-        productId: id,
-        dealId: deal._id,
-      })
-    );
-  };
+  
 
   useEffect(() => {
     if (status) {
       setModalCenter(false);
-      setDeal(null);
+      callApi(product._id)
     }
   }, [status]);
 
@@ -425,15 +420,15 @@ const ProductDetails = () => {
                               </div>
                             </li>
 
-                              <ul>
-                                <li>
-                                  <span>{deal.type}-</span>
-                                  <span className="ms-1">
-                                    {deal.option}{deal.percentage && `(${deal.percentage}%)`}
-                                  </span>
-                                </li>
-                              </ul>
-                            
+                            <ul>
+                              <li>
+                                <span>{deal.type}-</span>
+                                <span className="ms-1">
+                                  {deal.option}
+                                  {deal.percentage && `(${deal.percentage}%)`}
+                                </span>
+                              </li>
+                            </ul>
                           </ul>
                         ))}
                     </Paper>
@@ -468,41 +463,7 @@ const ProductDetails = () => {
             </button>
           </div>
           <div className="modal-body">
-            <Autocomplete
-              className="cursor-pointer"
-              onChange={(event, newValue) => {
-                console.log(newValue);
-                setDeal(newValue);
-              }}
-              getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(option, value) => option._id == value._id}
-              inputValue={searchDealKey}
-              onInputChange={(event, newInputValue) => {
-                setSearchDealKey(newInputValue);
-                // console.log("input value", newInputValue);
-              }}
-              id="controllable-states-demo"
-              options={deals.length > 0 ? deals : []}
-              sx={{ width: "100%" }}
-              renderInput={(params) => (
-                <TextField {...params} label="Select a Deal" />
-              )}
-              renderOption={(props, option) => (
-                <Box
-                  component="li"
-                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                  {...props}
-                  key={option._id}
-                >
-                  {option.option}
-                </Box>
-              )}
-            />
-            <div className="d-flex justify-content-center mt-3">
-              <Button color="primary" className="px-4" onClick={addDeal}>
-                {loading ? "Loading..." : "Add"}
-              </Button>
-            </div>
+            <DealForAdd type='product' item={product} shopType ={product?.shop?.shopType} />
           </div>
         </Modal>
       </GlobalWrapper>

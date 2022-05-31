@@ -222,11 +222,12 @@ const AddBanner = () => {
   const submitData = (url) => {
     const data = {
       title,
-      type: type,
+      type,
       description,
       image: url,
-      shopId: shop._id,
+      shopId:  shop?._id , 
     };
+    // console.log({data})
     if (id) {
       dispatch(
         editBanner({

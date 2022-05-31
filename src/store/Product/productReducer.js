@@ -145,8 +145,9 @@ const productReducer = (state = initialState, action) => {
         };
   
       case actionType.ADD_PRODUCT_DEAL_REQUEST_SUCCESS:
+        
         const filterd = state.products.map((item) =>
-          item._id == payload._id ? payload : item
+          item._id === payload._id ? payload : item
         );
   
         return {

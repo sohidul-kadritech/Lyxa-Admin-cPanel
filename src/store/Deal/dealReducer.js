@@ -5,6 +5,7 @@ const initialState = {
   error: null,
   deals: [],
   status: false,
+  type: 'all'
 };
 
 const dealReducer = (state = initialState, action) => {
@@ -113,6 +114,35 @@ const dealReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
+      };
+
+      // GET DEAL FOR ADD 
+      case actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ALL_DEAL_FOR_ADD_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        deals: payload,
+      };
+
+    case actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+      case actionType.UPDATE_TYPE_KEY:
+      return {
+        ...state,
+        type: payload,
       };
 
     default:

@@ -225,7 +225,7 @@ export const deleteProduct = (id) => async (dispatch) => {
 // ADD PRODUCT DEAL 
 
 export const addProductDeal = (values) => async (dispatch) => {
-  console.log({ values });
+  // console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_PRODUCT_DEAL_REQUEST_SEND,
@@ -251,7 +251,7 @@ export const addProductDeal = (values) => async (dispatch) => {
       });
       dispatch({
         type: actionType.ADD_PRODUCT_DEAL_REQUEST_SUCCESS,
-        payload: data.data.product,
+        payload: data.data.product
       });
     } else {
       toast.warn(data.error, {
