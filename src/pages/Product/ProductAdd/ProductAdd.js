@@ -43,7 +43,7 @@ import { getAllShop } from "../../../store/Shop/shopAction";
 import { useParams, useHistory, useLocation, Link } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_PRODUCT } from "../../../network/Api";
-import { cuisinesList } from "../../../assets/staticData";
+import { foodTypeOptions2 } from "../../../assets/staticData";
 import { updateShopType } from "./../../../store/Shop/shopAction";
 
 const ProductAdd = () => {
@@ -74,7 +74,7 @@ const ProductAdd = () => {
     value: "",
   });
   const [name, setName] = useState("");
-
+  const [foodType, setFoodType] = useState("");
   const [discount, setDiscount] = useState(0);
   const [price, setPrice] = useState(0);
   const [type, setType] = useState("");
@@ -322,7 +322,7 @@ const ProductAdd = () => {
       name,
       discount,
       price,
-      foodType: null,
+      foodType,
       shop: shop._id,
       images: [url],
       category: category._id,
@@ -617,6 +617,29 @@ const ProductAdd = () => {
                         )}
                       />
                     </div>
+                    {type === "food" && shop?.shopType === 'food' && (
+                      <div className="mb-4">
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Food Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={foodType}
+                            label="Food Type"
+                            onChange={(event) => {
+                              setFoodType(event.target.value);
+                            }}
+                          >
+                            {foodTypeOptions2.map((item,index)=>(
+                              <MenuItem key={index} value={item.value}>{item.label}</MenuItem>
+                            ))}
+                            
+                          </Select>
+                        </FormControl>
+                      </div>
+                    )}
                     <div className="mb-4">
                       <TextField
                         id="netPrice"
