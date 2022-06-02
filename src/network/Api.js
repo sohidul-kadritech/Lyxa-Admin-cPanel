@@ -123,6 +123,11 @@ export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay"
 export const ADD_USER_BALANCE = ADMIN_ENDPOINT + "/user/add-balance"
 export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance"
 
+// DELIVERY FEE SETTINGS 
+
+export const SET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/delivery-charge"
+export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-charge"
+
 
 // IMAGE UPLOAD 
 
