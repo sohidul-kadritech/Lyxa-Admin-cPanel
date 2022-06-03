@@ -49,6 +49,7 @@ export const RESTORE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/restore";
 
 export const ALL_USERS = ADMIN_ENDPOINT +  "/user";
 export const SINGLE_USER = ADMIN_ENDPOINT + "/user/get-user-details";
+export const USER_TRANSACTIONS = ADMIN_ENDPOINT + "/user/get-user-transaction";
 
 
 // CATEGORY 

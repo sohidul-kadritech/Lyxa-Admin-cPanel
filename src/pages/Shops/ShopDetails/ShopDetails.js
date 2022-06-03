@@ -254,6 +254,14 @@ const ShopDetails = () => {
                             <h5>Address:</h5>
                             <Value>{shop?.address.address}</Value>
                           </Details>
+                          {shop?.deliveryFeePerKm && <Details>
+                            <h5>Delivery Fee(per/km):</h5>
+                            <Value>{shop?.deliveryFeePerKm}</Value>
+                          </Details>}
+                          {shop?.dropChargePerKm && <Details>
+                            <h5>Drop Charge(per/km):</h5>
+                            <Value>{shop?.dropChargePerKm}</Value>
+                          </Details>}
                         </div>
                       </Col>
                     </Row>

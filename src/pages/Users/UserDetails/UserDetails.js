@@ -17,7 +17,6 @@ const UserDetails = () => {
 
   const [user, setUser] = useState({});
 
-
   useEffect(() => {
     if (id) {
       const findUser = users.find((user) => user.id == id);
@@ -77,6 +76,8 @@ const UserDetails = () => {
                 }}
               />
             )} */}
+
+
 
             <Row>
               <Col md={6}>

@@ -208,6 +208,16 @@ const UsersList = () => {
                             <Td>{user.status}</Td>
                             <Td>
                               <ButtonWrapper>
+                              <Tooltip title='Transactions'>
+                                <button
+                                  className="btn btn-info me-xl-3"
+                                  onClick={() =>
+                                    history.push(`/users/transactions/${user._id}`)
+                                  }
+                                >
+                                  <i className="ti-money" />
+                                </button>
+                                </Tooltip>
                                 <Tooltip title='Details'>
                                 <button
                                   className="btn btn-info me-xl-3"

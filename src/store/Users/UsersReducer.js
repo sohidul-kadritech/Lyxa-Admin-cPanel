@@ -1,4 +1,5 @@
 import * as actionType from "../actionType";
+import  moment  from 'moment';
 
 const initialState = {
   laoding: false,
@@ -13,7 +14,11 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  status: false
+  status: false,
+  sortBy: { label: "ASC", value: "ASC" },
+  startDate: moment().format('YYYY-MM-DD'),
+  endDate: moment().add(1, 'M').format('YYYY-MM-DD'),
+  transactionList: []
 };
 
 const usersReducer = (state = initialState, action) => {
@@ -52,6 +57,36 @@ const usersReducer = (state = initialState, action) => {
         errro: payload,
       };
 
+      // TRANSACTIONS
+
+    case actionType.USER_TRANSACTIONS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        errro: null,
+      };
+
+    case actionType.USER_TRANSACTIONS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        transactionList: payload.transactionList,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+      };
+
+    case actionType.USER_TRANSACTIONS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        errro: payload,
+      };
+
     //   UPDATE SORT BY KEY
 
     case actionType.UPDATE_USERS_SORT_KEY:
@@ -76,7 +111,23 @@ const usersReducer = (state = initialState, action) => {
         statusKey: payload,
       };
 
+      case actionType.UPDATE_START_DATE:
+      return {
+        ...state,
+        startDate: payload,
+      };
 
+    case actionType.UPDATE_END_DATE:
+      return {
+        ...state,
+        endDate: payload,
+      };
+
+      case actionType.UPDATE_SORT_BY_KEY:
+        return {
+          ...state,
+          sortBy: payload,
+        };
 
     default:
       return state;

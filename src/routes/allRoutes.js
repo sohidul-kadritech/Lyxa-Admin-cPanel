@@ -159,6 +159,7 @@ import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
 import Cuisine from "../pages/Shops/Cuisine";
 import AdminSettings from "../pages/AdminSettings/AdminSettings";
 import AppSettings from "../pages/AppSettings/AppSettings";
+import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
 
 
 const userRoutes = [
@@ -182,6 +183,7 @@ const userRoutes = [
   { path: "/users/list", component: UsersList },
 
   { path: "/users/details/:id", component: UserDetails },
+  {path: "/users/transactions/:id", component: UserTransaction },
 
   // SELLER
 
@@ -237,7 +239,7 @@ const userRoutes = [
 
   // CHAT
 
-  {path: "/chat", component: Chat},
+  {path: "/customer-support", component: Chat},
 
   // CATEGORIES AND TAGS
 

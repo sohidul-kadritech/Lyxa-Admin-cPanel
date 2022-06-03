@@ -329,6 +329,15 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
+            {/* CHAT */}
+
+            <li>
+              <Link to="/customer-support" className="waves-effect">
+                <i className="fas fa-sms" />
+                <span>{props.t("Chat")}</span>
+              </Link>
+            </li>
+
             {/* Admin Controls */}
 
             <li>
