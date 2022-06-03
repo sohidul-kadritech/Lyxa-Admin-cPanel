@@ -12,16 +12,27 @@ import {
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteDeal, getAllDeal } from "../../../store/Deal/dealAction";
-import { Tooltip } from "@mui/material";
+import {
+  deleteDeal,
+  getAllDeal,
+  updateShopFilter,
+} from "../../../store/Deal/dealAction";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tooltip,
+} from "@mui/material";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
+import { DealsFilterOptions } from "../../../assets/staticData";
 
 const DealsList = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { loading, deals } = useSelector((state) => state.dealReducer);
+  const { loading, deals, type } = useSelector((state) => state.dealReducer);
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -31,8 +42,10 @@ const DealsList = () => {
   const [dynamic_description, setdynamic_description] = useState("");
 
   useEffect(() => {
-    callDealList(true);
-  }, []);
+    if (type) {
+      callDealList(true);
+    }
+  }, [type]);
 
   const callDealList = (refresh = false) => {
     dispatch(getAllDeal(refresh));
@@ -40,9 +53,9 @@ const DealsList = () => {
 
   // DELETE DEAL
 
-  const handleDelete = (id) =>{
-    dispatch(deleteDeal({id}))
-  }
+  const handleDelete = (id) => {
+    dispatch(deleteDeal({ id }));
+  };
 
   return (
     <React.Fragment>
@@ -79,6 +92,35 @@ const DealsList = () => {
                 {dynamic_description}
               </SweetAlert>
             ) : null}
+
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col md={4}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Type
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={type}
+                        label="Status"
+                        onChange={(event) =>
+                          dispatch(updateShopFilter(event.target.value))
+                        }
+                      >
+                        {DealsFilterOptions.map((item, index) => (
+                          <MenuItem key={index} value={item.value}>
+                            {item.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
             <Card>
               <CardBody>

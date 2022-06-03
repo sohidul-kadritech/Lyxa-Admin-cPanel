@@ -72,6 +72,7 @@ export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details"
 
 // SHOP 
 
+export const ADD_SHOP_DEAL = ADMIN_ENDPOINT + "/shop/add-deal"
 export const ADD_SHOP = ADMIN_ENDPOINT + "/shop/add"
 export const EDIT_SHOP = ADMIN_ENDPOINT + "/shop/update"
 export const ALL_SHOP = ADMIN_ENDPOINT + "/shop"
@@ -114,12 +115,18 @@ export const GET_ALL_DEAL = ADMIN_ENDPOINT + "/deal"
 export const EDIT_DEAL = ADMIN_ENDPOINT + "/deal/edit"
 export const DELETE_DEAL = ADMIN_ENDPOINT + "/deal/delete"
 export const SINGLE_DEAL = ADMIN_ENDPOINT + "/deal/"
+export const ALL_DEAL_FOR_ADD = ADMIN_ENDPOINT + "/deal/get-deals-for-add"
 
 // DROP PAY
 
 export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay"
 export const ADD_USER_BALANCE = ADMIN_ENDPOINT + "/user/add-balance"
 export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance"
+
+// DELIVERY FEE SETTINGS 
+
+export const SET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/delivery-charge"
+export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-charge"
 
 
 // IMAGE UPLOAD 

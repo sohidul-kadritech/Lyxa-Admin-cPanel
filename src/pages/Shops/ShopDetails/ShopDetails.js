@@ -17,6 +17,7 @@ import {
   Spinner,
   Form,
   Label,
+  Modal,
 } from "reactstrap";
 
 import Lightbox from "react-image-lightbox";
@@ -26,15 +27,16 @@ import {
 } from "../../../store/Product/productAction";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { FormControlLabel, Switch, Tooltip } from "@mui/material";
+import { FormControlLabel, Paper, Switch, Tooltip } from "@mui/material";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { ShopLiveStatus } from "../../../store/Shop/shopAction";
+import DealForAdd from "../../../components/DealForAdd";
 
 const ShopDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { shops } = useSelector((state) => state.shopReducer);
+  const { shops, status } = useSelector((state) => state.shopReducer);
   const {
     paging,
     hasNextPage,
@@ -53,6 +55,7 @@ const ShopDetails = () => {
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
   const [activeStatus, setActiveStatus] = useState(false);
+  const [modalCenter, setModalCenter] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -113,6 +116,12 @@ const ShopDetails = () => {
     );
   };
 
+  useEffect(() => {
+    if (status) {
+      setModalCenter(false);
+      callApi(shop._id);
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -157,13 +166,26 @@ const ShopDetails = () => {
                     <Row>
                       <div className="d-flex justify-content-between align-items-center w-100 pb-1">
                         <h4>Shop</h4>
-                        <div>
+                        <div className="d-flex align-items-center">
+                          <Button
+                            outline={true}
+                            color="success"
+                            onClick={() => {
+                              setModalCenter(!modalCenter);
+                              document.body.classList.add("no_padding");
+                            }}
+                            className="me-3"
+                          >
+                            Add Deal
+                          </Button>
                           <Switch
                             checked={activeStatus}
                             onChange={changeLiveStatus}
                             inputProps={{ "aria-label": "controlled" }}
                           />
-                          <Label>{activeStatus ? "Online" : "Offline"}</Label>
+                          <Label className="mt-2">
+                            {activeStatus ? "Online" : "Offline"}
+                          </Label>
                         </div>
                       </div>
                       <hr />
@@ -293,70 +315,113 @@ const ShopDetails = () => {
               </Col>
             </Row>
 
-            {shop?.shopBanner || shop?.shopPhotos ? (
-              <Card>
-                <CardBody>
-                  <div>
-                    <CardTitle>Shop Photos</CardTitle>
-                    <hr />
+            <Row>
+              <Col lg={8}>
+                {shop?.shopBanner || shop?.shopPhotos ? (
+                  <Card>
+                    <CardBody>
+                      <div>
+                        <CardTitle>Shop Photos</CardTitle>
+                        <hr />
+                      </div>
+                      <Row>
+                        <Col md={6}>
+                          {shop.shopBanner ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(shop?.shopBanner);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="Veltrix"
+                                src={shop?.shopBanner}
+                                width="100%"
+                              />
+                              <small>Shop Banner</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                        <Col md={6}>
+                          {shop.shopPhotos ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(shop?.shopPhotos[0]);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="Veltrix"
+                                src={shop?.shopPhotos[0]}
+                                width="100%"
+                              />
+                              <small>Shop Photos</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Card>
+                ) : null}
+              </Col>
+              {shop?.deals.length > 0 && (
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <Paper className="py-2">
+                      <h5 className="text-center">Deals List</h5>
+                      <hr />
+                      {shop.deals.length > 0 &&
+                        shop.deals.map((deal, index) => (
+                          <ul key={index} style={{ listStyleType: "square" }}>
+                            <li>
+                              <div className="d-flex justify-content-between">
+                                <span
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "500",
+                                  }}
+                                >
+                                  {deal.name}
+                                  {`-(${deal.status})`}
+                                </span>
+                              </div>
+                            </li>
+
+                            <ul>
+                              <li>
+                                <span>{deal.type}-</span>
+                                <span className="ms-1">
+                                  {deal.option}
+                                  {deal.percentage && `(${deal.percentage}%)`}
+                                </span>
+                              </li>
+                            </ul>
+                          </ul>
+                        ))}
+                    </Paper>
                   </div>
-                  <Row>
-                    <Col md={6}>
-                      {shop.shopBanner ? (
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(shop?.shopBanner);
-                            }}
-                            className="img-fluid cursor-pointer"
-                            alt="Veltrix"
-                            src={shop?.shopBanner}
-                            width="100%"
-                          />
-                          <small>Shop Banner</small>
-                        </ImageWrapper>
-                      ) : null}
-                    </Col>
-                    <Col md={6}>
-                      {shop.shopPhotos ? (
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(shop?.shopPhotos[0]);
-                            }}
-                            className="img-fluid cursor-pointer"
-                            alt="Veltrix"
-                            src={shop?.shopPhotos[0]}
-                            width="100%"
-                          />
-                          <small>Shop Photos</small>
-                        </ImageWrapper>
-                      ) : null}
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
-            ) : null}
+                </Col>
+              )}
+            </Row>
 
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center ">
                   <CardTitle className="h4"> Product List</CardTitle>
-                  <Button color="success" onClick={addProduct}>
+
+                  <Button color="success" onClick={addProduct} className="ms-3">
                     Add Product
                   </Button>
                 </div>
@@ -388,23 +453,21 @@ const ShopDetails = () => {
                               fontWeight: "500",
                             }}
                           >
-                            <Th>
-                              <div style={{ height: "50px" }}>
-                                <img
-                                  onClick={() => {
-                                    // setIsZoom(true);
-                                    // setProImg(item?.images[0]);
-                                  }}
-                                  className="img-fluid cursor-pointer"
-                                  alt=""
-                                  src={item?.images[0]}
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "contain",
-                                  }}
-                                />
-                              </div>
+                            <Th style={{ height: "50px", maxWidth: "150px" }}>
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(item?.images[0]);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt=""
+                                src={item?.images[0]}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                }}
+                              />
                             </Th>
 
                             <Td>{item?.name}</Td>
@@ -494,6 +557,33 @@ const ShopDetails = () => {
             </Row>
           </Container>
         </div>
+        {/* DEAL */}
+
+        <Modal
+          isOpen={modalCenter}
+          toggle={() => {
+            setModalCenter(!modalCenter);
+          }}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">Add Deal</h5>
+            <button
+              type="button"
+              onClick={() => {
+                setModalCenter(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <DealForAdd type="shop" item={shop} shopType={shop?.shopType} />
+          </div>
+        </Modal>
       </GlobalWrapper>
     </React.Fragment>
   );

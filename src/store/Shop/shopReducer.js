@@ -131,6 +131,35 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
+      // ADD SHOP DEALS 
+      case actionType.ADD_SHOP_DEAL_REQUEST_SEND:
+        return {
+          ...state,
+          loading: true,
+          status: false,
+        };
+  
+      case actionType.ADD_SHOP_DEAL_REQUEST_SUCCESS:
+        
+        const filterd = state.shops.map((item) =>
+          item._id === payload._id ? payload : item
+        );
+  
+        return {
+          ...state,
+          loading: false,
+          status: true,
+          products: filterd,
+          error: null,
+        };
+      case actionType.ADD_SHOP_DEAL_REQUEST_FAIL:
+        return {
+          ...state,
+          loading: false,
+          status: false,
+          error: payload,
+        };
+
     // CHANGE LIVE STATUS
 
     case actionType.SHOP_LIVE_STATUS_REQUEST_SEND:

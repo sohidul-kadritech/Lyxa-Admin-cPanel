@@ -156,7 +156,7 @@ const ShopAdd = () => {
   }, [searchParams]);
 
   // UPDATE DATA
-  const updateData = (values) => {
+  const updateData = async (values) => {
     const {
       delivery,
       seller,
@@ -176,8 +176,8 @@ const ShopAdd = () => {
       address
     } = values;
 
-    const findSeller = sellers.find((s) => s._id == seller._id);
-    // console.log({findSeller})
+    const findSeller = await sellers.find((s) => s._id == seller._id);
+    console.log({findSeller})
 
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
@@ -198,6 +198,7 @@ const ShopAdd = () => {
     setLiveStatus(liveStatus);
     setFreeDelivery(freeDelivery);
     setPinCode(address.pin)
+    handleAddressSelect(address.address, address.placeId)
   };
 
   // TAGS
@@ -683,7 +684,7 @@ const ShopAdd = () => {
                       <TextField
                         type="time"
                         className="form-control"
-                        id="example-time-input"
+                        // id="example-time-input"
                         label="Close At"
                         required
                         value={shopEndTime}

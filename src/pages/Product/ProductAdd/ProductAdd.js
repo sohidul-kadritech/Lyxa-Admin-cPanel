@@ -43,7 +43,8 @@ import { getAllShop } from "../../../store/Shop/shopAction";
 import { useParams, useHistory, useLocation, Link } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_PRODUCT } from "../../../network/Api";
-import { cuisinesList } from "../../../assets/staticData";
+import { foodTypeOptions2 } from "../../../assets/staticData";
+import { updateShopType } from "./../../../store/Shop/shopAction";
 
 const ProductAdd = () => {
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ const ProductAdd = () => {
   const { categories, subCategories } = useSelector(
     (state) => state.categoryReducer
   );
-  const { shops } = useSelector((state) => state.shopReducer);
+  const { shops, typeKey } = useSelector((state) => state.shopReducer);
 
   const { loading, products, status } = useSelector(
     (state) => state.productReducer
@@ -73,18 +74,14 @@ const ProductAdd = () => {
     value: "",
   });
   const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [sku, setSku] = useState("");
+  const [foodType, setFoodType] = useState("");
   const [discount, setDiscount] = useState(0);
   const [price, setPrice] = useState(0);
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [visibility, setVisibility] = useState(false);
-  const [activeStatus, setActiveStatus] = useState('')
-  const [minQty, setMinQty] = useState(0);
-  const [minDeliveryTime, setMinDeliveryTime] = useState(0);
-  const [maxDeliveryTime, setMaxDeliveryTime] = useState(0);
+  const [activeStatus, setActiveStatus] = useState("");
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
   const [addons, setAddons] = useState([]);
@@ -100,7 +97,6 @@ const ProductAdd = () => {
       extraPrice: 0,
     },
   ]);
-
 
   // console.log({ attributes });
 
@@ -150,55 +146,57 @@ const ProductAdd = () => {
     const {
       category,
       name,
-      orderQuantityMinimum,
+
       images,
-      maxDeliveryTime,
-      minDeliveryTime,
-      previousPrice,
+
       price,
       productVisibility,
       seoDescription,
       tags,
       seoTitle,
       shop,
-      sku,
-      slug,
       subCategory,
       type,
       addons,
       attributes,
-      status
+      status,
     } = product;
 
     setShop(shop);
     setCategory(category);
     setSubCategory(subCategory);
     setName(name);
-    setSlug(slug);
-    setSku(sku);
     setDiscount(discount);
     setPrice(price);
     setType(type);
     setSeoTitle(seoTitle);
     setSeoDescription(seoDescription);
-    setMinQty(orderQuantityMinimum);
     setVisibility(productVisibility);
-    setMinDeliveryTime(minDeliveryTime == null ? 0 : minDeliveryTime);
-    setMaxDeliveryTime(maxDeliveryTime == null ? 0 : maxDeliveryTime);
+
     setTags({
       ...tags,
       items: tags,
     });
-    setImage(images[0])
+    setImage(images[0]);
     setAddons(addons);
     setAttributes(attributes);
-    setActiveStatus(status)
+    setActiveStatus(status);
   };
+
+  // ALL CATEGORY LIST
 
   useEffect(() => {
     dispatch(getAllCategory(true));
-    dispatch(getAllShop(true));
   }, []);
+
+  // ALL SHOP LIST
+  useEffect(() => {
+    if (type) {
+      dispatch(getAllShop(true));
+    }
+  }, [type]);
+
+  // ALL SUB CATEGORY LIST
 
   useEffect(() => {
     if (category) {
@@ -254,15 +252,12 @@ const ProductAdd = () => {
       !category ||
       !subCategory ||
       !name ||
-      !slug ||
-      !sku ||
       price <= 0 ||
       !type ||
       !seoTitle ||
       !seoDescription ||
       tags.items.length < 1 ||
-      !shop ||
-      minQty <= 0
+      !shop
     ) {
       return toast.warn("Please Fillup All Fields", {
         // position: "bottom-right",
@@ -276,18 +271,6 @@ const ProductAdd = () => {
       });
     }
 
-    if (type == "food" && (minDeliveryTime <= 0 || maxDeliveryTime <= 0)) {
-      return toast.warn("Please Add Min And Max Delivery Time", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
     if (!image) {
       return toast.warn("Select Product image", {
         // position: "bottom-right",
@@ -306,12 +289,11 @@ const ProductAdd = () => {
   };
 
   const uploadImage = async () => {
-    
-    if(typeof image === 'string') {
+    if (typeof image === "string") {
       submitData(image);
-    }else{
+    } else {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         let formData = new FormData();
         formData.append("image", image);
         // console.log({formData})
@@ -322,7 +304,7 @@ const ProductAdd = () => {
         // console.log("image upload", data)
         if (data.status) {
           // submitData(data.data.url);
-          setIsLoading(false)
+          setIsLoading(false);
           submitData(data.data.url);
         } else {
           console.log(data.error);
@@ -333,27 +315,23 @@ const ProductAdd = () => {
     }
   };
 
+  // SUBMIT DATA TO SERVER
   const submitData = (url) => {
-    const addonsData = addons.map(item => item._id)
+    const addonsData = addons.map((item) => item._id);
     const data = {
       name,
-      slug: slug.split(" ").join(""),
-      sku,
       discount,
       price,
-      type,
+      foodType,
       shop: shop._id,
-      orderQuantityMinimum: parseInt(minQty),
       images: [url],
       category: category._id,
       subCategory: subCategory._id,
-      minDeliveryTime: parseInt(minDeliveryTime),
-      maxDeliveryTime: parseInt(maxDeliveryTime),
       seoTitle,
       seoDescription,
       tags: tags.items,
       attributes,
-      addons:addonsData,
+      addons: addonsData,
     };
 
     // console.log({data})
@@ -363,7 +341,7 @@ const ProductAdd = () => {
           ...data,
           id,
           productVisibility: visibility,
-          status: activeStatus
+          status: activeStatus,
         })
       );
     } else {
@@ -473,25 +451,19 @@ const ProductAdd = () => {
         setCategory(null);
         setSubCategory(null);
         setName("");
-        setSlug("");
-        setSku("");
         setDiscount(0);
         setPrice(0);
-        setType("");
         setSeoTitle("");
         setSeoDescription("");
-        setMinQty(0);
-        setMinDeliveryTime(0);
-        setMaxDeliveryTime(0);
         setTags({
           items: [],
           value: "",
         });
 
         setAttributes([]);
-        setAddons([])
+        setAddons([]);
         setIsRequiredAttribute(false);
-        setIsNeedAddon(false)
+        setIsNeedAddon(false);
         setAttributeItems([
           {
             name: "",
@@ -581,29 +553,93 @@ const ProductAdd = () => {
                       />
                     </div>
                     <div className="mb-4">
-                      <TextField
-                        id="slug"
-                        label="Slug"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={slug}
-                        onChange={(event) => setSlug(event.target.value)}
-                        required
-                      />
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">
+                          Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={type}
+                          label="Type"
+                          onChange={(event) => {
+                            setType(event.target.value);
+                            dispatch(updateShopType(event.target.value));
+                          }}
+                        >
+                          <MenuItem value="food">Restaurant</MenuItem>
+                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                          <MenuItem value="grocery">Grocery</MenuItem>
+                        </Select>
+                      </FormControl>
                     </div>
                     <div className="mb-4">
-                      <TextField
-                        id="sku"
-                        label="SKU"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={sku}
-                        onChange={(event) => setSku(event.target.value)}
-                        required
+                      <Autocomplete
+                        disabled={id || !type ? true : false}
+                        className="cursor-pointer"
+                        value={shop}
+                        onChange={(event, newValue) => {
+                          setShop(newValue);
+                          setAddons([]);
+                          // console.log("new", newValue);
+                        }}
+                        getOptionLabel={(option) =>
+                          option.shopName ? option.shopName : ""
+                        }
+                        isOptionEqualToValue={(option, value) =>
+                          option._id == value._id
+                        }
+                        inputValue={searchShopKey}
+                        onInputChange={(event, newInputValue) => {
+                          setSearchShopKey(newInputValue);
+                          // console.log("input value", newInputValue);
+                        }}
+                        id="controllable-states-demo"
+                        options={shops.length > 0 ? shops : []}
+                        sx={{ width: "100%" }}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Select a Shop" />
+                        )}
+                        renderOption={(props, option) => (
+                          <Box
+                            component="li"
+                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                            {...props}
+                          >
+                            <img
+                              loading="lazy"
+                              width="60"
+                              src={option.shopBanner}
+                              alt=""
+                            />
+                            {option.shopName}
+                          </Box>
+                        )}
                       />
                     </div>
+                    {type === "food" && shop?.shopType === 'food' && (
+                      <div className="mb-4">
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Food Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={foodType}
+                            label="Food Type"
+                            onChange={(event) => {
+                              setFoodType(event.target.value);
+                            }}
+                          >
+                            {foodTypeOptions2.map((item,index)=>(
+                              <MenuItem key={index} value={item.value}>{item.label}</MenuItem>
+                            ))}
+                            
+                          </Select>
+                        </FormControl>
+                      </div>
+                    )}
                     <div className="mb-4">
                       <TextField
                         id="netPrice"
@@ -626,67 +662,12 @@ const ProductAdd = () => {
                         placeholder="Ender Discount Percentage"
                         autoComplete="off"
                         value={discount}
-                        onChange={(event) =>
-                          setDiscount(event.target.value)
-                        }
+                        onChange={(event) => setDiscount(event.target.value)}
                         required
                         type="number"
                       />
                     </div>
-                    
 
-                    <div className="mb-4">
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={type}
-                          label="Type"
-                          onChange={(event) => setType(event.target.value)}
-                        >
-                          <MenuItem value="food">Food</MenuItem>
-                          <MenuItem value="grocery">Grocery</MenuItem>
-                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    {type == "food" && (
-                      <>
-                        <div className="mb-4">
-                          <TextField
-                            id="delivery Time"
-                            label="Minimum Delivery Time(minute)"
-                            variant="outlined"
-                            style={{ width: "100%" }}
-                            autoComplete="off"
-                            value={minDeliveryTime}
-                            onChange={(event) =>
-                              setMinDeliveryTime(event.target.value)
-                            }
-                            required
-                            type="number"
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <TextField
-                            id="delivery Time"
-                            label="Maximum Delivery Time(minute)"
-                            variant="outlined"
-                            style={{ width: "100%" }}
-                            autoComplete="off"
-                            value={maxDeliveryTime}
-                            onChange={(event) =>
-                              setMaxDeliveryTime(event.target.value)
-                            }
-                            required
-                            type="number"
-                          />
-                        </div>
-                      </>
-                    )}
                     {id && (
                       <div className="mb-4">
                         <FormControl fullWidth required>
@@ -731,51 +712,6 @@ const ProductAdd = () => {
                     )}
                   </Col>
                   <Col lg={6}>
-                    <div className="mb-4">
-                      <Autocomplete
-                        disabled={id ? true : false}
-                        className="cursor-pointer"
-                        value={shop}
-                        onChange={(event, newValue) => {
-                          setShop(newValue)
-                          setAddons([])
-                          // console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) =>
-                          option.shopName ? option.shopName : ""
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchShopKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchShopKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={shops.length > 0 ? shops : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Shop" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.shopBanner}
-                              alt=""
-                            />
-                            {option.shopName}
-                          </Box>
-                        )}
-                      />
-                    </div>
-
                     <div className="mb-4">
                       <Autocomplete
                         className="cursor-pointer"
@@ -870,20 +806,6 @@ const ProductAdd = () => {
 
                     <div className="mb-4">
                       <TextField
-                        id="minQty"
-                        label="Minimum Order Quantity"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={minQty}
-                        onChange={(event) => setMinQty(event.target.value)}
-                        required
-                        type="number"
-                      />
-                    </div>
-
-                    <div className="mb-4">
-                      <TextField
                         id="seo"
                         label="SEO Title"
                         variant="outlined"
@@ -942,8 +864,6 @@ const ProductAdd = () => {
                         rows={2}
                       />
                     </div>
-
-                    
                   </Col>
                 </Row>
 
@@ -1099,11 +1019,15 @@ const ProductAdd = () => {
                                         fontWeight: "500",
                                       }}
                                     >
-                                      {attribute.name}{attribute.required ? '(Required)' : ""}
+                                      {attribute.name}
+                                      {attribute.required ? "(Required)" : ""}
                                     </span>
                                     <i
                                       className="fas fa-trash cursor-pointer me-3"
-                                      style={{ color: "#BD381C", fontSize: "15px" }}
+                                      style={{
+                                        color: "#BD381C",
+                                        fontSize: "15px",
+                                      }}
                                       onClick={() => removeAttribute(index)}
                                     ></i>
                                   </div>
@@ -1179,7 +1103,6 @@ const ProductAdd = () => {
                               component="li"
                               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                               {...props}
-                              
                             >
                               <img
                                 loading="lazy"
@@ -1227,7 +1150,10 @@ const ProductAdd = () => {
                                     </div>
                                     <i
                                       className="fas fa-trash cursor-pointer me-3"
-                                      style={{ color: "#BD381C", fontSize: "15px" }}
+                                      style={{
+                                        color: "#BD381C",
+                                        fontSize: "15px",
+                                      }}
                                       onClick={() => removeAddon(index)}
                                     ></i>
                                   </div>
@@ -1362,8 +1288,5 @@ const ProductAdd = () => {
     </React.Fragment>
   );
 };
-
-
-
 
 export default ProductAdd;
