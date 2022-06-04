@@ -30,6 +30,7 @@ import { getAllSeller } from "../../../store/Seller/sellerAction";
 import {
   getAllCategory,
   getAllSubCategory,
+  updateCategoryShopType,
 } from "../../../store/Category/categoryAction";
 import styled from "styled-components";
 import Dropzone from "react-dropzone";
@@ -64,6 +65,8 @@ const ProductAdd = () => {
   );
 
   const [shop, setShop] = useState(null);
+  const [cuisines, setCuisines] = useState(null);
+  const [cuisineSearchKey, setCuisineSearchKey] = useState("");
   const [searchShopKey, setSearchShopKey] = useState("");
   const [category, setCategory] = useState(null);
   const [searchCategoryKey, setSearchCategoryKey] = useState("");
@@ -146,9 +149,7 @@ const ProductAdd = () => {
     const {
       category,
       name,
-
       images,
-
       price,
       productVisibility,
       seoDescription,
@@ -157,9 +158,11 @@ const ProductAdd = () => {
       shop,
       subCategory,
       type,
+      foodType,
       addons,
       attributes,
       status,
+      discount,
     } = product;
 
     setShop(shop);
@@ -172,7 +175,7 @@ const ProductAdd = () => {
     setSeoTitle(seoTitle);
     setSeoDescription(seoDescription);
     setVisibility(productVisibility);
-
+    setFoodType(foodType ?? "");
     setTags({
       ...tags,
       items: tags,
@@ -186,8 +189,10 @@ const ProductAdd = () => {
   // ALL CATEGORY LIST
 
   useEffect(() => {
-    dispatch(getAllCategory(true));
-  }, []);
+    if(type){
+      dispatch(getAllCategory(true));
+    }
+  }, [type]);
 
   // ALL SHOP LIST
   useEffect(() => {
@@ -204,11 +209,11 @@ const ProductAdd = () => {
     }
   }, [category]);
 
-  useEffect(() => {
-    if (shop) {
-      dispatch(getAllProduct(true, shop._id));
-    }
-  }, [shop]);
+  // useEffect(() => {
+  //   if (shop) {
+  //     dispatch(getAllProduct(true, shop._id));
+  //   }
+  // }, [shop]);
 
   // TAGS
 
@@ -250,7 +255,6 @@ const ProductAdd = () => {
   const submitProduct = () => {
     if (
       !category ||
-      !subCategory ||
       !name ||
       price <= 0 ||
       !type ||
@@ -259,29 +263,11 @@ const ProductAdd = () => {
       tags.items.length < 1 ||
       !shop
     ) {
-      return toast.warn("Please Fillup All Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return errorMessage("Please fill all required fields");
     }
 
     if (!image) {
-      return toast.warn("Select Product image", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+       return errorMessage("Please Upload Image");
     }
 
     // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
@@ -302,18 +288,35 @@ const ProductAdd = () => {
           data: formData,
         });
         // console.log("image upload", data)
+        setIsLoading(false);
         if (data.status) {
           // submitData(data.data.url);
-          setIsLoading(false);
           submitData(data.data.url);
         } else {
-          console.log(data.error);
+
+          return errorMessage(data.error)
         }
       } catch (error) {
-        console.log(error.message);
+        setIsLoading(false);
+        return errorMessage(error.message)
       }
     }
   };
+
+  // ERROR MESSAGE
+
+  const errorMessage = (msg) =>{
+    toast.warn(msg, {
+      // position: "bottom-right",
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   // SUBMIT DATA TO SERVER
   const submitData = (url) => {
@@ -326,12 +329,13 @@ const ProductAdd = () => {
       shop: shop._id,
       images: [url],
       category: category._id,
-      subCategory: subCategory._id,
+      subCategory: subCategory?._id,
       seoTitle,
       seoDescription,
       tags: tags.items,
       attributes,
       addons: addonsData,
+      cuisines
     };
 
     // console.log({data})
@@ -459,6 +463,7 @@ const ProductAdd = () => {
           items: [],
           value: "",
         });
+        setType("")
 
         setAttributes([]);
         setAddons([]);
@@ -565,6 +570,9 @@ const ProductAdd = () => {
                           onChange={(event) => {
                             setType(event.target.value);
                             dispatch(updateShopType(event.target.value));
+                            dispatch(updateCategoryShopType(event.target.value));
+                            setShop(null);
+                            
                           }}
                         >
                           <MenuItem value="food">Restaurant</MenuItem>
@@ -581,11 +589,9 @@ const ProductAdd = () => {
                         onChange={(event, newValue) => {
                           setShop(newValue);
                           setAddons([]);
-                          // console.log("new", newValue);
+                          console.log("new", newValue);
                         }}
-                        getOptionLabel={(option) =>
-                          option.shopName ? option.shopName : ""
-                        }
+                        getOptionLabel={(option) =>option.shopName }
                         isOptionEqualToValue={(option, value) =>
                           option._id == value._id
                         }
@@ -605,6 +611,7 @@ const ProductAdd = () => {
                             component="li"
                             sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                             {...props}
+                            key={option._id}
                           >
                             <img
                               loading="lazy"
@@ -617,7 +624,46 @@ const ProductAdd = () => {
                         )}
                       />
                     </div>
-                    {type === "food" && shop?.shopType === 'food' && (
+
+                    {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
+                      <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={cuisines}
+                          onChange={(event, newValue) => {
+                            setCuisines(newValue);
+                            console.log("new", newValue);
+                          }}
+                          getOptionLabel={(option) =>
+                            option.name ? option.name : option
+                          }
+                          isOptionEqualToValue={(option, value) =>option == value}
+                          inputValue={cuisineSearchKey}
+                          onInputChange={(event, newInputValue) => {
+                            setCuisineSearchKey(newInputValue);
+                            // console.log("input value", newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={shop?.cuisineType?.length > 0 ? shop?.cuisineType : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select a Cuisine" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option}
+                            >
+                              {option?.name ||  option}
+                            </Box>
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    {type === "food" && shop?.shopType === "food" && (
                       <div className="mb-4">
                         <FormControl fullWidth required>
                           <InputLabel id="demo-simple-select-label">
@@ -632,10 +678,11 @@ const ProductAdd = () => {
                               setFoodType(event.target.value);
                             }}
                           >
-                            {foodTypeOptions2.map((item,index)=>(
-                              <MenuItem key={index} value={item.value}>{item.label}</MenuItem>
+                            {foodTypeOptions2.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
                             ))}
-                            
                           </Select>
                         </FormControl>
                       </div>
@@ -716,12 +763,12 @@ const ProductAdd = () => {
                       <Autocomplete
                         className="cursor-pointer"
                         value={category}
+                        disabled={!type ? true : false}
                         onChange={(event, newValue) => {
                           setCategory(newValue);
                           // console.log("new", newValue);
                         }}
-                        getOptionLabel={(option) =>
-                          option.name ? option.name : ""
+                        getOptionLabel={(option) => option.name 
                         }
                         isOptionEqualToValue={(option, value) =>
                           option._id == value._id
@@ -1103,6 +1150,7 @@ const ProductAdd = () => {
                               component="li"
                               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                               {...props}
+                              key={option._id}
                             >
                               <img
                                 loading="lazy"

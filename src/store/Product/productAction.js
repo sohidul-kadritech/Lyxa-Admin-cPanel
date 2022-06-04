@@ -277,8 +277,7 @@ export const addProductDeal = (values) => async (dispatch) => {
   }
 };
 
-
- // UPDATE SEARCH KEY
+ // UPDATE SEARCH KEYP
 
 export const updateProductSearchKey = (value) => (dispatch) => {
   dispatch({

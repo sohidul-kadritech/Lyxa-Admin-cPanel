@@ -23,13 +23,10 @@ import requestApi from "./../../../../network/httpRequest";
 import { SINGLE_CATEGORY } from "../../../../network/Api";
 import { editCategory } from "./../../../../store/Category/categoryAction";
 import { IMAGE_UPLOAD } from './../../../../network/Api';
+import { shopTypeOptions2 } from "../../../../assets/staticData";
 
 const CategoryAdd = () => {
-  const options = [
-    { label: "Pharmacy", value: "pharmacy" },
-    { label: "Grocery", value: "grocery" },
-    { label: "Food", value: "food" },
-  ];
+  
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -50,14 +47,8 @@ const CategoryAdd = () => {
       const findCat = categories.find((item) => item._id == id);
       // console.log({ findAdmin });
       if (findCat) {
-        const { name, type, slug, image } = findCat;
-
-        const findTypeObj = options.find((x) => x.value == type);
-        //  console.log({adminEmail})
-        setName(name);
-        setType(findTypeObj);
-        setSlug(slug);
-        setImage(image)
+         setCategoryData(findCat)
+        
       } else {
         callApi(id);
       }
@@ -75,17 +66,24 @@ const CategoryAdd = () => {
     // console.log("from api", data);
 
     if (data.status) {
-      const { name, type, slug, image } = data.data.category;
-      //  console.log({adminEmail})
-      const findTypeObj = options.find((x) => x.value == type);
-      setName(name);
-      setType(findTypeObj);
-      setSlug(slug);
-      setImage(image)
+      setCategoryData(data.data.category)
     } else {
       history.push("/categories/list", { replace: true });
     }
   };
+
+  // SET DATA TO STATE
+
+  const setCategoryData = (item) => {
+    const { name, type, slug, image } = item;
+
+    const findTypeObj = shopTypeOptions2.find((x) => x.value == type);
+    //  console.log({adminEmail})
+    setName(name);
+    setType(findTypeObj);
+    setSlug(slug);
+    setImage(image)
+  }
 
   // HANDLE SUBMIT
 
@@ -245,7 +243,7 @@ const CategoryAdd = () => {
                       value={type}
                       defaultValue={""}
                       palceholder="Select Shop Type"
-                      options={options}
+                      options={shopTypeOptions2}
                       classNamePrefix="select2-selection"
                       required
                     />

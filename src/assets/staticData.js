@@ -16,14 +16,14 @@ export const sortByOptions = [
 
  export const shopTypeOptions = [
     { label: "All", value: "all" },
-    { label: "Food", value: "food" },
+    { label: "Restaurent", value: "food" },
     { label: "Grocery", value: "grocery" },
     { label: "Pharmacy", value: "pharmacy" },
   ];
 
   export const sellerTypeOptions = [
     { label: "All", value: "all" },
-    { label: "Food", value: "food" },
+    { label: "Restaurent", value: "food" },
     { label: "Grocery", value: "grocery" },
     { label: "Pharmacy", value: "pharmacy" },
     { label: "Shop", value: "shop" },
@@ -31,7 +31,7 @@ export const sortByOptions = [
 
 
   export const shopTypeOptions2 = [
-    { label: "Food", value: "food" },
+    { label: "Restaurent", value: "food" },
     { label: "Grocery", value: "grocery" },
     { label: "Pharmacy", value: "pharmacy" },
   ];
@@ -39,7 +39,7 @@ export const sortByOptions = [
 
   export const bannerOptions = [
     { label: "Home", value: "home" },
-    { label: "Food", value: "food" },
+    { label: "Restaurant", value: "food" },
     { label: "Grocery", value: "grocery" },
     { label: "Pharmacy", value: "pharmacy" },
   ];
@@ -73,7 +73,7 @@ export const sortByOptions = [
 
   export const foodTypeOptions = [
     { label: "Restaurants", value: "restaurants" },
-    { label: "Food Cut", value: "foodCut" },
+    { label: "Food Cart", value: "foodCut" },
   ];
 
   export const sellerSubTypeOptions = [

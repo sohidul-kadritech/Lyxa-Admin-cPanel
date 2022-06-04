@@ -12,15 +12,18 @@ import {
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { useDispatch, useSelector } from "react-redux";
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
 
 import {
   getAllCategory,
   setCatStatusFalse,
+  updateCategoryShopType,
 } from "../../../../store/Category/categoryAction";
 import AppPagination from "./../../../../components/AppPagination";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
+import { shopTypeOptions } from "../../../../assets/staticData";
+import { FormControl, InputLabel, MenuItem,Select } from "@mui/material";
 
 const CategoryList = () => {
   const dispatch = useDispatch();
@@ -33,15 +36,18 @@ const CategoryList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    shopType,
   } = useSelector((state) => state.categoryReducer);
 
   const [isZoom, setIsZoom] = useState(false);
   const [catImg, setCatImg] = useState("");
 
   useEffect(() => {
-    callCategoryList();
-    dispatch(setCatStatusFalse());
-  }, []);
+    if (shopType) {
+      callCategoryList(true);
+      dispatch(setCatStatusFalse());
+    }
+  }, [shopType]);
 
   const callCategoryList = (refresh = false) => {
     dispatch(getAllCategory(refresh));
@@ -72,11 +78,37 @@ const CategoryList = () => {
               />
             ) : null}
 
+            <Row>
+              <Col lg={4}>
+                <Card>
+                  <CardBody>
+                    <FormControl fullWidth required>
+                      <InputLabel id="demo-simple-select-label">
+                        Shop Type
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={shopType}
+                        label="Shop Type"
+                        onChange={(event) => {
+                          dispatch(updateCategoryShopType(event.target.value));
+                        }}
+                      >
+                        {shopTypeOptions.map((option, index) => (
+                          <MenuItem key={index} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+
             <Card>
               <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
                 <CardTitle className="h4"> Category List</CardTitle>
                 <Table
                   id="tech-companies-1"
@@ -103,23 +135,21 @@ const CategoryList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th style={{ height: "50px",maxWidth: '150px' }}>
-                       
-                              <img
-                                onClick={() => {
-                                  setIsZoom(true);
-                                  setCatImg(item.image);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item.image}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                }}
-                              />
-                  
+                          <Th style={{ height: "50px", maxWidth: "150px" }}>
+                            <img
+                              onClick={() => {
+                                setIsZoom(true);
+                                setCatImg(item.image);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt=""
+                              src={item.image}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                              }}
+                            />
                           </Th>
 
                           <Td>{item.name}</Td>
@@ -128,25 +158,28 @@ const CategoryList = () => {
                           <Td>{item.status}</Td>
                           <Td>
                             <div>
-                            <Tooltip title="Edit">
-                              <button
-                                className="btn btn-success me-3 button"
-                                onClick={() =>
-                                  history.push(`/categories/edit/${item._id}`)
-                                }
-                              >
-                                <i className="fa fa-edit" />
-                              </button>
+                              <Tooltip title="Edit">
+                                <button
+                                  className="btn btn-success me-3 button"
+                                  onClick={() =>
+                                    history.push(`/categories/edit/${item._id}`)
+                                  }
+                                >
+                                  <i className="fa fa-edit" />
+                                </button>
                               </Tooltip>
                               <Tooltip title="Details">
-                              <button
-                                className="btn btn-info button"
-                                onClick={() =>history.push(`/category/details/${item._id}`) }
-                              >
-                                <i className="fa fa-eye" />
-                              </button>
+                                <button
+                                  className="btn btn-info button"
+                                  onClick={() =>
+                                    history.push(
+                                      `/category/details/${item._id}`
+                                    )
+                                  }
+                                >
+                                  <i className="fa fa-eye" />
+                                </button>
                               </Tooltip>
-                              
                             </div>
                           </Td>
                         </Tr>

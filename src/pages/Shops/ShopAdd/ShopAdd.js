@@ -159,7 +159,7 @@ const ShopAdd = () => {
   const updateData = async (values) => {
     const {
       delivery,
-      seller,
+      seller: { _id: sellerId },
       minOrderAmount,
       shopBanner,
       shopEndTimeText,
@@ -176,8 +176,8 @@ const ShopAdd = () => {
       address
     } = values;
 
-    const findSeller = await sellers.find((s) => s._id == seller._id);
-    console.log({findSeller})
+    const findSeller =  sellers.find((s) => s._id == sellerId);
+    // console.log({sellerId})
 
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
@@ -602,7 +602,7 @@ const ShopAdd = () => {
                   <Col lg={6}>
                     <Autocomplete
                       className="cursor-pointer"
-                      disabled={id ? true : false}
+                      // disabled={id ? true : false}
                       value={seller}
                       onChange={(event, newValue) => {
                         setSeller(newValue);
