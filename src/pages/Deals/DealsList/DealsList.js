@@ -47,6 +47,8 @@ const DealsList = () => {
     }
   }, [type]);
 
+  console.log({type})
+
   const callDealList = (refresh = false) => {
     dispatch(getAllDeal(refresh));
   };
@@ -68,6 +70,8 @@ const DealsList = () => {
               title="Deal"
               loading={loading}
               callList={callDealList}
+              isAddNew={true}
+              addNewRoute="deals/add"
             />
 
             {isOpen && (

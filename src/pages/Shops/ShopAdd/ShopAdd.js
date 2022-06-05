@@ -816,13 +816,12 @@ const ShopAdd = () => {
                   
              
                       {!id && <div className="mb-4">
-                        <FormControl fullWidth>
+                        <FormControl required fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Free Delivery
                           </InputLabel>
                           <Select
                             id="demo-simple-select"
-                            requird={true}
                             value={freeDelivery}
                             onChange={(e) => setFreeDelivery(e.target.value)}
                             label="Free Delivery"
@@ -839,14 +838,13 @@ const ShopAdd = () => {
                   </Col>
                   <Col lg={6} className="mt-4 mt-lg-0">
                     <div className="mb-4">
-                      <FormControl fullWidth>
+                      <FormControl required fullWidth>
                         <InputLabel id="demo-simple-select-label">
                           Shop Type
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          required={true}
                           value={shopType}
                           onChange={(e) => setShopType(e.target.value)}
                           label="Shop Type"
@@ -862,14 +860,13 @@ const ShopAdd = () => {
 
                     {shopType == "food" && (
                       <div className="mb-4">
-                        <FormControl fullWidth>
+                        <FormControl required fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Food Type
                           </InputLabel>
                           <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            required={true}
                             value={foodType}
                             onChange={(e) => setFoodType(e.target.value)}
                             label="Food Type"
@@ -921,14 +918,14 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <FormControl fullWidth>
+                      <FormControl required fullWidth>
                         <InputLabel id="demo-simple-select-label">
                           Delivery Type
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          required={true}
+                         
                           value={delivery}
                           onChange={(e) => setDelivery(e.target.value)}
                           label="Delivery  Type"
@@ -943,14 +940,13 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <FormControl fullWidth>
+                      <FormControl required fullWidth>
                         <InputLabel id="demo-simple-select-label">
                           Live Status
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          required={true}
                           value={liveStatus}
                           onChange={(e) => setLiveStatus(e.target.value)}
                           label="Live Status"

@@ -231,7 +231,7 @@ export const deleteShop = (id) => async (dispatch) => {
 // ADD PRODUCT DEAL 
 
 export const addShopDeal = (values) => async (dispatch) => {
-  // console.log({ values });
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SHOP_DEAL_REQUEST_SEND,
