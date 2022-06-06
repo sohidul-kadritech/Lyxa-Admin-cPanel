@@ -136,3 +136,16 @@ export const sortByOptions = [
     { label: "Fruit", value: "fruit" },
     { label: "Other", value: "other" },
   ]
+
+  export const userStatusOptions = [
+    { label: "All", value: "All" },
+    { label: "Pending", value: "pending" },
+    { label: "Approved", value: "approved" },
+    { label: "Rejected", value: "rejected" },
+    { label: "Blocked", value: "blocked" },
+  ]
+
+  export const orderTypesOptions = [
+    { label: "All", value: "All" },
+    { label: "Placed", value: "placed" },
+  ]

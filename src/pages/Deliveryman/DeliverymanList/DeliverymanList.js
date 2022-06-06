@@ -28,6 +28,7 @@ import {
 } from "../../../store/DeliveryMan/DeliveryManAction";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
+import Search from './../../../components/Search';
 
 const DeliverymanList = () => {
   const dispatch = useDispatch();
@@ -55,27 +56,6 @@ const DeliverymanList = () => {
     dispatch(allDeliveryMan(refresh));
   };
 
-  // DEBOUNCE SEARCH
-
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      // const context = this;
-      timer = setTimeout(() => {
-        func(args[0]);
-      }, delay);
-    };
-    // console.log("yes....");
-  };
-
-  const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
-    dispatch(updateDeliveryManSearchKey(event.target.value));
-  };
-
-  const searchKeyListener = debounce(handleSearchChange, 300);
 
   return (
     <React.Fragment>
@@ -128,18 +108,7 @@ const DeliverymanList = () => {
                 </Row>
                 <Row className="d-flex justify-content-center">
                   <Col lg={8}>
-                    <SearchWrapper>
-                      <div className="search__wrapper">
-                        <i className="fa fa-search" />
-                        <input
-                          className="form-control"
-                          type="search"
-                          placeholder="Search By Name..."
-                          id="search"
-                          onChange={searchKeyListener}
-                        />
-                      </div>
-                    </SearchWrapper>
+                    <Search dispatchFunc={updateDeliveryManSearchKey} />
                   </Col>
                 </Row>
               </CardBody>
@@ -159,7 +128,6 @@ const DeliverymanList = () => {
                   <Thead>
                     <Tr>
                       <Th>Name</Th>
-                      <Th>Address</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
                       <Th>Action</Th>
@@ -177,7 +145,6 @@ const DeliverymanList = () => {
                           }}
                         >
                           <Th>{item?.name}</Th>
-                          <Td>{item?.address?.address}</Td>
                           <Td>{item.number}</Td>
                           <Td>{item.status}</Td>
                           <Td>
@@ -261,6 +228,7 @@ const SearchWrapper = styled.div`
       border: none;
       color: black !important;
     }
+
 
   }
 `;

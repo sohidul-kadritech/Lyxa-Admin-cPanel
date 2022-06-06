@@ -414,7 +414,7 @@ export const updateSubCatStatusKey = (value) => (dispatch) => {
 export const updateCategoryShopType = (selectedType) => (dispatch) => {
   // console.log("selected car type", selectedType);
   dispatch({
-    type: actionType.UPDATE_TYPE_KEY,
+    type: actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY,
     payload: selectedType,
   });
 };

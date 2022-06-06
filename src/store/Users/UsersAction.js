@@ -23,15 +23,15 @@ export const userList =
 
         const { data } = await requestApi().request(ALL_USERS, {
           params: {
-            searchKey: searchKey,
-            page: page,
-            pageSize: 20,
-            sortBy: sortByKey,
-            status: statusKey,
+             searchKey,
+            page,
+            pageSize: 30,
+            sortBy: sortByKey.value,
+            status: statusKey.value,
           },
         });
 
-        console.log("users-----", data);
+        // console.log("users-----", data);
 
         if (data.status) {
           dispatch({

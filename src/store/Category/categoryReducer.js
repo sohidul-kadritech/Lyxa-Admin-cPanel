@@ -118,7 +118,7 @@ const categoryReducer = (state = initialState, action) => {
         status: false,
       };
 
-      case actionType.UPDATE_TYPE_KEY:
+      case actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY:
       return {
         ...state,
         shopType: payload

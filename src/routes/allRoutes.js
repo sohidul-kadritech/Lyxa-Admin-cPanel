@@ -160,12 +160,14 @@ import Cuisine from "../pages/Shops/Cuisine";
 import AdminSettings from "../pages/AdminSettings/AdminSettings";
 import AppSettings from "../pages/AppSettings/AppSettings";
 import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
+import OrderDetails from "../pages/Orders/OrderDetails/OrderDetails";
 
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
   {path:"/orders/list", component: OrdersList},
+  {path:"/orders/details/:id", component: OrderDetails},
 
   { path: "/image-gallery", component: PagesGallery },
   { path: "/image-folder", component: ImageFolder },
