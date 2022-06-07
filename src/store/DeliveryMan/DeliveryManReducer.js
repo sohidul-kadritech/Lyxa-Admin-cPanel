@@ -31,7 +31,7 @@ const deliveryManReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        deliveryMans: [...state.deliveryMan, payload],
+        deliveryMans: [...state.deliveryMans, payload],
       };
 
     case actionType.ADD_DELIVERY_MAN_REQUEST_FAIL:

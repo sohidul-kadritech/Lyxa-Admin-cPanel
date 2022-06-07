@@ -146,6 +146,12 @@ export const sortByOptions = [
   ]
 
   export const orderTypesOptions = [
-    { label: "All", value: "All" },
+    { label: "All", value: "all" },
     { label: "Placed", value: "placed" },
+  ]
+
+  export const DeliveryBoyVehicleOPtions = [
+    { label: "Bike", value: "bike" },
+    { label: "Car", value: "car" },
+    { label: "Bycycle", value: "cycle" },
   ]

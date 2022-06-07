@@ -127,7 +127,11 @@ export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance"
 // DELIVERY FEE SETTINGS 
 
 export const SET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/delivery-charge"
-export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-charge"
+export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-charge";
+
+// ORDERS
+
+export const ORDER_LIST = ADMIN_ENDPOINT + "/order"
 
 
 // IMAGE UPLOAD 

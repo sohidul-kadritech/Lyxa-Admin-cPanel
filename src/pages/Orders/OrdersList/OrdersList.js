@@ -1,14 +1,56 @@
-import React from "react";
-import { Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
+import React, { useEffect } from "react";
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Container,
+  Row,
+  Spinner,
+} from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
 import { orderTypesOptions, sortByOptions } from "../../../assets/staticData";
-import { Tooltip } from '@mui/material';
+import { Tooltip } from "@mui/material";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import {
+  getAllOrder,
+  updateOrderEndDate,
+  updateOrderSortByKey,
+  updateOrderStartDate,
+  updateOrderType,
+} from "../../../store/order/orderAction";
+import { useDispatch, useSelector } from "react-redux";
+import AppPagination from "./../../../components/AppPagination";
+import { useHistory } from 'react-router-dom';
 
 const OrdersList = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const {
+    sortByKey,
+    orders,
+    loading,
+    startDate,
+    endDate,
+    typeKey,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+  } = useSelector((state) => state.orderReducer);
+
+  useEffect(() => {
+    callOrderList(true);
+  }, [sortByKey, startDate, endDate, typeKey]);
+
+  const callOrderList = (refresh = false) => {
+    dispatch(getAllOrder(refresh));
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -18,9 +60,11 @@ const OrdersList = () => {
               maintitle="Drop"
               breadcrumbItem={"List"}
               title="Orders"
-              // loading={loading}
-              // callList={callShopList}
+              loading={loading}
+              callList={callOrderList}
             />
+
+            {/* FITLERS */}
             <Card>
               <CardBody>
                 <Row>
@@ -31,8 +75,8 @@ const OrdersList = () => {
                         palceholder="Select Status"
                         options={sortByOptions}
                         classNamePrefix="select2-selection"
-                        // value={sortByKey}
-                        // onChange={(e) => dispatch(updateDropPaySortByKey(e))}
+                        value={sortByKey}
+                        onChange={(e) => dispatch(updateOrderSortByKey(e))}
                       />
                     </div>
                   </Col>
@@ -46,10 +90,10 @@ const OrdersList = () => {
                             className="form-control d-block"
                             id="startDate"
                             placeholder="Start Date"
-                            // value={startDate}
-                            // onChange={(selectedDates, dateStr, instance) =>
-                            //   dispatch(updateDropPayStartDate(dateStr))
-                            // }
+                            value={startDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateOrderStartDate(dateStr))
+                            }
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -65,10 +109,10 @@ const OrdersList = () => {
                             className="form-control w-100"
                             id="endDate"
                             placeholder="Select End Date"
-                            // value={endDate}
-                            // onChange={(selectedDates, dateStr, instance) =>
-                            //   dispatch(updateDropPayEndDate(dateStr))
-                            // }
+                            value={endDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateOrderEndDate(dateStr))
+                            }
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -86,8 +130,8 @@ const OrdersList = () => {
                         palceholder="Select Status"
                         options={orderTypesOptions}
                         classNamePrefix="select2-selection"
-                        // value={sortByKey}
-                        // onChange={(e) => dispatch(updateDropPaySortByKey(e))}
+                        value={typeKey}
+                        onChange={(e) => dispatch(updateOrderType(e))}
                       />
                     </div>
                   </Col>
@@ -107,14 +151,16 @@ const OrdersList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Serial</Th>
-                      <Th>Address</Th>
+                      <Th>Order Id</Th>
+                      <Th>Delivery Address</Th>
                       <Th>Status</Th>
+                      <Th>Payment Status</Th>
+                      <Th>Total Amount</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {/* {shops.map((item, index) => {
+                    {orders.map((item, index) => {
                       return (
                         <Tr
                           key={index}
@@ -124,48 +170,25 @@ const OrdersList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th style={{ height: "50px", maxWidth: "150px" }}>
-                            <img
-                              onClick={() => {
-                                setIsZoom(true);
-                                setShopImg(item.shopLogo);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt=""
-                              src={item.shopLogo}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain",
-                              }}
-                            />
-                          </Th>
+                          <Th>{item?.orderId}</Th>
 
-                          <Td>{item.shopName}</Td>
-                          <Td>{item.shopType}</Td>
+                          <Td style={{ maxWidth: "120px" }}>
+                            {item?.orderDeliveryAddress?.address}
+                          </Td>
+                          <Td>{item?.orderStatus}</Td>
                           <Td>
-                            <p>{item.shopStartTimeText}</p>
+                            <p>{item?.paymentStatus}</p>
                             <p>{item.shopEndTimeText}</p>
                           </Td>
-                          <Td>{item.shopStatus}</Td>
+                          <Td>{item.summery?.total}</Td>
                           <Td>
                             <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-2 button"
-                                  // onClick={() =>
-                                  //   history.push(`/shops/edit/${item._id}`)
-                                  // }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
                               <Tooltip title="Details">
                                 <button
                                   className="btn btn-info button me-2"
-                                  // onClick={() => {
-                                  //   history.push(`/shops/details/${item._id}`);
-                                  // }}
+                                  onClick={() => {
+                                    history.push(`/orders/details/${item._id}`);
+                                  }}
                                 >
                                   <i className="fa fa-eye" />
                                 </button>
@@ -174,22 +197,22 @@ const OrdersList = () => {
                           </Td>
                         </Tr>
                       );
-                    })} */}
+                    })}
                   </Tbody>
                 </Table>
-                {/* {loading && (
+                {loading && (
                   <div className="text-center">
-                    <Spinner animation="border" variant="info" />
+                    <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && shops.length < 1 && (
+                {!loading && orders.length < 1 && (
                   <div className="text-center">
-                    <h4>No Data</h4>
+                    <h4>No Order!</h4>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
-            {/* <Row>
+            <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
@@ -197,12 +220,11 @@ const OrdersList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllShop(true, null, page))}
+                    lisener={(page) => dispatch(getAllOrder(true, page))}
                   />
                 </div>
               </Col>
-            </Row> */}
-
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

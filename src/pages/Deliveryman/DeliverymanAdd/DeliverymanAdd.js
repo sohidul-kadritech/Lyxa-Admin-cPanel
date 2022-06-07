@@ -7,6 +7,7 @@ import {
   CardBody,
   Col,
   Container,
+  Form,
   Input,
   Label,
   Row,
@@ -27,11 +28,15 @@ import {
   editDeliveryMan,
 } from "../../../store/DeliveryMan/DeliveryManAction";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { activeOptions } from "../../../assets/staticData";
+import { Link, useParams } from "react-router-dom";
+import {
+  activeOptions,
+  DeliveryBoyVehicleOPtions,
+} from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
-import { SINGLE_DELIVERY_MAN } from "../../../network/Api";
-import {useHistory} from "react-router-dom"
+import { IMAGE_UPLOAD, SINGLE_DELIVERY_MAN } from "../../../network/Api";
+import { useHistory } from "react-router-dom";
+import Dropzone from "react-dropzone";
 
 const DeliverymanAdd = () => {
   const dispatch = useDispatch();
@@ -55,6 +60,11 @@ const DeliverymanAdd = () => {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
+  const [vehicleNum, setVehicleNum] = useState("");
+  const [nid, setNid] = useState("");
+  const [vehicleDoc, setVehicleDoc] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
 
   // ID FROM PARAMS
 
@@ -62,6 +72,7 @@ const DeliverymanAdd = () => {
     if (id) {
       const findDeliveryMan = deliveryMans.find((man) => man._id == id);
       if (findDeliveryMan) {
+        console.log({findDeliveryMan})
         updateData(findDeliveryMan);
         // handleAddressSelect()
       } else {
@@ -80,6 +91,7 @@ const DeliverymanAdd = () => {
         },
       });
       if (status) {
+        console.log(data.delivery)
         updateData(data.delivery);
       } else {
       }
@@ -146,7 +158,11 @@ const DeliverymanAdd = () => {
       !name ||
       (!id && (!password || !address || !pin)) ||
       !email ||
-      !number
+      !number ||
+      !vehicleType ||
+      !vehicleNum ||
+      !nid ||
+      !vehicleDoc
     ) {
       return toast.warn("Please Fill Up All Fields", {
         // position: "bottom-right",
@@ -176,12 +192,61 @@ const DeliverymanAdd = () => {
       });
     }
 
-    submitData();
+    uploadImages();
+  };
+
+  const uploadImages = async () => {
+    let nidUrl = null;
+    let docUrl = null;
+    setIsLoading(true);
+    if (nid) {
+      if (typeof nid === "string") {
+        nidUrl = nid;
+      } else {
+        nidUrl = await imageUploadToServer(nid);
+      }
+    }
+    if (vehicleDoc) {
+      if (typeof vehicleDoc === "string") {
+        docUrl = vehicleDoc;
+      } else {
+        docUrl = await imageUploadToServer(vehicleDoc);
+      }
+    }
+
+
+    if (nidUrl && docUrl) {
+      setIsLoading(false);
+      submitData(nidUrl, docUrl);
+    }
+  };
+
+  //  UPLAOD IMAGE TO SERVER
+
+  const imageUploadToServer = async (image) => {
+    try {
+      let formData = new FormData();
+      formData.append("image", image);
+      // console.log({formData})
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+      // console.log("image upload", data)
+      if (data.status) {
+        // submitData(data.data.url);
+        return data.data.url;
+      } else {
+        console.log(data.error);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   // SUBMIT DATA
 
-  const submitData = () => {
+  const submitData = (nidUrl, docUrl) => {
     if (id) {
       dispatch(
         editDeliveryMan({
@@ -190,6 +255,10 @@ const DeliverymanAdd = () => {
           email,
           number,
           status: activeStatus.value,
+          vehicleType: vehicleType.value,
+          vehicle_number: vehicleNum,
+          national_id: nidUrl,
+          vehicle_data: docUrl
         })
       );
     } else {
@@ -199,7 +268,7 @@ const DeliverymanAdd = () => {
           email,
           password,
           number,
-          deliveryBoyAddress: {
+          address: {
             address: fullAddress,
             latitude: latLng.lat,
             longitude: latLng.lng,
@@ -211,6 +280,10 @@ const DeliverymanAdd = () => {
             primary: true,
             note: "",
           },
+          vehicleType: vehicleType.value,
+          vehicle_number: vehicleNum,
+          national_id: nidUrl,
+          vehicle_data: docUrl
         })
       );
     }
@@ -227,10 +300,46 @@ const DeliverymanAdd = () => {
         setNumber("");
         setPin("");
         setActiveStatus("");
-        window.scrollTo(0,0)
+        setAddress(null);
+        setVehicleType("");
+        setVehicleNum("");
+        setNid(null);
+        setVehicleDoc(null);
+        setSelectedAddress("");
+        window.scrollTo(0, 0);
       }
     }
   }, [status]);
+
+  /**
+   * Formats the size
+   */
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  // IMAGE
+
+  const handleAcceptedFiles = (files, type) => {
+    files.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    );
+
+    if (type === "nid") {
+      setNid(files[0]);
+    } else {
+      setVehicleDoc(files[0]);
+    }
+  };
 
   return (
     <div>
@@ -291,6 +400,19 @@ const DeliverymanAdd = () => {
                           />
                         </div>
                       )}
+
+                      <div className="mb-4">
+                        <label className="control-label">Vehicle Type</label>
+                        <Select
+                          palceholder="Select Status"
+                          options={DeliveryBoyVehicleOPtions}
+                          classNamePrefix="select2-selection"
+                          required
+                          value={vehicleType}
+                          onChange={(e) => setVehicleType(e)}
+                          defaultValue={""}
+                        />
+                      </div>
                     </Col>
 
                     <Col lg={6}>
@@ -412,6 +534,200 @@ const DeliverymanAdd = () => {
                           </PlacesAutocomplete>
                         </div>
                       )}
+                      <div className="mb-4">
+                        <Label>Vehicle Number</Label>
+                        <input
+                          className="form-control"
+                          type="email"
+                          placeholder="Enter Email"
+                          value={vehicleNum}
+                          onChange={(e) => setVehicleNum(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col lg={6}>
+                      <Label> National ID</Label>
+                      <div className="mb-5">
+                        <Form>
+                          <Dropzone
+                            onDrop={(acceptedFiles) => {
+                              handleAcceptedFiles(acceptedFiles, "nid");
+                            }}
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div className="dropzone">
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+                                  // onClick={() => setmodal_fullscreen(true)}
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="mb-3">
+                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                  </div>
+                                  <h4>Drop files here or click to upload.</h4>
+                                </div>
+                              </div>
+                            )}
+                          </Dropzone>
+                          <div
+                            className="dropzone-previews mt-3"
+                            id="file-previews"
+                          >
+                            {nid && (
+                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                <div className="p-2">
+                                  <Row className="align-items-center position-relative">
+                                    <Col className="col-auto">
+                                      <img
+                                        data-dz-thumbnail=""
+                                        // height="80"
+                                        style={{
+                                          maxWidth: "80px",
+                                        }}
+                                        className=" bg-light"
+                                        src={nid.preview ? nid.preview : nid}
+                                        alt=""
+                                      />
+                                    </Col>
+                                    <Col>
+                                      <Link
+                                        to="#"
+                                        className="text-muted font-weight-bold"
+                                      >
+                                        {nid.name ? nid.name : "NID"}
+                                      </Link>
+                                      <p className="mb-0">
+                                        <strong>
+                                          {nid.formattedSize &&
+                                            nid.formattedSize}
+                                        </strong>
+                                      </p>
+                                    </Col>
+
+                                    <div
+                                      className="position-absolute"
+                                      style={{
+                                        left: "0px",
+                                        top: "0px",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <i
+                                        onClick={() => setNid(null)}
+                                        className="mdi mdi-delete text-danger "
+                                        style={{
+                                          fontSize: "25px",
+                                          cursor: "pointer",
+                                        }}
+                                      ></i>
+                                    </div>
+                                  </Row>
+                                </div>
+                              </Card>
+                            )}
+                          </div>
+                        </Form>
+                      </div>
+                    </Col>
+                    <Col lg={6}>
+                      <Label>Vehicle Document</Label>
+                      <div className="mb-5">
+                        <Form>
+                          <Dropzone
+                            onDrop={(acceptedFiles) => {
+                              handleAcceptedFiles(acceptedFiles, "doc");
+                            }}
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div className="dropzone">
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+                                  // onClick={() => setmodal_fullscreen(true)}
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="mb-3">
+                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                  </div>
+                                  <h4>Drop files here or click to upload.</h4>
+                                </div>
+                              </div>
+                            )}
+                          </Dropzone>
+                          <div
+                            className="dropzone-previews mt-3"
+                            id="file-previews"
+                          >
+                            {vehicleDoc && (
+                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                <div className="p-2">
+                                  <Row className="align-items-center position-relative">
+                                    <Col className="col-auto">
+                                      <img
+                                        data-dz-thumbnail=""
+                                        // height="80"
+                                        style={{
+                                          maxWidth: "80px",
+                                        }}
+                                        className=" bg-light"
+                                        src={
+                                          vehicleDoc.preview
+                                            ? vehicleDoc.preview
+                                            : vehicleDoc
+                                        }
+                                        alt=""
+                                      />
+                                    </Col>
+                                    <Col>
+                                      <Link
+                                        to="#"
+                                        className="text-muted font-weight-bold"
+                                      >
+                                        {vehicleDoc.name
+                                          ? vehicleDoc.name
+                                          : "Vehicle Document"}
+                                      </Link>
+                                      <p className="mb-0">
+                                        <strong>
+                                          {vehicleDoc.formattedSize &&
+                                            vehicleDoc.formattedSize}
+                                        </strong>
+                                      </p>
+                                    </Col>
+
+                                    <div
+                                      className="position-absolute"
+                                      style={{
+                                        left: "0px",
+                                        top: "0px",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <i
+                                        onClick={() => setVehicleDoc(null)}
+                                        className="mdi mdi-delete text-danger "
+                                        style={{
+                                          fontSize: "25px",
+                                          cursor: "pointer",
+                                        }}
+                                      ></i>
+                                    </div>
+                                  </Row>
+                                </div>
+                              </Card>
+                            )}
+                          </div>
+                        </Form>
+                      </div>
                     </Col>
                   </Row>
 
@@ -420,9 +736,9 @@ const DeliverymanAdd = () => {
                       color="primary"
                       className="px-5"
                       onClick={submitDeliveryman}
-                      disabled={loading}
+                      disabled={isLoading || loading}
                     >
-                      {loading ? (
+                      {loading || isLoading ? (
                         <Spinner
                           animation="border"
                           size="sm"
