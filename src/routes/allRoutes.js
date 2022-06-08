@@ -161,6 +161,7 @@ import AdminSettings from "../pages/AdminSettings/AdminSettings";
 import AppSettings from "../pages/AppSettings/AppSettings";
 import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
 import OrderDetails from "../pages/Orders/OrderDetails/OrderDetails";
+import ChatDetails from "../pages/Chat/ChatDetails/ChatDetails";
 
 
 const userRoutes = [
@@ -242,6 +243,7 @@ const userRoutes = [
   // CHAT
 
   {path: "/customer-support", component: Chat},
+  {path: "/customer-support/details/:id", component: ChatDetails},
 
   // CATEGORIES AND TAGS
 

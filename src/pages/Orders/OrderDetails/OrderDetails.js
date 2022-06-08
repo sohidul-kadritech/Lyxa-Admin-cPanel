@@ -379,19 +379,19 @@ const OrderDetails = () => {
                     <CardTitle className="h4">Delivery Address</CardTitle>
                     <hr />
                     <DeliveryAddress>
-                      <i class="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker"></i>
                       <span className="ms-2 address ">
                         {`Full Address: ${order?.orderDeliveryAddress?.address}`}
                       </span>
                     </DeliveryAddress>
                     <DeliveryAddress>
-                      <i class="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker"></i>
                       <span className="ms-2 address">
                         {`State: ${order?.orderDeliveryAddress?.state}`}
                       </span>
                     </DeliveryAddress>
                     <DeliveryAddress>
-                      <i class="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker"></i>
                       <span className="ms-2 address">
                         {`City: ${order?.orderDeliveryAddress?.city}`}
                       </span>

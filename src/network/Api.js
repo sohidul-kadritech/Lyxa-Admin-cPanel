@@ -131,7 +131,12 @@ export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-c
 
 // ORDERS
 
-export const ORDER_LIST = ADMIN_ENDPOINT + "/order"
+export const ORDER_LIST = ADMIN_ENDPOINT + "/order";
+
+// CHAT
+
+export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request"
+export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
 
 
 // IMAGE UPLOAD 

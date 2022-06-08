@@ -1,73 +1,37 @@
-import React, { useState } from "react";
-import { Button, Card, CardBody, Col, Container, Input, Row } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
-import { Box, Tab, TabPanelUnstyled, Tabs, Typography } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import ChatIcon from "@mui/icons-material/Chat";
-import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
-
-import SimpleBar from "simplebar-react";
-import user2 from "../../assets/images/users/user-2.jpg";
-import user3 from "../../assets/images/users/user-3.jpg";
-import smimg1 from "../../assets/images/small/img-1.jpg";
-import smimg2 from "../../assets/images/small/img-2.jpg";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import  Select  from "react-select";
+import {  ChatOPtions, sortByOptions } from "../../assets/staticData";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllChat,
+  updateChatSortByKey,
+  updateChatType,
+} from "../../store/chat/chatAction";
+import { Tooltip } from "@mui/material";
 
 const Chat = () => {
-  const [chatValue, setChatValue] = useState(0);
-  const [chatValue2, setChatValue2] = useState(0);
+  const dispatch = useDispatch();
 
-  const handleChange = (event, newValue) => {
-    setChatValue(newValue);
-  };
+  const { loading, chats, sortByKey, typeKey } = useSelector(
+    (state) => state.chatReducer
+  );
 
-  const changeValue = (event, newValue) => {
-    setChatValue2(newValue);
-  };
+  useEffect(()=>{
+    if(sortByKey || typeKey){
+      callChatList(true);
+    }
+  },[sortByKey, typeKey])
 
-  // Chat TAB PANEL
+  const callChatList = (refresh = false) => {
 
-  const ChatListTabPanel = (props) => {
-    const { children, value, index, ...other } = props;
-    console.log({ children, value, index, ...other });
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  };
+    dispatch(getAllChat(refresh));
 
-  // CHAT RIGHT SIDE PANEL
+  }
 
-  const ChatDetailsTabPanel = (props) => {
-    const { children, value, index, ...other } = props;
-    console.log({ children, value, index, ...other });
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  };
 
   return (
     <React.Fragment>
@@ -77,288 +41,123 @@ const Chat = () => {
             <Breadcrumb
               maintitle="Drop"
               breadcrumbItem="Customer Support"
-              isRefresh={false}
-              //   loading={loading}
-              //   callList={callColorList}
+                loading={loading}
+                callList={callChatList}
             />
-            <Row>
-              <Col xl={6}>
-                <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-                  <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-                    <Tabs
-                      value={chatValue}
-                      onChange={handleChange}
-                      indicatorColor="primary"
-                      variant="fullWidth"
-                      aria-label="full width tabs example"
-                    >
-                      <Tab
-                        icon={<SendIcon />}
-                        iconPosition="start"
-                        label="New"
-                      />
 
-                      <Tab
-                        icon={<ChatIcon />}
-                        iconPosition="start"
-                        label="On Going"
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col lg={3}>
+                    <div className="mb-4">
+                      <label className="control-label">Sort By</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sortByOptions}
+                        classNamePrefix="select2-selection"
+                        value={sortByKey}
+                        onChange={(e) => dispatch(updateChatSortByKey(e))}
                       />
-                      <Tab
-                        icon={<MarkChatReadIcon />}
-                        iconPosition="start"
-                        label="Resolved"
+                    </div>
+                  </Col>
+                  <Col lg={3}>
+                    <div className="mb-4">
+                      <label className="control-label">Type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={ChatOPtions}
+                        classNamePrefix="select2-selection"
+                        value={typeKey}
+                        onChange={(e) => dispatch(updateChatType(e))}
                       />
-                    </Tabs>
-                  </Box>
-                  <ChatListTabPanel value={chatValue} index={0}>
-                    {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
-                      <div
-                        key={index}
-                        className="d-flex justify-content-between mb-2 cursor-pointer"
-                      >
-                        <div>
-                          <img
-                            src={user3}
-                            className="avatar-xs rounded-circle me-1"
-                            alt="male"
-                          />
-                          <span>Jhon Doe</span>
-                        </div>
-                        <span>need support</span>
-                        <span>05-06-2022</span>
-                      </div>
-                    ))}
-                  </ChatListTabPanel>
-                  <ChatListTabPanel value={chatValue} index={1}>
-                  {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
-                      <div
-                        key={index}
-                        className="d-flex justify-content-between mb-2 cursor-pointer"
-                      >
-                        <div>
-                          <img
-                            src={user3}
-                            className="avatar-xs rounded-circle me-1"
-                            alt="male"
-                          />
-                          <span>Jhon Doe</span>
-                        </div>
-                        <span>need support</span>
-                        <span>05-06-2022</span>
-                      </div>
-                    ))}
-                  </ChatListTabPanel>
-                  <ChatListTabPanel value={chatValue} index={2}>
-                  {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
-                      <div
-                        key={index}
-                        className="d-flex justify-content-between mb-2 cursor-pointer"
-                      >
-                        <div>
-                          <img
-                            src={user3}
-                            className="avatar-xs rounded-circle me-1"
-                            alt="male"
-                          />
-                          <span>Jhon Doe</span>
-                        </div>
-                        <span>need support</span>
-                        <span>05-06-2022</span>
-                      </div>
-                    ))}
-                  </ChatListTabPanel>
-                </Box>
-              </Col>
-              <Col xl={6} className="mt-3 mt-xl-0">
-                <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-                  <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-                    <Tabs
-                      value={chatValue2}
-                      onChange={changeValue}
-                      indicatorColor="primary"
-                      variant="fullWidth"
-                      aria-label="full width tabs example"
-                    >
-                      <Tab
-                        // icon={<SendIcon />}
-                        //  iconPosition="start"
-                        label="Conversation"
-                      />
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
-                      <Tab
-                        // icon={<ChatIcon />}
-                        // iconPosition="start"
-                        label="Profile"
-                      />
-                      <Tab
-                        // icon={<MarkChatReadIcon />}
-                        // iconPosition="start"
-                        label="Last Order"
-                      />
-                      <Tab
-                        // icon={<MarkChatReadIcon />}
-                        // iconPosition="start"
-                        label="Last 5 Order"
-                      />
-                    </Tabs>
-                  </Box>
-                  <ChatDetailsTabPanel value={chatValue2} index={0}>
-                    <div className="chat-conversation">
-                      <SimpleBar style={{ height: "365px" }}>
-                        <ul
-                          className="conversation-list"
-                          data-simplebar
-                          style={{ maxHeight: "367px" }}
+          {/* LIST */}
+          <Card>
+              <CardBody>
+                <Row className="mb-3">
+                  <Col md={3} className="text-end" />
+                </Row>
+                <CardTitle className="h4"> Chat List</CardTitle>
+                <Table
+                  id="tech-companies-1"
+                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                >
+                  <Thead>
+                    <Tr>
+                      <Th>User</Th>
+                      <Th>Reason</Th>
+                      <Th>Status</Th>
+                      <Th>Send Date</Th>
+                      <Th>Action</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody style={{ position: "relative" }}>
+                    {chats?.map((item, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          className="align-middle"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
                         >
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:00</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Hello!</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="Female"
-                              />
-                              <span className="time">10:01</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>
-                                  Hi, How are you? What about our next meeting?
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:04</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Yeah everything is fine</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:05</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>Wow that's great</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:08</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name mb-2">Smith</span>
+                          <Th>{item?.user?.name}</Th>
 
-                                <img
-                                  src={smimg1}
-                                  alt=""
-                                  height="48"
-                                  className="rounded me-2"
-                                />
-                                <img
-                                  src={smimg2}
-                                  alt=""
-                                  height="48"
-                                  className="rounded"
-                                />
-                              </div>
+                          <Td>
+                            {item?.reasonMessage}
+                          </Td>
+                          <Td>{item?.status}</Td>
+                          <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
+                
+                          <Td>{item.summery?.total}</Td>
+                          <Td>
+                            <div>
+                              {item?.status === 'pending' && <Tooltip title="Accept">
+                                <button
+                                  className="btn btn-info button me-2"
+                                  // onClick={() => {
+                                  //   history.push(`/orders/details/${item._id}`);
+                                  // }}
+                                >
+                                  <i className="fa fa-check" />
+                                </button>
+                              </Tooltip>}
+                              <Tooltip title="Details">
+                                <button
+                                  className="btn btn-info button me-2"
+                                  // onClick={() => {
+                                  //   history.push(`/orders/details/${item._id}`);
+                                  // }}
+                                >
+                                  <i className="fa fa-eye" />
+                                </button>
+                              </Tooltip>
                             </div>
-                          </li>
-                        </ul>
-                      </SimpleBar>
-
-                      <Row className="mt-3 pt-1">
-                        <Col md="9" className="chat-inputbar col-8">
-                          <Input
-                            type="text"
-                            className="chat-input"
-                            placeholder="Enter your text"
-                          />
-                        </Col>
-                        <Col md="3" className="chat-send col-4">
-                          <div className="d-grid">
-                            <Button
-                              type="submit"
-                              color="success"
-                              className="btn-block"
-                            >
-                              Send
-                            </Button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
-                  </ChatDetailsTabPanel>
-                  <ChatDetailsTabPanel value={chatValue2} index={1}>
-                    <div className="d-flex">
-                      <div>
-                        <img
-                          className="rounded-circle avatar-xl cursor-pointer"
-                          alt="partner"
-                          src={user2}
-                        />
-                      </div>
-                      <div className="ps-4 ">
-                        <div className="d-flex align-items-center">
-                          <h5>Name:</h5>
-                          <span>Shuvo</span>
-                        </div>
-                        <div className="d-flex align-items-center">
-                          <h5>Phone:</h5>
-                          <span>01537457618</span>
-                        </div>
-                      </div>
-                    </div>
-                  </ChatDetailsTabPanel>
-                  <ChatDetailsTabPanel value={chatValue2} index={2}>
-                    Last Order
-                  </ChatDetailsTabPanel>
-                  <ChatDetailsTabPanel value={chatValue2} index={3}>
-                    Last 5 Order
-                  </ChatDetailsTabPanel>
-                </Box>
-              </Col>
-            </Row>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+                {loading && (
+                  <div className="text-center">
+                    <Spinner animation="border" variant="success" />
+                  </div>
+                )}
+                {!loading && chats.length < 1 && (
+                  <div className="text-center">
+                    <h4>No Chat!</h4>
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+     
           </Container>
         </div>
       </GlobalWrapper>

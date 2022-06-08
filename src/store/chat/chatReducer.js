@@ -1,15 +1,12 @@
-import moment from "moment";
 import * as actionType from "../actionType";
 
 const initialState = {
   loading: false,
   error: null,
-  orders: [],
+  chats: [],
   status: false,
   typeKey: { label: "All", value: "all" },
   sortByKey: { label: "Desc", value: "desc" },
-  startDate: moment().format("YYYY-MM-DD"),
-  endDate: moment().add(1, "M").format("YYYY-MM-DD"),
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -17,56 +14,69 @@ const initialState = {
   hasPreviousPage: false,
 };
 
-const orderReducer = (state = initialState, action) => {
+const chatReducer = (state = initialState, action) => {
   const { payload, type } = action;
 
   switch (type) {
-
-    case actionType.ALL_ORDERS_REQUEST_SEND:
+    case actionType.ALL_CHAT_REQUEST_SEND:
       return {
         ...state,
         loading: true,
         error: null,
       };
 
-    case actionType.ALL_ORDERS_REQUEST_SUCCESS:
+    case actionType.ALL_CHAT_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
-        orders: payload.orders,
+        chats: payload.request,
         paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true
+        status: true,
       };
 
-      case actionType.ALL_ORDERS_REQUEST_FAIL:
+    case actionType.ALL_CHAT_REQUEST_FAIL:
       return {
         ...state,
         error: payload,
       };
 
+    case actionType.ACCEPT_CHAT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.ACCEPT_CHAT_REQUEST_SUCCESS:
+      const updateData = state.chats.map((item) =>
+        item._id === payload._id ? payload : item
+      );
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        chats: updateData,
+      };
+
+    case actionType.ACCEPT_CHAT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
 
     // FILTERS
-    case actionType.UPDATE_ORDER_SORT_BY_FILTER:
+    case actionType.UPDATE_CHAT_SORT_BY_FILTER:
       return {
         ...state,
         sortByKey: payload,
       };
-    case actionType.UPDATE_ORDER_START_DATE_FILTER:
-      return {
-        ...state,
-        startDate: payload,
-      };
-    case actionType.UPDATE_ORDER_END_DATE_FILTER:
-      return {
-        ...state,
-        endDate: payload,
-      };
 
-    case actionType.UPDATE_ORDER_TYPE_FILTER:
+    case actionType.UPDATE_CHAT_TYPE_FILTER:
       return {
         ...state,
         typeKey: payload,
@@ -77,4 +87,4 @@ const orderReducer = (state = initialState, action) => {
   }
 };
 
-export default orderReducer;
+export default chatReducer;

@@ -155,3 +155,10 @@ export const sortByOptions = [
     { label: "Car", value: "car" },
     { label: "Bycycle", value: "cycle" },
   ]
+
+  export const ChatOPtions = [
+    { label: "All", value: "all" },
+    { label: "Pending", value: "pending" },
+    { label: "Accepted", value: "accepted" },
+    { label: "Rejected", value: "rejected" },
+  ]

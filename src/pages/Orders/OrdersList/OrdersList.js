@@ -176,10 +176,7 @@ const OrdersList = () => {
                             {item?.orderDeliveryAddress?.address}
                           </Td>
                           <Td>{item?.orderStatus}</Td>
-                          <Td>
-                            <p>{item?.paymentStatus}</p>
-                            <p>{item.shopEndTimeText}</p>
-                          </Td>
+                          <Td>{item?.paymentStatus}</Td>
                           <Td>{item.summery?.total}</Td>
                           <Td>
                             <div>

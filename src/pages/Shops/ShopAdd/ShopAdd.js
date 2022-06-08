@@ -238,16 +238,7 @@ const ShopAdd = () => {
 
   const submitShop = () => {
     if (!seller) {
-      return toast.warn("Select a Seller", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Select a seller');
     }
     if (
       !shopType ||
@@ -261,55 +252,16 @@ const ShopAdd = () => {
       (!id && !pinCode) ||
       !liveStatus
     ) {
-      return toast.warn("Please Fillup All Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Fillup All Required Fields');
     }
 
     if (!id && !address) {
-      return toast.warn("Please Select a Address", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Select Shop Address')
     }
     if (!shopLogo || !shopBanner || !shopPhotos) {
-      return toast.warn("Please Select Images", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Choose Image')
     }
 
-    // if (isCuisine && !cuisineType) {
-    //   return toast.warn("Please Select Cuisine Type", {
-    //     // position: "bottom-right",
-    //     position: toast.POSITION.TOP_RIGHT,
-    //     autoClose: 3000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //   });
-    // }
 
     uploadImages();
 
@@ -581,6 +533,19 @@ const ShopAdd = () => {
     list.splice(index,1)
     setSelectedCuisines(list)
   };
+
+  const warningMessage = (message) =>{
+    toast.warn(message, {
+      // position: "bottom-right",
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   return (
     <React.Fragment>

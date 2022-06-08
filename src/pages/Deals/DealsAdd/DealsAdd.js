@@ -58,6 +58,7 @@ const DealsAdd = () => {
     if(id){
       const findDeal = deals.find(item => item._id === id)
       if(findDeal){
+        console.log({findDeal})
         updateData(findDeal)
       }else{
         // console.log("call Api")
@@ -165,76 +166,22 @@ const DealsAdd = () => {
 
   const submitDeal = () => {
     if (!name) {
-      return toast.warn("Select Deal Name", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Enter deal name')
     }
     if (!shopType) {
-      return toast.warn("Select a Shop Type", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Select shop type')
     }
     if (!dealType) {
-      return toast.warn("Select a Deal", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Select deal type')
     }
     if (dealType === "others" && !otherDeal) {
-      return toast.warn("Enter Other Deal Name", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Enter others deal name')
     }
     if (dealType === "percentage" && (!percentage || percentage <= 0)) {
-      return toast.warn("Enter Percentage", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Enter percentage')
     }
     if (shopType === "restaurant" && !image) {
-      return toast.warn("Chose a Image", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage('Choose a image') 
     }
 
     if(shopType === 'restaurant'){
@@ -243,6 +190,21 @@ const DealsAdd = () => {
       submitData();
     }
   };
+
+  // WARNING MESSAGE 
+
+  const warningMessage = (message) => {
+    toast.warn(message, {
+      // position: "bottom-right",
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   // SUBMIT DATA
 
@@ -254,6 +216,7 @@ const DealsAdd = () => {
       option: dealType,
       percentage,
       image: shopType === 'restaurant' ? image : null,
+      otherDeal: dealType === "others" ? otherDeal : null,
     };
     if(id){
       dispatch(editDeal({
