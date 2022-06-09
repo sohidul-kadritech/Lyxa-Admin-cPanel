@@ -31,6 +31,7 @@ import dropPayReducer from './DropPay/dropPayReducer';
 import appWalletReducer from './appWallet/appWalletReducer';
 import orderReducer from './order/orderReducer'
 import chatReducer from './chat/chatReducer';
+import socketReducer from './socket/socketReducer';
 
 const rootReducer = combineReducers({
   // public
@@ -59,7 +60,8 @@ const rootReducer = combineReducers({
   dropPayReducer,
   appWalletReducer,
   orderReducer,
-  chatReducer
+  chatReducer,
+  socketReducer
 });
 
 export default rootReducer;

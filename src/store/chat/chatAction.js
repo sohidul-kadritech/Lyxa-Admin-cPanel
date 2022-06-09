@@ -6,9 +6,9 @@ import * as actionType from "../actionType";
 export const getAllChat =
   (refresh = false, page) =>
   async (dispatch, getState) => {
-    const { chats, typeKey, sortByKey } = getState().chatReducer;
+    const { requests, typeKey, sortByKey } = getState().chatReducer;
 
-    if (chats.length < 1 || refresh) {
+    if (requests.length < 1 || refresh) {
       try {
         dispatch({
           type: actionType.ALL_CHAT_REQUEST_SEND,
@@ -49,7 +49,8 @@ export const getAllChat =
 
 // ACCEPT USER CHAT REQUEST
 
-export const acceptChatReq = (userId) => async (dispatch) => {
+export const acceptChatReq = (id) => async (dispatch) => {
+  console.log({id})
   try {
     dispatch({
       type: actionType.ACCEPT_CHAT_REQUEST_SEND,
@@ -57,8 +58,10 @@ export const acceptChatReq = (userId) => async (dispatch) => {
 
     const { data } = await requestApi().request(ACCEPT_CHAT, {
       method: "POST",
-      data: userId,
+      data: {id},
     });
+
+    console.log(data)
 
     if (data.status) {
       toast.success(data.message, {

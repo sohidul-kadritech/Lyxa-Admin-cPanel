@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import {
@@ -15,12 +15,27 @@ import {
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import user2 from "../../../assets/images/users/user-2.jpg";
 import user3 from "../../../assets/images/users/user-3.jpg";
-import smimg1 from "../../../assets/images/small/img-1.jpg";
-import smimg2 from "../../../assets/images/small/img-2.jpg";
+import user1 from "../../../assets/images/user1.jpg";
+
 import SimpleBar from "simplebar-react";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ChatDetails = () => {
+  const { id } = useParams();
+
+  const { requests } = useSelector((state) => state.chatReducer);
+
+  const [request, setRequest] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      const findReq = requests.find((item) => item._id == id);
+      setRequest(findReq);
+    }
+  }, [id]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -37,109 +52,68 @@ const ChatDetails = () => {
               <Col lg={6}>
                 <Card>
                   <CardBody>
+                    <div className='d-flex justify-content-between align-items-center'>
                     <CardTitle>Conversation</CardTitle>
+                    <strong style={{color: request.status === 'pending' ? 'blue' :  request.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase'}}>{request.status}</strong>
+                    </div>
                     <hr />
                     <div className="chat-conversation">
-                      <SimpleBar style={{ height: "365px" }}>
+                      <SimpleBar style={{ height: "330px" }}>
                         <ul
                           className="conversation-list"
                           data-simplebar
-                          style={{ maxHeight: "367px" }}
+                          style={{
+                            maxHeight: "300px",
+                            width: "100%",
+                          }}
                         >
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:00</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Hello!</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="Female"
-                              />
-                              <span className="time">10:01</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>
-                                  Hi, How are you? What about our next meeting?
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:04</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Yeah everything is fine</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:05</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>Wow that's great</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:08</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name mb-2">Smith</span>
+                          {request?.chats?.map((chat, index, arr) => (
+                            <div key={index}>
+                              {chat?.type === "user" && (
+                                <li className="clearfix">
+                                  <div className="chat-avatar">
+                                    <img
+                                      src={user1}
+                                      className="avatar-xs rounded-circle cursor-pointer"
+                                      alt="Admin"
+                                    />
+                                  </div>
+                                  <div className="conversation-text color-primary" >
+                                    <div className="ctext-wrap">
+                                      <span className="user-name">
+                                        {request?.user?.name}
+                                      </span>
+                                      <strong>
+                                         {chat?.message}.
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </li>
+                              )}
 
-                                <img
-                                  src={smimg1}
-                                  alt=""
-                                  height="48"
-                                  className="rounded me-2"
-                                />
-                                <img
-                                  src={smimg2}
-                                  alt=""
-                                  height="48"
-                                  className="rounded"
-                                />
-                              </div>
+                              {chat?.type  === "admin" && (
+                                <li className="clearfix odd">
+                                  <div className="chat-avatar">
+                                    <img
+                                      src={user1}
+                                      className="avatar-xs rounded-circle"
+                                      alt="Admin"
+                                    />
+                                  </div>
+                                  <div className="conversation-text">
+                                    <div className="ctext-wrap">
+                                      <span className="user-name">
+                                        {request?.admin?.name}
+                                      </span>
+                                      <strong>
+                                      {chat?.message}.
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </li>
+                              )}
                             </div>
-                          </li>
+                          ))}
                         </ul>
                       </SimpleBar>
                       <Row className="mt-3 pt-1">
@@ -167,51 +141,27 @@ const ChatDetails = () => {
                 </Card>
               </Col>
               <Col lg={6}>
-              <Card>
+                <Card>
                   <CardBody>
                     <Row>
-                      <div className="d-flex justify-content-between align-items-center w-100 pb-1">
-                        <h4>Usser Profile</h4>
-                        <button
-                        //   onClick={() =>
-                        //     history.push(`/seller/details/${shop?.seller?._id}`)
-                        //   }
-                          className="btn btn-success"
-                        >
-                          Details
-                        </button>
+                      <div className=" w-100 pb-1">
+                        <h4>User Profile</h4>
                       </div>
                       <hr />
                     </Row>
                     <Row>
                       <Col
-                        lg={4}
-                        className="d-flex justify-content-center align-items-center"
-                      >
-                        <div>
-                          <img
-                            className="rounded-circle avatar-xl cursor-pointer"
-                            alt="partner"
-                            src={user3}
-                            // onClick={() => {
-                            //   setIsOpen(true);
-                            //   setSelectedImg(shop?.seller?.profile_photo);
-                            // }}
-                          />
-                        </div>
-                      </Col>
-                      <Col
-                        lg={8}
+                      
                         className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
                       >
-                        <div className="ps-4">
+                        <div className="ps-4 w-100">
                           <Details>
                             <h5>Name:</h5>
-                            <Value>Shuvo</Value>
+                            <Value>{request?.user?.name}</Value>
                           </Details>
                           <Details>
                             <h5>Gmail:</h5>
-                            <Value>shuvo@gmail.com</Value>
+                            <Value>{request?.user?.email}</Value>
                           </Details>
                         </div>
                       </Col>
@@ -290,7 +240,6 @@ const ChatDetails = () => {
                 )} */}
               </CardBody>
             </Card>
-
           </Container>
         </div>
       </GlobalWrapper>

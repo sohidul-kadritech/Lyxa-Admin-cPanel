@@ -91,7 +91,7 @@ export const allDeliveryMan =
         });
 
         if (status) {
-          //   console.log({ data });
+            console.log({ data });
           dispatch({
             type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
             payload: data,

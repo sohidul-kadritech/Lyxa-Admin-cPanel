@@ -102,6 +102,7 @@ const BannerPage = () => {
             }}
           />
         ) : null}
+        
         <div className="table-rep-plugin">
           <div
             className="table-responsive mb-0"
