@@ -18,6 +18,8 @@ import ImageSelectionDialog from "../../Utility/ImageSelectionDialog";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  Autocomplete,
+  Box,
   FormControl,
   InputLabel,
   MenuItem,
@@ -32,7 +34,7 @@ import { Link,useHistory,useParams } from "react-router-dom";
 import { IMAGE_UPLOAD, SINGLE_DEAL } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
-import { addDeal, editDeal } from "../../../store/Deal/dealAction"
+import { addDeal, editDeal, getAllTags } from "../../../store/Deal/dealAction"
 
 
 const DealsAdd = () => {
@@ -40,7 +42,7 @@ const DealsAdd = () => {
   const {id} = useParams();
   const history = useHistory();
 
-  const { loading, deals, status } = useSelector((state) => state.dealReducer);
+  const { loading, deals, status, tags } = useSelector((state) => state.dealReducer);
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [shopType, setShopType] = useState("");
@@ -51,6 +53,7 @@ const DealsAdd = () => {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeStatus, setActiveStatus] = useState("");
+  const [tagSearchKey, setTagSearchKey] = useState('')
 
 
 
@@ -67,6 +70,14 @@ const DealsAdd = () => {
       
     }
   },[id])
+
+  // GET ALL TAGS
+
+  useEffect(()=>{
+    if(shopType || dealType === 'others'){
+      dispatch(getAllTags(shopType,tagSearchKey ))
+    }
+  },[shopType,dealType])
 
   // CALL API 
 
@@ -216,7 +227,7 @@ const DealsAdd = () => {
       option: dealType,
       percentage,
       image: shopType === 'restaurant' ? image : null,
-      otherDeal: dealType === "others" ? otherDeal : null,
+      tag: dealType === "others" ? otherDeal : null,
     };
     if(id){
       dispatch(editDeal({
@@ -328,15 +339,40 @@ const DealsAdd = () => {
                 <Row className="mt-0 mt-lg-3">
                   {dealType === "others" && (
                     <Col lg={4} className="mt-3 my-lg-0">
-                      <TextField
-                        type="text"
-                        className="form-control"
-                        placeholder="Enter Other Deal"
-                        required
-                        label="Other Deal"
-                        value={otherDeal}
-                        onChange={(e) => setOtherDeal(e.target.value)}
-                      />
+                      <Autocomplete
+                          className="cursor-pointer"
+                          onChange={(event, newValue) => {
+                            setOtherDeal(newValue);
+                          }}
+                          getOptionLabel={(option, index) =>
+                            option.name ? option.name : ""
+                          }
+                          isOptionEqualToValue={
+                            (option, value) => option._id == value._id
+                            // console.log({value})
+                          }
+                          inputValue={tagSearchKey}
+                          onInputChange={(event, newInputValue) => {
+                            setTagSearchKey(newInputValue);
+                            // console.log("input value", newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={tags.length > 0 ? tags : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params, index) => (
+                            <TextField {...params} label="Select Cuisine" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option._id}
+                            >
+                              {option.name}
+                            </Box>
+                          )}
+                        />
                     </Col>
                   )}
                   {dealType === "percentage" && (

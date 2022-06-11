@@ -32,6 +32,8 @@ import {
 } from "react-places-autocomplete";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SELLER } from "../../../network/Api";
+import moment from "moment";
+import { foodTypeOptions } from "../../../assets/staticData";
 
 const SellerAdd = () => {
   const dispatch = useDispatch();
@@ -46,7 +48,7 @@ const SellerAdd = () => {
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(moment().format('YYYY-MM-DD'));
   const [companyName, setCompanyName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [address, setAddress] = useState(null);
@@ -126,7 +128,7 @@ const SellerAdd = () => {
     setGender(gender);
     setEmail(email);
     setPassword(password);
-    setDateOfBirth(dob);
+    setDateOfBirth(moment(new Date(dob)).format('YYYY-MM-DD'));
     setCompanyName(company_name);
     setPhoneNum(phone_number);
     // setAddress("");
@@ -211,34 +213,37 @@ const SellerAdd = () => {
 
   // SUBMIT SELLER
 
-  const submitSeller = () => {
-    if (
-      !name ||
-      !gender ||
-      !email ||
-      (!id && !password) ||
-      !dateOfBirth ||
-      !companyName ||
-      !phoneNum ||
-      !bankName ||
-      !accountName ||
-      !accountNum ||
-      (!id && !sellerType) ||
-      !sellerStatus ||
-      (!id && !pin) ||
-      (!id && (sellerType == "food" || sellerType == "grocery") && !subType)
-    ) {
-      return toast.warn("Please Fill Up All Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
+  const submitSeller = (e) => {
+    e.preventDefault()
+    // if (
+    //   !name ||
+    //   !gender ||
+    //   !email ||
+    //   (!id && !password) ||
+    //   !dateOfBirth ||
+    //   !companyName ||
+    //   !phoneNum ||
+    //   !bankName ||
+    //   !accountName ||
+    //   !accountNum ||
+    //   (!id && !sellerType) ||
+    //   !sellerStatus ||
+    //   (!id && !pin) ||
+    //   (!id && (sellerType == "food" || sellerType == "grocery") && !subType)
+    // ) {
+    //   return toast.warn("Please Fill Up All Fields", {
+    //     // position: "bottom-right",
+    //     position: toast.POSITION.TOP_RIGHT,
+    //     autoClose: 3000,
+    //     hideProgressBar: true,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //   });
+    // }
+
+    
 
     if (!id && !address) {
       return toast.warn("Please Select a Address", {
@@ -268,7 +273,10 @@ const SellerAdd = () => {
 
     //  submitDate();
 
+   
+
     uploadImage();
+
   };
 
   // Upload Image
@@ -277,7 +285,7 @@ const SellerAdd = () => {
     let certificateUrl = null;
     let nidUrl = null;
     let contactUrl = null;
-    setIsLoading(true)
+    setIsLoading(true);
     if (profilePhoto) {
       if (typeof profilePhoto == "string") {
         profileUrl = profilePhoto;
@@ -310,8 +318,8 @@ const SellerAdd = () => {
       }
     }
 
-    if(profileUrl &&  certificateUrl && nidUrl && contactUrl){
-      setIsLoading(false)
+    if (profileUrl && certificateUrl && nidUrl && contactUrl) {
+      setIsLoading(false);
       submitData(profileUrl, certificateUrl, nidUrl, contactUrl);
     }
   };
@@ -408,7 +416,7 @@ const SellerAdd = () => {
         setGender("");
         setEmail("");
         setPassword("");
-        setDateOfBirth("");
+        setDateOfBirth(moment().format('YYYY-MM-DD'));
         setCompanyName("");
         setPhoneNum("");
         setAddress("");
@@ -449,336 +457,348 @@ const SellerAdd = () => {
                   <h5>Seller Informations</h5>
                   <hr />
                 </div>
-                <Row>
-                  <Col xl={6}>
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Name"
-                      variant="outlined"
-                      placeholder="Enter Full Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Email"
-                      variant="outlined"
-                      placeholder="Enter a Email Id"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </Col>
-                </Row>
-
-                {!id && (
-                  <Row className="mt-4">
+                <Form onSubmit={submitSeller}> 
+                  <Row>
                     <Col xl={6}>
-                      <PlacesAutocomplete
-                        value={selectedAddress}
-                        onChange={handleAddressChange}
-                        onSelect={handleAddressSelect}
-                        onError={(error) => {
-                          console.log(error);
-                        }}
-                        clearItemsOnError={true}
-                        shouldFetchSuggestions={selectedAddress.length > 3}
-                      >
-                        {({
-                          getInputProps,
-                          suggestions,
-                          getSuggestionItemProps,
-                          loading,
-                        }) => (
-                          <div>
-                            <TextField
-                              {...getInputProps({
-                                placeholder: "Search Places ...",
-                                className: "location-search-input",
-                                //
-                              })}
-                              type="text"
-                              required
-                              id="outlined-required"
-                              label="Address"
-                              className="form-control"
-                              value={selectedAddress}
-                            />
-                            <div
-                              className="autocomplete-dropdown-container"
-                              style={{
-                                fontSize: "14px",
-                                fontFamily: "emoji",
-                                color: "black",
-                              }}
-                            >
-                              {loading && <div>Loading...</div>}
-                              {suggestions.map((suggestion, index) => {
-                                const className = suggestion.active
-                                  ? "suggestion-item--active"
-                                  : "suggestion-item";
-
-                                // inline style for demonstration purpose
-                                const style = suggestion.active
-                                  ? {
-                                      backgroundColor: "#fafafa",
-                                      cursor: "pointer",
-                                    }
-                                  : {
-                                      backgroundColor: "#ffffff",
-                                      cursor: "pointer",
-                                    };
-                                return (
-                                  <div
-                                    // style={{padding: "20px 0px !important"}}
-                                    {...getSuggestionItemProps(suggestion, {
-                                      className,
-                                      style,
-                                    })}
-                                    key={index}
-                                  >
-                                    <i
-                                      className="ti-location-pin me-1"
-                                      style={{ color: "black" }}
-                                    />
-                                    <span>{suggestion.description}</span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </PlacesAutocomplete>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        name="name"
+                        label="Name"
+                        variant="outlined"
+                        placeholder="Enter Full Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
                     </Col>
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="Password"
+                        label="Email"
+                        type='email'
                         variant="outlined"
-                        placeholder="Enter a Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter a Email Id"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                       />
                     </Col>
                   </Row>
-                )}
 
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <DatePickerWrapper className="form-group mb-0">
-                      <Flatpickr
-                        className="form-control d-block"
-                        id="dateOfBirth"
-                        placeholder="Select  Date of Birth"
-                        value={dateOfBirth}
-                        onChange={(selectedDates, dateStr, instance) =>
-                          setDateOfBirth(dateStr)
-                        }
-                        options={{
-                          altInput: true,
-                          altFormat: "F j, Y",
-                          dateFormat: "Y-m-d",
-                        }}
-                      />
-                    </DatePickerWrapper>
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Company Name"
-                      variant="outlined"
-                      placeholder="Enter Companay Name"
-                      value={companyName}
-                      onChange={(e) => setCompanyName(e.target.value)}
-                      required
-                    />
-                  </Col>
-                </Row>
-
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <TextField
-                      id="outlined-textarea"
-                      label="Phone Number"
-                      placeholder="Enter Phone Number"
-                      style={{ width: "100%" }}
-                      type="number"
-                      value={phoneNum}
-                      onChange={(e) => setPhoneNum(e.target.value.toString())}
-                      required
-                    />
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Bank Name"
-                      variant="outlined"
-                      placeholder="Enter Bank Name"
-                      value={bankName}
-                      onChange={(e) => setBankName(e.target.value)}
-                      required
-                    />
-                  </Col>
-                </Row>
-
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Account Name"
-                      variant="outlined"
-                      placeholder="Enter Account Name"
-                      value={accountName}
-                      onChange={(e) => setAccountName(e.target.value)}
-                      required
-                    />
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Account Number"
-                      variant="outlined"
-                      placeholder="Enter Account Number"
-                      value={accountNum}
-                      onChange={(e) => setAccountNum(e.target.value)}
-                      required
-                    />
-                  </Col>
-                </Row>
-
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <FormControl fullWidth required>
-                      <InputLabel id="demo-simple-select-label">
-                        Gender
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={gender}
-                        label="Gender"
-                        onChange={(e) => setGender(e.target.value)}
-                      >
-                        <MenuItem value="male">Mele </MenuItem>
-                        <MenuItem value="female">Female</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                  <Col xl={6} className="mt-4 mt-xl-0">
-                    <FormControl fullWidth required>
-                      <InputLabel id="demo-simple-select-label">
-                        Status
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={sellerStatus}
-                        label="Status"
-                        onChange={(e) => setSellerStatus(e.target.value)}
-                      >
-                        <MenuItem value="active">Active</MenuItem>
-                        <MenuItem value="inactive">Inactive</MenuItem>
-                        <MenuItem value="archive">Archive</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                </Row>
-
-                {!id && (
-                  <Row className="mt-4">
-                    <Col xl={6}>
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Seller Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={sellerType}
-                          label="Gender"
-                          onChange={(e) => {
-                            setSellerType(e.target.value);
-                            setSubType("");
+                  {!id && (
+                    <Row className="mt-4">
+                      <Col xl={6}>
+                        <PlacesAutocomplete
+                          value={selectedAddress}
+                          onChange={handleAddressChange}
+                          onSelect={handleAddressSelect}
+                          onError={(error) => {
+                            console.log(error);
                           }}
+                          clearItemsOnError={true}
+                          shouldFetchSuggestions={selectedAddress.length > 3}
                         >
-                          <MenuItem value="food">Food</MenuItem>
-                          <MenuItem value="grocery">Grocery</MenuItem>
-                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                        </Select>
-                      </FormControl>
+                          {({
+                            getInputProps,
+                            suggestions,
+                            getSuggestionItemProps,
+                            loading,
+                          }) => (
+                            <div>
+                              <TextField
+                                {...getInputProps({
+                                  placeholder: "Search Places ...",
+                                  className: "location-search-input",
+                                  //
+                                })}
+                                type="text"
+                                required
+                                id="outlined-required"
+                                label="Address"
+                                className="form-control"
+                                value={selectedAddress}
+                              />
+                              <div
+                                className="autocomplete-dropdown-container"
+                                style={{
+                                  fontSize: "14px",
+                                  fontFamily: "emoji",
+                                  color: "black",
+                                }}
+                              >
+                                {loading && <div>Loading...</div>}
+                                {suggestions.map((suggestion, index) => {
+                                  const className = suggestion.active
+                                    ? "suggestion-item--active"
+                                    : "suggestion-item";
+
+                                  // inline style for demonstration purpose
+                                  const style = suggestion.active
+                                    ? {
+                                        backgroundColor: "#fafafa",
+                                        cursor: "pointer",
+                                      }
+                                    : {
+                                        backgroundColor: "#ffffff",
+                                        cursor: "pointer",
+                                      };
+                                  return (
+                                    <div
+                                      // style={{padding: "20px 0px !important"}}
+                                      {...getSuggestionItemProps(suggestion, {
+                                        className,
+                                        style,
+                                      })}
+                                      key={index}
+                                    >
+                                      <i
+                                        className="ti-location-pin me-1"
+                                        style={{ color: "black" }}
+                                      />
+                                      <span>{suggestion.description}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </PlacesAutocomplete>
+                      </Col>
+                      <Col xl={6} className="mt-4 mt-xl-0">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Password"
+                          variant="outlined"
+                          placeholder="Enter a Password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                      </Col>
+                    </Row>
+                  )}
+
+                  <Row className="mt-4">
+                    <Col xl={6}>
+               
+                        <TextField
+                        
+                          style={{ width: "100%" }}
+                          id="dateOfBirth"
+                          name="dateOfBirth"
+                          label="Date of Birth"
+                          variant="outlined"
+                          type='date'
+                          placeholder="Select  Date of Birth"
+                          value={dateOfBirth}
+                          onChange={(e) =>
+                            setDateOfBirth(moment(new Date(e.target.value)).format('YYYY-MM-DD'))
+                          }
+
+                          required
+                        />
+                   
                     </Col>
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="Pin Code"
+                        label="Company Name"
                         variant="outlined"
-                        placeholder="Enter Pin Code"
-                        value={pin}
-                        onChange={(e) => setPin(e.target.value)}
+                        placeholder="Enter Companay Name"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
                         required
                       />
                     </Col>
                   </Row>
-                )}
 
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    {sellerType && sellerType == "food" && (
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <TextField
+                        id="outlined-textarea"
+                        name='phone'
+                        label="Phone Number"
+                        placeholder="Enter Phone Number"
+                        style={{ width: "100%" }}
+                        type="tel"
+                        value={phoneNum}
+                        onChange={(e) => setPhoneNum(e.target.value.toString())}
+                        required
+                      />
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Bank Name"
+                        variant="outlined"
+                        placeholder="Enter Bank Name"
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
+                        required
+                      />
+                    </Col>
+                  </Row>
+
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Account Name"
+                        variant="outlined"
+                        placeholder="Enter Account Name"
+                        value={accountName}
+                        onChange={(e) => setAccountName(e.target.value)}
+                        required
+                      />
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Account Number"
+                        variant="outlined"
+                        placeholder="Enter Account Number"
+                        value={accountNum}
+                        onChange={(e) => setAccountNum(e.target.value)}
+                        required
+                      />
+                    </Col>
+                  </Row>
+
+                  <Row className="mt-4">
+                    <Col xl={6}>
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
-                          Sub Type
+                          Gender
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={subType}
-                          label="Sub Type"
-                          onChange={(e) => setSubType(e.target.value)}
-                          defaultValue={""}
+                          id="gender"
+
+                          name='gender'
+                          value={gender}
+                          label="Gender"
+                          onChange={(e) => setGender(e.target.value)}
                         >
-                          <MenuItem value="restaurants">Restaurants</MenuItem>
-                          <MenuItem value="foodcart">Food Cart</MenuItem>
+                          <MenuItem value="male">Mele </MenuItem>
+                          <MenuItem value="female">Female</MenuItem>
+                          <MenuItem value="other">Other</MenuItem>
                         </Select>
                       </FormControl>
-                    )}
-                    {sellerType && sellerType == "grocery" && (
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
-                          Sub Type
+                          Status
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={subType}
-                          label="Sub Type"
-                          onChange={(e) => setSubType(e.target.value)}
-                          defaultValue={""}
+                          id="status"
+                          name='status'
+                          value={sellerStatus}
+                          label="Status"
+                          onChange={(e) => setSellerStatus(e.target.value)}
                         >
-                          <MenuItem value="supermarkets">Supermarkets</MenuItem>
+                          <MenuItem value="active">Active</MenuItem>
+                          <MenuItem value="inactive">Inactive</MenuItem>
+                          <MenuItem value="archive">Archive</MenuItem>
                         </Select>
                       </FormControl>
-                    )}
-                  </Col>
-                </Row>
+                    </Col>
+                  </Row>
 
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <Label>Profile Photo</Label>
-                    <div className="mb-5">
-                      <Form>
+                  {!id && (
+                    <Row className="mt-4">
+                      <Col xl={6}>
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Seller Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={sellerType}
+                            label="Gender"
+                            onChange={(e) => {
+                              setSellerType(e.target.value);
+                              setSubType("");
+                            }}
+                          >
+                            <MenuItem value="food">Food</MenuItem>
+                            <MenuItem value="grocery">Grocery</MenuItem>
+                            <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Col>
+                      <Col xl={6} className="mt-4 mt-xl-0">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Pin Code"
+                          variant="outlined"
+                          placeholder="Enter Pin Code"
+                          value={pin}
+                          onChange={(e) => setPin(e.target.value)}
+                          required
+                        />
+                      </Col>
+                    </Row>
+                  )}
+
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      {sellerType && sellerType == "food" && (
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Sub Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={subType}
+                            label="Sub Type"
+                            onChange={(e) => setSubType(e.target.value)}
+                            defaultValue={""}
+                          >
+                            {foodTypeOptions.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      )}
+                      {sellerType && sellerType == "grocery" && (
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Sub Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={subType}
+                            label="Sub Type"
+                            onChange={(e) => setSubType(e.target.value)}
+                            defaultValue={""}
+                          >
+                            <MenuItem value="supermarkets">
+                              Supermarkets
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      )}
+                    </Col>
+                  </Row>
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <Label>Profile Photo</Label>
+                      <div className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "profile");
@@ -791,7 +811,7 @@ const SellerAdd = () => {
                                 {...getRootProps()}
                                 // onClick={() => setmodal_fullscreen(true)}
                               >
-                                <input {...getInputProps()} />
+                                <input {...getInputProps()} name='profile' />
                                 <div className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
@@ -866,109 +886,107 @@ const SellerAdd = () => {
                             </Card>
                           )}
                         </div>
-                      </Form>
-                    </div>
-                  </Col>
-                  <Col xl={6}>
-                    <Label>Certificate Of Incorporation</Label>
-                    <div className="mb-5">
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles, "certificate");
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
-                            </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {certificate && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      alt="certificate"
-                                      src={
-                                        certificate.preview
-                                          ? certificate.preview
-                                          : certificate
-                                      }
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {certificate.name
-                                        ? certificate.name
-                                        : "Certificate"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {certificate.formattedSize &&
-                                          certificate.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      onClick={() => setCertificate(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
+                      </div>
+                    </Col>
+                    <Col xl={6}>
+                      <Label>Certificate Of Incorporation</Label>
+                      <div className="mb-5">
+                        <Form>
+                          <Dropzone
+                            onDrop={(acceptedFiles) => {
+                              handleAcceptedFiles(acceptedFiles, "certificate");
+                            }}
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div className="dropzone">
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+                                  // onClick={() => setmodal_fullscreen(true)}
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="mb-3">
+                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                   </div>
-                                </Row>
+                                  <h4>Drop files here or click to upload.</h4>
+                                </div>
                               </div>
-                            </Card>
-                          )}
-                        </div>
-                      </Form>
-                    </div>
-                  </Col>
-                </Row>
+                            )}
+                          </Dropzone>
+                          <div
+                            className="dropzone-previews mt-3"
+                            id="file-previews"
+                          >
+                            {certificate && (
+                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                <div className="p-2">
+                                  <Row className="align-items-center position-relative">
+                                    <Col className="col-auto">
+                                      <img
+                                        data-dz-thumbnail=""
+                                        // height="80"
+                                        style={{
+                                          maxWidth: "80px",
+                                        }}
+                                        className=" bg-light"
+                                        alt="certificate"
+                                        src={
+                                          certificate.preview
+                                            ? certificate.preview
+                                            : certificate
+                                        }
+                                      />
+                                    </Col>
+                                    <Col>
+                                      <Link
+                                        to="#"
+                                        className="text-muted font-weight-bold"
+                                      >
+                                        {certificate.name
+                                          ? certificate.name
+                                          : "Certificate"}
+                                      </Link>
+                                      <p className="mb-0">
+                                        <strong>
+                                          {certificate.formattedSize &&
+                                            certificate.formattedSize}
+                                        </strong>
+                                      </p>
+                                    </Col>
 
-                <Row>
-                  <Col xl={6}>
-                    <Label>National ID</Label>
-                    <div className="mb-5">
-                      <Form>
+                                    <div
+                                      className="position-absolute"
+                                      style={{
+                                        left: "0px",
+                                        top: "0px",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <i
+                                        onClick={() => setCertificate(null)}
+                                        className="mdi mdi-delete text-danger "
+                                        style={{
+                                          fontSize: "25px",
+                                          cursor: "pointer",
+                                        }}
+                                      ></i>
+                                    </div>
+                                  </Row>
+                                </div>
+                              </Card>
+                            )}
+                          </div>
+                        </Form>
+                      </div>
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col xl={6}>
+                      <Label>National ID</Label>
+                      <div className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "nid");
@@ -1048,13 +1066,11 @@ const SellerAdd = () => {
                             </Card>
                           )}
                         </div>
-                      </Form>
-                    </div>
-                  </Col>
-                  <Col xl={6}>
-                    <Label>Contact Paper</Label>
-                    <div className="mb-5">
-                      <Form>
+                      </div>
+                    </Col>
+                    <Col xl={6}>
+                      <Label>Contact Paper</Label>
+                      <div className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "contact");
@@ -1141,31 +1157,31 @@ const SellerAdd = () => {
                             </Card>
                           )}
                         </div>
-                      </Form>
-                    </div>
-                  </Col>
-                </Row>
+                      </div>
+                    </Col>
+                  </Row>
 
-                <div className="d-flex justify-content-center mt-4">
-                  <Button
-                    color="primary"
-                    onClick={submitSeller}
-                    className="px-5"
-                    disabled={loading || isLoading}
-                  >
-                    {loading || isLoading ? (
-                      <Spinner
-                        animation="border"
-                        variant="info"
-                        size="sm"
-                      ></Spinner>
-                    ) : id ? (
-                      "Edit"
-                    ) : (
-                      "Add"
-                    )}
-                  </Button>
-                </div>
+                  <div className="d-flex justify-content-center mt-4">
+                    <Button
+                      color="primary"
+                      type="submit"
+                      className="px-5"
+                      disabled={loading || isLoading}
+                    >
+                      {loading || isLoading ? (
+                        <Spinner
+                          animation="border"
+                          variant="info"
+                          size="sm"
+                        ></Spinner>
+                      ) : id ? (
+                        "Save"
+                      ) : (
+                        "Add"
+                      )}
+                    </Button>
+                  </div>
+                </Form>
               </CardBody>
             </Card>
           </Container>

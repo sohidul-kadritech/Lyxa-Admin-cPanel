@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 // ADD
 export const addSeller = (values) => async (dispatch) => {
-  // console.log({ values });
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SELLER_REQUEST_SEND,
@@ -39,7 +39,7 @@ export const addSeller = (values) => async (dispatch) => {
         payload: data.data.seller,
       });
     } else {
-      toast.warn(data.message, {
+      toast.warn(data.error, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -55,7 +55,18 @@ export const addSeller = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
+    toast.warn(error.message, {
+      // position: "bottom-right",
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     dispatch({
+      
       type: actionType.ADD_SELLER_REQUEST_FAIL,
       payload: error.message,
     });

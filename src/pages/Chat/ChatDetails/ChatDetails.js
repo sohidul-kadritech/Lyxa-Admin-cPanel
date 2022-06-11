@@ -116,7 +116,9 @@ const ChatDetails = () => {
                           ))}
                         </ul>
                       </SimpleBar>
-                      <Row className="mt-3 pt-1">
+                      {/* {request.status !== 'pending' || request.status !== 'rejected'} 
+                       */}
+                       <Row className="mt-3 pt-1">
                         <Col md="9" className="chat-inputbar col-8">
                           <Input
                             type="text"

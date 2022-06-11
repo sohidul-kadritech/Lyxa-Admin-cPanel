@@ -15,6 +15,8 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  orderType: { label: "All", value: "all" },
+  orderSearchKey: "",
 };
 
 const orderReducer = (state = initialState, action) => {
@@ -70,6 +72,18 @@ const orderReducer = (state = initialState, action) => {
       return {
         ...state,
         typeKey: payload,
+      };
+
+      case actionType.UPDATE_ORDER_BY_SHOP_TYPE:
+      return {
+        ...state,
+        orderType: payload,
+      };
+
+      case actionType.UPDATE_ORDER_SEARCH_KEY:
+      return {
+        ...state,
+        orderSearchKey: payload,
       };
 
     default:

@@ -5,7 +5,7 @@ import * as actionType from "../actionType"
 // GET ALL ORDER
 
 export const getAllOrder = (refresh = false, page) => async (dispatch, getState) =>{
-    const {orders, typeKey, startDate, endDate, sortByKey} = getState().orderReducer;
+    const {orders, typeKey, startDate, endDate, sortByKey, orderSearchKey, orderType} = getState().orderReducer;
 
     if(orders.length < 1 || refresh){
         try{
@@ -19,10 +19,14 @@ export const getAllOrder = (refresh = false, page) => async (dispatch, getState)
                 params: {
                     page,
                     pageSize: 50,
-                    sortBy: sortByKey.value,
                     startDate, 
                     endDate,
-                    type: typeKey.value
+                    orderType: orderType.value,
+                    sortBy: sortByKey.value,
+                    type: typeKey.value,
+                    searchKey: orderSearchKey,
+                    
+
                 },
             });
 
@@ -60,6 +64,7 @@ export const updateOrderSortByKey = (type) => (dispatch) => {
   };
   
   export const updateOrderStartDate = (startDate) => (dispatch) => {
+    console.log({ startDate });
     dispatch({
       type: actionType.UPDATE_ORDER_START_DATE_FILTER,
       payload: startDate,
@@ -81,3 +86,20 @@ export const updateOrderSortByKey = (type) => (dispatch) => {
       payload: data,
     });
   };
+
+  export const updateOrderSearchKey = (search) =>dispatch => {
+    dispatch({
+      type: actionType.UPDATE_ORDER_SEARCH_KEY,
+      payload: search,
+    });
+  }
+
+  export const updateOrderByShopType = (type) =>dispatch => {
+    dispatch({
+      type: actionType.UPDATE_ORDER_BY_SHOP_TYPE,
+      payload: type,
+    });
+  }
+
+
+  

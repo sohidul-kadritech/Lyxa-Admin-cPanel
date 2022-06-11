@@ -85,7 +85,7 @@ const ShopAdd = () => {
   const [shopPhotos, setShopPhotos] = useState(null);
   const [shopStatus, setShopStatus] = useState("");
   const [delivery, setDelivery] = useState("");
-  const [minOrderAmount, setMinOrderAmount] = useState(0);
+  const [minOrderAmount, setMinOrderAmount] = useState("");
   const [foodType, setFoodType] = useState("");
 
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -236,23 +236,13 @@ const ShopAdd = () => {
 
   // SUBMIT SELLER
 
-  const submitShop = () => {
+  const submitShop = (e) => {
+    e.preventDefault()
     if (!seller) {
       return warningMessage('Select a seller');
     }
-    if (
-      !shopType ||
-      !shopStartTime ||
-      !shopEndTime ||
-      !shopName ||
-      !shopStatus ||
-      !delivery ||
-      minOrderAmount <= 0 ||
-      tags.items.length < 1 ||
-      (!id && !pinCode) ||
-      !liveStatus
-    ) {
-      return warningMessage('Fillup All Required Fields');
+    if (tags.items.length < 1) {
+      return warningMessage('Please Add Shop Tag');
     }
 
     if (!id && !address) {
@@ -615,6 +605,7 @@ const ShopAdd = () => {
 
             <Card>
               <CardBody>
+                <Form onSubmit={submitShop}>
                 <Row className="pb-3 ">
                   <div className="mb-3">
                     <h5>Shop Informations</h5>
@@ -658,7 +649,7 @@ const ShopAdd = () => {
                     </div>
 
                     <div className="mb-4">
-                      <FormControl fullWidth>
+                      <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
                           Status
                         </InputLabel>
@@ -1007,7 +998,7 @@ const ShopAdd = () => {
                   <Col xl={6}>
                     <Label>Shop Logo</Label>
                     <div className="mb-5">
-                      <Form>
+                
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "logo");
@@ -1094,13 +1085,13 @@ const ShopAdd = () => {
                             </Card>
                           )}
                         </div>
-                      </Form>
+                     
                     </div>
                   </Col>
                   <Col xl={6}>
                     <Label>Shop Banner</Label>
                     <div className="mb-5">
-                      <Form>
+            
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "banner");
@@ -1187,7 +1178,7 @@ const ShopAdd = () => {
                             </Card>
                           )}
                         </div>
-                      </Form>
+                  
                     </div>
                   </Col>
                 </Row>
@@ -1196,7 +1187,7 @@ const ShopAdd = () => {
                   <Col xl={6}>
                     <Label>Shop Photos</Label>
                     <div className="mb-5">
-                      <Form>
+            
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "photos");
@@ -1283,7 +1274,7 @@ const ShopAdd = () => {
                             </Card>
                           )}
                         </div>
-                      </Form>
+                   
                     </div>
                   </Col>
                 </Row>
@@ -1291,7 +1282,8 @@ const ShopAdd = () => {
                 <div className="my-5 d-flex justify-content-center">
                   <Button
                     disabled={loading || isLoading}
-                    onClick={submitShop}
+                    
+                    type='submit'
                     color="primary"
                     className="px-5"
                   >
@@ -1302,12 +1294,13 @@ const ShopAdd = () => {
                         size="sm"
                       ></Spinner>
                     ) : id ? (
-                      "Edit"
+                      "Save"
                     ) : (
                       "Add"
                     )}
                   </Button>
                 </div>
+                </Form>
               </CardBody>
             </Card>
           </Container>

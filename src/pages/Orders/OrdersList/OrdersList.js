@@ -12,19 +12,26 @@ import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
-import { orderTypesOptions, sortByOptions } from "../../../assets/staticData";
+import {
+  orderTypesOptions,
+  shopTypeOptions,
+  sortByOptions,
+} from "../../../assets/staticData";
 import { Tooltip } from "@mui/material";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import {
   getAllOrder,
+  updateOrderByShopType,
   updateOrderEndDate,
+  updateOrderSearchKey,
   updateOrderSortByKey,
   updateOrderStartDate,
   updateOrderType,
 } from "../../../store/order/orderAction";
 import { useDispatch, useSelector } from "react-redux";
 import AppPagination from "./../../../components/AppPagination";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import Search from "./../../../components/Search";
 
 const OrdersList = () => {
   const dispatch = useDispatch();
@@ -41,11 +48,22 @@ const OrdersList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    orderType,
+    orderSearchKey,
   } = useSelector((state) => state.orderReducer);
 
   useEffect(() => {
-    callOrderList(true);
-  }, [sortByKey, startDate, endDate, typeKey]);
+    if (
+      sortByKey ||
+      startDate ||
+      endDate ||
+      typeKey ||
+      orderType ||
+      orderSearchKey
+    ) {
+      callOrderList(true);
+    }
+  }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey]);
 
   const callOrderList = (refresh = false) => {
     dispatch(getAllOrder(refresh));
@@ -134,6 +152,26 @@ const OrdersList = () => {
                         onChange={(e) => dispatch(updateOrderType(e))}
                       />
                     </div>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">
+                        Order By Shop Type
+                      </label>
+                      <Select
+                        palceholder="Select Status"
+                        options={shopTypeOptions}
+                        classNamePrefix="select2-selection"
+                        value={orderType}
+                        onChange={(e) => dispatch(updateOrderByShopType(e))}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={8}>
+                    <Search dispatchFunc={updateOrderSearchKey} />
                   </Col>
                 </Row>
               </CardBody>

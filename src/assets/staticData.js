@@ -148,6 +148,13 @@ export const sortByOptions = [
   export const orderTypesOptions = [
     { label: "All", value: "all" },
     { label: "Placed", value: "placed" },
+    { label: "Accepted by delivery boy", value: "accepted_delivery_boy" },
+    { label: "Preparing", value: "preparing" },
+    { label: "Ready to pickup", value: "ready_to_pickup" },
+    { label: "On the way", value: "order_on_the_way" },
+    { label: "Delivered", value: "delivered" },
+    { label: "Refused", value: "refused" },
+    { label: "Cancelled", value: "cancelled" },
   ]
 
   export const DeliveryBoyVehicleOPtions = [

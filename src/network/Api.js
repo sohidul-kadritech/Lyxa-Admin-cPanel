@@ -116,6 +116,7 @@ export const EDIT_DEAL = ADMIN_ENDPOINT + "/deal/edit"
 export const DELETE_DEAL = ADMIN_ENDPOINT + "/deal/delete"
 export const SINGLE_DEAL = ADMIN_ENDPOINT + "/deal/"
 export const ALL_DEAL_FOR_ADD = ADMIN_ENDPOINT + "/deal/get-deals-for-add"
+export const ALL_TAG = ADMIN_ENDPOINT + "/deal/get-tags"
 
 // DROP PAY
 

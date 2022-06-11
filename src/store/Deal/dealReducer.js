@@ -5,7 +5,8 @@ const initialState = {
   error: null,
   deals: [],
   status: false,
-  type: 'all'
+  type: 'all',
+  tags: []
 };
 
 const dealReducer = (state = initialState, action) => {
@@ -117,6 +118,7 @@ const dealReducer = (state = initialState, action) => {
       };
 
       // GET DEAL FOR ADD 
+
       case actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND:
       return {
         ...state,
@@ -133,6 +135,31 @@ const dealReducer = (state = initialState, action) => {
       };
 
     case actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+      // GET ALL TAG
+
+      case actionType.ALL_TAG_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ALL_TAG_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        tags: payload,
+        status: false
+      };
+
+    case actionType.ALL_TAG_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

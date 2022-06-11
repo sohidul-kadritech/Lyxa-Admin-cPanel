@@ -78,8 +78,8 @@ const ProductAdd = () => {
   });
   const [name, setName] = useState("");
   const [foodType, setFoodType] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [price, setPrice] = useState(0);
+  const [discount, setDiscount] = useState("");
+  const [price, setPrice] = useState("");
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
@@ -189,7 +189,7 @@ const ProductAdd = () => {
   // ALL CATEGORY LIST
 
   useEffect(() => {
-    if(type){
+    if (type) {
       dispatch(getAllCategory(true));
     }
   }, [type]);
@@ -252,22 +252,16 @@ const ProductAdd = () => {
 
   // VALIDATION
 
-  const submitProduct = () => {
-    if (
-      !category ||
-      !name ||
-      price <= 0 ||
-      !type ||
-      !seoTitle ||
-      !seoDescription ||
-      tags.items.length < 1 ||
-      !shop
-    ) {
-      return errorMessage("Please fill all required fields");
+  const submitProduct = (e) => {
+
+    e.preventDefault();
+
+    if ( tags.items.length < 1) {
+      return errorMessage("Please add at least one tag");
     }
 
     if (!image) {
-       return errorMessage("Please Upload Image");
+      return errorMessage("Please Upload Image");
     }
 
     // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
@@ -293,19 +287,18 @@ const ProductAdd = () => {
           // submitData(data.data.url);
           submitData(data.data.url);
         } else {
-
-          return errorMessage(data.error)
+          return errorMessage(data.error);
         }
       } catch (error) {
         setIsLoading(false);
-        return errorMessage(error.message)
+        return errorMessage(error.message);
       }
     }
   };
 
   // ERROR MESSAGE
 
-  const errorMessage = (msg) =>{
+  const errorMessage = (msg) => {
     toast.warn(msg, {
       // position: "bottom-right",
       position: toast.POSITION.TOP_RIGHT,
@@ -316,7 +309,7 @@ const ProductAdd = () => {
       draggable: true,
       progress: undefined,
     });
-  }
+  };
 
   // SUBMIT DATA TO SERVER
   const submitData = (url) => {
@@ -335,7 +328,7 @@ const ProductAdd = () => {
       tags: tags.items,
       attributes,
       addons: addonsData,
-      cuisines
+      cuisines,
     };
 
     // console.log({data})
@@ -455,15 +448,15 @@ const ProductAdd = () => {
         setCategory(null);
         setSubCategory(null);
         setName("");
-        setDiscount(0);
-        setPrice(0);
+        setDiscount("");
+        setPrice("");
         setSeoTitle("");
         setSeoDescription("");
         setTags({
           items: [],
           value: "",
         });
-        setType("")
+        setType("");
 
         setAttributes([]);
         setAddons([]);
@@ -543,294 +536,255 @@ const ProductAdd = () => {
                 <CardTitle>Product Informations</CardTitle>
                 <hr />
 
-                <Row>
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <TextField
-                        id="name"
-                        label="Name"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={type}
-                          label="Type"
-                          onChange={(event) => {
-                            setType(event.target.value);
-                            dispatch(updateShopType(event.target.value));
-                            dispatch(updateCategoryShopType(event.target.value));
-                            setShop(null);
-                            
-                          }}
-                        >
-                          <MenuItem value="food">Restaurant</MenuItem>
-                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                          <MenuItem value="grocery">Grocery</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className="mb-4">
-                      <Autocomplete
-                        disabled={id || !type ? true : false}
-                        className="cursor-pointer"
-                        value={shop}
-                        onChange={(event, newValue) => {
-                          setShop(newValue);
-                          setAddons([]);
-                          console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) =>option.shopName }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchShopKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchShopKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={shops.length > 0 ? shops : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Shop" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                            key={option._id}
+                <Form  onSubmit={submitProduct}>
+                  <Row>
+                    <Col lg={6}>
+                      <div className="mb-4">
+                        <TextField
+                          id="name"
+                          label="Name"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={name}
+                          onChange={(event) => setName(event.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={type}
+                            label="Type"
+                            onChange={(event) => {
+                              setType(event.target.value);
+                              dispatch(updateShopType(event.target.value));
+                              dispatch(
+                                updateCategoryShopType(event.target.value)
+                              );
+                              setShop(null);
+                            }}
                           >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.shopBanner}
-                              alt=""
-                            />
-                            {option.shopName}
-                          </Box>
-                        )}
-                      />
-                    </div>
-
-                    {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
+                            <MenuItem value="food">Restaurant</MenuItem>
+                            <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                            <MenuItem value="grocery">Grocery</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
                       <div className="mb-4">
                         <Autocomplete
+                          disabled={id || !type ? true : false}
+                       
                           className="cursor-pointer"
-                          value={cuisines}
+                          value={shop}
                           onChange={(event, newValue) => {
-                            setCuisines(newValue);
+                            setShop(newValue);
+                            setAddons([]);
                             console.log("new", newValue);
                           }}
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : option
+                          getOptionLabel={(option) => option.shopName}
+                          isOptionEqualToValue={(option, value) =>
+                            option._id == value._id
                           }
-                          isOptionEqualToValue={(option, value) =>option == value}
-                          inputValue={cuisineSearchKey}
+                          inputValue={searchShopKey}
                           onInputChange={(event, newInputValue) => {
-                            setCuisineSearchKey(newInputValue);
+                            setSearchShopKey(newInputValue);
                             // console.log("input value", newInputValue);
                           }}
                           id="controllable-states-demo"
-                          options={shop?.cuisineType?.length > 0 ? shop?.cuisineType : []}
+                          options={shops.length > 0 ? shops : []}
                           sx={{ width: "100%" }}
                           renderInput={(params) => (
-                            <TextField {...params} label="Select a Cuisine" />
+                            <TextField {...params} label="Select a Shop" required name='shop' />
                           )}
                           renderOption={(props, option) => (
                             <Box
                               component="li"
                               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                               {...props}
-                              key={option}
+                              key={option._id}
                             >
-                              {option?.name ||  option}
+                              <img
+                                loading="lazy"
+                                width="60"
+                                src={option.shopBanner}
+                                alt=""
+                              />
+                              {option.shopName}
                             </Box>
                           )}
                         />
                       </div>
-                    )}
 
-                    {type === "food" && shop?.shopType === "food" && (
-                      <div className="mb-4">
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Food Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={foodType}
-                            label="Food Type"
-                            onChange={(event) => {
-                              setFoodType(event.target.value);
+                      {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
+                        <div className="mb-4">
+                          <Autocomplete
+                            className="cursor-pointer"
+                            value={cuisines}
+                            onChange={(event, newValue) => {
+                              setCuisines(newValue);
+                              console.log("new", newValue);
                             }}
-                          >
-                            {foodTypeOptions2.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </div>
-                    )}
-                    <div className="mb-4">
-                      <TextField
-                        id="netPrice"
-                        label="Net Price"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={price}
-                        onChange={(event) => setPrice(event.target.value)}
-                        required
-                        type="number"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <TextField
-                        id="previousPrice"
-                        label="Discount"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        placeholder="Ender Discount Percentage"
-                        autoComplete="off"
-                        value={discount}
-                        onChange={(event) => setDiscount(event.target.value)}
-                        required
-                        type="number"
-                      />
-                    </div>
+                            getOptionLabel={(option) =>
+                              option.name ? option.name : option
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option == value
+                            }
+                            inputValue={cuisineSearchKey}
+                            onInputChange={(event, newInputValue) => {
+                              setCuisineSearchKey(newInputValue);
+                              // console.log("input value", newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={
+                              shop?.cuisineType?.length > 0
+                                ? shop?.cuisineType
+                                : []
+                            }
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select a Cuisine" required name='cuisine' />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option}
+                              >
+                                {option?.name || option}
+                              </Box>
+                            )}
+                          />
+                        </div>
+                      )}
 
-                    {id && (
+                      {type === "food" && shop?.shopType === "food" && (
+                        <div className="mb-4">
+                          <FormControl fullWidth required>
+                            <InputLabel id="demo-simple-select-label">
+                              Food Type
+                            </InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={foodType}
+                              label="Food Type"
+                              onChange={(event) => {
+                                setFoodType(event.target.value);
+                              }}
+                            >
+                              {foodTypeOptions2.map((item, index) => (
+                                <MenuItem key={index} value={item.value}>
+                                  {item.label}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                      )}
                       <div className="mb-4">
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Visibility
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={visibility}
-                            label="Type"
-                            onChange={(event) =>
-                              setVisibility(event.target.value)
-                            }
-                          >
-                            <MenuItem value="true">True</MenuItem>
-                            <MenuItem value="false">False</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          id="netPrice"
+                          label="Net Price"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={price}
+                          onChange={(event) => setPrice(event.target.value)}
+                          required
+                          type="number"
+                        />
                       </div>
-                    )}
-                    {id && (
                       <div className="mb-4">
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Status
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={activeStatus}
-                            label="Type"
-                            onChange={(event) =>
-                              setActiveStatus(event.target.value)
-                            }
-                          >
-                            <MenuItem value="active">Active</MenuItem>
-                            <MenuItem value="inactive">Inactive</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          id="previousPrice"
+                          label="Discount(%)"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          placeholder="Ender Discount Percentage"
+                          autoComplete="off"
+                          value={discount}
+                          onChange={(event) => setDiscount(event.target.value)}
+                          required
+                          type="number"
+                        />
                       </div>
-                    )}
-                  </Col>
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <Autocomplete
-                        className="cursor-pointer"
-                        value={category}
-                        disabled={!type ? true : false}
-                        onChange={(event, newValue) => {
-                          setCategory(newValue);
-                          // console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) => option.name 
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchCategoryKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchCategoryKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={categories.length > 0 ? categories : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Category" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.image}
-                              alt=""
-                            />
-                            {option.name}
-                          </Box>
-                        )}
-                      />
-                    </div>
-                    {category && (
+
+                      {id && (
+                        <div className="mb-4">
+                          <FormControl fullWidth required>
+                            <InputLabel id="demo-simple-select-label">
+                              Visibility
+                            </InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={visibility}
+                              label="Type"
+                              onChange={(event) =>
+                                setVisibility(event.target.value)
+                              }
+                            >
+                              <MenuItem value="true">True</MenuItem>
+                              <MenuItem value="false">False</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </div>
+                      )}
+                      {id && (
+                        <div className="mb-4">
+                          <FormControl fullWidth required>
+                            <InputLabel id="demo-simple-select-label">
+                              Status
+                            </InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={activeStatus}
+                              label="Type"
+                              onChange={(event) =>
+                                setActiveStatus(event.target.value)
+                              }
+                            >
+                              <MenuItem value="active">Active</MenuItem>
+                              <MenuItem value="inactive">Inactive</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </div>
+                      )}
+                    </Col>
+                    <Col lg={6}>
                       <div className="mb-4">
                         <Autocomplete
                           className="cursor-pointer"
-                          value={subCategory}
+                          required
+                          value={category}
+                          disabled={!type ? true : false}
                           onChange={(event, newValue) => {
-                            setSubCategory(newValue);
+                            setCategory(newValue);
                             // console.log("new", newValue);
                           }}
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : ""
-                          }
+                          getOptionLabel={(option) => option.name}
                           isOptionEqualToValue={(option, value) =>
-                            option.id == value.id
+                            option._id == value._id
                           }
-                          inputValue={searchSubCatKey}
+                          inputValue={searchCategoryKey}
                           onInputChange={(event, newInputValue) => {
-                            setSearchSubCatKey(newInputValue);
+                            setSearchCategoryKey(newInputValue);
                             // console.log("input value", newInputValue);
                           }}
                           id="controllable-states-demo"
-                          options={
-                            subCategories.length > 0 ? subCategories : []
-                          }
+                          options={categories.length > 0 ? categories : []}
                           sx={{ width: "100%" }}
                           renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select a Sub Category"
-                            />
+                            <TextField {...params} label="Select a Category" required name='category' />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -849,485 +803,534 @@ const ProductAdd = () => {
                           )}
                         />
                       </div>
-                    )}
-
-                    <div className="mb-4">
-                      <TextField
-                        id="seo"
-                        label="SEO Title"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={seoTitle}
-                        onChange={(event) => setSeoTitle(event.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <TextField
-                        id="seoTag"
-                        label="SEO Tags"
-                        variant="outlined"
-                        placeholder="type tag name then press enter"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        onKeyDown={handleTagAdd}
-                        onChange={handleTagChange}
-                        value={tags?.value}
-                        //   onChange={(event) => setName(event.target.value)}
-                        required
-                      />
-                      {tags.items.length > 0 && (
-                        <Paper className="mt-4 p-3">
-                          {tags.items.map((item, index) => (
-                            <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() => handleTagDelete(item)}
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          ))}
-                        </Paper>
-                      )}
-                    </div>
-
-                    <div className="mb-4">
-                      <TextField
-                        id="seo"
-                        label="SEO Description"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={seoDescription}
-                        onChange={(event) =>
-                          setSeoDescription(event.target.value)
-                        }
-                        required
-                        multiline
-                        rows={2}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-
-                {/* ATTRIBUTE */}
-                <Row className="mt-3">
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={isNeedAttribute}
-                            id="flexCheckDefault"
-                            onChange={(e) =>
-                              setIsNeedAttribute(e.target.checked)
+                      {category && (
+                        <div className="mb-4">
+                          <Autocomplete
+                            className="cursor-pointer"
+                            value={subCategory}
+                            onChange={(event, newValue) => {
+                              setSubCategory(newValue);
+                              // console.log("new", newValue);
+                            }}
+                            getOptionLabel={(option) =>
+                              option.name ? option.name : ""
                             }
+                            isOptionEqualToValue={(option, value) =>
+                              option.id == value.id
+                            }
+                            inputValue={searchSubCatKey}
+                            onInputChange={(event, newInputValue) => {
+                              setSearchSubCatKey(newInputValue);
+                              // console.log("input value", newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={
+                              subCategories.length > 0 ? subCategories : []
+                            }
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Select a Sub Category"
+                              />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                              >
+                                <img
+                                  loading="lazy"
+                                  width="60"
+                                  src={option.image}
+                                  alt=""
+                                />
+                                {option.name}
+                              </Box>
+                            )}
                           />
-                          <label
-                            className="form-check-label ms-1"
-                            style={{ fontSize: "16px" }}
-                            htmlFor="flexCheckDefault"
-                          >
-                            Attribute(s)
-                          </label>
                         </div>
+                      )}
+
+                      <div className="mb-4">
+                        <TextField
+                          id="seo"
+                          label="SEO Title"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={seoTitle}
+                          onChange={(event) => setSeoTitle(event.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <TextField
+                          id="seoTag"
+                          label="SEO Tags"
+                          variant="outlined"
+                          placeholder="type tag name then press enter"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          onKeyDown={handleTagAdd}
+                          onChange={handleTagChange}
+                          value={tags?.value}
+                          //   onChange={(event) => setName(event.target.value)}
+                        />
+                        {tags.items.length > 0 && (
+                          <Paper className="mt-4 p-3">
+                            {tags.items.map((item, index) => (
+                              <div className="tag__wrapper" key={index}>
+                                {item}
+                                <button
+                                  type="button"
+                                  className="button"
+                                  onClick={() => handleTagDelete(item)}
+                                >
+                                  &times;
+                                </button>
+                              </div>
+                            ))}
+                          </Paper>
+                        )}
                       </div>
 
-                      {isNeedAttribute && (
-                        <div>
-                          <Row className="mt-2">
-                            <Col sm={8}>
-                              <TextField
-                                id="Attribute name"
-                                label="Attribute Name"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                                autoComplete="off"
-                                value={attributeName}
-                                onChange={(e) =>
-                                  setAttributeName(e.target.value)
-                                }
-                                type="text"
-                              />
-                            </Col>
-                            <Col sm={4}>
-                              <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value={isRequiredAttribute}
-                                  id="flexCheckDefault"
-                                  onChange={(e) =>
-                                    setIsRequiredAttribute(e.target.checked)
-                                  }
-                                />
-                                <label
-                                  className="form-check-label ms-1"
-                                  style={{ fontSize: "16px" }}
-                                  htmlFor="flexCheckDefault"
-                                >
-                                  Required
-                                </label>
-                              </div>
-                            </Col>
-                          </Row>
-                          {attributeItems.map((item, index) => (
-                            <Row className="mt-3" key={index}>
-                              <Col sm={6}>
+                      <div className="mb-4">
+                        <TextField
+                          id="seo"
+                          label="SEO Description"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={seoDescription}
+                          onChange={(event) =>
+                            setSeoDescription(event.target.value)
+                          }
+                          required
+                          multiline
+                          rows={2}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+
+                  {/* ATTRIBUTE */}
+                  <Row className="mt-3">
+                    <Col lg={6}>
+                      <div className="mb-4">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              value={isNeedAttribute}
+                              id="flexCheckDefault"
+                              onChange={(e) =>
+                                setIsNeedAttribute(e.target.checked)
+                              }
+                            />
+                            <label
+                              className="form-check-label ms-1"
+                              style={{ fontSize: "16px" }}
+                              htmlFor="flexCheckDefault"
+                            >
+                              Attribute(s)
+                            </label>
+                          </div>
+                        </div>
+
+                        {isNeedAttribute && (
+                          <div>
+                            <Row className="mt-2">
+                              <Col sm={8}>
                                 <TextField
-                                  id="variant name"
-                                  label="Name"
-                                  name="name"
+                                  id="Attribute name"
+                                  label="Attribute Name"
                                   variant="outlined"
                                   style={{ width: "100%" }}
                                   autoComplete="off"
-                                  value={item?.name}
-                                  onChange={(event) =>
-                                    attributeItemChange(event, index)
+                                  value={attributeName}
+                                  onChange={(e) =>
+                                    setAttributeName(e.target.value)
                                   }
                                   type="text"
                                 />
                               </Col>
-                              <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                                <TextField
-                                  id="variant extra price"
-                                  name="extraPrice"
-                                  label="Extra Price"
-                                  variant="outlined"
-                                  style={{ width: "100%" }}
-                                  autoComplete="off"
-                                  value={item?.extraPrice}
-                                  onChange={(event) =>
-                                    attributeItemChange(event, index)
-                                  }
-                                  type="number"
-                                />
-                                {attributeItems.length > 1 && (
-                                  <i
-                                    className="fas fa-trash cursor-pointer ms-1"
-                                    style={{ color: "red", fontSize: "18px" }}
-                                    onClick={() => removeAttributeItem(index)}
-                                  ></i>
-                                )}
-                              </Col>
-                              {attributeItems.length - 1 === index && (
-                                <div>
-                                  <Button
-                                    outline={true}
-                                    color="primary"
-                                    className="mt-2"
-                                    onClick={addAttributeItem}
+                              <Col sm={4}>
+                                <div className="form-check">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    value={isRequiredAttribute}
+                                    id="flexCheckDefault"
+                                    onChange={(e) =>
+                                      setIsRequiredAttribute(e.target.checked)
+                                    }
+                                  />
+                                  <label
+                                    className="form-check-label ms-1"
+                                    style={{ fontSize: "16px" }}
+                                    htmlFor="flexCheckDefault"
                                   >
-                                    Add Item
-                                  </Button>
+                                    Required
+                                  </label>
                                 </div>
-                              )}
+                              </Col>
                             </Row>
-                          ))}
-
-                          <div className="mt-3 text-center">
-                            <Button
-                              outline={true}
-                              color="success"
-                              size="lg"
-                              className="px-5"
-                              onClick={addAttribute}
-                            >
-                              Add
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Col>
-                  <Col lg={6}>
-                    {attributes.length > 0 && (
-                      <div className="mb-4">
-                        <Paper className="py-2">
-                          <h5 className="text-center">Attributes List</h5>
-                          <hr />
-                          {attributes.length > 0 &&
-                            attributes.map((attribute, index) => (
-                              <ul
-                                key={index}
-                                style={{ listStyleType: "square" }}
-                              >
-                                <li>
-                                  <div className="d-flex justify-content-between">
-                                    <span
-                                      style={{
-                                        fontSize: "15px",
-                                        fontWeight: "500",
-                                      }}
-                                    >
-                                      {attribute.name}
-                                      {attribute.required ? "(Required)" : ""}
-                                    </span>
+                            {attributeItems.map((item, index) => (
+                              <Row className="mt-3" key={index}>
+                                <Col sm={6}>
+                                  <TextField
+                                    id="variant name"
+                                    label="Name"
+                                    name="name"
+                                    variant="outlined"
+                                    style={{ width: "100%" }}
+                                    autoComplete="off"
+                                    value={item?.name}
+                                    onChange={(event) =>
+                                      attributeItemChange(event, index)
+                                    }
+                                    type="text"
+                                  />
+                                </Col>
+                                <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                                  <TextField
+                                    id="variant extra price"
+                                    name="extraPrice"
+                                    label="Extra Price"
+                                    variant="outlined"
+                                    style={{ width: "100%" }}
+                                    autoComplete="off"
+                                    value={item?.extraPrice}
+                                    onChange={(event) =>
+                                      attributeItemChange(event, index)
+                                    }
+                                    type="number"
+                                  />
+                                  {attributeItems.length > 1 && (
                                     <i
-                                      className="fas fa-trash cursor-pointer me-3"
-                                      style={{
-                                        color: "#BD381C",
-                                        fontSize: "15px",
-                                      }}
-                                      onClick={() => removeAttribute(index)}
+                                      className="fas fa-trash cursor-pointer ms-1"
+                                      style={{ color: "red", fontSize: "18px" }}
+                                      onClick={() => removeAttributeItem(index)}
                                     ></i>
+                                  )}
+                                </Col>
+                                {attributeItems.length - 1 === index && (
+                                  <div>
+                                    <Button
+                                      outline={true}
+                                      color="primary"
+                                      className="mt-2"
+                                      onClick={addAttributeItem}
+                                    >
+                                      Add Item
+                                    </Button>
                                   </div>
-                                </li>
-                                {attribute.items.map((item, index) => (
-                                  <ul key={index}>
-                                    <li>
-                                      <span>{item.name}-</span>
-                                      <span className="ms-1">
-                                        {item.extraPrice}
-                                      </span>
-                                    </li>
-                                  </ul>
-                                ))}
-                              </ul>
+                                )}
+                              </Row>
                             ))}
-                        </Paper>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
 
-                {/* ADDON */}
-
-                <Row className="mt-4">
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={isNeedAddon}
-                            id="flexCheckDefault"
-                            onChange={(e) => setIsNeedAddon(e.target.checked)}
-                          />
-                          <label
-                            className="form-check-label ms-1"
-                            style={{ fontSize: "16px" }}
-                            htmlFor="flexCheckDefault"
-                          >
-                            Addon(s)
-                          </label>
-                        </div>
-                      </div>
-
-                      {isNeedAddon && (
-                        <Autocomplete
-                          className="cursor-pointer"
-                          // value={addon}
-                          onChange={(event, newValue) =>
-                            addAddonProduct(newValue)
-                          }
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={(option, value) =>
-                            option._id == value._id
-                          }
-                          inputValue={productSearchKey}
-                          onInputChange={(event, newInputValue) => {
-                            setProductSearchKey(newInputValue);
-                            // console.log("input value", newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={products.length > 0 ? products : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params) => (
-                            <TextField {...params} label="Select Products" />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
-                            >
-                              <img
-                                loading="lazy"
-                                width="60"
-                                src={option.images[0]}
-                                alt=""
-                              />
-                              {option.name}
-                            </Box>
-                          )}
-                        />
-                      )}
-                    </div>
-                  </Col>
-                  <Col lg={6}>
-                    {addons.length > 0 && (
-                      <div className="mb-4">
-                        <Paper className="py-2">
-                          <h5 className="text-center">Addons List</h5>
-                          <hr />
-                          {addons.length > 0 &&
-                            addons.map((item, index) => (
-                              <ul
-                                key={index}
-                                style={{ listStyleType: "square" }}
+                            <div className="mt-3 text-center">
+                              <Button
+                                outline={true}
+                                color="success"
+                                size="lg"
+                                className="px-5"
+                                onClick={addAttribute}
                               >
-                                <li>
-                                  <div className="d-flex justify-content-between">
-                                    <div>
-                                      <img
-                                        loading="lazy"
-                                        width="60"
-                                        src={item.images[0]}
-                                        alt=""
-                                      />
+                                Add
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </Col>
+                    <Col lg={6}>
+                      {attributes.length > 0 && (
+                        <div className="mb-4">
+                          <Paper className="py-2">
+                            <h5 className="text-center">Attributes List</h5>
+                            <hr />
+                            {attributes.length > 0 &&
+                              attributes.map((attribute, index) => (
+                                <ul
+                                  key={index}
+                                  style={{ listStyleType: "square" }}
+                                >
+                                  <li>
+                                    <div className="d-flex justify-content-between">
                                       <span
                                         style={{
                                           fontSize: "15px",
                                           fontWeight: "500",
-                                          marginLeft: "10px",
                                         }}
                                       >
-                                        {item.name}
+                                        {attribute.name}
+                                        {attribute.required ? "(Required)" : ""}
                                       </span>
+                                      <i
+                                        className="fas fa-trash cursor-pointer me-3"
+                                        style={{
+                                          color: "#BD381C",
+                                          fontSize: "15px",
+                                        }}
+                                        onClick={() => removeAttribute(index)}
+                                      ></i>
                                     </div>
-                                    <i
-                                      className="fas fa-trash cursor-pointer me-3"
-                                      style={{
-                                        color: "#BD381C",
-                                        fontSize: "15px",
-                                      }}
-                                      onClick={() => removeAddon(index)}
-                                    ></i>
-                                  </div>
-                                </li>
-                              </ul>
-                            ))}
-                        </Paper>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col>
-                    <Label>Product Images</Label>
-                    <div className="mb-5">
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles);
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
-                            </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {image && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        image.preview ? image.preview : image
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {image.name
-                                        ? image.name
-                                        : "Product Image"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {image.formattedSize &&
-                                          image.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      onClick={() => setImage(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          )}
+                                  </li>
+                                  {attribute.items.map((item, index) => (
+                                    <ul key={index}>
+                                      <li>
+                                        <span>{item.name}-</span>
+                                        <span className="ms-1">
+                                          {item.extraPrice}
+                                        </span>
+                                      </li>
+                                    </ul>
+                                  ))}
+                                </ul>
+                              ))}
+                          </Paper>
                         </div>
-                      </Form>
-                    </div>
-                  </Col>
-                </Row>
+                      )}
+                    </Col>
+                  </Row>
 
-                <div className="my-5 d-flex justify-content-center">
-                  <Button
-                    onClick={submitProduct}
-                    color="primary"
-                    className="px-5"
-                    disabled={loading || isLoading}
-                  >
-                    {loading || isLoading ? (
-                      <Spinner
-                        animation="border"
-                        variant="info"
-                        size="sm"
-                      ></Spinner>
-                    ) : id ? (
-                      "Edit"
-                    ) : (
-                      "Add"
-                    )}
-                  </Button>
-                </div>
+                  {/* ADDON */}
+
+                  <Row className="mt-4">
+                    <Col lg={6}>
+                      <div className="mb-4">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              value={isNeedAddon}
+                              id="flexCheckDefault"
+                              onChange={(e) => setIsNeedAddon(e.target.checked)}
+                            />
+                            <label
+                              className="form-check-label ms-1"
+                              style={{ fontSize: "16px" }}
+                              htmlFor="flexCheckDefault"
+                            >
+                              Addon(s)
+                            </label>
+                          </div>
+                        </div>
+
+                        {isNeedAddon && (
+                          <Autocomplete
+                            className="cursor-pointer"
+                            // value={addon}
+                            onChange={(event, newValue) =>
+                              addAddonProduct(newValue)
+                            }
+                            getOptionLabel={(option) =>
+                              option.name ? option.name : ""
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option._id == value._id
+                            }
+                            inputValue={productSearchKey}
+                            onInputChange={(event, newInputValue) => {
+                              setProductSearchKey(newInputValue);
+                              // console.log("input value", newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={products.length > 0 ? products : []}
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select Products" />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option._id}
+                              >
+                                <img
+                                  loading="lazy"
+                                  width="60"
+                                  src={option.images[0]}
+                                  alt=""
+                                />
+                                {option.name}
+                              </Box>
+                            )}
+                          />
+                        )}
+                      </div>
+                    </Col>
+                    <Col lg={6}>
+                      {addons.length > 0 && (
+                        <div className="mb-4">
+                          <Paper className="py-2">
+                            <h5 className="text-center">Addons List</h5>
+                            <hr />
+                            {addons.length > 0 &&
+                              addons.map((item, index) => (
+                                <ul
+                                  key={index}
+                                  style={{ listStyleType: "square" }}
+                                >
+                                  <li>
+                                    <div className="d-flex justify-content-between">
+                                      <div>
+                                        <img
+                                          loading="lazy"
+                                          width="60"
+                                          src={item.images[0]}
+                                          alt=""
+                                        />
+                                        <span
+                                          style={{
+                                            fontSize: "15px",
+                                            fontWeight: "500",
+                                            marginLeft: "10px",
+                                          }}
+                                        >
+                                          {item.name}
+                                        </span>
+                                      </div>
+                                      <i
+                                        className="fas fa-trash cursor-pointer me-3"
+                                        style={{
+                                          color: "#BD381C",
+                                          fontSize: "15px",
+                                        }}
+                                        onClick={() => removeAddon(index)}
+                                      ></i>
+                                    </div>
+                                  </li>
+                                </ul>
+                              ))}
+                          </Paper>
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col>
+                      <Label>Product Images</Label>
+                      <div className="mb-5">
+                
+                          <Dropzone
+                            onDrop={(acceptedFiles) => {
+                              handleAcceptedFiles(acceptedFiles);
+                            }}
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div className="dropzone">
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+                                  // onClick={() => setmodal_fullscreen(true)}
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="mb-3">
+                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                  </div>
+                                  <h4>Drop files here or click to upload.</h4>
+                                </div>
+                              </div>
+                            )}
+                          </Dropzone>
+                          <div
+                            className="dropzone-previews mt-3"
+                            id="file-previews"
+                          >
+                            {image && (
+                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                <div className="p-2">
+                                  <Row className="align-items-center position-relative">
+                                    <Col className="col-auto">
+                                      <img
+                                        data-dz-thumbnail=""
+                                        // height="80"
+                                        style={{
+                                          maxWidth: "80px",
+                                        }}
+                                        className=" bg-light"
+                                        src={
+                                          image.preview ? image.preview : image
+                                        }
+                                        alt=""
+                                      />
+                                    </Col>
+                                    <Col>
+                                      <Link
+                                        to="#"
+                                        className="text-muted font-weight-bold"
+                                      >
+                                        {image.name
+                                          ? image.name
+                                          : "Product Image"}
+                                      </Link>
+                                      <p className="mb-0">
+                                        <strong>
+                                          {image.formattedSize &&
+                                            image.formattedSize}
+                                        </strong>
+                                      </p>
+                                    </Col>
+
+                                    <div
+                                      className="position-absolute"
+                                      style={{
+                                        left: "0px",
+                                        top: "0px",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <i
+                                        onClick={() => setImage(null)}
+                                        className="mdi mdi-delete text-danger "
+                                        style={{
+                                          fontSize: "25px",
+                                          cursor: "pointer",
+                                        }}
+                                      ></i>
+                                    </div>
+                                  </Row>
+                                </div>
+                              </Card>
+                            )}
+                          </div>
+                     
+                      </div>
+                    </Col>
+                  </Row>
+
+                  <div className="my-5 d-flex justify-content-center">
+                    <Button
+                     
+                      type="submit"
+                      color="primary"
+                      className="px-5"
+                      disabled={loading || isLoading}
+                    >
+                      {loading || isLoading ? (
+                        <Spinner
+                          animation="border"
+                          variant="info"
+                          size="sm"
+                        ></Spinner>
+                      ) : id ? (
+                        "Save"
+                      ) : (
+                        "Add"
+                      )}
+                    </Button>
+                  </div>
+                </Form>
               </CardBody>
             </Card>
           </Container>

@@ -31,7 +31,7 @@ export const userList =
           },
         });
 
-        // console.log("users-----", data);
+        console.log("users-----", data);
 
         if (data.status) {
           dispatch({

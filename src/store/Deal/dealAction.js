@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { ADD_DEAL, ALL_DEAL_FOR_ADD, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
+import { ADD_DEAL, ALL_DEAL_FOR_ADD, ALL_TAG, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
 import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType';
 
@@ -253,11 +253,48 @@ export const addDeal = (values) => async (dispatch) => {
   };
 
 
-  // FILTER UPDATE r
+  // FILTER UPDATE 
 
   export const updateShopFilter = (value) =>dispatch =>{
     dispatch({
       type: actionType.UPDATE_DEAL_TYPE_KEY,
       payload: value
     })
+  }
+
+  // GET ALL TAGS 
+
+  export const getAllTags = (type, searchKey) => async (dispatch) => {
+    try {
+      dispatch({
+        type: actionType.ALL_TAG_REQUEST_SEND,
+      });
+      const { data } = await requestApi().request(ALL_TAG,{
+        params:{
+          page: 1,
+          pageSize: 100,
+          type,
+          searchKey
+        }
+      });
+  
+      console.log({ data });
+  
+      if (data.status) {
+        dispatch({
+          type: actionType.ALL_TAG_REQUEST_SUCCESS,
+          payload: data.data.tags,
+        });
+      } else {
+        dispatch({
+          type: actionType.ALL_TAG_REQUEST_FAIL,
+          payload: data.error,
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: actionType.ALL_TAG_REQUEST_FAIL,
+        payload: error.message,
+      });
+    }
   }

@@ -59,27 +59,7 @@ const UsersList = () => {
     dispatch(userList(refresh));
   };
 
-  // DEBOUNCE SEARCH
 
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      // const context = this;
-      timer = setTimeout(() => {
-        func(args[0]);
-      }, delay);
-    };
-    // console.log("yes....");
-  };
-
-  const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
-    dispatch(updateSearchKey(event.target.value));
-  };
-
-  const searchKeyListener = debounce(handleSearchChange, 300);
 
   return (
     <React.Fragment>
