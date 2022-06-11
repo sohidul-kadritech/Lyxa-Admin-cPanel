@@ -159,12 +159,16 @@ import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
 import Cuisine from "../pages/Shops/Cuisine";
 import AdminSettings from "../pages/AdminSettings/AdminSettings";
 import AppSettings from "../pages/AppSettings/AppSettings";
+import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
+import OrderDetails from "../pages/Orders/OrderDetails/OrderDetails";
+import ChatDetails from "../pages/Chat/ChatDetails/ChatDetails";
 
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
   {path:"/orders/list", component: OrdersList},
+  {path:"/orders/details/:id", component: OrderDetails},
 
   { path: "/image-gallery", component: PagesGallery },
   { path: "/image-folder", component: ImageFolder },
@@ -182,6 +186,7 @@ const userRoutes = [
   { path: "/users/list", component: UsersList },
 
   { path: "/users/details/:id", component: UserDetails },
+  {path: "/users/transactions/:id", component: UserTransaction },
 
   // SELLER
 
@@ -237,7 +242,8 @@ const userRoutes = [
 
   // CHAT
 
-  {path: "/chat", component: Chat},
+  {path: "/customer-support", component: Chat},
+  {path: "/customer-support/details/:id", component: ChatDetails},
 
   // CATEGORIES AND TAGS
 

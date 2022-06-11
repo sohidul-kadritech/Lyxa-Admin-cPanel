@@ -89,7 +89,7 @@ export const getAllSeller =
           },
         });
 
-        // console.log({ data });
+        console.log({ data });
 
         if (data.status) {
           dispatch({

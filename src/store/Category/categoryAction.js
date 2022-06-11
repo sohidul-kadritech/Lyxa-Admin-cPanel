@@ -71,7 +71,7 @@ export const getAllCategory =
   (refresh = false, page = 1) =>
   async (dispatch, getState) => {
     // console.log({adminData})
-    const { categories } = getState().categoryReducer;
+    const { categories,shopType } = getState().categoryReducer;
 
     if (categories.length < 1 || refresh) {
       try {
@@ -83,10 +83,11 @@ export const getAllCategory =
           params: {
             page: page,
             pageSize: 30,
+            type: shopType
           },
         });
 
-        // console.log({ data });
+        console.log({ data });
 
         if (data.status) {
           dispatch({
@@ -405,5 +406,15 @@ export const updateSubCatStatusKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_STATUS_KEY,
     payload: value,
+  });
+};
+
+// UPDTAE CATEGORY  TYPE KEY 
+
+export const updateCategoryShopType = (selectedType) => (dispatch) => {
+  // console.log("selected car type", selectedType);
+  dispatch({
+    type: actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY,
+    payload: selectedType,
   });
 };

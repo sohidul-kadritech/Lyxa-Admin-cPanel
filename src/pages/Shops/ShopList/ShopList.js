@@ -35,6 +35,7 @@ import {
   shopTypeOptions,
   sortByOptions,
 } from "../../../assets/staticData";
+import Search from "../../../components/Search";
 
 const ShopList = () => {
   const dispatch = useDispatch();
@@ -69,8 +70,6 @@ const ShopList = () => {
   useEffect(() => {
     if (statusKey || typeKey || sortByKey || searchKey || liveStatus) {
       callShopList(true);
-    } else {
-      callShopList();
     }
   }, [statusKey, typeKey, sortByKey, searchKey, liveStatus]);
 
@@ -78,27 +77,7 @@ const ShopList = () => {
     dispatch(getAllShop(refresh));
   };
 
-  // DEBOUNCE SEARCH
 
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      // const context = this;
-      timer = setTimeout(() => {
-        func(args[0]);
-      }, delay);
-    };
-    // console.log("yes....");
-  };
-
-  const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
-    dispatch(updateShopSearchKey(event.target.value));
-  };
-
-  const searchKeyListener = debounce(handleSearchChange, 300);
 
   // DELETE SHOP
 
@@ -204,19 +183,7 @@ const ShopList = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-                    <label className="control-label">Search</label>
-                    <SearchWrapper>
-                      <div className="search__wrapper">
-                        <i className="fa fa-search" />
-                        <input
-                          className="form-control"
-                          type="search"
-                          placeholder="Search Shop..."
-                          id="search"
-                          onChange={searchKeyListener}
-                        />
-                      </div>
-                    </SearchWrapper>
+                    <Search dispatchFunc={updateShopSearchKey} />
                   </Col>
                 </Row>
               </CardBody>

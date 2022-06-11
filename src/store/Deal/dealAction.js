@@ -257,7 +257,7 @@ export const addDeal = (values) => async (dispatch) => {
 
   export const updateShopFilter = (value) =>dispatch =>{
     dispatch({
-      type: actionType.UPDATE_TYPE_KEY,
+      type: actionType.UPDATE_DEAL_TYPE_KEY,
       payload: value
     })
   }

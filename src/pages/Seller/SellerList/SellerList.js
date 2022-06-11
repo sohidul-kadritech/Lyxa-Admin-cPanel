@@ -36,6 +36,7 @@ import {
   sortByOptions,
 } from "../../../assets/staticData";
 import Select from "react-select";
+import Search from "../../../components/Search";
 
 const SellerList = () => {
   const dispatch = useDispatch();
@@ -78,29 +79,6 @@ const SellerList = () => {
   const callSellerList = (refresh = false) => {
     dispatch(getAllSeller(refresh));
   };
-
-  // DEBOUNCE SEARCH
-
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      // const context = this;
-      timer = setTimeout(() => {
-        func(args[0]);
-      }, delay);
-    };
-    // console.log("yes....");
-  };
-
-  const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
-    dispatch(updateSellerSearchKey(event.target.value));
-  };
-
-  const searchKeyListener = debounce(handleSearchChange, 300);
-
 
 
   return (
@@ -189,19 +167,7 @@ const SellerList = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-                    <label className="control-label">Search</label>
-                    <SearchWrapper>
-                      <div className="search__wrapper">
-                        <i className="fa fa-search" />
-                        <input
-                          className="form-control"
-                          type="search"
-                          placeholder="Search Seller..."
-                          id="search"
-                          onChange={searchKeyListener}
-                        />
-                      </div>
-                    </SearchWrapper>
+                    <Search dispatchFunc={updateSellerSearchKey} />
                   </Col>
                 </Row>
               </CardBody>

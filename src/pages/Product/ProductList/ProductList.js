@@ -34,6 +34,7 @@ import { Tooltip } from "@mui/material";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
+import Search from './../../../components/Search';
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -59,30 +60,6 @@ const ProductList = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
-
-  // SEARCH
-
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      // const context = this;
-      timer = setTimeout(() => {
-        func(args[0]);
-      }, delay);
-    };
-    // console.log("yes....");
-  };
-
-  // SEARCH INPUT CHANGE
-
-  const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
-    dispatch(updateProductSearchKey(event.target.value));
-  };
-
-  const searchKeyListener = debounce(handleSearchChange, 300);
 
   useEffect(() => {
     if (
@@ -208,7 +185,7 @@ const ProductList = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                       <label className="control-label">Search</label>
 
                       <SearchWrapper>
@@ -223,7 +200,9 @@ const ProductList = () => {
                           />
                         </div>
                       </SearchWrapper>
-                    </div>
+                    </div> */}
+
+                    <Search dispatchFunc={updateProductSearchKey} />
                   </Col>
                 </Row>
               </CardBody>
@@ -406,6 +385,7 @@ const SearchWrapper = styled.div`
       border: none;
       color: black !important;
     }
+
   }
 `;
 

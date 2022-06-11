@@ -1,8 +1,8 @@
 
-import React from "react"
+import React, { useEffect } from "react"
 import PropTypes from 'prop-types'
 import { Switch, BrowserRouter as Router } from "react-router-dom"
-import { connect } from "react-redux"
+import { connect, useDispatch } from "react-redux"
 
 // Import Routes all
 import { userRoutes, authRoutes } from "./routes/allRoutes"
@@ -17,9 +17,15 @@ import NonAuthLayout from "./components/NonAuthLayout"
 
 // Import scss
 import "./assets/scss/theme.scss"
+import { socketConnect } from "./store/socket/socketAction"
 
 
 const App = props => {
+
+  const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(socketConnect());
+  // }, []);
 
   function getLayout() {
 

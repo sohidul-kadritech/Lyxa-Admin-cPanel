@@ -2,8 +2,7 @@
 // export const FTP_URL = "http://localhost:1000";
 
 export const API_URL = "https://node.drop-deliveryapp.com/";
-
-
+// export const SOCKET_CONNECTION = "https://node.drop-deliveryapp.com";
 
 
 const ADMIN_ENDPOINT = "admin";
@@ -49,6 +48,7 @@ export const RESTORE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/restore";
 
 export const ALL_USERS = ADMIN_ENDPOINT +  "/user";
 export const SINGLE_USER = ADMIN_ENDPOINT + "/user/get-user-details";
+export const USER_TRANSACTIONS = ADMIN_ENDPOINT + "/user/get-user-transaction";
 
 
 // CATEGORY 
@@ -126,7 +126,16 @@ export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance"
 // DELIVERY FEE SETTINGS 
 
 export const SET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/delivery-charge"
-export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-charge"
+export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-charge";
+
+// ORDERS
+
+export const ORDER_LIST = ADMIN_ENDPOINT + "/order";
+
+// CHAT
+
+export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request"
+export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
 
 
 // IMAGE UPLOAD 

@@ -139,7 +139,7 @@ const dealReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      case actionType.UPDATE_TYPE_KEY:
+      case actionType.UPDATE_DEAL_TYPE_KEY:
       return {
         ...state,
         type: payload,

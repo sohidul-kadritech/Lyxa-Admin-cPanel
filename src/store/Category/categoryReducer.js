@@ -18,6 +18,7 @@ const initialState = {
   subHasPreviousPage: false,
   subSearchKey: "",
   subStatusKey: { label: "All", value: "all" },
+  shopType: 'all'
 };
 
 const categoryReducer = (state = initialState, action) => {
@@ -115,6 +116,12 @@ const categoryReducer = (state = initialState, action) => {
       return {
         ...state,
         status: false,
+      };
+
+      case actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY:
+      return {
+        ...state,
+        shopType: payload
       };
 
     // ADD SUB CATEGORY

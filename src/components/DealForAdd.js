@@ -21,36 +21,66 @@ const DealForAdd = ({ type, item, shopType }) => {
   }, []);
 
   const addDeal = () => {
-    const findDeal = item.deals.find((item) => item._id === deal._id);
-    if (findDeal) {
-      return toast.warn("Deal Already Added!.Try Another One", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } else {
-      if (type === "product") {
-        dispatch(
-          addProductDeal({
-            productId: item._id,
-            dealId: deal._id,
-          })
-        );
+    console.log(item)
+    
+
+    if(item.deals.length === 0){
+      callApi(type)
+    }else{
+      const findDeal = item?.deals.find((item) => item._id == deal._id);
+      if (findDeal) {
+        return toast.warn("Deal Already Added!.Try Another One", {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
-        dispatch(
-          addShopDeal({
-            shopId: item._id,
-            dealId: deal._id,
-          })
-        );
+        callApi(type)
+        // if (type === "product") {
+        //   dispatch(
+        //     addProductDeal({
+        //       productId: item._id,
+        //       dealId: deal._id,
+        //     })
+        //   );
+        // } else {
+        //   dispatch(
+        //     addShopDeal({
+        //       shopId: item._id,
+        //       dealId: deal._id,
+        //     })
+        //   );
+        // }
       }
     }
+
+    
   };
+
+  // DEAL SAVE TO SERVER 
+
+  const callApi = (value) =>{
+    if (value === "product") {
+      dispatch(
+        addProductDeal({
+          productId: item._id,
+          dealId: deal._id,
+        })
+      );
+    } else {
+      dispatch(
+        addShopDeal({
+          shopId: item._id,
+          dealId: deal._id,
+        })
+      );
+    }
+  }
 
   return (
     <div>
@@ -60,7 +90,7 @@ const DealForAdd = ({ type, item, shopType }) => {
           // console.log(newValue);
           setDeal(newValue);
         }}
-        getOptionLabel={(option) => option.option}
+        getOptionLabel={(option) => option.name}
         isOptionEqualToValue={(option, value) => option._id == value._id}
         inputValue={searchDealKey}
         onInputChange={(event, newInputValue) => {

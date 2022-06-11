@@ -5,7 +5,6 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import {
   Card,
@@ -28,6 +27,9 @@ import {
 import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
 import { Tooltip } from "@mui/material";
+import Search from "./../../../components/Search";
+import { sortByOptions, userStatusOptions } from "./../../../assets/staticData";
+import Select from "react-select";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -56,8 +58,6 @@ const UsersList = () => {
   const callUsersList = (refresh = false) => {
     dispatch(userList(refresh));
   };
-
-
 
   // DEBOUNCE SEARCH
 
@@ -102,67 +102,31 @@ const UsersList = () => {
               <CardBody>
                 <Row>
                   <Col md={3}>
-                    <div>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Sort By
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={sortByKey}
-                          label="Status"
-                          onChange={(event) =>
-                            dispatch(updateSortKey(event.target.value))
-                          }
-                        >
-                          <MenuItem value={"asc"}>A-Z</MenuItem>
-                          <MenuItem value={"desc"}>Z-A</MenuItem>
-                        </Select>
-                      </FormControl>
+                    <div className="mb-4">
+                      <label className="control-label">Sort By</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sortByOptions}
+                        classNamePrefix="select2-selection"
+                        value={sortByKey}
+                        onChange={(e) => dispatch(updateSortKey(e))}
+                      />
                     </div>
                   </Col>
-                  <Col
-                    md={6}
-                    className="d-flex align-items-center my-3 my-md-0"
-                  >
-                    <SearchWrapper>
-                      <div className="search__wrapper">
-                        <i className="fa fa-search" />
-                        <input
-                          className="form-control"
-                          type="search"
-                          placeholder="Search by name"
-                          id="search"
-
-                          onChange={searchKeyListener}
-                        />
-                      </div>
-                    </SearchWrapper>
+                  <Col md={6}>
+                    <Search dispatchFunc={updateSearchKey} />
                   </Col>
 
                   <Col md={3}>
-                    <div>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Status
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={statusKey}
-                          label="Status"
-                          onChange={(event) =>
-                            dispatch(updateStatusKey(event.target.value))
-                          }
-                        >
-                          <MenuItem value={"all"}>All</MenuItem>
-                          <MenuItem value={"pending"}>Pending</MenuItem>
-                          <MenuItem value={"approved"}>Approved</MenuItem>
-                          <MenuItem value={"rejected"}>Rejected</MenuItem>
-                          <MenuItem value={"blocked"}>Blocked</MenuItem>
-                        </Select>
-                      </FormControl>
+                    <div className="mb-4">
+                      <label className="control-label">Status</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={userStatusOptions}
+                        classNamePrefix="select2-selection"
+                        value={statusKey}
+                        onChange={(e) => dispatch(updateStatusKey(e))}
+                      />
                     </div>
                   </Col>
                 </Row>
@@ -208,15 +172,27 @@ const UsersList = () => {
                             <Td>{user.status}</Td>
                             <Td>
                               <ButtonWrapper>
-                                <Tooltip title='Details'>
-                                <button
-                                  className="btn btn-info me-xl-3"
-                                  onClick={() =>
-                                    history.push(`/users/details/${user._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
+                                <Tooltip title="Transactions">
+                                  <button
+                                    className="btn btn-info me-xl-3"
+                                    onClick={() =>
+                                      history.push(
+                                        `/users/transactions/${user._id}`
+                                      )
+                                    }
+                                  >
+                                    <i className="ti-money" />
+                                  </button>
+                                </Tooltip>
+                                <Tooltip title="Details">
+                                  <button
+                                    className="btn btn-info me-xl-3"
+                                    onClick={() =>
+                                      history.push(`/users/details/${user._id}`)
+                                    }
+                                  >
+                                    <i className="fa fa-eye" />
+                                  </button>
                                 </Tooltip>
                               </ButtonWrapper>
                             </Td>
@@ -268,26 +244,6 @@ const UsersList = () => {
     </React.Fragment>
   );
 };
-
-const SearchWrapper = styled.div`
-  width: 100%;
-  border: 1px solid #cfcccc;
-  border-radius: 6px;
-
-  .search__wrapper {
-    padding: 7px 10px;
-    display: flex;
-    align-items: center;
-
-    i {
-      font-size: 15px;
-    }
-    input {
-      border: none;
-      color: black !important;
-    }
-  }
-`;
 
 const ButtonWrapper = styled.div`
   .btn {

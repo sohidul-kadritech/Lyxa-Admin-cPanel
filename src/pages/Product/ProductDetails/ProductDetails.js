@@ -89,7 +89,7 @@ const ProductDetails = () => {
   useEffect(() => {
     if (status) {
       setModalCenter(false);
-      callApi(product._id)
+      callApi(product?._id)
     }
   }, [status]);
 
@@ -147,7 +147,7 @@ const ProductDetails = () => {
                 <div className="d-flex justify-content-center pb-3">
                   <img
                     className="rounded-circle avatar-xl cursor-pointer"
-                    alt="seller"
+                    alt="Product"
                     src={product?.images[0]}
                     onClick={() => {
                       setIsOpen(true);
