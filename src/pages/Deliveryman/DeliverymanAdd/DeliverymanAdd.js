@@ -52,7 +52,7 @@ const DeliverymanAdd = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [number, setNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [pin, setPin] = useState("");
   const [latLng, setLatLng] = useState(null);
   const [fullAddress, setFullAddress] = useState("");
@@ -64,15 +64,15 @@ const DeliverymanAdd = () => {
   const [vehicleNum, setVehicleNum] = useState("");
   const [nid, setNid] = useState("");
   const [vehicleDoc, setVehicleDoc] = useState("");
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
-  // ID FROM PARAMS
+  // ID FROM PARAMSnumber
 
   useEffect(() => {
     if (id) {
       const findDeliveryMan = deliveryMans.find((man) => man._id == id);
       if (findDeliveryMan) {
-        console.log({findDeliveryMan})
+        console.log({ findDeliveryMan });
         updateData(findDeliveryMan);
         // handleAddressSelect()
       } else {
@@ -91,7 +91,7 @@ const DeliverymanAdd = () => {
         },
       });
       if (status) {
-        console.log(data.delivery)
+        console.log(data.delivery);
         updateData(data.delivery);
       } else {
       }
@@ -102,14 +102,20 @@ const DeliverymanAdd = () => {
 
   // UPDATE DATA
 
-  const updateData = ({ name, email, number, status }) => {
+  const updateData = (data) => {
+    const { name, email, phone, status,nationalIdDocument,vehicleRegistrationDocument,vehicleType } = data;
     const findStatus = activeOptions.find((option) => option.value === status);
+    const findVahicleType = DeliveryBoyVehicleOPtions.find((option) => option.value === vehicleType);
 
     setName(name);
     setEmail(email);
-    setNumber(number);
+    setPhone(phone);
     setActiveStatus(findStatus);
-    setPin(pin);
+    setNid(nationalIdDocument);
+    setVehicleDoc(vehicleRegistrationDocument);
+    setVehicleType(findVahicleType);
+    // setPin(pin);
+    // handleAddressSelect(address, placeId)
   };
 
   // ADDRESS CHANGE
@@ -151,45 +157,38 @@ const DeliverymanAdd = () => {
     }
   }, [address]);
 
+  //  Warning Message
+
+  const warningMessage = (msg) => {
+    toast.warn(msg, {
+      // position: "bottom-right",
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
   // VALIDATIONS
 
-  const submitDeliveryman = () => {
-    if (
-      !name ||
-      (!id && (!password || !address || !pin)) ||
-      !email ||
-      !number ||
-      !vehicleType ||
-      !vehicleNum ||
-      !nid ||
-      !vehicleDoc
-    ) {
-      return toast.warn("Please Fill Up All Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+  const submitDeliveryman = (e) => {
+    e.preventDefault();
+    if (!vehicleType) {
+      return warningMessage("select Vahicle Type");
+    }
+
+    if (!nid || !vehicleDoc) {
+      return warningMessage("select Images");
     }
 
     let re = /\S+@\S+\.\S+/;
     const isValid = re.test(email);
 
     if (!isValid) {
-      return toast.warn("Please Enter Valid Email Address", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage("Invalid Email");
     }
 
     uploadImages();
@@ -213,7 +212,6 @@ const DeliverymanAdd = () => {
         docUrl = await imageUploadToServer(vehicleDoc);
       }
     }
-
 
     if (nidUrl && docUrl) {
       setIsLoading(false);
@@ -253,12 +251,12 @@ const DeliverymanAdd = () => {
           id,
           name,
           email,
-          number,
+          phone,
           status: activeStatus.value,
           vehicleType: vehicleType.value,
           vehicle_number: vehicleNum,
           national_id: nidUrl,
-          vehicle_data: docUrl
+          vehicle_data: docUrl,
         })
       );
     } else {
@@ -267,7 +265,7 @@ const DeliverymanAdd = () => {
           name,
           email,
           password,
-          number,
+          phone,
           address: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -282,13 +280,12 @@ const DeliverymanAdd = () => {
           },
           vehicleType: vehicleType.value,
           vehicle_number: vehicleNum,
-          national_id: nidUrl,
-          vehicle_data: docUrl
+          nationalIdDocument: nidUrl,
+          vehicleRegistrationDocument: docUrl,
         })
       );
     }
   };
-
 
   // SUCCESS
 
@@ -300,7 +297,7 @@ const DeliverymanAdd = () => {
         setName("");
         setEmail("");
         setPassword("");
-        setNumber("");
+        setPhone("");
         setPin("");
         setActiveStatus("");
         setAddress(null);
@@ -358,204 +355,218 @@ const DeliverymanAdd = () => {
                 // callList={callCarList}
                 isRefresh={false}
               />
-
-              <Card>
-                <CardBody>
-                  <Row className="pb-3 ">
-                    <div className="mb-3">
-                      <h5>Delivery Man Informations</h5>
-                      <hr />
-                    </div>
-                    <Col lg={6}>
-                      <div className="mb-4">
-                        <Label>Name</Label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Enter  Name"
-                          required
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
+              <Form onSubmit={submitDeliveryman}>
+                <Card>
+                  <CardBody>
+                    <Row className="pb-3 ">
+                      <div className="mb-3">
+                        <h5>Delivery Man Informations</h5>
+                        <hr />
                       </div>
 
-                      <div className="mb-4">
-                        <Label>Phone Number</Label>
-                        <input
-                          className="form-control"
-                          type="number"
-                          placeholder="Enter Phone Number"
-                          required
-                          value={number}
-                          onChange={(e) => setNumber(e.target.value)}
-                        />
-                      </div>
-                      {!id && (
+                      <Col lg={6}>
                         <div className="mb-4">
-                          <Label>Pin Code</Label>
-                          <input
-                            className="form-control"
-                            type="number"
-                            placeholder="Enter Pin Code"
-                            required
-                            value={pin}
-                            onChange={(e) => setPin(e.target.value)}
-                          />
-                        </div>
-                      )}
-
-                      <div className="mb-4">
-                        <label className="control-label">Vehicle Type</label>
-                        <Select
-                          palceholder="Select Status"
-                          options={DeliveryBoyVehicleOPtions}
-                          classNamePrefix="select2-selection"
-                          required
-                          value={vehicleType}
-                          onChange={(e) => setVehicleType(e)}
-                          defaultValue={""}
-                        />
-                      </div>
-                    </Col>
-
-                    <Col lg={6}>
-                      <div className="mb-4">
-                        <Label>Email</Label>
-                        <input
-                          className="form-control"
-                          type="email"
-                          placeholder="Enter Email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          required
-                        />
-                      </div>
-
-                      {id ? (
-                        <div className="mb-4">
-                          <label className="control-label">Status</label>
-                          <Select
-                            palceholder="Select Status"
-                            options={activeOptions}
-                            classNamePrefix="select2-selection"
-                            required
-                            value={activeStatus}
-                            onChange={(e) => setActiveStatus(e)}
-                            defaultValue={""}
-                          />
-                        </div>
-                      ) : (
-                        <div className="mb-4">
-                          <Label>Password</Label>
+                          <Label>Name</Label>
                           <input
                             className="form-control"
                             type="text"
-                            placeholder="Enter Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter  Name"
+                            name="name"
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                          />
+                        </div>
+
+                        <div className="mb-4">
+                          <Label>Phone phone</Label>
+                          <input
+                            className="form-control"
+                            name="phone"
+                            type="phone"
+                            placeholder="Enter Phone phone"
+                            required
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                        </div>
+                        {!id && (
+                          <div className="mb-4">
+                            <Label>Pin Code</Label>
+                            <input
+                              className="form-control"
+                              type="number"
+                              name="pin"
+                              placeholder="Enter Pin Code"
+                              required
+                              value={pin}
+                              onChange={(e) => setPin(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        <div className="mb-4">
+                          <label className="control-label">Vehicle Type</label>
+                          <Select
+                            palceholder="Select Vahicle Type"
+                            options={DeliveryBoyVehicleOPtions}
+                            classNamePrefix="select2-selection"
+                            name="vahicaleType"
+                            required
+                            value={vehicleType}
+                            onChange={(e) => setVehicleType(e)}
+                            defaultValue={""}
+                          />
+                        </div>
+                      </Col>
+
+                      <Col lg={6}>
+                        <div className="mb-4">
+                          <Label>Email</Label>
+                          <input
+                            className="form-control"
+                            type="email"
+                            name="email"
+                            placeholder="Enter Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                           />
                         </div>
-                      )}
-                      {!id && (
-                        <div className="mb-4">
-                          <Label>Address</Label>
-                          <PlacesAutocomplete
-                            value={selectedAddress}
-                            onChange={handleAddressChange}
-                            onSelect={handleAddressSelect}
-                            onError={(error) => {
-                              console.log(error);
-                            }}
-                            clearItemsOnError={true}
-                            shouldFetchSuggestions={selectedAddress.length > 3}
-                          >
-                            {({
-                              getInputProps,
-                              suggestions,
-                              getSuggestionItemProps,
-                              loading,
-                            }) => (
-                              <div>
-                                <input
-                                  {...getInputProps({
-                                    placeholder: "Search Places ...",
-                                    className: "location-search-input",
-                                    //
-                                  })}
-                                  type="text"
-                                  required
-                                  id="outlined-required"
-                                  label="Address"
-                                  className="form-control"
-                                  value={selectedAddress}
-                                />
-                                <div
-                                  className="autocomplete-dropdown-container"
-                                  style={{
-                                    fontSize: "14px",
-                                    fontFamily: "emoji",
-                                    color: "black",
-                                  }}
-                                >
-                                  {loading && <div>Loading...</div>}
-                                  {suggestions.map((suggestion, index) => {
-                                    const className = suggestion.active
-                                      ? "suggestion-item--active"
-                                      : "suggestion-item";
 
-                                    // inline style for demonstration purpose
-                                    const style = suggestion.active
-                                      ? {
-                                          backgroundColor: "#fafafa",
-                                          cursor: "pointer",
-                                        }
-                                      : {
-                                          backgroundColor: "#ffffff",
-                                          cursor: "pointer",
-                                        };
-                                    return (
-                                      <div
-                                        // style={{padding: "20px 0px !important"}}
-                                        {...getSuggestionItemProps(suggestion, {
-                                          className,
-                                          style,
-                                        })}
-                                        key={index}
-                                      >
-                                        <i
-                                          className="ti-location-pin me-1"
-                                          style={{ color: "black" }}
-                                        />
-                                        <span>{suggestion.description}</span>
-                                      </div>
-                                    );
-                                  })}
+                        {id ? (
+                          <div className="mb-4">
+                            <label className="control-label">Status</label>
+                            <Select
+                              palceholder="Select Status"
+                              name="status"
+                              options={activeOptions}
+                              classNamePrefix="select2-selection"
+                              required
+                              value={activeStatus}
+                              onChange={(e) => setActiveStatus(e)}
+                              defaultValue={""}
+                            />
+                          </div>
+                        ) : (
+                          <div className="mb-4">
+                            <Label>Password</Label>
+                            <input
+                              className="form-control"
+                              type="text"
+                              name="password"
+                              placeholder="Enter Password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              required
+                            />
+                          </div>
+                        )}
+                        {!id && (
+                          <div className="mb-4">
+                            <Label>Address</Label>
+                            <PlacesAutocomplete
+                              value={selectedAddress}
+                              onChange={handleAddressChange}
+                              onSelect={handleAddressSelect}
+                              onError={(error) => {
+                                console.log(error);
+                              }}
+                              clearItemsOnError={true}
+                              shouldFetchSuggestions={
+                                selectedAddress.length > 3
+                              }
+                            >
+                              {({
+                                getInputProps,
+                                suggestions,
+                                getSuggestionItemProps,
+                                loading,
+                              }) => (
+                                <div>
+                                  <input
+                                    {...getInputProps({
+                                      placeholder: "Search Places ...",
+                                      className: "location-search-input",
+                                      //
+                                    })}
+                                    type="text"
+                                    name="address"
+                                    required
+                                    id="outlined-required"
+                                    label="Address"
+                                    className="form-control"
+                                    value={selectedAddress}
+                                  />
+                                  <div
+                                    className="autocomplete-dropdown-container"
+                                    style={{
+                                      fontSize: "14px",
+                                      fontFamily: "emoji",
+                                      color: "black",
+                                    }}
+                                  >
+                                    {loading && <div>Loading...</div>}
+                                    {suggestions.map((suggestion, index) => {
+                                      const className = suggestion.active
+                                        ? "suggestion-item--active"
+                                        : "suggestion-item";
+
+                                      // inline style for demonstration purpose
+                                      const style = suggestion.active
+                                        ? {
+                                            backgroundColor: "#fafafa",
+                                            cursor: "pointer",
+                                          }
+                                        : {
+                                            backgroundColor: "#ffffff",
+                                            cursor: "pointer",
+                                          };
+                                      return (
+                                        <div
+                                          // style={{padding: "20px 0px !important"}}
+                                          {...getSuggestionItemProps(
+                                            suggestion,
+                                            {
+                                              className,
+                                              style,
+                                            }
+                                          )}
+                                          key={index}
+                                        >
+                                          <i
+                                            className="ti-location-pin me-1"
+                                            style={{ color: "black" }}
+                                          />
+                                          <span>{suggestion.description}</span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                          </PlacesAutocomplete>
+                              )}
+                            </PlacesAutocomplete>
+                          </div>
+                        )}
+                        <div className="mb-4">
+                          <Label>Vehicle Number</Label>
+                          <input
+                            className="form-control"
+                            type="text"
+                            name
+                            placeholder="Enter Vahicle Number"
+                            value={vehicleNum}
+                            onChange={(e) => setVehicleNum(e.target.value)}
+                            required
+                          />
                         </div>
-                      )}
-                      <div className="mb-4">
-                        <Label>Vehicle Number</Label>
-                        <input
-                          className="form-control"
-                          type="email"
-                          placeholder="Enter Email"
-                          value={vehicleNum}
-                          onChange={(e) => setVehicleNum(e.target.value)}
-                          required
-                        />
-                      </div>
-                    </Col>
-                  </Row>
+                      </Col>
+                    </Row>
 
-                  <Row>
-                    <Col lg={6}>
-                      <Label> National ID</Label>
-                      <div className="mb-5">
-                        <Form>
+                    <Row>
+                      <Col lg={6}>
+                        <Label> National ID</Label>
+                        <div className="mb-5">
                           <Dropzone
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "nid");
@@ -636,13 +647,11 @@ const DeliverymanAdd = () => {
                               </Card>
                             )}
                           </div>
-                        </Form>
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <Label>Vehicle Document</Label>
-                      <div className="mb-5">
-                        <Form>
+                        </div>
+                      </Col>
+                      <Col lg={6}>
+                        <Label>Vehicle Document</Label>
+                        <div className="mb-5">
                           <Dropzone
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "doc");
@@ -729,33 +738,33 @@ const DeliverymanAdd = () => {
                               </Card>
                             )}
                           </div>
-                        </Form>
-                      </div>
-                    </Col>
-                  </Row>
+                        </div>
+                      </Col>
+                    </Row>
 
-                  <div className="my-5 d-flex justify-content-center">
-                    <Button
-                      color="primary"
-                      className="px-5"
-                      onClick={submitDeliveryman}
-                      disabled={isLoading || loading}
-                    >
-                      {loading || isLoading ? (
-                        <Spinner
-                          animation="border"
-                          size="sm"
-                          variant="success"
-                        ></Spinner>
-                      ) : id ? (
-                        "Edit"
-                      ) : (
-                        "Add"
-                      )}
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
+                    <div className="my-5 d-flex justify-content-center">
+                      <Button
+                        color="primary"
+                        className="px-5"
+                        type="submit"
+                        disabled={isLoading || loading}
+                      >
+                        {loading || isLoading ? (
+                          <Spinner
+                            animation="border"
+                            size="sm"
+                            variant="success"
+                          ></Spinner>
+                        ) : id ? (
+                          "Save"
+                        ) : (
+                          "Add"
+                        )}
+                      </Button>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Form>
             </Container>
           </div>
         </GlobalWrapper>

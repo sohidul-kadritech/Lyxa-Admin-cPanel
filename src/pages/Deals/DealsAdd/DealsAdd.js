@@ -30,19 +30,20 @@ import {
   pharmacyAndGroceryDeals,
   resturantDeals,
 } from "../../../assets/staticData";
-import { Link,useHistory,useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { IMAGE_UPLOAD, SINGLE_DEAL } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
-import { addDeal, editDeal, getAllTags } from "../../../store/Deal/dealAction"
-
+import { addDeal, editDeal, getAllTags } from "../../../store/Deal/dealAction";
 
 const DealsAdd = () => {
   const dispatch = useDispatch();
-  const {id} = useParams();
+  const { id } = useParams();
   const history = useHistory();
 
-  const { loading, deals, status, tags } = useSelector((state) => state.dealReducer);
+  const { loading, deals, status, tags } = useSelector(
+    (state) => state.dealReducer
+  );
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [shopType, setShopType] = useState("");
@@ -53,65 +54,61 @@ const DealsAdd = () => {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeStatus, setActiveStatus] = useState("");
-  const [tagSearchKey, setTagSearchKey] = useState('')
+  const [tagSearchKey, setTagSearchKey] = useState("");
 
-
-
-  useEffect(()=>{
-    if(id){
-      const findDeal = deals.find(item => item._id === id)
-      if(findDeal){
-        console.log({findDeal})
-        updateData(findDeal)
-      }else{
+  useEffect(() => {
+    if (id) {
+      const findDeal = deals.find((item) => item._id === id);
+      if (findDeal) {
+        console.log({ findDeal });
+        updateData(findDeal);
+      } else {
         // console.log("call Api")
-        callApi(id)
+        callApi(id);
       }
-      
     }
-  },[id])
+  }, [id]);
 
   // GET ALL TAGS
 
-  useEffect(()=>{
-    if(shopType || dealType === 'others'){
-      dispatch(getAllTags(shopType,tagSearchKey ))
+  useEffect(() => {
+    if (dealType === "others") {
+      dispatch(getAllTags(shopType, tagSearchKey));
     }
-  },[shopType,dealType])
+  }, [dealType]);
 
-  // CALL API 
+  // CALL API
 
-  const callApi = async(dealId) =>{
-    if(dealId){
+  const callApi = async (dealId) => {
+    if (dealId) {
       try {
-        const {data: {status, error, data = null}} = await requestApi().request(SINGLE_DEAL + dealId)
-        if(status){
-          updateData(data.deal)
-        }else{
-          console.log(error)
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(SINGLE_DEAL + dealId);
+        if (status) {
+          updateData(data.deal);
+        } else {
+          console.log(error);
         }
-        
       } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
       }
-    }else{
-      history.push('/deals/list', {replace: true})
+    } else {
+      history.push("/deals/list", { replace: true });
     }
-  }
+  };
 
+  // UPDATE DATA
 
-  // UPDATE DATA 
-
-  const updateData = (data) =>{
-    const {name,image,option,percentage,status,type} = data;
+  const updateData = (data) => {
+    const { name, image, option, percentage, status, type } = data;
     setName(name);
     setImage(image);
     setShopType(type);
     setDealType(option);
     setActiveStatus(status);
-    setPercentage(percentage ?? "")
-  }
-
+    setPercentage(percentage ?? "");
+  };
 
   /**
    * Formats the size
@@ -157,7 +154,7 @@ const DealsAdd = () => {
           // console.log("image upload", data)
           if (data.status) {
             // submitData(data.data.url);
-            setIsLoading(false)
+            setIsLoading(false);
             url = data.data.url;
           } else {
             console.log(data.error);
@@ -175,34 +172,23 @@ const DealsAdd = () => {
 
   // VALIDATION
 
-  const submitDeal = () => {
-    if (!name) {
-      return warningMessage('Enter deal name')
-    }
-    if (!shopType) {
-      return warningMessage('Select shop type')
-    }
-    if (!dealType) {
-      return warningMessage('Select deal type')
-    }
-    if (dealType === "others" && !otherDeal) {
-      return warningMessage('Enter others deal name')
-    }
-    if (dealType === "percentage" && (!percentage || percentage <= 0)) {
-      return warningMessage('Enter percentage')
-    }
+  const submitDeal = (e) => {
+    e.preventDefault();
+   
+
+
     if (shopType === "restaurant" && !image) {
-      return warningMessage('Choose a image') 
+      return warningMessage("Choose a image");
     }
 
-    if(shopType === 'restaurant'){
+    if (shopType === "restaurant") {
       uploadImage();
-    }else{
+    } else {
       submitData();
     }
   };
 
-  // WARNING MESSAGE 
+  // WARNING MESSAGE
 
   const warningMessage = (message) => {
     toast.warn(message, {
@@ -215,44 +201,44 @@ const DealsAdd = () => {
       draggable: true,
       progress: undefined,
     });
-  }
+  };
 
   // SUBMIT DATA
 
   const submitData = (image = null) => {
-    
     const data = {
       name,
       type: shopType,
       option: dealType,
       percentage,
-      image: shopType === 'restaurant' ? image : null,
+      image: shopType === "restaurant" ? image : null,
       tag: dealType === "others" ? otherDeal : null,
     };
-    if(id){
-      dispatch(editDeal({
-        ...data,
-        id,
-        activeStatus
-      }))
-    }else{
+    if (id) {
+      dispatch(
+        editDeal({
+          ...data,
+          id,
+          activeStatus,
+        })
+      );
+    } else {
       dispatch(addDeal(data));
     }
-    
   };
 
   // SUCCESS
 
   useEffect(() => {
     if (status) {
-      if(id){
-        history.goBack()
-      }else{
+      if (id) {
+        history.goBack();
+      } else {
         setName("");
-      setShopType("");
-      setDealType("");
-      setPercentage("")
-      window.scroll(0, 0);
+        setShopType("");
+        setDealType("");
+        setPercentage("");
+        window.scroll(0, 0);
       }
     }
   }, [status]);
@@ -264,82 +250,82 @@ const DealsAdd = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={id ? "Edit" :"Add"}
+              breadcrumbItem={id ? "Edit" : "Add"}
               title="Deal"
               isRefresh={false}
             />
 
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col lg={4}>
-                    <TextField
-                      type="text"
-                      className="form-control"
-                      placeholder="Enter Deal Name"
-                      required
-                      label="Deal Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </Col>
-                  <Col lg={4}>
-                    <div className="my-3 my-lg-0">
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Shop Type
-                        </InputLabel>
-                        <Select
-                          id="demo-simple-select"
-                          value={shopType}
-                          onChange={(e) => {
-                            setShopType(e.target.value);
-                            setDealType("");
-                          }}
-                          label="Shop Type"
-                        >
-                          <MenuItem value="restaurant">Restaurant</MenuItem>
-                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                          <MenuItem value="grocery">Grocery</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </Col>
-                  {shopType && (
+            <Form onSubmit={submitDeal}>
+              <Card>
+                <CardBody>
+                  <Row>
                     <Col lg={4}>
-                      <div>
-                        <FormControl fullWidth>
+                      <TextField
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter Deal Name"
+                        required
+                        label="Deal Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </Col>
+                    <Col lg={4}>
+                      <div className="my-3 my-lg-0">
+                        <FormControl fullWidth required name='shopType'>
                           <InputLabel id="demo-simple-select-label">
-                            Deal Type
+                            Shop Type
                           </InputLabel>
                           <Select
                             id="demo-simple-select"
-                            value={dealType}
-                            onChange={(e) => setDealType(e.target.value)}
-                            label="Deal Type"
-                            
+                            value={shopType}
+                            onChange={(e) => {
+                              setShopType(e.target.value);
+                              setDealType("");
+                            }}
+                            label="Shop Type"
                           >
-                            {shopType === "restaurant"
-                              ? resturantDeals.map((item, index) => (
-                                  <MenuItem key={index} value={item.value}>
-                                    {item.label}
-                                  </MenuItem>
-                                ))
-                              : pharmacyAndGroceryDeals.map((item, index) => (
-                                  <MenuItem key={index} value={item.value}>
-                                    {item.label}
-                                  </MenuItem>
-                                ))}
+                            <MenuItem value="restaurant">Restaurant</MenuItem>
+                            <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                            <MenuItem value="grocery">Grocery</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
                     </Col>
-                  )}
-                </Row>
-                <Row className="mt-0 mt-lg-3">
-                  {dealType === "others" && (
-                    <Col lg={4} className="mt-3 my-lg-0">
-                      <Autocomplete
+                    {shopType && (
+                      <Col lg={4}>
+                        <div>
+                          <FormControl fullWidth required>
+                            <InputLabel id="demo-simple-select-label">
+                              Deal Type
+                            </InputLabel>
+                            <Select
+                              id="demo-simple-select"
+                              value={dealType}
+                              onChange={(e) => setDealType(e.target.value)}
+                              label="Deal Type"
+                            >
+                              {shopType === "restaurant"
+                                ? resturantDeals.map((item, index) => (
+                                    <MenuItem key={index} value={item.value}>
+                                      {item.label}
+                                    </MenuItem>
+                                  ))
+                                : pharmacyAndGroceryDeals.map((item, index) => (
+                                    <MenuItem key={index} value={item.value}>
+                                      {item.label}
+                                    </MenuItem>
+                                  ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                      </Col>
+                    )}
+                  </Row>
+                  <Row className="mt-0 mt-lg-3">
+                    {dealType === "others" && (
+                      <Col lg={4} className="mt-3 my-lg-0">
+                        <Autocomplete
                           className="cursor-pointer"
                           onChange={(event, newValue) => {
                             setOtherDeal(newValue);
@@ -360,7 +346,7 @@ const DealsAdd = () => {
                           options={tags.length > 0 ? tags : []}
                           sx={{ width: "100%" }}
                           renderInput={(params, index) => (
-                            <TextField {...params} label="Select Cuisine" />
+                            <TextField {...params} label="Select Tag" required name='tag' />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -373,51 +359,53 @@ const DealsAdd = () => {
                             </Box>
                           )}
                         />
-                    </Col>
-                  )}
-                  {dealType === "percentage" && (
-                    <Col lg={4} className="mt-3 my-lg-0">
-                      <TextField
-                        type="number"
-                        className="form-control"
-                        placeholder="Enter Percentage"
-                        required
-                        label="Percentage"
-                        value={percentage}
-                        onChange={(e) => setPercentage(e.target.value)}
-                      />
-                    </Col>
-                  )}
-                  {id && <Col lg={4}>
-                    <div className="mt-3 my-lg-0">
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Status
-                        </InputLabel>
-                        <Select
-                          id="demo-simple-select"
-                          value={activeStatus}
-                          onChange={(e) => {
-                            setActiveStatus(e.target.value);
-                          }}
-                          label="Status"
-                        >
-                          <MenuItem value="active">Active</MenuItem>
-                          <MenuItem value="inactive">Inactive</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </Col>}
-                </Row>
-              </CardBody>
-            </Card>
+                      </Col>
+                    )}
+                    {dealType === "percentage" && (
+                      <Col lg={4} className="mt-3 my-lg-0">
+                        <TextField
+                          type="number"
+                          name='percentage'
+                          className="form-control"
+                          placeholder="Enter Percentage"
+                          required
+                          label="Percentage"
+                          value={percentage}
+                          onChange={(e) => setPercentage(e.target.value)}
+                        />
+                      </Col>
+                    )}
+                    {id && (
+                      <Col lg={4}>
+                        <div className="mt-3 my-lg-0">
+                          <FormControl fullWidth required>
+                            <InputLabel id="demo-simple-select-label">
+                              Status
+                            </InputLabel>
+                            <Select
+                              id="demo-simple-select"
+                              value={activeStatus}
+                              onChange={(e) => {
+                                setActiveStatus(e.target.value);
+                              }}
+                              label="Status"
+                            >
+                              <MenuItem value="active">Active</MenuItem>
+                              <MenuItem value="inactive">Inactive</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </div>
+                      </Col>
+                    )}
+                  </Row>
+                </CardBody>
+              </Card>
 
-            {shopType === "restaurant" && (
-              <Card>
-                <CardBody>
-                  <CardTitle className="h4">Uplaod Image</CardTitle>
-                  <div className="mb-5">
-                    <Form>
+              {shopType === "restaurant" && (
+                <Card>
+                  <CardBody>
+                    <CardTitle className="h4">Uplaod Image</CardTitle>
+                    <div className="mb-5">
                       <Dropzone
                         onDrop={(acceptedFiles) => {
                           handleAcceptedFiles(acceptedFiles);
@@ -498,22 +486,22 @@ const DealsAdd = () => {
                           </Card>
                         )}
                       </div>
-                    </Form>
-                  </div>
-                </CardBody>
-              </Card>
-            )}
+                    </div>
+                  </CardBody>
+                </Card>
+              )}
 
-            <div className="d-flex justify-content-center mb-3">
-              <Button
-                disabled={isLoading || loading}
-                color="success"
-                className="px-5"
-                onClick={submitDeal}
-              >
-                {isLoading || loading ? "Loading..." : id ? "Update" : "Add"}
-              </Button>
-            </div>
+              <div className="d-flex justify-content-center mb-3">
+                <Button
+                  disabled={isLoading || loading}
+                  color="success"
+                  type="submit"
+                  className="px-5"
+                >
+                  {isLoading || loading ? "Loading..." : id ? "Save" : "Add"}
+                </Button>
+              </div>
+            </Form>
           </Container>
         </div>
 

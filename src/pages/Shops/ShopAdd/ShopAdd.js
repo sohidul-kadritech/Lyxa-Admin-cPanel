@@ -102,6 +102,8 @@ const ShopAdd = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCuisines, setSelectedCuisines] = useState([]);
   const [searchCuisineKey, setSearchCuisineKey] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   // GET SELLER
 
@@ -159,7 +161,7 @@ const ShopAdd = () => {
   const updateData = async (values) => {
     const {
       delivery,
-      seller: { _id: sellerId },
+      seller,
       minOrderAmount,
       shopBanner,
       shopEndTimeText,
@@ -173,16 +175,16 @@ const ShopAdd = () => {
       tags,
       liveStatus,
       freeDelivery,
-      address
+      address,
+      email,
+      phone_number
     } = values;
-
-    const findSeller =  sellers.find((s) => s._id == sellerId);
-    // console.log({sellerId})
-
+    
+    setPhone(phone_number)
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
-    setSeller(findSeller);
+    setSeller(seller);
     setFoodType(foodType);
     setShopType(shopType);
     setShopStartTime(shopStartTimeText);
@@ -197,8 +199,8 @@ const ShopAdd = () => {
     });
     setLiveStatus(liveStatus);
     setFreeDelivery(freeDelivery);
-    setPinCode(address.pin)
-    handleAddressSelect(address.address, address.placeId)
+    setPinCode(address.pin);
+    handleAddressSelect(address.address, address.placeId);
   };
 
   // TAGS
@@ -237,21 +239,20 @@ const ShopAdd = () => {
   // SUBMIT SELLER
 
   const submitShop = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!seller) {
-      return warningMessage('Select a seller');
+      return warningMessage("Select a seller");
     }
     if (tags.items.length < 1) {
-      return warningMessage('Please Add Shop Tag');
+      return warningMessage("Please Add Shop Tag");
     }
 
     if (!id && !address) {
-      return warningMessage('Select Shop Address')
+      return warningMessage("Select Shop Address");
     }
     if (!shopLogo || !shopBanner || !shopPhotos) {
-      return warningMessage('Choose Image')
+      return warningMessage("Choose Image");
     }
-
 
     uploadImages();
 
@@ -318,11 +319,19 @@ const ShopAdd = () => {
 
   const submitData = (logoUrl, bannerUrl, photosUrl) => {
     // console.log("given data---", data);
-    const cuisinesList = selectedCuisines?.map(item => item?._id)
+    const cuisinesList = selectedCuisines?.map((item) => item?._id);
     if (id) {
       dispatch(
         editShop({
           id,
+          shopStartTime,
+          shopEndTime,
+          shopName,
+          freeDelivery,
+          isCuisine,
+          minOrderAmount,
+          email,
+          phone_number: phone,
           shopType: shopType,
           foodType:
             shopType == "food"
@@ -330,9 +339,7 @@ const ShopAdd = () => {
               : shopType == "grocery"
               ? "supermarkets"
               : "food cut",
-          shopStartTime,
-          shopEndTime,
-          shopName,
+
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
           shopPhotos: photosUrl,
@@ -340,10 +347,9 @@ const ShopAdd = () => {
           shopDescription: "desrcriptions",
           delivery: delivery,
           tags: tags.items,
-          minOrderAmount,
+
           liveStatus: liveStatus,
-           freeDelivery,
-          isCuisine,
+
           cuisineType: cuisinesList,
           shopAddress: {
             address: fullAddress,
@@ -356,12 +362,19 @@ const ShopAdd = () => {
             pin: pinCode,
             primary: true,
             note: "",
-          }
+          },
         })
       );
     } else {
       dispatch(
         addShop({
+          email,
+          shopStartTime,
+          shopName,
+          shopEndTime,
+          minOrderAmount,
+          isCuisine,
+          phone_number: phone,
           shopAddress: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -375,13 +388,12 @@ const ShopAdd = () => {
             note: "",
           },
           seller: seller._id,
-          shopName,
+
           shopType: shopType,
-          shopStartTime,
-          shopEndTime,
+
           shopStatus: shopStatus,
           delivery: delivery,
-          minOrderAmount,
+
           tags: tags.items,
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
@@ -393,7 +405,7 @@ const ShopAdd = () => {
               ? "supermarkets"
               : "",
           shopDescription: "desrcriptions",
-          isCuisine,
+
           cuisineType: cuisinesList,
           liveStatus: liveStatus,
         })
@@ -470,7 +482,7 @@ const ShopAdd = () => {
         setSearchCuisineKey("");
         setLiveStatus("");
         setIsCuisine(false);
-        setFreeDelivery("")
+        setFreeDelivery("");
         window.scroll(0, 0);
       }
     }
@@ -508,7 +520,6 @@ const ShopAdd = () => {
     }
   };
 
-
   // CUISINES ADD
 
   const addNewCuisine = (item) => {
@@ -520,11 +531,11 @@ const ShopAdd = () => {
 
   const handleCuisineDelete = (index) => {
     let list = [...selectedCuisines];
-    list.splice(index,1)
-    setSelectedCuisines(list)
+    list.splice(index, 1);
+    setSelectedCuisines(list);
   };
 
-  const warningMessage = (message) =>{
+  const warningMessage = (message) => {
     toast.warn(message, {
       // position: "bottom-right",
       position: toast.POSITION.TOP_RIGHT,
@@ -535,7 +546,7 @@ const ShopAdd = () => {
       draggable: true,
       progress: undefined,
     });
-  }
+  };
 
   return (
     <React.Fragment>
@@ -557,7 +568,7 @@ const ShopAdd = () => {
                   <Col lg={6}>
                     <Autocomplete
                       className="cursor-pointer"
-                      // disabled={id ? true : false}
+                      disabled={id ? true : false}
                       value={seller}
                       onChange={(event, newValue) => {
                         setSeller(newValue);
@@ -606,228 +617,205 @@ const ShopAdd = () => {
             <Card>
               <CardBody>
                 <Form onSubmit={submitShop}>
-                <Row className="pb-3 ">
-                  <div className="mb-3">
-                    <h5>Shop Informations</h5>
-                    <hr />
-                  </div>
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <TextField
-                        type="text"
-                        className="form-control"
-                        placeholder="Enter Shop Name"
-                        required
-                        label="Name"
-                        value={shopName}
-                        onChange={(e) => setShopName(e.target.value)}
-                      />
+                  <Row className="pb-3 ">
+                    <div className="mb-3">
+                      <h5>Shop Informations</h5>
+                      <hr />
                     </div>
+                    <Col lg={6}>
+                      <div className="mb-4">
+                        <TextField
+                          type="text"
+                          className="form-control"
+                          placeholder="Enter Shop Name"
+                          required
+                          label="Name"
+                          value={shopName}
+                          onChange={(e) => setShopName(e.target.value)}
+                        />
+                      </div>
 
-                    <div className="mb-4">
-                      <TextField
-                        className="form-control"
-                        type="time"
-                        id="example-time-input"
-                        required
-                        value={shopStartTime}
-                        label="Open At"
-                        onChange={(e) => setShopStartTime(e.target.value)}
-                      />
-                    </div>
+                      <div className="mb-4">
+                        <TextField
+                          className="form-control"
+                          type="time"
+                          id="example-time-input"
+                          required
+                          value={shopStartTime}
+                          label="Open At"
+                          onChange={(e) => setShopStartTime(e.target.value)}
+                        />
+                      </div>
 
-                    <div className="mb-4">
-                      <TextField
-                        type="time"
-                        className="form-control"
-                        // id="example-time-input"
-                        label="Close At"
-                        required
-                        value={shopEndTime}
-                        onChange={(e) => setShopEndTime(e.target.value)}
-                      />
-                    </div>
+                      <div className="mb-4">
+                        <TextField
+                          type="time"
+                          className="form-control"
+                          // id="example-time-input"
+                          label="Close At"
+                          required
+                          value={shopEndTime}
+                          onChange={(e) => setShopEndTime(e.target.value)}
+                        />
+                      </div>
 
-                    <div className="mb-4">
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Status
-                        </InputLabel>
-                        <Select
-                          id="demo-simple-select"
-                          value={shopStatus}
-                          onChange={(e) => setShopStatus(e.target.value)}
-                          label="Status"
-                        >
-                          {shopStatusOptions2.map((item, index) => (
-                            <MenuItem key={index} value={item.value}>
-                              {item.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-
-                    <div className="mb-4">
-                      <TextField
-                        className="form-control"
-                        type="number"
-                        placeholder="Enter Minimum Order Amount"
-                        required
-                        label="Minimum Order"
-                        value={minOrderAmount}
-                        onChange={(e) => setMinOrderAmount(e.target.value)}
-                      />
-                    </div>
-
-          
-                        <div className="mb-4">
-                          <PlacesAutocomplete
-                            value={selectedAddress}
-                            onChange={handleAddressChange}
-                            onSelect={handleAddressSelect}
-                            onError={(error) => {
-                              console.log(error);
-                            }}
-                            clearItemsOnError={true}
-                            shouldFetchSuggestions={selectedAddress.length > 3}
-                          >
-                            {({
-                              getInputProps,
-                              suggestions,
-                              getSuggestionItemProps,
-                              loading,
-                            }) => (
-                              <div>
-                                <TextField
-                                  {...getInputProps({
-                                    placeholder: "Search Places ...",
-                                    className: "location-search-input",
-                                  })}
-                                  type="text"
-                                  required
-                                  id="outlined-required"
-                                  label="Address"
-                                  className="form-control"
-                                  value={selectedAddress}
-                                />
-                                <div
-                                  className="autocomplete-dropdown-container"
-                                  style={{
-                                    fontSize: "14px",
-                                    fontFamily: "emoji",
-                                    color: "black",
-                                  }}
-                                >
-                                  {loading && <div>Loading...</div>}
-                                  {suggestions.map((suggestion, index) => {
-                                    const className = suggestion.active
-                                      ? "suggestion-item--active"
-                                      : "suggestion-item";
-
-                                    // inline style for demonstration purpose
-                                    const style = suggestion.active
-                                      ? {
-                                          backgroundColor: "#fafafa",
-                                          cursor: "pointer",
-                                        }
-                                      : {
-                                          backgroundColor: "#ffffff",
-                                          cursor: "pointer",
-                                        };
-                                    return (
-                                      <div
-                                        // style={{padding: "20px 0px !important"}}
-                                        {...getSuggestionItemProps(suggestion, {
-                                          className,
-                                          style,
-                                        })}
-                                        key={index}
-                                      >
-                                        <i
-                                          className="ti-location-pin me-1"
-                                          style={{ color: "black" }}
-                                        />
-                                        <span>{suggestion.description}</span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                          </PlacesAutocomplete>
-                        </div>
-
-                        <div className="mb-4">
-                          <TextField
-                            className="form-control"
-                            type="number"
-                            placeholder="Enter Pin Code"
-                            required
-                            label="Pin Code"
-                            value={pinCode}
-                            onChange={(e) => setPinCode(e.target.value)}
-                          />
-                        </div>
-                  
-             
-                      {!id && <div className="mb-4">
-                        <FormControl required fullWidth>
+                      <div className="mb-4">
+                        <FormControl fullWidth required>
                           <InputLabel id="demo-simple-select-label">
-                            Free Delivery
+                            Status
                           </InputLabel>
                           <Select
                             id="demo-simple-select"
-                            value={freeDelivery}
-                            onChange={(e) => setFreeDelivery(e.target.value)}
-                            label="Free Delivery"
+                            value={shopStatus}
+                            onChange={(e) => setShopStatus(e.target.value)}
+                            label="Status"
                           >
-                            {productVisibility.map((item, index) => (
+                            {shopStatusOptions2.map((item, index) => (
                               <MenuItem key={index} value={item.value}>
                                 {item.label}
                               </MenuItem>
                             ))}
                           </Select>
                         </FormControl>
-                      </div>}
-                 
-                  </Col>
-                  <Col lg={6} className="mt-4 mt-lg-0">
-                    <div className="mb-4">
-                      <FormControl required fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Shop Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={shopType}
-                          onChange={(e) => setShopType(e.target.value)}
-                          label="Shop Type"
-                        >
-                          {shopTypeOptions2.map((item, index) => (
-                            <MenuItem key={index} value={item.value}>
-                              {item.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
+                      </div>
 
-                    {shopType == "food" && (
+                      <div className="mb-4">
+                        <TextField
+                          className="form-control"
+                          type="number"
+                          placeholder="Enter Minimum Order Amount"
+                          required
+                          label="Minimum Order"
+                          value={minOrderAmount}
+                          onChange={(e) => setMinOrderAmount(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="mb-4">
+                        <PlacesAutocomplete
+                          value={selectedAddress}
+                          onChange={handleAddressChange}
+                          onSelect={handleAddressSelect}
+                          onError={(error) => {
+                            console.log(error);
+                          }}
+                          clearItemsOnError={true}
+                          shouldFetchSuggestions={selectedAddress.length > 3}
+                        >
+                          {({
+                            getInputProps,
+                            suggestions,
+                            getSuggestionItemProps,
+                            loading,
+                          }) => (
+                            <div>
+                              <TextField
+                                {...getInputProps({
+                                  placeholder: "Search Places ...",
+                                  className: "location-search-input",
+                                })}
+                                type="text"
+                                required
+                                id="outlined-required"
+                                label="Address"
+                                className="form-control"
+                                value={selectedAddress}
+                              />
+                              <div
+                                className="autocomplete-dropdown-container"
+                                style={{
+                                  fontSize: "14px",
+                                  fontFamily: "emoji",
+                                  color: "black",
+                                }}
+                              >
+                                {loading && <div>Loading...</div>}
+                                {suggestions.map((suggestion, index) => {
+                                  const className = suggestion.active
+                                    ? "suggestion-item--active"
+                                    : "suggestion-item";
+
+                                  // inline style for demonstration purpose
+                                  const style = suggestion.active
+                                    ? {
+                                        backgroundColor: "#fafafa",
+                                        cursor: "pointer",
+                                      }
+                                    : {
+                                        backgroundColor: "#ffffff",
+                                        cursor: "pointer",
+                                      };
+                                  return (
+                                    <div
+                                      // style={{padding: "20px 0px !important"}}
+                                      {...getSuggestionItemProps(suggestion, {
+                                        className,
+                                        style,
+                                      })}
+                                      key={index}
+                                    >
+                                      <i
+                                        className="ti-location-pin me-1"
+                                        style={{ color: "black" }}
+                                      />
+                                      <span>{suggestion.description}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </PlacesAutocomplete>
+                      </div>
+
+                      <div className="mb-4">
+                        <TextField
+                          className="form-control"
+                          type="number"
+                          placeholder="Enter Pin Code"
+                          required
+                          label="Pin Code"
+                          value={pinCode}
+                          onChange={(e) => setPinCode(e.target.value)}
+                        />
+                      </div>
+
+                      {!id && (
+                        <div className="mb-4">
+                          <FormControl required fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              Free Delivery
+                            </InputLabel>
+                            <Select
+                              id="demo-simple-select"
+                              value={freeDelivery}
+                              onChange={(e) => setFreeDelivery(e.target.value)}
+                              label="Free Delivery"
+                            >
+                              {productVisibility.map((item, index) => (
+                                <MenuItem key={index} value={item.value}>
+                                  {item.label}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                      )}
+                    </Col>
+                    <Col lg={6} className="mt-4 mt-lg-0">
                       <div className="mb-4">
                         <FormControl required fullWidth>
                           <InputLabel id="demo-simple-select-label">
-                            Food Type
+                            Shop Type
                           </InputLabel>
                           <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={foodType}
-                            onChange={(e) => setFoodType(e.target.value)}
-                            label="Food Type"
+                            value={shopType}
+                            onChange={(e) => setShopType(e.target.value)}
+                            label="Shop Type"
                           >
-                            {foodTypeOptions.map((item, index) => (
+                            {shopTypeOptions2.map((item, index) => (
                               <MenuItem key={index} value={item.value}>
                                 {item.label}
                               </MenuItem>
@@ -835,153 +823,83 @@ const ShopAdd = () => {
                           </Select>
                         </FormControl>
                       </div>
-                    )}
 
-                    <div className="mb-4">
-                      <div>
-                        <div className="d-flex justify-content-end">
-                          {foodType?.value == "restaurants" && (
-                            <span style={{ color: "red" }}>
-                              Must add one cuisine
-                            </span>
-                          )}
-                        </div>
+                      <div className="mb-4">
                         <TextField
-                          value={tags.value}
-                          placeholder="Type Tag Name and press `Enter`..."
-                          onKeyDown={handleTagAdd}
-                          onChange={handleTagChange}
+                          type="email"
+                          name="email"
                           className="form-control"
-                          label="tag"
+                          placeholder="Enter Shop Email"
+                          required
+                          label="Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
-                      {tags.items.length > 0 && (
-                        <Paper className="mt-4 p-3">
-                          {tags.items.map((item, index) => (
-                            <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() => handleTagDelete(item)}
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          ))}
-                        </Paper>
-                      )}
-                    </div>
 
-                    <div className="mb-4">
-                      <FormControl required fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Delivery Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                         
-                          value={delivery}
-                          onChange={(e) => setDelivery(e.target.value)}
-                          label="Delivery  Type"
-                        >
-                          {shopDeliveryOptions.map((item, index) => (
-                            <MenuItem key={index} value={item.value}>
-                              {item.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-
-                    <div className="mb-4">
-                      <FormControl required fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Live Status
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={liveStatus}
-                          onChange={(e) => setLiveStatus(e.target.value)}
-                          label="Live Status"
-                        >
-                          {liveStatusOptions.map((item, index) => (
-                            <MenuItem key={index} value={item.value}>
-                              {item.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-
-                    {(foodType == "restaurants" && !id) && (
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          value={isCuisine}
-                          id="flexCheckDefault"
-                          onChange={(e) => setIsCuisine(e.target.checked)}
+                      <div className="mb-4">
+                        <TextField
+                          type="number"
+                          name="phone"
+                          className="form-control"
+                          placeholder="Enter Shop phone"
+                          required
+                          label="Phone"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
                         />
-                        <label
-                          className="form-check-label ms-1"
-                          style={{ fontSize: "16px" }}
-                          htmlFor="flexCheckDefault"
-                        >
-                          Is Cuisine?
-                        </label>
                       </div>
-                    )}
 
-                    {isCuisine && (
-                      <div className="mb-3">
-                        <Autocomplete
-                          className="cursor-pointer"
-                          onChange={(event, newValue) => {
-                            addNewCuisine(newValue);
-                            // console.log("new", newValue);
-                          }}
-                          getOptionLabel={(option, index) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={
-                            (option, value) => option._id == value._id
-                            // console.log({value})
-                          }
-                          inputValue={searchCuisineKey}
-                          onInputChange={(event, newInputValue) => {
-                            setSearchCuisineKey(newInputValue);
-                            // console.log("input value", newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={cuisines.length > 0 ? cuisines : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params, index) => (
-                            <TextField {...params} label="Select Cuisine" />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
+                      {shopType == "food" && (
+                        <div className="mb-4">
+                          <FormControl required fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              Food Type
+                            </InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={foodType}
+                              onChange={(e) => setFoodType(e.target.value)}
+                              label="Food Type"
                             >
-                              {option.name}
-                            </Box>
-                          )}
-                        />
+                              {foodTypeOptions.map((item, index) => (
+                                <MenuItem key={index} value={item.value}>
+                                  {item.label}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                      )}
 
-                        {selectedCuisines.length > 0 && (
+                      <div className="mb-4">
+                        <div>
+                          <div className="d-flex justify-content-end">
+                            {foodType?.value == "restaurants" && (
+                              <span style={{ color: "red" }}>
+                                Must add one cuisine
+                              </span>
+                            )}
+                          </div>
+                          <TextField
+                            value={tags.value}
+                            placeholder="Type Tag Name and press `Enter`..."
+                            onKeyDown={handleTagAdd}
+                            onChange={handleTagChange}
+                            className="form-control"
+                            label="Tag"
+                          />
+                        </div>
+                        {tags.items.length > 0 && (
                           <Paper className="mt-4 p-3">
-                            {selectedCuisines.map((item, index) => (
+                            {tags.items.map((item, index) => (
                               <div className="tag__wrapper" key={index}>
-                                {item.name}
+                                {item}
                                 <button
                                   type="button"
                                   className="button"
-                                  onClick={() => handleCuisineDelete(index)}
+                                  onClick={() => handleTagDelete(item)}
                                 >
                                   &times;
                                 </button>
@@ -990,15 +908,131 @@ const ShopAdd = () => {
                           </Paper>
                         )}
                       </div>
-                    )}
-                  </Col>
-                </Row>
 
-                <Row className="mt-4">
-                  <Col xl={6}>
-                    <Label>Shop Logo</Label>
-                    <div className="mb-5">
-                
+                      <div className="mb-4">
+                        <FormControl required fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            Delivery Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={delivery}
+                            onChange={(e) => setDelivery(e.target.value)}
+                            label="Delivery  Type"
+                          >
+                            {shopDeliveryOptions.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+
+                      <div className="mb-4">
+                        <FormControl required fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            Live Status
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={liveStatus}
+                            onChange={(e) => setLiveStatus(e.target.value)}
+                            label="Live Status"
+                          >
+                            {liveStatusOptions.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+
+                      {foodType == "restaurants" && !id && (
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value={isCuisine}
+                            id="flexCheckDefault"
+                            onChange={(e) => setIsCuisine(e.target.checked)}
+                          />
+                          <label
+                            className="form-check-label ms-1"
+                            style={{ fontSize: "16px" }}
+                            htmlFor="flexCheckDefault"
+                          >
+                            Is Cuisine?
+                          </label>
+                        </div>
+                      )}
+
+                      {isCuisine && (
+                        <div className="mb-3">
+                          <Autocomplete
+                            className="cursor-pointer"
+                            onChange={(event, newValue) => {
+                              addNewCuisine(newValue);
+                              // console.log("new", newValue);
+                            }}
+                            getOptionLabel={(option, index) =>
+                              option.name ? option.name : ""
+                            }
+                            isOptionEqualToValue={
+                              (option, value) => option._id == value._id
+                              // console.log({value})
+                            }
+                            inputValue={searchCuisineKey}
+                            onInputChange={(event, newInputValue) => {
+                              setSearchCuisineKey(newInputValue);
+                              // console.log("input value", newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={cuisines.length > 0 ? cuisines : []}
+                            sx={{ width: "100%" }}
+                            renderInput={(params, index) => (
+                              <TextField {...params} label="Select Cuisine" />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option._id}
+                              >
+                                {option.name}
+                              </Box>
+                            )}
+                          />
+
+                          {selectedCuisines.length > 0 && (
+                            <Paper className="mt-4 p-3">
+                              {selectedCuisines.map((item, index) => (
+                                <div className="tag__wrapper" key={index}>
+                                  {item.name}
+                                  <button
+                                    type="button"
+                                    className="button"
+                                    onClick={() => handleCuisineDelete(index)}
+                                  >
+                                    &times;
+                                  </button>
+                                </div>
+                              ))}
+                            </Paper>
+                          )}
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
+
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <Label>Shop Logo</Label>
+                      <div className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "logo");
@@ -1085,13 +1119,11 @@ const ShopAdd = () => {
                             </Card>
                           )}
                         </div>
-                     
-                    </div>
-                  </Col>
-                  <Col xl={6}>
-                    <Label>Shop Banner</Label>
-                    <div className="mb-5">
-            
+                      </div>
+                    </Col>
+                    <Col xl={6}>
+                      <Label>Shop Banner</Label>
+                      <div className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "banner");
@@ -1178,16 +1210,14 @@ const ShopAdd = () => {
                             </Card>
                           )}
                         </div>
-                  
-                    </div>
-                  </Col>
-                </Row>
+                      </div>
+                    </Col>
+                  </Row>
 
-                <Row>
-                  <Col xl={6}>
-                    <Label>Shop Photos</Label>
-                    <div className="mb-5">
-            
+                  <Row>
+                    <Col xl={6}>
+                      <Label>Shop Photos</Label>
+                      <div className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "photos");
@@ -1274,32 +1304,30 @@ const ShopAdd = () => {
                             </Card>
                           )}
                         </div>
-                   
-                    </div>
-                  </Col>
-                </Row>
+                      </div>
+                    </Col>
+                  </Row>
 
-                <div className="my-5 d-flex justify-content-center">
-                  <Button
-                    disabled={loading || isLoading}
-                    
-                    type='submit'
-                    color="primary"
-                    className="px-5"
-                  >
-                    {loading || isLoading ? (
-                      <Spinner
-                        animation="border"
-                        variant="info"
-                        size="sm"
-                      ></Spinner>
-                    ) : id ? (
-                      "Save"
-                    ) : (
-                      "Add"
-                    )}
-                  </Button>
-                </div>
+                  <div className="my-5 d-flex justify-content-center">
+                    <Button
+                      disabled={loading || isLoading}
+                      type="submit"
+                      color="primary"
+                      className="px-5"
+                    >
+                      {loading || isLoading ? (
+                        <Spinner
+                          animation="border"
+                          variant="info"
+                          size="sm"
+                        ></Spinner>
+                      ) : id ? (
+                        "Save"
+                      ) : (
+                        "Add"
+                      )}
+                    </Button>
+                  </div>
                 </Form>
               </CardBody>
             </Card>
@@ -1309,7 +1337,5 @@ const ShopAdd = () => {
     </React.Fragment>
   );
 };
-
-
 
 export default ShopAdd;

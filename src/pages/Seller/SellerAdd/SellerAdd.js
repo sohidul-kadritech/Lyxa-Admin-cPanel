@@ -891,7 +891,7 @@ const SellerAdd = () => {
                     <Col xl={6}>
                       <Label>Certificate Of Incorporation</Label>
                       <div className="mb-5">
-                        <Form>
+              
                           <Dropzone
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "certificate");
@@ -978,7 +978,7 @@ const SellerAdd = () => {
                               </Card>
                             )}
                           </div>
-                        </Form>
+                      
                       </div>
                     </Col>
                   </Row>

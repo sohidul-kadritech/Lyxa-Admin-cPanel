@@ -23,7 +23,7 @@ export const addSeller = (values) => async (dispatch) => {
     console.log({ data });
 
     if (data.status) {
-      toast.warn(data.message, {
+      toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -39,7 +39,7 @@ export const addSeller = (values) => async (dispatch) => {
         payload: data.data.seller,
       });
     } else {
-      toast.warn(data.error, {
+      toast.warn(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,

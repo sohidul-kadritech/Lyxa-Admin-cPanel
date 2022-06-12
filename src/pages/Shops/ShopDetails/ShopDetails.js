@@ -54,7 +54,7 @@ const ShopDetails = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
-  const [activeStatus, setActiveStatus] = useState(false);
+  const [liveStatus, setLiveStatus] = useState(false);
   const [modalCenter, setModalCenter] = useState(false);
 
   useEffect(() => {
@@ -63,8 +63,8 @@ const ShopDetails = () => {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
         console.log({ findShop });
-        const activeStatus = findShop.liveStatus == "live" ? true : false;
-        setActiveStatus(activeStatus);
+        const activeStatus = findShop?.liveStatus == "online" ? true : false;
+        setLiveStatus(activeStatus);
         setShop(findShop);
       } else {
         callApi(id);
@@ -83,8 +83,8 @@ const ShopDetails = () => {
     // console.log(banner)
     if (data.status) {
       console.log(data.data.shop);
-      const activeStatus = data.data.shop.liveStatus == "live" ? true : false;
-      setActiveStatus(activeStatus);
+      const activeStatus = data?.data?.shop?.liveStatus == "online" ? true : false;
+      setLiveStatus(activeStatus);
       setShop(data.data.shop);
     }
   };
@@ -106,7 +106,7 @@ const ShopDetails = () => {
   // CHANGE LIVE STATUS
 
   const changeLiveStatus = (e) => {
-    setActiveStatus(e.target.checked);
+    setLiveStatus(e.target.checked);
     const status = e.target.checked;
     dispatch(
       ShopLiveStatus({
@@ -119,7 +119,7 @@ const ShopDetails = () => {
   useEffect(() => {
     if (status) {
       setModalCenter(false);
-      callApi(shop._id);
+      callApi(shop?._id);
     }
   }, [status]);
 
@@ -179,12 +179,12 @@ const ShopDetails = () => {
                             Add Deal
                           </Button>
                           <Switch
-                            checked={activeStatus}
+                            checked={liveStatus}
                             onChange={changeLiveStatus}
                             inputProps={{ "aria-label": "controlled" }}
                           />
                           <Label className="mt-2">
-                            {activeStatus ? "Online" : "Offline"}
+                            {liveStatus ? "Online" : "Offline"}
                           </Label>
                         </div>
                       </div>
@@ -254,66 +254,21 @@ const ShopDetails = () => {
                             <h5>Address:</h5>
                             <Value>{shop?.address.address}</Value>
                           </Details>
-                          {shop?.deliveryFeePerKm && <Details>
-                            <h5>Delivery Fee(per/km):</h5>
-                            <Value>{shop?.deliveryFeePerKm}</Value>
-                          </Details>}
-                          {shop?.dropChargePerKm && <Details>
-                            <h5>Drop Charge(per/km):</h5>
-                            <Value>{shop?.dropChargePerKm}</Value>
-                          </Details>}
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <Row>
-                      <div className="d-flex justify-content-between align-items-center w-100 pb-1">
-                        <h4>Seller</h4>
-                        <button
-                          onClick={() =>
-                            history.push(`/seller/details/${shop?.seller?._id}`)
-                          }
-                          className="btn btn-success"
-                        >
-                          Details
-                        </button>
-                      </div>
-                      <hr />
-                    </Row>
-                    <Row>
-                      <Col
-                        lg={4}
-                        className="d-flex justify-content-center align-items-center"
-                      >
-                        <div>
-                          <img
-                            className="rounded-circle avatar-xl cursor-pointer"
-                            alt="partner"
-                            src={shop?.seller?.profile_photo}
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(shop?.seller?.profile_photo);
-                            }}
-                          />
-                        </div>
-                      </Col>
-                      <Col
-                        lg={8}
-                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                      >
-                        <div className="ps-4">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{shop?.seller?.name}</Value>
-                          </Details>
                           <Details>
                             <h5>Phone:</h5>
-                            <Value>{shop?.seller?.phone_number}</Value>
+                            <Value>{shop?.phone_number}</Value>
+                          </Details>
+                          <Details>
+                            <h5>Email:</h5>
+                            <Value>{shop?.phone_number}</Value>
+                          </Details>
+                           <Details>
+                            <h5>Delivery Fee(per/km):</h5>
+                            <Value>{shop?.deliveryFeePerKm}</Value>
+                          </Details>
+                           <Details>
+                            <h5>Drop Charge(per/km):</h5>
+                            <Value>{shop?.dropChargePerKm}</Value>
                           </Details>
                         </div>
                       </Col>
@@ -321,10 +276,8 @@ const ShopDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
-            </Row>
 
-            <Row>
-              <Col lg={8}>
+              <Col xl={6}>
                 {shop?.shopBanner || shop?.shopPhotos ? (
                   <Card>
                     <CardBody>
@@ -384,6 +337,64 @@ const ShopDetails = () => {
                   </Card>
                 ) : null}
               </Col>
+              
+            </Row>
+
+            <Row>
+            <Col xl={6}>
+                <Card>
+                  <CardBody>
+                    <Row>
+                      <div className="d-flex justify-content-between align-items-center w-100 pb-1">
+                        <h4>Seller</h4>
+                        <button
+                          onClick={() =>
+                            history.push(`/seller/details/${shop?.seller?._id}`)
+                          }
+                          className="btn btn-success"
+                        >
+                          Details
+                        </button>
+                      </div>
+                      <hr />
+                    </Row>
+                    <Row>
+                      <Col
+                        lg={4}
+                        className="d-flex justify-content-center align-items-center"
+                      >
+                        <div>
+                          <img
+                            className="rounded-circle avatar-xl cursor-pointer"
+                            alt="partner"
+                            src={shop?.seller?.profile_photo}
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(shop?.seller?.profile_photo);
+                            }}
+                          />
+                        </div>
+                      </Col>
+                      <Col
+                        lg={8}
+                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
+                      >
+                        <div className="ps-4">
+                          <Details>
+                            <h5>Name:</h5>
+                            <Value>{shop?.seller?.name}</Value>
+                          </Details>
+                          <Details>
+                            <h5>Phone:</h5>
+                            <Value>{shop?.seller?.phone_number}</Value>
+                          </Details>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col>
+              
               {shop?.deals.length > 0 && (
                 <Col lg={4}>
                   <div className="mb-4">
@@ -597,7 +608,7 @@ const ShopDetails = () => {
   );
 };
 
-const ImageWrapper = styled.div`
+export const ImageWrapper = styled.div`
   text-align: center;
   img {
     object-fit: contain;

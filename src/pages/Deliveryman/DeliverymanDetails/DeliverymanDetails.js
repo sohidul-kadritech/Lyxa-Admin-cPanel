@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 import Lightbox from "react-image-lightbox";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import { ImageWrapper } from "../../Shops/ShopDetails/ShopDetails";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
@@ -27,6 +28,8 @@ const DeliverymanDetails = () => {
   );
 
   const [deliveryMan, setDeliveryMan] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedImg, setSelectedImg] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -75,7 +78,18 @@ const DeliverymanDetails = () => {
               isRefresh={false}
             />
 
-            <Row >
+            {isOpen && (
+              <Lightbox
+                mainSrc={selectedImg}
+                enableZoom={true}
+                imageCaption="img"
+                onCloseRequest={() => {
+                  setIsOpen(!isOpen);
+                }}
+              />
+            )}
+
+            <Row>
               <Col lg={6}>
                 <Card>
                   <CardBody>
@@ -110,7 +124,70 @@ const DeliverymanDetails = () => {
                             <h5>Status:</h5>
                             <Value>{deliveryMan?.status}.</Value>
                           </Details>
+                          <Details>
+                            <h5>Live Status:</h5>
+                            <Value>{deliveryMan?.liveStatus}.</Value>
+                          </Details>
+                          <Details>
+                            <h5>Vahicle Type:</h5>
+                            <Value>{deliveryMan?.vehicleType}.</Value>
+                          </Details>
                         </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xl={6}>
+                <Card>
+                  <CardBody>
+                    <div>
+                      <CardTitle>Images</CardTitle>
+                      <hr />
+                    </div>
+                    <Row>
+                      <Col md={6}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
+                          }}
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(deliveryMan?.nationalIdDocument);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt="Veltrix"
+                            src={deliveryMan?.nationalIdDocument}
+                            width="100%"
+                          />
+                          <small>NID</small>
+                        </ImageWrapper>
+                      </Col>
+                      <Col md={6}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
+                          }}
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(deliveryMan?.nationalIdDocument);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt="Veltrix"
+                            src={deliveryMan?.vehicleRegistrationDocument}
+                            width="100%"
+                          />
+                          <small>Vahicle Document</small>
+                        </ImageWrapper>
+                        
                       </Col>
                     </Row>
                   </CardBody>

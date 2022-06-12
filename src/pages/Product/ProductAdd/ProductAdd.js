@@ -121,6 +121,8 @@ const ProductAdd = () => {
       const shopId = searchParams.get("shopId");
       if (shopId) {
         const findShop = shops.find((item) => item._id == shopId);
+        // console.log({findShop})
+        setType(findShop.shopType);
         setShop(findShop);
       }
     }
@@ -552,7 +554,7 @@ const ProductAdd = () => {
                         />
                       </div>
                       <div className="mb-4">
-                        <FormControl fullWidth required>
+                        <FormControl fullWidth required disabled={ shop ? true : false }>
                           <InputLabel id="demo-simple-select-label">
                             Type
                           </InputLabel>
@@ -568,6 +570,7 @@ const ProductAdd = () => {
                                 updateCategoryShopType(event.target.value)
                               );
                               setShop(null);
+                              setCategory(null);
                             }}
                           >
                             <MenuItem value="food">Restaurant</MenuItem>
@@ -578,14 +581,14 @@ const ProductAdd = () => {
                       </div>
                       <div className="mb-4">
                         <Autocomplete
-                          disabled={id || !type ? true : false}
+                          disabled={id || !type || searchParams ? true : false}
                        
                           className="cursor-pointer"
                           value={shop}
                           onChange={(event, newValue) => {
                             setShop(newValue);
                             setAddons([]);
-                            console.log("new", newValue);
+                            // console.log("new", newValue);
                           }}
                           getOptionLabel={(option) => option.shopName}
                           isOptionEqualToValue={(option, value) =>
@@ -628,13 +631,13 @@ const ProductAdd = () => {
                             value={cuisines}
                             onChange={(event, newValue) => {
                               setCuisines(newValue);
-                              console.log("new", newValue);
+                              // console.log("new", newValue);
                             }}
                             getOptionLabel={(option) =>
-                              option.name ? option.name : option
+                              option.name ? option.name : ""
                             }
                             isOptionEqualToValue={(option, value) =>
-                              option == value
+                              option._id == value._id
                             }
                             inputValue={cuisineSearchKey}
                             onInputChange={(event, newInputValue) => {
@@ -656,9 +659,9 @@ const ProductAdd = () => {
                                 component="li"
                                 sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                                 {...props}
-                                key={option}
+                                key={option._id}
                               >
-                                {option?.name || option}
+                                {option?.name}
                               </Box>
                             )}
                           />
