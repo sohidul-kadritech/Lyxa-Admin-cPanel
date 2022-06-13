@@ -24,6 +24,7 @@ import { SINGLE_CATEGORY } from "../../../../network/Api";
 import { editCategory } from "./../../../../store/Category/categoryAction";
 import { IMAGE_UPLOAD } from './../../../../network/Api';
 import { shopTypeOptions2 } from "../../../../assets/staticData";
+import formatBytes from "../../../../common/imageFormatBytes";
 
 const CategoryAdd = () => {
   
@@ -160,18 +161,7 @@ const CategoryAdd = () => {
     }
   }
 
-  /**
-   * Formats the size
-   */
-   function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
 
   // IMAGE
 

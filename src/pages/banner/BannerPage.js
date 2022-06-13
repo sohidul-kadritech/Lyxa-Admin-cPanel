@@ -134,7 +134,7 @@ const BannerPage = () => {
              
                             <img
                               src={item.image}
-                              style={{ width: "100px" }}
+                              style={{ width: "100px", maxHeight: '75px' }}
                               alt="Banner"
                               className="cursor-pointer"
                               onClick={() => {

@@ -4,7 +4,7 @@ import * as actionType from "../actionType"
 
 // GET ALL ORDER
 
-export const getAllOrder = (refresh = false, page) => async (dispatch, getState) =>{
+export const getAllOrder = (refresh = false, page = 1, shop) => async (dispatch, getState) =>{
     const {orders, typeKey, startDate, endDate, sortByKey, orderSearchKey, orderType} = getState().orderReducer;
 
     if(orders.length < 1 || refresh){
@@ -25,7 +25,7 @@ export const getAllOrder = (refresh = false, page) => async (dispatch, getState)
                     sortBy: sortByKey.value,
                     type: typeKey.value,
                     searchKey: orderSearchKey,
-                    
+                    shop
 
                 },
             });

@@ -46,6 +46,7 @@ import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_PRODUCT } from "../../../network/Api";
 import { foodTypeOptions2 } from "../../../assets/staticData";
 import { updateShopType } from "./../../../store/Shop/shopAction";
+import formatBytes from "../../../common/imageFormatBytes";
 
 const ProductAdd = () => {
   const dispatch = useDispatch();
@@ -118,6 +119,7 @@ const ProductAdd = () => {
 
   useEffect(() => {
     if (searchParams) {
+      // console.log('search params')
       const shopId = searchParams.get("shopId");
       if (shopId) {
         const findShop = shops.find((item) => item._id == shopId);
@@ -476,18 +478,7 @@ const ProductAdd = () => {
     }
   }, [status]);
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
 
   // IMAGE
 
@@ -581,7 +572,7 @@ const ProductAdd = () => {
                       </div>
                       <div className="mb-4">
                         <Autocomplete
-                          disabled={id || !type || searchParams ? true : false}
+                          disabled={id || !type || searchParams.get("shopId") ? true : false}
                        
                           className="cursor-pointer"
                           value={shop}

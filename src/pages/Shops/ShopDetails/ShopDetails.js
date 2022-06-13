@@ -31,6 +31,8 @@ import { FormControlLabel, Paper, Switch, Tooltip } from "@mui/material";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { ShopLiveStatus } from "../../../store/Shop/shopAction";
 import DealForAdd from "../../../components/DealForAdd";
+import TableForList from "../../../components/TableForList";
+import { getAllOrder } from "../../../store/order/orderAction";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -45,6 +47,15 @@ const ShopDetails = () => {
     loading,
     products,
   } = useSelector((state) => state.productReducer);
+  const {
+    orders,
+    loading: orderLoading,
+    paging: orderPaging,
+    hasNextPage: orderHasNextPage,
+    hasPreviousPage: orderHasPreviousPage,
+    currentPage: orderCurrentPage,
+
+  } = useSelector((state) => state.orderReducer);
 
   const [shop, setShop] = useState(null);
 
@@ -60,6 +71,7 @@ const ShopDetails = () => {
   useEffect(() => {
     if (id) {
       dispatch(getAllProduct(true, id));
+      dispatch(getAllOrder(true,1 , id));
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
         console.log({ findShop });
@@ -83,7 +95,8 @@ const ShopDetails = () => {
     // console.log(banner)
     if (data.status) {
       console.log(data.data.shop);
-      const activeStatus = data?.data?.shop?.liveStatus == "online" ? true : false;
+      const activeStatus =
+        data?.data?.shop?.liveStatus == "online" ? true : false;
       setLiveStatus(activeStatus);
       setShop(data.data.shop);
     }
@@ -122,6 +135,10 @@ const ShopDetails = () => {
       callApi(shop?._id);
     }
   }, [status]);
+
+
+
+
 
   return (
     <React.Fragment>
@@ -262,11 +279,11 @@ const ShopDetails = () => {
                             <h5>Email:</h5>
                             <Value>{shop?.phone_number}</Value>
                           </Details>
-                           <Details>
+                          <Details>
                             <h5>Delivery Fee(per/km):</h5>
                             <Value>{shop?.deliveryFeePerKm}</Value>
                           </Details>
-                           <Details>
+                          <Details>
                             <h5>Drop Charge(per/km):</h5>
                             <Value>{shop?.dropChargePerKm}</Value>
                           </Details>
@@ -337,11 +354,10 @@ const ShopDetails = () => {
                   </Card>
                 ) : null}
               </Col>
-              
             </Row>
 
             <Row>
-            <Col xl={6}>
+              <Col xl={6}>
                 <Card>
                   <CardBody>
                     <Row>
@@ -394,7 +410,7 @@ const ShopDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
-              
+
               {shop?.deals.length > 0 && (
                 <Col lg={4}>
                   <div className="mb-4">
@@ -435,128 +451,224 @@ const ShopDetails = () => {
               )}
             </Row>
 
+            {/* Product list */}
+            <div>
+              <Card>
+                <CardBody>
+                  <div className="d-flex justify-content-between align-items-center ">
+                    <CardTitle className="h4"> Product List</CardTitle>
+
+                    <Button
+                      color="success"
+                      onClick={addProduct}
+                      className="ms-3"
+                    >
+                      Add Product
+                    </Button>
+                  </div>
+                  <hr className="my-2" />
+
+                  <Table
+                    id="tech-companies-1"
+                    className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  >
+                    <Thead>
+                      <Tr>
+                        <Th>Image</Th>
+                        <Th>Name</Th>
+                        <Th>Shop Name</Th>
+                        <Th>Price</Th>
+                        <Th>Status</Th>
+                        <Th>Action</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody style={{ position: "relative" }}>
+                      {products &&
+                        products.length > 0 &&
+                        products.map((item, index) => {
+                          return (
+                            <Tr
+                              key={index}
+                              className="align-middle"
+                              style={{
+                                fontSize: "15px",
+                                fontWeight: "500",
+                              }}
+                            >
+                              <Th style={{ height: "50px", maxWidth: "150px" }}>
+                                <img
+                                  onClick={() => {
+                                    setIsOpen(true);
+                                    setSelectedImg(item?.images[0]);
+                                  }}
+                                  className="img-fluid cursor-pointer"
+                                  alt=""
+                                  src={item?.images[0]}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                  }}
+                                />
+                              </Th>
+
+                              <Td>{item?.name}</Td>
+                              <Td>{item?.shop?.shopName}</Td>
+                              <Td>
+                                <p>{item?.price}</p>
+                                <p>{item?.shopEndTimeText}</p>
+                              </Td>
+                              <Td>{item?.status}</Td>
+                              <Td>
+                                <div>
+                                  <Tooltip title="Edit">
+                                    <button
+                                      className="btn btn-success me-3 button"
+                                      onClick={() =>
+                                        history.push(
+                                          `/products/edit/${item?._id}`
+                                        )
+                                      }
+                                    >
+                                      <i className="fa fa-edit" />
+                                    </button>
+                                  </Tooltip>
+                                  <Tooltip title="Delete">
+                                    <button
+                                      className="btn btn-danger button"
+                                      onClick={() => {
+                                        setconfirm_alert(true);
+                                      }}
+                                    >
+                                      <i className="fa fa-trash" />
+                                    </button>
+                                  </Tooltip>
+                                  {confirm_alert ? (
+                                    <SweetAlert
+                                      title="Are you sure?"
+                                      warning
+                                      showCancel
+                                      confirmButtonText="Yes, delete it!"
+                                      confirmBtnBsStyle="success"
+                                      cancelBtnBsStyle="danger"
+                                      onConfirm={() => {
+                                        handleDelete(item?._id);
+                                        setconfirm_alert(false);
+                                        setsuccess_dlg(true);
+                                        setdynamic_title("Deleted");
+                                        setdynamic_description(
+                                          "Your file has been deleted."
+                                        );
+                                      }}
+                                      onCancel={() => setconfirm_alert(false)}
+                                    >
+                                      You want to delete this Product.
+                                    </SweetAlert>
+                                  ) : null}
+                                </div>
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                    </Tbody>
+                  </Table>
+                  {loading && (
+                    <div className="text-center">
+                      <Spinner animation="border" variant="info" />
+                    </div>
+                  )}
+                  {!loading && products.length < 1 && (
+                    <div className="text-center">
+                      <h4>No Data</h4>
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+              <Row>
+                <Col xl={12}>
+                  <div className="d-flex justify-content-center">
+                    <AppPagination
+                      paging={paging}
+                      hasNextPage={hasNextPage}
+                      hasPreviousPage={hasPreviousPage}
+                      currentPage={currentPage}
+                      lisener={(page) =>
+                        dispatch(getAllProduct(true, id, page))
+                      }
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+            {/* Order list */}
+            <div>
             <Card>
               <CardBody>
-                <div className="d-flex justify-content-between align-items-center ">
-                  <CardTitle className="h4"> Product List</CardTitle>
-
-                  <Button color="success" onClick={addProduct} className="ms-3">
-                    Add Product
-                  </Button>
-                </div>
-                <hr className="my-2" />
+                <Row className="mb-3">
+                  <Col md={3} className="text-end" />
+                </Row>
+                <CardTitle className="h4"> Order List</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image</Th>
-                      <Th>Name</Th>
-                      <Th>Shop Name</Th>
-                      <Th>Price</Th>
+                      <Th>Order Id</Th>
+                      <Th>Delivery Address</Th>
                       <Th>Status</Th>
+                      <Th>Payment Status</Th>
+                      <Th>Total Amount</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {products &&
-                      products.length > 0 &&
-                      products.map((item, index) => {
-                        return (
-                          <Tr
-                            key={index}
-                            className="align-middle"
-                            style={{
-                              fontSize: "15px",
-                              fontWeight: "500",
-                            }}
-                          >
-                            <Th style={{ height: "50px", maxWidth: "150px" }}>
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(item?.images[0]);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item?.images[0]}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                }}
-                              />
-                            </Th>
+                    {orders.map((item, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          className="align-middle"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Th>{item?.orderId}</Th>
 
-                            <Td>{item?.name}</Td>
-                            <Td>{item?.shop?.shopName}</Td>
-                            <Td>
-                              <p>{item?.price}</p>
-                              <p>{item?.shopEndTimeText}</p>
-                            </Td>
-                            <Td>{item?.status}</Td>
-                            <Td>
-                              <div>
-                                <Tooltip title="Edit">
-                                  <button
-                                    className="btn btn-success me-3 button"
-                                    onClick={() =>
-                                      history.push(
-                                        `/products/edit/${item?._id}`
-                                      )
-                                    }
-                                  >
-                                    <i className="fa fa-edit" />
-                                  </button>
-                                </Tooltip>
-                                <Tooltip title="Delete">
-                                  <button
-                                    className="btn btn-danger button"
-                                    onClick={() => {
-                                      setconfirm_alert(true);
-                                    }}
-                                  >
-                                    <i className="fa fa-trash" />
-                                  </button>
-                                </Tooltip>
-                                {confirm_alert ? (
-                                  <SweetAlert
-                                    title="Are you sure?"
-                                    warning
-                                    showCancel
-                                    confirmButtonText="Yes, delete it!"
-                                    confirmBtnBsStyle="success"
-                                    cancelBtnBsStyle="danger"
-                                    onConfirm={() => {
-                                      handleDelete(item?._id);
-                                      setconfirm_alert(false);
-                                      setsuccess_dlg(true);
-                                      setdynamic_title("Deleted");
-                                      setdynamic_description(
-                                        "Your file has been deleted."
-                                      );
-                                    }}
-                                    onCancel={() => setconfirm_alert(false)}
-                                  >
-                                    You want to delete this Product.
-                                  </SweetAlert>
-                                ) : null}
-                              </div>
-                            </Td>
-                          </Tr>
-                        );
-                      })}
+                          <Td style={{ maxWidth: "120px" }}>
+                            {item?.orderDeliveryAddress?.address}
+                          </Td>
+                          <Td>{item?.orderStatus}</Td>
+                          <Td>{item?.paymentStatus}</Td>
+                          <Td>{item.summery?.total}</Td>
+                          <Td>
+                            <div>
+                              <Tooltip title="Details">
+                                <button
+                                  className="btn btn-info button me-2"
+                                  onClick={() => {
+                                    history.push(`/orders/details/${item._id}`);
+                                  }}
+                                >
+                                  <i className="fa fa-eye" />
+                                </button>
+                              </Tooltip>
+                            </div>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
                   </Tbody>
                 </Table>
-                {loading && (
+                {orderLoading && (
                   <div className="text-center">
-                    <Spinner animation="border" variant="info" />
+                    <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && products.length < 1 && (
+                {!orderLoading && orders.length < 1 && (
                   <div className="text-center">
-                    <h4>No Data</h4>
+                    <h4>No Order!</h4>
                   </div>
                 )}
               </CardBody>
@@ -565,15 +677,16 @@ const ShopDetails = () => {
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllProduct(true, id, page))}
+                    paging={orderPaging}
+                    hasNextPage={orderHasNextPage}
+                    hasPreviousPage={orderHasPreviousPage}
+                    currentPage={orderCurrentPage}
+                    lisener={(page) => dispatch(getAllOrder(true, page, id))}
                   />
                 </div>
               </Col>
             </Row>
+            </div>
           </Container>
         </div>
         {/* DEAL */}

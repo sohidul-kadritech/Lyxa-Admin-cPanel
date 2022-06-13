@@ -168,7 +168,7 @@ const DealsList = () => {
                                 }}
                               />
                             )}
-                            {item?.name}
+                            {item?.option}
                           </Th>
 
                           <Td>{item?.type}</Td>

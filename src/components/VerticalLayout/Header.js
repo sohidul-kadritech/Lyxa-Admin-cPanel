@@ -12,8 +12,9 @@ import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDr
 import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 
 import logodarkImg from "../../assets/images/drop_logo.png";
-import logosmImg from "../../assets/images/drop_logo.png";
 import logolightImg from "../../assets/images/drop_logo.png";
+import smLogo from "../../assets/images/sm-logo.jpeg";
+import {logoSvg} from '../../assets/staticData';
 
 
 //i18n
@@ -77,7 +78,8 @@ const Header = props => {
             <div className="navbar-brand-box">
               <Link to="/" className="logo logo-dark">
                 <span className="logo-sm">
-                  <img src={logosmImg} alt="" height="22" />
+                  {/* <img src={logoSvg} alt="" height="22" /> */}
+                  {logoSvg}
                 </span>
                 <span className="logo-lg">
                   <img src={logodarkImg} alt="" height="17" />
@@ -86,7 +88,8 @@ const Header = props => {
 
               <Link to="/" className="logo logo-light">
                 <span className="logo-sm">
-                  <img src={logosmImg} alt="" height="22" />
+                  {/* <img src={logoSvg} alt="" height="22" /> */}
+                  {logoSvg}
                 </span>
                 <span className="logo-lg">
                   <img src={logolightImg} alt="" height="18" />

@@ -35,6 +35,7 @@ import { IMAGE_UPLOAD, SINGLE_DEAL } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
 import { addDeal, editDeal, getAllTags } from "../../../store/Deal/dealAction";
+import formatBytes from "../../../common/imageFormatBytes";
 
 const DealsAdd = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const DealsAdd = () => {
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [shopType, setShopType] = useState("");
   const [dealType, setDealType] = useState("");
-  const [otherDeal, setOtherDeal] = useState("");
+  const [otherDeal, setOtherDeal] = useState(null);
   const [image, setImage] = useState(null);
   const [percentage, setPercentage] = useState("");
   const [name, setName] = useState("");
@@ -60,7 +61,7 @@ const DealsAdd = () => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
-        console.log({ findDeal });
+        // console.log({ findDeal });
         updateData(findDeal);
       } else {
         // console.log("call Api")
@@ -102,26 +103,22 @@ const DealsAdd = () => {
 
   const updateData = (data) => {
     const { name, image, option, percentage, status, type } = data;
-    setName(name);
+
+    if(option === "others"){
+      const findTag =  tags.find(item => item._id === name);
+      if(findTag){
+        setOtherDeal(findTag);
+      }
+    }else{
+      setName(name);
+    }
+
     setImage(image);
     setShopType(type);
     setDealType(option);
     setActiveStatus(status);
     setPercentage(percentage ?? "");
   };
-
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
 
   // IMAGE
 
@@ -207,12 +204,12 @@ const DealsAdd = () => {
 
   const submitData = (image = null) => {
     const data = {
-      name,
+      name: dealType === "others" ? otherDeal : name,
       type: shopType,
       option: dealType,
       percentage,
       image: shopType === "restaurant" ? image : null,
-      tag: dealType === "others" ? otherDeal : null,
+
     };
     if (id) {
       dispatch(
@@ -262,7 +259,8 @@ const DealsAdd = () => {
                     <Col lg={4}>
                       <TextField
                         type="text"
-                        className="form-control"
+                        disabled={dealType === "others" ? true : false}
+                         className="form-control"
                         placeholder="Enter Deal Name"
                         required
                         label="Deal Name"
@@ -327,6 +325,7 @@ const DealsAdd = () => {
                       <Col lg={4} className="mt-3 my-lg-0">
                         <Autocomplete
                           className="cursor-pointer"
+                          value={otherDeal}
                           onChange={(event, newValue) => {
                             setOtherDeal(newValue);
                           }}

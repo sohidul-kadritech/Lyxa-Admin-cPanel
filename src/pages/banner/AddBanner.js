@@ -42,6 +42,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { getAllShop } from "../../store/Shop/shopAction";
 import { getAllProduct } from "../../store/Product/productAction";
+import formatBytes from "../../common/imageFormatBytes";
 
 const AddBanner = () => {
   const { bannerImage, imageStatus } = useSelector(
@@ -115,8 +116,8 @@ const AddBanner = () => {
       status,
       description,
       shop,
-      clickType ,
-      clickableUrl ,
+      clickType,
+      clickableUrl,
       isClickable,
       productId,
       shopId,
@@ -134,7 +135,7 @@ const AddBanner = () => {
     setType(type);
     setActiveStatus(status);
     setShop(shop);
-    setClickType(clickType ? clickType : '');
+    setClickType(clickType ? clickType : "");
     setClickableUrl(clickableUrl ? clickableUrl : "");
     setIsClickable(isClickable);
 
@@ -170,42 +171,8 @@ const AddBanner = () => {
     setDescription(currentContentAsHTML);
   };
   // VALIDATION
-  const submitBanner = () => {
-    if (!title) {
-      return WarningMessage("Enter Title");
-    }
-
-    if (!type) {
-      return WarningMessage("Please Select Type");
-    }
-
-    if (type == "shop" && !shop) {
-      return WarningMessage("Please Select a Shop");
-    }
-
-    if (type === "home" && isClickable === "" ) {
-      return WarningMessage("Please select a option for clickable");
-    }
-
-    if (isClickable && !clickOption) {
-      return WarningMessage("Please select a banner option");
-    }
-
-    if (clickOption === "link" && !clickableUrl) {
-      return WarningMessage("Please type a URL");
-    }
-
-    if (clickOption === "route" && !clickType) {
-      return WarningMessage("Please select click type");
-    }
-
-    if (clickType === "shop" && !clickableShop) {
-      return WarningMessage("Please select a shop");
-    }
-
-    if (clickType === "product" && !clickableProduct) {
-      return WarningMessage("Please select a Product");
-    }
+  const submitBanner = (e) => {
+    e.preventDefault();
 
     if (!editorState.getCurrentContent().hasText()) {
       return WarningMessage("Please type a description");
@@ -317,19 +284,6 @@ const AddBanner = () => {
     }
   }, [status]);
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
-
   // IMAGE
 
   const handleAcceptedFiles = (files) => {
@@ -355,113 +309,37 @@ const AddBanner = () => {
             // callList={callCarList}
             isRefresh={false}
           />
+          <Form onSubmit={submitBanner}>
+            <Card className="mt-5">
+              <CardBody>
+                {/* <CardTitle className="h4">Add Banner</CardTitle> */}
 
-          <Card className="mt-5">
-            <CardBody>
-              {/* <CardTitle className="h4">Add Banner</CardTitle> */}
-
-              <Row className="mb-4">
-                <Col lg={6}>
-                  <TextField
-                    style={{ width: "100%" }}
-                    id="outlined-basic"
-                    label="Title"
-                    variant="outlined"
-                    placeholder="Enter Banner Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                  />
-                </Col>
-                <Col lg={6} className="mt-3 mt-lg-0">
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">
-                      Shop Type
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={type}
-                      label="Shop Type"
-                      onChange={(event) => {
-                        setType(event.target.value);
-                        setIsClickable("");
-                        setClickOption("");
-                        setClickableUrl("");
-                        setClickType("");
-                        setClickableShop(null);
-                        setClickableProduct(null);
-                      }}
-                      required
-                    >
-                      <MenuItem value="home">Home</MenuItem>
-                      <MenuItem value="food">Restaurant</MenuItem>
-                      <MenuItem value="grocery">Grocery</MenuItem>
-                      <MenuItem value="shop">Shop</MenuItem>
-                      <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Col>
-              </Row>
-
-              {(type === 'home' || type === 'shop') && <Row className="mb-4">
-                {type == "shop" && (
+                <Row className="mb-4">
                   <Col lg={6}>
-                    <Autocomplete
-                      className="cursor-pointer"
-                      value={shop}
-                      onChange={(event, newValue) => {
-                        setShop(newValue);
-                        // console.log("new", newValue);
-                      }}
-                      getOptionLabel={(option) =>
-                        option.shopName ? option.shopName : ""
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option._id == value._id
-                      }
-                      inputValue={searchShopKey}
-                      onInputChange={(event, newInputValue) => {
-                        setSearchShopKey(newInputValue);
-                        // console.log("input value", newInputValue);
-                      }}
-                      id="controllable-states-demo"
-                      options={shops.length > 0 ? shops : []}
-                      sx={{ width: "100%" }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Select a Shop" />
-                      )}
-                      renderOption={(props, option) => (
-                        <Box
-                          component="li"
-                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                          {...props}
-                        >
-                          <img
-                            loading="lazy"
-                            width="60"
-                            src={option.shopBanner}
-                            alt=""
-                          />
-                          {option.shopName}
-                        </Box>
-                      )}
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Title"
+                      variant="outlined"
+                      placeholder="Enter Banner Title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required
                     />
                   </Col>
-                )}
-                {type == "home" && (
-                  <Col lg={6}>
-                    <FormControl fullWidth>
+                  <Col lg={6} className="mt-3 mt-lg-0">
+                    <FormControl fullWidth required name='shopType'>
                       <InputLabel id="demo-simple-select-label">
-                        Is Clickable
+                        Shop Type
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={isClickable}
-                        label="Is Clickable"
+                        value={type}
+                        label="Shop Type"
                         onChange={(event) => {
-                          setIsClickable(event.target.value);
+                          setType(event.target.value);
+                          setIsClickable("");
                           setClickOption("");
                           setClickableUrl("");
                           setClickType("");
@@ -470,213 +348,292 @@ const AddBanner = () => {
                         }}
                         required
                       >
-                        <MenuItem value={true}>Yes</MenuItem>
-                        <MenuItem value={false}>No</MenuItem>
+                        <MenuItem value="home">Home</MenuItem>
+                        <MenuItem value="food">Restaurant</MenuItem>
+                        <MenuItem value="grocery">Grocery</MenuItem>
+                        <MenuItem value="shop">Shop</MenuItem>
+                        <MenuItem value="pharmacy">Pharmacy</MenuItem>
                       </Select>
                     </FormControl>
                   </Col>
-                )}
-                {isClickable && (
-                  <Col lg={6} className="mt-3 mt-lg-0">
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Banner For
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={clickOption}
-                        label="Is Clickable"
-                        onChange={(event) => {
-                          setClickOption(event.target.value);
-                          setClickableUrl("");
-                          setClickType("");
-                          setClickableShop(null);
-                          setClickableProduct(null);
-                        }}
-                        required
-                      >
-                        <MenuItem value="link">Link</MenuItem>
-                        <MenuItem value="route">Shop/Product</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                )}
-              </Row>}
+                </Row>
 
-              {clickOption && <Row className="mb-4">
+                {(type === "home" || type === "shop") && (
+                  <Row className="mb-4">
+                    {type == "shop" && (
+                      <Col lg={6}>
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={shop}
+                          onChange={(event, newValue) => {
+                            setShop(newValue);
+                            // console.log("new", newValue);
+                          }}
+                          getOptionLabel={(option) =>
+                            option.shopName ? option.shopName : ""
+                          }
+                          isOptionEqualToValue={(option, value) =>
+                            option._id == value._id
+                          }
+                          inputValue={searchShopKey}
+                          onInputChange={(event, newInputValue) => {
+                            setSearchShopKey(newInputValue);
+                            // console.log("input value", newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={shops.length > 0 ? shops : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select a Shop" required name='shop' />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                            >
+                              <img
+                                loading="lazy"
+                                width="60"
+                                src={option.shopBanner}
+                                alt=""
+                              />
+                              {option.shopName}
+                            </Box>
+                          )}
+                        />
+                      </Col>
+                    )}
+                    {type == "home" && (
+                      <Col lg={6}>
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Is Clickable
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={isClickable}
+                            label="Is Clickable"
+                            onChange={(event) => {
+                              setIsClickable(event.target.value);
+                              setClickOption("");
+                              setClickableUrl("");
+                              setClickType("");
+                              setClickableShop(null);
+                              setClickableProduct(null);
+                            }}
+                            required
+                          >
+                            <MenuItem value={true}>Yes</MenuItem>
+                            <MenuItem value={false}>No</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Col>
+                    )}
+                    {isClickable && (
+                      <Col lg={6} className="mt-3 mt-lg-0">
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Banner For
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={clickOption}
+                            label="Is Clickable"
+                            onChange={(event) => {
+                              setClickOption(event.target.value);
+                              setClickableUrl("");
+                              setClickType("");
+                              setClickableShop(null);
+                              setClickableProduct(null);
+                            }}
+                            required
+                          >
+                            <MenuItem value="link">Link</MenuItem>
+                            <MenuItem value="route">Shop/Product</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Col>
+                    )}
+                  </Row>
+                )}
+
                 {clickOption && (
-                  <Col lg={6}>
-                    {clickOption === "link" ? (
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Url"
-                        variant="outlined"
-                        placeholder="Enter Url"
-                        value={clickableUrl}
-                        onChange={(e) => setClickableUrl(e.target.value)}
-                        required
-                      />
-                    ) : (
-                      <FormControl fullWidth>
+                  <Row className="mb-4">
+                    {clickOption && (
+                      <Col lg={6}>
+                        {clickOption === "link" ? (
+                          <TextField
+                            style={{ width: "100%" }}
+                            id="outlined-basic"
+                            label="Url"
+                            variant="outlined"
+                            placeholder="Enter Url"
+                            value={clickableUrl}
+                            onChange={(e) => setClickableUrl(e.target.value)}
+                            required
+                          />
+                        ) : (
+                          <FormControl fullWidth required>
+                            <InputLabel id="demo-simple-select-label">
+                              Click Type
+                            </InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={clickType}
+                              label="Is Clickable"
+                              onChange={(event) => {
+                                setClickType(event.target.value);
+                              }}
+                              required
+                            >
+                              <MenuItem value="shop">Shop</MenuItem>
+                              <MenuItem value="product">Product</MenuItem>
+                            </Select>
+                          </FormControl>
+                        )}
+                      </Col>
+                    )}
+                    {clickType && (
+                      <Col lg={6} className="mt-3 mt-lg-0">
+                        {clickType === "shop" ? (
+                          <Autocomplete
+                            className="cursor-pointer"
+                            value={clickableShop}
+                            onChange={(event, newValue) => {
+                              setClickableShop(newValue);
+                              // console.log("new", newValue);
+                            }}
+                            getOptionLabel={(option) =>
+                              option.shopName ? option.shopName : ""
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option._id == value._id
+                            }
+                            inputValue={searchShopKey}
+                            onInputChange={(event, newInputValue) => {
+                              setSearchShopKey(newInputValue);
+                              // console.log("input value", newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={shops.length > 0 ? shops : []}
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select  Shop" required />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option._id}
+                              >
+                                <img
+                                  loading="lazy"
+                                  width="60"
+                                  src={option.shopBanner}
+                                  alt=""
+                                />
+                                {option.shopName}
+                              </Box>
+                            )}
+                          />
+                        ) : (
+                          <Autocomplete
+                            className="cursor-pointer"
+                            value={clickableProduct}
+                            onChange={(event, newValue) => {
+                              setClickableProduct(newValue);
+                              // console.log("new", newValue);
+                            }}
+                            getOptionLabel={(option) =>
+                              option.name ? option.name : ""
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option._id == value._id
+                            }
+                            inputValue={searchShopKey}
+                            onInputChange={(event, newInputValue) => {
+                              setSearchShopKey(newInputValue);
+                              // console.log("input value", newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={products.length > 0 ? products : []}
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select Product" required />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option._id}
+                              >
+                                <img
+                                  loading="lazy"
+                                  width="60"
+                                  src={option.images[0]}
+                                  alt=""
+                                />
+                                {option.name}
+                              </Box>
+                            )}
+                          />
+                        )}
+                      </Col>
+                    )}
+                  </Row>
+                )}
+
+                <Row className="mb-4">
+                  {id && (
+                    <Col lg={6} className="mt-3 mt-lg-0">
+                      <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
-                          Click Type
+                          Status
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          value={clickType}
-                          label="Is Clickable"
+                          value={activeStatus}
+                          label="Status"
                           onChange={(event) => {
-                            setClickType(event.target.value);
+                            setActiveStatus(event.target.value);
                           }}
                           required
                         >
-                          <MenuItem value="shop">Shop</MenuItem>
-                          <MenuItem value="product">Product</MenuItem>
+                          <MenuItem value="active">Active</MenuItem>
+                          <MenuItem value="inactive">Inactive</MenuItem>
                         </Select>
                       </FormControl>
-                    )}
-                  </Col>
-                )}
-                {clickType && (
-                  <Col lg={6} className="mt-3 mt-lg-0">
-                    {clickType === "shop" ? (
-                      <Autocomplete
-                        className="cursor-pointer"
-                        value={clickableShop}
-                        onChange={(event, newValue) => {
-                          setClickableShop(newValue);
-                          // console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) =>
-                          option.shopName ? option.shopName : ""
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchShopKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchShopKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={shops.length > 0 ? shops : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select  Shop" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                            key={option._id}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.shopBanner}
-                              alt=""
-                            />
-                            {option.shopName}
-                          </Box>
-                        )}
-                      />
-                    ) : (
-                      <Autocomplete
-                        className="cursor-pointer"
-                        value={clickableProduct}
-                        onChange={(event, newValue) => {
-                          setClickableProduct(newValue);
-                          // console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) =>
-                          option.name ? option.name : ""
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchShopKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchShopKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={products.length > 0 ? products : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select Product" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                            key={option._id}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.images[0]}
-                              alt=""
-                            />
-                            {option.name}
-                          </Box>
-                        )}
-                      />
-                    )}
-                  </Col>
-                )}
-              </Row>}
+                    </Col>
+                  )}
+                </Row>
 
-              <Row className="mb-4">
-                {id && (
-                  <Col lg={6} className="mt-3 mt-lg-0">
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Status
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={activeStatus}
-                        label="Status"
-                        onChange={(event) => {
-                          setActiveStatus(event.target.value);
-                        }}
-                        required
-                      >
-                        <MenuItem value="active">Active</MenuItem>
-                        <MenuItem value="inactive">Inactive</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                )}
-              </Row>
+                <Row className="mb-3">
+                  <label className="col-md-2 col-form-label">Description</label>
+                  <div className="col-md-10">
+                    <Editor
+                      toolbarClassName="toolbarClassName"
+                      wrapperClassName="wrapperClassName"
+                      editorClassName="editorClassName"
+                      editorState={editorState}
+                      defaultEditorState={editorState}
+                      onEditorStateChange={handleEditorChange}
+                    />
+                  </div>
+                </Row>
+              </CardBody>
+            </Card>
 
-              <Row className="mb-3">
-                <label className="col-md-2 col-form-label">Description</label>
-                <div className="col-md-10">
-                  <Editor
-                    toolbarClassName="toolbarClassName"
-                    wrapperClassName="wrapperClassName"
-                    editorClassName="editorClassName"
-                    editorState={editorState}
-                    defaultEditorState={editorState}
-                    onEditorStateChange={handleEditorChange}
-                  />
-                </div>
-              </Row>
-            </CardBody>
-          </Card>
-
-          <Row>
-            <Col className="col-12">
-              <Label>Upload Image</Label>
-              <div className="mb-5">
-                <Form>
+            <Row>
+              <Col className="col-12">
+                <Label>Upload Image</Label>
+                <div className="mb-5">
                   <Dropzone
                     onDrop={(acceptedFiles) => {
                       handleAcceptedFiles(acceptedFiles);
@@ -751,19 +708,20 @@ const AddBanner = () => {
                       </Card>
                     )}
                   </div>
-                </Form>
-              </div>
-            </Col>
-          </Row>
-          <div className="d-flex justify-content-center">
-            <Button
-              disabled={loading || isLoading}
-              color="primary w-50"
-              onClick={submitBanner}
-            >
-              {!loading || !isLoading ? "Submit" : "loading...."}
-            </Button>
-          </div>
+                </div>
+              </Col>
+            </Row>
+            <div className="d-flex justify-content-center">
+              <Button
+                disabled={loading || isLoading}
+                color="primary w-50"
+                
+                type='submit'
+              >
+                {!loading || !isLoading ? "Submit" : "loading...."}
+              </Button>
+            </div>
+          </Form>
         </Container>
       </div>
     </React.Fragment>
