@@ -124,10 +124,20 @@ export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay"
 export const ADD_USER_BALANCE = ADMIN_ENDPOINT + "/user/add-balance"
 export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance"
 
+// APP WALLET
+
 // DELIVERY FEE SETTINGS 
 
 export const SET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/delivery-charge"
 export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/get-global-delivery-charge";
+
+// SELLER TRX
+
+export const SELLER_TRX = ADMIN_ENDPOINT + "/wallet/seller"
+
+// DELIVERY BOY TRX 
+export const DELIVERY_TRX = ADMIN_ENDPOINT + "/wallet/delivery-boy"
+
 
 // ORDERS
 
