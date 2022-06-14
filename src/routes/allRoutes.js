@@ -162,6 +162,7 @@ import AppSettings from "../pages/AppSettings/AppSettings";
 import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
 import OrderDetails from "../pages/Orders/OrderDetails/OrderDetails";
 import ChatDetails from "../pages/Chat/ChatDetails/ChatDetails";
+import DropTransactions from "../pages/AppWallet/dropTransactions/DropTransactions";
 
 
 const userRoutes = [
@@ -239,6 +240,7 @@ const userRoutes = [
   {path: "/add-wallet/seller-transactions", component: SellerTransactions},
   {path: "/add-wallet/delivery-transactions", component: DeliveryTransactions},
   {path: "/add-wallet/payments-history", component: PaymentHistory},
+  {path: "/add-wallet/drop-transactions", component: DropTransactions},
 
   // CHAT
 

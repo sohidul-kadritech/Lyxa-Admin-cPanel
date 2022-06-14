@@ -321,6 +321,12 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/add-wallet/drop-transactions">
+                    <i className="fas fa-exchange-alt" />
+                    <span>{props.t("Drop TRX")}</span>
+                  </Link>
+                </li>
+                <li>
                   <Link to="/add-wallet/payments-history">
                     <i className="ti-money" />
                     <span>{props.t("Payments History")}</span>

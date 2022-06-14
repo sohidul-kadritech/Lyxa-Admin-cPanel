@@ -50,6 +50,23 @@ const init = {
       
     },
     
+  ],
+  dropTrxStartDate: moment().format("YYYY-MM-DD"),
+  dropTrxEndDate: moment().add(1, "M").format("YYYY-MM-DD"),
+  dropTrxs: [
+    {
+      deliveryBoy: {
+        name: "mizan",
+      },
+      
+        amount: 12,
+        status: "success",
+        adminNote: "Delivery Boy will get charge",
+        userNote: "Amount get for Order Completed",
+        isRefund: false,
+      
+    },
+    
   ]
 };
 
@@ -169,6 +186,47 @@ const appWalletReducer = (state = init, action) => {
       };
 
     case actionTypes.GET_DELIVERY_TRX_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+      // DROP TRX
+
+      
+    case actionTypes.DROP_TRX_START_DATE:
+      return {
+        ...state,
+        dropTrxStartDate: payload,
+      };
+
+    case actionTypes.DROP_TRX_END_DATE:
+      return {
+        ...state,
+        dropTrxEndDate: payload,
+      };
+
+      case actionTypes.GET_DROP_TRX_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.GET_DROP_TRX_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        // sellerTrxs: payload.transactionList,
+        Paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: true,
+      };
+
+    case actionTypes.GET_DROP_TRX_REQUEST_FAIL:
       return {
         ...state,
         error: payload,

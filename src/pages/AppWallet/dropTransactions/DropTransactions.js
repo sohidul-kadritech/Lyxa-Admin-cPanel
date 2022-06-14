@@ -14,18 +14,17 @@ import {
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import  Flatpickr  from 'react-flatpickr';
 import { useDispatch, useSelector } from "react-redux";
-import { getDeliveryTrx, updateDeliveryTrxEndDate, updateDeliveryTrxStartDate } from "../../../store/appWallet/appWalletAction";
+import { getDeliveryTrx, getDropTrx, updateDeliveryTrxEndDate, updateDeliveryTrxStartDate } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
 
 
-const DeliveryTransactions = () => {
-
+const DropTransactions = () => {
 
   const {
     loading,
-    deliveryTrxs,
-    deliveryTrxStartDate,
-    deliveryTrxEndDate,
+    dropTrxs,
+    dropTrxStartDate,
+    dropTrxEndDate,
     paging,
     hasNextPage,
     currentPage,
@@ -35,13 +34,13 @@ const DeliveryTransactions = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (deliveryTrxStartDate || deliveryTrxEndDate) {
+    if (dropTrxStartDate || dropTrxEndDate) {
       callTransList(true);
     }
-  }, [deliveryTrxStartDate, deliveryTrxEndDate]);
+  }, [dropTrxStartDate, dropTrxEndDate]);
 
   const callTransList = (refresh = false) => {
-    dispatch(getDeliveryTrx(refresh));
+    dispatch(getDropTrx(refresh));
   };
 
   return (
@@ -73,7 +72,7 @@ const DeliveryTransactions = () => {
                           className="form-control d-block"
                           id="startDate"
                           placeholder="Start Date"
-                          value={deliveryTrxStartDate}
+                          value={dropTrxStartDate}
                           onChange={(selectedDates, dateStr, instance) =>
                             dispatch(updateDeliveryTrxStartDate(dateStr))
                           }
@@ -94,7 +93,7 @@ const DeliveryTransactions = () => {
                           className="form-control w-100"
                           id="endDate"
                           placeholder="Select End Date"
-                          value={deliveryTrxEndDate}
+                          value={dropTrxEndDate}
                           onChange={(selectedDates, dateStr, instance) =>
                             dispatch(updateDeliveryTrxEndDate(dateStr))
                           }
@@ -116,7 +115,7 @@ const DeliveryTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Delivery  Transactions List</CardTitle>
+                <CardTitle className="h4"> Drop Transactions List</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -131,7 +130,7 @@ const DeliveryTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {deliveryTrxs.map((item, index) => {
+                    {dropTrxs.map((item, index) => {
                       return (
                         <Tr
                           key={index}
@@ -161,7 +160,7 @@ const DeliveryTransactions = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && deliveryTrxs.length < 1 && (
+                {!loading && dropTrxs.length < 1 && (
                   <div className="text-center">
                     <h4>No Order!</h4>
                   </div>
@@ -176,7 +175,7 @@ const DeliveryTransactions = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getDeliveryTrx(true, page))}
+                    lisener={(page) => dispatch(getDropTrx(true, page))}
                   />
                 </div>
               </Col>
@@ -188,4 +187,4 @@ const DeliveryTransactions = () => {
   );
 };
 
-export default DeliveryTransactions;
+export default DropTransactions;
