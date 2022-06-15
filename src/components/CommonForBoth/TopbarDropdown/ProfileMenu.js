@@ -5,7 +5,8 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Modal
 } from "reactstrap";
 
 import { useHistory } from "react-router-dom";
@@ -19,6 +20,7 @@ import { withRouter, Link } from "react-router-dom";
 // users
 import user1 from "../../../assets/images/users/user-4.jpg";
 import { logoutAdmin } from "./../../../store/auth/login/actions";
+import ChangePassword from './../ChangePassword';
 
 const ProfileMenu = props => {
   // Declare a new state variable, which we'll call "menu"
@@ -26,10 +28,18 @@ const ProfileMenu = props => {
 
   const [username, setusername] = useState("Admin");
   // const { accessToken } = useSelector(state => state.login);
+  const {loading, status} = useSelector((state) => state.Profile);
 
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const [isChangePass, setIsChangePass] = useState(false);
+
+  useEffect(()=>{
+    if(status){
+      setIsChangePass(false);
+    }
+  },[status])
   
 
   useEffect(
@@ -77,16 +87,48 @@ const ProfileMenu = props => {
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
           <DropdownItem tag="a" href="/profile">
-            {" "}<i className="bx bx-user font-size-16 align-middle me-1" />
-            {props.t("Profile")}{" "}
+           <i className="fa fa-user font-size-16 align-baseline me-2" />
+            {props.t("Profile")}
+          </DropdownItem>
+          <DropdownItem tag="a" onClick={() => setIsChangePass(!isChangePass)}>
+           <i className="fa fa-lock font-size-16 align-baseline me-2" />
+            {props.t("Change Password")}
           </DropdownItem>
           <div className="dropdown-divider" />
           <p className="dropdown-item cursor-pointer" onClick={logout}>
-            <i className="bx bx-power-off font-size-16 align-middle me-1 text-danger" />
+            <i className="fa fa-power-off font-size-16 align-baseline me-2 text-danger" />
             <span>Logout</span>
           </p>
         </DropdownMenu>
       </Dropdown>
+
+      {/* CHANGE PASSWORD */}
+
+      <Modal
+          isOpen={isChangePass}
+          toggle={() => {
+            setIsChangePass(!isChangePass);
+          }}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">Change Password</h5>
+            <button
+              type="button"
+              onClick={() => {
+                setIsChangePass(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <ChangePassword />
+          </div>
+        </Modal>
     </React.Fragment>
   );
 };

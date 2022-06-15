@@ -116,6 +116,12 @@ const deliveryManReducer = (state = initialState, action) => {
         searchKey: payload,
       };
 
+      case actionType.SET_STATUS_FALSE:
+      return {
+        ...state,
+        status: false,
+      }
+
     default:
       return state;
   }

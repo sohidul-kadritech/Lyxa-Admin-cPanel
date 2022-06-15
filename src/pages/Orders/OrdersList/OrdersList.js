@@ -2,11 +2,9 @@ import React, { useEffect } from "react";
 import {
   Card,
   CardBody,
-  CardTitle,
   Col,
   Container,
   Row,
-  Spinner,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -17,8 +15,7 @@ import {
   shopTypeOptions,
   sortByOptions,
 } from "../../../assets/staticData";
-import { Tooltip } from "@mui/material";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+
 import {
   getAllOrder,
   updateOrderByShopType,
@@ -32,10 +29,11 @@ import { useDispatch, useSelector } from "react-redux";
 import AppPagination from "./../../../components/AppPagination";
 import { useHistory } from "react-router-dom";
 import Search from "./../../../components/Search";
+import OrderTable from "../../../components/OrderTable";
 
 const OrdersList = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+
 
   const {
     sortByKey,
@@ -177,76 +175,9 @@ const OrdersList = () => {
               </CardBody>
             </Card>
 
-            <Card>
-              <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4"> Order List</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Order Id</Th>
-                      <Th>Delivery Address</Th>
-                      <Th>Status</Th>
-                      <Th>Payment Status</Th>
-                      <Th>Total Amount</Th>
-                      <Th>Action</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {orders.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th>{item?.orderId}</Th>
-
-                          <Td style={{ maxWidth: "120px" }}>
-                            {item?.orderDeliveryAddress?.address}
-                          </Td>
-                          <Td>{item?.orderStatus}</Td>
-                          <Td>{item?.paymentStatus}</Td>
-                          <Td>{item.summery?.total}</Td>
-                          <Td>
-                            <div>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button me-2"
-                                  onClick={() => {
-                                    history.push(`/orders/details/${item._id}`);
-                                  }}
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
-                            </div>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="success" />
-                  </div>
-                )}
-                {!loading && orders.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Order!</h4>
-                  </div>
-                )}
-              </CardBody>
-            </Card>
+            <div>
+              <OrderTable orders={orders} loading={loading} />
+            </div>
             <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">

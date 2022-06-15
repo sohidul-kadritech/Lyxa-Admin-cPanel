@@ -197,3 +197,9 @@ export const updateDeliveryManSearchKey = (value) => (dispatch) => {
     payload: value,
   });
 };
+
+export const setDeliveryStatusFalse = () => dispatch =>{
+  dispatch({
+    type: actionType.SET_STATUS_FALSE,
+  });
+}

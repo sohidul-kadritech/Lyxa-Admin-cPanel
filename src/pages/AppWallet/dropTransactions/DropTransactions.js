@@ -50,7 +50,7 @@ const DropTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem=" Delivery Transactions"
+              breadcrumbItem=" Drop Transactions"
               title="App Wallet"
               loading={loading}
               callList={callTransList}

@@ -88,9 +88,9 @@ const Login = props => {
                           handleValidSubmit(e, v);
                         }}
                       >
-                        {props.error && typeof props.error === "string"
+                        {props.error
                           ? <Alert color="danger">
-                              {props.error}
+                              {'Invalid Gmail/Password'}
                             </Alert>
                           : null}
 

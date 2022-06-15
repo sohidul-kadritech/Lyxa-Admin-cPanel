@@ -34,6 +34,10 @@ export const DELETE_ADMIN = ADMIN_ENDPOINT + "/admins/delete";
 export const EDIT_ADMIN = ADMIN_ENDPOINT + "/admins/update";
 export const SINGLE_ADMIN = ADMIN_ENDPOINT + "/admins/get-single-admin-details";
 
+// CHANGE PASSWORD
+
+export const CHANGE_PASSWORD = ADMIN_ENDPOINT + "/admins/change-password";
+
 // ROLE
 
 export const ADD_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/add";

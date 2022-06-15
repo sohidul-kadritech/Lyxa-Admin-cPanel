@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useHistory, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import requestApi from "../../../network/httpRequest";
 import { SINGLE_DELIVERY_MAN } from "../../../network/Api";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
@@ -19,10 +19,13 @@ import {
 import Lightbox from "react-image-lightbox";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { ImageWrapper } from "../../Shops/ShopDetails/ShopDetails";
+import { setDeliveryStatusFalse } from "../../../store/DeliveryMan/DeliveryManAction";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
+  
   const { loading, deliveryMans } = useSelector(
     (state) => state.deliveryManReducer
   );
@@ -33,6 +36,9 @@ const DeliverymanDetails = () => {
 
   useEffect(() => {
     if (id) {
+
+      dispatch(setDeliveryStatusFalse())
+
       const findMan = deliveryMans.find((man) => man._id === id);
       if (findMan) {
         console.log({ findMan });

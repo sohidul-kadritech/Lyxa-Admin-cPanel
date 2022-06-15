@@ -58,44 +58,32 @@ const DropPayList = () => {
     dispatch(getAllDropPay(refresh));
   }
 
+  // Warinig Message 
+
+  const warningMessage = (msg) => {
+    toast.warn(msg, {
+      // position: "bottom-right",
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
+
   // ADD/ REMOVE BALANCE
 
   const submitBalance = (type) => {
     if (!selectedUser) {
-      return toast.warn("Please select a User", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage("Please select user");
     }
     if (!amount) {
-      return toast.warn("Please add amount", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage("Please enter amount");
     }
     if (!userNote) {
-      return toast.warn("Please Type user Note", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return warningMessage("Please enter user note");
     }
 
     submitData(type);

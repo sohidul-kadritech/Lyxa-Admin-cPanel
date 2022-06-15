@@ -103,19 +103,19 @@ const DeliverymanAdd = () => {
   // UPDATE DATA
 
   const updateData = (data) => {
-    const { name, email, phone, status,nationalIdDocument,vehicleRegistrationDocument,vehicleType } = data;
+    const { name, email, number, status,nationalIdDocument,vehicleRegistrationDocument,vehicleType, vehicleNumber } = data;
     const findStatus = activeOptions.find((option) => option.value === status);
     const findVahicleType = DeliveryBoyVehicleOPtions.find((option) => option.value === vehicleType);
 
     setName(name);
     setEmail(email);
-    setPhone(phone);
+    setPhone(number);
     setActiveStatus(findStatus);
     setNid(nationalIdDocument);
     setVehicleDoc(vehicleRegistrationDocument);
     setVehicleType(findVahicleType);
-    // setPin(pin);
-    // handleAddressSelect(address, placeId)
+    setVehicleNum(vehicleNumber);
+
   };
 
   // ADDRESS CHANGE
@@ -255,8 +255,8 @@ const DeliverymanAdd = () => {
           status: activeStatus.value,
           vehicleType: vehicleType.value,
           vehicle_number: vehicleNum,
-          national_id: nidUrl,
-          vehicle_data: docUrl,
+          nationalIdDocument: nidUrl,
+          vehicleRegistrationDocument: docUrl,
         })
       );
     } else {
@@ -553,7 +553,7 @@ const DeliverymanAdd = () => {
                           <input
                             className="form-control"
                             type="text"
-                            name
+                            name='vahicleNumber'
                             placeholder="Enter Vahicle Number"
                             value={vehicleNum}
                             onChange={(e) => setVehicleNum(e.target.value)}

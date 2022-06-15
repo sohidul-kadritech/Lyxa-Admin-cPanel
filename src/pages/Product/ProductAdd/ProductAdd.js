@@ -71,7 +71,7 @@ const ProductAdd = () => {
   const [searchShopKey, setSearchShopKey] = useState("");
   const [category, setCategory] = useState(null);
   const [searchCategoryKey, setSearchCategoryKey] = useState("");
-  const [subCategory, setSubCategory] = useState(null);
+  const [subCategory, setSubCategory] = useState('');
   const [searchSubCatKey, setSearchSubCatKey] = useState("");
   const [tags, setTags] = useState({
     items: [],
