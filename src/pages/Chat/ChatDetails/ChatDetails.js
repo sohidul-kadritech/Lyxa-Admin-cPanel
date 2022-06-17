@@ -26,8 +26,19 @@ const ChatDetails = () => {
   const { id } = useParams();
 
   const { requests } = useSelector((state) => state.chatReducer);
+  const  { socket } = useSelector((state) => state.socketReducer);
 
   const [request, setRequest] = useState(null);
+
+  useEffect(() => {
+
+    if(socket) {
+      socket.emit('join_user_and_admin_chat', {room: id});
+      socket.on('join_user_and_admin_chat_received', (data)=>{
+        console.log(data)
+      });
+    }
+  },[socket])
 
   useEffect(() => {
     if (id) {
@@ -35,6 +46,12 @@ const ChatDetails = () => {
       setRequest(findReq);
     }
   }, [id]);
+
+  const sendMsg = () =>{
+    if(socket) {
+      socket.emit('join_user_and_admin_chat_send', {room: id, message: 'hello'});
+    }
+  }
 
   return (
     <React.Fragment>
@@ -54,7 +71,7 @@ const ChatDetails = () => {
                   <CardBody>
                     <div className='d-flex justify-content-between align-items-center'>
                     <CardTitle>Conversation</CardTitle>
-                    <strong style={{color: request.status === 'pending' ? 'blue' :  request.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase'}}>{request.status}</strong>
+                    <strong style={{color: request?.status === 'pending' ? 'blue' :  request?.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase'}}>{request?.status}</strong>
                     </div>
                     <hr />
                     <div className="chat-conversation">
@@ -129,6 +146,7 @@ const ChatDetails = () => {
                         <Col md="3" className="chat-send col-4">
                           <div className="d-grid">
                             <Button
+                              onClick={sendMsg}
                               type="submit"
                               color="success"
                               className="btn-block"

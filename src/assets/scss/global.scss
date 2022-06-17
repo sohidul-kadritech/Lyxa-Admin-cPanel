@@ -50,3 +50,14 @@
 .hover-shadow:hover{
   box-shadow: 0px 0px 5px 0px rgba(198, 188, 188, 0.75);
 }
+
+.details{
+  display: flex;
+  align-items: center;
+}
+
+.value{
+  color: #343a40;
+  font-weight: 600;
+  margin-left: 4px;
+}

@@ -14,9 +14,11 @@ const init = {
         seller: {
           name: "seller name",
           profile_photo: "url",
+          _id: "626b7b182a152dec55900b3f"
         },
         shopName: "shopName",
         shopLogo: "logo url",
+        _id: "627e697325b67e6b397c6c27"
       },
       amount: 1800,
       status: "success",
@@ -27,19 +29,21 @@ const init = {
       __v: 0,
     },
   ],
-  sellerTrxStartDate: moment().format("YYYY-MM-DD"),
-  sellerTrxEndDate: moment().add(1, "M").format("YYYY-MM-DD"),
+  sellerTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
+  sellerTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  deliveryTrxStartDate: moment().format("YYYY-MM-DD"),
-  deliveryTrxEndDate: moment().add(1, "M").format("YYYY-MM-DD"),
+  deliveryTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
+  deliveryTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
   deliveryTrxs: [
     {
+      _id: "62a8d237be31b986bbf6bc6d",
       deliveryBoy: {
         name: "mizan",
+        _id: "628280060f89c854b2b78ecd",
       },
       
         amount: 12,
@@ -51,8 +55,8 @@ const init = {
     },
     
   ],
-  dropTrxStartDate: moment().format("YYYY-MM-DD"),
-  dropTrxEndDate: moment().add(1, "M").format("YYYY-MM-DD"),
+  dropTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
+  dropTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
   dropTrxs: [
     {
       deliveryBoy: {

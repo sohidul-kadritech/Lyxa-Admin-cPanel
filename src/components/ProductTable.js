@@ -116,12 +116,22 @@ const ProductTable = ({ products, loading }) => {
                     <div>
                       <Tooltip title="Edit">
                         <button
-                          className="btn btn-success me-3 button"
+                          className="btn btn-success  button"
                           onClick={() =>
                             history.push(`/products/edit/${item?._id}`)
                           }
                         >
                           <i className="fa fa-edit" />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title="Details">
+                        <button
+                          className="btn btn-info button"
+                          onClick={() => {
+                            history.push(`/products/details/${item?._id}`)
+                          }}
+                        >
+                          <i className="fa fa-eye" />
                         </button>
                       </Tooltip>
                       <Tooltip title="Delete">

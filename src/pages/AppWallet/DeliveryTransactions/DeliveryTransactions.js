@@ -12,15 +12,19 @@ import {
   Spinner,
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import  Flatpickr  from 'react-flatpickr';
+import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
-import { getDeliveryTrx, updateDeliveryTrxEndDate, updateDeliveryTrxStartDate } from "../../../store/appWallet/appWalletAction";
+import {
+  getDeliveryTrx,
+  updateDeliveryTrxEndDate,
+  updateDeliveryTrxStartDate,
+} from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
-
+import { Tooltip } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 const DeliveryTransactions = () => {
-
-
+  const history = useHistory();
   const {
     loading,
     deliveryTrxs,
@@ -57,7 +61,6 @@ const DeliveryTransactions = () => {
               callList={callTransList}
             />
 
-          
             <div>
               <TransactionsCard />
             </div>
@@ -116,7 +119,10 @@ const DeliveryTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Delivery  Transactions List</CardTitle>
+                <CardTitle className="h4">
+                  {" "}
+                  Delivery Transactions List
+                </CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -150,6 +156,20 @@ const DeliveryTransactions = () => {
                           </Td>
                           <Td style={{ maxWidth: "150px" }}>
                             {item?.userNote}
+                          </Td>
+                          <Td>
+                            <Tooltip title="Details">
+                              <button
+                                className="btn btn-info button"
+                                onClick={() =>
+                                  history.push(
+                                    `/add-wallet/delivery-transactions/details/${item._id}`
+                                  )
+                                }
+                              >
+                                <i className="fa fa-eye" />
+                              </button>
+                            </Tooltip>
                           </Td>
                         </Tr>
                       );

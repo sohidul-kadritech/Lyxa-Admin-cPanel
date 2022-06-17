@@ -163,6 +163,8 @@ import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
 import OrderDetails from "../pages/Orders/OrderDetails/OrderDetails";
 import ChatDetails from "../pages/Chat/ChatDetails/ChatDetails";
 import DropTransactions from "../pages/AppWallet/dropTransactions/DropTransactions";
+import SellerTransactionDetails from "../pages/AppWallet/SellerTransactions/SellerTransactionDetails";
+import DeliveryTransactionsDetails from "../pages/AppWallet/DeliveryTransactions/DeliveryTransactionsDetails";
 
 
 const userRoutes = [
@@ -238,7 +240,9 @@ const userRoutes = [
   {path: "/add-wallet/percentage-setting", component: PercentageSetting},
   {path: "/add-wallet/admin-log-history", component: AdminLogHistory},
   {path: "/add-wallet/seller-transactions", component: SellerTransactions},
+  {path: "/add-wallet/seller-transactions/details/:id", component: SellerTransactionDetails},
   {path: "/add-wallet/delivery-transactions", component: DeliveryTransactions},
+  {path: "/add-wallet/delivery-transactions/details/:id", component: DeliveryTransactionsDetails},
   {path: "/add-wallet/payments-history", component: PaymentHistory},
   {path: "/add-wallet/drop-transactions", component: DropTransactions},
 

@@ -23,9 +23,10 @@ import { socketConnect } from "./store/socket/socketAction"
 const App = props => {
 
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(socketConnect());
-  // }, []);
+
+  useEffect(() => {
+    dispatch(socketConnect());
+  }, []);
 
   function getLayout() {
 

@@ -32,6 +32,7 @@ import ProductTable from "../../../components/ProductTable";
 import Lightbox from "react-image-lightbox";
 import OrdersList from "../../Orders/OrdersList/OrdersList";
 import OrderTable from "../../../components/OrderTable";
+import Info from "./../../../components/Info";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -75,8 +76,6 @@ const ShopDetails = () => {
       } else {
         callApi(id);
       }
-    } else {
-      history.push("/shop/list", { replace: true });
     }
   }, [id]);
 
@@ -88,11 +87,14 @@ const ShopDetails = () => {
     });
     // console.log(banner)
     if (data.status) {
-      console.log(data.data.shop);
-      const activeStatus =
-        data?.data?.shop?.liveStatus == "online" ? true : false;
-      setLiveStatus(activeStatus);
-      setShop(data.data.shop);
+      const { shop } = data.data;
+      if (shop) {
+        const activeStatus = shop?.liveStatus == "online" ? true : false;
+        setLiveStatus(activeStatus);
+        setShop(shop);
+      } else {
+        history.push("/shops/list", { replace: true });
+      }
     }
   };
 
@@ -207,64 +209,41 @@ const ShopDetails = () => {
                         className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
                       >
                         <div className="ps-4">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{shop?.shopName}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Start Time:</h5>
-                            <Value>{shop?.shopStartTimeText}</Value>
-                          </Details>
-                          <Details>
-                            <h5>End Time:</h5>
-                            <Value>{shop?.shopEndTimeText}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Shop Type:</h5>
-                            <Value>{shop?.shopType}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Delivery:</h5>
-                            <Value>{shop?.delivery}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Minimum Order:</h5>
-                            <Value>{shop?.minOrderAmount}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Status:</h5>
-                            <Value>{shop?.shopStatus}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Free Delivery:</h5>
-                            <Value>{shop?.freeDelivery ? "Yes" : "No"}</Value>
-                          </Details>
+                          <Info title="Name" value={shop?.shopName} />
+                          <Info
+                            title="Start Time"
+                            value={shop?.shopStartTimeText}
+                          />
+                          <Info
+                            title="End Time"
+                            value={shop?.shopEndTimeText}
+                          />
+                          <Info title="Shop Type" value={shop?.shopType} />
+                          <Info title="Delivery" value={shop?.delivery} />
+                          <Info
+                            title="Minimum Order"
+                            value={shop?.minOrderAmount}
+                          />
+                          <Info title="Status" value={shop?.shopStatus} />
+                          <Info
+                            title="Free Delivery"
+                            value={shop?.freeDelivery ? "Yes" : "No"}
+                          />
+
                           {shop?.foodType && (
-                            <Details>
-                              <h5>Food Type:</h5>
-                              <Value>{shop?.foodType}</Value>
-                            </Details>
+                            <Info title="Food Type" value={shop?.foodType} />
                           )}
-                          <Details>
-                            <h5>Address:</h5>
-                            <Value>{shop?.address.address}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Phone:</h5>
-                            <Value>{shop?.phone_number}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Email:</h5>
-                            <Value>{shop?.phone_number}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Delivery Fee(per/km):</h5>
-                            <Value>{shop?.deliveryFeePerKm}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Drop Charge(per/km):</h5>
-                            <Value>{shop?.dropChargePerKm}</Value>
-                          </Details>
+                          <Info title="Address" value={shop?.address.address} />
+                          <Info title="Phone" value={shop?.phone_number} />
+                          <Info title="Email" value={shop?.email} />
+                          <Info
+                            title="Delivery Fee(per/km)"
+                            value={shop?.deliveryFeePerKm}
+                          />
+                          <Info
+                            title="Drop Charge(per/km)"
+                            value={shop?.dropChargePerKm}
+                          />
                         </div>
                       </Col>
                     </Row>
@@ -374,14 +353,11 @@ const ShopDetails = () => {
                         className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
                       >
                         <div className="ps-4">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{shop?.seller?.name}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Phone:</h5>
-                            <Value>{shop?.seller?.phone_number}</Value>
-                          </Details>
+                          <Info title="Name" value={shop?.seller?.name} />
+                          <Info
+                            title="Phone"
+                            value={shop?.seller?.phone_number}
+                          />
                         </div>
                       </Col>
                     </Row>

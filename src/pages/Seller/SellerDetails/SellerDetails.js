@@ -21,6 +21,9 @@ import Tooltip from "@mui/material/Tooltip";
 import AppPagination from "../../../components/AppPagination";
 import { deleteShop, getAllShop } from "../../../store/Shop/shopAction";
 import SweetAlert from "react-bootstrap-sweetalert";
+import requestApi from "../../../network/httpRequest";
+import { SINGLE_SELLER } from "../../../network/Api";
+import Info from './../../../components/Info';
 
 const SellerDetails = () => {
   const { id } = useParams();
@@ -47,11 +50,31 @@ const SellerDetails = () => {
         setSeller(findSeller);
       } else {
         console.log("call api");
+        callApi();
       }
-    } else {
-      history.push("/seller/list", { replace: true });
     }
   }, [id]);
+
+  // CALL API
+
+  const callApi = async () => {
+    try {
+      const { data } = await requestApi().request(SINGLE_SELLER, {
+        params: {
+          id,
+        },
+      });
+
+      if (data.status) {
+        const { seller } = data.data;
+        setSeller(seller);
+      } else {
+        history.push("/seller/list", { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // DELETE SHOP
 
@@ -141,48 +164,16 @@ const SellerDetails = () => {
                         className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
                       >
                         <div className="ps-4">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{seller?.name}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Email:</h5>
-                            <Value>{seller?.email}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Gender:</h5>
-                            <Value>{seller?.gender}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Birth Date:</h5>
-                            <Value>
-                              {new Date(seller?.dob).toLocaleDateString()}
-                            </Value>
-                          </Details>
-                          <Details>
-                            <h5>Company:</h5>
-                            <Value>{seller?.company_name}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Bank:</h5>
-                            <Value>{seller?.bank_name}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Account Name:</h5>
-                            <Value>{seller?.account_name}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Account No:</h5>
-                            <Value>{seller?.account_number}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Phone:</h5>
-                            <Value>{seller?.phone_number}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Status:</h5>
-                            <Value>{seller?.status}.</Value>
-                          </Details>
+                          <Info title='Name' value = {seller?.name}  />
+                          <Info title='Email' value = {seller?.email}  />
+                          <Info title='Gender' value = {seller?.gender}  />
+                          <Info title='Birth Date' value = {new Date(seller?.dob).toLocaleDateString()}  />
+                          <Info title='Company' value = {seller?.company_name}  />
+                          <Info title='Bank' value = {seller?.bank_name}  />
+                          <Info title='Account Name' value = {seller?.account_name}  />
+                          <Info title='Account No' value = {seller?.account_number}  />
+                          <Info title='Phone' value = {seller?.phone_number}  />
+                          <Info title='Status' value = {seller?.status}  />
                         </div>
                       </Col>
                     </Row>

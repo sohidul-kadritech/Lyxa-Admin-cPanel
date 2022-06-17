@@ -20,10 +20,13 @@ import {
 } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import  Lightbox  from 'react-image-lightbox';
+import Lightbox from "react-image-lightbox";
+import { useHistory } from "react-router-dom";
+import { Tooltip } from "@mui/material";
 
 const SellerTransactions = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const {
     loading,
@@ -160,7 +163,9 @@ const SellerTransactions = () => {
                             <img
                               onClick={() => {
                                 setIsOpen(true);
-                                setSelectedImg(item?.shop?.seller?.profile_photo);
+                                setSelectedImg(
+                                  item?.shop?.seller?.profile_photo
+                                );
                               }}
                               className="avatar-xs rounded-circle me-2 cursor-pointer"
                               alt=""
@@ -185,6 +190,20 @@ const SellerTransactions = () => {
                           <Td>{item?.status}</Td>
                           <Td style={{ maxWidth: "150px" }}>
                             {item?.adminNote}
+                          </Td>
+                          <Td>
+                            <Tooltip title="Details">
+                              <button
+                                className="btn btn-info button"
+                                onClick={() =>
+                                  history.push(
+                                    `/add-wallet/seller-transactions/details/${item._id}`
+                                  )
+                                }
+                              >
+                                <i className="fa fa-eye" />
+                              </button>
+                            </Tooltip>
                           </Td>
                         </Tr>
                       );

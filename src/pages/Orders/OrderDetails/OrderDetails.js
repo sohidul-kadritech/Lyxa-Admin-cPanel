@@ -177,7 +177,7 @@ const OrderDetails = () => {
                             />
                           </TimelineSeparator>
                           <TimelineContent
-                            color={item?.active ? "#fc4503" : "black"}
+                            color={item?.active ? 'green' : "black"}
                           >
                             {item?.status}
                           </TimelineContent>
@@ -397,7 +397,7 @@ const OrderDetails = () => {
                       </span>
                     </DeliveryAddress>
                     <DeliveryAddress>
-                      <i class="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker"></i>
                       <span className="ms-2 address">
                         {`Country: ${order?.orderDeliveryAddress?.country}`}
                       </span>

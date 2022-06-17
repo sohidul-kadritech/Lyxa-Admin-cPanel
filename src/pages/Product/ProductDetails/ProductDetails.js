@@ -238,7 +238,7 @@ const ProductDetails = () => {
                         </span>
                       </div>
                     </Details>
-                    <Details>
+                    {product?.subCategory && <Details>
                       <h5>Subcategory:</h5>
                       <div className="ms-2">
                         <img
@@ -260,7 +260,8 @@ const ProductDetails = () => {
                           {product?.subCategory?.name}.
                         </span>
                       </div>
-                    </Details>
+                    </Details>}
+                    
                     <Details>
                       <h5>Seller:</h5>
                       <div className="ms-2">

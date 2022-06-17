@@ -20,12 +20,13 @@ import Lightbox from "react-image-lightbox";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { ImageWrapper } from "../../Shops/ShopDetails/ShopDetails";
 import { setDeliveryStatusFalse } from "../../../store/DeliveryMan/DeliveryManAction";
+import Info from "../../../components/Info";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  
+
   const { loading, deliveryMans } = useSelector(
     (state) => state.deliveryManReducer
   );
@@ -36,39 +37,36 @@ const DeliverymanDetails = () => {
 
   useEffect(() => {
     if (id) {
+      dispatch(setDeliveryStatusFalse());
 
-      dispatch(setDeliveryStatusFalse())
-
-      const findMan = deliveryMans.find((man) => man._id === id);
+      const findMan = deliveryMans.find((man) => man._id == id);
       if (findMan) {
         console.log({ findMan });
         setDeliveryMan(findMan);
       } else {
-        callApi(id);
-      }
-    }
-  }, [id]);
-
-  const callApi = async (manId) => {
-    if (manId) {
-      try {
-        const {
-          data: { status, error, data = null },
-        } = await requestApi().request(SINGLE_DELIVERY_MAN, {
-          params: {
-            id: manId,
-          },
-        });
-        if (status) {
-          setDeliveryMan(data.delivery);
-        } else {
-          console.log(error);
-        }
-      } catch (error) {
-        console.log(error.message);
+        callApi();
       }
     } else {
       history.push("/deliveryman/list", { replace: true });
+    }
+  }, [id]);
+
+  const callApi = async () => {
+    try {
+      const {
+        data: { status, error, data = null },
+      } = await requestApi().request(SINGLE_DELIVERY_MAN, {
+        params: {
+          id,
+        },
+      });
+      if (status) {
+        setDeliveryMan(data.delivery);
+      } else {
+        history.push("/deliveryman/list", { replace: true });
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -113,31 +111,23 @@ const DeliverymanDetails = () => {
                     <Row>
                       <Col className="d-flex justify-content-between  align-items-center mt-5 mt-md-0">
                         <div className="ps-4">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{deliveryMan?.name}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Email:</h5>
-                            <Value>{deliveryMan?.email}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Address:</h5>
-                            <Value>{deliveryMan?.address?.address}.</Value>
-                          </Details>
+                          <Info title="Name" value={deliveryMan?.name} />
+                          <Info title="Email" value={deliveryMan?.email} />
+                          <Info
+                            title="Address"
+                            value={deliveryMan?.address?.address}
+                          />
 
-                          <Details>
-                            <h5>Status:</h5>
-                            <Value>{deliveryMan?.status}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Live Status:</h5>
-                            <Value>{deliveryMan?.liveStatus}.</Value>
-                          </Details>
-                          <Details>
-                            <h5>Vahicle Type:</h5>
-                            <Value>{deliveryMan?.vehicleType}.</Value>
-                          </Details>
+                          <Info title="Status" value={deliveryMan?.status} />
+                          <Info
+                            title="Live Status"
+                            value={deliveryMan?.liveStatus}
+                          />
+
+                          <Info
+                            title="Vahicle Type"
+                            value={deliveryMan?.vehicleType}
+                          />
                         </div>
                       </Col>
                     </Row>
@@ -193,7 +183,6 @@ const DeliverymanDetails = () => {
                           />
                           <small>Vahicle Document</small>
                         </ImageWrapper>
-                        
                       </Col>
                     </Row>
                   </CardBody>

@@ -11,19 +11,20 @@ export const socketConnect = () => async (dispatch, getState) => {
         type: actionType.SOCKET_CONNECT_SEND,
       });
 
-      const socket = io('www.example.com', {
+      const socket = io(SOCKET_CONNECTION, {
         transports: ["websocket"],
-        query: {
-          authorization: "authorization",
-          token: localStorage.getItem("accessToken"),
-          type: "admin",
-          platform: "web",
-        },
-      });
+        // query: {
+        //     authorization: "authorization",
+        //     token: localStorage.getItem('accessToken'),
+        //     type: "user",
+        //     platform: "web"
+        // },
+    });
 
-      console.log({ socket });
+    console.log({socket})
 
-      if (socket.connected) {
+
+      
         socket.on("connect", () => {
           console.log("socket connected");
           dispatch({
@@ -31,19 +32,13 @@ export const socketConnect = () => async (dispatch, getState) => {
             payload: socket,
           });
 
-          socket.emit("online", {
-            token: "b",
+          socket.emit("request_drop_room_join", {
+            token: localStorage.getItem("accessToken"),
             type: "admin",
             platform: "web",
           });
         });
-      }else {
-        console.log("not connect")
-        dispatch({
-          type: actionType.SOCKET_CONNECT_FAIL,
-          payload: "socket not connected",
-        });
-      }
+     
     } catch (error) {
       dispatch({
         type: actionType.SOCKET_CONNECT_FAIL,
