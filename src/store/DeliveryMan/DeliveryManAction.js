@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_DELIVERY_MAN,
   ALL_DELIVERY_MAN,
@@ -9,7 +10,7 @@ import * as actionType from "../actionType";
 
 // ADD
 export const addDeliveryMan = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_DELIVERY_MAN_REQUEST_SEND,
@@ -23,33 +24,14 @@ export const addDeliveryMan = (values) => async (dispatch) => {
     });
 
     if (status) {
-      console.log({ data });
-      toast.warn(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(message, 'success')
 
       dispatch({
         type: actionType.ADD_DELIVERY_MAN_REQUEST_SUCCESS,
         payload: data.deliveryBoyFinal,
       });
     } else {
-      toast.warn(error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(error, 'error')
 
       dispatch({
         type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
@@ -91,7 +73,7 @@ export const allDeliveryMan =
         });
 
         if (status) {
-            console.log({ data });
+
           dispatch({
             type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
             payload: data,
@@ -114,7 +96,7 @@ export const allDeliveryMan =
 //   EDIT
 
 export const editDeliveryMan = (values) => async (dispatch) => {
-  // console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_DELIVERY_MAN_REQUEST_SEND,
@@ -128,17 +110,7 @@ export const editDeliveryMan = (values) => async (dispatch) => {
     });
 
     if (status) {
-      // console.log({ data });
-      toast.warn(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(message, 'success')
 
       setTimeout(() => {
         dispatch({
@@ -147,16 +119,8 @@ export const editDeliveryMan = (values) => async (dispatch) => {
         });
       }, [450]);
     } else {
-      toast.warn(error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(error, 'error')
+
 
       dispatch({
         type: actionType.EDIT_DELIVERY_MAN_REQUEST_FAIL,

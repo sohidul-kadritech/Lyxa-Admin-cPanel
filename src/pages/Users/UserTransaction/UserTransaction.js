@@ -194,7 +194,7 @@ const UserTransaction = () => {
                             </Tr>
                           );
                         })}
-                      {/* {loading && (
+                      {loading && (
                         <Tr>
                           <Td>
                             <Spinner
@@ -208,16 +208,16 @@ const UserTransaction = () => {
                             />
                           </Td>
                         </Tr>
-                      )} */}
+                      )}
                     </Tbody>
                   </Table>
                 </div>
 
-                {/* {accounts.length < 1 && !loading && (
+                {transactionList.length < 1 && !loading && (
                   <div className="text-center">
-                    <h3>No Data Found</h3>
+                    <h3>No Data Found!</h3>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
 

@@ -46,7 +46,7 @@ const CategoryAdd = () => {
   useEffect(() => {
     if (id) {
       const findCat = categories.find((item) => item._id == id);
-      // console.log({ findAdmin });
+
       if (findCat) {
          setCategoryData(findCat)
         
@@ -64,7 +64,7 @@ const CategoryAdd = () => {
         id
       },
     });
-    // console.log("from api", data);
+
 
     if (data.status) {
       setCategoryData(data.data.category)
@@ -79,7 +79,6 @@ const CategoryAdd = () => {
     const { name, type, slug, image } = item;
 
     const findTypeObj = shopTypeOptions2.find((x) => x.value == type);
-    //  console.log({adminEmail})
     setName(name);
     setType(findTypeObj);
     setSlug(slug);
@@ -116,14 +115,14 @@ const CategoryAdd = () => {
         setIsLoading(true)
         let formData = new FormData();
         formData.append("image", image);
-        // console.log({formData})
+
         const { data } = await requestApi().request(IMAGE_UPLOAD, {
           method: "POST",
           data: formData,
         });
-        // console.log("image upload", data)
+
         if (data.status) {
-          // submitData(data.data.url);
+
           setIsLoading(false)
           submitData(data.data.url);
         } else {
@@ -199,8 +198,6 @@ const CategoryAdd = () => {
               maintitle="Drop"
               breadcrumbItem={id ? "Update" : "Add"}
               title="Category"
-              // loading={loading}
-              // callList={callCarList}
               isRefresh={false}
             />
 

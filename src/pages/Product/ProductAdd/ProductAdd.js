@@ -26,19 +26,19 @@ import {
   TextField,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSeller } from "../../../store/Seller/sellerAction";
+
 import {
   getAllCategory,
   getAllSubCategory,
   updateCategoryShopType,
 } from "../../../store/Category/categoryAction";
-import styled from "styled-components";
+
 import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
 import {
   addProduct,
   editProduct,
-  getAllProduct,
+
 } from "../../../store/Product/productAction";
 import { getAllShop } from "../../../store/Shop/shopAction";
 import { useParams, useHistory, useLocation, Link } from "react-router-dom";
@@ -52,14 +52,14 @@ const ProductAdd = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { categories, subCategories } = useSelector(
     (state) => state.categoryReducer
   );
-  const { shops, typeKey } = useSelector((state) => state.shopReducer);
+  const { shops } = useSelector((state) => state.shopReducer);
 
   const { loading, products, status } = useSelector(
     (state) => state.productReducer
@@ -102,14 +102,14 @@ const ProductAdd = () => {
     },
   ]);
 
-  // console.log({ attributes });
+
 
   useEffect(() => {
     if (id) {
       const findProduct = products.find((item) => item._id == id);
 
       if (findProduct) {
-        console.log({ findProduct });
+
         setProductValue(findProduct);
       } else {
         callApi(id);
@@ -119,11 +119,11 @@ const ProductAdd = () => {
 
   useEffect(() => {
     if (searchParams) {
-      // console.log('search params')
+
       const shopId = searchParams.get("shopId");
       if (shopId) {
         const findShop = shops.find((item) => item._id == shopId);
-        // console.log({findShop})
+
         setType(findShop.shopType);
         setShop(findShop);
       }
@@ -222,7 +222,7 @@ const ProductAdd = () => {
   // TAGS
 
   const handleTagAdd = (evt) => {
-    // console.log(evt.key);
+
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
@@ -244,7 +244,7 @@ const ProductAdd = () => {
       ...tags,
       value: evt.target.value,
     });
-    // console.log(tags);
+
   };
 
   const handleTagDelete = (item) => {
@@ -268,7 +268,7 @@ const ProductAdd = () => {
       return errorMessage("Please Upload Image");
     }
 
-    // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
+
     uploadImage();
   };
 
@@ -280,15 +280,15 @@ const ProductAdd = () => {
         setIsLoading(true);
         let formData = new FormData();
         formData.append("image", image);
-        // console.log({formData})
+
         const { data } = await requestApi().request(IMAGE_UPLOAD, {
           method: "POST",
           data: formData,
         });
-        // console.log("image upload", data)
+
         setIsLoading(false);
         if (data.status) {
-          // submitData(data.data.url);
+
           submitData(data.data.url);
         } else {
           return errorMessage(data.error);
@@ -335,7 +335,7 @@ const ProductAdd = () => {
       cuisines,
     };
 
-    // console.log({data})
+
     if (id) {
       dispatch(
         editProduct({
@@ -496,7 +496,7 @@ const ProductAdd = () => {
   // ADD ADDON
 
   const addAddonProduct = (item) => {
-    console.log(item);
+
     if (item) {
       setAddons([...addons, item]);
     }
@@ -579,7 +579,7 @@ const ProductAdd = () => {
                           onChange={(event, newValue) => {
                             setShop(newValue);
                             setAddons([]);
-                            // console.log("new", newValue);
+
                           }}
                           getOptionLabel={(option) => option.shopName}
                           isOptionEqualToValue={(option, value) =>
@@ -588,7 +588,7 @@ const ProductAdd = () => {
                           inputValue={searchShopKey}
                           onInputChange={(event, newInputValue) => {
                             setSearchShopKey(newInputValue);
-                            // console.log("input value", newInputValue);
+
                           }}
                           id="controllable-states-demo"
                           options={shops.length > 0 ? shops : []}
@@ -622,7 +622,7 @@ const ProductAdd = () => {
                             value={cuisines}
                             onChange={(event, newValue) => {
                               setCuisines(newValue);
-                              // console.log("new", newValue);
+
                             }}
                             getOptionLabel={(option) =>
                               option.name ? option.name : ""
@@ -633,7 +633,7 @@ const ProductAdd = () => {
                             inputValue={cuisineSearchKey}
                             onInputChange={(event, newInputValue) => {
                               setCuisineSearchKey(newInputValue);
-                              // console.log("input value", newInputValue);
+
                             }}
                             id="controllable-states-demo"
                             options={
@@ -763,7 +763,7 @@ const ProductAdd = () => {
                           disabled={!type ? true : false}
                           onChange={(event, newValue) => {
                             setCategory(newValue);
-                            // console.log("new", newValue);
+    
                           }}
                           getOptionLabel={(option) => option.name}
                           isOptionEqualToValue={(option, value) =>
@@ -772,7 +772,7 @@ const ProductAdd = () => {
                           inputValue={searchCategoryKey}
                           onInputChange={(event, newInputValue) => {
                             setSearchCategoryKey(newInputValue);
-                            // console.log("input value", newInputValue);
+ 
                           }}
                           id="controllable-states-demo"
                           options={categories.length > 0 ? categories : []}
@@ -804,7 +804,7 @@ const ProductAdd = () => {
                             value={subCategory}
                             onChange={(event, newValue) => {
                               setSubCategory(newValue);
-                              // console.log("new", newValue);
+
                             }}
                             getOptionLabel={(option) =>
                               option.name ? option.name : ""
@@ -815,7 +815,7 @@ const ProductAdd = () => {
                             inputValue={searchSubCatKey}
                             onInputChange={(event, newInputValue) => {
                               setSearchSubCatKey(newInputValue);
-                              // console.log("input value", newInputValue);
+
                             }}
                             id="controllable-states-demo"
                             options={
@@ -1132,7 +1132,6 @@ const ProductAdd = () => {
                             inputValue={productSearchKey}
                             onInputChange={(event, newInputValue) => {
                               setProductSearchKey(newInputValue);
-                              // console.log("input value", newInputValue);
                             }}
                             id="controllable-states-demo"
                             options={products.length > 0 ? products : []}

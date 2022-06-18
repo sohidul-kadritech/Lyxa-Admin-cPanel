@@ -14,10 +14,8 @@ import {
   Col,
   Container,
   Row,
-  Spinner,
 } from "reactstrap";
 import Lightbox from "react-image-lightbox";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { ImageWrapper } from "../../Shops/ShopDetails/ShopDetails";
 import { setDeliveryStatusFalse } from "../../../store/DeliveryMan/DeliveryManAction";
 import Info from "../../../components/Info";
@@ -27,7 +25,7 @@ const DeliverymanDetails = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { loading, deliveryMans } = useSelector(
+  const { deliveryMans } = useSelector(
     (state) => state.deliveryManReducer
   );
 

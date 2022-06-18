@@ -17,7 +17,6 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
-import Flatpickr from "react-flatpickr";
 import styled from "styled-components";
 import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
@@ -75,11 +74,11 @@ const SellerAdd = () => {
   useEffect(() => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
-      console.log({ findSeller });
+
       if (findSeller) {
         updateSellerData(findSeller);
       } else {
-        // console.log("call api---");
+
         callApi(id);
       }
     }

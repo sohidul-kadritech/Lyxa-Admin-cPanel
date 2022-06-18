@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { successMsg } from "../../helpers/successMsg";
 import { DELIVERY_TRX, DROP_TRX, GET_DELIVERY_FEE, SELLER_TRX, SET_DELIVERY_FEE } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionTypes from "../actionType";
@@ -19,30 +20,12 @@ export const addDeliveryCharge = (values) => async (dispatch) => {
     console.log({ data: data });
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
       dispatch({
         type: actionTypes.ADD_DELIVERY_FEE_REQUEST_SUCCESS,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
 
       dispatch({
         type: actionTypes.ADD_DELIVERY_FEE_REQUEST_FAIL,

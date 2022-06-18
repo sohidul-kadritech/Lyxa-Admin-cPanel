@@ -6,12 +6,12 @@ import {
 } from "../../../network/Api";
 import * as actionType from "../../actionType";
 import requestApi from "./../../../network/httpRequest";
-import { toast } from "react-toastify";
+import { successMsg } from "../../../helpers/successMsg";
 
 // ADD
 
 export const addAdmin = (adminData) => async (dispatch) => {
-  // console.log({adminData})
+
   try {
     dispatch({
       type: actionType.ADD_ADMIN_REQUEST_SEND,
@@ -22,34 +22,17 @@ export const addAdmin = (adminData) => async (dispatch) => {
       data: adminData,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
+
       dispatch({
         type: actionType.ADD_ADMIN_REQUEST_SUCCESS,
         payload: data.data.admin,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
       dispatch({
         type: actionType.ADD_ADMIN_REQUEST_FAIL,
         payload: data.message,
@@ -68,7 +51,7 @@ export const addAdmin = (adminData) => async (dispatch) => {
 export const getAllAdmin =
   (refresh = false) =>
   async (dispatch, getState) => {
-    // console.log({adminData})
+
     const { admins } = getState().adminReducer;
 
     if ((admins && admins.length < 1 )|| refresh) {
@@ -79,7 +62,7 @@ export const getAllAdmin =
 
         const { data } = await requestApi().request(GET_ALL_ADMIN);
 
-        console.log({ data });
+
 
         if (data.status) {
           dispatch({
@@ -104,7 +87,7 @@ export const getAllAdmin =
 // DELETE
 
 export const deleteAdmin = (value) => async (dispatch) => {
-  // console.log({adminData})
+
 
   try {
     dispatch({
@@ -116,34 +99,16 @@ export const deleteAdmin = (value) => async (dispatch) => {
       data: value,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
       dispatch({
         type: actionType.DELETE_ADMIN_REQUEST_SUCCESS,
         payload: data?.data?.admin,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
       dispatch({
         type: actionType.DELETE_ADMIN_REQUEST_FAIL,
         payload: data.message,
@@ -160,7 +125,7 @@ export const deleteAdmin = (value) => async (dispatch) => {
 // EDIT
 
 export const editAdmin = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_ADMIN_REQUEST_SEND,
@@ -171,20 +136,10 @@ export const editAdmin = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      // console.log("success-----------")
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
 
       setTimeout(() => {
         dispatch({
@@ -193,17 +148,7 @@ export const editAdmin = (values) => async (dispatch) => {
         });
       }, 300);
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
+      successMsg(data.message, "error")
       dispatch({
         type: actionType.EDIT_ADMIN_REQUEST_FAIL,
         paylaod: data.message,

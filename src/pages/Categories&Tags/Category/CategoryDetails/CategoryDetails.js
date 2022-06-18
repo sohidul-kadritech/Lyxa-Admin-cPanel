@@ -87,7 +87,7 @@ const CategoryDetails = () => {
       if (findCategory) {
         setCategory(findCategory);
       } else {
-        // console.log("api------------");
+
         callApi(id);
       }
       //   GET ALL SUB CATEGORY
@@ -113,7 +113,7 @@ const CategoryDetails = () => {
         id: catId,
       },
     });
-    // console.log("from api", data);
+
 
     if (data.status) {
       setCategory(data.data.category);
@@ -155,12 +155,11 @@ const CategoryDetails = () => {
         func(args[0]);
       }, delay);
     };
-    // console.log("yes....");
+
   };
 
   const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
+
     dispatch(updateSubCatSearchKey(event.target.value));
   };
 
@@ -231,14 +230,14 @@ const CategoryDetails = () => {
         setIsLoading(true);
         let formData = new FormData();
         formData.append("image", image);
-        // console.log({formData})
+
         const { data } = await requestApi().request(IMAGE_UPLOAD, {
           method: "POST",
           data: formData,
         });
-        // console.log("image upload", data)
+
         if (data.status) {
-          // submitData(data.data.url);
+
           setIsLoading(false);
           submitData(data.data.url);
         } else {

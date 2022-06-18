@@ -14,7 +14,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Tooltip from "@mui/material/Tooltip";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  deleteSeller,
+
   getAllSeller,
   setSellerStatusFalse,
   updateSellerSearchKey,
@@ -26,13 +26,11 @@ import {
 import AppPagination from "../../../components/AppPagination";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
-import SweetAlert from "react-bootstrap-sweetalert";
 import styled from "styled-components";
 import {
   sellerStatusOptions,
   sellerSubTypeOptions,
   sellerTypeOptions,
-  shopTypeOptions,
   sortByOptions,
 } from "../../../assets/staticData";
 import Select from "react-select";
@@ -44,10 +42,6 @@ const SellerList = () => {
 
   const [isZoom, setIsZoom] = useState(false);
   const [sellerImg, setSellerImg] = useState("");
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
 
   const {
     loading,

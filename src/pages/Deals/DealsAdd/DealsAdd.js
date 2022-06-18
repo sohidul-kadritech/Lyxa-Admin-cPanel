@@ -8,7 +8,6 @@ import {
   Col,
   Container,
   Form,
-  Label,
   Modal,
   Row,
 } from "reactstrap";
@@ -61,10 +60,10 @@ const DealsAdd = () => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
-        // console.log({ findDeal });
+
         updateData(findDeal);
       } else {
-        // console.log("call Api")
+
         callApi(id);
       }
     }
@@ -143,14 +142,14 @@ const DealsAdd = () => {
         try {
           let formData = new FormData();
           formData.append("image", image);
-          // console.log({formData})
+
           const { data } = await requestApi().request(IMAGE_UPLOAD, {
             method: "POST",
             data: formData,
           });
-          // console.log("image upload", data)
+
           if (data.status) {
-            // submitData(data.data.url);
+
             setIsLoading(false);
             url = data.data.url;
           } else {
@@ -334,12 +333,12 @@ const DealsAdd = () => {
                           }
                           isOptionEqualToValue={
                             (option, value) => option._id == value._id
-                            // console.log({value})
+                  
                           }
                           inputValue={tagSearchKey}
                           onInputChange={(event, newInputValue) => {
                             setTagSearchKey(newInputValue);
-                            // console.log("input value", newInputValue);
+        
                           }}
                           id="controllable-states-demo"
                           options={tags.length > 0 ? tags : []}
@@ -532,18 +531,7 @@ const DealsAdd = () => {
             <ImageSelectionDialog
               lisener={(list) => {
                 const image = list[0];
-                // console.log("full image---", carImage);
-                // console.log("")
-                // if (imageId == 1) {
-                //   setCarSmartCardFont(image.path);
-                // }
-                // if (imageId == 2) {
-                //   setCarSmartCardBack(image.path);
-                // }
-                // if (imageId == 3) {
-                //   setCarImages([...carImages, image]);
-                //   // console.log("images---", newArray)
-                // }
+                
 
                 dispatch(removeAllSelectedGalleryImage());
                 setmodal_fullscreen(!modal_fullscreen);

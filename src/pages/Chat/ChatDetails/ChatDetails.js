@@ -20,15 +20,19 @@ import user1 from "../../../assets/images/user1.jpg";
 import SimpleBar from "simplebar-react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { acceptChatReq } from "../../../store/chat/chatAction";
 
 const ChatDetails = () => {
   const { id } = useParams();
+
+  const dispatch = useDispatch();
 
   const { requests } = useSelector((state) => state.chatReducer);
   const  { socket } = useSelector((state) => state.socketReducer);
 
   const [request, setRequest] = useState(null);
+  const  [text, setText] = useState('')
 
   useEffect(() => {
 
@@ -49,9 +53,16 @@ const ChatDetails = () => {
 
   const sendMsg = () =>{
     if(socket) {
-      socket.emit('join_user_and_admin_chat_send', {room: id, message: 'hello'});
+      socket.emit('join_user_and_admin_chat_send', {room: id, message: text});
     }
   }
+
+  // ACCEPT REQUEST
+
+  const handleAccept = () => {
+    // console.log(bannerId)
+    dispatch(acceptChatReq(id));
+  };
 
   return (
     <React.Fragment>
@@ -75,7 +86,7 @@ const ChatDetails = () => {
                     </div>
                     <hr />
                     <div className="chat-conversation">
-                      <SimpleBar style={{ height: "330px" }}>
+                      <SimpleBar style={{ maxHeight: "330px", height: '100%' }}>
                         <ul
                           className="conversation-list"
                           data-simplebar
@@ -133,14 +144,21 @@ const ChatDetails = () => {
                           ))}
                         </ul>
                       </SimpleBar>
-                      {/* {request.status !== 'pending' || request.status !== 'rejected'} 
-                       */}
-                       <Row className="mt-3 pt-1">
+                      {request?.status === 'pending' && (
+                        <div className="text-center py-3">
+                          <h5>Select a option!</h5>
+                          <Button color='primary' outline={true} onClick={handleAccept}>Accept</Button>
+                          <Button color='danger' outline={true} className='ms-3'>Reject</Button>
+                        </div>
+                      ) } 
+                      
+                       {request?.status === 'accepted' && <Row className="mt-3 pt-1">
                         <Col md="9" className="chat-inputbar col-8">
                           <Input
                             type="text"
                             className="chat-input"
                             placeholder="Enter your text"
+                            onChange={(e)=> setText(e.target.value)}
                           />
                         </Col>
                         <Col md="3" className="chat-send col-4">
@@ -155,7 +173,7 @@ const ChatDetails = () => {
                             </Button>
                           </div>
                         </Col>
-                      </Row>
+                      </Row>}
                     </div>
                   </CardBody>
                 </Card>

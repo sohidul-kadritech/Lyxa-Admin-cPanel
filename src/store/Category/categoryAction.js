@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_CATEGORY,
   ADD_SUB_CATEGORY,
@@ -15,7 +16,7 @@ import * as actionType from "../actionType";
 // ADD CATEGORY 
 
 export const addCategory = (values) => async (dispatch) => {
-  // console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_CATEGORY_REQUEST_SEND,
@@ -26,34 +27,14 @@ export const addCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-    // console.log({ data });
-
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
       dispatch({
         type: actionType.ADD_CATEGORY_REQUEST_SUCCESS,
         payload: data.data.category,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
       dispatch({
         type: actionType.ADD_CATEGORY_REQUEST_FAIL,
         payload: data.message,
@@ -70,7 +51,7 @@ export const addCategory = (values) => async (dispatch) => {
 export const getAllCategory =
   (refresh = false, page = 1) =>
   async (dispatch, getState) => {
-    // console.log({adminData})
+
     const { categories,shopType } = getState().categoryReducer;
 
     if (categories.length < 1 || refresh) {
@@ -87,7 +68,7 @@ export const getAllCategory =
           },
         });
 
-        console.log({ data });
+
 
         if (data.status) {
           dispatch({
@@ -112,7 +93,7 @@ export const getAllCategory =
 //   EDIT
 
 export const editCategory = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_CATEGORY_REQUEST_SEND,
@@ -123,20 +104,9 @@ export const editCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
 
     if (data.status) {
-      // console.log("success-----------")
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
 
       setTimeout(() => {
         dispatch({
@@ -145,16 +115,7 @@ export const editCategory = (values) => async (dispatch) => {
         });
       }, 400);
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
 
       dispatch({
         type: actionType.EDIT_CATEGORY_REQUEST_FAIL,
@@ -180,7 +141,7 @@ export const setCatStatusFalse = () => (dispatch) => {
 // ADD SUB CATGEGORY
 
 export const addSubCategory = (values) => async (dispatch) => {
-  // console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_SUB_CATEGORY_REQUEST_SEND,
@@ -191,34 +152,16 @@ export const addSubCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-    // console.log({data})
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
       dispatch({
         type: actionType.ADD_SUB_CATEGORY_REQUEST_SUCCESS,
         payload: data.data.addSubCategory,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
       dispatch({
         type: actionType.ADD_SUB_CATEGORY_REQUEST_FAIL,
         payload: data.message,
@@ -237,7 +180,7 @@ export const addSubCategory = (values) => async (dispatch) => {
 export const getAllSubCategory =
   (refresh = false,  CatId, page = 1) =>
   async (dispatch, getState) => {
-    // console.log({ refresh, page, CatId });
+
     const { subCategories, subStatusKey, subSearchKey } = getState().categoryReducer;
 
     if (subCategories.length < 1 || refresh) {
@@ -256,7 +199,7 @@ export const getAllSubCategory =
           },
         });
 
-        // console.log({ data });
+
 
         if (data.status) {
           dispatch({
@@ -292,20 +235,10 @@ export const editSubCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      // console.log("success-----------")
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
 
       dispatch({
         type: actionType.EDIT_SUB_CATEGORY_REQUEST_SUCCESS,
@@ -313,16 +246,7 @@ export const editSubCategory = (values) => async (dispatch) => {
       });
 
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
 
       dispatch({
         type: actionType.EDIT_SUB_CATEGORY_REQUEST_FAIL,
@@ -350,19 +274,10 @@ export const deleteSubCategory = (id) => async (dispatch) => {
       data: {id},
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success")
 
       dispatch({
         type: actionType.DELETE_SUB_CATEGORY_REQUEST_SUCCESS,
@@ -370,16 +285,7 @@ export const deleteSubCategory = (id) => async (dispatch) => {
 
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error")
       dispatch({
         type: actionType.DELETE_SUB_CATEGORY_REQUEST_FAIL,
         payload: data.message,
@@ -412,7 +318,6 @@ export const updateSubCatStatusKey = (value) => (dispatch) => {
 // UPDTAE CATEGORY  TYPE KEY 
 
 export const updateCategoryShopType = (selectedType) => (dispatch) => {
-  // console.log("selected car type", selectedType);
   dispatch({
     type: actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY,
     payload: selectedType,

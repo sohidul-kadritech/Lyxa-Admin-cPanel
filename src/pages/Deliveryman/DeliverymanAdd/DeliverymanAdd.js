@@ -72,7 +72,7 @@ const DeliverymanAdd = () => {
     if (id) {
       const findDeliveryMan = deliveryMans.find((man) => man._id == id);
       if (findDeliveryMan) {
-        console.log({ findDeliveryMan });
+
         updateData(findDeliveryMan);
         // handleAddressSelect()
       } else {
@@ -91,7 +91,7 @@ const DeliverymanAdd = () => {
         },
       });
       if (status) {
-        console.log(data.delivery);
+
         updateData(data.delivery);
       } else {
       }
@@ -121,7 +121,7 @@ const DeliverymanAdd = () => {
   // ADDRESS CHANGE
 
   const handleAddressChange = (address) => {
-    // console.log("address", address);
+
     setSelectedAddress(address);
   };
 
@@ -225,14 +225,14 @@ const DeliverymanAdd = () => {
     try {
       let formData = new FormData();
       formData.append("image", image);
-      // console.log({formData})
+
       const { data } = await requestApi().request(IMAGE_UPLOAD, {
         method: "POST",
         data: formData,
       });
-      // console.log("image upload", data)
+
       if (data.status) {
-        // submitData(data.data.url);
+
         return data.data.url;
       } else {
         console.log(data.error);

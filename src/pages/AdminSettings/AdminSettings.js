@@ -39,7 +39,7 @@ const AdminSettings = () => {
   // DISPATCH AREA SEARCH KEY
 
   const handleKmAdd = (evt) => {
-    // console.log(evt.key);
+
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 

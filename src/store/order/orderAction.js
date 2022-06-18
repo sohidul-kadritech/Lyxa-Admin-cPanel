@@ -30,7 +30,7 @@ export const getAllOrder = (refresh = false, page = 1, shop) => async (dispatch,
                 },
             });
 
-            console.log({data})
+
 
             if(status){
                 dispatch({
@@ -64,7 +64,7 @@ export const updateOrderSortByKey = (type) => (dispatch) => {
   };
   
   export const updateOrderStartDate = (startDate) => (dispatch) => {
-    console.log({ startDate });
+
     dispatch({
       type: actionType.UPDATE_ORDER_START_DATE_FILTER,
       payload: startDate,
@@ -72,7 +72,7 @@ export const updateOrderSortByKey = (type) => (dispatch) => {
   };
   
   export const updateOrderEndDate = (date) => (dispatch) => {
-    // console.log({ date });
+
     dispatch({
       type: actionType.UPDATE_ORDER_END_DATE_FILTER,
       payload: date,
@@ -80,7 +80,7 @@ export const updateOrderSortByKey = (type) => (dispatch) => {
   };
 
   export const updateOrderType = (data) => (dispatch) => {
-    // console.log({ date });
+
     dispatch({
       type: actionType.UPDATE_ORDER_TYPE_FILTER,
       payload: data,

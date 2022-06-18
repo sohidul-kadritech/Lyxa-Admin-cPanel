@@ -8,7 +8,7 @@ import {
   DELETE_BANNER_REQUEST_FAIL,
 } from "./../actionType";
 import { EDIT_BANNER } from "./../../network/Api";
-import { toast } from "react-toastify";
+import { successMsg } from "../../helpers/successMsg";
 
 // DELETE BANNER REQUEST
 
@@ -30,11 +30,13 @@ export const deleteBanner = (id) => async (dispatch) => {
     // console.log({ status });
 
     if (status) {
+      successMsg(message, 'success')
       dispatch({
         type: DELETE_BANNER_REQUEST_SUCCESS,
         payload: id,
       });
     } else {
+      successMsg(message, 'error')
       dispatch({
         type: DELETE_BANNER_REQUEST_FAIL,
         payload: error,
@@ -105,32 +107,14 @@ export const addBanner = (addData) => async (dispatch, getState) => {
     // console.log({ data });
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, 'success')
 
       dispatch({
         type: actionType.BANNER_ADD_REQUEST_SUCCESS,
         payload: data.data.banner,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, 'error')
       dispatch({
         type: actionType.BANNER_ADD_REQUEST_FAIL,
         payload: data.message,
@@ -170,16 +154,7 @@ export const editBanner = (bannerData) => async (dispatch) => {
     // console.log({ data });
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, 'success')
       setTimeout(() => {
         dispatch({
           type: actionType.GET_EDITED_BANNER,
@@ -187,12 +162,14 @@ export const editBanner = (bannerData) => async (dispatch) => {
         });
       }, [450]);
     } else {
+      successMsg(data.error, 'error')
       dispatch({
         type: actionType.EDIT_BANNER_REQUEST_FAIL,
         payload: data.message,
       });
     }
   } catch (error) {
+    successMsg(error.message, 'error')
     dispatch({
       type: actionType.EDIT_BANNER_REQUEST_FAIL,
       payload: error,

@@ -33,7 +33,6 @@ const AppSettings = () => {
   const updateSettings = () => {
     if (!nearByShopKm) {
       return toast.warn("Enter Near Shop Distance(KM)", {
-        // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
         hideProgressBar: true,
@@ -55,8 +54,6 @@ const AppSettings = () => {
             <Breadcrumb
               maintitle="Drop"
               breadcrumbItem={"App Settings"}
-              // loading={loading}
-              // callList={callCuisineList}
               isRefresh={false}
             />
 

@@ -6,9 +6,9 @@ import {
   Col,
   Container,
   Row,
-  Modal,
+
   Button,
-  CardTitle,
+
   CardBody,
   Spinner,
   Form,
@@ -20,7 +20,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { toast } from "react-toastify";
+
 import { useDispatch } from "react-redux";
 import {
   addAdmin,
@@ -51,10 +51,10 @@ const CreateAdmin = () => {
   useEffect(() => {
     if (id) {
       const findAdmin = admins.find((admin) => admin._id == id);
-      // console.log({ findAdmin });
+
       if (findAdmin) {
         const { email, name, number, status } = findAdmin;
-        //  console.log({adminEmail})
+
         setName(name);
         setEmail(email);
         setPhoneNumber(number);
@@ -73,11 +73,11 @@ const CreateAdmin = () => {
         id,
       },
     });
-    // console.log("from api", data);
+
 
     if (data.status) {
       const { email, name, number, status } = data.data.admin;
-      //  console.log({adminEmail})
+
       setName(name);
       setEmail(email);
       setPhoneNumber(number);

@@ -1,4 +1,5 @@
-import { toast } from "react-toastify";
+
+import { successMsg } from "../../helpers/successMsg";
 import { ADD_PRODUCT, ALL_PRODUCT,DELETE_PRODUCT,EDIT_PRODUCT,ADD_PRODUCT_DEAL } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -7,7 +8,7 @@ import * as actionType from "../actionType";
 // ADD
 
 export const addProduct = (values) => async (dispatch) => {
-    console.log({ values });
+
     try {
       dispatch({
         type: actionType.ADD_PRODUCT_REQUEST_SEND,
@@ -18,34 +19,16 @@ export const addProduct = (values) => async (dispatch) => {
         data: values,
       });
   
-      console.log({ data });
+
   
       if (data.status) {
-        toast.success(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successMsg(data.message, "success");
         dispatch({
           type: actionType.ADD_PRODUCT_REQUEST_SUCCESS,
           payload: data.data.product,
         });
       } else {
-        toast.warn(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successMsg(data.message, "error");
         dispatch({
           type: actionType.ADD_PRODUCT_REQUEST_FAIL,
           payload: data.message,
@@ -64,7 +47,7 @@ export const addProduct = (values) => async (dispatch) => {
 export const getAllProduct =
 (refresh = false, shopId = null, page = 1) =>
 async (dispatch, getState) => {
-  console.log({shopId})
+
   const { products, searchKey, statusKey, typeKey, sortByKey,productVisibilityKey } =
     getState().productReducer;
 
@@ -87,7 +70,7 @@ async (dispatch, getState) => {
         },
       });
 
-      console.log("product list", data);
+
 
       if (data.status) {
         dispatch({
@@ -112,7 +95,7 @@ async (dispatch, getState) => {
 // EDIT
 
 export const editProduct = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_PRODUCT_REQUEST_SEND,
@@ -122,19 +105,11 @@ export const editProduct = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
+ 
 
       setTimeout(() => {
         dispatch({
@@ -143,16 +118,7 @@ export const editProduct = (values) => async (dispatch) => {
         });
       }, 400);
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.EDIT_PRODUCT_REQUEST_FAIL,
         payload: data.message,
@@ -179,35 +145,18 @@ export const deleteProduct = (id) => async (dispatch) => {
       data: {id},
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
+
 
       dispatch({
         type: actionType.DELETE_PRODUCT_REQUEST_SUCCESS,
         payload: data.data.product,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.DELETE_PRODUCT_REQUEST_FAIL,
         payload: data.message,
@@ -225,7 +174,7 @@ export const deleteProduct = (id) => async (dispatch) => {
 // ADD PRODUCT DEAL 
 
 export const addProductDeal = (values) => async (dispatch) => {
-  // console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_PRODUCT_DEAL_REQUEST_SEND,
@@ -236,34 +185,18 @@ export const addProductDeal = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
+
       dispatch({
         type: actionType.ADD_PRODUCT_DEAL_REQUEST_SUCCESS,
         payload: data.data.product
       });
     } else {
-      toast.warn(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
+
       dispatch({
         type: actionType.ADD_PRODUCT_DEAL_REQUEST_FAIL,
         payload: data.message,
@@ -316,7 +249,7 @@ export const updateProductVisibilityByKey = (value) => (dispatch) => {
 // TYPE KEY
 
 export const updateProductType = (selectedType) => (dispatch) => {
-  // console.log("selected car type", selectedType);
+
   dispatch({
     type: actionType.UPDATE_TYPE_KEY,
     payload: selectedType,

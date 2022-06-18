@@ -13,21 +13,19 @@ import {
   Col,
   Container,
   Row,
-  Spinner,
+
   Modal,
 } from "reactstrap";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
-import { Autocomplete, Box, Paper, TextField, Tooltip } from "@mui/material";
-import { getAllDeal, getAllDealForAdd } from "../../../store/Deal/dealAction";
-import { addProductDeal } from "../../../store/Product/productAction";
-import { toast } from "react-toastify";
+import {  Paper,  Tooltip } from "@mui/material";
 import DealForAdd from "../../../components/DealForAdd";
+import Info from './../../../components/Info';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const history = useHistory();
-  const dispatch = useDispatch();
+
 
   const { products, loading, status } = useSelector(
     (state) => state.productReducer
@@ -45,7 +43,7 @@ const ProductDetails = () => {
     if (id) {
       const findProduct = products.find((item) => item._id === id);
       if (findProduct) {
-        console.log(findProduct);
+
         setProduct(findProduct);
       } else {
         callApi(id);
@@ -66,7 +64,7 @@ const ProductDetails = () => {
       });
 
       if (data.status) {
-        console.log(data.data.product);
+
         setProduct(data.data.product);
       } else {
         console.log(data.error);
@@ -158,61 +156,19 @@ const ProductDetails = () => {
                 <Row>
                   <Col xl={4}>
                     <div className="ps-0 ps-xl-3">
-                      <Details>
-                        <h5>Name:</h5>
-                        <Value>{product?.name}.</Value>
-                      </Details>
 
-                      <Details>
-                        <h5>Slug:</h5>
-                        <Value>{product?.slug}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Visibility:</h5>
-                        <Value>
-                          {product?.productVisibility ? "Yes" : "No"}.
-                        </Value>
-                      </Details>
-
-                      <Details>
-                        <h5>Type:</h5>
-                        <Value>{product?.type}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Minimum Order:</h5>
-                        <Value>{product?.orderQuantityMinimum}.</Value>
-                      </Details>
-                      <Details>
-                        <h5>Featured:</h5>
-                        <Value>{product?.isFeatured ? "Yes" : "No"}.</Value>
-                      </Details>
+                      <Info title="Name" value={product?.name} />
+                      <Info title="Visibility" value={product?.productVisibility ? "Yes" : "No"} />
+                      <Info title="Type" value={product?.type} />
+                      <Info title="Minimum Order" value={product?.orderQuantityMinimum} />
+                      <Info title="Featured" value={product?.isFeatured ? "Yes" : "No"} />
                     </div>
                   </Col>
                   <Col xl={4}>
-                    <Details>
-                      <h5>Price:</h5>
-                      <Value>{product?.price}.</Value>
-                    </Details>
-                    <Details>
-                      <h5>Previous Price:</h5>
-                      <Value>{product?.previousPrice}.</Value>
-                    </Details>
-                    <Details>
-                      <h5>Delivery Time(Min):</h5>
-                      <Value>{product?.minDeliveryTime}.Min</Value>
-                    </Details>
-                    <Details>
-                      <h5>Delivery Time(Max):</h5>
-                      <Value>{product?.maxDeliveryTime}Min.</Value>
-                    </Details>
-                    <Details>
-                      <h5>Status:</h5>
-                      <Value>{product?.status}.</Value>
-                    </Details>
-                    <Details>
-                      <h5>Free Delivery:</h5>
-                      <Value>{product?.freeDelivery ? "Yes" : "No"}.</Value>
-                    </Details>
+                  <Info title="Price" value={product?.price} />
+                  <Info title="Previous Price" value={product?.previousPrice} />
+                  <Info title="Status" value={product?.status} />
+                  <Info title="Free Delivery" value={product?.freeDelivery ? "Yes" : "No"} />
                   </Col>
                   <Col xl={4}>
                     <Details>

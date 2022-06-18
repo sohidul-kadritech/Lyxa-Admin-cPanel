@@ -34,11 +34,6 @@ const Chat = () => {
     (state) => state.chatReducer
   );
 
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
-  const [reqId, setReqId] = useState(null)
  
   useEffect(() => {
     if (sortByKey || typeKey) {
@@ -50,10 +45,7 @@ const Chat = () => {
     dispatch(getAllChat(refresh));
   };
 
-  const handleAccept = () => {
-    // console.log(bannerId)
-    dispatch(acceptChatReq(reqId));
-  };
+  
 
   return (
     <React.Fragment>
@@ -67,17 +59,6 @@ const Chat = () => {
               callList={callChatList}
             />
 
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
 
             <Card>
               <CardBody>
@@ -151,19 +132,6 @@ const Chat = () => {
 
                           <Td>
                             <div>
-                              {item?.status === "pending" && (
-                                <Tooltip title="Accept">
-                                  <button
-                                    className="btn btn-success button me-2"
-                                    onClick={() => {
-                                      setconfirm_alert(true);
-                                      setReqId(item._id);
-                                    }}
-                                  >
-                                    <i className="fa fa-check" />
-                                  </button>
-                                </Tooltip>
-                              )}
                               <Tooltip title="Details">
                                 <button
                                   className="btn btn-info button me-2"
@@ -177,28 +145,7 @@ const Chat = () => {
                                 </button>
                                 
                               </Tooltip>
-                              {confirm_alert ? (
-                                  <SweetAlert
-                                    title="Are you sure?"
-                                    warning
-                                    showCancel
-                                    confirmButtonText="Yes, Accept it!"
-                                    confirmBtnBsStyle="success"
-                                    cancelBtnBsStyle="danger"
-                                    onConfirm={() => {
-                                      handleAccept();
-                                      setconfirm_alert(false);
-                                      setsuccess_dlg(true);
-                                      setdynamic_title("Accepted");
-                                      setdynamic_description(
-                                        "User request accepted."
-                                      );
-                                    }}
-                                    onCancel={() => setconfirm_alert(false)}
-                                  >
-                                    You won't be able to revert this!
-                                  </SweetAlert>
-                                ) : null}
+                           
                             </div>
                           </Td>
                         </Tr>

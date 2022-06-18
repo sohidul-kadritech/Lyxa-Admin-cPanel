@@ -12,10 +12,11 @@ import {
   EDIT_SHOP,
   SHOP_LIVE_STATUS,
 } from "../../network/Api";
+import { successMsg } from "../../helpers/successMsg";
 
 // ADD
 export const addShop = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_SHOP_REQUEST_SEND,
@@ -25,35 +26,18 @@ export const addShop = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
 
     if (data.status) {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
+
 
       dispatch({
         type: actionType.ADD_SHOP_REQUEST_SUCCESS,
         payload: data.data.shop,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
+
       dispatch({
         type: actionType.ADD_SHOP_REQUEST_FAIL,
         payload: data.message,
@@ -72,7 +56,7 @@ export const addShop = (values) => async (dispatch) => {
 export const getAllShop =
   (refresh = false, seller = null, page = 1) =>
   async (dispatch, getState) => {
-    // console.log({adminData})
+
     const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } =
       getState().shopReducer;
 
@@ -95,7 +79,7 @@ export const getAllShop =
           },
         });
 
-        // console.log({ data });
+
 
         if (data.status) {
           dispatch({
@@ -120,7 +104,7 @@ export const getAllShop =
 // EDIT
 
 export const editShop = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_SHOP_REQUEST_SEND,
@@ -130,19 +114,10 @@ export const editShop = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
 
       setTimeout(() => {
         dispatch({
@@ -151,16 +126,7 @@ export const editShop = (values) => async (dispatch) => {
         });
       }, 400);
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.EDIT_SHOP_REQUEST_FAIL,
         payload: data.message,
@@ -186,35 +152,17 @@ export const deleteShop = (id) => async (dispatch) => {
       data: { id },
     });
 
-    // console.log({ data });
+
 
     if (data.status) {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
 
       dispatch({
         type: actionType.DELETE_SHOP_REQUEST_SUCCESS,
         payload: id,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.DELETE_SHOP_REQUEST_FAIL,
         payload: data.message,
@@ -231,7 +179,7 @@ export const deleteShop = (id) => async (dispatch) => {
 // ADD PRODUCT DEAL 
 
 export const addShopDeal = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_SHOP_DEAL_REQUEST_SEND,
@@ -242,34 +190,16 @@ export const addShopDeal = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
       dispatch({
         type: actionType.ADD_SHOP_DEAL_REQUEST_SUCCESS,
         payload: data.data.shop
       });
     } else {
-      toast.warn(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.ADD_SHOP_DEAL_REQUEST_FAIL,
         payload: data.message,
@@ -294,35 +224,18 @@ export const ShopLiveStatus = (value) => async (dispatch) => {
       data: value,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
+
 
       dispatch({
         type: actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS,
         payload: data.data.shop,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.SHOP_LIVE_STATUS_REQUEST_FAIL,
         payload: data.data.shop,
@@ -374,7 +287,7 @@ export const updateSortByKey = (value) => (dispatch) => {
 // type key
 
 export const updateShopType = (selectedType) => (dispatch) => {
-  // console.log("selected car type", selectedType);
+
   dispatch({
     type: actionType.UPDATE_TYPE_KEY,
     payload: selectedType,
@@ -382,7 +295,7 @@ export const updateShopType = (selectedType) => (dispatch) => {
 };
 
 export const updateShopLiveStatus = (value) => (dispatch) => {
-  // console.log("selected car type", selectedType);
+
   dispatch({
     type: actionType.UPDATE_SHOP_LIVE_STATUS,
     payload: value,
@@ -392,7 +305,7 @@ export const updateShopLiveStatus = (value) => (dispatch) => {
 // ADD CUISINES
 
 export const addCuisine = (name) => async (dispatch) => {
-  // console.log({ name });
+
   try {
     dispatch({
       type: actionType.ADD_CUISINE_REQUEST_SEND,
@@ -405,34 +318,17 @@ export const addCuisine = (name) => async (dispatch) => {
       data: { name },
     });
 
-    // console.log({ data });
+
 
     if (status) {
-      toast.warn(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(message, "success");
+  
       dispatch({
         type: actionType.ADD_CUISINE_REQUEST_SUCCESS,
         payload: data.cuisines,
       });
     } else {
-      toast.warn(error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(error, "error");
       dispatch({
         type: actionType.ADD_CUISINE_REQUEST_FAIL,
         paylaod: error,
@@ -460,7 +356,7 @@ export const getAllCuisine = (refresh) => async (dispatch, getState) => {
         data: { status, error, data = null },
       } = await requestApi().request(ALL_CUISINE);
 
-      // console.log({ data });
+
 
       if (status) {
         dispatch({
@@ -498,34 +394,16 @@ export const editCuisine = (values) => async (dispatch) => {
       data: values
     });
 
-    // console.log({ data });
+
 
     if (status) {
-      toast.success(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(message, "success");
       dispatch({
         type: actionType.EDIT_CUISINE_REQUEST_SUCCESS,
         payload: data.cuisines,
       });
     } else {
-      toast.warn(error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(error, "error");
       dispatch({
         type: actionType.EDIT_CUISINE_REQUEST_FAIL,
         paylaod: error,

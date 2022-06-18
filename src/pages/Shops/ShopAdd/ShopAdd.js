@@ -124,10 +124,9 @@ const ShopAdd = () => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
-        console.log({ findShop });
         updateData(findShop);
       } else {
-        // console.log("call api-------");
+
         callApi(id);
       }
     }
@@ -139,9 +138,9 @@ const ShopAdd = () => {
         id: shopId,
       },
     });
-    // console.log(banner)
+
     if (data.status) {
-      console.log("single shop from api", data.data.shop);
+
       updateData(data.data.shop);
     } else {
       history.push("/shop/list", { replace: true });
@@ -207,7 +206,7 @@ const ShopAdd = () => {
   // TAGS
 
   const handleTagAdd = (evt) => {
-    // console.log(evt.key);
+
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
@@ -227,7 +226,7 @@ const ShopAdd = () => {
       ...tags,
       value: evt.target.value,
     });
-    // console.log(tags);
+
   };
 
   const handleTagDelete = (item) => {
@@ -299,14 +298,14 @@ const ShopAdd = () => {
     try {
       let formData = new FormData();
       formData.append("image", image);
-      // console.log({formData})
+
       const { data } = await requestApi().request(IMAGE_UPLOAD, {
         method: "POST",
         data: formData,
       });
-      // console.log("image upload", data)
+
       if (data.status) {
-        // submitData(data.data.url);
+
         return data.data.url;
       } else {
         console.log(data.error);
@@ -319,7 +318,7 @@ const ShopAdd = () => {
   // DISPACTH DATA
 
   const submitData = (logoUrl, bannerUrl, photosUrl) => {
-    // console.log("given data---", data);
+
     const cuisinesList = selectedCuisines?.map((item) => item?._id);
     if (id) {
       dispatch(
@@ -417,12 +416,12 @@ const ShopAdd = () => {
   // ADDRESS CHANGE
 
   const handleAddressChange = (address) => {
-    // console.log("address", address);
+
     setSelectedAddress(address);
   };
 
   const handleAddressSelect = (address, placeId) => {
-    // console.log("select-------------", address, placeId);
+
     setSelectedAddress(address);
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
@@ -512,7 +511,7 @@ const ShopAdd = () => {
   // CUISINES ADD
 
   const addNewCuisine = (item) => {
-    // console.log({ item });
+
     setSelectedCuisines([...selectedCuisines, item]);
   };
 
@@ -561,19 +560,19 @@ const ShopAdd = () => {
                       value={seller}
                       onChange={(event, newValue) => {
                         setSeller(newValue);
-                        // console.log("new", newValue);
+
                       }}
                       getOptionLabel={(option, index) =>
                         option.name ? option.name : ""
                       }
                       isOptionEqualToValue={
                         (option, value) => option?._id == value?._id
-                        // console.log({value})
+
                       }
                       inputValue={searchSellerKey}
                       onInputChange={(event, newInputValue) => {
                         setSearchSellerKey(newInputValue);
-                        // console.log("input value", newInputValue);
+
                       }}
                       id="controllable-states-demo"
                       options={sellers.length > 0 ? sellers : []}
@@ -965,19 +964,19 @@ const ShopAdd = () => {
                             className="cursor-pointer"
                             onChange={(event, newValue) => {
                               addNewCuisine(newValue);
-                              // console.log("new", newValue);
+
                             }}
                             getOptionLabel={(option, index) =>
                               option.name ? option.name : ""
                             }
                             isOptionEqualToValue={
                               (option, value) => option._id == value._id
-                              // console.log({value})
+
                             }
                             inputValue={searchCuisineKey}
                             onInputChange={(event, newInputValue) => {
                               setSearchCuisineKey(newInputValue);
-                              // console.log("input value", newInputValue);
+
                             }}
                             id="controllable-states-demo"
                             options={cuisines.length > 0 ? cuisines : []}

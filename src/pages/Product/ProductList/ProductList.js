@@ -9,7 +9,6 @@ import {
   Col,
   Container,
   Row,
-  Spinner,
 } from "reactstrap";
 import Select from "react-select";
 import {
@@ -26,16 +25,14 @@ import {
   updateProductStatusKey,
   updateProductType,
   updateProductVisibilityByKey,
-  deleteProduct,
 } from "../../../store/Product/productAction";
 import AppPagination from "../../../components/AppPagination";
-import { useHistory } from "react-router-dom";
 import Search from './../../../components/Search';
 import ProductTable from "../../../components/ProductTable";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+
 
   const {
     searchKey,

@@ -7,10 +7,10 @@ import {
   EDIT_SELLER,
 } from "../../network/Api";
 import { toast } from "react-toastify";
+import { successMsg } from "../../helpers/successMsg";
 
 // ADD
 export const addSeller = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SELLER_REQUEST_SEND,
@@ -20,53 +20,23 @@ export const addSeller = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
-
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
 
       dispatch({
         type: actionType.ADD_SELLER_REQUEST_SUCCESS,
         payload: data.data.seller,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.ADD_SELLER_REQUEST_FAIL,
         payload: data.error,
       });
     }
   } catch (error) {
-    toast.warn(error.message, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    successMsg(error.message, "error");
     dispatch({
-      
       type: actionType.ADD_SELLER_REQUEST_FAIL,
       payload: error.message,
     });
@@ -78,7 +48,6 @@ export const addSeller = (values) => async (dispatch) => {
 export const getAllSeller =
   (refresh = false, page = 1) =>
   async (dispatch, getState) => {
-    // console.log({adminData})
     const { sellers, sortByKey, searchKey, statusKey, typeKey, subTypeKey } =
       getState().sellerReducer;
 
@@ -96,11 +65,9 @@ export const getAllSeller =
             sellerStatus: statusKey.value,
             sellerType: typeKey.value,
             subType: subTypeKey.value,
-            searchKey
+            searchKey,
           },
         });
-
-        console.log({ data });
 
         if (data.status) {
           dispatch({
@@ -125,7 +92,6 @@ export const getAllSeller =
 // EDIT
 
 export const editSeller = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_SELLER_REQUEST_SEND,
@@ -135,19 +101,8 @@ export const editSeller = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
-
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
 
       setTimeout(() => {
         dispatch({
@@ -156,16 +111,8 @@ export const editSeller = (values) => async (dispatch) => {
         });
       }, 450);
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
+
       dispatch({
         type: actionType.EDIT_SELLER_REQUEST_FAIL,
         payload: data.message,
@@ -191,35 +138,16 @@ export const deleteSeller = (id) => async (dispatch) => {
       data: { id },
     });
 
-    console.log({ data });
-
     if (data.status) {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "success");
+ 
 
       dispatch({
         type: actionType.DELETE_SELLER_REQUEST_SUCCESS,
         payload: data.data.seller,
       });
     } else {
-      toast.warn(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.DELETE_SELLER_REQUEST_FAIL,
         payload: data.message,
@@ -253,7 +181,6 @@ export const updateSellerSortByKey = (value) => (dispatch) => {
 // UPDATE SELLER TYPE
 
 export const updateSellerType = (selectedType) => (dispatch) => {
-  // console.log("selected car type", selectedType);
   dispatch({
     type: actionType.UPDATE_TYPE_KEY,
     payload: selectedType,

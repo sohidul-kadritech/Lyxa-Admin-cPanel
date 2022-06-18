@@ -47,7 +47,7 @@ const DealsList = () => {
     }
   }, [type]);
 
-  console.log({type})
+
 
   const callDealList = (refresh = false) => {
     dispatch(getAllDeal(refresh));

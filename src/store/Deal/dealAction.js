@@ -1,4 +1,5 @@
-import { toast } from 'react-toastify';
+
+import { successMsg } from '../../helpers/successMsg';
 import { ADD_DEAL, ALL_DEAL_FOR_ADD, ALL_TAG, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
 import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType';
@@ -6,7 +7,7 @@ import * as actionType from '../actionType';
 // ADD
 
 export const addDeal = (values) => async (dispatch) => {
-    console.log({ values });
+
     try {
       dispatch({
         type: actionType.ADD_DEAL_REQUEST_SEND,
@@ -16,35 +17,17 @@ export const addDeal = (values) => async (dispatch) => {
         data: values,
       });
   
-      console.log({ data });
+
   
       if (data.status) {
-        toast.success(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successMsg(data.message, "success");
   
         dispatch({
           type: actionType.ADD_DEAL_REQUEST_SUCCESS,
           payload: data.data.deal,
         });
       } else {
-        toast.warn(data.error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successMsg(data.message, "error");
         dispatch({
           type: actionType.ADD_DEAL_REQUEST_FAIL,
           payload: data.error,
@@ -75,7 +58,7 @@ export const addDeal = (values) => async (dispatch) => {
           }
         });
     
-        console.log({ data });
+
     
         if (data.status) {
 
@@ -102,7 +85,7 @@ export const addDeal = (values) => async (dispatch) => {
   // EDIT 
 
   export const editDeal = (values) => async (dispatch) => {
-    console.log({ values });
+
     try {
       dispatch({
         type: actionType.EDIT_DEAL_REQUEST_SEND,
@@ -112,20 +95,10 @@ export const addDeal = (values) => async (dispatch) => {
         data: values,
       });
   
-      console.log({ data });
+
   
       if (data.status) {
-        toast.success(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-  
+        successMsg(data.message, "success");
         setTimeout(()=>{
           dispatch({
             type: actionType.EDIT_DEAL_REQUEST_SUCCESS,
@@ -133,16 +106,7 @@ export const addDeal = (values) => async (dispatch) => {
           });
         },450)
       } else {
-        toast.warn(data.error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successMsg(data.error, "error");
         dispatch({
           type: actionType.EDIT_DEAL_REQUEST_FAIL,
           payload: data.error,
@@ -169,19 +133,11 @@ export const addDeal = (values) => async (dispatch) => {
         data: id,
       });
   
-      console.log({ data });
+
   
       if (data.status) {
-        toast.success(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successMsg(data.message, "success")
+
   
 
           dispatch({
@@ -190,16 +146,7 @@ export const addDeal = (values) => async (dispatch) => {
           });
   
       } else {
-        toast.warn(data.error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successMsg(data.error, "error")
         dispatch({
           type: actionType.DELETE_DEAL_REQUEST_FAIL,
           payload: data.error,
@@ -216,7 +163,7 @@ export const addDeal = (values) => async (dispatch) => {
   // GET ALL FOR SHOP AND PRODUCCT
 
   export const getAllDealForAdd = (type, shopType) => async (dispatch,getState) => {
-    console.log({type, shopType})
+
       try {
         dispatch({
           type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND,
@@ -228,7 +175,7 @@ export const addDeal = (values) => async (dispatch) => {
           }
         });
     
-        console.log({ data });
+
     
         if (data.status) {
 
@@ -278,7 +225,7 @@ export const addDeal = (values) => async (dispatch) => {
         }
       });
   
-      console.log({ data });
+
   
       if (data.status) {
         dispatch({

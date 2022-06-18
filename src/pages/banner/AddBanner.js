@@ -96,12 +96,9 @@ const AddBanner = () => {
     if (id) {
       const findBanner = list.find((item) => item?._id === id);
       if (findBanner) {
-        console.log({ findBanner });
-
         updateBannerData(findBanner);
       } else {
         callApi(id);
-        // console.log("Call Api");
       }
     }
   }, [id]);
@@ -153,9 +150,7 @@ const AddBanner = () => {
 
   const callApi = async (id) => {
     const { data } = await requestApi().request(GET_SINGLE_BANNER + id);
-    // console.log(banner)
     if (data.status) {
-      console.log("banner", data.data.banner);
       updateBannerData(data.data.banner);
       //   setDescriptionText(convertToText)
     } else {
@@ -164,10 +159,8 @@ const AddBanner = () => {
   };
 
   const handleEditorChange = (state) => {
-    // console.log(state)
     setEditorState(state);
     let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-    // console.log(currentContentAsHTML);
     setDescription(currentContentAsHTML);
   };
   // VALIDATION
@@ -181,10 +174,6 @@ const AddBanner = () => {
     if (!image) {
       return WarningMessage("Please Select a Image");
     }
-
-    // console.log(typeof image);
-
-    // dispatch(imageUpload(image, "banner"));
 
     uploadImage();
   };
@@ -207,7 +196,6 @@ const AddBanner = () => {
   // UPLOAD IMAGE TO SERVER
 
   const uploadImage = async () => {
-    // console.log({image})
     if (typeof image == "string") {
       submitData(image);
     } else {
@@ -215,12 +203,10 @@ const AddBanner = () => {
       try {
         let formData = new FormData();
         formData.append("image", image);
-        // console.log({formData})
         const { data } = await requestApi().request(IMAGE_UPLOAD, {
           method: "POST",
           data: formData,
         });
-        // console.log("image upload", data)
         if (data.status) {
           setIsLoading(false);
           submitData(data.data.url);
@@ -245,7 +231,6 @@ const AddBanner = () => {
       productId: clickableProduct?._id,
       shopIdForClickGo: clickableShop?._id,
     };
-    // console.log({data})
     if (id) {
       dispatch(
         editBanner({
@@ -367,7 +352,6 @@ const AddBanner = () => {
                           value={shop}
                           onChange={(event, newValue) => {
                             setShop(newValue);
-                            // console.log("new", newValue);
                           }}
                           getOptionLabel={(option) =>
                             option.shopName ? option.shopName : ""
@@ -378,7 +362,7 @@ const AddBanner = () => {
                           inputValue={searchShopKey}
                           onInputChange={(event, newInputValue) => {
                             setSearchShopKey(newInputValue);
-                            // console.log("input value", newInputValue);
+
                           }}
                           id="controllable-states-demo"
                           options={shops.length > 0 ? shops : []}
@@ -505,7 +489,7 @@ const AddBanner = () => {
                             value={clickableShop}
                             onChange={(event, newValue) => {
                               setClickableShop(newValue);
-                              // console.log("new", newValue);
+
                             }}
                             getOptionLabel={(option) =>
                               option.shopName ? option.shopName : ""
@@ -516,7 +500,7 @@ const AddBanner = () => {
                             inputValue={searchShopKey}
                             onInputChange={(event, newInputValue) => {
                               setSearchShopKey(newInputValue);
-                              // console.log("input value", newInputValue);
+
                             }}
                             id="controllable-states-demo"
                             options={shops.length > 0 ? shops : []}
@@ -547,7 +531,7 @@ const AddBanner = () => {
                             value={clickableProduct}
                             onChange={(event, newValue) => {
                               setClickableProduct(newValue);
-                              // console.log("new", newValue);
+
                             }}
                             getOptionLabel={(option) =>
                               option.name ? option.name : ""
@@ -558,7 +542,7 @@ const AddBanner = () => {
                             inputValue={searchShopKey}
                             onInputChange={(event, newInputValue) => {
                               setSearchShopKey(newInputValue);
-                              // console.log("input value", newInputValue);
+
                             }}
                             id="controllable-states-demo"
                             options={products.length > 0 ? products : []}
