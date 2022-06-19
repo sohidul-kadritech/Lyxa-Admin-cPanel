@@ -37,6 +37,7 @@ import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_DELIVERY_MAN } from "../../../network/Api";
 import { useHistory } from "react-router-dom";
 import Dropzone from "react-dropzone";
+import formatBytes from "../../../common/imageFormatBytes";
 
 const DeliverymanAdd = () => {
   const dispatch = useDispatch();
@@ -251,7 +252,7 @@ const DeliverymanAdd = () => {
           id,
           name,
           email,
-          phone,
+          number: phone,
           status: activeStatus.value,
           vehicleType: vehicleType.value,
           vehicle_number: vehicleNum,
@@ -265,7 +266,7 @@ const DeliverymanAdd = () => {
           name,
           email,
           password,
-          phone,
+         number: phone,
           address: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -311,18 +312,7 @@ const DeliverymanAdd = () => {
     }
   }, [status]);
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
 
   // IMAGE
 

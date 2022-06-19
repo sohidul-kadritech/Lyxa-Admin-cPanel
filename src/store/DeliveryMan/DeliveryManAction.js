@@ -109,6 +109,8 @@ export const editDeliveryMan = (values) => async (dispatch) => {
       data: values,
     });
 
+    console.log({data})
+
     if (status) {
       successMsg(message, 'success')
 
