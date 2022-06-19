@@ -165,6 +165,14 @@ export const ChatOPtions = [
   { label: "Rejected", value: "rejected" },
 ];
 
+export const orderStatusOptions = [
+  { label: "Accepted delivery boy", value: "accepted_delivery_boy" },
+  { label: "Preparing", value: "preparing" },
+  { label: "Ready to pickup", value: "ready_to_pickup" },
+  { label: "On the way", value: "order_on_the_way" },
+  { label: "Delivered", value: "delivered" },
+]
+
 export const logoSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

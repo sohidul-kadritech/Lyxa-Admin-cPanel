@@ -50,6 +50,30 @@ const orderReducer = (state = initialState, action) => {
         error: payload,
       };
 
+      // UPDATE STATUS
+
+      case actionType.ORDER_UPDATE_STATUS_REQUEST_SEND:
+      return {
+        ...state,
+          loading: true,
+          status: false,
+          error: null
+      };
+
+      case actionType.ORDER_UPDATE_STATUS_REQUEST_SUCCESS:
+      return {
+        ...state,
+          loading: false,
+          status: true
+      };
+
+      case actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL:
+      return {
+        ...state,
+          loading: false,
+          error: payload
+      };
+
 
     // FILTERS
     case actionType.UPDATE_ORDER_SORT_BY_FILTER:
@@ -85,6 +109,8 @@ const orderReducer = (state = initialState, action) => {
         ...state,
         orderSearchKey: payload,
       };
+
+
 
     default:
       return state;

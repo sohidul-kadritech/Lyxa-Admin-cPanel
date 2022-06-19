@@ -176,7 +176,7 @@ const OrdersList = () => {
             </Card>
 
             <div>
-              <OrderTable orders={orders} loading={loading} />
+              <OrderTable  />
             </div>
             <Row>
               <Col xl={12}>

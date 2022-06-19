@@ -144,6 +144,7 @@ export const DROP_TRX = ADMIN_ENDPOINT + "/wallet/admin"
 // ORDERS
 
 export const ORDER_LIST = ADMIN_ENDPOINT + "/order";
+export const ORDRE_UPDATE_STATUS = ADMIN_ENDPOINT + "/order/update-order-status"
 
 // CHAT
 

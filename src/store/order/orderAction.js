@@ -1,6 +1,7 @@
-import { ORDER_LIST } from "../../network/Api";
+import { ORDER_LIST, ORDRE_UPDATE_STATUS } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType"
+import { successMsg } from './../../helpers/successMsg';
 
 // GET ALL ORDER
 
@@ -50,6 +51,45 @@ export const getAllOrder = (refresh = false, page = 1, shop) => async (dispatch,
             });
         }
     }
+}
+
+// ORDER UPDATE STATUS 
+
+export const orderUpdateStatus = (values) => async dispatch =>{
+  try{
+    dispatch({
+      type: actionType.ORDER_UPDATE_STATUS_REQUEST_SEND,
+    });
+
+    const {
+      data: { status,message, error, data = null },
+    } = await requestApi().request(ORDRE_UPDATE_STATUS, {
+      method: "POST",
+      data: values,
+    });
+
+
+    console.log({data})
+
+    if(status){
+      successMsg(message, 'success')
+      dispatch({
+        type: actionType.ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
+        payload: data,
+      });
+    }else{
+      successMsg(error, 'error')
+      dispatch({
+        type: actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL,
+        payload: error,
+      });
+    }
+  }catch(error){
+    dispatch({
+      type: actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
 }
 
 
