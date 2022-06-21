@@ -129,11 +129,13 @@ const DeliveryTransactions = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Delivery Boy</Th>
+                      <Th>Name</Th>
                       <Th>Amount</Th>
-                      <Th>Status</Th>
+                      <Th>Payment Method</Th>
                       <Th>admin Note</Th>
                       <Th>User Note</Th>
+                      <Th>User Note</Th>
+
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
@@ -150,7 +152,7 @@ const DeliveryTransactions = () => {
                           <Th>{item?.deliveryBoy?.name}</Th>
 
                           <Td>{item?.amount}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td>{item?.paymentMethod}</Td>
                           <Td style={{ maxWidth: "150px" }}>
                             {item?.adminNote}
                           </Td>

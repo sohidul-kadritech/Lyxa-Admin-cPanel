@@ -165,6 +165,7 @@ import ChatDetails from "../pages/Chat/ChatDetails/ChatDetails";
 import DropTransactions from "../pages/AppWallet/dropTransactions/DropTransactions";
 import SellerTransactionDetails from "../pages/AppWallet/SellerTransactions/SellerTransactionDetails";
 import DeliveryTransactionsDetails from "../pages/AppWallet/DeliveryTransactions/DeliveryTransactionsDetails";
+import DropTransactionsDetails from "../pages/AppWallet/dropTransactions/dropTransactionsDetails";
 
 
 const userRoutes = [
@@ -245,6 +246,7 @@ const userRoutes = [
   {path: "/add-wallet/delivery-transactions/details/:id", component: DeliveryTransactionsDetails},
   {path: "/add-wallet/payments-history", component: PaymentHistory},
   {path: "/add-wallet/drop-transactions", component: DropTransactions},
+  {path: "/add-wallet/drop-transactions/details/:id", component: DropTransactionsDetails},
 
   // CHAT
 

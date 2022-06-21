@@ -6,29 +6,7 @@ const init = {
   error: null,
   status: false,
   deliveryFee: null,
-  sellerTrxs: [
-    {
-      _id: "62a8c6f172edafc6e13188f5",
-
-      shop: {
-        seller: {
-          name: "seller name",
-          profile_photo: "url",
-          _id: "626b7b182a152dec55900b3f"
-        },
-        shopName: "shopName",
-        shopLogo: "logo url",
-        _id: "627e697325b67e6b397c6c27"
-      },
-      amount: 1800,
-      status: "success",
-      adminNote: "Shop Order Completed",
-      isRefund: false,
-      createdAt: "2022-06-14T17:35:45.777Z",
-      updatedAt: "2022-06-14T17:35:45.777Z",
-      __v: 0,
-    },
-  ],
+  sellerTrxs: [],
   sellerTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
   sellerTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
   paginate: null,
@@ -38,40 +16,10 @@ const init = {
   hasPreviousPage: false,
   deliveryTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
   deliveryTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
-  deliveryTrxs: [
-    {
-      _id: "62a8d237be31b986bbf6bc6d",
-      deliveryBoy: {
-        name: "mizan",
-        _id: "628280060f89c854b2b78ecd",
-      },
-      
-        amount: 12,
-        status: "success",
-        adminNote: "Delivery Boy will get charge",
-        userNote: "Amount get for Order Completed",
-        isRefund: false,
-      
-    },
-    
-  ],
+  deliveryTrxs: [],
   dropTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
   dropTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
-  dropTrxs: [
-    {
-      deliveryBoy: {
-        name: "mizan",
-      },
-      
-        amount: 12,
-        status: "success",
-        adminNote: "Delivery Boy will get charge",
-        userNote: "Amount get for Order Completed",
-        isRefund: false,
-      
-    },
-    
-  ]
+  dropTrxs: []
 };
 
 const appWalletReducer = (state = init, action) => {
@@ -140,7 +88,7 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        // sellerTrxs: payload.transactionList,
+        sellerTrxs: payload.transactionList,
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
@@ -180,7 +128,7 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        // sellerTrxs: payload.transactionList,
+        deliveryTrxs: payload.transactionList,
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
@@ -221,7 +169,7 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        // sellerTrxs: payload.transactionList,
+        dropTrxs: payload.transactionList,
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,

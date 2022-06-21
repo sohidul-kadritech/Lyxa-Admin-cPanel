@@ -8,7 +8,7 @@ const Info = ({ title, value, link  }) => {
     return (
         <div className="details">
       <h5>{title}: </h5>
-      <h5 className="value cursor-pointer" onClick={()=> history.push(link)}>{value}</h5>
+      <h5 className="value cursor-pointer" style={{textDecoration: link ? 'underline' : 'none'}} onClick={()=> history.push(link)}>{value}</h5>
     </div>
     );
 };

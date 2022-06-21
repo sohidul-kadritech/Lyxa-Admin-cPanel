@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import {
+  Autocomplete,
+  Box,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  TextField,
   Tooltip,
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
@@ -23,20 +26,24 @@ import { orderStatusOptions } from "../assets/staticData";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrder, orderUpdateStatus } from "../store/order/orderAction";
 import { useEffect } from "react";
+import { allDeliveryMan } from "../store/DeliveryMan/DeliveryManAction";
 
 const OrderTable = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const {orders, loading , status } = useSelector((state) => state.orderReducer)
+  const { orders, loading, status } = useSelector(
+    (state) => state.orderReducer
+  );
+
+  const {deliveryMans} = useSelector((state) => state.deliveryManReducer);
 
   const [isUpdateStatus, setIsUpdateStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
   const [orderId, setOrderId] = useState("");
   const [shop, setShop] = useState(null);
   const [deliveryBoy, setDeliveryBoy] = useState(null);
-
-
+  const [deliverySearchKey, setDeliverySearchKey] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,17 +52,25 @@ const OrderTable = () => {
         orderId,
         orderStatus,
         shop,
-        deliveryBoy,
+        deliveryBoy: deliveryBoy._id,
       })
     );
   };
 
-  useEffect(()=>{
-    if(status){
+  useEffect(() => {
+    if (status) {
       setIsUpdateStatus(false);
       dispatch(getAllOrder(true));
     }
-  },[status])
+  }, [status]);
+
+  // GET ALL DELIVERY BOY
+
+  useEffect(() => {
+    if (orderStatus === "accepted_delivery_boy") {
+      dispatch(allDeliveryMan(true));
+    }
+  }, [orderStatus]);
 
   return (
     <>
@@ -98,7 +113,7 @@ const OrderTable = () => {
                       </Td>
                       <Td>{item?.orderStatus}</Td>
                       <Td>{item?.paymentStatus}</Td>
-                      <Td>{item.summery?.total}</Td>
+                      <Td>{item.summary?.total}</Td>
                       <Td>
                         <div>
                           <Tooltip title="Update Status">
@@ -108,6 +123,7 @@ const OrderTable = () => {
                                 setIsUpdateStatus(!isUpdateStatus);
                                 setOrderId(item?._id);
                                 setShop(item?.shop?._id);
+                                setOrderStatus(item?.orderStatus)
                               }}
                             >
                               <i className="fa fa-arrow-up" />
@@ -171,7 +187,7 @@ const OrderTable = () => {
           <Form className="mb-4" onSubmit={handleSubmit}>
             <FormControl fullWidth required>
               <InputLabel id="demo-simple-select-label">
-                Select A Status
+                Select status
               </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -190,9 +206,44 @@ const OrderTable = () => {
               </Select>
             </FormControl>
 
+            {orderStatus === "accepted_delivery_boy" && (
+              <Autocomplete
+                className="cursor-pointer mt-3"
+                onChange={(event, newValue) => {
+                  setDeliveryBoy(newValue);
+                }}
+                getOptionLabel={(option, index) =>
+                  option.name ? option.name : ""
+                }
+                isOptionEqualToValue={(option, value) =>
+                  option?._id == value?._id
+                }
+                inputValue={deliverySearchKey}
+                onInputChange={(event, newInputValue) => {
+                  setDeliverySearchKey(newInputValue);
+                }}
+                id="controllable-states-demo"
+                options={deliveryMans.length > 0 ? deliveryMans : []}
+                sx={{ width: "100%" }}
+                renderInput={(params, index) => (
+                  <TextField {...params} label="Select a Delivery Boy" />
+                )}
+                renderOption={(props, option) => (
+                  <Box
+                    component="li"
+                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                    {...props}
+                    key={option._id}
+                  >
+                    {option.name}
+                  </Box>
+                )}
+              />
+            )}
+
             <div className="mt-3 d-flex justify-content-end">
               <Button type="submit" color="success" disabled={loading}>
-                {loading ? 'Updating' : 'Update'}
+                {loading ? "Updating" : "Update"}
               </Button>
             </div>
           </Form>

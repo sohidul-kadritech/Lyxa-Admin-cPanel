@@ -109,12 +109,6 @@ const SidebarContent = (props) => {
               </Link>
             </li>
 
-            {/* <li>
-              <Link to="/calendar" className=" waves-effect">
-                <i className="ti-calendar"></i>
-                <span>{props.t("Calendar")}</span>
-              </Link>
-            </li> */}
 
             <li>
               <Link to="/#" className="has-arrow waves-effect">
@@ -302,12 +296,12 @@ const SidebarContent = (props) => {
                     <span>{props.t("Percentage Setting")}</span>
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/add-wallet/admin-log-history">
                     <i className="fas fa-history" />
                     <span>{props.t("Admin Log History")}</span>
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/add-wallet/seller-transactions">
                     <i className="fas fa-exchange-alt" />
@@ -323,15 +317,15 @@ const SidebarContent = (props) => {
                 <li>
                   <Link to="/add-wallet/drop-transactions">
                     <i className="fas fa-exchange-alt" />
-                    <span>{props.t("Drop TRX")}</span>
+                    <span>{props.t("Admin TRX")}</span>
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/add-wallet/payments-history">
                     <i className="ti-money" />
                     <span>{props.t("Payments History")}</span>
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </li>
 

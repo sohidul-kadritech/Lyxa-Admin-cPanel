@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAllAdminSettings,
   updateAdminSettings,
-  updateDeliveryFee,
   updateGoogleMapApiKey,
   updateSearchDeliveryBoyKm,  
   removeSearchDeliveryBoyKm
@@ -26,7 +25,7 @@ import { toast } from "react-toastify";
 const AdminSettings = () => {
   const dispatch = useDispatch();
 
-  const { googleMapKey, loading, deliveryFeePerKm,searchDeliveryBoyKm } = useSelector(
+  const { googleMapKey, loading,searchDeliveryBoyKm } = useSelector(
     (state) => state.settingsReducer
   );
 
@@ -109,23 +108,6 @@ const AdminSettings = () => {
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
-                      label="Deliver Fee(per/km)"
-                      variant="outlined"
-                      placeholder="Enter Delivery Fee Per/KM"
-                      
-                      value={deliveryFeePerKm}
-                      type="number"
-                      onChange={(e) =>
-                        dispatch(updateDeliveryFee(e.target.value))
-                      }
-                      required
-                    />
-                  </Col>
-
-                  <Col lg={4} className="my-3 my-lg-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
                       label="Delivery Boy Around Area"
                       variant="outlined"
                       placeholder="Press Enter delivery boy find Around Area"
@@ -162,6 +144,7 @@ const AdminSettings = () => {
                     color="success"
                     style={{ padding: "10px 50px" }}
                     onClick={updateSettings}
+                    disabled={loading}
                   >
                     {loading ? (
                       <Spinner

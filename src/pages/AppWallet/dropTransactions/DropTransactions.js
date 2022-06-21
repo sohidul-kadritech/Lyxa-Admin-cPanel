@@ -12,13 +12,22 @@ import {
   Spinner,
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import  Flatpickr  from 'react-flatpickr';
+import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
-import { getDeliveryTrx, getDropTrx, updateDeliveryTrxEndDate, updateDeliveryTrxStartDate } from "../../../store/appWallet/appWalletAction";
+import {
+  getDeliveryTrx,
+  getDropTrx,
+  updateDeliveryTrxEndDate,
+  updateDeliveryTrxStartDate,
+} from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
+import { Tooltip } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 
 const DropTransactions = () => {
+
+  const history = useHistory();
 
   const {
     loading,
@@ -56,7 +65,6 @@ const DropTransactions = () => {
               callList={callTransList}
             />
 
-          
             <div>
               <TransactionsCard />
             </div>
@@ -115,18 +123,19 @@ const DropTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Drop Transactions List</CardTitle>
+                <CardTitle className="h4"> Admin Transactions List</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
                 >
                   <Thead>
                     <Tr>
-                      <Th>Delivery Boy</Th>
+                      <Th>Payment status</Th>
                       <Th>Amount</Th>
                       <Th>Status</Th>
                       <Th>admin Note</Th>
                       <Th>User Note</Th>
+                      <Th>Action</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
@@ -140,7 +149,7 @@ const DropTransactions = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>{item?.deliveryBoy?.name}</Th>
+                          <Th>{item?.paymentMethod}</Th>
 
                           <Td>{item?.amount}</Td>
                           <Td>{item?.status}</Td>
@@ -149,6 +158,20 @@ const DropTransactions = () => {
                           </Td>
                           <Td style={{ maxWidth: "150px" }}>
                             {item?.userNote}
+                          </Td>
+                          <Td>
+                            <Tooltip title="Details">
+                              <button
+                                className="btn btn-info button"
+                                onClick={() =>
+                                  history.push(
+                                    `/add-wallet/drop-transactions/details/${item._id}`
+                                  )
+                                }
+                              >
+                                <i className="fa fa-eye" />
+                              </button>
+                            </Tooltip>
                           </Td>
                         </Tr>
                       );

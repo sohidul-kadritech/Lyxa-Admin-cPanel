@@ -31,6 +31,7 @@ import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
+import Info from "./../../../components/Info";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -50,7 +51,6 @@ const OrderDetails = () => {
 
   useEffect(() => {
     if (id) {
-      map()
       const findOrder = orders.find((order) => order._id == id);
       if (findOrder) {
         console.log({ findOrder });
@@ -63,8 +63,9 @@ const OrderDetails = () => {
 
   // SHOW MAP
 
-  const map = () =>{
-    const directionsRenderer_ = new google.maps.DirectionsRenderer();
+  useEffect(() => {
+    if (order) {
+      const directionsRenderer_ = new google.maps.DirectionsRenderer();
       const directionsService_ = new google.maps.DirectionsService();
       setdirectionsRenderer(directionsRenderer_);
       setdirectionsService(directionsService_);
@@ -85,31 +86,31 @@ const OrderDetails = () => {
       map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
 
       calculateAndDisplayRoute(directionsService_, directionsRenderer_);
-  }
+    }
+  }, [order]);
 
   function calculateAndDisplayRoute(directionsService, directionsRenderer) {
-    // const {latitude, longitude} = order?.orderDeliveryAddress;
+    const { latitude: desLat, longitude: desLong } =
+      order?.orderDeliveryAddress;
+    const { latitude: shopLat, longitude: shopLong } = order?.shop?.address;
+
     directionsService
       .route({
-        origin: { lat: 23.7356, lng: 90.3837 },
-        destination: { lat: 22.328127, lng: 91.805502 },
+        origin: { lat: shopLat, lng: shopLong },
+        destination: { lat: desLat, lng: desLong },
         travelMode: google.maps.TravelMode.DRIVING,
       })
       .then((response) => {
-
-
         const route = response.routes[0];
 
         directionsRenderer.setDirections(response);
 
         setDistance(route.legs[0].distance.value.toString());
         setDuration(route.legs[0].duration.value.toString());
-
       })
       .catch((e) =>
         window.alert("Directions request failed due to " + e.message)
       );
-
   }
 
   return (
@@ -136,6 +137,57 @@ const OrderDetails = () => {
               />
             ) : null}
 
+            {/* ORDER INFORMATIONS */}
+
+            <Card>
+              <CardBody>
+                <CardTitle>Order Details</CardTitle>
+                <hr />
+                <Row className='text-center'>
+                  <Col lg={6} >
+                    <Info
+                      title="User"
+                      value={order?.user?.name}
+                      link={`/users/details/${order?.user?._id}`}
+                    />
+                    <Info
+                      title="Shop"
+                      value={order?.shop?.shopName}
+                      link={`/shops/details/${order?.shop?._id}`}
+                    />
+                    {order?.deliveryBoy && (
+                      <Info
+                        title="Delivery Boy"
+                        value={order?.shop?.shopName}
+                        link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
+                      />
+                    )}
+                    <Info
+                      title="Delivery Distance"
+                      value={order?.deliveryDistance}
+                    />
+                    <Info
+                      title="Delivery Fee(Total)"
+                      value={order?.deliveryFee}
+                    />
+                    <Info
+                      title="Delivery Fee(Per/Km)"
+                      value={order?.deliveryFeePerKm}
+                    />
+                    <Info title="Drop Fee" value={order?.dropCharge} />
+                  </Col>
+
+                  <Col lg={6}>
+                  <Info title="Order Status" value={order?.orderStatus} />
+                  <Info title="Order Type" value={order?.orderType} />
+                  <Info title="Payment Method" value={order?.paymentMethod} />
+                  <Info title="Payment Status" value={order?.paymentStatus} />
+                  <Info title="Order Time" value={new Date(order?.createdAt).toLocaleString()} />
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+
             {/* TIMELINE AND CHAT */}
             <Row>
               <Col xl={6}>
@@ -147,7 +199,7 @@ const OrderDetails = () => {
                       {order?.timeline?.map((item, index) => (
                         <TimelineItem key={index}>
                           <TimelineOppositeContent color="text.secondary">
-                            {item.createdAt && (
+                            {item.active && (
                               <Box>
                                 <Typography>
                                   {new Date(item?.createdAt).toLocaleString()}
@@ -156,18 +208,14 @@ const OrderDetails = () => {
                               </Box>
                             )}
                           </TimelineOppositeContent>
-                          <TimelineSeparator
-                          // style={{
-                          //
-                          // }}
-                          >
+                          <TimelineSeparator>
                             <TimelineDot
-                              color={item?.createdAt ? "success" : "grey"}
+                              color={item?.active ? "success" : "grey"}
                               className="m-0"
                             />
                             <TimelineConnector
                               style={{
-                                backgroundColor: item?.createdAt
+                                backgroundColor: item?.active
                                   ? "#2e7d32"
                                   : "grey",
                                 display:
@@ -177,7 +225,7 @@ const OrderDetails = () => {
                             />
                           </TimelineSeparator>
                           <TimelineContent
-                            color={item?.active ? 'green' : "black"}
+                            color={item?.active ? "green" : "black"}
                           >
                             {item?.status}
                           </TimelineContent>
@@ -357,16 +405,6 @@ const OrderDetails = () => {
                     })}
                   </Tbody>
                 </Table>
-                {/* {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="success" />
-                  </div>
-                )}
-                {!loading && orders.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Order!</h4>
-                  </div>
-                )} */}
               </CardBody>
             </Card>
 
@@ -408,28 +446,27 @@ const OrderDetails = () => {
               <Col lg={6}>
                 <Card>
                   <CardBody>
-                    <CardTitle className="h4">Summery</CardTitle>
+                    <CardTitle className="h4">Summary</CardTitle>
                     <hr />
-                 
-                      <Summery>
-                        <div className='item'>
-                          <span>Subtotal</span>
-                          <span>{order?.summery?.netPrice}</span>
-                        </div>
-                        <div className='item'>
+
+                    <Summery>
+                      <div className="item">
+                        <span>Subtotal</span>
+                        <span>{order?.summary?.netPrice}</span>
+                      </div>
+                      {/* <div className='item'>
                           <span>Coupon Discount</span>
                           <span>{order?.summery?.coupon}</span>
-                        </div>
-                        <div className='item'>
-                          <span>Discount</span>
-                          <span>{order?.summery?.discount}</span>
-                        </div>
-                        <div className='item'>
-                          <span>Payable Total</span>
-                          <span>{order?.summery?.total}</span>
-                        </div>
-                      </Summery>
-                  
+                        </div> */}
+                      <div className="item">
+                        <span>Delivery Charge</span>
+                        <span>{order?.summary?.deliveryCharge}</span>
+                      </div>
+                      <div className="item">
+                        <span>Payable Total</span>
+                        <span>{order?.summary?.total}</span>
+                      </div>
+                    </Summery>
                   </CardBody>
                 </Card>
               </Col>
@@ -460,23 +497,21 @@ const DeliveryAddress = styled.div`
 `;
 
 const Summery = styled.div`
+  .item {
+    font-weight: 400;
+    font-family: Arial, Helvetica, sans-serif;
+    border-bottom: 1px solid #d8d8d8;
+    padding: 10px 0;
+    color: #333333;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 
-  .item{
-      font-weight: 400;
-      font-family: Arial, Helvetica, sans-serif;
-      border-bottom: 1px solid #d8d8d8;
-      padding: 10px 0;
-      color: #333333;
-      font-size: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-
-      &:last-child {
-        border-bottom: none;
-      }
+    &:last-child {
+      border-bottom: none;
     }
-  
+  }
 `;
 
 export default OrderDetails;
