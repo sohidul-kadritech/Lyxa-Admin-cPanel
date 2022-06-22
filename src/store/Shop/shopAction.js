@@ -79,7 +79,7 @@ export const getAllShop =
           },
         });
 
-
+        console.log({data})
 
         if (data.status) {
           dispatch({

@@ -171,6 +171,20 @@ export const orderStatusOptions = [
   { label: "Ready to pickup", value: "ready_to_pickup" },
   { label: "On the way", value: "order_on_the_way" },
   { label: "Delivered", value: "delivered" },
+];
+
+export const bannerTypeOPtions = [
+  { label: "Home", value: "home" },
+  { label: "Restaurent", value: "food" },
+  { label: "Grocery", value: "grocery" },
+  { label: "Pharmacy", value: "pharmacy" },
+  { label: "Shop", value: "shop" },
+
+]
+
+export const bannerForOptions = [
+  { label: "Link", value: "link" },
+  { label: "Shop/Product", value: "route" },
 ]
 
 export const logoSvg = (

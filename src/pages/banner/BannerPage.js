@@ -30,6 +30,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import styled from "styled-components";
 import { FormControl } from "@mui/material";
 import Lightbox from "react-image-lightbox";
+import { updateShopSearchKey, updateShopType } from "../../store/Shop/shopAction";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
@@ -83,12 +84,19 @@ const BannerPage = () => {
     route.push(`/banner/edit/${id}`);
   };
 
+
+
   // DELETE BANNER
 
   const handleDelete = (id) => {
     // console.log(bannerId)
     dispatch(deleteBanner(bannerId));
   };
+
+  useEffect(()=>{
+    dispatch(updateShopType({label: 'All', value: 'all'}));
+    dispatch(updateShopSearchKey(""))
+  },[])
 
   const listViewBanner = () => {
     return (

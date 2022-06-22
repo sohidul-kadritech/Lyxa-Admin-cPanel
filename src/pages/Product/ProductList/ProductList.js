@@ -29,6 +29,7 @@ import {
 import AppPagination from "../../../components/AppPagination";
 import Search from './../../../components/Search';
 import ProductTable from "../../../components/ProductTable";
+import { updateShopSearchKey, updateShopType } from "../../../store/Shop/shopAction";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -65,6 +66,12 @@ const ProductList = () => {
   const callProductList = (refresh = false) => {
     dispatch(getAllProduct(refresh));
   };
+
+
+  useEffect(()=>{
+    dispatch(updateShopType({label: 'All', value: 'all'}));
+    dispatch(updateShopSearchKey(""))
+  },[])
 
 
   return (

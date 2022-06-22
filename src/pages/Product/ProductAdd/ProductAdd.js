@@ -35,18 +35,20 @@ import {
 
 import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
+import { addProduct, editProduct } from "../../../store/Product/productAction";
 import {
-  addProduct,
-  editProduct,
-
-} from "../../../store/Product/productAction";
-import { getAllShop } from "../../../store/Shop/shopAction";
+  getAllShop,
+  updateShopSearchKey,
+} from "../../../store/Shop/shopAction";
 import { useParams, useHistory, useLocation, Link } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_PRODUCT } from "../../../network/Api";
-import { foodTypeOptions2 } from "../../../assets/staticData";
+import { foodTypeOptions2, shopTypeOptions2 } from "../../../assets/staticData";
 import { updateShopType } from "./../../../store/Shop/shopAction";
 import formatBytes from "../../../common/imageFormatBytes";
+import ShopAutocompleted from "../../../components/ShopAutocompleted";
+import { successMsg } from "../../../helpers/successMsg";
+import SelectOption from "../../../components/SelectOption";
 
 const ProductAdd = () => {
   const dispatch = useDispatch();
@@ -59,7 +61,9 @@ const ProductAdd = () => {
   const { categories, subCategories } = useSelector(
     (state) => state.categoryReducer
   );
-  const { shops } = useSelector((state) => state.shopReducer);
+  const { shops, searchKey, typeKey } = useSelector(
+    (state) => state.shopReducer
+  );
 
   const { loading, products, status } = useSelector(
     (state) => state.productReducer
@@ -71,7 +75,7 @@ const ProductAdd = () => {
   const [searchShopKey, setSearchShopKey] = useState("");
   const [category, setCategory] = useState(null);
   const [searchCategoryKey, setSearchCategoryKey] = useState("");
-  const [subCategory, setSubCategory] = useState('');
+  const [subCategory, setSubCategory] = useState("");
   const [searchSubCatKey, setSearchSubCatKey] = useState("");
   const [tags, setTags] = useState({
     items: [],
@@ -102,14 +106,11 @@ const ProductAdd = () => {
     },
   ]);
 
-
-
   useEffect(() => {
     if (id) {
       const findProduct = products.find((item) => item._id == id);
 
       if (findProduct) {
-
         setProductValue(findProduct);
       } else {
         callApi(id);
@@ -119,7 +120,6 @@ const ProductAdd = () => {
 
   useEffect(() => {
     if (searchParams) {
-
       const shopId = searchParams.get("shopId");
       if (shopId) {
         const findShop = shops.find((item) => item._id == shopId);
@@ -200,10 +200,10 @@ const ProductAdd = () => {
 
   // ALL SHOP LIST
   useEffect(() => {
-    if (type) {
+    if (type || typeKey || searchKey) {
       dispatch(getAllShop(true));
     }
-  }, [type]);
+  }, [type, typeKey, searchKey]);
 
   // ALL SUB CATEGORY LIST
 
@@ -213,16 +213,9 @@ const ProductAdd = () => {
     }
   }, [category]);
 
-  // useEffect(() => {
-  //   if (shop) {
-  //     dispatch(getAllProduct(true, shop._id));
-  //   }
-  // }, [shop]);
-
   // TAGS
 
   const handleTagAdd = (evt) => {
-
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
@@ -244,7 +237,6 @@ const ProductAdd = () => {
       ...tags,
       value: evt.target.value,
     });
-
   };
 
   const handleTagDelete = (item) => {
@@ -257,17 +249,15 @@ const ProductAdd = () => {
   // VALIDATION
 
   const submitProduct = (e) => {
-
     e.preventDefault();
 
-    if ( tags.items.length < 1) {
-      return errorMessage("Please add at least one tag");
+    if (tags.items.length < 1) {
+      return successMsg("Please add at least one tag", "error");
     }
 
     if (!image) {
-      return errorMessage("Please Upload Image");
+      return successMsg("Please Upload Image", "error");
     }
-
 
     uploadImage();
   };
@@ -288,31 +278,15 @@ const ProductAdd = () => {
 
         setIsLoading(false);
         if (data.status) {
-
           submitData(data.data.url);
         } else {
-          return errorMessage(data.error);
+          return successMsg(data.error, "error");
         }
       } catch (error) {
         setIsLoading(false);
-        return errorMessage(error.message);
+        return successMsg(error.message, "error");
       }
     }
-  };
-
-  // ERROR MESSAGE
-
-  const errorMessage = (msg) => {
-    toast.warn(msg, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
   };
 
   // SUBMIT DATA TO SERVER
@@ -335,7 +309,6 @@ const ProductAdd = () => {
       cuisines,
     };
 
-
     if (id) {
       dispatch(
         editProduct({
@@ -354,16 +327,7 @@ const ProductAdd = () => {
 
   const addAttributeItem = () => {
     if (attributeItems[attributeItems.length - 1].name == "") {
-      return toast.warn("Please Fillup Previous Input Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg("Please Fillup Previous Input Fields", "error");
     }
     setAttributeItems([
       ...attributeItems,
@@ -395,28 +359,10 @@ const ProductAdd = () => {
 
   const addAttribute = () => {
     if (!attributeName) {
-      return toast.warn("Please add attribute name", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg("Please add attribure name", "error");
     }
     if (attributeItems[attributeItems.length - 1].name == "") {
-      return toast.warn("Please add atleast one item", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg("Please at least one item", "error");
     }
     const data = {
       name: attributeName,
@@ -478,8 +424,6 @@ const ProductAdd = () => {
     }
   }, [status]);
 
-
-
   // IMAGE
 
   const handleAcceptedFiles = (files, type) => {
@@ -496,7 +440,6 @@ const ProductAdd = () => {
   // ADD ADDON
 
   const addAddonProduct = (item) => {
-
     if (item) {
       setAddons([...addons, item]);
     }
@@ -529,7 +472,7 @@ const ProductAdd = () => {
                 <CardTitle>Product Informations</CardTitle>
                 <hr />
 
-                <Form  onSubmit={submitProduct}>
+                <Form onSubmit={submitProduct}>
                   <Row>
                     <Col lg={6}>
                       <div className="mb-4">
@@ -545,73 +488,38 @@ const ProductAdd = () => {
                         />
                       </div>
                       <div className="mb-4">
-                        <FormControl fullWidth required disabled={ shop ? true : false }>
-                          <InputLabel id="demo-simple-select-label">
-                            Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={type}
-                            label="Type"
-                            onChange={(event) => {
-                              setType(event.target.value);
-                              dispatch(updateShopType(event.target.value));
-                              dispatch(
-                                updateCategoryShopType(event.target.value)
-                              );
-                              setShop(null);
-                              setCategory(null);
-                            }}
-                          >
-                            <MenuItem value="food">Restaurant</MenuItem>
-                            <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                            <MenuItem value="grocery">Grocery</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <SelectOption
+                          label="Type"
+                          value={type}
+                          onChange={(event) => {
+                            setType(event.target.value);
+                            dispatch(updateShopType(event.target.value));
+                            dispatch(
+                              updateCategoryShopType(event.target.value)
+                            );
+                            setShop(null);
+                            setCategory(null);
+                          }}
+                          options={shopTypeOptions2}
+                          disabled={
+                            id || searchParams.get("shopId") ? true : false
+                          }
+                        />
                       </div>
                       <div className="mb-4">
-                        <Autocomplete
-                          disabled={id || !type || searchParams.get("shopId") ? true : false}
-                       
-                          className="cursor-pointer"
+                        <ShopAutocompleted
                           value={shop}
-                          onChange={(event, newValue) => {
-                            setShop(newValue);
-                            setAddons([]);
-
-                          }}
-                          getOptionLabel={(option) => option.shopName}
-                          isOptionEqualToValue={(option, value) =>
-                            option._id == value._id
+                          onChange={(event, newValue) => setShop(newValue)}
+                          searchKey={searchKey}
+                          onInputChange={(event, newInputValue) =>
+                            dispatch(updateShopSearchKey(newInputValue))
                           }
-                          inputValue={searchShopKey}
-                          onInputChange={(event, newInputValue) => {
-                            setSearchShopKey(newInputValue);
-
-                          }}
-                          id="controllable-states-demo"
-                          options={shops.length > 0 ? shops : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params) => (
-                            <TextField {...params} label="Select a Shop" required name='shop' />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
-                            >
-                              <img
-                                loading="lazy"
-                                width="60"
-                                src={option.shopBanner}
-                                alt=""
-                              />
-                              {option.shopName}
-                            </Box>
-                          )}
+                          list={shops}
+                          disabled={
+                            id || !type || searchParams.get("shopId")
+                              ? true
+                              : false
+                          }
                         />
                       </div>
 
@@ -622,7 +530,6 @@ const ProductAdd = () => {
                             value={cuisines}
                             onChange={(event, newValue) => {
                               setCuisines(newValue);
-
                             }}
                             getOptionLabel={(option) =>
                               option.name ? option.name : ""
@@ -633,7 +540,6 @@ const ProductAdd = () => {
                             inputValue={cuisineSearchKey}
                             onInputChange={(event, newInputValue) => {
                               setCuisineSearchKey(newInputValue);
-
                             }}
                             id="controllable-states-demo"
                             options={
@@ -643,7 +549,12 @@ const ProductAdd = () => {
                             }
                             sx={{ width: "100%" }}
                             renderInput={(params) => (
-                              <TextField {...params} label="Select a Cuisine" required name='cuisine' />
+                              <TextField
+                                {...params}
+                                label="Select a Cuisine"
+                                required
+                                name="cuisine"
+                              />
                             )}
                             renderOption={(props, option) => (
                               <Box
@@ -661,26 +572,14 @@ const ProductAdd = () => {
 
                       {type === "food" && shop?.shopType === "food" && (
                         <div className="mb-4">
-                          <FormControl fullWidth required>
-                            <InputLabel id="demo-simple-select-label">
-                              Food Type
-                            </InputLabel>
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              value={foodType}
-                              label="Food Type"
-                              onChange={(event) => {
-                                setFoodType(event.target.value);
-                              }}
-                            >
-                              {foodTypeOptions2.map((item, index) => (
-                                <MenuItem key={index} value={item.value}>
-                                  {item.label}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
+                          <SelectOption
+                            label="Food Type"
+                            value={foodType}
+                            onChange={(event) => {
+                              setFoodType(event.target.value);
+                            }}
+                            options={foodTypeOptions2}
+                          />
                         </div>
                       )}
                       <div className="mb-4">
@@ -713,44 +612,32 @@ const ProductAdd = () => {
 
                       {id && (
                         <div className="mb-4">
-                          <FormControl fullWidth required>
-                            <InputLabel id="demo-simple-select-label">
-                              Visibility
-                            </InputLabel>
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              value={visibility}
-                              label="Type"
-                              onChange={(event) =>
-                                setVisibility(event.target.value)
-                              }
-                            >
-                              <MenuItem value="true">True</MenuItem>
-                              <MenuItem value="false">False</MenuItem>
-                            </Select>
-                          </FormControl>
+                          <SelectOption
+                            label="Visibility"
+                            value={visibility}
+                            onChange={(event) =>
+                              setVisibility(event.target.value)
+                            }
+                            options={[
+                              { label: "Yes", value: true },
+                              { label: "No", value: false },
+                            ]}
+                          />
                         </div>
                       )}
                       {id && (
                         <div className="mb-4">
-                          <FormControl fullWidth required>
-                            <InputLabel id="demo-simple-select-label">
-                              Status
-                            </InputLabel>
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              value={activeStatus}
-                              label="Type"
-                              onChange={(event) =>
-                                setActiveStatus(event.target.value)
-                              }
-                            >
-                              <MenuItem value="active">Active</MenuItem>
-                              <MenuItem value="inactive">Inactive</MenuItem>
-                            </Select>
-                          </FormControl>
+                          <SelectOption
+                            label="Status"
+                            value={activeStatus}
+                            onChange={(event) =>
+                              setActiveStatus(event.target.value)
+                            }
+                            options={[
+                              { label: "Active", value: 'active' },
+                              { label: "Inactive", value: "inactive" },
+                            ]}
+                          />
                         </div>
                       )}
                     </Col>
@@ -763,7 +650,6 @@ const ProductAdd = () => {
                           disabled={!type ? true : false}
                           onChange={(event, newValue) => {
                             setCategory(newValue);
-    
                           }}
                           getOptionLabel={(option) => option.name}
                           isOptionEqualToValue={(option, value) =>
@@ -772,13 +658,17 @@ const ProductAdd = () => {
                           inputValue={searchCategoryKey}
                           onInputChange={(event, newInputValue) => {
                             setSearchCategoryKey(newInputValue);
- 
                           }}
                           id="controllable-states-demo"
                           options={categories.length > 0 ? categories : []}
                           sx={{ width: "100%" }}
                           renderInput={(params) => (
-                            <TextField {...params} label="Select a Category" required name='category' />
+                            <TextField
+                              {...params}
+                              label="Select a Category"
+                              required
+                              name="category"
+                            />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -804,7 +694,6 @@ const ProductAdd = () => {
                             value={subCategory}
                             onChange={(event, newValue) => {
                               setSubCategory(newValue);
-
                             }}
                             getOptionLabel={(option) =>
                               option.name ? option.name : ""
@@ -815,7 +704,6 @@ const ProductAdd = () => {
                             inputValue={searchSubCatKey}
                             onInputChange={(event, newInputValue) => {
                               setSearchSubCatKey(newInputValue);
-
                             }}
                             id="controllable-states-demo"
                             options={
@@ -1212,99 +1100,96 @@ const ProductAdd = () => {
                     <Col>
                       <Label>Product Images</Label>
                       <div className="mb-5">
-                
-                          <Dropzone
-                            onDrop={(acceptedFiles) => {
-                              handleAcceptedFiles(acceptedFiles);
-                            }}
-                          >
-                            {({ getRootProps, getInputProps }) => (
-                              <div className="dropzone">
-                                <div
-                                  className="dz-message needsclick"
-                                  {...getRootProps()}
-                                  // onClick={() => setmodal_fullscreen(true)}
-                                >
-                                  <input {...getInputProps()} />
-                                  <div className="mb-3">
-                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                  </div>
-                                  <h4>Drop files here or click to upload.</h4>
+                        <Dropzone
+                          onDrop={(acceptedFiles) => {
+                            handleAcceptedFiles(acceptedFiles);
+                          }}
+                        >
+                          {({ getRootProps, getInputProps }) => (
+                            <div className="dropzone">
+                              <div
+                                className="dz-message needsclick"
+                                {...getRootProps()}
+                                // onClick={() => setmodal_fullscreen(true)}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="mb-3">
+                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
+                                <h4>Drop files here or click to upload.</h4>
                               </div>
-                            )}
-                          </Dropzone>
-                          <div
-                            className="dropzone-previews mt-3"
-                            id="file-previews"
-                          >
-                            {image && (
-                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                                <div className="p-2">
-                                  <Row className="align-items-center position-relative">
-                                    <Col className="col-auto">
-                                      <img
-                                        data-dz-thumbnail=""
-                                        // height="80"
-                                        style={{
-                                          maxWidth: "80px",
-                                        }}
-                                        className=" bg-light"
-                                        src={
-                                          image.preview ? image.preview : image
-                                        }
-                                        alt=""
-                                      />
-                                    </Col>
-                                    <Col>
-                                      <Link
-                                        to="#"
-                                        className="text-muted font-weight-bold"
-                                      >
-                                        {image.name
-                                          ? image.name
-                                          : "Product Image"}
-                                      </Link>
-                                      <p className="mb-0">
-                                        <strong>
-                                          {image.formattedSize &&
-                                            image.formattedSize}
-                                        </strong>
-                                      </p>
-                                    </Col>
-
-                                    <div
-                                      className="position-absolute"
+                            </div>
+                          )}
+                        </Dropzone>
+                        <div
+                          className="dropzone-previews mt-3"
+                          id="file-previews"
+                        >
+                          {image && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
                                       style={{
-                                        left: "0px",
-                                        top: "0px",
-                                        width: "100%",
-                                        display: "flex",
-                                        justifyContent: "flex-end",
+                                        maxWidth: "80px",
                                       }}
+                                      className=" bg-light"
+                                      src={
+                                        image.preview ? image.preview : image
+                                      }
+                                      alt=""
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
                                     >
-                                      <i
-                                        onClick={() => setImage(null)}
-                                        className="mdi mdi-delete text-danger "
-                                        style={{
-                                          fontSize: "25px",
-                                          cursor: "pointer",
-                                        }}
-                                      ></i>
-                                    </div>
-                                  </Row>
-                                </div>
-                              </Card>
-                            )}
-                          </div>
-                     
+                                      {image.name
+                                        ? image.name
+                                        : "Product Image"}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>
+                                        {image.formattedSize &&
+                                          image.formattedSize}
+                                      </strong>
+                                    </p>
+                                  </Col>
+
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      onClick={() => setImage(null)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          )}
+                        </div>
                       </div>
                     </Col>
                   </Row>
 
                   <div className="my-5 d-flex justify-content-center">
                     <Button
-                     
                       type="submit"
                       color="primary"
                       className="px-5"
