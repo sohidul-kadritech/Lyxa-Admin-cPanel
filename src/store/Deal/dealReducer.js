@@ -1,4 +1,4 @@
-import * as actionType from "../actionType";
+  import * as actionType from "../actionType";
 
 const initialState = {
   loading: false,
@@ -6,7 +6,8 @@ const initialState = {
   deals: [],
   status: false,
   type: 'all',
-  tags: []
+  tags: [],
+  tagSearchKey: ''
 };
 
 const dealReducer = (state = initialState, action) => {
@@ -164,6 +165,12 @@ const dealReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
+      };
+
+      case actionType.UPDATE_TAG_SEARCH_KEY:
+      return {
+        ...state,
+        tagSearchKey: payload
       };
 
       case actionType.UPDATE_DEAL_TYPE_KEY:

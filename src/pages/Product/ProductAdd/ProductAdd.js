@@ -35,7 +35,12 @@ import {
 
 import Dropzone from "react-dropzone";
 import { toast } from "react-toastify";
-import { addProduct, editProduct } from "../../../store/Product/productAction";
+import {
+  addProduct,
+  editProduct,
+  getAllProduct,
+  updateProductSearchKey,
+} from "../../../store/Product/productAction";
 import {
   getAllShop,
   updateShopSearchKey,
@@ -49,6 +54,7 @@ import formatBytes from "../../../common/imageFormatBytes";
 import ShopAutocompleted from "../../../components/ShopAutocompleted";
 import { successMsg } from "../../../helpers/successMsg";
 import SelectOption from "../../../components/SelectOption";
+import ProductAutocompleted from "../../../components/ProductAutocompleted";
 
 const ProductAdd = () => {
   const dispatch = useDispatch();
@@ -65,14 +71,16 @@ const ProductAdd = () => {
     (state) => state.shopReducer
   );
 
-  const { loading, products, status } = useSelector(
-    (state) => state.productReducer
-  );
+  const {
+    loading,
+    products,
+    status,
+    searchKey: productSearchKey,
+  } = useSelector((state) => state.productReducer);
 
   const [shop, setShop] = useState(null);
   const [cuisines, setCuisines] = useState(null);
   const [cuisineSearchKey, setCuisineSearchKey] = useState("");
-  const [searchShopKey, setSearchShopKey] = useState("");
   const [category, setCategory] = useState(null);
   const [searchCategoryKey, setSearchCategoryKey] = useState("");
   const [subCategory, setSubCategory] = useState("");
@@ -92,8 +100,8 @@ const ProductAdd = () => {
   const [activeStatus, setActiveStatus] = useState("");
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
+  const [selectedAddon, setSelectedAddon] = useState("");
   const [addons, setAddons] = useState([]);
-  const [productSearchKey, setProductSearchKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
   const [attributeName, setAttributeName] = useState("");
@@ -441,8 +449,15 @@ const ProductAdd = () => {
 
   const addAddonProduct = (item) => {
     if (item) {
+      const isExist = addons.filter((i) => i._id === item._id);
+
+      if (isExist.length > 0) {
+        return successMsg("Already added.Try another");
+      }
+
       setAddons([...addons, item]);
     }
+    // setSelectedAddon(item)
   };
 
   // REMOVE ADDON
@@ -452,6 +467,14 @@ const ProductAdd = () => {
     list.splice(i, 1);
     setAddons(list);
   };
+
+  // GET ALL Product
+
+  useEffect(() => {
+    if (productSearchKey) {
+      dispatch(getAllProduct(true));
+    }
+  }, [productSearchKey]);
 
   return (
     <React.Fragment>
@@ -502,11 +525,12 @@ const ProductAdd = () => {
                           }}
                           options={shopTypeOptions2}
                           disabled={
-                            id || searchParams.get("shopId") ? true : false
+                            !type || searchParams.get("shopId") || id ? true : false
                           }
                         />
                       </div>
                       <div className="mb-4">
+
                         <ShopAutocompleted
                           value={shop}
                           onChange={(event, newValue) => setShop(newValue)}
@@ -516,9 +540,7 @@ const ProductAdd = () => {
                           }
                           list={shops}
                           disabled={
-                            id || !type || searchParams.get("shopId")
-                              ? true
-                              : false
+                            id || searchParams.get("shopId") ? true : false
                           }
                         />
                       </div>
@@ -634,7 +656,7 @@ const ProductAdd = () => {
                               setActiveStatus(event.target.value)
                             }
                             options={[
-                              { label: "Active", value: 'active' },
+                              { label: "Active", value: "active" },
                               { label: "Inactive", value: "inactive" },
                             ]}
                           />
@@ -1005,44 +1027,15 @@ const ProductAdd = () => {
                         </div>
 
                         {isNeedAddon && (
-                          <Autocomplete
-                            className="cursor-pointer"
-                            // value={addon}
-                            onChange={(event, newValue) =>
-                              addAddonProduct(newValue)
-                            }
-                            getOptionLabel={(option) =>
-                              option.name ? option.name : ""
-                            }
-                            isOptionEqualToValue={(option, value) =>
-                              option._id == value._id
-                            }
-                            inputValue={productSearchKey}
-                            onInputChange={(event, newInputValue) => {
-                              setProductSearchKey(newInputValue);
+                          <ProductAutocompleted
+                            onChange={(event, newValue) => {
+                              addAddonProduct(newValue);
                             }}
-                            id="controllable-states-demo"
-                            options={products.length > 0 ? products : []}
-                            sx={{ width: "100%" }}
-                            renderInput={(params) => (
-                              <TextField {...params} label="Select Products" />
-                            )}
-                            renderOption={(props, option) => (
-                              <Box
-                                component="li"
-                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                                {...props}
-                                key={option._id}
-                              >
-                                <img
-                                  loading="lazy"
-                                  width="60"
-                                  src={option.images[0]}
-                                  alt=""
-                                />
-                                {option.name}
-                              </Box>
-                            )}
+                            searchKey={productSearchKey}
+                            onInputChange={(event, newInputValue) =>
+                              dispatch(updateProductSearchKey(newInputValue))
+                            }
+                            list={products}
                           />
                         )}
                       </div>

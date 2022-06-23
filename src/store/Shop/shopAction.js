@@ -261,7 +261,7 @@ export const setShopStatusFalse = () => (dispatch) => {
 
 export const updateShopSearchKey = (value) => (dispatch) => {
   dispatch({
-    type: actionType.UPDATE_SEARCH_KEY,
+    type: actionType.UPDATE_SHOP_SEARCH_KEY,
     payload: value,
   });
 };

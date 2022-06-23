@@ -33,15 +33,21 @@ import { Link, useHistory, useParams } from "react-router-dom";
 import { IMAGE_UPLOAD, SINGLE_DEAL } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
-import { addDeal, editDeal, getAllTags } from "../../../store/Deal/dealAction";
+import {
+  addDeal,
+  editDeal,
+  getAllTags,
+  updateTagsSearchKey,
+} from "../../../store/Deal/dealAction";
 import formatBytes from "../../../common/imageFormatBytes";
+import { successMsg } from "../../../helpers/successMsg";
 
 const DealsAdd = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
 
-  const { loading, deals, status, tags } = useSelector(
+  const { loading, deals, status, tags, tagSearchKey } = useSelector(
     (state) => state.dealReducer
   );
 
@@ -54,16 +60,13 @@ const DealsAdd = () => {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeStatus, setActiveStatus] = useState("");
-  const [tagSearchKey, setTagSearchKey] = useState("");
 
   useEffect(() => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
-
         updateData(findDeal);
       } else {
-
         callApi(id);
       }
     }
@@ -72,10 +75,12 @@ const DealsAdd = () => {
   // GET ALL TAGS
 
   useEffect(() => {
-    if (dealType === "others") {
-      dispatch(getAllTags(shopType, tagSearchKey));
+    if (dealType === "others" || tagSearchKey) {
+      dispatch(getAllTags());
     }
-  }, [dealType]);
+  }, [dealType, tagSearchKey]);
+
+
 
   // CALL API
 
@@ -103,12 +108,12 @@ const DealsAdd = () => {
   const updateData = (data) => {
     const { name, image, option, percentage, status, type } = data;
 
-    if(option === "others"){
-      const findTag =  tags.find(item => item._id === name);
-      if(findTag){
+    if (option === "others") {
+      const findTag = tags.find((item) => item._id === name);
+      if (findTag) {
         setOtherDeal(findTag);
       }
-    }else{
+    } else {
       setName(name);
     }
 
@@ -149,7 +154,6 @@ const DealsAdd = () => {
           });
 
           if (data.status) {
-
             setIsLoading(false);
             url = data.data.url;
           } else {
@@ -170,11 +174,9 @@ const DealsAdd = () => {
 
   const submitDeal = (e) => {
     e.preventDefault();
-   
-
 
     if (shopType === "restaurant" && !image) {
-      return warningMessage("Choose a image");
+      return successMsg("Choose a image");
     }
 
     if (shopType === "restaurant") {
@@ -182,21 +184,6 @@ const DealsAdd = () => {
     } else {
       submitData();
     }
-  };
-
-  // WARNING MESSAGE
-
-  const warningMessage = (message) => {
-    toast.warn(message, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
   };
 
   // SUBMIT DATA
@@ -208,7 +195,6 @@ const DealsAdd = () => {
       option: dealType,
       percentage,
       image: shopType === "restaurant" ? image : null,
-
     };
     if (id) {
       dispatch(
@@ -239,6 +225,7 @@ const DealsAdd = () => {
     }
   }, [status]);
 
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -259,7 +246,7 @@ const DealsAdd = () => {
                       <TextField
                         type="text"
                         disabled={dealType === "others" ? true : false}
-                         className="form-control"
+                        className="form-control"
                         placeholder="Enter Deal Name"
                         required
                         label="Deal Name"
@@ -269,7 +256,7 @@ const DealsAdd = () => {
                     </Col>
                     <Col lg={4}>
                       <div className="my-3 my-lg-0">
-                        <FormControl fullWidth required name='shopType'>
+                        <FormControl fullWidth required name="shopType">
                           <InputLabel id="demo-simple-select-label">
                             Shop Type
                           </InputLabel>
@@ -331,20 +318,23 @@ const DealsAdd = () => {
                           getOptionLabel={(option, index) =>
                             option.name ? option.name : ""
                           }
-                          isOptionEqualToValue={
-                            (option, value) => option._id == value._id
-                  
+                          isOptionEqualToValue={(option, value) =>
+                            option._id == value._id
                           }
                           inputValue={tagSearchKey}
-                          onInputChange={(event, newInputValue) => {
-                            setTagSearchKey(newInputValue);
-        
-                          }}
+                          onInputChange={(event, newInputValue)=>dispatch(updateTagsSearchKey(newInputValue))}
+     
                           id="controllable-states-demo"
                           options={tags.length > 0 ? tags : []}
                           sx={{ width: "100%" }}
                           renderInput={(params, index) => (
-                            <TextField {...params} label="Select Tag" required name='tag' />
+                            <TextField
+                              {...params}
+                              label="Select Tag"
+                              required
+                              name="tag"
+                          
+                            />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -363,7 +353,7 @@ const DealsAdd = () => {
                       <Col lg={4} className="mt-3 my-lg-0">
                         <TextField
                           type="number"
-                          name='percentage'
+                          name="percentage"
                           className="form-control"
                           placeholder="Enter Percentage"
                           required
@@ -531,7 +521,6 @@ const DealsAdd = () => {
             <ImageSelectionDialog
               lisener={(list) => {
                 const image = list[0];
-                
 
                 dispatch(removeAllSelectedGalleryImage());
                 setmodal_fullscreen(!modal_fullscreen);

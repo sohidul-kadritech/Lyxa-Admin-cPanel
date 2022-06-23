@@ -276,7 +276,7 @@ const shopReducer = (state = initialState, action) => {
         typeKey: payload,
       };
 
-    case actionType.UPDATE_SEARCH_KEY:
+    case actionType.UPDATE_SHOP_SEARCH_KEY:
       return {
         ...state,
         searchKey: payload,

@@ -50,18 +50,24 @@ import {
   updateShopSearchKey,
   updateShopType,
 } from "../../store/Shop/shopAction";
-import { getAllProduct } from "../../store/Product/productAction";
+import {
+  getAllProduct,
+  updateProductSearchKey,
+} from "../../store/Product/productAction";
 import formatBytes from "../../common/imageFormatBytes";
 
 import ShopAutocompleted from "../../components/ShopAutocompleted";
 import SelectOption from "../../components/SelectOption";
+import ProductAutocompleted from "../../components/ProductAutocompleted";
 
 const AddBanner = () => {
-
-
   const { list, status, loading } = useSelector((state) => state.bannerReducer);
-  const { shops, searchKey, typeKey } = useSelector((state) => state.shopReducer);
-  const { products } = useSelector((state) => state.productReducer);
+  const { shops, searchKey, typeKey } = useSelector(
+    (state) => state.shopReducer
+  );
+  const { products, searchKey: productSearchKey } = useSelector(
+    (state) => state.productReducer
+  );
 
   const dispatch = useDispatch();
   const route = useHistory();
@@ -88,15 +94,15 @@ const AddBanner = () => {
     if (shopType || typeKey || searchKey) {
       dispatch(getAllShop(true));
     }
-  }, [shopType, typeKey ,searchKey]);
+  }, [shopType, typeKey, searchKey]);
 
-  // GET ALL SHOP
+  // GET ALL Product
 
   useEffect(() => {
-    if (clickType === "product") {
+    if (clickType === "product" || productSearchKey) {
       dispatch(getAllProduct(true));
     }
-  }, [clickType]);
+  }, [clickType, productSearchKey]);
 
   // EDIT BANNER
 
@@ -143,7 +149,7 @@ const AddBanner = () => {
     setClickType(clickType ? clickType : "");
     setClickableUrl(clickableUrl ? clickableUrl : "");
     setIsClickable(isClickable);
-    setShopType(shop ? shop.shopType : shopId ? findShop.shopType :  '')
+    setShopType(shop ? shop.shopType : shopId ? findShop.shopType : "");
   };
 
   // GET BANNER FROM SERVER
@@ -416,6 +422,7 @@ const AddBanner = () => {
                             value={clickType}
                             onChange={(event) => {
                               setClickType(event.target.value);
+                              setShopType("");
                             }}
                             options={[
                               { label: "Shop", value: "shop" },
@@ -446,67 +453,35 @@ const AddBanner = () => {
                 )}
 
                 <Row className="mb-4">
-                  {clickType && (
-                    <Col lg={6} className="mt-3 mt-lg-0">
-                      {clickType === "shop" ? (
-                        <ShopAutocompleted
-                          value={clickableShop}
-                          onChange={(event, newValue) =>
-                            setClickableShop(newValue)
-                          }
-                          searchKey={searchKey}
-                          onInputChange={(event, newInputValue) =>
-                            dispatch(updateShopSearchKey(newInputValue))
-                          }
-                          list={shops}
-                        />
-                      ) : (
-                        <Autocomplete
-                          className="cursor-pointer"
-                          value={clickableProduct}
-                          onChange={(event, newValue) => {
-                            setClickableProduct(newValue);
-                          }}
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={(option, value) =>
-                            option._id == value._id
-                          }
-                          inputValue={searchShopKey}
-                          onInputChange={(event, newInputValue) => {
-                            setSearchShopKey(newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={products.length > 0 ? products : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select Product"
-                              required
-                            />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
-                            >
-                              <img
-                                loading="lazy"
-                                width="60"
-                                src={option.images[0]}
-                                alt=""
-                              />
-                              {option.name}
-                            </Box>
-                          )}
-                        />
-                      )}
-                    </Col>
-                  )}
+                  <Col lg={6} className="mt-3 mt-lg-0">
+                    {clickType === "shop" && shopType && (
+                      <ShopAutocompleted
+                        value={clickableShop}
+                        onChange={(event, newValue) =>
+                          setClickableShop(newValue)
+                        }
+                        searchKey={searchKey}
+                        onInputChange={(event, newInputValue) =>
+                          dispatch(updateShopSearchKey(newInputValue))
+                        }
+                        list={shops}
+                      />
+                    )}
+
+                    {clickType === "product" && (
+                      <ProductAutocompleted
+                        value={clickableProduct}
+                        onChange={(event, newValue) =>
+                          setClickableProduct(newValue)
+                        }
+                        searchKey={productSearchKey}
+                        onInputChange={(event, newInputValue) =>
+                          dispatch(updateProductSearchKey(newInputValue))
+                        }
+                        list={products}
+                      />
+                    )}
+                  </Col>
 
                   {id && (
                     <Col lg={6} className="mt-3 mt-lg-0">

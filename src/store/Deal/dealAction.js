@@ -211,7 +211,8 @@ export const addDeal = (values) => async (dispatch) => {
 
   // GET ALL TAGS 
 
-  export const getAllTags = (type, searchKey) => async (dispatch) => {
+  export const getAllTags = (refresh) => async (dispatch, getState) => {
+    const {tagSearchKey} = getState().dealReducer;
     try {
       dispatch({
         type: actionType.ALL_TAG_REQUEST_SEND,
@@ -220,12 +221,11 @@ export const addDeal = (values) => async (dispatch) => {
         params:{
           page: 1,
           pageSize: 100,
-          type,
-          searchKey
+          searchKey: tagSearchKey
         }
       });
   
-
+      console.log(data)
   
       if (data.status) {
         dispatch({
@@ -245,3 +245,11 @@ export const addDeal = (values) => async (dispatch) => {
       });
     }
   }
+  
+
+  export const updateTagsSearchKey= (value) => (dispatch) => {
+    dispatch({
+      type: actionType.UPDATE_TAG_SEARCH_KEY,
+      payload: value,
+    });
+  };
