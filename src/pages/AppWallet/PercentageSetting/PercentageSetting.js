@@ -13,14 +13,19 @@ import { toast } from "react-toastify";
 import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import { addDeliveryCharge, getDeliveryCharge } from "../../../store/appWallet/appWalletAction";
+import {
+  addDeliveryCharge,
+  getDeliveryCharge,
+} from "../../../store/appWallet/appWalletAction";
 import { getAllShop } from "../../../store/Shop/shopAction";
 
 const PercentageSetting = () => {
   const dispatch = useDispatch();
 
   const { shops } = useSelector((state) => state.shopReducer);
-  const {loading, deliveryFee} = useSelector((state) => state.appWalletReducer);
+  const { loading, deliveryFee } = useSelector(
+    (state) => state.appWalletReducer
+  );
 
   const [feeInfo, setFeeInfo] = useState({
     deliveryFeePerKm: "",
@@ -30,30 +35,27 @@ const PercentageSetting = () => {
   const [searchShopKey, setSearchShopKey] = useState("");
   const [shop, setShop] = useState(null);
 
-  useEffect(()=>{
-    callDeliveryFee(true)
-  },[])
+  useEffect(() => {
+    callDeliveryFee(true);
+  }, []);
 
-  const callDeliveryFee = (refresh = false) =>{
-    dispatch(getDeliveryCharge(refresh))
-  }
+  const callDeliveryFee = (refresh = false) => {
+    dispatch(getDeliveryCharge(refresh));
+  };
 
-  useEffect(()=>{
-    if(deliveryFee){
+  useEffect(() => {
+    if (deliveryFee) {
       setFeeInfo({
         deliveryFeePerKm: deliveryFee.deliveryFeePerKm,
         dropChargePerKm: deliveryFee.dropChargePerKm,
-        
-      })
+      });
     }
-  },[deliveryFee])
+  }, [deliveryFee]);
 
   const handleChange = (event) => {
-
-      const { name, value } = event.target;
-      // console.log({ name, value });
-      setFeeInfo({ ...feeInfo, [name]: value });
-    
+    const { name, value } = event.target;
+    // console.log({ name, value });
+    setFeeInfo({ ...feeInfo, [name]: value });
   };
 
   // GET ALL SHOP
@@ -63,31 +65,35 @@ const PercentageSetting = () => {
     }
   }, [feeInfo?.deliveryApplied]);
 
-
   // VALIDATION
-  const DeliveryFeeSubmit = () =>{
-    const {deliveryFeePerKm, dropChargePerKm, deliveryApplied} = feeInfo;
-    if(!deliveryFeePerKm){
-      return WarningMessage('Enter delivery Fee Per Km ');
+  const DeliveryFeeSubmit = () => {
+    const { deliveryFeePerKm, dropChargePerKm, deliveryApplied } = feeInfo;
+    if (!deliveryFeePerKm) {
+      return WarningMessage("Enter delivery Fee Per Km ");
     }
-    if(!dropChargePerKm){
-      return WarningMessage('Enter Drop charge Per Km ');
+    if (!dropChargePerKm) {
+      return WarningMessage("Enter Drop charge Per Km ");
     }
-    if(!deliveryApplied){
-      return WarningMessage('Select Applied For ');
-    }
-
-    if(deliveryApplied === 'shop' && !shop){
-      return WarningMessage('Select a shop ');
+    if (!deliveryApplied) {
+      return WarningMessage("Select Applied For ");
     }
 
-    submitData()
-  }
-  // SUBMTI DATA TO SERVER 
+    if (deliveryApplied === "shop" && !shop) {
+      return WarningMessage("Select a shop ");
+    }
+
+    submitData();
+  };
+  // SUBMTI DATA TO SERVER
 
   const submitData = () => {
-    dispatch(addDeliveryCharge({...feeInfo, shopId: feeInfo.deliveryApplied === 'shop' ?  shop?._id : null}));
-  }
+    dispatch(
+      addDeliveryCharge({
+        ...feeInfo,
+        shopId: feeInfo.deliveryApplied === "shop" ? shop?._id : null,
+      })
+    );
+  };
 
   // WARINIG MESSAGE
 
@@ -123,7 +129,7 @@ const PercentageSetting = () => {
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
-                      label="Delivery Fee(Per KM)"
+                      label="Delivery Fee(Per/KM)"
                       variant="outlined"
                       name="deliveryFeePerKm"
                       placeholder="Enter Delivery feeInfo(Per KM)"
@@ -133,11 +139,11 @@ const PercentageSetting = () => {
                       required
                     />
                   </Col>
-                  <Col lg={6} className='mt-4 mt-lg-0'>
+                  <Col lg={6} className="mt-4 mt-lg-0">
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
-                      label="Drop feeInfo(Per KM)"
+                      label="Drop fee(Per/KM)"
                       variant="outlined"
                       placeholder="Enter Drop feeInfo(Per KM)"
                       name="dropChargePerKm"
@@ -148,7 +154,7 @@ const PercentageSetting = () => {
                     />
                   </Col>
                 </Row>
-                <Row className='mt-4'>
+                <Row className="mt-4">
                   <Col lg={6}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
@@ -173,9 +179,7 @@ const PercentageSetting = () => {
                       <Autocomplete
                         className="cursor-pointer"
                         value={shop}
-                        onChange={(event, newValue) =>
-                          setShop(newValue)
-                        }
+                        onChange={(event, newValue) => setShop(newValue)}
                         getOptionLabel={(option) =>
                           option.shopName ? option.shopName : ""
                         }
@@ -212,8 +216,15 @@ const PercentageSetting = () => {
                     )}
                   </Col>
                 </Row>
-                <div className='d-flex justify-content-center mt-5'>
-                  <Button disabled={loading} style={{maxWidth: '200px', width: '100%'}} color='primary' onClick={DeliveryFeeSubmit}>{loading ? "Loading..." : "Add"}</Button>
+                <div className="d-flex justify-content-center mt-5">
+                  <Button
+                    disabled={loading}
+                    style={{ maxWidth: "200px", width: "100%" }}
+                    color="primary"
+                    onClick={DeliveryFeeSubmit}
+                  >
+                    {loading ? "Loading..." : "Add"}
+                  </Button>
                 </div>
               </CardBody>
             </Card>
@@ -224,4 +235,4 @@ const PercentageSetting = () => {
   );
 };
 
-export default PercentageSetting; 
+export default PercentageSetting;

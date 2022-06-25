@@ -14,7 +14,6 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Tooltip from "@mui/material/Tooltip";
 import { useSelector, useDispatch } from "react-redux";
 import {
-
   getAllSeller,
   setSellerStatusFalse,
   updateSellerSearchKey,
@@ -62,18 +61,16 @@ const SellerList = () => {
   }, []);
 
   useEffect(() => {
-    if(sortByKey || searchKey || statusKey || typeKey || subTypeKey){
-      
-    callSellerList(true);
-    }else{
-      callSellerList()
+    if (sortByKey || searchKey || statusKey || typeKey || subTypeKey) {
+      callSellerList(true);
+    } else {
+      callSellerList();
     }
-  },[sortByKey, searchKey, statusKey, typeKey, subTypeKey]);
+  }, [sortByKey, searchKey, statusKey, typeKey, subTypeKey]);
 
   const callSellerList = (refresh = false) => {
     dispatch(getAllSeller(refresh));
   };
-
 
   return (
     <React.Fragment>
@@ -199,8 +196,8 @@ const SellerList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th style={{ height: "50px",maxWidth: '150px' }}>
-                   
+                          <Th className="d-flex justify-content-center">
+                            <div className="image__wrapper">
                               <img
                                 onClick={() => {
                                   setIsZoom(true);
@@ -215,7 +212,7 @@ const SellerList = () => {
                                   objectFit: "contain",
                                 }}
                               />
-                  
+                            </div>
                           </Th>
 
                           <Td>{item?.name}</Td>

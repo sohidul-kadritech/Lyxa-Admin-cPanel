@@ -96,8 +96,8 @@ const OrderDetails = () => {
 
     directionsService
       .route({
-        origin: { lat: shopLat, lng: shopLong },
-        destination: { lat: desLat, lng: desLong },
+        origin: { lat: 23.8103, lng: 90.4125 },
+        destination: { lat: 23.8103, lng: 90.4125 },
         travelMode: google.maps.TravelMode.DRIVING,
       })
       .then((response) => {
@@ -143,8 +143,8 @@ const OrderDetails = () => {
               <CardBody>
                 <CardTitle>Order Details</CardTitle>
                 <hr />
-                <Row className='text-center'>
-                  <Col lg={6} >
+                <Row className="text-center">
+                  <Col lg={6}>
                     <Info
                       title="User"
                       value={order?.user?.name}
@@ -178,11 +178,14 @@ const OrderDetails = () => {
                   </Col>
 
                   <Col lg={6}>
-                  <Info title="Order Status" value={order?.orderStatus} />
-                  <Info title="Order Type" value={order?.orderType} />
-                  <Info title="Payment Method" value={order?.paymentMethod} />
-                  <Info title="Payment Status" value={order?.paymentStatus} />
-                  <Info title="Order Time" value={new Date(order?.createdAt).toLocaleString()} />
+                    <Info title="Order Status" value={order?.orderStatus} />
+                    <Info title="Order Type" value={order?.orderType} />
+                    <Info title="Payment Method" value={order?.paymentMethod} />
+                    <Info title="Payment Status" value={order?.paymentStatus} />
+                    <Info
+                      title="Order Time"
+                      value={new Date(order?.createdAt).toLocaleString()}
+                    />
                   </Col>
                 </Row>
               </CardBody>

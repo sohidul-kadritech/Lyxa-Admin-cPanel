@@ -4,13 +4,13 @@ import {
   ADD_DELIVERY_MAN,
   ALL_DELIVERY_MAN,
   EDIT_DELIVERY_MAN,
+  TRACK_DELIVERY_MAN,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 // ADD
 export const addDeliveryMan = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_DELIVERY_MAN_REQUEST_SEND,
@@ -24,14 +24,14 @@ export const addDeliveryMan = (values) => async (dispatch) => {
     });
 
     if (status) {
-      successMsg(message, 'success')
+      successMsg(message, "success");
 
       dispatch({
         type: actionType.ADD_DELIVERY_MAN_REQUEST_SUCCESS,
         payload: data.deliveryBoyFinal,
       });
     } else {
-      successMsg(error, 'error')
+      successMsg(error, "error");
 
       dispatch({
         type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
@@ -73,7 +73,6 @@ export const allDeliveryMan =
         });
 
         if (status) {
-
           dispatch({
             type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
             payload: data,
@@ -96,7 +95,6 @@ export const allDeliveryMan =
 //   EDIT
 
 export const editDeliveryMan = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.EDIT_DELIVERY_MAN_REQUEST_SEND,
@@ -109,10 +107,10 @@ export const editDeliveryMan = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({data})
+    console.log({ data });
 
     if (status) {
-      successMsg(message, 'success')
+      successMsg(message, "success");
 
       setTimeout(() => {
         dispatch({
@@ -121,11 +119,47 @@ export const editDeliveryMan = (values) => async (dispatch) => {
         });
       }, [450]);
     } else {
-      successMsg(error, 'error')
-
+      successMsg(error, "error");
 
       dispatch({
         type: actionType.EDIT_DELIVERY_MAN_REQUEST_FAIL,
+        payload: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// TRACKING DELIVERY Boy
+
+export const trackDeliveryBoy = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.TRACK_DELIVERY_MAN_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, message, data = null },
+    } = await requestApi().request(TRACK_DELIVERY_MAN, {
+      id,
+    });
+
+    console.log({ data });
+
+    if (status) {
+      dispatch({
+        type: actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS,
+        payload: data.delivery,
+      });
+    } else {
+      successMsg(error, "error");
+
+      dispatch({
+        type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
         payload: error,
       });
     }
@@ -164,8 +198,8 @@ export const updateDeliveryManSearchKey = (value) => (dispatch) => {
   });
 };
 
-export const setDeliveryStatusFalse = () => dispatch =>{
+export const setDeliveryStatusFalse = () => (dispatch) => {
   dispatch({
     type: actionType.SET_STATUS_FALSE,
   });
-}
+};

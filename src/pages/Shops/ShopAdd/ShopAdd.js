@@ -55,6 +55,11 @@ import {
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
 import formatBytes from "../../../common/imageFormatBytes";
+import MomentUtils from "@date-io/moment";
+import {
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 
 const ShopAdd = () => {
   const dispatch = useDispatch();
@@ -126,7 +131,6 @@ const ShopAdd = () => {
       if (findShop) {
         updateData(findShop);
       } else {
-
         callApi(id);
       }
     }
@@ -140,7 +144,6 @@ const ShopAdd = () => {
     });
 
     if (data.status) {
-
       updateData(data.data.shop);
     } else {
       history.push("/shop/list", { replace: true });
@@ -177,10 +180,10 @@ const ShopAdd = () => {
       freeDelivery,
       address,
       email,
-      phone_number
+      phone_number,
     } = values;
-    
-    setPhone(phone_number)
+
+    setPhone(phone_number);
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
@@ -206,7 +209,6 @@ const ShopAdd = () => {
   // TAGS
 
   const handleTagAdd = (evt) => {
-
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
@@ -226,7 +228,6 @@ const ShopAdd = () => {
       ...tags,
       value: evt.target.value,
     });
-
   };
 
   const handleTagDelete = (item) => {
@@ -305,7 +306,6 @@ const ShopAdd = () => {
       });
 
       if (data.status) {
-
         return data.data.url;
       } else {
         console.log(data.error);
@@ -318,7 +318,6 @@ const ShopAdd = () => {
   // DISPACTH DATA
 
   const submitData = (logoUrl, bannerUrl, photosUrl) => {
-
     const cuisinesList = selectedCuisines?.map((item) => item?._id);
     if (id) {
       dispatch(
@@ -416,12 +415,10 @@ const ShopAdd = () => {
   // ADDRESS CHANGE
 
   const handleAddressChange = (address) => {
-
     setSelectedAddress(address);
   };
 
   const handleAddressSelect = (address, placeId) => {
-
     setSelectedAddress(address);
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
@@ -488,7 +485,6 @@ const ShopAdd = () => {
     }
   }, [status]);
 
-
   // IMAGE
 
   const handleAcceptedFiles = (files, type) => {
@@ -511,7 +507,6 @@ const ShopAdd = () => {
   // CUISINES ADD
 
   const addNewCuisine = (item) => {
-
     setSelectedCuisines([...selectedCuisines, item]);
   };
 
@@ -556,23 +551,22 @@ const ShopAdd = () => {
                   <Col lg={6}>
                     <Autocomplete
                       className="cursor-pointer"
-                      disabled={id ? true : false}
+                      disabled={
+                        id || searchParams.get("sellerId") ? true : false
+                      }
                       value={seller}
                       onChange={(event, newValue) => {
                         setSeller(newValue);
-
                       }}
                       getOptionLabel={(option, index) =>
                         option.name ? option.name : ""
                       }
-                      isOptionEqualToValue={
-                        (option, value) => option?._id == value?._id
-
+                      isOptionEqualToValue={(option, value) =>
+                        option?._id == value?._id
                       }
                       inputValue={searchSellerKey}
                       onInputChange={(event, newInputValue) => {
                         setSearchSellerKey(newInputValue);
-
                       }}
                       id="controllable-states-demo"
                       options={sellers.length > 0 ? sellers : []}
@@ -622,19 +616,17 @@ const ShopAdd = () => {
                           onChange={(e) => setShopName(e.target.value)}
                         />
                       </div>
-
                       <div className="mb-4">
                         <TextField
-                          className="form-control"
                           type="time"
-                          id="example-time-input"
+                          className="form-control"
+                          // id="example-time-input"
+                          label="Close At"
                           required
-                          value={shopStartTime}
-                          label="Open At"
+                          value={shopEndTime}
                           onChange={(e) => setShopStartTime(e.target.value)}
                         />
                       </div>
-
                       <div className="mb-4">
                         <TextField
                           type="time"
@@ -644,8 +636,31 @@ const ShopAdd = () => {
                           required
                           value={shopEndTime}
                           onChange={(e) => setShopEndTime(e.target.value)}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
                         />
                       </div>
+                      {/* <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <div className="mb-4">
+                          <KeyboardTimePicker
+                            // margin="normal"
+                            id="time-picker"
+                            variant="outline"
+                            label="Time picker"
+                            value={shopStartTime}
+                            onChange={(e) => console.log(e)}
+                            // KeyboardButtonProps={{
+                            //   "aria-label": "change time",
+                            // }}
+                          />
+                        </div>
+
+                       
+                      </MuiPickersUtilsProvider> */}
 
                       <div className="mb-4">
                         <FormControl fullWidth required>
@@ -964,19 +979,16 @@ const ShopAdd = () => {
                             className="cursor-pointer"
                             onChange={(event, newValue) => {
                               addNewCuisine(newValue);
-
                             }}
                             getOptionLabel={(option, index) =>
                               option.name ? option.name : ""
                             }
-                            isOptionEqualToValue={
-                              (option, value) => option._id == value._id
-
+                            isOptionEqualToValue={(option, value) =>
+                              option._id == value._id
                             }
                             inputValue={searchCuisineKey}
                             onInputChange={(event, newInputValue) => {
                               setSearchCuisineKey(newInputValue);
-
                             }}
                             id="controllable-states-demo"
                             options={cuisines.length > 0 ? cuisines : []}

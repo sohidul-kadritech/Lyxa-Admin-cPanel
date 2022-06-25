@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
   CardTitle,
   Col,
   Container,
+  Modal,
   Row,
   Spinner,
 } from "reactstrap";
@@ -21,13 +22,15 @@ import {
 } from "../../../assets/staticData";
 import {
   allDeliveryMan,
+  trackDeliveryBoy,
   updateDeliveryManSearchKey,
   updateDeliveryManSortByKey,
   updateDeliveryManStatusKey,
 } from "../../../store/DeliveryMan/DeliveryManAction";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom';
-import Search from './../../../components/Search';
+import { useHistory } from "react-router-dom";
+import Search from "./../../../components/Search";
+import TrackingDeliveryBoy from "../../../components/TrackingDeliveryBoy";
 
 const DeliverymanList = () => {
   const dispatch = useDispatch();
@@ -45,6 +48,9 @@ const DeliverymanList = () => {
     currentPage,
   } = useSelector((state) => state.deliveryManReducer);
 
+  const [track, setTrack] = useState(false);
+  const [id, setId] = useState(null);
+
   useEffect(() => {
     if (sortByKey || statusKey || searchKey) {
       callDeliveryManList(true);
@@ -55,6 +61,14 @@ const DeliverymanList = () => {
     dispatch(allDeliveryMan(refresh));
   };
 
+  // TRACK DELIVERY
+
+  useEffect(() => {
+    if (track && id) {
+      dispatch(trackDeliveryBoy(id));
+    }
+    return;
+  }, [track, id]);
 
   return (
     <React.Fragment>
@@ -152,7 +166,9 @@ const DeliverymanList = () => {
                                 <button
                                   className="btn btn-success me-0 me-lg-2 button"
                                   onClick={() =>
-                                    history.push(`/deliveryman/edit/${item._id}`)
+                                    history.push(
+                                      `/deliveryman/edit/${item._id}`
+                                    )
                                   }
                                 >
                                   <i className="fa fa-edit" />
@@ -162,10 +178,23 @@ const DeliverymanList = () => {
                                 <button
                                   className="btn btn-info button me-0 me-lg-2"
                                   onClick={() =>
-                                    history.push(`/deliveryman/details/${item._id}`)
+                                    history.push(
+                                      `/deliveryman/details/${item._id}`
+                                    )
                                   }
                                 >
                                   <i className="fa fa-eye" />
+                                </button>
+                              </Tooltip>
+                              <Tooltip title="Tracking">
+                                <button
+                                  className="btn btn-warning button me-0 me-lg-2"
+                                  onClick={() => {
+                                    setTrack(true);
+                                    setId(item._id);
+                                  }}
+                                >
+                                  <i className="fa fa-map-marker" />
                                 </button>
                               </Tooltip>
                             </div>
@@ -203,33 +232,37 @@ const DeliverymanList = () => {
             </Row>
           </Container>
         </div>
+
+        {/* TRACK DELIVERY BOY */}
+
+        <Modal
+          isOpen={track}
+          toggle={() => {
+            setTrack(!track);
+          }}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">Tracking Delivery Boy</h5>
+            <button
+              type="button"
+              onClick={() => {
+                setTrack(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <TrackingDeliveryBoy />
+          </div>
+        </Modal>
       </GlobalWrapper>
     </React.Fragment>
   );
 };
-
-const SearchWrapper = styled.div`
-  border: 1px solid lightgray;
-  border-radius: 6px;
-  width: 100%;
-  padding: 2px 7px;
-  @media (max-width: 1200px) {
-    width: 100%;
-  }
-  .search__wrapper {
-    /* padding: 7px 10px; */
-    display: flex;
-    align-items: center;
-    i {
-      font-size: 15px;
-    }
-    input {
-      border: none;
-      color: black !important;
-    }
-
-
-  }
-`;
 
 export default DeliverymanList;

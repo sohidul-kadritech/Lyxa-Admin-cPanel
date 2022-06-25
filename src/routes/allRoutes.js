@@ -128,32 +128,32 @@ import AdminList from "../pages/AdminControl/Admins/AdminList.js/AdminList";
 import CreateAdmin from "../pages/AdminControl/Admins/CreateAdmin/CreateAdmin";
 import Role from "../pages/AdminControl/Role/Role";
 import UserDetails from "../pages/Users/UserDetails/UserDetails";
-import SellerList from './../pages/Seller/SellerList/SellerList';
-import SellerAdd from './../pages/Seller/SellerAdd/SellerAdd';
-import ShopList from './../pages/Shops/ShopList/ShopList';
-import ShopAdd from './../pages/Shops/ShopAdd/ShopAdd';
-import DeliverymanList from './../pages/Deliveryman/DeliverymanList/DeliverymanList';
-import DeliverymanAdd from './../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
-import OrdersList from './../pages/Orders/OrdersList/OrdersList';
+import SellerList from "./../pages/Seller/SellerList/SellerList";
+import SellerAdd from "./../pages/Seller/SellerAdd/SellerAdd";
+import ShopList from "./../pages/Shops/ShopList/ShopList";
+import ShopAdd from "./../pages/Shops/ShopAdd/ShopAdd";
+import DeliverymanList from "./../pages/Deliveryman/DeliverymanList/DeliverymanList";
+import DeliverymanAdd from "./../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd";
+import OrdersList from "./../pages/Orders/OrdersList/OrdersList";
 import DealsList from "../pages/Deals/DealsList/DealsList";
 import DealsAdd from "../pages/Deals/DealsAdd/DealsAdd";
 import DropPayList from "../pages/DropPay/DropPayList/DropPayList";
-import transactions from './../pages/Transactions/transactions';
-import PercentageSetting from './../pages/AppWallet/PercentageSetting/PercentageSetting';
-import AdminLogHistory from './../pages/AppWallet/AdminLogHistory/AdminLogHistory';
-import SellerTransactions from './../pages/AppWallet/SellerTransactions/SellerTransactions';
-import DeliveryTransactions from './../pages/AppWallet/DeliveryTransactions/DeliveryTransactions';
-import PaymentHistory from './../pages/AppWallet/PaymentHistory/PaymentHistory';
-import Chat from './../pages/Chat/Chat';
-import CategoryList from './../pages/Categories&Tags/Category/CategoryList/CategoryList';
-import CategoryAdd from './../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
-import TagsList from './../pages/Categories&Tags/Tags/TagsList/TagsList';
-import TagAdd from './../pages/Categories&Tags/Tags/TagAdd/TagAdd';
+import transactions from "./../pages/Transactions/transactions";
+import PercentageSetting from "./../pages/AppWallet/PercentageSetting/PercentageSetting";
+import AdminLogHistory from "./../pages/AppWallet/AdminLogHistory/AdminLogHistory";
+import SellerTransactions from "./../pages/AppWallet/SellerTransactions/SellerTransactions";
+import DeliveryTransactions from "./../pages/AppWallet/DeliveryTransactions/DeliveryTransactions";
+import PaymentHistory from "./../pages/AppWallet/PaymentHistory/PaymentHistory";
+import Chat from "./../pages/Chat/Chat";
+import CategoryList from "./../pages/Categories&Tags/Category/CategoryList/CategoryList";
+import CategoryAdd from "./../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd";
+import TagsList from "./../pages/Categories&Tags/Tags/TagsList/TagsList";
+import TagAdd from "./../pages/Categories&Tags/Tags/TagAdd/TagAdd";
 import CategoryDetails from "../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails";
 import ProductList from "../pages/Product/ProductList/ProductList";
 import ProductAdd from "../pages/Product/ProductAdd/ProductAdd";
 import ShopDetails from "../pages/Shops/ShopDetails/ShopDetails";
-import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
+import SellerDetails from "./../pages/Seller/SellerDetails/SellerDetails";
 import DeliverymanDetails from "../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails.js";
 import ProductDetails from "../pages/Product/ProductDetails/ProductDetails";
 import Cuisine from "../pages/Shops/Cuisine";
@@ -167,12 +167,11 @@ import SellerTransactionDetails from "../pages/AppWallet/SellerTransactions/Sell
 import DeliveryTransactionsDetails from "../pages/AppWallet/DeliveryTransactions/DeliveryTransactionsDetails";
 import DropTransactionsDetails from "../pages/AppWallet/dropTransactions/dropTransactionsDetails";
 
-
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
-  {path:"/orders/list", component: OrdersList},
-  {path:"/orders/details/:id", component: OrderDetails},
+  { path: "/orders/list", component: OrdersList },
+  { path: "/orders/details/:id", component: OrderDetails },
 
   { path: "/image-gallery", component: PagesGallery },
   { path: "/image-folder", component: ImageFolder },
@@ -190,78 +189,88 @@ const userRoutes = [
   { path: "/users/list", component: UsersList },
 
   { path: "/users/details/:id", component: UserDetails },
-  {path: "/users/transactions/:id", component: UserTransaction },
+  { path: "/users/transactions/:id", component: UserTransaction },
 
   // SELLER
 
-  {path: "/seller/list", component: SellerList},
-  {path: "/seller/add", component: SellerAdd},
-  {path: "/seller/edit/:id", component: SellerAdd},
-  {path: "/seller/details/:id", component: SellerDetails},
+  { path: "/seller/list", component: SellerList },
+  { path: "/seller/add", component: SellerAdd },
+  { path: "/seller/edit/:id", component: SellerAdd },
+  { path: "/seller/details/:id", component: SellerDetails },
 
   // SHOPS
 
-  {path: "/shops/list", component: ShopList},
-  {path: "/shops/add", component: ShopAdd},
-  {path: "/shops/edit/:id", component: ShopAdd},
-  {path: "/shops/details/:id", component: ShopDetails},
-  {path: '/shops/cuisines', component: Cuisine },
+  { path: "/shops/list", component: ShopList },
+  { path: "/shops/add", component: ShopAdd },
+  { path: "/shops/edit/:id", component: ShopAdd },
+  { path: "/shops/details/:id", component: ShopDetails },
+  { path: "/shops/cuisines", component: Cuisine },
 
-  // PRODUCT 
+  // PRODUCT
 
-  {path: '/products/list', component: ProductList},
-  {path: '/products/add', component: ProductAdd},
-  {path: '/products/edit/:id', component: ProductAdd},
-  {path: '/products/details/:id', component: ProductDetails},
-  
-
+  { path: "/products/list", component: ProductList },
+  { path: "/products/add", component: ProductAdd },
+  { path: "/products/edit/:id", component: ProductAdd },
+  { path: "/products/details/:id", component: ProductDetails },
 
   // DELIVERY MAN
 
-  {path: "/deliveryman/list", component: DeliverymanList},
-  {path: "/deliveryman/add", component: DeliverymanAdd},
-  {path: "/deliveryman/edit/:id", component: DeliverymanAdd},
-  {path: "/deliveryman/details/:id", component: DeliverymanDetails},
+  { path: "/deliveryman/list", component: DeliverymanList },
+  { path: "/deliveryman/add", component: DeliverymanAdd },
+  { path: "/deliveryman/edit/:id", component: DeliverymanAdd },
+  { path: "/deliveryman/details/:id", component: DeliverymanDetails },
 
   // DEALS
 
-  {path: "/deals/list", component: DealsList},
-  {path: "/deals/add", component: DealsAdd},
-  {path: "/deals/edit/:id", component: DealsAdd},
+  { path: "/deals/list", component: DealsList },
+  { path: "/deals/add", component: DealsAdd },
+  { path: "/deals/edit/:id", component: DealsAdd },
 
   // DROP PAY
-  {path: "/drop-pay", component: DropPayList},
+  { path: "/drop-pay", component: DropPayList },
 
-  // TRANSACTIONS 
+  // TRANSACTIONS
 
-  { path: "/transactions",  component:transactions},
+  { path: "/transactions", component: transactions },
 
-  // APP WALLET 
+  // APP WALLET
 
-  {path: "/add-wallet/percentage-setting", component: PercentageSetting},
-  {path: "/add-wallet/admin-log-history", component: AdminLogHistory},
-  {path: "/add-wallet/seller-transactions", component: SellerTransactions},
-  {path: "/add-wallet/seller-transactions/details/:id", component: SellerTransactionDetails},
-  {path: "/add-wallet/delivery-transactions", component: DeliveryTransactions},
-  {path: "/add-wallet/delivery-transactions/details/:id", component: DeliveryTransactionsDetails},
-  {path: "/add-wallet/payments-history", component: PaymentHistory},
-  {path: "/add-wallet/drop-transactions", component: DropTransactions},
-  {path: "/add-wallet/drop-transactions/details/:id", component: DropTransactionsDetails},
+  { path: "/add-wallet/percentage-setting", component: PercentageSetting },
+  { path: "/add-wallet/admin-log-history", component: AdminLogHistory },
+  { path: "/add-wallet/seller-transactions", component: SellerTransactions },
+  {
+    path: "/add-wallet/seller-transactions/details/:id",
+    component: SellerTransactionDetails,
+  },
+  {
+    path: "/add-wallet/delivery-transactions",
+    component: DeliveryTransactions,
+  },
+  {
+    path: "/add-wallet/delivery-transactions/details/:id",
+    component: DeliveryTransactionsDetails,
+  },
+  { path: "/add-wallet/payments-history", component: PaymentHistory },
+  { path: "/add-wallet/drop-transactions", component: DropTransactions },
+  {
+    path: "/add-wallet/drop-transactions/details/:id",
+    component: DropTransactionsDetails,
+  },
 
   // CHAT
 
-  {path: "/customer-support", component: Chat},
-  {path: "/customer-support/details/:id", component: ChatDetails},
+  { path: "/customer-support", component: Chat },
+  { path: "/customer-support/details/:id", component: ChatDetails },
 
   // CATEGORIES AND TAGS
 
-  {path: "/categories/list", component: CategoryList},
-  {path: "/categories/add", component: CategoryAdd},
-  {path: "/categories/edit/:id", component: CategoryAdd},
-  {path: "/category/details/:id", component: CategoryDetails},
+  { path: "/categories/list", component: CategoryList },
+  { path: "/categories/add", component: CategoryAdd },
+  { path: "/categories/edit/:id", component: CategoryAdd },
+  { path: "/category/details/:id", component: CategoryDetails },
 
-  {path: "/tags/list", component: TagsList},
-  {path: "/tags/add", component: TagAdd},
+  { path: "/tags/list", component: TagsList },
+  { path: "/tags/add", component: TagAdd },
 
   // ADMIN CONTROL
 
@@ -270,12 +279,10 @@ const userRoutes = [
   { path: "/admin/edit/:id", component: CreateAdmin },
   { path: "/admin/role", component: Role },
 
-  //  SETTINGS 
+  //  SETTINGS
 
-  
   { path: "/admin/settings", component: AdminSettings },
   { path: "/app/settings", component: AppSettings },
-
 
   // //calendar
   { path: "/calendar", component: Calendar },

@@ -36,6 +36,7 @@ import {
   sortByOptions,
 } from "../../../assets/staticData";
 import Search from "../../../components/Search";
+import ShopTable from "../../../components/ShopTable";
 
 const ShopList = () => {
   const dispatch = useDispatch();
@@ -65,7 +66,7 @@ const ShopList = () => {
   useEffect(() => {
     dispatch(setShopStatusFalse());
     dispatch(updateShopType({ label: "All", value: "all" }));
-    dispatch(updateShopSearchKey(""))
+    dispatch(updateShopSearchKey(""));
   }, []);
 
   useEffect(() => {
@@ -77,8 +78,6 @@ const ShopList = () => {
   const callShopList = (refresh = false) => {
     dispatch(getAllShop(refresh));
   };
-
-
 
   // DELETE SHOP
 
@@ -196,126 +195,8 @@ const ShopList = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4"> Shop List</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Logo</Th>
-                      <Th>Name</Th>
-                      <Th>Type</Th>
-                      <Th>Open/Close</Th>
-                      <Th>Status</Th>
-                      <Th>Action</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {shops.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th style={{ height: "50px", maxWidth: "150px" }}>
-                            <img
-                              onClick={() => {
-                                setIsZoom(true);
-                                setShopImg(item.shopLogo);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt=""
-                              src={item.shopLogo}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain",
-                              }}
-                            />
-                          </Th>
 
-                          <Td>{item.shopName}</Td>
-                          <Td>{item.shopType}</Td>
-                          <Td>
-                            <p>{item.shopStartTimeText}</p>
-                            <p>{item.shopEndTimeText}</p>
-                          </Td>
-                          <Td>{item.shopStatus}</Td>
-                          <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-2 button"
-                                  onClick={() =>
-                                    history.push(`/shops/edit/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button me-2"
-                                  onClick={() => {
-                                    history.push(`/shops/details/${item._id}`);
-                                  }}
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Delete">
-                                <button
-                                  className="btn btn-danger button"
-                                  onClick={() => {
-                                    setconfirm_alert(true);
-                                  }}
-                                >
-                                  <i className="fa fa-trash" />
-                                </button>
-                              </Tooltip>
-                              {confirm_alert ? (
-                                <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item._id);
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  You want to delete this Shop.
-                                </SweetAlert>
-                              ) : null}
-                            </div>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>
-                )}
-                {!loading && shops.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Data</h4>
-                  </div>
-                )}
+                <ShopTable />
               </CardBody>
             </Card>
             <Row>

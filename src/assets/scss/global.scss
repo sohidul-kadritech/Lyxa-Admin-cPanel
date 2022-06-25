@@ -1,5 +1,5 @@
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 // .ril-close{
@@ -7,18 +7,17 @@
 //         no-repeat center !important;
 // }
 
-
-.button{
-    width: 30px;
-    height: 30px;
-    padding: 6px 0px;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 12px;
-    line-height: 1.42857;
+.button {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
 }
 
-.tag__wrapper{
+.tag__wrapper {
   background-color: #d4d5d6;
   display: inline-block;
   font-size: 14px;
@@ -47,17 +46,33 @@
   }
 }
 
-.hover-shadow:hover{
+.hover-shadow:hover {
   box-shadow: 0px 0px 5px 0px rgba(198, 188, 188, 0.75);
 }
 
-.details{
+.details {
   display: flex;
   align-items: center;
 }
 
-.value{
+.value {
   color: #343a40;
   font-weight: 600;
   margin-left: 4px;
+}
+
+.image__wrapper {
+  height: 75px;
+  max-width: 170px;
+
+  @media (max-width: 1200px) {
+    max-width: 100%;
+  }
+}
+
+input[type="date"]:required:invalid::-webkit-datetime-edit {
+  color: transparent;
+}
+input[type="date"]:focus::-webkit-datetime-edit {
+  color: black !important;
 }

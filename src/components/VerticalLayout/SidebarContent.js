@@ -109,7 +109,6 @@ const SidebarContent = (props) => {
               </Link>
             </li>
 
-
             <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="ti-image" />
