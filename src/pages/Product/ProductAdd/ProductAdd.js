@@ -10,21 +10,11 @@ import {
   Col,
   Container,
   Form,
-  Input,
   Label,
   Row,
   Spinner,
 } from "reactstrap";
-import {
-  Autocomplete,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Box, Paper, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -34,7 +24,6 @@ import {
 } from "../../../store/Category/categoryAction";
 
 import Dropzone from "react-dropzone";
-import { toast } from "react-toastify";
 import {
   addProduct,
   editProduct,
@@ -100,7 +89,6 @@ const ProductAdd = () => {
   const [activeStatus, setActiveStatus] = useState("");
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
-  const [selectedAddon, setSelectedAddon] = useState("");
   const [addons, setAddons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
@@ -525,12 +513,11 @@ const ProductAdd = () => {
                           }}
                           options={shopTypeOptions2}
                           disabled={
-                            !type || searchParams.get("shopId") || id ? true : false
+                            searchParams.get("shopId") || id ? true : false
                           }
                         />
                       </div>
                       <div className="mb-4">
-
                         <ShopAutocompleted
                           value={shop}
                           onChange={(event, newValue) => setShop(newValue)}
@@ -540,7 +527,9 @@ const ProductAdd = () => {
                           }
                           list={shops}
                           disabled={
-                            id || searchParams.get("shopId") ? true : false
+                            !type || id || searchParams.get("shopId")
+                              ? true
+                              : false
                           }
                         />
                       </div>
@@ -819,275 +808,294 @@ const ProductAdd = () => {
                     </Col>
                   </Row>
 
-                  {/* ATTRIBUTE */}
-                  <Row className="mt-3">
-                    <Col lg={6}>
-                      <div className="mb-4">
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value={isNeedAttribute}
-                              id="flexCheckDefault"
-                              onChange={(e) =>
-                                setIsNeedAttribute(e.target.checked)
-                              }
-                            />
-                            <label
-                              className="form-check-label ms-1"
-                              style={{ fontSize: "16px" }}
-                              htmlFor="flexCheckDefault"
-                            >
-                              Attribute(s)
-                            </label>
-                          </div>
-                        </div>
-
-                        {isNeedAttribute && (
-                          <div>
-                            <Row className="mt-2">
-                              <Col sm={8}>
-                                <TextField
-                                  id="Attribute name"
-                                  label="Attribute Name"
-                                  variant="outlined"
-                                  style={{ width: "100%" }}
-                                  autoComplete="off"
-                                  value={attributeName}
+                  {type === "food" && (
+                    <>
+                      {/* ATTRIBUTE */}
+                      <Row className="mt-3">
+                        <Col lg={6}>
+                          <div className="mb-4">
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div className="form-check">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  value={isNeedAttribute}
+                                  id="flexCheckDefault"
                                   onChange={(e) =>
-                                    setAttributeName(e.target.value)
+                                    setIsNeedAttribute(e.target.checked)
                                   }
-                                  type="text"
                                 />
-                              </Col>
-                              <Col sm={4}>
-                                <div className="form-check">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    value={isRequiredAttribute}
-                                    id="flexCheckDefault"
-                                    onChange={(e) =>
-                                      setIsRequiredAttribute(e.target.checked)
-                                    }
-                                  />
-                                  <label
-                                    className="form-check-label ms-1"
-                                    style={{ fontSize: "16px" }}
-                                    htmlFor="flexCheckDefault"
-                                  >
-                                    Required
-                                  </label>
-                                </div>
-                              </Col>
-                            </Row>
-                            {attributeItems.map((item, index) => (
-                              <Row className="mt-3" key={index}>
-                                <Col sm={6}>
-                                  <TextField
-                                    id="variant name"
-                                    label="Name"
-                                    name="name"
-                                    variant="outlined"
-                                    style={{ width: "100%" }}
-                                    autoComplete="off"
-                                    value={item?.name}
-                                    onChange={(event) =>
-                                      attributeItemChange(event, index)
-                                    }
-                                    type="text"
-                                  />
-                                </Col>
-                                <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                                  <TextField
-                                    id="variant extra price"
-                                    name="extraPrice"
-                                    label="Extra Price"
-                                    variant="outlined"
-                                    style={{ width: "100%" }}
-                                    autoComplete="off"
-                                    value={item?.extraPrice}
-                                    onChange={(event) =>
-                                      attributeItemChange(event, index)
-                                    }
-                                    type="number"
-                                  />
-                                  {attributeItems.length > 1 && (
-                                    <i
-                                      className="fas fa-trash cursor-pointer ms-1"
-                                      style={{ color: "red", fontSize: "18px" }}
-                                      onClick={() => removeAttributeItem(index)}
-                                    ></i>
-                                  )}
-                                </Col>
-                                {attributeItems.length - 1 === index && (
-                                  <div>
-                                    <Button
-                                      outline={true}
-                                      color="primary"
-                                      className="mt-2"
-                                      onClick={addAttributeItem}
-                                    >
-                                      Add Item
-                                    </Button>
-                                  </div>
-                                )}
-                              </Row>
-                            ))}
-
-                            <div className="mt-3 text-center">
-                              <Button
-                                outline={true}
-                                color="success"
-                                size="lg"
-                                className="px-5"
-                                onClick={addAttribute}
-                              >
-                                Add
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      {attributes.length > 0 && (
-                        <div className="mb-4">
-                          <Paper className="py-2">
-                            <h5 className="text-center">Attributes List</h5>
-                            <hr />
-                            {attributes.length > 0 &&
-                              attributes.map((attribute, index) => (
-                                <ul
-                                  key={index}
-                                  style={{ listStyleType: "square" }}
+                                <label
+                                  className="form-check-label ms-1"
+                                  style={{ fontSize: "16px" }}
+                                  htmlFor="flexCheckDefault"
                                 >
-                                  <li>
-                                    <div className="d-flex justify-content-between">
-                                      <span
-                                        style={{
-                                          fontSize: "15px",
-                                          fontWeight: "500",
-                                        }}
+                                  Attribute(s)
+                                </label>
+                              </div>
+                            </div>
+
+                            {isNeedAttribute && (
+                              <div>
+                                <Row className="mt-2">
+                                  <Col sm={8}>
+                                    <TextField
+                                      id="Attribute name"
+                                      label="Attribute Name"
+                                      variant="outlined"
+                                      style={{ width: "100%" }}
+                                      autoComplete="off"
+                                      value={attributeName}
+                                      onChange={(e) =>
+                                        setAttributeName(e.target.value)
+                                      }
+                                      type="text"
+                                    />
+                                  </Col>
+                                  <Col sm={4}>
+                                    <div className="form-check">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value={isRequiredAttribute}
+                                        id="flexCheckDefault"
+                                        onChange={(e) =>
+                                          setIsRequiredAttribute(
+                                            e.target.checked
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label ms-1"
+                                        style={{ fontSize: "16px" }}
+                                        htmlFor="flexCheckDefault"
                                       >
-                                        {attribute.name}
-                                        {attribute.required ? "(Required)" : ""}
-                                      </span>
-                                      <i
-                                        className="fas fa-trash cursor-pointer me-3"
-                                        style={{
-                                          color: "#BD381C",
-                                          fontSize: "15px",
-                                        }}
-                                        onClick={() => removeAttribute(index)}
-                                      ></i>
+                                        Required
+                                      </label>
                                     </div>
-                                  </li>
-                                  {attribute.items.map((item, index) => (
-                                    <ul key={index}>
+                                  </Col>
+                                </Row>
+                                {attributeItems.map((item, index) => (
+                                  <Row className="mt-3" key={index}>
+                                    <Col sm={6}>
+                                      <TextField
+                                        id="variant name"
+                                        label="Name"
+                                        name="name"
+                                        variant="outlined"
+                                        style={{ width: "100%" }}
+                                        autoComplete="off"
+                                        value={item?.name}
+                                        onChange={(event) =>
+                                          attributeItemChange(event, index)
+                                        }
+                                        type="text"
+                                      />
+                                    </Col>
+                                    <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                                      <TextField
+                                        id="variant extra price"
+                                        name="extraPrice"
+                                        label="Extra Price"
+                                        variant="outlined"
+                                        style={{ width: "100%" }}
+                                        autoComplete="off"
+                                        value={item?.extraPrice}
+                                        onChange={(event) =>
+                                          attributeItemChange(event, index)
+                                        }
+                                        type="number"
+                                      />
+                                      {attributeItems.length > 1 && (
+                                        <i
+                                          className="fas fa-trash cursor-pointer ms-1"
+                                          style={{
+                                            color: "red",
+                                            fontSize: "18px",
+                                          }}
+                                          onClick={() =>
+                                            removeAttributeItem(index)
+                                          }
+                                        ></i>
+                                      )}
+                                    </Col>
+                                    {attributeItems.length - 1 === index && (
+                                      <div>
+                                        <Button
+                                          outline={true}
+                                          color="primary"
+                                          className="mt-2"
+                                          onClick={addAttributeItem}
+                                        >
+                                          Add Item
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </Row>
+                                ))}
+
+                                <div className="mt-3 text-center">
+                                  <Button
+                                    outline={true}
+                                    color="success"
+                                    size="lg"
+                                    className="px-5"
+                                    onClick={addAttribute}
+                                  >
+                                    Add
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </Col>
+                        <Col lg={6}>
+                          {attributes.length > 0 && (
+                            <div className="mb-4">
+                              <Paper className="py-2">
+                                <h5 className="text-center">Attributes List</h5>
+                                <hr />
+                                {attributes.length > 0 &&
+                                  attributes.map((attribute, index) => (
+                                    <ul
+                                      key={index}
+                                      style={{ listStyleType: "square" }}
+                                    >
                                       <li>
-                                        <span>{item.name}-</span>
-                                        <span className="ms-1">
-                                          {item.extraPrice}
-                                        </span>
+                                        <div className="d-flex justify-content-between">
+                                          <span
+                                            style={{
+                                              fontSize: "15px",
+                                              fontWeight: "500",
+                                            }}
+                                          >
+                                            {attribute.name}
+                                            {attribute.required
+                                              ? "(Required)"
+                                              : ""}
+                                          </span>
+                                          <i
+                                            className="fas fa-trash cursor-pointer me-3"
+                                            style={{
+                                              color: "#BD381C",
+                                              fontSize: "15px",
+                                            }}
+                                            onClick={() =>
+                                              removeAttribute(index)
+                                            }
+                                          ></i>
+                                        </div>
+                                      </li>
+                                      {attribute.items.map((item, index) => (
+                                        <ul key={index}>
+                                          <li>
+                                            <span>{item.name}-</span>
+                                            <span className="ms-1">
+                                              {item.extraPrice}
+                                            </span>
+                                          </li>
+                                        </ul>
+                                      ))}
+                                    </ul>
+                                  ))}
+                              </Paper>
+                            </div>
+                          )}
+                        </Col>
+                      </Row>
+
+                      {/* ADDON */}
+
+                      <Row className="mt-4">
+                        <Col lg={6}>
+                          <div className="mb-4">
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div className="form-check">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  value={isNeedAddon}
+                                  id="flexCheckDefault"
+                                  onChange={(e) =>
+                                    setIsNeedAddon(e.target.checked)
+                                  }
+                                />
+                                <label
+                                  className="form-check-label ms-1"
+                                  style={{ fontSize: "16px" }}
+                                  htmlFor="flexCheckDefault"
+                                >
+                                  Addon(s)
+                                </label>
+                              </div>
+                            </div>
+
+                            {isNeedAddon && (
+                              <ProductAutocompleted
+                                onChange={(event, newValue) => {
+                                  addAddonProduct(newValue);
+                                }}
+                                searchKey={productSearchKey}
+                                onInputChange={(event, newInputValue) =>
+                                  dispatch(
+                                    updateProductSearchKey(newInputValue)
+                                  )
+                                }
+                                list={products}
+                              />
+                            )}
+                          </div>
+                        </Col>
+                        <Col lg={6}>
+                          {addons.length > 0 && (
+                            <div className="mb-4">
+                              <Paper className="py-2">
+                                <h5 className="text-center">Addons List</h5>
+                                <hr />
+                                {addons.length > 0 &&
+                                  addons.map((item, index) => (
+                                    <ul
+                                      key={index}
+                                      style={{ listStyleType: "square" }}
+                                    >
+                                      <li>
+                                        <div className="d-flex justify-content-between">
+                                          <div>
+                                            <img
+                                              loading="lazy"
+                                              width="60"
+                                              src={item.images[0]}
+                                              alt=""
+                                            />
+                                            <span
+                                              style={{
+                                                fontSize: "15px",
+                                                fontWeight: "500",
+                                                marginLeft: "10px",
+                                              }}
+                                            >
+                                              {item.name}
+                                            </span>
+                                          </div>
+                                          <i
+                                            className="fas fa-trash cursor-pointer me-3"
+                                            style={{
+                                              color: "#BD381C",
+                                              fontSize: "15px",
+                                            }}
+                                            onClick={() => removeAddon(index)}
+                                          ></i>
+                                        </div>
                                       </li>
                                     </ul>
                                   ))}
-                                </ul>
-                              ))}
-                          </Paper>
-                        </div>
-                      )}
-                    </Col>
-                  </Row>
-
-                  {/* ADDON */}
-
-                  <Row className="mt-4">
-                    <Col lg={6}>
-                      <div className="mb-4">
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value={isNeedAddon}
-                              id="flexCheckDefault"
-                              onChange={(e) => setIsNeedAddon(e.target.checked)}
-                            />
-                            <label
-                              className="form-check-label ms-1"
-                              style={{ fontSize: "16px" }}
-                              htmlFor="flexCheckDefault"
-                            >
-                              Addon(s)
-                            </label>
-                          </div>
-                        </div>
-
-                        {isNeedAddon && (
-                          <ProductAutocompleted
-                            onChange={(event, newValue) => {
-                              addAddonProduct(newValue);
-                            }}
-                            searchKey={productSearchKey}
-                            onInputChange={(event, newInputValue) =>
-                              dispatch(updateProductSearchKey(newInputValue))
-                            }
-                            list={products}
-                          />
-                        )}
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      {addons.length > 0 && (
-                        <div className="mb-4">
-                          <Paper className="py-2">
-                            <h5 className="text-center">Addons List</h5>
-                            <hr />
-                            {addons.length > 0 &&
-                              addons.map((item, index) => (
-                                <ul
-                                  key={index}
-                                  style={{ listStyleType: "square" }}
-                                >
-                                  <li>
-                                    <div className="d-flex justify-content-between">
-                                      <div>
-                                        <img
-                                          loading="lazy"
-                                          width="60"
-                                          src={item.images[0]}
-                                          alt=""
-                                        />
-                                        <span
-                                          style={{
-                                            fontSize: "15px",
-                                            fontWeight: "500",
-                                            marginLeft: "10px",
-                                          }}
-                                        >
-                                          {item.name}
-                                        </span>
-                                      </div>
-                                      <i
-                                        className="fas fa-trash cursor-pointer me-3"
-                                        style={{
-                                          color: "#BD381C",
-                                          fontSize: "15px",
-                                        }}
-                                        onClick={() => removeAddon(index)}
-                                      ></i>
-                                    </div>
-                                  </li>
-                                </ul>
-                              ))}
-                          </Paper>
-                        </div>
-                      )}
-                    </Col>
-                  </Row>
+                              </Paper>
+                            </div>
+                          )}
+                        </Col>
+                      </Row>
+                    </>
+                  )}
 
                   <Row>
                     <Col>

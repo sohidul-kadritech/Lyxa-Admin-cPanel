@@ -55,11 +55,8 @@ import {
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
 import formatBytes from "../../../common/imageFormatBytes";
-import MomentUtils from "@date-io/moment";
-import {
-  KeyboardTimePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+
+import moment from "moment";
 
 const ShopAdd = () => {
   const dispatch = useDispatch();
@@ -83,7 +80,9 @@ const ShopAdd = () => {
   const [seller, setSeller] = useState(null);
   const [searchSellerKey, setSearchSellerKey] = useState("");
   const [shopType, setShopType] = useState("");
-  const [shopStartTime, setShopStartTime] = useState("");
+  const [shopStartTime, setShopStartTime] = useState(
+    moment("12:10 AM").format("LT")
+  );
   const [shopEndTime, setShopEndTime] = useState("");
   const [shopName, setShopName] = useState("");
   const [shopLogo, setShopLogo] = useState(null);
@@ -620,18 +619,24 @@ const ShopAdd = () => {
                         <TextField
                           type="time"
                           className="form-control"
-                          // id="example-time-input"
-                          label="Close At"
+                          id="example-time-input"
+                          label="Start At"
                           required
                           value={shopEndTime}
                           onChange={(e) => setShopStartTime(e.target.value)}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          // inputProps={{
+                          //   step: 300, // 5 min
+                          // }}
                         />
                       </div>
                       <div className="mb-4">
                         <TextField
                           type="time"
                           className="form-control"
-                          // id="example-time-input"
+                          id="example-time-input"
                           label="Close At"
                           required
                           value={shopEndTime}
@@ -639,28 +644,11 @@ const ShopAdd = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          inputProps={{
-                            step: 300, // 5 min
-                          }}
+                          // inputProps={{
+                          //   step: 300, // 5 min
+                          // }}
                         />
                       </div>
-                      {/* <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <div className="mb-4">
-                          <KeyboardTimePicker
-                            // margin="normal"
-                            id="time-picker"
-                            variant="outline"
-                            label="Time picker"
-                            value={shopStartTime}
-                            onChange={(e) => console.log(e)}
-                            // KeyboardButtonProps={{
-                            //   "aria-label": "change time",
-                            // }}
-                          />
-                        </div>
-
-                       
-                      </MuiPickersUtilsProvider> */}
 
                       <div className="mb-4">
                         <FormControl fullWidth required>

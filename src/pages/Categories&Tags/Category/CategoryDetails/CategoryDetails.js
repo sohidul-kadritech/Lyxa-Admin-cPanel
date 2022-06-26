@@ -35,6 +35,9 @@ import {
 import AppPagination from "../../../../components/AppPagination";
 import SweetAlert from "react-bootstrap-sweetalert";
 import formatBytes from "../../../../common/imageFormatBytes";
+import { successMsg } from "../../../../helpers/successMsg";
+import Info from "../../../../components/Info";
+import Search from "../../../../components/Search";
 
 const CategoryDetails = () => {
   const { id } = useParams();
@@ -87,7 +90,6 @@ const CategoryDetails = () => {
       if (findCategory) {
         setCategory(findCategory);
       } else {
-
         callApi(id);
       }
       //   GET ALL SUB CATEGORY
@@ -114,7 +116,6 @@ const CategoryDetails = () => {
       },
     });
 
-
     if (data.status) {
       setCategory(data.data.category);
     } else {
@@ -129,7 +130,6 @@ const CategoryDetails = () => {
   // EDIT SUB CATEGORY
 
   const handleEditSubCategory = (subId) => {
-
     setSubCatId(subId);
     const findSubCategory = subCategories.find((sub) => sub._id == subId);
 
@@ -144,77 +144,18 @@ const CategoryDetails = () => {
     window.scroll(0, 0);
   };
 
-  // DEBOUNCE SEARCH
-
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      // const context = this;
-      timer = setTimeout(() => {
-        func(args[0]);
-      }, delay);
-    };
-
-  };
-
-  const handleSearchChange = (event) => {
-
-    dispatch(updateSubCatSearchKey(event.target.value));
-  };
-
-  const searchKeyListener = debounce(handleSearchChange, 300);
-
   //   SUBMIT SUB CATEGORY
 
   const submitSubCategory = () => {
     if (!name) {
-      return toast.warn("Please Enter  Name", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg("Enter Name");
     }
-    if (!slug) {
-      return toast.warn("Please Enter Slug", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
+
     if (!activeStatus) {
-      return toast.warn("Please  Select Status", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg("Select Status");
     }
     if (!image) {
-      return toast.warn("Please  Select Image", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg("Select image");
     }
 
     uploadImage();
@@ -237,7 +178,6 @@ const CategoryDetails = () => {
         });
 
         if (data.status) {
-
           setIsLoading(false);
           submitData(data.data.url);
         } else {
@@ -278,8 +218,6 @@ const CategoryDetails = () => {
     }
   };
 
-
-
   // IMAGE
 
   const handleAcceptedFiles = (files, type) => {
@@ -301,7 +239,7 @@ const CategoryDetails = () => {
       setSlug("");
       setActiveStatus("");
       setSubCatId(null);
-      setImage(null)
+      setImage(null);
     }
   }, [status]);
 
@@ -309,6 +247,15 @@ const CategoryDetails = () => {
 
   const handleDelete = (subId) => {
     dispatch(deleteSubCategory(subId));
+  };
+
+  // HANDLE CHANGE NAME
+
+  const handleChangeName = (e) => {
+    setName(e.target.value);
+
+    const generateSlug = e.target.value + Math.round(Math.random() * 100);
+    setSlug(generateSlug);
   };
 
   return (
@@ -382,22 +329,9 @@ const CategoryDetails = () => {
                       </Col>
                       <Col md={6} className=" mt-5 mt-md-0">
                         <div className="ps-4 ">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{category?.name}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Slug:</h5>
-                            <Value>{category?.slug}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Type:</h5>
-                            <Value>{category?.type}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Status:</h5>
-                            <Value>{category?.status}</Value>
-                          </Details>
+                          <Info title="Name" value={category?.name} />
+                          <Info title="Type" value={category?.type} />
+                          <Info title="Status" value={category?.status} />
                         </div>
                       </Col>
                     </Row>
@@ -420,17 +354,7 @@ const CategoryDetails = () => {
                           type="text"
                           placeholder="Enter Sub Category Name"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <Label>Slug</Label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Enter Sub Category Slug"
-                          value={slug}
-                          onChange={(e) => setSlug(e.target.value)}
+                          onChange={handleChangeName}
                         />
                       </div>
                       <div className="mb-2">
@@ -581,19 +505,7 @@ const CategoryDetails = () => {
                         </div>
                       </Col>
                       <Col lg={8}>
-                        <label className="control-label">Search</label>
-                        <SearchWrapper>
-                          <div className="search__wrapper">
-                            <i className="fa fa-search" />
-                            <input
-                              className="form-control"
-                              type="search"
-                              placeholder="Search Subcategory..."
-                              id="search"
-                              onChange={searchKeyListener}
-                            />
-                          </div>
-                        </SearchWrapper>
+                        <Search dispatchFunc={updateSubCatSearchKey} />
                       </Col>
                     </Row>
                   </CardBody>
@@ -626,23 +538,21 @@ const CategoryDetails = () => {
                                 fontWeight: "500",
                               }}
                             >
-                              <Th style={{ height: "50px", maxWidth: '100px' }}>
-                           
-                                  <img
-                                    onClick={() => {
-                                      setSelectedImg(item?.image);
-                                      setIsOpen(true);
-                                    }}
-                                    className="img-fluid cursor-pointer"
-                                    alt=""
-                                    src={item.image}
-                                    style={{
-                                      width: "100%",
-                                      height: "100%",
-                                      objectFit: "contain",
-                                    }}
-                                  />
-                                
+                              <Th style={{ height: "50px", maxWidth: "100px" }}>
+                                <img
+                                  onClick={() => {
+                                    setSelectedImg(item?.image);
+                                    setIsOpen(true);
+                                  }}
+                                  className="img-fluid cursor-pointer"
+                                  alt=""
+                                  src={item.image}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                  }}
+                                />
                               </Th>
 
                               <Td>{item.name}</Td>

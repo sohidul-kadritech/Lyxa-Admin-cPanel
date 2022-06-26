@@ -22,13 +22,11 @@ import requestApi from "./../../../../network/httpRequest";
 
 import { SINGLE_CATEGORY } from "../../../../network/Api";
 import { editCategory } from "./../../../../store/Category/categoryAction";
-import { IMAGE_UPLOAD } from './../../../../network/Api';
+import { IMAGE_UPLOAD } from "./../../../../network/Api";
 import { shopTypeOptions2 } from "../../../../assets/staticData";
 import formatBytes from "../../../../common/imageFormatBytes";
 
 const CategoryAdd = () => {
-  
-
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
@@ -48,8 +46,7 @@ const CategoryAdd = () => {
       const findCat = categories.find((item) => item._id == id);
 
       if (findCat) {
-         setCategoryData(findCat)
-        
+        setCategoryData(findCat);
       } else {
         callApi(id);
       }
@@ -61,13 +58,12 @@ const CategoryAdd = () => {
   const callApi = async (id) => {
     const { data } = await requestApi().request(SINGLE_CATEGORY, {
       params: {
-        id
+        id,
       },
     });
 
-
     if (data.status) {
-      setCategoryData(data.data.category)
+      setCategoryData(data.data.category);
     } else {
       history.push("/categories/list", { replace: true });
     }
@@ -82,13 +78,13 @@ const CategoryAdd = () => {
     setName(name);
     setType(findTypeObj);
     setSlug(slug);
-    setImage(image)
-  }
+    setImage(image);
+  };
 
   // HANDLE SUBMIT
 
   const handleSubmit = () => {
-    if (!name || !type || !slug) {
+    if (!name || !type) {
       return toast.warn("Please Fill Up All Fields", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -101,18 +97,15 @@ const CategoryAdd = () => {
       });
     }
 
-    uploadImage()
-
-    
+    uploadImage();
   };
 
   const uploadImage = async () => {
-    
-    if(typeof image === 'string') {
+    if (typeof image === "string") {
       submitData(image);
-    }else{
+    } else {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         let formData = new FormData();
         formData.append("image", image);
 
@@ -122,8 +115,7 @@ const CategoryAdd = () => {
         });
 
         if (data.status) {
-
-          setIsLoading(false)
+          setIsLoading(false);
           submitData(data.data.url);
         } else {
           console.log(data.error);
@@ -134,9 +126,9 @@ const CategoryAdd = () => {
     }
   };
 
-  // SUBMIT DATA 
+  // SUBMIT DATA
 
-  const submitData = (url) =>{
+  const submitData = (url) => {
     const newSlug = slug.split(" ").join("");
     if (id) {
       dispatch(
@@ -158,9 +150,7 @@ const CategoryAdd = () => {
         })
       );
     }
-  }
-
-
+  };
 
   // IMAGE
 
@@ -183,11 +173,20 @@ const CategoryAdd = () => {
         setName("");
         setSlug("");
         setType(null);
-        setImage(null)
+        setImage(null);
         window.scroll(0, 0);
       }
     }
   }, [status]);
+
+  // HANDLE CHANGE NAME
+
+  const handleChangeName = (e) => {
+    setName(e.target.value);
+
+    const generateSlug = e.target.value + Math.round(Math.random() * 100);
+    setSlug(generateSlug);
+  };
 
   return (
     <React.Fragment>
@@ -216,14 +215,13 @@ const CategoryAdd = () => {
                         type="text"
                         placeholder="Enter Category Name"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={handleChangeName}
                       />
                     </div>
                   </Col>
                   <Col lg={6} className="mt-3 mt-lg-0">
                     <Label>Shop Type</Label>
                     <Select
-                      // value={country}
                       onChange={(event) => {
                         setType(event);
                       }}
@@ -237,7 +235,7 @@ const CategoryAdd = () => {
                   </Col>
                 </Row>
 
-                <Row className="mt-3">
+                {/* <Row className="mt-3">
                   <Col lg={6}>
                     <div>
                       <Label>Slug</Label>
@@ -250,12 +248,12 @@ const CategoryAdd = () => {
                       />
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
 
                 <Row className="my-4">
                   <Col>
                     <Label>Category Image</Label>
-                    <div >
+                    <div>
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {

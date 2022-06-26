@@ -1,18 +1,21 @@
 import React from "react";
 import { Autocomplete, Box, TextField } from "@mui/material";
 
-const ShopAutocompleted = ({ value , onChange, searchKey, onInputChange, list, disabled }) => {
-
-  console.log({value})
-
-
+const ShopAutocompleted = ({
+  value,
+  onChange,
+  searchKey,
+  onInputChange,
+  list,
+  disabled,
+}) => {
   return (
     <Autocomplete
       className="cursor-pointer"
       disabled={disabled}
       value={value}
       onChange={onChange}
-      getOptionLabel={(option => option.shopName)}
+      getOptionLabel={(option) => option.shopName}
       isOptionEqualToValue={(option, item) => option._id == item._id}
       inputValue={searchKey}
       onInputChange={onInputChange}
