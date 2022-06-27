@@ -32,22 +32,15 @@ import Box from "@mui/material/Box";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
+import OrderTrackingMap from "../../../components/OrderTrackingMap";
 
 const OrderDetails = () => {
   const { id } = useParams();
   const { orders } = useSelector((state) => state.orderReducer);
-  const mapRef = useRef();
-  const sidebar = useRef();
-  const floatingPanel = useRef();
 
   const [order, setOrder] = useState(null);
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
-  const [directionsRenderer, setdirectionsRenderer] = useState(null);
-  const [directionsService, setdirectionsService] = useState(null);
-  const [distance, setDistance] = useState("");
-  const [duration, setDuration] = useState("");
-  const google = window.google;
 
   useEffect(() => {
     if (id) {
@@ -62,56 +55,6 @@ const OrderDetails = () => {
   }, [id]);
 
   // SHOW MAP
-
-  useEffect(() => {
-    if (order) {
-      const directionsRenderer_ = new google.maps.DirectionsRenderer();
-      const directionsService_ = new google.maps.DirectionsService();
-      setdirectionsRenderer(directionsRenderer_);
-      setdirectionsService(directionsService_);
-
-      const map = new google.maps.Map(mapRef.current, {
-        center: { lat: 22.328127, lng: 91.805502 },
-        zoom: 12,
-        disableDefaultUI: true,
-        // mapTypeId: 'satellite',
-        // heading: 90,
-        // tilt: 45,
-      });
-
-      directionsRenderer_.setMap(map);
-      directionsRenderer_.setPanel(sidebar.current);
-
-      const control = floatingPanel.current;
-      map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
-
-      calculateAndDisplayRoute(directionsService_, directionsRenderer_);
-    }
-  }, [order]);
-
-  function calculateAndDisplayRoute(directionsService, directionsRenderer) {
-    const { latitude: desLat, longitude: desLong } =
-      order?.orderDeliveryAddress;
-    const { latitude: shopLat, longitude: shopLong } = order?.shop?.address;
-
-    directionsService
-      .route({
-        origin: { lat: 23.8103, lng: 90.4125 },
-        destination: { lat: 23.8103, lng: 90.4125 },
-        travelMode: google.maps.TravelMode.DRIVING,
-      })
-      .then((response) => {
-        const route = response.routes[0];
-
-        directionsRenderer.setDirections(response);
-
-        setDistance(route.legs[0].distance.value.toString());
-        setDuration(route.legs[0].duration.value.toString());
-      })
-      .catch((e) =>
-        window.alert("Directions request failed due to " + e.message)
-      );
-  }
 
   return (
     <React.Fragment>
@@ -477,11 +420,7 @@ const OrderDetails = () => {
 
             <Row>
               <Col md={12}>
-                <div
-                  ref={mapRef}
-                  className="map"
-                  style={{ width: "100%", height: "250px" }}
-                ></div>
+                <OrderTrackingMap />
               </Col>
             </Row>
           </Container>

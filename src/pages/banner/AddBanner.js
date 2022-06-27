@@ -136,10 +136,12 @@ const AddBanner = () => {
     } = data;
 
     const findShop = shops.find((item) => item._id == shopId);
+    console.log(findShop);
     const findProduct = products.find((item) => item._id == productId);
+    console.log(findProduct);
     setClickOption(clickType ? "route" : clickableUrl ? "link" : "");
 
-    setClickableProduct(findProduct ? findProduct : null);
+    setClickableProduct(findProduct);
     setClickableShop(findShop ? findShop : null);
     setImage(image);
     setTitle(title);

@@ -43,6 +43,7 @@
     "express": "^4.17.2",
     "firebase": "^8.6.3",
     "glamor": "^2.20.40",
+    "google-map-react": "^2.1.10",
     "google-maps-react": "^2.0.6",
     "html-to-draftjs": "^1.5.0",
     "i18next": "^20.3.1",

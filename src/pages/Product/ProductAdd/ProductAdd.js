@@ -423,6 +423,7 @@ const ProductAdd = () => {
   // IMAGE
 
   const handleAcceptedFiles = (files, type) => {
+    console.log(files);
     files.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
