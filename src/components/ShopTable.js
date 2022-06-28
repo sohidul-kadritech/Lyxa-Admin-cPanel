@@ -19,7 +19,7 @@ import {
 import styled from "styled-components";
 import { deleteShop } from "../store/Shop/shopAction";
 
-const ShopTable = ({ sellerId }) => {
+const ShopTable = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 

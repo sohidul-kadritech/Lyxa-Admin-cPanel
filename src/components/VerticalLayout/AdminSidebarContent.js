@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 // sdlf
 //i18n
 import { withTranslation } from "react-i18next";
+import { adminMenuItem } from "../../assets/SideMenuItem";
 
 const SidebarContent = (props) => {
   const ref = useRef();
@@ -91,25 +92,52 @@ const SidebarContent = (props) => {
     <React.Fragment>
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
         <div id="sidebar-menu">
+          {/* ADMIN MENU */}
+
           <ul className="metismenu list-unstyled" id="side-menu">
             {/* <li className="menu-title">{props.t("Main")} </li> */}
-            <li>
+
+            {/* <li>
               <Link to="/dashboard" className="waves-effect">
                 <i className="ti-home" />
                 <span>{props.t("Dashboard")}</span>
               </Link>
-            </li>
+            </li> */}
+
+            {adminMenuItem.map((item, index) => (
+              <li key={item.id}>
+                <Link
+                  to={item.link}
+                  className={`waves-effect ${item.isSubmenu && "has-arrow"}`}
+                >
+                  <i className={item.icon} />
+                  <span>{props.t(item.name)}</span>
+                </Link>
+                {item.isSubmenu && (
+                  <ul className="sub-menu" aria-expanded="false">
+                    {item.submenu.map((sub, index) => (
+                      <li key={sub.id}>
+                        <Link to={sub.link}>
+                          <i className={sub.icon} />
+                          <span>{props.t(sub.name)} </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
 
             {/* ORDERS */}
 
-            <li>
+            {/* <li>
               <Link to="/orders/list" className="waves-effect">
                 <i className="fas fa-cart-plus" />
                 <span>{props.t("Orders")}</span>
               </Link>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="ti-image" />
                 <span>{props.t("Banner")}</span>
@@ -128,20 +156,20 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* USERS MENU */}
 
-            <li>
+            {/* <li>
               <Link to="/users/list" className="waves-effect">
                 <i className="fas fa-user-friends" />
                 <span>{props.t("User")}</span>
               </Link>
-            </li>
+            </li> */}
 
             {/* SELLER */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fas fa-user-friends" />
                 <span>{props.t("Seller")}</span>
@@ -160,11 +188,11 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* SHOPS */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fas fa-home" />
                 <span>{props.t("Shops")}</span>
@@ -189,11 +217,11 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* PRODUCT */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fa fa-cube" />
                 <span>{props.t("Products")}</span>
@@ -212,11 +240,11 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* DELIVERY MANS */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fas fa-user-friends" />
                 <span>{props.t("Delivery Man")}</span>
@@ -234,15 +262,13 @@ const SidebarContent = (props) => {
                     <span>{props.t("Add")}</span>
                   </Link>
                 </li>
-                {/* <li>
-                  <Link to="/email-compose">{props.t("Email Compose")} </Link>
-                </li> */}
+
               </ul>
-            </li>
+            </li> */}
 
             {/* DEALS */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fas fa-handshake" />
                 <span>{props.t("Deals")}</span>
@@ -261,16 +287,16 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* DROP PAY */}
 
-            <li>
+            {/* <li>
               <Link to="/drop-pay" className="waves-effect">
                 <i className="fas fa-comment-dollar" />
                 <span>{props.t("Drop Pay")}</span>
               </Link>
-            </li>
+            </li> */}
 
             {/* TRANSACTIONS */}
 
@@ -283,7 +309,7 @@ const SidebarContent = (props) => {
 
             {/* APP WALLET */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fas fa-wallet" />
                 <span>{props.t("App Wallet")}</span>
@@ -295,12 +321,7 @@ const SidebarContent = (props) => {
                     <span>{props.t("Percentage Setting")}</span>
                   </Link>
                 </li>
-                {/* <li>
-                  <Link to="/add-wallet/admin-log-history">
-                    <i className="fas fa-history" />
-                    <span>{props.t("Admin Log History")}</span>
-                  </Link>
-                </li> */}
+
                 <li>
                   <Link to="/add-wallet/seller-transactions">
                     <i className="fas fa-exchange-alt" />
@@ -319,27 +340,21 @@ const SidebarContent = (props) => {
                     <span>{props.t("Admin TRX")}</span>
                   </Link>
                 </li>
-                {/* <li>
-                  <Link to="/add-wallet/payments-history">
-                    <i className="ti-money" />
-                    <span>{props.t("Payments History")}</span>
-                  </Link>
-                </li> */}
               </ul>
-            </li>
+            </li> */}
 
             {/* CHAT */}
 
-            <li>
+            {/* <li>
               <Link to="/customer-support" className="waves-effect">
                 <i className="fas fa-sms" />
                 <span>{props.t("Chat")}</span>
               </Link>
-            </li>
+            </li> */}
 
             {/* Admin Controls */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fas fa-user-friends" />
                 <span>{props.t("Admins")}</span>
@@ -358,11 +373,11 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* CATEGORIES AND TAGS */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="fas fa-list" />
                 <span>{props.t("Categories")}</span>
@@ -380,33 +395,13 @@ const SidebarContent = (props) => {
                     <span>{props.t("Add")}</span>
                   </Link>
                 </li>
-                {/* 
-                <li>
-                  <Link to="/#" className="has-arrow waves-effect">
-                    <i className="fas fa-tags" />
-                    <span>{props.t("Tags")}</span>
-                  </Link>
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/tags/list">
-                        <i className="fas fa-clipboard-list" />
-                        <span>{props.t("List")} </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/tags/add">
-                        <i className="fas fa-plus-circle" />
-                        <span>{props.t("Add")}</span>
-                      </Link>
-                    </li>
-                  </ul>
-                </li> */}
+
               </ul>
-            </li>
+            </li> */}
 
             {/* SETTINGS */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="ti-settings" />
                 <span>{props.t("Settings")}</span>
@@ -425,7 +420,7 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
           </ul>
         </div>
       </SimpleBar>

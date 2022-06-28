@@ -48,7 +48,7 @@ const ShopList = () => {
     sortByKey,
     searchKey,
     loading,
-    shops,
+
     paging,
     hasNextPage,
     hasPreviousPage,
@@ -56,17 +56,11 @@ const ShopList = () => {
     liveStatus,
   } = useSelector((state) => state.shopReducer);
 
-  const [isZoom, setIsZoom] = useState(false);
-  const [shopImg, setShopImg] = useState("");
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
-
   useEffect(() => {
     dispatch(setShopStatusFalse());
     dispatch(updateShopType({ label: "All", value: "all" }));
     dispatch(updateShopSearchKey(""));
+    return;
   }, []);
 
   useEffect(() => {
@@ -77,12 +71,6 @@ const ShopList = () => {
 
   const callShopList = (refresh = false) => {
     dispatch(getAllShop(refresh));
-  };
-
-  // DELETE SHOP
-
-  const handleDelete = (id) => {
-    dispatch(deleteShop(id));
   };
 
   return (
@@ -99,28 +87,6 @@ const ShopList = () => {
               isAddNew={true}
               addNewRoute="shops/add"
             />
-
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
-
-            {isZoom ? (
-              <Lightbox
-                mainSrc={shopImg}
-                enableZoom={true}
-                onCloseRequest={() => {
-                  setIsZoom(!isZoom);
-                }}
-              />
-            ) : null}
 
             <Card>
               <CardBody>

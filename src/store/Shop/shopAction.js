@@ -10,13 +10,13 @@ import {
   DELETE_SHOP,
   EDIT_CUISINE,
   EDIT_SHOP,
+  SET_AS_FEATURED,
   SHOP_LIVE_STATUS,
 } from "../../network/Api";
 import { successMsg } from "../../helpers/successMsg";
 
 // ADD
 export const addShop = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_SHOP_REQUEST_SEND,
@@ -26,10 +26,8 @@ export const addShop = (values) => async (dispatch) => {
       data: values,
     });
 
-
     if (data.status) {
       successMsg(data.message, "success");
-
 
       dispatch({
         type: actionType.ADD_SHOP_REQUEST_SUCCESS,
@@ -56,7 +54,6 @@ export const addShop = (values) => async (dispatch) => {
 export const getAllShop =
   (refresh = false, seller = null, page = 1) =>
   async (dispatch, getState) => {
-
     const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } =
       getState().shopReducer;
 
@@ -72,14 +69,14 @@ export const getAllShop =
             pageSize: 10,
             sortBy: sortByKey.value,
             searchKey,
-            type: typeKey.value ? typeKey.value  : typeKey,
+            type: typeKey.value ? typeKey.value : typeKey,
             shopStatus: statusKey.value,
             liveStatus: liveStatus.value,
             sellerId: seller,
           },
         });
 
-        console.log({data})
+        console.log({ data });
 
         if (data.status) {
           dispatch({
@@ -104,7 +101,6 @@ export const getAllShop =
 // EDIT
 
 export const editShop = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.EDIT_SHOP_REQUEST_SEND,
@@ -113,8 +109,6 @@ export const editShop = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
-
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -152,8 +146,6 @@ export const deleteShop = (id) => async (dispatch) => {
       data: { id },
     });
 
-
-
     if (data.status) {
       successMsg(data.message, "success");
 
@@ -176,10 +168,9 @@ export const deleteShop = (id) => async (dispatch) => {
   }
 };
 
-// ADD PRODUCT DEAL 
+// ADD PRODUCT DEAL
 
 export const addShopDeal = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_SHOP_DEAL_REQUEST_SEND,
@@ -190,13 +181,11 @@ export const addShopDeal = (values) => async (dispatch) => {
       data: values,
     });
 
-
-
     if (data.status) {
       successMsg(data.message, "success");
       dispatch({
         type: actionType.ADD_SHOP_DEAL_REQUEST_SUCCESS,
-        payload: data.data.shop
+        payload: data.data.shop,
       });
     } else {
       successMsg(data.message, "error");
@@ -224,11 +213,8 @@ export const ShopLiveStatus = (value) => async (dispatch) => {
       data: value,
     });
 
-
-
     if (data.status) {
       successMsg(data.message, "success");
-
 
       dispatch({
         type: actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS,
@@ -287,7 +273,6 @@ export const updateSortByKey = (value) => (dispatch) => {
 // type key
 
 export const updateShopType = (selectedType) => (dispatch) => {
-
   dispatch({
     type: actionType.UPDATE_TYPE_KEY,
     payload: selectedType,
@@ -295,7 +280,6 @@ export const updateShopType = (selectedType) => (dispatch) => {
 };
 
 export const updateShopLiveStatus = (value) => (dispatch) => {
-
   dispatch({
     type: actionType.UPDATE_SHOP_LIVE_STATUS,
     payload: value,
@@ -305,7 +289,6 @@ export const updateShopLiveStatus = (value) => (dispatch) => {
 // ADD CUISINES
 
 export const addCuisine = (name) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_CUISINE_REQUEST_SEND,
@@ -318,11 +301,9 @@ export const addCuisine = (name) => async (dispatch) => {
       data: { name },
     });
 
-
-
     if (status) {
       successMsg(message, "success");
-  
+
       dispatch({
         type: actionType.ADD_CUISINE_REQUEST_SUCCESS,
         payload: data.cuisines,
@@ -342,6 +323,44 @@ export const addCuisine = (name) => async (dispatch) => {
   }
 };
 
+// SET AS FEATURED SHOP
+
+export const setAsFeaturedShop = (values) => async (dispatch) => {
+  console.log("values", values);
+  try {
+    dispatch({
+      type: actionType.SET_FEATURED_SHOP_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, message },
+    } = await requestApi().request(SET_AS_FEATURED, {
+      method: "POST",
+      data: values,
+    });
+    console.log({ message, error });
+
+    if (status) {
+      successMsg(message, "success");
+      dispatch({
+        type: actionType.SET_FEATURED_SHOP_REQUEST_SUCCESS,
+      });
+    } else {
+      successMsg(error, "error");
+      dispatch({
+        type: actionType.SET_FEATURED_SHOP_REQUEST_FAIL,
+        payload: error,
+      });
+    }
+  } catch (error) {
+    successMsg(error, "error");
+    dispatch({
+      type: actionType.SET_FEATURED_SHOP_REQUEST_FAIL,
+      payload: error,
+    });
+  }
+};
+
 // GET ALL CUISINES
 
 export const getAllCuisine = (refresh) => async (dispatch, getState) => {
@@ -355,8 +374,6 @@ export const getAllCuisine = (refresh) => async (dispatch, getState) => {
       const {
         data: { status, error, data = null },
       } = await requestApi().request(ALL_CUISINE);
-
-
 
       if (status) {
         dispatch({
@@ -378,8 +395,7 @@ export const getAllCuisine = (refresh) => async (dispatch, getState) => {
   }
 };
 
-
-// EDIT CUISINE 
+// EDIT CUISINE
 
 export const editCuisine = (values) => async (dispatch) => {
   try {
@@ -391,10 +407,8 @@ export const editCuisine = (values) => async (dispatch) => {
       data: { status, message, error, data = null },
     } = await requestApi().request(EDIT_CUISINE, {
       method: "POST",
-      data: values
+      data: values,
     });
-
-
 
     if (status) {
       successMsg(message, "success");

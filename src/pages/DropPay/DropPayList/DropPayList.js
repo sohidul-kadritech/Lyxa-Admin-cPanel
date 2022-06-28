@@ -26,6 +26,7 @@ import {
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { userList } from "../../../store/Users/UsersAction";
 import { toast } from "react-toastify";
+import { successMsg } from "../../../helpers/successMsg";
 
 const DropPayList = () => {
   const dispatch = useDispatch();
@@ -43,10 +44,10 @@ const DropPayList = () => {
   const [amount, setAmount] = useState(0);
 
   useEffect(() => {
-    if(sortByKey || startDate || endDate){
-      callDropPayList(true)
+    if (sortByKey || startDate || endDate) {
+      callDropPayList(true);
     }
-  }, [sortByKey,startDate,endDate]);
+  }, [sortByKey, startDate, endDate]);
 
   useEffect(() => {
     if (balAddModal) {
@@ -54,11 +55,11 @@ const DropPayList = () => {
     }
   }, [balAddModal]);
 
-  const callDropPayList = (refresh = false) =>{
+  const callDropPayList = (refresh = false) => {
     dispatch(getAllDropPay(refresh));
-  }
+  };
 
-  // Warinig Message 
+  // Warinig Message
 
   const warningMessage = (msg) => {
     toast.warn(msg, {
@@ -71,19 +72,22 @@ const DropPayList = () => {
       draggable: true,
       progress: undefined,
     });
-  }
+  };
 
   // ADD/ REMOVE BALANCE
 
   const submitBalance = (type) => {
     if (!selectedUser) {
-      return warningMessage("Please select user");
+      return successMsg("Please select user", "error");
     }
     if (!amount) {
-      return warningMessage("Please enter amount");
+      return successMsg("Please enter amount", "error");
     }
     if (!userNote) {
-      return warningMessage("Please enter user note");
+      return successMsg("Please enter user note", "error");
+    }
+    if (amount > 20000) {
+      return successMsg("Amount can't be more than 20000", "error");
     }
 
     submitData(type);
@@ -104,11 +108,11 @@ const DropPayList = () => {
     }
   };
 
-  useEffect(()=>{
-    if(status){
-      setBalAddModal(false)
+  useEffect(() => {
+    if (status) {
+      setBalAddModal(false);
     }
-  },[status])
+  }, [status]);
 
   return (
     <React.Fragment>

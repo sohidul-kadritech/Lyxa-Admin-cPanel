@@ -6,7 +6,7 @@ import {
   LOGIN_SUCCESS,
   LOGOUT_USER,
   LOGOUT_USER_SUCCESS,
-  API_ERROR
+  API_ERROR,
 } from "./actionTypes";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 export const loginUser = () => {
   // console.log("request", user);
   return {
-    type: LOGIN_USER
+    type: LOGIN_USER,
   };
 };
 
@@ -22,44 +22,46 @@ export const loginSuccess = (admin, accessToken, message) => {
   // console.log(user);
   return {
     type: LOGIN_SUCCESS,
-    payload: { admin, accessToken, message }
+    payload: { admin, accessToken, message },
   };
 };
 
-export const logoutUser = history => {
+export const logoutUser = (history) => {
   return {
     type: LOGOUT_USER,
-    payload: { history }
+    payload: { history },
   };
 };
 
 export const logoutUserSuccess = () => {
   return {
-    type: LOGOUT_USER_SUCCESS
+    type: LOGOUT_USER_SUCCESS,
   };
 };
 
-export const apiError = error => {
+export const apiError = (error) => {
   return {
     type: API_ERROR,
-    payload: error
+    payload: error,
   };
 };
 
-export const logoutAdmin = () => dispatch => {
+export const logoutAdmin = () => (dispatch) => {
   dispatch({
-    type: LOGOUT_USER_SUCCESS
+    type: LOGOUT_USER_SUCCESS,
   });
 };
 
-export const adminAuth = user => async (dispatch, getState) => {
-  console.log({user})
+export const adminAuth = (user) => async (dispatch, getState) => {
+  console.log({ user });
   try {
     // dispatch(loginUser(user));
 
-    const { data: {status, message , error, data = null } } = await requestApi().request(LOGIN, {
+    const {
+      data: { status, message, error, data = null },
+    } = await requestApi().request(LOGIN, {
       method: "POST",
-      data: user
+      data: user,
     });
 
     // console.log({data})
@@ -67,17 +69,17 @@ export const adminAuth = user => async (dispatch, getState) => {
     if (status) {
       // const {name , token, email, status, number} = admin;
       // const adminInfo = {name, email, status, number}
+      console.log({ data });
 
       localStorage.setItem("accessToken", data.admin.token);
       localStorage.setItem("admin", JSON.stringify(data.admin));
-      
+      // localStorage.setItem("accountType", JSON.stringify(data.admin));
 
       dispatch(loginSuccess(data.admin, data.admin.token, message));
     } else {
       dispatch(apiError(message));
     }
   } catch (error) {
-    
     dispatch(apiError(error.message));
   }
 };

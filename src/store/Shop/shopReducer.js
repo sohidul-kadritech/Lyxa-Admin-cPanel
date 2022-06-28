@@ -131,34 +131,33 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // ADD SHOP DEALS 
-      case actionType.ADD_SHOP_DEAL_REQUEST_SEND:
-        return {
-          ...state,
-          loading: true,
-          status: false,
-        };
-  
-      case actionType.ADD_SHOP_DEAL_REQUEST_SUCCESS:
-        
-        const filterd = state.shops.map((item) =>
-          item._id === payload._id ? payload : item
-        );
-  
-        return {
-          ...state,
-          loading: false,
-          status: true,
-          products: filterd,
-          error: null,
-        };
-      case actionType.ADD_SHOP_DEAL_REQUEST_FAIL:
-        return {
-          ...state,
-          loading: false,
-          status: false,
-          error: payload,
-        };
+    // ADD SHOP DEALS
+    case actionType.ADD_SHOP_DEAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.ADD_SHOP_DEAL_REQUEST_SUCCESS:
+      const filterd = state.shops.map((item) =>
+        item._id === payload._id ? payload : item
+      );
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        products: filterd,
+        error: null,
+      };
+    case actionType.ADD_SHOP_DEAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
 
     // CHANGE LIVE STATUS
 
@@ -212,7 +211,7 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      case actionType.ALL_CUISINES_REQUEST_SEND:
+    case actionType.ALL_CUISINES_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -233,7 +232,7 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      case actionType.EDIT_CUISINE_REQUEST_SEND:
+    case actionType.EDIT_CUISINE_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -292,6 +291,29 @@ const shopReducer = (state = initialState, action) => {
       return {
         ...state,
         status: false,
+      };
+
+    // SET AS FEATURED SHOP
+
+    case actionType.SET_FEATURED_SHOP_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.SET_FEATURED_SHOP_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+    case actionType.SET_FEATURED_SHOP_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
 
     default:

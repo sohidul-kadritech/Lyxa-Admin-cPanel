@@ -20,33 +20,28 @@ import { toast } from "react-toastify";
 import GlobalWrapper from "./../../components/GlobalWrapper";
 import styled from "styled-components";
 
-const Login = props => {
-  
-
+const Login = (props) => {
   const history = useHistory();
 
-  const { admin,accessToken,message } = useSelector(state => state.Login);
+  const { admin, accessToken, message } = useSelector((state) => state.Login);
 
-  useEffect(
-    () => {
-      // console.log(admin);
-      if (accessToken) {
-        toast.success(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
+  useEffect(() => {
+    // console.log(admin);
+    if (accessToken) {
+      toast.success(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
 
-        history.push("/dashboard");
-      }
-    },
-    [accessToken]
-  );
+      history.push("/dashboard");
+    }
+  }, [accessToken]);
 
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
@@ -88,11 +83,11 @@ const Login = props => {
                           handleValidSubmit(e, v);
                         }}
                       >
-                        {props.error
-                          ? <Alert color="danger">
-                              {'Invalid Gmail/Password'}
-                            </Alert>
-                          : null}
+                        {props.error ? (
+                          <Alert color="danger">
+                            {"Invalid Gmail/Password"}
+                          </Alert>
+                        ) : null}
 
                         <div className="mb-3">
                           <AvField
@@ -146,7 +141,7 @@ const Login = props => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { error } = state.Login;
   return { error };
 };
@@ -158,5 +153,5 @@ export default withRouter(
 Login.propTypes = {
   error: PropTypes.any,
   history: PropTypes.object,
-  loginUser: PropTypes.func
+  loginUser: PropTypes.func,
 };

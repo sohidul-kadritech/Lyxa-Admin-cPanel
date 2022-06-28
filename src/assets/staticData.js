@@ -93,6 +93,7 @@ export const activeOptions = [
 export const shopDeliveryOptions = [
   { label: "Pickup", value: "pickup" },
   { label: "Drop", value: "drop" },
+  { label: "Drop & Pickup", value: "both" },
 ];
 
 export const cuisinesList = [
@@ -179,13 +180,12 @@ export const bannerTypeOPtions = [
   { label: "Grocery", value: "grocery" },
   { label: "Pharmacy", value: "pharmacy" },
   { label: "Shop", value: "shop" },
-
-]
+];
 
 export const bannerForOptions = [
   { label: "Link", value: "link" },
   { label: "Shop/Product", value: "route" },
-]
+];
 
 export const logoSvg = (
   <svg
@@ -193,9 +193,8 @@ export const logoSvg = (
     className="h-5 w-5"
     viewBox="0 0 20 20"
     fill="#a83232"
-    width='30px'
-    height='30px'
-
+    width="30px"
+    height="30px"
   >
     <path
       fillRule="evenodd"

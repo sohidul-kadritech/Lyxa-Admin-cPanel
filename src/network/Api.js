@@ -80,6 +80,7 @@ export const SHOP_LIVE_STATUS = ADMIN_ENDPOINT + "/shop/shop-visibility-change";
 export const ADD_CUISINE = ADMIN_ENDPOINT + "/cuisines/add";
 export const ALL_CUISINE = ADMIN_ENDPOINT + "/cuisines";
 export const EDIT_CUISINE = ADMIN_ENDPOINT + "/cuisines/update";
+export const SET_AS_FEATURED = ADMIN_ENDPOINT + "/cuisines/update";
 
 // PRODUCT
 

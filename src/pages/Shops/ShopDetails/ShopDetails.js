@@ -25,7 +25,10 @@ import AppPagination from "../../../components/AppPagination";
 
 import { Paper, Switch } from "@mui/material";
 
-import { ShopLiveStatus } from "../../../store/Shop/shopAction";
+import {
+  setAsFeaturedShop,
+  ShopLiveStatus,
+} from "../../../store/Shop/shopAction";
 import DealForAdd from "../../../components/DealForAdd";
 import { getAllOrder } from "../../../store/order/orderAction";
 import ProductTable from "../../../components/ProductTable";
@@ -132,6 +135,17 @@ const ShopDetails = () => {
     }
   }, [status]);
 
+  // SET AS FEATURED
+
+  const setAsFeatured = () => {
+    dispatch(
+      setAsFeaturedShop({
+        id: shop._id,
+        isFeatured: shop?.isFeatured ? false : true,
+      })
+    );
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -161,9 +175,21 @@ const ShopDetails = () => {
                 <Card>
                   <CardBody>
                     <Row>
-                      <div className="d-flex justify-content-between align-items-center w-100 pb-1">
+                      <HeaderWrapper>
                         <h4>Shop</h4>
-                        <div className="d-flex align-items-center">
+                        <div className="d-flex  align-items-center">
+                          <Button
+                            outline={true}
+                            color="success"
+                            onClick={() => {
+                              setAsFeatured();
+                            }}
+                            className="me-3"
+                          >
+                            {!shop?.isFeatured
+                              ? "Set as featured"
+                              : "Remove featured"}
+                          </Button>
                           <Button
                             outline={true}
                             color="success"
@@ -175,16 +201,18 @@ const ShopDetails = () => {
                           >
                             Add Deal
                           </Button>
-                          <Switch
-                            checked={liveStatus}
-                            onChange={changeLiveStatus}
-                            inputProps={{ "aria-label": "controlled" }}
-                          />
-                          <Label className="mt-2">
-                            {liveStatus ? "Online" : "Offline"}
-                          </Label>
+                          <div>
+                            <Switch
+                              checked={liveStatus}
+                              onChange={changeLiveStatus}
+                              inputProps={{ "aria-label": "controlled" }}
+                            />
+                            <Label className="mt-2">
+                              {liveStatus ? "Online" : "Offline"}
+                            </Label>
+                          </div>
                         </div>
-                      </div>
+                      </HeaderWrapper>
                       <hr />
                     </Row>
                     <Row>
@@ -221,6 +249,10 @@ const ShopDetails = () => {
                           <Info title="Shop Type" value={shop?.shopType} />
                           <Info title="Delivery" value={shop?.delivery} />
                           <Info
+                            title="Featured"
+                            value={shop?.isFeatured ? "Yes" : "NO"}
+                          />
+                          <Info
                             title="Minimum Order"
                             value={shop?.minOrderAmount}
                           />
@@ -233,7 +265,7 @@ const ShopDetails = () => {
                           {shop?.foodType && (
                             <Info title="Food Type" value={shop?.foodType} />
                           )}
-                          <Info title="Address" value={shop?.address.address} />
+
                           <Info title="Phone" value={shop?.phone_number} />
                           <Info title="Email" value={shop?.email} />
                           <Info
@@ -244,6 +276,7 @@ const ShopDetails = () => {
                             title="Drop Charge(per/km)"
                             value={shop?.dropChargePerKm}
                           />
+                          <Info title="Address" value={shop?.address.address} />
                         </div>
                       </Col>
                     </Row>
@@ -502,17 +535,16 @@ export const ImageWrapper = styled.div`
   }
 `;
 
-const Details = styled.div`
+const HeaderWrapper = styled.div`
   display: flex;
-  /* justify-content: space-between; */
-`;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 1rem;
 
-const Value = styled.h5`
-  color: lightcoral;
-  font-style: italic;
-  font-weight: 500;
-  margin-left: 4px;
-  /* padding-left: 5px; */
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 export default ShopDetails;
