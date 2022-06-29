@@ -88,7 +88,7 @@ const ShopTable = () => {
                   fontWeight: "500",
                 }}
               >
-                <Th className="d-flex justify-content-center">
+                <Th className="d-flex justify-content-center align-items-center">
                   <div className="image__wrapper">
                     <img
                       onClick={() => {

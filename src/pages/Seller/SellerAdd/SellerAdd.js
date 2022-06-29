@@ -48,7 +48,7 @@ const SellerAdd = () => {
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState(moment().format('YYYY-MM-DD'));
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [address, setAddress] = useState(null);
@@ -78,7 +78,6 @@ const SellerAdd = () => {
       if (findSeller) {
         updateSellerData(findSeller);
       } else {
-
         callApi(id);
       }
     }
@@ -128,7 +127,7 @@ const SellerAdd = () => {
     setGender(gender);
     setEmail(email);
     setPassword(password);
-    setDateOfBirth(moment(new Date(dob)).format('YYYY-MM-DD'));
+    setDateOfBirth(moment(new Date(dob)).format("YYYY-MM-DD"));
     setCompanyName(company_name);
     setPhoneNum(phone_number);
     // setAddress("");
@@ -137,8 +136,6 @@ const SellerAdd = () => {
     setAccountNum(account_number);
     setSellerStatus(sellerStatus);
   };
-
-
 
   // IMAGE
 
@@ -203,7 +200,7 @@ const SellerAdd = () => {
   // SUBMIT SELLER
 
   const submitSeller = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     // if (
     //   !name ||
     //   !gender ||
@@ -231,8 +228,6 @@ const SellerAdd = () => {
     //     progress: undefined,
     //   });
     // }
-
-    
 
     if (!id && !address) {
       return toast.warn("Please Select a Address", {
@@ -262,10 +257,7 @@ const SellerAdd = () => {
 
     //  submitDate();
 
-   
-
     uploadImage();
-
   };
 
   // Upload Image
@@ -405,7 +397,7 @@ const SellerAdd = () => {
         setGender("");
         setEmail("");
         setPassword("");
-        setDateOfBirth(moment().format('YYYY-MM-DD'));
+        setDateOfBirth(moment().format("YYYY-MM-DD"));
         setCompanyName("");
         setPhoneNum("");
         setAddress("");
@@ -446,7 +438,7 @@ const SellerAdd = () => {
                   <h5>Seller Informations</h5>
                   <hr />
                 </div>
-                <Form onSubmit={submitSeller}> 
+                <Form onSubmit={submitSeller}>
                   <Row>
                     <Col xl={6}>
                       <TextField
@@ -466,7 +458,7 @@ const SellerAdd = () => {
                         style={{ width: "100%" }}
                         id="outlined-basic"
                         label="Email"
-                        type='email'
+                        type="email"
                         variant="outlined"
                         placeholder="Enter a Email Id"
                         value={email}
@@ -572,24 +564,24 @@ const SellerAdd = () => {
 
                   <Row className="mt-4">
                     <Col xl={6}>
-               
-                        <TextField
-                        
-                          style={{ width: "100%" }}
-                          id="dateOfBirth"
-                          name="dateOfBirth"
-                          label="Date of Birth"
-                          variant="outlined"
-                          type='date'
-                          placeholder="Select  Date of Birth"
-                          value={dateOfBirth}
-                          onChange={(e) =>
-                            setDateOfBirth(moment(new Date(e.target.value)).format('YYYY-MM-DD'))
-                          }
-
-                          required
-                        />
-                   
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        label="Date of Birth"
+                        variant="outlined"
+                        type="date"
+                        placeholder="Select  Date of Birth"
+                        value={dateOfBirth}
+                        onChange={(e) =>
+                          setDateOfBirth(
+                            moment(new Date(e.target.value)).format(
+                              "YYYY-MM-DD"
+                            )
+                          )
+                        }
+                        required
+                      />
                     </Col>
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <TextField
@@ -609,7 +601,7 @@ const SellerAdd = () => {
                     <Col xl={6}>
                       <TextField
                         id="outlined-textarea"
-                        name='phone'
+                        name="phone"
                         label="Phone Number"
                         placeholder="Enter Phone Number"
                         style={{ width: "100%" }}
@@ -669,8 +661,7 @@ const SellerAdd = () => {
                         <Select
                           labelId="demo-simple-select-label"
                           id="gender"
-
-                          name='gender'
+                          name="gender"
                           value={gender}
                           label="Gender"
                           onChange={(e) => setGender(e.target.value)}
@@ -689,7 +680,7 @@ const SellerAdd = () => {
                         <Select
                           labelId="demo-simple-select-label"
                           id="status"
-                          name='status'
+                          name="status"
                           value={sellerStatus}
                           label="Status"
                           onChange={(e) => setSellerStatus(e.target.value)}
@@ -800,7 +791,7 @@ const SellerAdd = () => {
                                 {...getRootProps()}
                                 // onClick={() => setmodal_fullscreen(true)}
                               >
-                                <input {...getInputProps()} name='profile' />
+                                <input {...getInputProps()} name="profile" />
                                 <div className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
@@ -880,94 +871,92 @@ const SellerAdd = () => {
                     <Col xl={6}>
                       <Label>Certificate Of Incorporation</Label>
                       <div className="mb-5">
-              
-                          <Dropzone
-                            onDrop={(acceptedFiles) => {
-                              handleAcceptedFiles(acceptedFiles, "certificate");
-                            }}
-                          >
-                            {({ getRootProps, getInputProps }) => (
-                              <div className="dropzone">
-                                <div
-                                  className="dz-message needsclick"
-                                  {...getRootProps()}
-                                  // onClick={() => setmodal_fullscreen(true)}
-                                >
-                                  <input {...getInputProps()} />
-                                  <div className="mb-3">
-                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                  </div>
-                                  <h4>Drop files here or click to upload.</h4>
+                        <Dropzone
+                          onDrop={(acceptedFiles) => {
+                            handleAcceptedFiles(acceptedFiles, "certificate");
+                          }}
+                        >
+                          {({ getRootProps, getInputProps }) => (
+                            <div className="dropzone">
+                              <div
+                                className="dz-message needsclick"
+                                {...getRootProps()}
+                                // onClick={() => setmodal_fullscreen(true)}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="mb-3">
+                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
+                                <h4>Drop files here or click to upload.</h4>
                               </div>
-                            )}
-                          </Dropzone>
-                          <div
-                            className="dropzone-previews mt-3"
-                            id="file-previews"
-                          >
-                            {certificate && (
-                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                                <div className="p-2">
-                                  <Row className="align-items-center position-relative">
-                                    <Col className="col-auto">
-                                      <img
-                                        data-dz-thumbnail=""
-                                        // height="80"
-                                        style={{
-                                          maxWidth: "80px",
-                                        }}
-                                        className=" bg-light"
-                                        alt="certificate"
-                                        src={
-                                          certificate.preview
-                                            ? certificate.preview
-                                            : certificate
-                                        }
-                                      />
-                                    </Col>
-                                    <Col>
-                                      <Link
-                                        to="#"
-                                        className="text-muted font-weight-bold"
-                                      >
-                                        {certificate.name
-                                          ? certificate.name
-                                          : "Certificate"}
-                                      </Link>
-                                      <p className="mb-0">
-                                        <strong>
-                                          {certificate.formattedSize &&
-                                            certificate.formattedSize}
-                                        </strong>
-                                      </p>
-                                    </Col>
-
-                                    <div
-                                      className="position-absolute"
+                            </div>
+                          )}
+                        </Dropzone>
+                        <div
+                          className="dropzone-previews mt-3"
+                          id="file-previews"
+                        >
+                          {certificate && (
+                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
                                       style={{
-                                        left: "0px",
-                                        top: "0px",
-                                        width: "100%",
-                                        display: "flex",
-                                        justifyContent: "flex-end",
+                                        maxWidth: "80px",
                                       }}
+                                      className=" bg-light"
+                                      alt="certificate"
+                                      src={
+                                        certificate.preview
+                                          ? certificate.preview
+                                          : certificate
+                                      }
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
                                     >
-                                      <i
-                                        onClick={() => setCertificate(null)}
-                                        className="mdi mdi-delete text-danger "
-                                        style={{
-                                          fontSize: "25px",
-                                          cursor: "pointer",
-                                        }}
-                                      ></i>
-                                    </div>
-                                  </Row>
-                                </div>
-                              </Card>
-                            )}
-                          </div>
-                      
+                                      {certificate.name
+                                        ? certificate.name
+                                        : "Certificate"}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>
+                                        {certificate.formattedSize &&
+                                          certificate.formattedSize}
+                                      </strong>
+                                    </p>
+                                  </Col>
+
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      onClick={() => setCertificate(null)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          )}
+                        </div>
                       </div>
                     </Col>
                   </Row>

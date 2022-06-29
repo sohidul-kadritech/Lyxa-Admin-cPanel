@@ -81,8 +81,8 @@ export const sellerSubTypeOptions = [
 ];
 
 export const productVisibility = [
-  { label: "Yes", value: true },
-  { label: "NO", value: false },
+  { label: "Visiable", value: true },
+  { label: "Invisiable", value: false },
 ];
 
 export const activeOptions = [

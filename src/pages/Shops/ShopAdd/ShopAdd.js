@@ -80,9 +80,7 @@ const ShopAdd = () => {
   const [seller, setSeller] = useState(null);
   const [searchSellerKey, setSearchSellerKey] = useState("");
   const [shopType, setShopType] = useState("");
-  const [shopStartTime, setShopStartTime] = useState(
-    moment("12:10 AM").format("LT")
-  );
+  const [shopStartTime, setShopStartTime] = useState("");
   const [shopEndTime, setShopEndTime] = useState("");
   const [shopName, setShopName] = useState("");
   const [shopLogo, setShopLogo] = useState(null);

@@ -2,14 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-} from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
 import Select from "react-select";
 import {
   productStatusOptions,
@@ -27,13 +20,16 @@ import {
   updateProductVisibilityByKey,
 } from "../../../store/Product/productAction";
 import AppPagination from "../../../components/AppPagination";
-import Search from './../../../components/Search';
+import Search from "./../../../components/Search";
 import ProductTable from "../../../components/ProductTable";
-import { updateShopSearchKey, updateShopType } from "../../../store/Shop/shopAction";
+import {
+  updateShopSearchKey,
+  updateShopType,
+} from "../../../store/Shop/shopAction";
+import { KeyboardReturnRounded } from "@mui/icons-material";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-
 
   const {
     searchKey,
@@ -49,8 +45,6 @@ const ProductList = () => {
     products,
   } = useSelector((state) => state.productReducer);
 
-
-
   useEffect(() => {
     if (
       searchKey ||
@@ -61,18 +55,18 @@ const ProductList = () => {
     ) {
       callProductList(true);
     }
+    return;
   }, [searchKey, statusKey, typeKey, sortByKey, productVisibilityKey]);
 
   const callProductList = (refresh = false) => {
     dispatch(getAllProduct(refresh));
   };
 
-
-  useEffect(()=>{
-    dispatch(updateShopType({label: 'All', value: 'all'}));
-    dispatch(updateShopSearchKey(""))
-  },[])
-
+  useEffect(() => {
+    dispatch(updateShopType({ label: "All", value: "all" }));
+    dispatch(updateShopSearchKey(""));
+    return;
+  }, []);
 
   return (
     <React.Fragment>
@@ -154,7 +148,6 @@ const ProductList = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-
                     <Search dispatchFunc={updateProductSearchKey} />
                   </Col>
                 </Row>
@@ -206,7 +199,6 @@ const SearchWrapper = styled.div`
       border: none;
       color: black !important;
     }
-
   }
 `;
 

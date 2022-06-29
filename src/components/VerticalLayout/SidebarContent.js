@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 // sdlf
 //i18n
 import { withTranslation } from "react-i18next";
-import { adminMenuItem } from "../../assets/SideMenuItem";
 
 const SidebarContent = (props) => {
   const ref = useRef();
@@ -104,7 +103,7 @@ const SidebarContent = (props) => {
               </Link>
             </li> */}
 
-            {adminMenuItem.map((item, index) => (
+            {props?.list?.map((item, index) => (
               <li key={item.id}>
                 <Link
                   to={item.link}
@@ -115,7 +114,7 @@ const SidebarContent = (props) => {
                 </Link>
                 {item.isSubmenu && (
                   <ul className="sub-menu" aria-expanded="false">
-                    {item.submenu.map((sub, index) => (
+                    {item?.submenu?.map((sub, index) => (
                       <li key={sub.id}>
                         <Link to={sub.link}>
                           <i className={sub.icon} />

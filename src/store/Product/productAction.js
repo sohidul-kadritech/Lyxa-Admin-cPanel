@@ -21,6 +21,7 @@ export const addProduct = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
+    console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -76,7 +77,7 @@ export const getAllProduct =
           },
         });
 
-        console.log(data)
+        console.log(data);
 
         if (data.status) {
           dispatch({
@@ -109,6 +110,8 @@ export const editProduct = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
+
+    console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");

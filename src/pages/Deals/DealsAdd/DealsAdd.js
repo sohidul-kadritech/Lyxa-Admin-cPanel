@@ -65,7 +65,7 @@ const DealsAdd = () => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
-        updateData(findDeal);
+        console.log({ findDeal });
       } else {
         callApi(id);
       }
@@ -79,8 +79,6 @@ const DealsAdd = () => {
       dispatch(getAllTags());
     }
   }, [dealType, tagSearchKey]);
-
-
 
   // CALL API
 
@@ -220,11 +218,11 @@ const DealsAdd = () => {
         setShopType("");
         setDealType("");
         setPercentage("");
+        setImage(null);
         window.scroll(0, 0);
       }
     }
   }, [status]);
-
 
   return (
     <React.Fragment>
@@ -322,8 +320,9 @@ const DealsAdd = () => {
                             option._id == value._id
                           }
                           inputValue={tagSearchKey}
-                          onInputChange={(event, newInputValue)=>dispatch(updateTagsSearchKey(newInputValue))}
-     
+                          onInputChange={(event, newInputValue) =>
+                            dispatch(updateTagsSearchKey(newInputValue))
+                          }
                           id="controllable-states-demo"
                           options={tags.length > 0 ? tags : []}
                           sx={{ width: "100%" }}
@@ -333,7 +332,6 @@ const DealsAdd = () => {
                               label="Select Tag"
                               required
                               name="tag"
-                          
                             />
                           )}
                           renderOption={(props, option) => (

@@ -48,6 +48,10 @@ const UsersList = () => {
   } = useSelector((state) => state.usersReducer);
 
   useEffect(() => {
+    dispatch(updateSearchKey(""));
+  }, []);
+
+  useEffect(() => {
     if (sortByKey || searchKey || statusKey) {
       callUsersList(true);
     }
@@ -58,8 +62,6 @@ const UsersList = () => {
   const callUsersList = (refresh = false) => {
     dispatch(userList(refresh));
   };
-
-
 
   return (
     <React.Fragment>

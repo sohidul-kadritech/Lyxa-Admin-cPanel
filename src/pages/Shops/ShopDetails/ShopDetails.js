@@ -263,7 +263,7 @@ const ShopDetails = () => {
                           />
 
                           {shop?.foodType && (
-                            <Info title="Food Type" value={shop?.foodType} />
+                            <Info title="Type" value={shop?.foodType} />
                           )}
 
                           <Info title="Phone" value={shop?.phone_number} />
@@ -518,7 +518,7 @@ const ShopDetails = () => {
             </button>
           </div>
           <div className="modal-body">
-            <DealForAdd type="shop" item={shop} shopType={shop?.shopType} />
+            <DealForAdd type="shop" item={shop} />
           </div>
         </Modal>
       </GlobalWrapper>

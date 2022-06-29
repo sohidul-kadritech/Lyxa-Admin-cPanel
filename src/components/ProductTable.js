@@ -88,24 +88,25 @@ const ProductTable = ({ products, loading }) => {
                     fontWeight: "500",
                   }}
                 >
-                  <Th style={{ height: "50px", maxWidth: "150px" }}>
-                    <img
-                      onClick={() => {
-                        setIsOpen(true);
-                        setSelectedImg(item?.images[0]);
-                      }}
-                      className="img-fluid cursor-pointer"
-                      alt=""
-                      src={item?.images[0]}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                      }}
-                    />
+                  <Th className="d-flex justify-content-center align-items-center">
+                    <div className="image__wrapper">
+                      <img
+                        onClick={() => {
+                          setIsOpen(true);
+                          setSelectedImg(item?.images[0]);
+                        }}
+                        className="img-fluid cursor-pointer"
+                        alt=""
+                        src={item?.images[0]}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      />
+                    </div>
                   </Th>
 
-                  <Td>{item?.name}</Td>
+                  <Td style={{ maxWidth: "140px" }}>{item?.name}</Td>
                   <Td>{item?.shop?.shopName}</Td>
                   <Td>
                     <p>{item?.price}</p>
@@ -128,7 +129,7 @@ const ProductTable = ({ products, loading }) => {
                         <button
                           className="btn btn-info button"
                           onClick={() => {
-                            history.push(`/products/details/${item?._id}`)
+                            history.push(`/products/details/${item?._id}`);
                           }}
                         >
                           <i className="fa fa-eye" />

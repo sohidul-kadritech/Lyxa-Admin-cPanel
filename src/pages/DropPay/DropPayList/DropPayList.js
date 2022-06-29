@@ -24,7 +24,7 @@ import {
   withdrawUserAmount,
 } from "../../../store/DropPay/dropPayAction";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { userList } from "../../../store/Users/UsersAction";
+import { updateSearchKey, userList } from "../../../store/Users/UsersAction";
 import { toast } from "react-toastify";
 import { successMsg } from "../../../helpers/successMsg";
 
@@ -34,10 +34,9 @@ const DropPayList = () => {
   const { loading, pays, sortByKey, startDate, endDate, status } = useSelector(
     (state) => state.dropPayReducer
   );
-  const { users } = useSelector((state) => state.usersReducer);
+  const { users, searchKey } = useSelector((state) => state.usersReducer);
 
   const [balAddModal, setBalAddModal] = useState(false);
-  const [userSearchKey, setUserSearchKey] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [adminNote, setAdminNote] = useState("");
   const [userNote, setUserNote] = useState("");
@@ -50,28 +49,13 @@ const DropPayList = () => {
   }, [sortByKey, startDate, endDate]);
 
   useEffect(() => {
-    if (balAddModal) {
+    if (searchKey) {
       dispatch(userList(true));
     }
-  }, [balAddModal]);
+  }, [searchKey]);
 
   const callDropPayList = (refresh = false) => {
     dispatch(getAllDropPay(refresh));
-  };
-
-  // Warinig Message
-
-  const warningMessage = (msg) => {
-    toast.warn(msg, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
   };
 
   // ADD/ REMOVE BALANCE
@@ -111,6 +95,10 @@ const DropPayList = () => {
   useEffect(() => {
     if (status) {
       setBalAddModal(false);
+      setAdminNote("");
+      setUserNote("");
+      setAmount(0);
+      setSelectedUser(null);
     }
   }, [status]);
 
@@ -234,16 +222,17 @@ const DropPayList = () => {
               <Autocomplete
                 className="cursor-pointer"
                 onChange={(event, newValue) => {
-                  console.log(newValue);
+                  // console.log(newValue);
                   setSelectedUser(newValue);
                 }}
                 getOptionLabel={(option) => option.name}
                 isOptionEqualToValue={(option, value) =>
                   option._id == value._id
                 }
-                inputValue={userSearchKey}
+                inputValue={searchKey}
                 onInputChange={(event, newInputValue) => {
-                  setUserSearchKey(newInputValue);
+                  // setUserSearchKey(newInputValue);
+                  dispatch(updateSearchKey(newInputValue));
                   // console.log("input value", newInputValue);
                 }}
                 id="controllable-states-demo"

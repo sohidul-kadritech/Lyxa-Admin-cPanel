@@ -94,6 +94,8 @@ const ProductAdd = () => {
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
   const [attributeName, setAttributeName] = useState("");
   const [isRequiredAttribute, setIsRequiredAttribute] = useState(false);
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [attributes, setAttributes] = useState([]);
   const [attributeItems, setAttributeItems] = useState([
     {
@@ -107,6 +109,7 @@ const ProductAdd = () => {
       const findProduct = products.find((item) => item._id == id);
 
       if (findProduct) {
+        // console.log({ findProduct });
         setProductValue(findProduct);
       } else {
         callApi(id);
@@ -163,9 +166,11 @@ const ProductAdd = () => {
       attributes,
       status,
       discount,
+      password,
     } = product;
 
     setShop(shop);
+    setPassword(password);
     setCategory(category);
     setSubCategory(subCategory);
     setName(name);
@@ -196,10 +201,11 @@ const ProductAdd = () => {
 
   // ALL SHOP LIST
   useEffect(() => {
-    if (type || typeKey || searchKey) {
+    if ((typeKey || searchKey) && type && !id) {
       dispatch(getAllShop(true));
     }
-  }, [type, typeKey, searchKey]);
+    return;
+  }, [type, typeKey, searchKey, id]);
 
   // ALL SUB CATEGORY LIST
 
@@ -303,6 +309,8 @@ const ProductAdd = () => {
       attributes,
       addons: addonsData,
       cuisines,
+      password,
+      email,
     };
 
     if (id) {
@@ -415,6 +423,8 @@ const ProductAdd = () => {
           },
         ]);
         setImage(null);
+        setPassword("");
+        setEmail("");
         window.scroll(0, 0);
       }
     }
@@ -499,6 +509,35 @@ const ProductAdd = () => {
                           required
                         />
                       </div>
+                      <div className="mb-4">
+                        <TextField
+                          id="email"
+                          label="email"
+                          type="email"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={email}
+                          onChange={(event) => setEmail(event.target.value)}
+                          required
+                        />
+                      </div>
+                      {!id && (
+                        <div className="mb-4">
+                          <TextField
+                            id="password"
+                            label="Password"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={password}
+                            onChange={(event) =>
+                              setPassword(event.target.value)
+                            }
+                            required
+                          />
+                        </div>
+                      )}
                       <div className="mb-4">
                         <SelectOption
                           label="Type"

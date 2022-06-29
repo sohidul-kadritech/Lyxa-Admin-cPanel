@@ -5,9 +5,13 @@ import { withRouter } from "react-router-dom";
 
 //i18n
 import { withTranslation } from "react-i18next";
-import AdminSidebarContent from "./AdminSidebarContent";
-import SellerSidebarContent from "./SellerSidebarContent";
-import ShopSidebarContent from "./ShopSidebarContent";
+import SidebarContent from "./SidebarContent";
+import {
+  adminMenuItem,
+  customerServiceMenuItem,
+  sellerMenuItem,
+  shopMenuItem,
+} from "../../assets/SideMenuItem";
 
 const Sidebar = (props) => {
   const { account_type } = JSON.parse(localStorage.getItem("admin"));
@@ -16,7 +20,17 @@ const Sidebar = (props) => {
     <React.Fragment>
       <div className="vertical-menu">
         <div data-simplebar className="h-100">
-          {account_type === "admin" && <AdminSidebarContent />}
+          <SidebarContent
+            list={
+              account_type === "admin"
+                ? adminMenuItem
+                : account_type === "customer_service"
+                ? customerServiceMenuItem
+                : account_type === "seller"
+                ? sellerMenuItem
+                : shopMenuItem
+            }
+          />
           {/* {admin.account_type === "seller" && <SellerSidebarContent />}
           {admin.account_type === "shop" && <ShopSidebarContent />} */}
         </div>

@@ -3,68 +3,56 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Button } from "reactstrap";
+import { successMsg } from "../helpers/successMsg";
 import { getAllDealForAdd } from "../store/Deal/dealAction";
 import { addProductDeal } from "../store/Product/productAction";
 import { addShopDeal } from "../store/Shop/shopAction";
 
-const DealForAdd = ({ type, item, shopType }) => {
+const DealForAdd = ({ type, item }) => {
   const dispatch = useDispatch();
   const { deals } = useSelector((state) => state.dealReducer);
   const { loading } = useSelector((state) => state.productReducer);
-  const {loading:shopLoading } = useSelector((state) => state.shopReducer);
+  const { loading: shopLoading } = useSelector((state) => state.shopReducer);
 
   const [deal, setDeal] = useState(null);
   const [searchDealKey, setSearchDealKey] = useState("");
 
   useEffect(() => {
-    dispatch(getAllDealForAdd(type, shopType));
+    dispatch(getAllDealForAdd(type, item?.shopType));
   }, []);
 
   const addDeal = () => {
-    console.log(item)
-    
-
-    if(item.deals.length === 0){
-      callApi(type)
-    }else{
+    if (item.deals.length === 0) {
+      callApi(type);
+    } else {
       const findDeal = item?.deals.find((item) => item._id == deal._id);
+      const findDoubleDeal = item?.deals.find(
+        (item) => item.option === "double_menu"
+      );
+      const findPercentage = item?.deals.find(
+        (item) => item.option === "percentage"
+      );
+      console.log({ findDoubleDeal, findPercentage });
+      if (
+        (deal.option === "percentage" && findDoubleDeal) ||
+        (deal.option === "double_menu" && findPercentage)
+      ) {
+        return successMsg(
+          "You can not add percentage or double deal in same shop"
+        );
+      }
+
       if (findDeal) {
-        return toast.warn("Deal Already Added!.Try Another One", {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        return successMsg("Deal Already Added!.Try Another One");
       } else {
-        callApi(type)
-        // if (type === "product") {
-        //   dispatch(
-        //     addProductDeal({
-        //       productId: item._id,
-        //       dealId: deal._id,
-        //     })
-        //   );
-        // } else {
-        //   dispatch(
-        //     addShopDeal({
-        //       shopId: item._id,
-        //       dealId: deal._id,
-        //     })
-        //   );
-        // }
+        callApi(type);
       }
     }
-
-    
   };
 
-  // DEAL SAVE TO SERVER 
+  // DEAL SAVE TO SERVER
 
-  const callApi = (value) =>{
+  const callApi = (value) => {
     if (value === "product") {
       dispatch(
         addProductDeal({
@@ -80,7 +68,7 @@ const DealForAdd = ({ type, item, shopType }) => {
         })
       );
     }
-  }
+  };
 
   return (
     <div>
@@ -90,7 +78,7 @@ const DealForAdd = ({ type, item, shopType }) => {
           // console.log(newValue);
           setDeal(newValue);
         }}
-        getOptionLabel={(option) => option.name}
+        getOptionLabel={(option) => option.option}
         isOptionEqualToValue={(option, value) => option._id == value._id}
         inputValue={searchDealKey}
         onInputChange={(event, newInputValue) => {
