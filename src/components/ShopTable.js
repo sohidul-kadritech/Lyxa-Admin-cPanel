@@ -34,9 +34,9 @@ const ShopTable = () => {
 
   // DELETE SHOP
 
-  const handleDelete = (shopId) => {
-    dispatch(deleteShop(shopId));
-  };
+  // const handleDelete = (shopId) => {
+  //   dispatch(deleteShop(shopId));
+  // };
 
   return (
     <div>
@@ -51,7 +51,7 @@ const ShopTable = () => {
         />
       )}
 
-      {success_dlg ? (
+      {/* {success_dlg ? (
         <SweetAlert
           success
           title={dynamic_title}
@@ -61,7 +61,7 @@ const ShopTable = () => {
         >
           {dynamic_description}
         </SweetAlert>
-      ) : null}
+      ) : null} */}
 
       <Table
         id="tech-companies-1"
@@ -134,7 +134,7 @@ const ShopTable = () => {
                         <i className="fa fa-eye" />
                       </button>
                     </Tooltip>
-                    <Tooltip title="Delete">
+                    {/* <Tooltip title="Delete">
                       <button
                         className="btn btn-danger button"
                         onClick={() => {
@@ -143,8 +143,8 @@ const ShopTable = () => {
                       >
                         <i className="fa fa-trash" />
                       </button>
-                    </Tooltip>
-                    {confirm_alert ? (
+                    </Tooltip> */}
+                    {/* {confirm_alert ? (
                       <SweetAlert
                         title="Are you sure?"
                         warning
@@ -163,7 +163,7 @@ const ShopTable = () => {
                       >
                         You want to delete this Shop.
                       </SweetAlert>
-                    ) : null}
+                    ) : null} */}
                   </div>
                 </Td>
               </Tr>

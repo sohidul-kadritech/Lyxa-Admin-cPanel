@@ -187,6 +187,11 @@ export const bannerForOptions = [
   { label: "Shop/Product", value: "route" },
 ];
 
+export const freeDeliveryOptions = [
+  { label: "Yes", value: true },
+  { label: "No", value: false },
+];
+
 export const logoSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

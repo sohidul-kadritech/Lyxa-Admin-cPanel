@@ -6,9 +6,7 @@ import {
   Col,
   Container,
   Row,
-
   Button,
-
   CardBody,
   Spinner,
   Form,
@@ -53,6 +51,7 @@ const CreateAdmin = () => {
       const findAdmin = admins.find((admin) => admin._id == id);
 
       if (findAdmin) {
+        console.log({ findAdmin });
         const { email, name, number, status } = findAdmin;
 
         setName(name);
@@ -73,7 +72,6 @@ const CreateAdmin = () => {
         id,
       },
     });
-
 
     if (data.status) {
       const { email, name, number, status } = data.data.admin;
@@ -98,7 +96,6 @@ const CreateAdmin = () => {
           role,
           number: phoneNumber,
           status: activeStatus,
-          
         })
       );
     } else {
@@ -251,7 +248,7 @@ const CreateAdmin = () => {
                     <Button
                       color="primary"
                       className="px-5"
-                      type='submit'
+                      type="submit"
                       disabled={loading}
                     >
                       {loading ? (

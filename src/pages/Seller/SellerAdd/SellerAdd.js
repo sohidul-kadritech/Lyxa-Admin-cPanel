@@ -414,6 +414,7 @@ const SellerAdd = () => {
         setCertificate(null);
         setNid(null);
         setContactPaper(null);
+        window.scroll(0, 0);
       }
     }
   }, [status]);

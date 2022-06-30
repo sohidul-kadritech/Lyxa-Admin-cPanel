@@ -51,6 +51,7 @@ import {
   shopStatusOptions2,
   shopTypeOptions2,
   productVisibility,
+  freeDeliveryOptions,
 } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
@@ -106,6 +107,7 @@ const ShopAdd = () => {
   const [selectedCuisines, setSelectedCuisines] = useState([]);
   const [searchCuisineKey, setSearchCuisineKey] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
 
   // GET SELLER
@@ -179,7 +181,7 @@ const ShopAdd = () => {
       email,
       phone_number,
     } = values;
-
+    setEmail(email);
     setPhone(phone_number);
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
@@ -365,6 +367,7 @@ const ShopAdd = () => {
       dispatch(
         addShop({
           email,
+          password,
           shopStartTime,
           shopName,
           shopEndTime,
@@ -620,7 +623,7 @@ const ShopAdd = () => {
                           id="example-time-input"
                           label="Start At"
                           required
-                          value={shopEndTime}
+                          value={shopStartTime}
                           onChange={(e) => setShopStartTime(e.target.value)}
                           InputLabelProps={{
                             shrink: true,
@@ -781,7 +784,7 @@ const ShopAdd = () => {
                               onChange={(e) => setFreeDelivery(e.target.value)}
                               label="Free Delivery"
                             >
-                              {productVisibility.map((item, index) => (
+                              {freeDeliveryOptions.map((item, index) => (
                                 <MenuItem key={index} value={item.value}>
                                   {item.label}
                                 </MenuItem>
@@ -790,6 +793,27 @@ const ShopAdd = () => {
                           </FormControl>
                         </div>
                       )}
+
+                      <div className="mb-4">
+                        <FormControl required fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            Delivery Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={delivery}
+                            onChange={(e) => setDelivery(e.target.value)}
+                            label="Delivery  Type"
+                          >
+                            {shopDeliveryOptions.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
                     </Col>
                     <Col lg={6} className="mt-4 mt-lg-0">
                       <div className="mb-4">
@@ -825,6 +849,22 @@ const ShopAdd = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
+                      {!id && (
+                        <div className="mb-4">
+                          <TextField
+                            id="password"
+                            label="Password"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={password}
+                            onChange={(event) =>
+                              setPassword(event.target.value)
+                            }
+                            required
+                          />
+                        </div>
+                      )}
 
                       <div className="mb-4">
                         <TextField
@@ -896,27 +936,6 @@ const ShopAdd = () => {
                             ))}
                           </Paper>
                         )}
-                      </div>
-
-                      <div className="mb-4">
-                        <FormControl required fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Delivery Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={delivery}
-                            onChange={(e) => setDelivery(e.target.value)}
-                            label="Delivery  Type"
-                          >
-                            {shopDeliveryOptions.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
                       </div>
 
                       <div className="mb-4">

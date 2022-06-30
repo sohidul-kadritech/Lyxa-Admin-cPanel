@@ -30,6 +30,7 @@ import {
   sellerStatusOptions,
   sellerSubTypeOptions,
   sellerTypeOptions,
+  shopTypeOptions,
   sortByOptions,
 } from "../../../assets/staticData";
 import Select from "react-select";
@@ -118,7 +119,7 @@ const SellerList = () => {
                       <label className="control-label">Type</label>
                       <Select
                         palceholder="Select Status"
-                        options={sellerTypeOptions}
+                        options={shopTypeOptions}
                         classNamePrefix="select2-selection"
                         required
                         value={typeKey}

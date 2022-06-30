@@ -250,7 +250,7 @@ const ShopDetails = () => {
                           <Info title="Delivery" value={shop?.delivery} />
                           <Info
                             title="Featured"
-                            value={shop?.isFeatured ? "Yes" : "NO"}
+                            value={shop?.isFeatured ? "Yes" : "No"}
                           />
                           <Info
                             title="Minimum Order"
