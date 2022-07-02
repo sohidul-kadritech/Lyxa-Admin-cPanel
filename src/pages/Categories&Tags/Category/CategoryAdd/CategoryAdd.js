@@ -25,6 +25,7 @@ import { editCategory } from "./../../../../store/Category/categoryAction";
 import { IMAGE_UPLOAD } from "./../../../../network/Api";
 import { shopTypeOptions2 } from "../../../../assets/staticData";
 import formatBytes from "../../../../common/imageFormatBytes";
+import { successMsg } from "../../../../helpers/successMsg";
 
 const CategoryAdd = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const CategoryAdd = () => {
 
   const [name, setName] = useState("");
   const [type, setType] = useState(null);
-  const [slug, setSlug] = useState("");
+
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,32 +73,29 @@ const CategoryAdd = () => {
   // SET DATA TO STATE
 
   const setCategoryData = (item) => {
-    const { name, type, slug, image } = item;
+    const { name, type, image } = item;
 
     const findTypeObj = shopTypeOptions2.find((x) => x.value == type);
     setName(name);
     setType(findTypeObj);
-    setSlug(slug);
     setImage(image);
   };
 
   // HANDLE SUBMIT
 
   const handleSubmit = () => {
-    if (!name || !type) {
-      return toast.warn("Please Fill Up All Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    if (!name) {
+      return successMsg("Enter category name", "error");
+    }
+    if (!type) {
+      return successMsg("Enter category type", "error");
     }
 
-    uploadImage();
+    if (image) {
+      uploadImage();
+    } else {
+      submitData();
+    }
   };
 
   const uploadImage = async () => {
@@ -114,8 +112,8 @@ const CategoryAdd = () => {
           data: formData,
         });
 
+        setIsLoading(false);
         if (data.status) {
-          setIsLoading(false);
           submitData(data.data.url);
         } else {
           console.log(data.error);
@@ -129,13 +127,11 @@ const CategoryAdd = () => {
   // SUBMIT DATA
 
   const submitData = (url) => {
-    const newSlug = slug.split(" ").join("");
     if (id) {
       dispatch(
         editCategory({
           id,
           name,
-          slug: newSlug,
           image: url,
           type: type.value,
         })
@@ -144,9 +140,9 @@ const CategoryAdd = () => {
       dispatch(
         addCategory({
           name,
-          slug: newSlug,
           image: url,
           type: type.value,
+          slug: "12345",
         })
       );
     }
@@ -171,7 +167,6 @@ const CategoryAdd = () => {
         history.goBack();
       } else {
         setName("");
-        setSlug("");
         setType(null);
         setImage(null);
         window.scroll(0, 0);
@@ -180,13 +175,6 @@ const CategoryAdd = () => {
   }, [status]);
 
   // HANDLE CHANGE NAME
-
-  const handleChangeName = (e) => {
-    setName(e.target.value);
-
-    const generateSlug = e.target.value + Math.round(Math.random() * 100);
-    setSlug(generateSlug);
-  };
 
   return (
     <React.Fragment>
@@ -215,7 +203,7 @@ const CategoryAdd = () => {
                         type="text"
                         placeholder="Enter Category Name"
                         value={name}
-                        onChange={handleChangeName}
+                        onChange={(e) => setName(e.target.value)}
                       />
                     </div>
                   </Col>
@@ -235,114 +223,101 @@ const CategoryAdd = () => {
                   </Col>
                 </Row>
 
-                {/* <Row className="mt-3">
-                  <Col lg={6}>
-                    <div>
-                      <Label>Slug</Label>
-                      <input
-                        className="form-control"
-                        type="text"
-                        placeholder="Enter Category Slug"
-                        value={slug}
-                        onChange={(event) => setSlug(event.target.value)}
-                      />
-                    </div>
-                  </Col>
-                </Row> */}
-
-                <Row className="my-4">
-                  <Col>
-                    <Label>Category Image</Label>
-                    <div>
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles);
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
-                            </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {image && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        image.preview ? image.preview : image
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {image.name
-                                        ? image.name
-                                        : "Product Image"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {image.formattedSize &&
-                                          image.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      onClick={() => setImage(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
+                {type?.value !== "food" && (
+                  <Row className="my-4">
+                    <Col>
+                      <Label>Category Image</Label>
+                      <div>
+                        <Form>
+                          <Dropzone
+                            onDrop={(acceptedFiles) => {
+                              handleAcceptedFiles(acceptedFiles);
+                            }}
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div className="dropzone">
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+                                  // onClick={() => setmodal_fullscreen(true)}
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="mb-3">
+                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                   </div>
-                                </Row>
+                                  <h4>Drop files here or click to upload.</h4>
+                                </div>
                               </div>
-                            </Card>
-                          )}
-                        </div>
-                      </Form>
-                    </div>
-                  </Col>
-                </Row>
+                            )}
+                          </Dropzone>
+                          <div
+                            className="dropzone-previews mt-3"
+                            id="file-previews"
+                          >
+                            {image && (
+                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                <div className="p-2">
+                                  <Row className="align-items-center position-relative">
+                                    <Col className="col-auto">
+                                      <img
+                                        data-dz-thumbnail=""
+                                        // height="80"
+                                        style={{
+                                          maxWidth: "80px",
+                                        }}
+                                        className=" bg-light"
+                                        src={
+                                          image.preview ? image.preview : image
+                                        }
+                                        alt=""
+                                      />
+                                    </Col>
+                                    <Col>
+                                      <Link
+                                        to="#"
+                                        className="text-muted font-weight-bold"
+                                      >
+                                        {image.name
+                                          ? image.name
+                                          : "Product Image"}
+                                      </Link>
+                                      <p className="mb-0">
+                                        <strong>
+                                          {image.formattedSize &&
+                                            image.formattedSize}
+                                        </strong>
+                                      </p>
+                                    </Col>
+
+                                    <div
+                                      className="position-absolute"
+                                      style={{
+                                        left: "0px",
+                                        top: "0px",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <i
+                                        onClick={() => setImage(null)}
+                                        className="mdi mdi-delete text-danger "
+                                        style={{
+                                          fontSize: "25px",
+                                          cursor: "pointer",
+                                        }}
+                                      ></i>
+                                    </div>
+                                  </Row>
+                                </div>
+                              </Card>
+                            )}
+                          </div>
+                        </Form>
+                      </div>
+                    </Col>
+                  </Row>
+                )}
 
                 <div className="my-4 d-flex justify-content-center">
                   <Button

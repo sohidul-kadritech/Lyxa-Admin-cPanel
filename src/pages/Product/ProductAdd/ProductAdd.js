@@ -85,8 +85,7 @@ const ProductAdd = () => {
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
-  const [visibility, setVisibility] = useState(false);
-  const [activeStatus, setActiveStatus] = useState("");
+
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
   const [addons, setAddons] = useState([]);
@@ -94,6 +93,7 @@ const ProductAdd = () => {
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
   const [attributeName, setAttributeName] = useState("");
   const [isRequiredAttribute, setIsRequiredAttribute] = useState(false);
+  const [isMultipleAttribute, setIsMultipleAttribute] = useState(false);
 
   const [attributes, setAttributes] = useState([]);
   const [attributeItems, setAttributeItems] = useState([
@@ -153,7 +153,6 @@ const ProductAdd = () => {
       name,
       images,
       price,
-      productVisibility,
       seoDescription,
       tags,
       seoTitle,
@@ -163,7 +162,6 @@ const ProductAdd = () => {
       foodType,
       addons,
       attributes,
-      status,
       discount,
     } = product;
 
@@ -176,7 +174,6 @@ const ProductAdd = () => {
     setType(type);
     setSeoTitle(seoTitle);
     setSeoDescription(seoDescription);
-    setVisibility(productVisibility);
     setFoodType(foodType ?? "");
     setTags({
       ...tags,
@@ -185,7 +182,6 @@ const ProductAdd = () => {
     setImage(images[0]);
     setAddons(addons);
     setAttributes(attributes);
-    setActiveStatus(status);
   };
 
   // ALL CATEGORY LIST
@@ -313,8 +309,6 @@ const ProductAdd = () => {
         editProduct({
           ...data,
           id,
-          productVisibility: visibility,
-          status: activeStatus,
         })
       );
     } else {
@@ -366,6 +360,7 @@ const ProductAdd = () => {
     const data = {
       name: attributeName,
       required: isRequiredAttribute,
+      select: isMultipleAttribute && "multiple",
       items: attributeItems,
     };
     setAttributes([...attributes, data]);
@@ -625,37 +620,6 @@ const ProductAdd = () => {
                           type="number"
                         />
                       </div>
-
-                      {id && (
-                        <div className="mb-4">
-                          <SelectOption
-                            label="Visibility"
-                            value={visibility}
-                            onChange={(event) =>
-                              setVisibility(event.target.value)
-                            }
-                            options={[
-                              { label: "Yes", value: true },
-                              { label: "No", value: false },
-                            ]}
-                          />
-                        </div>
-                      )}
-                      {id && (
-                        <div className="mb-4">
-                          <SelectOption
-                            label="Status"
-                            value={activeStatus}
-                            onChange={(event) =>
-                              setActiveStatus(event.target.value)
-                            }
-                            options={[
-                              { label: "Active", value: "active" },
-                              { label: "Inactive", value: "inactive" },
-                            ]}
-                          />
-                        </div>
-                      )}
                     </Col>
                     <Col lg={6}>
                       <div className="mb-4">
@@ -691,6 +655,7 @@ const ProductAdd = () => {
                               component="li"
                               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                               {...props}
+                              key={option._id}
                             >
                               <img
                                 loading="lazy"
@@ -878,6 +843,27 @@ const ProductAdd = () => {
                                         Required
                                       </label>
                                     </div>
+
+                                    <div className="form-check">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value={isMultipleAttribute}
+                                        id="flexCheckDefault"
+                                        onChange={(e) =>
+                                          setIsMultipleAttribute(
+                                            e.target.checked
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label ms-1"
+                                        style={{ fontSize: "16px" }}
+                                        htmlFor="flexCheckDefault"
+                                      >
+                                        Multiple
+                                      </label>
+                                    </div>
                                   </Col>
                                 </Row>
                                 {attributeItems.map((item, index) => (
@@ -974,10 +960,22 @@ const ProductAdd = () => {
                                               fontWeight: "500",
                                             }}
                                           >
-                                            {attribute.name}
+                                            {`${attribute.name} ${
+                                              attribute.required
+                                                ? "(Required)"
+                                                : ""
+                                            } ${
+                                              attribute.select === "multiple"
+                                                ? "(Multiple)"
+                                                : "(Single)"
+                                            }`}
+                                            {/* {attribute.name}
                                             {attribute.required
                                               ? "(Required)"
                                               : ""}
+                                              {attribute.required
+                                              ? "(Required)"
+                                              : ""} */}
                                           </span>
                                           <i
                                             className="fas fa-trash cursor-pointer me-3"
@@ -1047,6 +1045,7 @@ const ProductAdd = () => {
                                   )
                                 }
                                 list={products}
+                                required={false}
                               />
                             )}
                           </div>

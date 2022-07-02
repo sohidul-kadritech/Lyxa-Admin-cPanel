@@ -36,7 +36,6 @@ const ProductList = () => {
     statusKey,
     typeKey,
     sortByKey,
-    productVisibilityKey,
     paging,
     hasNextPage,
     hasPreviousPage,
@@ -46,17 +45,11 @@ const ProductList = () => {
   } = useSelector((state) => state.productReducer);
 
   useEffect(() => {
-    if (
-      searchKey ||
-      statusKey ||
-      typeKey ||
-      sortByKey ||
-      productVisibilityKey
-    ) {
+    if (searchKey || statusKey || typeKey || sortByKey) {
       callProductList(true);
     }
     return;
-  }, [searchKey, statusKey, typeKey, sortByKey, productVisibilityKey]);
+  }, [searchKey, statusKey, typeKey, sortByKey]);
 
   const callProductList = (refresh = false) => {
     dispatch(getAllProduct(refresh));
@@ -129,24 +122,6 @@ const ProductList = () => {
                   </Col>
                 </Row>
                 <Row className="d-flex justify-content-center">
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">
-                        Product Visibility
-                      </label>
-                      <Select
-                        palceholder="Select Status"
-                        options={productVisibility}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={productVisibilityKey}
-                        onChange={(e) =>
-                          dispatch(updateProductVisibilityByKey(e))
-                        }
-                        defaultValue={""}
-                      />
-                    </div>
-                  </Col>
                   <Col lg={8}>
                     <Search dispatchFunc={updateProductSearchKey} />
                   </Col>
@@ -181,25 +156,5 @@ const ProductList = () => {
     </React.Fragment>
   );
 };
-
-const SearchWrapper = styled.div`
-  border: 1px solid lightgray;
-  border-radius: 6px;
-  width: 100%;
-  padding: 2px 7px;
-
-  .search__wrapper {
-    /* padding: 7px 10px; */
-    display: flex;
-    align-items: center;
-    i {
-      font-size: 15px;
-    }
-    input {
-      border: none;
-      color: black !important;
-    }
-  }
-`;
 
 export default ProductList;

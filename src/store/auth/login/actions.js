@@ -77,6 +77,7 @@ export const adminAuth = (user) => async (dispatch, getState) => {
 
       dispatch(loginSuccess(data.admin, data.admin.token, message));
     } else {
+      console.log(message);
       dispatch(apiError(message));
     }
   } catch (error) {

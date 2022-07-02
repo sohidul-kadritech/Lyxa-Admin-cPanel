@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_CATEGORY,
@@ -12,11 +11,10 @@ import {
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
-
-// ADD CATEGORY 
+// ADD CATEGORY
 
 export const addCategory = (values) => async (dispatch) => {
-
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_CATEGORY_REQUEST_SEND,
@@ -27,20 +25,23 @@ export const addCategory = (values) => async (dispatch) => {
       data: values,
     });
 
+    console.log({ data });
+
     if (data.status) {
-      successMsg(data.message, "success")
+      successMsg(data.message, "success");
       dispatch({
         type: actionType.ADD_CATEGORY_REQUEST_SUCCESS,
         payload: data.data.category,
       });
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.ADD_CATEGORY_REQUEST_FAIL,
         payload: data.message,
       });
     }
   } catch (error) {
+    successMsg(error.message, "error");
     dispatch({
       type: actionType.ADD_CATEGORY_REQUEST_FAIL,
       payload: error.message,
@@ -51,8 +52,7 @@ export const addCategory = (values) => async (dispatch) => {
 export const getAllCategory =
   (refresh = false, page = 1) =>
   async (dispatch, getState) => {
-
-    const { categories,shopType } = getState().categoryReducer;
+    const { categories, shopType } = getState().categoryReducer;
 
     if (categories.length < 1 || refresh) {
       try {
@@ -64,11 +64,9 @@ export const getAllCategory =
           params: {
             page: page,
             pageSize: 30,
-            type: shopType
+            type: shopType,
           },
         });
-
-
 
         if (data.status) {
           dispatch({
@@ -93,7 +91,6 @@ export const getAllCategory =
 //   EDIT
 
 export const editCategory = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.EDIT_CATEGORY_REQUEST_SEND,
@@ -104,9 +101,8 @@ export const editCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-
     if (data.status) {
-      successMsg(data.message, "success")
+      successMsg(data.message, "success");
 
       setTimeout(() => {
         dispatch({
@@ -115,7 +111,7 @@ export const editCategory = (values) => async (dispatch) => {
         });
       }, 400);
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
 
       dispatch({
         type: actionType.EDIT_CATEGORY_REQUEST_FAIL,
@@ -141,7 +137,6 @@ export const setCatStatusFalse = () => (dispatch) => {
 // ADD SUB CATGEGORY
 
 export const addSubCategory = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_SUB_CATEGORY_REQUEST_SEND,
@@ -152,16 +147,14 @@ export const addSubCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-
-
     if (data.status) {
-      successMsg(data.message, "success")
+      successMsg(data.message, "success");
       dispatch({
         type: actionType.ADD_SUB_CATEGORY_REQUEST_SUCCESS,
         payload: data.data.addSubCategory,
       });
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.ADD_SUB_CATEGORY_REQUEST_FAIL,
         payload: data.message,
@@ -178,10 +171,10 @@ export const addSubCategory = (values) => async (dispatch) => {
 // GET ALL SUB CATEGORY BY CATEGORY
 
 export const getAllSubCategory =
-  (refresh = false,  CatId, page = 1) =>
+  (refresh = false, CatId, page = 1) =>
   async (dispatch, getState) => {
-
-    const { subCategories, subStatusKey, subSearchKey } = getState().categoryReducer;
+    const { subCategories, subStatusKey, subSearchKey } =
+      getState().categoryReducer;
 
     if (subCategories.length < 1 || refresh) {
       try {
@@ -198,8 +191,6 @@ export const getAllSubCategory =
             status: subStatusKey.value,
           },
         });
-
-
 
         if (data.status) {
           dispatch({
@@ -235,18 +226,15 @@ export const editSubCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-
-
     if (data.status) {
-      successMsg(data.message, "success")
+      successMsg(data.message, "success");
 
       dispatch({
         type: actionType.EDIT_SUB_CATEGORY_REQUEST_SUCCESS,
         payload: data.data.category,
       });
-
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
 
       dispatch({
         type: actionType.EDIT_SUB_CATEGORY_REQUEST_FAIL,
@@ -261,31 +249,27 @@ export const editSubCategory = (values) => async (dispatch) => {
   }
 };
 
-//   DELETE 
+//   DELETE
 
 export const deleteSubCategory = (id) => async (dispatch) => {
- 
   try {
     dispatch({
       type: actionType.DELETE_SUB_CATEGORY_REQUEST_SEND,
     });
     const { data } = await requestApi().request(DELETE_SUB_CAT, {
       method: "POST",
-      data: {id},
+      data: { id },
     });
 
-
-
     if (data.status) {
-      successMsg(data.message, "success")
+      successMsg(data.message, "success");
 
       dispatch({
         type: actionType.DELETE_SUB_CATEGORY_REQUEST_SUCCESS,
-        payload: data.data.subCategory
-
+        payload: data.data.subCategory,
       });
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.DELETE_SUB_CATEGORY_REQUEST_FAIL,
         payload: data.message,
@@ -315,7 +299,7 @@ export const updateSubCatStatusKey = (value) => (dispatch) => {
   });
 };
 
-// UPDTAE CATEGORY  TYPE KEY 
+// UPDTAE CATEGORY  TYPE KEY
 
 export const updateCategoryShopType = (selectedType) => (dispatch) => {
   dispatch({

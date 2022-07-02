@@ -12,6 +12,7 @@ import * as actionType from "../actionType";
 // ADD
 
 export const addProduct = (values) => async (dispatch) => {
+  // console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_PRODUCT_REQUEST_SEND,
@@ -21,7 +22,7 @@ export const addProduct = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-    console.log({ data });
+    // console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -49,14 +50,8 @@ export const addProduct = (values) => async (dispatch) => {
 export const getAllProduct =
   (refresh = false, shopId = null, page = 1) =>
   async (dispatch, getState) => {
-    const {
-      products,
-      searchKey,
-      statusKey,
-      typeKey,
-      sortByKey,
-      productVisibilityKey,
-    } = getState().productReducer;
+    const { products, searchKey, statusKey, typeKey, sortByKey } =
+      getState().productReducer;
 
     if (products.length < 1 || refresh) {
       try {
@@ -72,7 +67,6 @@ export const getAllProduct =
             searchKey,
             type: typeKey.value,
             status: statusKey.value,
-            productVisibility: productVisibilityKey.value,
             shop: shopId,
           },
         });
@@ -121,7 +115,7 @@ export const editProduct = (values) => async (dispatch) => {
           type: actionType.EDIT_PRODUCT_REQUEST_SUCCESS,
           payload: data.data.product,
         });
-      }, 400);
+      }, 350);
     } else {
       successMsg(data.message, "error");
       dispatch({
@@ -139,33 +133,36 @@ export const editProduct = (values) => async (dispatch) => {
 
 //   DELETE
 
-export const deleteProduct = (id) => async (dispatch) => {
+export const updateProductStatus = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
-      type: actionType.DELETE_PRODUCT_REQUEST_SEND,
+      type: actionType.UPDATE_PRODUCT_STATUS_REQUEST_SEND,
     });
     const { data } = await requestApi().request(DELETE_PRODUCT, {
       method: "POST",
-      data: { id },
+      data: values,
     });
+
+    console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");
 
       dispatch({
-        type: actionType.DELETE_PRODUCT_REQUEST_SUCCESS,
+        type: actionType.UPDATE_PRODUCT_STATUS_REQUEST_SUCCESS,
         payload: data.data.product,
       });
     } else {
       successMsg(data.message, "error");
       dispatch({
-        type: actionType.DELETE_PRODUCT_REQUEST_FAIL,
+        type: actionType.UPDATE_PRODUCT_STATUS_REQUEST_FAIL,
         payload: data.message,
       });
     }
   } catch (error) {
     dispatch({
-      type: actionType.DELETE_SHOP_REQUEST_FAIL,
+      type: actionType.UPDATE_PRODUCT_STATUS_REQUEST_FAIL,
       payload: error.message,
     });
   }
@@ -230,15 +227,6 @@ export const updateProductStatusKey = (value) => (dispatch) => {
 export const updateProductSortByKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_SORT_BY_KEY,
-    payload: value,
-  });
-};
-
-// PRODUCT VISIBILITY KEY
-
-export const updateProductVisibilityByKey = (value) => (dispatch) => {
-  dispatch({
-    type: actionType.UPDATE_PRODUCT_VISIBILITY_KEY,
     payload: value,
   });
 };

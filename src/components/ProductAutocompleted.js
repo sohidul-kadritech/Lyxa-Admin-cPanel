@@ -8,6 +8,7 @@ const ProductAutocompleted = ({
   onInputChange,
   list,
   disabled = false,
+  required = true,
 }) => {
   return (
     <Autocomplete
@@ -23,7 +24,12 @@ const ProductAutocompleted = ({
       options={list.length > 0 ? list : []}
       sx={{ width: "100%" }}
       renderInput={(params) => (
-        <TextField {...params} label="Select a Product" required name="Product" />
+        <TextField
+          {...params}
+          label="Select a Product"
+          required={required}
+          name="Product"
+        />
       )}
       renderOption={(props, option) => (
         <Box

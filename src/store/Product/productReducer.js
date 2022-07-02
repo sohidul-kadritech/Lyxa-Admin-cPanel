@@ -14,7 +14,6 @@ const initialState = {
   statusKey: { label: "All", value: "all" },
   typeKey: { label: "All", value: "all" },
   sortByKey: { label: "Desc", value: "desc" },
-  productVisibilityKey: { label: "Visiable", value: true },
 };
 
 const productReducer = (state = initialState, action) => {
@@ -107,28 +106,24 @@ const productReducer = (state = initialState, action) => {
 
     // DELETE
 
-    case actionType.DELETE_PRODUCT_REQUEST_SEND:
+    case actionType.UPDATE_PRODUCT_STATUS_REQUEST_SEND:
       return {
         ...state,
         loading: true,
         status: false,
+        error: null,
       };
 
-    case actionType.DELETE_PRODUCT_REQUEST_SUCCESS:
-      const filered = state.products.filter((item) => item._id != payload._id);
-
+    case actionType.UPDATE_PRODUCT_STATUS_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
         status: true,
-        products: filered,
-        error: null,
       };
-    case actionType.DELETE_PRODUCT_REQUEST_FAIL:
+    case actionType.UPDATE_PRODUCT_STATUS_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        status: false,
         error: payload,
       };
 
@@ -177,12 +172,6 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         sortByKey: payload,
-      };
-
-    case actionType.UPDATE_PRODUCT_VISIBILITY_KEY:
-      return {
-        ...state,
-        productVisibilityKey: payload,
       };
 
     case actionType.UPDATE_TYPE_KEY:

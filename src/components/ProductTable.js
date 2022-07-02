@@ -1,25 +1,12 @@
 import React, { useState } from "react";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-  Form,
-  Label,
-  Modal,
-} from "reactstrap";
+import { Spinner } from "reactstrap";
 import { Tooltip } from "@mui/material";
 
-import SweetAlert from "react-bootstrap-sweetalert";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { deleteProduct } from "../store/Product/productAction";
+import { updateProductStatus } from "../store/Product/productAction";
 
 const ProductTable = ({ products, loading }) => {
   const history = useHistory();
@@ -27,13 +14,14 @@ const ProductTable = ({ products, loading }) => {
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
 
-  const handleDelete = (id) => {
-    dispatch(deleteProduct(id));
+  const updateStatus = (id, status) => {
+    dispatch(
+      updateProductStatus({
+        id,
+        status: status === "active" ? "inactive" : "active",
+      })
+    );
   };
 
   return (
@@ -48,18 +36,6 @@ const ProductTable = ({ products, loading }) => {
           }}
         />
       )}
-
-      {success_dlg ? (
-        <SweetAlert
-          success
-          title={dynamic_title}
-          onConfirm={() => {
-            setsuccess_dlg(false);
-          }}
-        >
-          {dynamic_description}
-        </SweetAlert>
-      ) : null}
 
       <Table
         id="tech-companies-1"
@@ -135,38 +111,28 @@ const ProductTable = ({ products, loading }) => {
                           <i className="fa fa-eye" />
                         </button>
                       </Tooltip>
-                      <Tooltip title="Delete">
+                      <Tooltip
+                        title={`${
+                          item.status === "active" ? "Deactivate" : "Activate"
+                        }`}
+                      >
                         <button
-                          className="btn btn-danger button"
-                          onClick={() => {
-                            setconfirm_alert(true);
-                          }}
+                          className={`btn button ${
+                            item.status === "active"
+                              ? "btn-danger"
+                              : "btn-success"
+                          }`}
+                          onClick={() => updateStatus(item._id, item.status)}
                         >
-                          <i className="fa fa-trash" />
+                          <i
+                            className={
+                              item.status === "active"
+                                ? "fa fa-trash"
+                                : "fa fa-trash-restore"
+                            }
+                          />
                         </button>
                       </Tooltip>
-                      {confirm_alert ? (
-                        <SweetAlert
-                          title="Are you sure?"
-                          warning
-                          showCancel
-                          confirmButtonText="Yes, delete it!"
-                          confirmBtnBsStyle="success"
-                          cancelBtnBsStyle="danger"
-                          onConfirm={() => {
-                            handleDelete(item?._id);
-                            setconfirm_alert(false);
-                            setsuccess_dlg(true);
-                            setdynamic_title("Deleted");
-                            setdynamic_description(
-                              "Your file has been deleted."
-                            );
-                          }}
-                          onCancel={() => setconfirm_alert(false)}
-                        >
-                          You want to delete this Product.
-                        </SweetAlert>
-                      ) : null}
                     </div>
                   </Td>
                 </Tr>
