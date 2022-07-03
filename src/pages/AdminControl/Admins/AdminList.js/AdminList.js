@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GlobalWrapper from "../../../../components/GlobalWrapper";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-
-  Row,
-
-} from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Row } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +9,7 @@ import {
   getAllAdmin,
   setStatusFalse,
 } from "../../../../store/AdminControl/Admin/adminAction";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 
 const AdminList = () => {
@@ -32,21 +24,17 @@ const AdminList = () => {
   const [dynamic_description, setdynamic_description] = useState("");
 
   useEffect(() => {
-   
     callAdminList(true);
-      dispatch(setStatusFalse())
-
-  
-    
+    dispatch(setStatusFalse());
   }, []);
 
   const callAdminList = (refresh = false) => {
     dispatch(getAllAdmin(refresh));
   };
 
-  const handleDelete = (id) =>{
-    dispatch(deleteAdmin({ id}))
-  }
+  const handleDelete = (id) => {
+    dispatch(deleteAdmin({ id }));
+  };
 
   return (
     <React.Fragment>
@@ -94,43 +82,46 @@ const AdminList = () => {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: "relative" }}>
-                  {admins && admins.length > 0 && admins.map((item, index) => {
-                    return (
-                      <Tr
-                        key={index}
-                        className="align-middle"
-                        style={{
-                          fontSize: "15px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        <Th>{item?.name}</Th>
+                  {admins &&
+                    admins.length > 0 &&
+                    admins.map((item, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          className="align-middle"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Th>{item?.name}</Th>
 
-                        <Td>{item?.email}</Td>
-                        <Td>{item?.number}</Td>
-                        <Td>{item?.status}</Td>
-                        <Td>{"role"}</Td>
-                        <Td>
-                          <div>
-                            <button
-                              className="btn btn-info me-3 button"
-                              onClick={() =>
-                                history.push(`/admin/edit/${item._id}`)
-                              }
-                            >
-                              <i className="fa fa-edit" />
-                            </button>
-                            <button
-                              className="btn btn-danger button"
-                              onClick={() =>
-                                // 
-                                setconfirm_alert(true)
-                                // 
-                              }
-                            >
-                              <i className="fa fa-trash" />
-                            </button>
-                            {confirm_alert ? (
+                          <Td>{item?.email}</Td>
+                          <Td>{item?.phone_number}</Td>
+                          <Td>{item?.status}</Td>
+                          <Td>{"role"}</Td>
+                          <Td>
+                            <div>
+                              <button
+                                className="btn btn-info me-3 button"
+                                onClick={() =>
+                                  history.push(`/admin/edit/${item._id}`)
+                                }
+                              >
+                                <i className="fa fa-edit" />
+                              </button>
+                              <button
+                                className="btn btn-danger button"
+                                onClick={
+                                  () =>
+                                    //
+                                    setconfirm_alert(true)
+                                  //
+                                }
+                              >
+                                <i className="fa fa-trash" />
+                              </button>
+                              {confirm_alert ? (
                                 <SweetAlert
                                   title="Are you sure?"
                                   warning
@@ -152,11 +143,11 @@ const AdminList = () => {
                                   Are You Sure! You want to delete this Shop.
                                 </SweetAlert>
                               ) : null}
-                          </div>
-                        </Td>
-                      </Tr>
-                    );
-                  })}
+                            </div>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
                 </Tbody>
               </Table>
               {/* {loading && (
@@ -166,11 +157,11 @@ const AdminList = () => {
                       variant="info"
                     />
                   )} */}
-                  {!loading && admins?.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Data</h4>
-                  </div>
-                )}
+              {!loading && admins?.length < 1 && (
+                <div className="text-center">
+                  <h4>No Data</h4>
+                </div>
+              )}
             </CardBody>
           </Card>
         </div>

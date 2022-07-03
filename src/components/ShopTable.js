@@ -51,18 +51,6 @@ const ShopTable = () => {
         />
       )}
 
-      {/* {success_dlg ? (
-        <SweetAlert
-          success
-          title={dynamic_title}
-          onConfirm={() => {
-            setsuccess_dlg(false);
-          }}
-        >
-          {dynamic_description}
-        </SweetAlert>
-      ) : null} */}
-
       <Table
         id="tech-companies-1"
         className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -134,16 +122,16 @@ const ShopTable = () => {
                         <i className="fa fa-eye" />
                       </button>
                     </Tooltip>
-                    {/* <Tooltip title="Delete">
+                    <Tooltip title="See shop products">
                       <button
-                        className="btn btn-danger button"
+                        className="btn btn-success button"
                         onClick={() => {
                           setconfirm_alert(true);
                         }}
                       >
-                        <i className="fa fa-trash" />
+                        <i class="fab fa-product-hunt"></i>
                       </button>
-                    </Tooltip> */}
+                    </Tooltip>
                     {/* {confirm_alert ? (
                       <SweetAlert
                         title="Are you sure?"

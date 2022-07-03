@@ -11,7 +11,6 @@ import { successMsg } from "../../../helpers/successMsg";
 // ADD
 
 export const addAdmin = (adminData) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_ADMIN_REQUEST_SEND,
@@ -22,17 +21,15 @@ export const addAdmin = (adminData) => async (dispatch) => {
       data: adminData,
     });
 
-
-
     if (data.status) {
-      successMsg(data.message, "success")
+      successMsg(data.message, "success");
 
       dispatch({
         type: actionType.ADD_ADMIN_REQUEST_SUCCESS,
         payload: data.data.admin,
       });
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.ADD_ADMIN_REQUEST_FAIL,
         payload: data.message,
@@ -51,10 +48,9 @@ export const addAdmin = (adminData) => async (dispatch) => {
 export const getAllAdmin =
   (refresh = false) =>
   async (dispatch, getState) => {
-
     const { admins } = getState().adminReducer;
 
-    if ((admins && admins.length < 1 )|| refresh) {
+    if ((admins && admins.length < 1) || refresh) {
       try {
         dispatch({
           type: actionType.GET_ALL_ADMIN_REQUEST_SEND,
@@ -62,7 +58,7 @@ export const getAllAdmin =
 
         const { data } = await requestApi().request(GET_ALL_ADMIN);
 
-
+        console.log(data);
 
         if (data.status) {
           dispatch({
@@ -87,8 +83,6 @@ export const getAllAdmin =
 // DELETE
 
 export const deleteAdmin = (value) => async (dispatch) => {
-
-
   try {
     dispatch({
       type: actionType.DELETE_ADMIN_REQUEST_SEND,
@@ -99,16 +93,14 @@ export const deleteAdmin = (value) => async (dispatch) => {
       data: value,
     });
 
-
-
     if (data.status) {
-      successMsg(data.message, "success")
+      successMsg(data.message, "success");
       dispatch({
         type: actionType.DELETE_ADMIN_REQUEST_SUCCESS,
         payload: data?.data?.admin,
       });
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.DELETE_ADMIN_REQUEST_FAIL,
         payload: data.message,
@@ -125,7 +117,6 @@ export const deleteAdmin = (value) => async (dispatch) => {
 // EDIT
 
 export const editAdmin = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.EDIT_ADMIN_REQUEST_SEND,
@@ -135,8 +126,6 @@ export const editAdmin = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
-
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -148,7 +137,7 @@ export const editAdmin = (values) => async (dispatch) => {
         });
       }, 300);
     } else {
-      successMsg(data.message, "error")
+      successMsg(data.message, "error");
       dispatch({
         type: actionType.EDIT_ADMIN_REQUEST_FAIL,
         paylaod: data.message,

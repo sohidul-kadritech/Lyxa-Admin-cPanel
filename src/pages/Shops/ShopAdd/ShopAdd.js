@@ -52,6 +52,7 @@ import {
   shopTypeOptions2,
   productVisibility,
   freeDeliveryOptions,
+  statusOptions2,
 } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
@@ -662,7 +663,7 @@ const ShopAdd = () => {
                             onChange={(e) => setShopStatus(e.target.value)}
                             label="Status"
                           >
-                            {shopStatusOptions2.map((item, index) => (
+                            {statusOptions2.map((item, index) => (
                               <MenuItem key={index} value={item.value}>
                                 {item.label}
                               </MenuItem>
@@ -794,7 +795,7 @@ const ShopAdd = () => {
                         </div>
                       )}
 
-                      <div className="mb-4">
+                      {/* <div className="mb-4">
                         <FormControl required fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Delivery Type
@@ -813,7 +814,7 @@ const ShopAdd = () => {
                             ))}
                           </Select>
                         </FormControl>
-                      </div>
+                      </div> */}
                     </Col>
                     <Col lg={6} className="mt-4 mt-lg-0">
                       <div className="mb-4">

@@ -39,6 +39,7 @@ import {
   bannerForOptions,
   bannerOptions,
   bannerTypeOPtions,
+  shopTypeOptions2,
 } from "../../assets/staticData";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
@@ -79,7 +80,6 @@ const AddBanner = () => {
   const [activeStatus, setActiveStatus] = useState("");
 
   const [shop, setShop] = useState(null);
-  const [searchShopKey, setSearchShopKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isClickable, setIsClickable] = useState("");
   const [clickOption, setClickOption] = useState("");
@@ -444,10 +444,7 @@ const AddBanner = () => {
                             setShop(null);
                             dispatch(updateShopType(event.target.value));
                           }}
-                          options={[
-                            { label: "Grocery", value: "grocery" },
-                            { label: "Pharmacy", value: "pharmacy" },
-                          ]}
+                          options={shopTypeOptions2}
                         />
                       </Col>
                     )}
@@ -532,6 +529,13 @@ const AddBanner = () => {
                             <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                           </div>
                           <h4>Drop files here or click to upload.</h4>
+                          <Declaration>
+                            <small>* Max Image size allowed Id 1 Mb.</small>
+                            <small>
+                              * Image dimensions larger than 900 X 600 will be
+                              cropped to given dimentions.
+                            </small>
+                          </Declaration>
                         </div>
                       </div>
                     )}
@@ -608,44 +612,11 @@ const AddBanner = () => {
   );
 };
 
-const ImageView = styled.div`
-  /* width: 100% !important;
-  max-width: 300pximport { Select } from 'react-select';
-; */
-
-  position: relative;
-
-  .img_view {
-    opacity: 1;
-    transition: 0.5s ease;
-    backface-visibility: hidden;
-  }
-
-  .button__wrapper {
-    transition: 0.5s ease;
-    opacity: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    text-align: center;
-
-    .remove__btn {
-      /* background-color: yellow; */
-      font-size: 18px;
-      color: red;
-    }
-  }
-
-  &:hover {
-    .img_view {
-      opacity: 0.3;
-    }
-    .button__wrapper {
-      opacity: 1;
-    }
-  }
+const Declaration = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 export default AddBanner;

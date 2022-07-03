@@ -30,7 +30,10 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import styled from "styled-components";
 import { FormControl } from "@mui/material";
 import Lightbox from "react-image-lightbox";
-import { updateShopSearchKey, updateShopType } from "../../store/Shop/shopAction";
+import {
+  updateShopSearchKey,
+  updateShopType,
+} from "../../store/Shop/shopAction";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
@@ -76,15 +79,13 @@ const BannerPage = () => {
   }, [type]);
 
   function callBanner(refresh = false) {
-    dispatch(getBannerListAction( refresh ));
+    dispatch(getBannerListAction(refresh));
   }
 
   const handleEdit = (id) => {
     // console.log(id)
     route.push(`/banner/edit/${id}`);
   };
-
-
 
   // DELETE BANNER
 
@@ -93,10 +94,10 @@ const BannerPage = () => {
     dispatch(deleteBanner(bannerId));
   };
 
-  useEffect(()=>{
-    dispatch(updateShopType({label: 'All', value: 'all'}));
-    dispatch(updateShopSearchKey(""))
-  },[])
+  useEffect(() => {
+    dispatch(updateShopType({ label: "All", value: "all" }));
+    dispatch(updateShopSearchKey(""));
+  }, []);
 
   const listViewBanner = () => {
     return (
@@ -110,7 +111,7 @@ const BannerPage = () => {
             }}
           />
         ) : null}
-        
+
         <div className="table-rep-plugin">
           <div
             className="table-responsive mb-0"
@@ -125,10 +126,11 @@ const BannerPage = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Serial No</Th>
-                      <Th data-priority="1">Type</Th>
                       <Th data-priority="1">Images</Th>
+                      <Th data-priority="1">Type</Th>
+                      <Th data-priority="1">Status</Th>
                       <Th data-priority="3">Created At</Th>
+                      <Th data-priority="4">Action</Th>
                     </Tr>
                   </Thead>
 
@@ -136,13 +138,10 @@ const BannerPage = () => {
                     {list.map((item, index) => {
                       return (
                         <Tr key={index}>
-                          <Th>{index + 1}</Th>
-                          <Td>{item.type}</Td>
-                          <Td style={{ height: "50px",maxWidth: '150px' }}>
-             
+                          <Td style={{ height: "50px", maxWidth: "150px" }}>
                             <img
                               src={item.image}
-                              style={{ width: "100px", maxHeight: '75px' }}
+                              style={{ width: "100px", maxHeight: "75px" }}
                               alt="Banner"
                               className="cursor-pointer"
                               onClick={() => {
@@ -150,8 +149,9 @@ const BannerPage = () => {
                                 setBannerImg(item.image);
                               }}
                             />
-              
                           </Td>
+                          <Td>{item.type}</Td>
+                          <Td>{item.status}</Td>
                           <Td>
                             {moment(item.createdAt)
                               .utc()

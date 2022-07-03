@@ -51,13 +51,8 @@ const CreateAdmin = () => {
       const findAdmin = admins.find((admin) => admin._id == id);
 
       if (findAdmin) {
-        console.log({ findAdmin });
-        const { email, name, number, status } = findAdmin;
-
-        setName(name);
-        setEmail(email);
-        setPhoneNumber(number);
-        setActiveStatus(status);
+        updateData(findAdmin);
+        console.log(findAdmin);
       } else {
         callApi(id);
       }
@@ -74,15 +69,19 @@ const CreateAdmin = () => {
     });
 
     if (data.status) {
-      const { email, name, number, status } = data.data.admin;
-
-      setName(name);
-      setEmail(email);
-      setPhoneNumber(number);
-      setActiveStatus(status);
+      updateData(data.data.admin);
     } else {
       history.push("/admin/list", { replace: true });
     }
+  };
+
+  const updateData = (data) => {
+    const { email, name, phone_number, status } = data;
+
+    setName(name);
+    setEmail(email);
+    setPhoneNumber(phone_number);
+    setActiveStatus(status);
   };
 
   const handleSubmit = (e) => {

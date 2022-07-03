@@ -14,8 +14,6 @@ import {
   Col,
   Container,
   Row,
-  Spinner,
-  Form,
   Label,
   Modal,
 } from "reactstrap";
@@ -33,7 +31,6 @@ import DealForAdd from "../../../components/DealForAdd";
 import { getAllOrder } from "../../../store/order/orderAction";
 import ProductTable from "../../../components/ProductTable";
 import Lightbox from "react-image-lightbox";
-import OrdersList from "../../Orders/OrdersList/OrdersList";
 import OrderTable from "../../../components/OrderTable";
 import Info from "./../../../components/Info";
 
@@ -216,76 +213,52 @@ const ShopDetails = () => {
                       <hr />
                     </Row>
                     <Row>
-                      <Col
-                        lg={4}
-                        className="d-flex justify-content-center align-items-center"
-                      >
-                        <div>
-                          <img
-                            className="rounded-circle avatar-xl cursor-pointer"
-                            alt="partner"
-                            src={shop?.shopLogo}
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(shop?.shopLogo);
-                            }}
-                          />
-                        </div>
-                      </Col>
-                      <Col
-                        lg={8}
-                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                      >
-                        <div className="ps-4">
-                          <Info title="Name" value={shop?.shopName} />
-                          <Info
-                            title="Start Time"
-                            value={shop?.shopStartTimeText}
-                          />
-                          <Info
-                            title="End Time"
-                            value={shop?.shopEndTimeText}
-                          />
-                          <Info title="Shop Type" value={shop?.shopType} />
-                          <Info title="Delivery" value={shop?.delivery} />
-                          <Info
-                            title="Featured"
-                            value={shop?.isFeatured ? "Yes" : "No"}
-                          />
-                          <Info
-                            title="Minimum Order"
-                            value={shop?.minOrderAmount}
-                          />
-                          <Info title="Status" value={shop?.shopStatus} />
-                          <Info
-                            title="Free Delivery"
-                            value={shop?.freeDelivery ? "Yes" : "No"}
-                          />
+                      <div className="ps-4">
+                        <Info title="Name" value={shop?.shopName} />
+                        <Info
+                          title="Start Time"
+                          value={shop?.shopStartTimeText}
+                        />
+                        <Info title="End Time" value={shop?.shopEndTimeText} />
+                        <Info title="Shop Type" value={shop?.shopType} />
+                        <Info title="Delivery" value={shop?.delivery} />
+                        <Info
+                          title="Featured"
+                          value={shop?.isFeatured ? "Yes" : "No"}
+                        />
+                        <Info
+                          title="Minimum Order"
+                          value={shop?.minOrderAmount}
+                        />
+                        <Info title="Status" value={shop?.shopStatus} />
+                        <Info
+                          title="Free Delivery"
+                          value={shop?.freeDelivery ? "Yes" : "No"}
+                        />
 
-                          {shop?.foodType && (
-                            <Info title="Type" value={shop?.foodType} />
-                          )}
+                        {shop?.foodType && (
+                          <Info title="Type" value={shop?.foodType} />
+                        )}
 
-                          <Info title="Phone" value={shop?.phone_number} />
-                          <Info title="Email" value={shop?.email} />
-                          <Info
-                            title="Delivery Fee(per/km)"
-                            value={shop?.deliveryFeePerKm}
-                          />
-                          <Info
-                            title="Drop Charge(per/km)"
-                            value={shop?.dropChargePerKm}
-                          />
-                          <Info title="Address" value={shop?.address.address} />
-                        </div>
-                      </Col>
+                        <Info title="Phone" value={shop?.phone_number} />
+                        <Info title="Email" value={shop?.email} />
+                        <Info title="Address" value={shop?.address.address} />
+                        <Info
+                          title="Delivery fee(per/km)"
+                          value={shop?.deliveryFeePerKm}
+                        />
+                        <Info
+                          title="Drop charge(per/km)"
+                          value={shop?.dropChargePerKm}
+                        />
+                      </div>
                     </Row>
                   </CardBody>
                 </Card>
               </Col>
 
               <Col xl={6}>
-                {shop?.shopBanner || shop?.shopPhotos ? (
+                {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
                   <Card>
                     <CardBody>
                       <div>
@@ -293,7 +266,28 @@ const ShopDetails = () => {
                         <hr />
                       </div>
                       <Row>
-                        <Col md={6}>
+                        <Col md={4}>
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
+                            }}
+                          >
+                            <img
+                              className="img-fluid cursor-pointer cursor-pointer"
+                              alt="partner"
+                              src={shop?.shopLogo}
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(shop?.shopLogo);
+                              }}
+                              width="100%"
+                            />
+                            <small>Shop Logo</small>
+                          </ImageWrapper>
+                        </Col>
+                        <Col md={4}>
                           {shop.shopBanner ? (
                             <ImageWrapper
                               style={{
@@ -308,7 +302,7 @@ const ShopDetails = () => {
                                   setSelectedImg(shop?.shopBanner);
                                 }}
                                 className="img-fluid cursor-pointer"
-                                alt="Veltrix"
+                                alt="shop banner"
                                 src={shop?.shopBanner}
                                 width="100%"
                               />
@@ -316,7 +310,7 @@ const ShopDetails = () => {
                             </ImageWrapper>
                           ) : null}
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                           {shop.shopPhotos ? (
                             <ImageWrapper
                               style={{
@@ -331,7 +325,7 @@ const ShopDetails = () => {
                                   setSelectedImg(shop?.shopPhotos[0]);
                                 }}
                                 className="img-fluid cursor-pointer"
-                                alt="Veltrix"
+                                alt="shopPhoto"
                                 src={shop?.shopPhotos[0]}
                                 width="100%"
                               />
@@ -381,10 +375,7 @@ const ShopDetails = () => {
                           />
                         </div>
                       </Col>
-                      <Col
-                        lg={8}
-                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                      >
+                      <Col lg={8} className=" mt-5 mt-md-0">
                         <div className="ps-4">
                           <Info title="Name" value={shop?.seller?.name} />
                           <Info

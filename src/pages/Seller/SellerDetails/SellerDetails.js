@@ -144,7 +144,7 @@ const SellerDetails = () => {
                     </div>
                     <hr className="my-2" />
                     <Row>
-                      <Col
+                      {/* <Col
                         lg={5}
                         className="d-flex justify-content-center align-items-center"
                       >
@@ -159,33 +159,24 @@ const SellerDetails = () => {
                             }}
                           />
                         </div>
-                      </Col>
-                      <Col
-                        lg={7}
-                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                      >
-                        <div className="ps-4">
-                          <Info title="Name" value={seller?.name} />
-                          <Info title="Email" value={seller?.email} />
-                          <Info title="Gender" value={seller?.gender} />
-                          <Info
-                            title="Birth Date"
-                            value={new Date(seller?.dob).toLocaleDateString()}
-                          />
-                          <Info title="Company" value={seller?.company_name} />
-                          <Info title="Bank" value={seller?.bank_name} />
-                          <Info
-                            title="Account Name"
-                            value={seller?.account_name}
-                          />
-                          <Info
-                            title="Account No"
-                            value={seller?.account_number}
-                          />
-                          <Info title="Phone" value={seller?.phone_number} />
-                          <Info title="Status" value={seller?.status} />
-                        </div>
-                      </Col>
+                      </Col> */}
+
+                      <div className="ps-4">
+                        <Info title="Company" value={seller?.company_name} />
+                        <Info title="Contact person" value={seller?.name} />
+                        <Info title="Email" value={seller?.email} />
+                        <Info title="Bank" value={seller?.bank_name} />
+                        <Info
+                          title="Account Name"
+                          value={seller?.account_name}
+                        />
+                        <Info
+                          title="Account No"
+                          value={seller?.account_number}
+                        />
+                        <Info title="Phone" value={seller?.phone_number} />
+                        <Info title="Status" value={seller?.status} />
+                      </div>
                     </Row>
                   </CardBody>
                 </Card>
@@ -199,7 +190,28 @@ const SellerDetails = () => {
                         <hr />
                       </div>
                       <Row>
-                        <Col md={6}>
+                        <Col md={4}>
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
+                            }}
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(seller?.profile_photo);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt="Veltrix"
+                              src={seller?.profile_photo}
+                              width="100%"
+                            />
+                            <small>Company image</small>
+                          </ImageWrapper>
+                        </Col>
+                        <Col md={4}>
                           {seller?.certificate_of_incorporation ? (
                             <ImageWrapper
                               style={{
@@ -224,7 +236,7 @@ const SellerDetails = () => {
                             </ImageWrapper>
                           ) : null}
                         </Col>
-                        <Col md={6}>
+                        <Col md={4}>
                           {seller?.national_id ? (
                             <ImageWrapper
                               style={{

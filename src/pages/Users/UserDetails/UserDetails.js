@@ -8,6 +8,7 @@ import requestApi from "../../../network/httpRequest";
 import { SINGLE_USER } from "../../../network/Api";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
+import Info from "./../../../components/Info";
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -77,35 +78,22 @@ const UserDetails = () => {
               />
             )} */}
 
-
-
             <Row>
               <Col md={6}>
                 <Card>
                   <CardBody>
-                    <Details>
-                      <h5 className="title">Name:</h5>
-                      <h4 className="value">{user.name}</h4>
-                    </Details>
-
-                    <Details>
-                      <h5 className="title">Gmail:</h5>
-                      <h4 className="value">{user.email}</h4>
-                    </Details>
-                    <Details>
-                      <h5 className="title">Gender:</h5>
-                      <h4 className="value">{user.gender}</h4>
-                    </Details>
-                    <Details>
-                      <h5 className="title">Birth Date:</h5>
-                      <h4 className="value">
-                        {new Date(user.dob).toDateString()}
-                      </h4>
-                    </Details>
-                    <Details>
-                      <h5 className="title">status:</h5>
-                      <h4 className="value">{user.status}</h4>
-                    </Details>
+                    <Info title="Name" value={user.name} />
+                    <Info title="Email" value={user.email} />
+                    <Info title="Gender" value={user.gender} />
+                    <Info
+                      title="Birth Date"
+                      value={new Date(user.dob).toDateString()}
+                    />
+                    <Info title="Status" value={user.status} />
+                    <Info
+                      title="Created At"
+                      value={new Date(user.createdAt).toDateString()}
+                    />
                   </CardBody>
                 </Card>
               </Col>

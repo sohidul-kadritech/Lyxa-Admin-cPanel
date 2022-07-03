@@ -45,10 +45,8 @@ const SellerAdd = () => {
   );
 
   const [name, setName] = useState("");
-  const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [address, setAddress] = useState(null);
@@ -124,10 +122,8 @@ const SellerAdd = () => {
     setNid(national_id);
     setContactPaper(sellerContractPaper);
     setName(name);
-    setGender(gender);
     setEmail(email);
     setPassword(password);
-    setDateOfBirth(moment(new Date(dob)).format("YYYY-MM-DD"));
     setCompanyName(company_name);
     setPhoneNum(phone_number);
     // setAddress("");
@@ -201,33 +197,6 @@ const SellerAdd = () => {
 
   const submitSeller = (e) => {
     e.preventDefault();
-    // if (
-    //   !name ||
-    //   !gender ||
-    //   !email ||
-    //   (!id && !password) ||
-    //   !dateOfBirth ||
-    //   !companyName ||
-    //   !phoneNum ||
-    //   !bankName ||
-    //   !accountName ||
-    //   !accountNum ||
-    //   (!id && !sellerType) ||
-    //   !sellerStatus ||
-    //   (!id && !pin) ||
-    //   (!id && (sellerType == "food" || sellerType == "grocery") && !subType)
-    // ) {
-    //   return toast.warn("Please Fill Up All Fields", {
-    //     // position: "bottom-right",
-    //     position: toast.POSITION.TOP_RIGHT,
-    //     autoClose: 3000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //   });
-    // }
 
     if (!id && !address) {
       return toast.warn("Please Select a Address", {
@@ -336,12 +305,10 @@ const SellerAdd = () => {
         editSeller({
           id,
           name,
-          gender,
           phone_number: phoneNum,
           company_name: companyName,
           email,
           profile_photo: profileUrl,
-          dob: dateOfBirth,
           bank_name: bankName,
           account_name: accountName,
           account_number: accountNum,
@@ -354,13 +321,11 @@ const SellerAdd = () => {
       dispatch(
         addSeller({
           name,
-          gender,
           phone_number: phoneNum,
           company_name: companyName,
           email,
           password,
           profile_photo: profileUrl,
-          dob: dateOfBirth,
           account_type: "seller",
           bank_name: bankName,
           account_name: accountName,
@@ -394,10 +359,8 @@ const SellerAdd = () => {
         history.push("/seller/list");
       } else {
         setName("");
-        setGender("");
         setEmail("");
         setPassword("");
-        setDateOfBirth(moment().format("YYYY-MM-DD"));
         setCompanyName("");
         setPhoneNum("");
         setAddress("");
@@ -446,7 +409,7 @@ const SellerAdd = () => {
                         style={{ width: "100%" }}
                         id="outlined-basic"
                         name="name"
-                        label="Name"
+                        label="Contact Person"
                         variant="outlined"
                         placeholder="Enter Full Name"
                         value={name}
@@ -564,26 +527,6 @@ const SellerAdd = () => {
                   )}
 
                   <Row className="mt-4">
-                    <Col xl={6}>
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        label="Date of Birth"
-                        variant="outlined"
-                        type="date"
-                        placeholder="Select  Date of Birth"
-                        value={dateOfBirth}
-                        onChange={(e) =>
-                          setDateOfBirth(
-                            moment(new Date(e.target.value)).format(
-                              "YYYY-MM-DD"
-                            )
-                          )
-                        }
-                        required
-                      />
-                    </Col>
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <TextField
                         style={{ width: "100%" }}
@@ -593,6 +536,18 @@ const SellerAdd = () => {
                         placeholder="Enter Companay Name"
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
+                        required
+                      />
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Bank Name"
+                        variant="outlined"
+                        placeholder="Enter Bank Name"
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
                         required
                       />
                     </Col>
@@ -616,11 +571,11 @@ const SellerAdd = () => {
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="Bank Name"
+                        label="Account Number"
                         variant="outlined"
-                        placeholder="Enter Bank Name"
-                        value={bankName}
-                        onChange={(e) => setBankName(e.target.value)}
+                        placeholder="Enter Account Number"
+                        value={accountNum}
+                        onChange={(e) => setAccountNum(e.target.value)}
                         required
                       />
                     </Col>
@@ -640,40 +595,6 @@ const SellerAdd = () => {
                       />
                     </Col>
                     <Col xl={6} className="mt-4 mt-xl-0">
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Account Number"
-                        variant="outlined"
-                        placeholder="Enter Account Number"
-                        value={accountNum}
-                        onChange={(e) => setAccountNum(e.target.value)}
-                        required
-                      />
-                    </Col>
-                  </Row>
-
-                  <Row className="mt-4">
-                    <Col xl={6}>
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Gender
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="gender"
-                          name="gender"
-                          value={gender}
-                          label="Gender"
-                          onChange={(e) => setGender(e.target.value)}
-                        >
-                          <MenuItem value="male">Mele </MenuItem>
-                          <MenuItem value="female">Female</MenuItem>
-                          <MenuItem value="other">Other</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Col>
-                    <Col xl={6} className="mt-4 mt-xl-0">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
                           Status
@@ -688,7 +609,6 @@ const SellerAdd = () => {
                         >
                           <MenuItem value="active">Active</MenuItem>
                           <MenuItem value="inactive">Inactive</MenuItem>
-                          <MenuItem value="archive">Archive</MenuItem>
                         </Select>
                       </FormControl>
                     </Col>
@@ -705,7 +625,7 @@ const SellerAdd = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={sellerType}
-                            label="Gender"
+                            label="seller type"
                             onChange={(e) => {
                               setSellerType(e.target.value);
                               setSubType("");

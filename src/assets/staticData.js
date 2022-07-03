@@ -16,28 +16,28 @@ export const liveStatusOptions = [
 
 export const shopTypeOptions = [
   { label: "All", value: "all" },
-  { label: "Restaurent", value: "food" },
+  { label: "Food", value: "food" },
   { label: "Grocery", value: "grocery" },
   { label: "Pharmacy", value: "pharmacy" },
 ];
 
 export const sellerTypeOptions = [
   { label: "All", value: "all" },
-  { label: "Restaurent", value: "food" },
+  { label: "Food", value: "food" },
   { label: "Grocery", value: "grocery" },
   { label: "Pharmacy", value: "pharmacy" },
   { label: "Shop", value: "shop" },
 ];
 
 export const shopTypeOptions2 = [
-  { label: "Restaurent", value: "food" },
+  { label: "Food", value: "food" },
   { label: "Grocery", value: "grocery" },
   { label: "Pharmacy", value: "pharmacy" },
 ];
 
 export const bannerOptions = [
   { label: "Home", value: "home" },
-  { label: "Restaurant", value: "food" },
+  { label: "Food", value: "food" },
   { label: "Grocery", value: "grocery" },
   { label: "Pharmacy", value: "pharmacy" },
 ];
@@ -176,7 +176,6 @@ export const orderStatusOptions = [
 
 export const bannerTypeOPtions = [
   { label: "Home", value: "home" },
-  { label: "Restaurent", value: "food" },
   { label: "Grocery", value: "grocery" },
   { label: "Pharmacy", value: "pharmacy" },
   { label: "Shop", value: "shop" },
@@ -190,6 +189,16 @@ export const bannerForOptions = [
 export const freeDeliveryOptions = [
   { label: "Yes", value: true },
   { label: "No", value: false },
+];
+
+export const statusOptions = [
+  { label: "All", value: "all" },
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" },
+];
+export const statusOptions2 = [
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" },
 ];
 
 export const logoSvg = (

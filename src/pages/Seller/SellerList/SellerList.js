@@ -32,6 +32,7 @@ import {
   sellerTypeOptions,
   shopTypeOptions,
   sortByOptions,
+  statusOptions,
 } from "../../../assets/staticData";
 import Select from "react-select";
 import Search from "../../../components/Search";
@@ -133,7 +134,7 @@ const SellerList = () => {
                       <label className="control-label">Status</label>
                       <Select
                         palceholder="Select Status"
-                        options={sellerStatusOptions}
+                        options={statusOptions}
                         classNamePrefix="select2-selection"
                         required
                         value={statusKey}
@@ -178,10 +179,10 @@ const SellerList = () => {
                   <Thead>
                     <Tr>
                       <Th>Image</Th>
-                      <Th>Name</Th>
+                      <Th>Company Name</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
-                      <Th>Company Name</Th>
+
                       <Th>Status</Th>
                       <Th>Action</Th>
                     </Tr>
@@ -216,10 +217,9 @@ const SellerList = () => {
                             </div>
                           </Th>
 
-                          <Td>{item?.name}</Td>
+                          <Td>{item.company_name}</Td>
                           <Td>{item?.email}</Td>
                           <Td>{item.phone_number}</Td>
-                          <Td>{item.company_name}</Td>
                           <Td>{item.status}</Td>
                           <Td>
                             <div>

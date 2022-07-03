@@ -28,7 +28,13 @@ import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
 import { Tooltip } from "@mui/material";
 import Search from "./../../../components/Search";
-import { sortByOptions, userStatusOptions } from "./../../../assets/staticData";
+import {
+  productStatusOptions,
+  shopStatusOptions2,
+  sortByOptions,
+  statusOptions,
+  userStatusOptions,
+} from "./../../../assets/staticData";
 import Select from "react-select";
 
 const UsersList = () => {
@@ -55,7 +61,7 @@ const UsersList = () => {
     if (sortByKey || searchKey || statusKey) {
       callUsersList(true);
     }
-  }, [sortByKey, searchKey]);
+  }, [sortByKey, searchKey, statusKey]);
 
   // CALL USERS LIST
 
@@ -104,7 +110,7 @@ const UsersList = () => {
                       <label className="control-label">Status</label>
                       <Select
                         palceholder="Select Status"
-                        options={userStatusOptions}
+                        options={statusOptions}
                         classNamePrefix="select2-selection"
                         value={statusKey}
                         onChange={(e) => dispatch(updateStatusKey(e))}
