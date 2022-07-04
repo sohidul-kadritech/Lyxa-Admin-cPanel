@@ -153,9 +153,7 @@ const BannerPage = () => {
                           <Td>{item.type}</Td>
                           <Td>{item.status}</Td>
                           <Td>
-                            {moment(item.createdAt)
-                              .utc()
-                              .format("YYYY-MM-DD hh:mm:ss")}
+                            {moment(item.createdAt).utc().format("YYYY-MM-DD")}
                           </Td>
                           <Td>
                             <button

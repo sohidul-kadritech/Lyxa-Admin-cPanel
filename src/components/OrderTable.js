@@ -36,7 +36,7 @@ const OrderTable = () => {
     (state) => state.orderReducer
   );
 
-  const {deliveryMans} = useSelector((state) => state.deliveryManReducer);
+  const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
 
   const [isUpdateStatus, setIsUpdateStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
@@ -88,10 +88,12 @@ const OrderTable = () => {
               <Thead>
                 <Tr>
                   <Th>Order Id</Th>
-                  <Th>Delivery Address</Th>
-                  <Th>Status</Th>
-                  <Th>Payment Status</Th>
-                  <Th>Total Amount</Th>
+                  <Th>Customer name</Th>
+                  <Th>Shop name</Th>
+                  <Th>Order Date</Th>
+                  <Th>Amount</Th>
+                  <Th>Payment method</Th>
+                  <Th>Order Status</Th>
                   <Th>Action</Th>
                 </Tr>
               </Thead>
@@ -102,28 +104,28 @@ const OrderTable = () => {
                       key={index}
                       className="align-middle"
                       style={{
-                        fontSize: "15px",
+                        fontSize: "14px",
                         fontWeight: "500",
                       }}
                     >
                       <Th>{item?.orderId}</Th>
 
-                      <Td style={{ maxWidth: "120px" }}>
-                        {item?.orderDeliveryAddress?.address}
-                      </Td>
+                      <Td>{item?.user?.name}</Td>
+                      <Td>{item?.shop?.shopName}</Td>
+                      <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
+                      <Td>{item?.summary?.totalPrice}</Td>
+                      <Td>{item?.paymentMethod}</Td>
                       <Td>{item?.orderStatus}</Td>
-                      <Td>{item?.paymentStatus}</Td>
-                      <Td>{item.summary?.total}</Td>
                       <Td>
                         <div>
                           <Tooltip title="Update Status">
                             <button
-                              className="btn btn-info button me-xl-2  me-0"
+                              className="btn btn-info button me-md-0  me-2"
                               onClick={() => {
                                 setIsUpdateStatus(!isUpdateStatus);
                                 setOrderId(item?._id);
                                 setShop(item?.shop?._id);
-                                setOrderStatus(item?.orderStatus)
+                                setOrderStatus(item?.orderStatus);
                               }}
                             >
                               <i className="fa fa-arrow-up" />

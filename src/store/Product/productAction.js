@@ -48,8 +48,9 @@ export const addProduct = (values) => async (dispatch) => {
 // GET ALL
 
 export const getAllProduct =
-  (refresh = false, shopId = null, page = 1) =>
+  (refresh = false, shopId = null, sellerId = null, page = 1) =>
   async (dispatch, getState) => {
+    console.log({ sellerId });
     const { products, searchKey, statusKey, typeKey, sortByKey } =
       getState().productReducer;
 
@@ -68,6 +69,7 @@ export const getAllProduct =
             type: typeKey.value,
             status: statusKey.value,
             shop: shopId,
+            seller: sellerId,
           },
         });
 

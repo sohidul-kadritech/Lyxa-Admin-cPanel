@@ -65,7 +65,6 @@ const ShopDetails = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getAllProduct(true, id));
       dispatch(getAllOrder(true, 1, id));
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
@@ -428,43 +427,6 @@ const ShopDetails = () => {
                 </Col>
               )}
             </Row>
-
-            {/* Product list */}
-            <div>
-              <Card>
-                <CardBody>
-                  <div className="d-flex justify-content-between align-items-center ">
-                    <CardTitle className="h4"> Product List</CardTitle>
-
-                    <Button
-                      color="success"
-                      onClick={addProduct}
-                      className="ms-3"
-                    >
-                      Add Product
-                    </Button>
-                  </div>
-                  <hr className="my-2" />
-
-                  <ProductTable products={products} loading={loading} />
-                </CardBody>
-              </Card>
-              <Row>
-                <Col xl={12}>
-                  <div className="d-flex justify-content-center">
-                    <AppPagination
-                      paging={paging}
-                      hasNextPage={hasNextPage}
-                      hasPreviousPage={hasPreviousPage}
-                      currentPage={currentPage}
-                      lisener={(page) =>
-                        dispatch(getAllProduct(true, id, page))
-                      }
-                    />
-                  </div>
-                </Col>
-              </Row>
-            </div>
 
             {/* Order list */}
             <div>

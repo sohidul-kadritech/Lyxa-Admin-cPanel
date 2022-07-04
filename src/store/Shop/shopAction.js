@@ -256,7 +256,7 @@ export const updateShopSearchKey = (value) => (dispatch) => {
 
 export const updateShopStatusKey = (value) => (dispatch) => {
   dispatch({
-    type: actionType.UPDATE_STATUS_KEY,
+    type: actionType.UPDATE_SHOP_STATUS_KEY,
     payload: value,
   });
 };
@@ -265,7 +265,7 @@ export const updateShopStatusKey = (value) => (dispatch) => {
 
 export const updateSortByKey = (value) => (dispatch) => {
   dispatch({
-    type: actionType.UPDATE_SORT_BY_KEY,
+    type: actionType.UPDATE_SHOP_SORT_BY_KEY,
     payload: value,
   });
 };
@@ -274,7 +274,7 @@ export const updateSortByKey = (value) => (dispatch) => {
 
 export const updateShopType = (selectedType) => (dispatch) => {
   dispatch({
-    type: actionType.UPDATE_TYPE_KEY,
+    type: actionType.UPDATE_SHOP_TYPE_KEY,
     payload: selectedType,
   });
 };

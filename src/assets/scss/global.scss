@@ -76,3 +76,7 @@ input[type="date"]:required:invalid::-webkit-datetime-edit {
 input[type="date"]:focus::-webkit-datetime-edit {
   color: black !important;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}

@@ -27,9 +27,7 @@ import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import {
-  sellerStatusOptions,
   sellerSubTypeOptions,
-  sellerTypeOptions,
   shopTypeOptions,
   sortByOptions,
   statusOptions,
@@ -178,12 +176,11 @@ const SellerList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image</Th>
                       <Th>Company Name</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
-
                       <Th>Status</Th>
+                      <Th>Created At</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -198,29 +195,13 @@ const SellerList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th className="d-flex justify-content-center">
-                            <div className="image__wrapper">
-                              <img
-                                onClick={() => {
-                                  setIsZoom(true);
-                                  setSellerImg(item.profile_photo);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item?.profile_photo}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                }}
-                              />
-                            </div>
-                          </Th>
-
-                          <Td>{item.company_name}</Td>
+                          <Td>{item?.company_name}</Td>
                           <Td>{item?.email}</Td>
-                          <Td>{item.phone_number}</Td>
-                          <Td>{item.status}</Td>
+                          <Td>{item?.phone_number}</Td>
+                          <Td>{item?.status}</Td>
+                          <Td>
+                            {new Date(item?.createdAt).toLocaleDateString()}
+                          </Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">

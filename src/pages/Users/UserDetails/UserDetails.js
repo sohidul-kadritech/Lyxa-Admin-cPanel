@@ -91,7 +91,7 @@ const UserDetails = () => {
                     />
                     <Info title="Status" value={user.status} />
                     <Info
-                      title="Created At"
+                      title="Joined Date"
                       value={new Date(user.createdAt).toDateString()}
                     />
                   </CardBody>

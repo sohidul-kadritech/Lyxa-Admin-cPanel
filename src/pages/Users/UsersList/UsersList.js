@@ -135,10 +135,14 @@ const UsersList = () => {
                 >
                   <Thead>
                     <Tr>
+                      {/* <Th>User ID</Th> */}
                       <Th>Name</Th>
                       <Th>Email</Th>
+                      <Th>Phone</Th>
                       <Th>Gender</Th>
-                      <Th>Status</Th>
+                      <Th>DOB</Th>
+                      <Th>Joined Date</Th>
+                      <Th>Total Orders</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -154,10 +158,15 @@ const UsersList = () => {
                               fontWeight: "500",
                             }}
                           >
-                            <Th>{user.name}</Th>
-                            <Td>{user.email}</Td>
-                            <Td>{user.gender}</Td>
-                            <Td>{user.status}</Td>
+                            <Th>{user?.name}</Th>
+                            <Td>{user?.email}</Td>
+                            <Td>{user?.phone_number}</Td>
+                            <Td>{user?.gender}</Td>
+                            <Td>{new Date(user?.dob).toLocaleDateString()}</Td>
+                            <Td>
+                              {new Date(user?.createdAt).toLocaleDateString()}
+                            </Td>
+                            <Td>{"Order"}</Td>
                             <Td>
                               <ButtonWrapper>
                                 <Tooltip title="Transactions">

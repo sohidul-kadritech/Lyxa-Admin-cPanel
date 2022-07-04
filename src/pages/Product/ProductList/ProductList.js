@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -26,10 +26,13 @@ import {
   updateShopSearchKey,
   updateShopType,
 } from "../../../store/Shop/shopAction";
-import { KeyboardReturnRounded } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
 
 const ProductList = () => {
   const dispatch = useDispatch();
+  const { search } = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const {
     searchKey,
@@ -44,22 +47,27 @@ const ProductList = () => {
     products,
   } = useSelector((state) => state.productReducer);
 
+  const { account_type, _id: sellerId } = JSON.parse(
+    localStorage.getItem("admin")
+  );
+
   useEffect(() => {
-    if (searchKey || statusKey || typeKey || sortByKey) {
-      callProductList(true);
+    if (account_type === "admin") {
+      dispatch(updateShopType({ label: "All", value: "all" }));
+      dispatch(updateShopSearchKey(""));
     }
     return;
-  }, [searchKey, statusKey, typeKey, sortByKey]);
-
-  const callProductList = (refresh = false) => {
-    dispatch(getAllProduct(refresh));
-  };
+  }, [account_type]);
 
   useEffect(() => {
-    dispatch(updateShopType({ label: "All", value: "all" }));
-    dispatch(updateShopSearchKey(""));
-    return;
-  }, []);
+    if (searchKey || statusKey || typeKey || sortByKey || searchParams) {
+      callProductList(true, searchParams.get("shopId"), sellerId);
+    }
+  }, [searchKey, statusKey, typeKey, sortByKey, searchParams]);
+
+  const callProductList = (refresh = false, shopId = null, sellerId = null) => {
+    dispatch(getAllProduct(refresh, shopId, sellerId));
+  };
 
   return (
     <React.Fragment>
@@ -144,7 +152,14 @@ const ProductList = () => {
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
                     lisener={(page) =>
-                      dispatch(getAllProduct(true, null, page))
+                      dispatch(
+                        getAllProduct(
+                          true,
+                          searchParams.get("shopId"),
+                          sellerId,
+                          page
+                        )
+                      )
                     }
                   />
                 </div>

@@ -140,9 +140,12 @@ const DeliverymanList = () => {
                 >
                   <Thead>
                     <Tr>
+                      <Th>Profile Pic</Th>
                       <Th>Name</Th>
+                      <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
+                      <Th>Delivered Order</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -157,9 +160,29 @@ const DeliverymanList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>{item?.name}</Th>
-                          <Td>{item.number}</Td>
+                          <Th className="d-flex justify-content-center align-items-center">
+                            <div className="image__wrapper">
+                              <img
+                                // onClick={() => {
+                                //   setIsOpen(true);
+                                //   setSelectedImg(item?.shopLogo);
+                                // }}
+                                className="img-fluid cursor-pointer"
+                                alt=""
+                                src={item.image}
+                                style={{
+                                  // width: "100%",
+                                  height: "100%",
+                                  // objectFit: "contain",
+                                }}
+                              />
+                            </div>
+                          </Th>
+                          <Td>{item?.name}</Td>
+                          <Td>{item.email}</Td>
+                          <Td>{item.phone_number}</Td>
                           <Td>{item.status}</Td>
+                          <Td>{"delivered order"}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">

@@ -91,8 +91,6 @@ const ShopAdd = () => {
   const [shopStatus, setShopStatus] = useState("");
   const [delivery, setDelivery] = useState("");
   const [minOrderAmount, setMinOrderAmount] = useState("");
-  const [foodType, setFoodType] = useState("");
-
   const [selectedAddress, setSelectedAddress] = useState("");
   const [address, setAddress] = useState("");
   const [latLng, setLatLng] = useState({});
@@ -174,7 +172,6 @@ const ShopAdd = () => {
       shopStartTimeText,
       shopStatus,
       shopType,
-      foodType,
       tags,
       liveStatus,
       freeDelivery,
@@ -188,7 +185,6 @@ const ShopAdd = () => {
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
     setSeller(seller);
-    setFoodType(foodType);
     setShopType(shopType);
     setShopStartTime(shopStartTimeText);
     setShopEndTime(shopEndTimeText);
@@ -332,13 +328,6 @@ const ShopAdd = () => {
           email,
           phone_number: phone,
           shopType: shopType,
-          foodType:
-            shopType == "food"
-              ? foodType
-              : shopType == "grocery"
-              ? "supermarkets"
-              : "food cut",
-
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
           shopPhotos: photosUrl,
@@ -398,12 +387,6 @@ const ShopAdd = () => {
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
           shopPhotos: photosUrl,
-          foodType:
-            shopType == "food"
-              ? foodType
-              : shopType == "grocery"
-              ? "supermarkets"
-              : "",
           shopDescription: "desrcriptions",
 
           cuisineType: cuisinesList,
@@ -475,7 +458,6 @@ const ShopAdd = () => {
         setShopLogo(null);
         setShopBanner(null);
         setShopPhotos(null);
-        setFoodType("");
         setSelectedCuisines([]);
         setSearchCuisineKey("");
         setLiveStatus("");
@@ -880,7 +862,7 @@ const ShopAdd = () => {
                         />
                       </div>
 
-                      {shopType == "food" && (
+                      {/* {shopType == "food" && (
                         <div className="mb-4">
                           <FormControl required fullWidth>
                             <InputLabel id="demo-simple-select-label">
@@ -901,17 +883,10 @@ const ShopAdd = () => {
                             </Select>
                           </FormControl>
                         </div>
-                      )}
+                      )} */}
 
                       <div className="mb-4">
                         <div>
-                          <div className="d-flex justify-content-end">
-                            {foodType?.value == "restaurants" && (
-                              <span style={{ color: "red" }}>
-                                Must add one cuisine
-                              </span>
-                            )}
-                          </div>
                           <TextField
                             value={tags.value}
                             placeholder="Type Tag Name and press `Enter`..."
@@ -960,7 +935,7 @@ const ShopAdd = () => {
                         </FormControl>
                       </div>
 
-                      {foodType == "restaurants" && !id && (
+                      {shopType == "food" && !id && (
                         <div className="form-check">
                           <input
                             className="form-check-input"

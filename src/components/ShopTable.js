@@ -16,8 +16,6 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import styled from "styled-components";
-import { deleteShop } from "../store/Shop/shopAction";
 
 const ShopTable = () => {
   const history = useHistory();
@@ -27,16 +25,15 @@ const ShopTable = () => {
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
 
-  // DELETE SHOP
+  // GO TO SHOP PRODUCT LIST
 
-  // const handleDelete = (shopId) => {
-  //   dispatch(deleteShop(shopId));
-  // };
+  const goToShopProductList = (shopId) => {
+    history.push({
+      pathname: `/products/list`,
+      search: `?shopId=${shopId}`,
+    });
+  };
 
   return (
     <div>
@@ -60,8 +57,9 @@ const ShopTable = () => {
             <Th>Logo</Th>
             <Th>Name</Th>
             <Th>Type</Th>
-            <Th>Open/Close</Th>
             <Th>Status</Th>
+            <Th>Assigned deals</Th>
+            <Th>Featured</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
@@ -95,13 +93,21 @@ const ShopTable = () => {
                   </div>
                 </Th>
 
-                <Td>{item.shopName}</Td>
-                <Td>{item.shopType}</Td>
+                <Td>{item?.shopName}</Td>
+                <Td>{item?.shopType}</Td>
+                <Td>{item?.shopStatus}</Td>
                 <Td>
-                  <p>{item.shopStartTimeText}</p>
-                  <p>{item.shopEndTimeText}</p>
+                  {item?.deals.length > 0 ? (
+                    <>
+                      <p>{item?.deals[0]?.option}</p>
+                      <p>{item?.deals[1]?.option}</p>
+                      <p>{item?.deals[2]?.option}</p>
+                    </>
+                  ) : (
+                    "N/A"
+                  )}
                 </Td>
-                <Td>{item.shopStatus}</Td>
+                <Td>{item?.isFeatured ? "Yes" : "NO"}</Td>
                 <Td>
                   <div>
                     <Tooltip title="Edit">
@@ -125,33 +131,11 @@ const ShopTable = () => {
                     <Tooltip title="See shop products">
                       <button
                         className="btn btn-success button"
-                        onClick={() => {
-                          setconfirm_alert(true);
-                        }}
+                        onClick={() => goToShopProductList(item._id)}
                       >
-                        <i class="fab fa-product-hunt"></i>
+                        <i className="fab fa-product-hunt"></i>
                       </button>
                     </Tooltip>
-                    {/* {confirm_alert ? (
-                      <SweetAlert
-                        title="Are you sure?"
-                        warning
-                        showCancel
-                        confirmButtonText="Yes, delete it!"
-                        confirmBtnBsStyle="success"
-                        cancelBtnBsStyle="danger"
-                        onConfirm={() => {
-                          handleDelete(item._id);
-                          setconfirm_alert(false);
-                          setsuccess_dlg(true);
-                          setdynamic_title("Deleted");
-                          setdynamic_description("Your file has been deleted.");
-                        }}
-                        onCancel={() => setconfirm_alert(false)}
-                      >
-                        You want to delete this Shop.
-                      </SweetAlert>
-                    ) : null} */}
                   </div>
                 </Td>
               </Tr>
@@ -166,7 +150,7 @@ const ShopTable = () => {
       )}
       {!loading && shops.length < 1 && (
         <div className="text-center">
-          <h4>No Data</h4>
+          <h4>No Product!</h4>
         </div>
       )}
     </div>

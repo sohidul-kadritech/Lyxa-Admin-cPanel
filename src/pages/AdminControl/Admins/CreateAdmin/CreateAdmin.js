@@ -234,9 +234,8 @@ const CreateAdmin = () => {
                           onChange={(e) => setRole(e.target.value)}
                         >
                           <MenuItem value={"admin"}>Admin</MenuItem>
-                          <MenuItem value={"seller"}>Seller</MenuItem>
-                          <MenuItem value={"deliveryman"}>
-                            Delivery Man
+                          <MenuItem value={"customer_service"}>
+                            Customer Service
                           </MenuItem>
                         </Select>
                       </FormControl>
@@ -257,7 +256,7 @@ const CreateAdmin = () => {
                           size="sm"
                         ></Spinner>
                       ) : id ? (
-                        "Edit"
+                        "Update"
                       ) : (
                         "Create"
                       )}
