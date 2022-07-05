@@ -110,6 +110,13 @@ export const adminMenuItem = [
         link: "/products/add",
         isSubmenu: false,
       },
+      {
+        id: 72,
+        name: "Unit Types",
+        icon: "fa fa-cube",
+        link: "/products/unit-types",
+        isSubmenu: false,
+      },
     ],
   },
   {

@@ -59,15 +59,22 @@ const ProductList = () => {
     return;
   }, [account_type]);
 
+  const callProductList = (refresh = false) => {
+    // console.log({ shopId }, { sellerId });
+    dispatch(
+      getAllProduct(
+        refresh,
+        searchParams.get("shopId"),
+        account_type === "seller" ? sellerId : null
+      )
+    );
+  };
+
   useEffect(() => {
     if (searchKey || statusKey || typeKey || sortByKey || searchParams) {
-      callProductList(true, searchParams.get("shopId"), sellerId);
+      callProductList(true);
     }
   }, [searchKey, statusKey, typeKey, sortByKey, searchParams]);
-
-  const callProductList = (refresh = false, shopId = null, sellerId = null) => {
-    dispatch(getAllProduct(refresh, shopId, sellerId));
-  };
 
   return (
     <React.Fragment>
@@ -156,7 +163,7 @@ const ProductList = () => {
                         getAllProduct(
                           true,
                           searchParams.get("shopId"),
-                          sellerId,
+                          account_type === "seller" ? sellerId : null,
                           page
                         )
                       )

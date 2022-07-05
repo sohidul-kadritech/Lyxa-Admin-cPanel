@@ -65,7 +65,7 @@ export const sellerStatusOptions = [
 export const productStatusOptions = [
   { label: "All", value: "all" },
   { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" },
+  { label: "Inactive", value: "deactive" },
 ];
 
 export const foodTypeOptions = [

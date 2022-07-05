@@ -13,37 +13,31 @@ import {
   Col,
   Container,
   Row,
-
   Modal,
 } from "reactstrap";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
-import {  Paper,  Tooltip } from "@mui/material";
+import { Paper, Tooltip } from "@mui/material";
 import DealForAdd from "../../../components/DealForAdd";
-import Info from './../../../components/Info';
+import Info from "./../../../components/Info";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const history = useHistory();
 
-
   const { products, loading, status } = useSelector(
     (state) => state.productReducer
   );
-  
 
   const [product, setProduct] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [modalCenter, setModalCenter] = useState(false);
-  
- 
 
   useEffect(() => {
     if (id) {
       const findProduct = products.find((item) => item._id === id);
       if (findProduct) {
-
         setProduct(findProduct);
       } else {
         callApi(id);
@@ -64,7 +58,6 @@ const ProductDetails = () => {
       });
 
       if (data.status) {
-
         setProduct(data.data.product);
       } else {
         console.log(data.error);
@@ -76,18 +69,15 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (modalCenter) {
-      
     }
   }, [modalCenter]);
 
   // ADD DEAL
 
-  
-
   useEffect(() => {
     if (status) {
       setModalCenter(false);
-      callApi(product?._id)
+      callApi(product?._id);
     }
   }, [status]);
 
@@ -156,124 +146,58 @@ const ProductDetails = () => {
                 <Row>
                   <Col xl={4}>
                     <div className="ps-0 ps-xl-3">
-
                       <Info title="Name" value={product?.name} />
-                      <Info title="Visibility" value={product?.productVisibility ? "Yes" : "No"} />
+                      <Info
+                        title="Visibility"
+                        value={product?.productVisibility ? "Yes" : "No"}
+                      />
                       <Info title="Type" value={product?.type} />
-                      <Info title="Minimum Order" value={product?.orderQuantityMinimum} />
-                      <Info title="Featured" value={product?.isFeatured ? "Yes" : "No"} />
+                      <Info
+                        title="Minimum Order"
+                        value={product?.orderQuantityMinimum}
+                      />
+                      <Info
+                        title="Featured"
+                        value={product?.isFeatured ? "Yes" : "No"}
+                      />
                     </div>
                   </Col>
                   <Col xl={4}>
-                  <Info title="Price" value={product?.price} />
-                  <Info title="Previous Price" value={product?.previousPrice} />
-                  <Info title="Status" value={product?.status} />
-                  <Info title="Free Delivery" value={product?.freeDelivery ? "Yes" : "No"} />
+                    <Info title="Price" value={product?.price} />
+                    <Info title="Discount" value={`${product?.discount}%`} />
+                    <Info title="Status" value={product?.status} />
+                    <Info
+                      title="Free Delivery"
+                      value={product?.freeDelivery ? "Yes" : "No"}
+                    />
+                    <Info
+                      title="Free Delivery"
+                      value={product?.freeDelivery ? "Yes" : "No"}
+                    />
                   </Col>
                   <Col xl={4}>
-                    <Details>
-                      <h5>Category:</h5>
-                      <div className="ms-2">
-                        <img
-                          src={product?.category?.image}
-                          className="avatar-xs rounded-circle me-2 cursor-pointer"
-                          alt="category"
-                          onClick={() => {
-                            setIsOpen(true);
-                            setSelectedImg(product?.category?.image);
-                          }}
-                        />
-                        <span
-                          style={{
-                            fontSize: "16px",
-                            fontWeight: "500",
-                            color: "#343a40",
-                          }}
-                        >
-                          {product?.category?.name}.
-                        </span>
-                      </div>
-                    </Details>
-                    {product?.subCategory && <Details>
-                      <h5>Subcategory:</h5>
-                      <div className="ms-2">
-                        <img
-                          src={product?.subCategory?.image}
-                          className="avatar-xs rounded-circle me-2 cursor-pointer"
-                          alt="subCategory"
-                          onClick={() => {
-                            setIsOpen(true);
-                            setSelectedImg(product?.subCategory?.image);
-                          }}
-                        />
-                        <span
-                          style={{
-                            fontSize: "16px",
-                            fontWeight: "500",
-                            color: "#343a40",
-                          }}
-                        >
-                          {product?.subCategory?.name}.
-                        </span>
-                      </div>
-                    </Details>}
-                    
-                    <Details>
-                      <h5>Seller:</h5>
-                      <div className="ms-2">
-                        <img
-                          src={product?.seller?.profile_photo}
-                          className="avatar-xs rounded-circle me-2 cursor-pointer"
-                          alt="product"
-                          onClick={() => {
-                            setIsOpen(true);
-                            setSelectedImg(product?.seller?.profile_photo);
-                          }}
-                        />
-
-                        <Link to={`/seller/details/${product?.seller?._id}`}>
-                          <Tooltip title="Details">
-                            <span
-                              style={{
-                                fontSize: "16px",
-                                fontWeight: "500",
-                                color: "#343a40",
-                              }}
-                            >
-                              {product?.seller?.name}.
-                            </span>
-                          </Tooltip>
-                        </Link>
-                      </div>
-                    </Details>
-                    <Details className="mt-1">
-                      <h5>Shop:</h5>
-                      <div className="ms-2">
-                        <img
-                          src={product?.shop?.shopLogo}
-                          className="avatar-xs rounded-circle me-2 cursor-pointer"
-                          alt="Shop"
-                          onClick={() => {
-                            setIsOpen(true);
-                            setSelectedImg(product?.shop?.shopLogo);
-                          }}
-                        />
-
-                        <Link to={`/shops/details/${product?.shop?._id}`}>
-                          <Tooltip title="Details">
-                            <span
-                              style={{
-                                fontSize: "16px",
-                                fontWeight: "500",
-                                color: "#343a40",
-                              }}
-                            >
-                              {product?.shop?.shopName}.
-                            </span>
-                          </Tooltip>
-                        </Link>
-                      </div>
-                    </Details>
+                    <Info
+                      title="Category"
+                      value={product?.category?.name}
+                      link={`/category/details/${product?.category?._id}`}
+                    />
+                    {product?.subCategory && (
+                      <Info
+                        title="Category"
+                        value={product?.subCategory?.name}
+                        link={`/category/details/${product?.subCategory?._id}`}
+                      />
+                    )}
+                    <Info
+                      title="Seller"
+                      value={product?.seller?.name}
+                      link={`/seller/details/${product?.seller?._id}`}
+                    />
+                    <Info
+                      title="Shop"
+                      value={product?.shop?.shopName}
+                      link={`/shops/details/${product?.shop?._id}`}
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -420,7 +344,11 @@ const ProductDetails = () => {
             </button>
           </div>
           <div className="modal-body">
-            <DealForAdd type='product' item={product} shopType ={product?.shop?.shopType} />
+            <DealForAdd
+              type="product"
+              item={product}
+              shopType={product?.shop?.shopType}
+            />
           </div>
         </Modal>
       </GlobalWrapper>

@@ -18,20 +18,21 @@ import folderCreateReducer from "./reducer/image/folderCreate.reducer";
 import bannerReducer from "./banner/bannerReducer";
 import { roleReducer } from "./AdminControl/Role/roleReducer";
 import usersReducer from "./Users/UsersReducer";
-import adminReducer from './AdminControl/Admin/adminReducer';
+import adminReducer from "./AdminControl/Admin/adminReducer";
 import categoryReducer from "./Category/categoryReducer";
-import sellerReducer from './Seller/sellerReducer';
+import sellerReducer from "./Seller/sellerReducer";
 import shopReducer from "./Shop/shopReducer";
 import imageUploadReducer from "./ImageUpload/imageUploadReducer";
 import productReducer from "./Product/productReducer";
 import deliveryManReducer from "./DeliveryMan/DeliveryManReducer";
-import settingsReducer from './Settings/settingsReducer';
-import dealReducer from './Deal/dealReducer';
-import dropPayReducer from './DropPay/dropPayReducer';
-import appWalletReducer from './appWallet/appWalletReducer';
-import orderReducer from './order/orderReducer'
-import chatReducer from './chat/chatReducer';
-import socketReducer from './socket/socketReducer';
+import settingsReducer from "./Settings/settingsReducer";
+import dealReducer from "./Deal/dealReducer";
+import dropPayReducer from "./DropPay/dropPayReducer";
+import appWalletReducer from "./appWallet/appWalletReducer";
+import orderReducer from "./order/orderReducer";
+import chatReducer from "./chat/chatReducer";
+import socketReducer from "./socket/socketReducer";
+import unitTypeReducer from "./unitType/unitTypeReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -61,7 +62,8 @@ const rootReducer = combineReducers({
   appWalletReducer,
   orderReducer,
   chatReducer,
-  socketReducer
+  socketReducer,
+  unitTypeReducer,
 });
 
 export default rootReducer;

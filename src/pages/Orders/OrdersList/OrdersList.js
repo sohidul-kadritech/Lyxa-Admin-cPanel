@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Row,
-} from "reactstrap";
+import { Card, CardBody, Col, Container, Row } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
@@ -34,7 +28,6 @@ import OrderTable from "../../../components/OrderTable";
 const OrdersList = () => {
   const dispatch = useDispatch();
 
-
   const {
     sortByKey,
     orders,
@@ -50,6 +43,16 @@ const OrdersList = () => {
     orderSearchKey,
   } = useSelector((state) => state.orderReducer);
 
+  const { account_type, _id: sellerId } = JSON.parse(
+    localStorage.getItem("admin")
+  );
+
+  const callOrderList = (refresh = false) => {
+    dispatch(
+      getAllOrder(refresh, null, account_type === "seller" ? sellerId : null)
+    );
+  };
+
   useEffect(() => {
     if (
       sortByKey ||
@@ -61,11 +64,8 @@ const OrdersList = () => {
     ) {
       callOrderList(true);
     }
+    return;
   }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey]);
-
-  const callOrderList = (refresh = false) => {
-    dispatch(getAllOrder(refresh));
-  };
 
   return (
     <React.Fragment>
@@ -176,7 +176,7 @@ const OrdersList = () => {
             </Card>
 
             <div>
-              <OrderTable  />
+              <OrderTable />
             </div>
             <Row>
               <Col xl={12}>
@@ -186,7 +186,16 @@ const OrdersList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllOrder(true, page))}
+                    lisener={(page) =>
+                      dispatch(
+                        getAllOrder(
+                          true,
+                          null,
+                          account_type === "seller" ? sellerId : null,
+                          page
+                        )
+                      )
+                    }
                   />
                 </div>
               </Col>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -40,11 +40,16 @@ const UserTransaction = () => {
     hasPreviousPage,
     currentPage,
     transactionList,
-    loading
+    loading,
+    users,
   } = useSelector((state) => state.usersReducer);
+
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     if (id) {
+      const findUser = users.find((user) => user._id == id);
+      setUser(findUser);
       if (sortBy || startDate || endDate) {
         callTransList(true);
       }
@@ -64,10 +69,10 @@ const UserTransaction = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem="Transaction"
-              title="User"
-                loading={loading}
-                callList={callTransList}
+              breadcrumbItem={user?.name}
+              title="User Transaction"
+              loading={loading}
+              callList={callTransList}
             />
 
             <Card>

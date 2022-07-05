@@ -91,6 +91,11 @@ export const SINGLE_PRODUCT = ADMIN_ENDPOINT + "/product/product-details";
 export const DELETE_PRODUCT = ADMIN_ENDPOINT + "/product/delete";
 export const ADD_PRODUCT_DEAL = ADMIN_ENDPOINT + "/product/add-deal";
 
+export const ADD_UNIT = ADMIN_ENDPOINT + "/unit/add";
+export const GET_ALL_UNIT = ADMIN_ENDPOINT + "/unit";
+export const EDIT_UNIT = ADMIN_ENDPOINT + "/unit/update";
+export const DELETE_UNIT = ADMIN_ENDPOINT + "/unit/delete";
+
 // DELIVERY MAN
 
 export const ADD_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/add";

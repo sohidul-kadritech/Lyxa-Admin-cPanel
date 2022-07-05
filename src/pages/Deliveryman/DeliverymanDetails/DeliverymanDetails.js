@@ -25,9 +25,7 @@ const DeliverymanDetails = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { deliveryMans } = useSelector(
-    (state) => state.deliveryManReducer
-  );
+  const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -106,29 +104,26 @@ const DeliverymanDetails = () => {
                       </Button>
                     </div>
                     <hr className="my-2" />
-                    <Row>
-                      <Col className="d-flex justify-content-between  align-items-center mt-5 mt-md-0">
-                        <div className="ps-4">
-                          <Info title="Name" value={deliveryMan?.name} />
-                          <Info title="Email" value={deliveryMan?.email} />
-                          <Info
-                            title="Address"
-                            value={deliveryMan?.address?.address}
-                          />
 
-                          <Info title="Status" value={deliveryMan?.status} />
-                          <Info
-                            title="Live Status"
-                            value={deliveryMan?.liveStatus}
-                          />
+                    <div>
+                      <Info title="Name" value={deliveryMan?.name} />
+                      <Info title="Email" value={deliveryMan?.email} />
+                      <Info
+                        title="Address"
+                        value={deliveryMan?.address?.address}
+                      />
 
-                          <Info
-                            title="Vahicle Type"
-                            value={deliveryMan?.vehicleType}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
+                      <Info title="Status" value={deliveryMan?.status} />
+                      <Info
+                        title="Live Status"
+                        value={deliveryMan?.liveStatus}
+                      />
+
+                      <Info
+                        title="Vahicle Type"
+                        value={deliveryMan?.vehicleType}
+                      />
+                    </div>
                   </CardBody>
                 </Card>
               </Col>

@@ -19,7 +19,7 @@ const ProductTable = ({ products, loading }) => {
     dispatch(
       updateProductStatus({
         id,
-        status: status === "active" ? "inactive" : "active",
+        status: status === "active" ? "deactive" : "active",
       })
     );
   };
@@ -147,7 +147,7 @@ const ProductTable = ({ products, loading }) => {
       )}
       {!loading && products.length < 1 && (
         <div className="text-center">
-          <h4>No Data</h4>
+          <h4>No Product!</h4>
         </div>
       )}
     </div>

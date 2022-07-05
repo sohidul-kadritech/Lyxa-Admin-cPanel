@@ -50,7 +50,7 @@ export const addProduct = (values) => async (dispatch) => {
 export const getAllProduct =
   (refresh = false, shopId = null, sellerId = null, page = 1) =>
   async (dispatch, getState) => {
-    console.log({ sellerId });
+    // console.log({ sellerId }, { shopId });
     const { products, searchKey, statusKey, typeKey, sortByKey } =
       getState().productReducer;
 

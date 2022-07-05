@@ -60,7 +60,7 @@ const OrderTable = () => {
   useEffect(() => {
     if (status) {
       setIsUpdateStatus(false);
-      dispatch(getAllOrder(true));
+      // dispatch(getAllOrder(true));
     }
   }, [status]);
 

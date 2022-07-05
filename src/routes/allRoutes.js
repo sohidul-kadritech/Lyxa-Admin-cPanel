@@ -166,6 +166,7 @@ import DropTransactions from "../pages/AppWallet/dropTransactions/DropTransactio
 import SellerTransactionDetails from "../pages/AppWallet/SellerTransactions/SellerTransactionDetails";
 import DeliveryTransactionsDetails from "../pages/AppWallet/DeliveryTransactions/DeliveryTransactionsDetails";
 import DropTransactionsDetails from "../pages/AppWallet/dropTransactions/dropTransactionsDetails";
+import UnitTypes from "../pages/Product/UnitTypes/UnitTypes";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -212,6 +213,7 @@ const userRoutes = [
   { path: "/products/add", component: ProductAdd },
   { path: "/products/edit/:id", component: ProductAdd },
   { path: "/products/details/:id", component: ProductDetails },
+  { path: "/products/unit-types", component: UnitTypes },
 
   // DELIVERY MAN
 
