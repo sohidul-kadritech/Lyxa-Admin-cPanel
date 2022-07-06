@@ -107,11 +107,11 @@ const OrderDetails = () => {
                     )}
                     <Info
                       title="Delivery Distance"
-                      value={order?.deliveryDistance}
+                      value={`${order?.deliveryDistance} KM`}
                     />
                     <Info
                       title="Delivery Fee(Total)"
-                      value={order?.deliveryFee}
+                      value={order?.finalDeliveryCharge}
                     />
                     <Info
                       title="Delivery Fee(Per/Km)"
@@ -398,7 +398,9 @@ const OrderDetails = () => {
                     <Summery>
                       <div className="item">
                         <span>Subtotal</span>
-                        <span>{order?.summary?.netPrice}</span>
+                        <span className="value">
+                          {order?.summary?.netPrice}
+                        </span>
                       </div>
                       {/* <div className='item'>
                           <span>Coupon Discount</span>
@@ -406,11 +408,15 @@ const OrderDetails = () => {
                         </div> */}
                       <div className="item">
                         <span>Delivery Charge</span>
-                        <span>{order?.summary?.deliveryCharge}</span>
+                        <span className="value">
+                          {order?.summary?.deliveryCharge}
+                        </span>
                       </div>
                       <div className="item">
+                        {" "}
+                        className='value'
                         <span>Payable Total</span>
-                        <span>{order?.summary?.total}</span>
+                        <span className="value">{order?.summary?.total}</span>
                       </div>
                     </Summery>
                   </CardBody>
@@ -435,6 +441,10 @@ const DeliveryAddress = styled.div`
     font-size: 15px;
     font-weight: 500;
     font-family: "Courier New", Courier, monospace;
+    &.value {
+      font-weight: "bold";
+      color: "green";
+    }
   }
 `;
 

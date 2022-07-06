@@ -2,22 +2,24 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import { Tooltip } from "@mui/material";
 
 const Info = ({ title, value, link }) => {
   const history = useHistory();
 
   return (
-    <Details>
+    <Details link={link}>
       <div className="title">
         <span>{title} </span>
       </div>
-      <span
-        className="value cursor-pointer"
-        style={{ textDecoration: link ? "underline" : "none" }}
-        onClick={() => history.push(link)}
-      >
-        {value}
-      </span>
+      <Tooltip title={`${link ? "See details" : ""}`}>
+        <span
+          className={`${link && "cursor-pointer"} value }`}
+          onClick={() => history.push(link)}
+        >
+          {value}
+        </span>
+      </Tooltip>
     </Details>
   );
 };
@@ -32,7 +34,7 @@ const Details = styled.div`
   }
   .title {
     width: 120px;
-    border-right: 1px solid black;
+    border-right: 1px solid lightgray;
     padding: 10px;
     color: black;
     font-weight: 500;
@@ -47,6 +49,12 @@ const Details = styled.div`
     color: green;
     font-weight: 500;
     font-size: 15px;
+    padding-left: 5px;
+    &:hover {
+      color: ${({ link }) => link && "blue"};
+      font-weight: ${({ link }) => link && "bold"};
+    }
+    text-decoration: ${({ link }) => link && "underline"};
   }
 `;
 

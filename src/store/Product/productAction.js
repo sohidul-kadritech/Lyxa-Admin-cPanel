@@ -5,6 +5,7 @@ import {
   DELETE_PRODUCT,
   EDIT_PRODUCT,
   ADD_PRODUCT_DEAL,
+  UPDATE_PRODUCT_STATUS,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -141,7 +142,7 @@ export const updateProductStatus = (values) => async (dispatch) => {
     dispatch({
       type: actionType.UPDATE_PRODUCT_STATUS_REQUEST_SEND,
     });
-    const { data } = await requestApi().request(DELETE_PRODUCT, {
+    const { data } = await requestApi().request(UPDATE_PRODUCT_STATUS, {
       method: "POST",
       data: values,
     });
@@ -153,7 +154,6 @@ export const updateProductStatus = (values) => async (dispatch) => {
 
       dispatch({
         type: actionType.UPDATE_PRODUCT_STATUS_REQUEST_SUCCESS,
-        payload: data.data.product,
       });
     } else {
       successMsg(data.message, "error");
@@ -206,7 +206,7 @@ export const addProductDeal = (values) => async (dispatch) => {
   }
 };
 
-// UPDATE SEARCH KEYP
+// UPDATE SEARCH KEY
 
 export const updateProductSearchKey = (value) => (dispatch) => {
   dispatch({

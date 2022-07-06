@@ -82,7 +82,7 @@ const ProductTable = ({ products, loading }) => {
                     </div>
                   </Th>
 
-                  <Td style={{ maxWidth: "140px" }}>{item?.name}</Td>
+                  <Td>{item?.name}</Td>
                   <Td>{item?.shop?.shopName}</Td>
                   <Td>
                     <p>{item?.price}</p>
@@ -93,7 +93,7 @@ const ProductTable = ({ products, loading }) => {
                     <div>
                       <Tooltip title="Edit">
                         <button
-                          className="btn btn-success  button"
+                          className="btn btn-success me-1  button"
                           onClick={() =>
                             history.push(`/products/edit/${item?._id}`)
                           }
@@ -103,7 +103,7 @@ const ProductTable = ({ products, loading }) => {
                       </Tooltip>
                       <Tooltip title="Details">
                         <button
-                          className="btn btn-info button"
+                          className="btn btn-info me-1 button"
                           onClick={() => {
                             history.push(`/products/details/${item?._id}`);
                           }}
@@ -121,7 +121,7 @@ const ProductTable = ({ products, loading }) => {
                             item.status === "active"
                               ? "btn-danger"
                               : "btn-success"
-                          }`}
+                          } me-1`}
                           onClick={() => updateStatus(item._id, item.status)}
                         >
                           <i

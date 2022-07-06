@@ -23,7 +23,7 @@ import AppPagination from "./../../../../components/AppPagination";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import { shopTypeOptions } from "../../../../assets/staticData";
-import { FormControl, InputLabel, MenuItem,Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const CategoryList = () => {
   const dispatch = useDispatch();
@@ -118,7 +118,6 @@ const CategoryList = () => {
                     <Tr>
                       <Th>Image</Th>
                       <Th>Name</Th>
-                      <Th>Slug</Th>
                       <Th>Type</Th>
                       <Th>Status</Th>
                       <Th>Action</Th>
@@ -135,13 +134,13 @@ const CategoryList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th style={{ height: "50px", maxWidth: "150px" }}>
+                          <Th>
                             <img
                               onClick={() => {
                                 setIsZoom(true);
                                 setCatImg(item.image);
                               }}
-                              className="img-fluid cursor-pointer"
+                              className="img-fluid avater avater-lg cursor-pointer"
                               alt=""
                               src={item.image}
                               style={{
@@ -150,12 +149,11 @@ const CategoryList = () => {
                                 objectFit: "contain",
                               }}
                             />
+                            {item?.name}
                           </Th>
-
-                          <Td>{item.name}</Td>
-                          <Td>{item.slug}</Td>
-                          <Td>{item.type}</Td>
-                          <Td>{item.status}</Td>
+                          <Td>{item?.type}</Td>
+                          <Td>{item?.status}</Td>
+                          <Td>{new Date(item?.status).toLocaleDateString()}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">

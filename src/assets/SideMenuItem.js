@@ -2,7 +2,7 @@ export const adminMenuItem = [
   {
     id: 1,
     name: "Dashboard",
-    icon: "fas fa-cart-plus",
+    icon: "fas fa-list",
     link: "/dashboard",
     isSubmenu: false,
   },
@@ -180,13 +180,6 @@ export const adminMenuItem = [
     isSubmenu: true,
     submenu: [
       {
-        id: 110,
-        name: "Percentage Setting",
-        icon: "ti-settings",
-        link: "/add-wallet/percentage-setting",
-        isSubmenu: false,
-      },
-      {
         id: 111,
         name: "Seller TRX",
         icon: "fas fa-exchange-alt",
@@ -281,6 +274,13 @@ export const adminMenuItem = [
         name: "App",
         icon: "ti-settings",
         link: "/app/settings",
+        isSubmenu: false,
+      },
+      {
+        id: 152,
+        name: "Percentage Setting",
+        icon: "ti-settings",
+        link: "/percentage-setting",
         isSubmenu: false,
       },
     ],
@@ -440,13 +440,6 @@ export const sellerMenuItem = [
     isSubmenu: true,
     submenu: [
       {
-        id: 40,
-        name: "Percentage Setting",
-        icon: "ti-settings",
-        link: "/add-wallet/percentage-setting",
-        isSubmenu: false,
-      },
-      {
         id: 41,
         name: "Seller TRX",
         icon: "fas fa-exchange-alt",
@@ -562,13 +555,6 @@ export const shopMenuItem = [
     link: "/#",
     isSubmenu: true,
     submenu: [
-      {
-        id: 40,
-        name: "Percentage Setting",
-        icon: "ti-settings",
-        link: "/add-wallet/percentage-setting",
-        isSubmenu: false,
-      },
       {
         id: 41,
         name: "Seller TRX",

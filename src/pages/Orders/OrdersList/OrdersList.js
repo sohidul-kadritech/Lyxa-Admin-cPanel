@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Card, CardBody, Col, Container, Row } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -21,12 +21,16 @@ import {
 } from "../../../store/order/orderAction";
 import { useDispatch, useSelector } from "react-redux";
 import AppPagination from "./../../../components/AppPagination";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Search from "./../../../components/Search";
 import OrderTable from "../../../components/OrderTable";
 
 const OrdersList = () => {
   const dispatch = useDispatch();
+
+  const { search } = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const {
     sortByKey,
@@ -49,7 +53,11 @@ const OrdersList = () => {
 
   const callOrderList = (refresh = false) => {
     dispatch(
-      getAllOrder(refresh, null, account_type === "seller" ? sellerId : null)
+      getAllOrder(
+        refresh,
+        searchParams.get("shopId"),
+        account_type === "seller" ? sellerId : null
+      )
     );
   };
 
@@ -60,12 +68,21 @@ const OrdersList = () => {
       endDate ||
       typeKey ||
       orderType ||
-      orderSearchKey
+      orderSearchKey ||
+      searchParams.get("shopId")
     ) {
       callOrderList(true);
     }
     return;
-  }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey]);
+  }, [
+    sortByKey,
+    startDate,
+    endDate,
+    typeKey,
+    orderType,
+    orderSearchKey,
+    searchParams.get("shopId"),
+  ]);
 
   return (
     <React.Fragment>

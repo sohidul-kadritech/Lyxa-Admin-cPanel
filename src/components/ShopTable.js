@@ -35,6 +35,15 @@ const ShopTable = () => {
     });
   };
 
+  // GO TO SHOP ORDER LIST
+
+  const goToShopOrderList = (shopId) => {
+    history.push({
+      pathname: `/orders/list`,
+      search: `?shopId=${shopId}`,
+    });
+  };
+
   return (
     <div>
       {isOpen && (
@@ -112,7 +121,7 @@ const ShopTable = () => {
                   <div>
                     <Tooltip title="Edit">
                       <button
-                        className="btn btn-success me-2 button"
+                        className="btn btn-success me-1 button"
                         onClick={() => history.push(`/shops/edit/${item._id}`)}
                       >
                         <i className="fa fa-edit" />
@@ -120,7 +129,7 @@ const ShopTable = () => {
                     </Tooltip>
                     <Tooltip title="Details">
                       <button
-                        className="btn btn-info button me-2"
+                        className="btn btn-info button me-1"
                         onClick={() => {
                           history.push(`/shops/details/${item._id}`);
                         }}
@@ -128,12 +137,20 @@ const ShopTable = () => {
                         <i className="fa fa-eye" />
                       </button>
                     </Tooltip>
-                    <Tooltip title="See shop products">
+                    <Tooltip title="See products">
                       <button
-                        className="btn btn-success button"
+                        className="btn btn-success button me-1"
                         onClick={() => goToShopProductList(item._id)}
                       >
                         <i className="fab fa-product-hunt"></i>
+                      </button>
+                    </Tooltip>
+                    <Tooltip title="See orders">
+                      <button
+                        className="btn btn-primary button"
+                        onClick={() => goToShopOrderList(item._id)}
+                      >
+                        <i className="fas fa-shopping-cart"></i>
                       </button>
                     </Tooltip>
                   </div>

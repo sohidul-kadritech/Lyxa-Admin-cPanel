@@ -8,6 +8,7 @@ import {
   ALL_CUISINE,
   ALL_SHOP,
   DELETE_SHOP,
+  DELETE_SHOP_DEAL,
   EDIT_CUISINE,
   EDIT_SHOP,
   SET_AS_FEATURED,
@@ -426,6 +427,42 @@ export const editCuisine = (values) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: actionType.EDIT_CUISINE_REQUEST_FAIL,
+      paylaod: error.message,
+    });
+  }
+};
+
+// DELETE DEAL
+
+export const deleteDealOfShop = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.DELETE_SHOP_DEAL_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, data = null },
+    } = await requestApi().request(DELETE_SHOP_DEAL, {
+      method: "POST",
+      data: values,
+    });
+
+    if (status) {
+      successMsg("Successfully deleted", "success");
+      dispatch({
+        type: actionType.DELETE_SHOP_DEAL_REQUEST_SUCCESS,
+        payload: data.shop,
+      });
+    } else {
+      successMsg(error, "error");
+      dispatch({
+        type: actionType.DELETE_SHOP_DEAL_REQUEST_FAIL,
+        paylaod: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.DELETE_SHOP_DEAL_REQUEST_FAIL,
       paylaod: error.message,
     });
   }

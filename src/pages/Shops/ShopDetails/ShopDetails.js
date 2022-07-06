@@ -24,6 +24,7 @@ import AppPagination from "../../../components/AppPagination";
 import { Paper, Switch } from "@mui/material";
 
 import {
+  deleteDealOfShop,
   setAsFeaturedShop,
   ShopLiveStatus,
 } from "../../../store/Shop/shopAction";
@@ -39,22 +40,6 @@ const ShopDetails = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { shops, status } = useSelector((state) => state.shopReducer);
-  const {
-    paging,
-    hasNextPage,
-    hasPreviousPage,
-    currentPage,
-    loading,
-    products,
-  } = useSelector((state) => state.productReducer);
-  const {
-    orders,
-    loading: orderLoading,
-    paging: orderPaging,
-    hasNextPage: orderHasNextPage,
-    hasPreviousPage: orderHasPreviousPage,
-    currentPage: orderCurrentPage,
-  } = useSelector((state) => state.orderReducer);
 
   const [shop, setShop] = useState(null);
 
@@ -65,7 +50,6 @@ const ShopDetails = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getAllOrder(true, 1, id));
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
         console.log({ findShop });
@@ -95,20 +79,6 @@ const ShopDetails = () => {
         history.push("/shops/list", { replace: true });
       }
     }
-  };
-
-  // const handleDelete = (id) => {
-  //   dispatch(deleteProduct(id));
-  // };
-
-  // ADD PRODUCT
-
-  const addProduct = () => {
-    history.push({
-      pathname: "/products/add",
-      search: `?shopId=${id}`,
-      // state: { detail: 'some_value' }
-    });
   };
 
   // CHANGE LIVE STATUS
@@ -142,6 +112,17 @@ const ShopDetails = () => {
     );
   };
 
+  // DELETE DEAL
+
+  const deleteDeal = (dealId) => {
+    dispatch(
+      deleteDealOfShop({
+        shopId: id,
+        dealId,
+      })
+    );
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -151,7 +132,6 @@ const ShopDetails = () => {
               maintitle="Drop"
               breadcrumbItem={"Details"}
               title="Shop"
-              loading={loading}
               isRefresh={false}
             />
 
@@ -165,98 +145,94 @@ const ShopDetails = () => {
                 }}
               />
             )}
+            <Card>
+              <CardBody>
+                <HeaderWrapper>
+                  <h4>Shop</h4>
+                  <div className="d-flex  align-items-center">
+                    <Button
+                      outline={true}
+                      color="success"
+                      onClick={() => {
+                        setAsFeatured();
+                      }}
+                      className="me-3"
+                    >
+                      {!shop?.isFeatured
+                        ? "Set as featured"
+                        : "Remove featured"}
+                    </Button>
+                    <Button
+                      outline={true}
+                      color="success"
+                      onClick={() => {
+                        setModalCenter(!modalCenter);
+                        document.body.classList.add("no_padding");
+                      }}
+                      className="me-3"
+                    >
+                      Add Deal
+                    </Button>
+                    <div>
+                      <Switch
+                        checked={liveStatus}
+                        onChange={changeLiveStatus}
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                      <Label className="mt-2">
+                        {liveStatus ? "Online" : "Offline"}
+                      </Label>
+                    </div>
+                  </div>
+                </HeaderWrapper>
+                <hr />
+                <Row>
+                  <Col xl={6}>
+                    <Info
+                      title="Seller"
+                      value={shop?.seller?.name}
+                      link={`/seller/details/${shop?.seller?._id}`}
+                    />
+                    <Info title="Name" value={shop?.shopName} />
+                    <Info title="Start Time" value={shop?.shopStartTimeText} />
+                    <Info title="End Time" value={shop?.shopEndTimeText} />
+                    <Info title="Shop Type" value={shop?.shopType} />
+                    <Info title="Delivery" value={shop?.delivery} />
+                    <Info
+                      title="Featured"
+                      value={shop?.isFeatured ? "Yes" : "No"}
+                    />
+                    <Info title="Minimum Order" value={shop?.minOrderAmount} />
+                    <Info title="Status" value={shop?.shopStatus} />
+                  </Col>
+
+                  <Col xl={6}>
+                    <Info title="Phone" value={shop?.phone_number} />
+                    <Info title="Email" value={shop?.email} />
+                    <Info title="Address" value={shop?.address.address} />
+                    <Info
+                      title="Delivery fee(per/km)"
+                      value={shop?.deliveryFeePerKm}
+                    />
+                    <Info
+                      title="Drop charge(per/km)"
+                      value={shop?.dropChargePerKm}
+                    />
+                    <Info
+                      title="Free Delivery"
+                      value={shop?.freeDelivery ? "Yes" : "No"}
+                    />
+
+                    {shop?.foodType && (
+                      <Info title="Type" value={shop?.foodType} />
+                    )}
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
             <Row>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <Row>
-                      <HeaderWrapper>
-                        <h4>Shop</h4>
-                        <div className="d-flex  align-items-center">
-                          <Button
-                            outline={true}
-                            color="success"
-                            onClick={() => {
-                              setAsFeatured();
-                            }}
-                            className="me-3"
-                          >
-                            {!shop?.isFeatured
-                              ? "Set as featured"
-                              : "Remove featured"}
-                          </Button>
-                          <Button
-                            outline={true}
-                            color="success"
-                            onClick={() => {
-                              setModalCenter(!modalCenter);
-                              document.body.classList.add("no_padding");
-                            }}
-                            className="me-3"
-                          >
-                            Add Deal
-                          </Button>
-                          <div>
-                            <Switch
-                              checked={liveStatus}
-                              onChange={changeLiveStatus}
-                              inputProps={{ "aria-label": "controlled" }}
-                            />
-                            <Label className="mt-2">
-                              {liveStatus ? "Online" : "Offline"}
-                            </Label>
-                          </div>
-                        </div>
-                      </HeaderWrapper>
-                      <hr />
-                    </Row>
-                    <Row>
-                      <div className="ps-4">
-                        <Info title="Name" value={shop?.shopName} />
-                        <Info
-                          title="Start Time"
-                          value={shop?.shopStartTimeText}
-                        />
-                        <Info title="End Time" value={shop?.shopEndTimeText} />
-                        <Info title="Shop Type" value={shop?.shopType} />
-                        <Info title="Delivery" value={shop?.delivery} />
-                        <Info
-                          title="Featured"
-                          value={shop?.isFeatured ? "Yes" : "No"}
-                        />
-                        <Info
-                          title="Minimum Order"
-                          value={shop?.minOrderAmount}
-                        />
-                        <Info title="Status" value={shop?.shopStatus} />
-                        <Info
-                          title="Free Delivery"
-                          value={shop?.freeDelivery ? "Yes" : "No"}
-                        />
-
-                        {shop?.foodType && (
-                          <Info title="Type" value={shop?.foodType} />
-                        )}
-
-                        <Info title="Phone" value={shop?.phone_number} />
-                        <Info title="Email" value={shop?.email} />
-                        <Info title="Address" value={shop?.address.address} />
-                        <Info
-                          title="Delivery fee(per/km)"
-                          value={shop?.deliveryFeePerKm}
-                        />
-                        <Info
-                          title="Drop charge(per/km)"
-                          value={shop?.dropChargePerKm}
-                        />
-                      </div>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-
-              <Col xl={6}>
+              <Col xl={7}>
                 {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
                   <Card>
                     <CardBody>
@@ -337,59 +313,9 @@ const ShopDetails = () => {
                   </Card>
                 ) : null}
               </Col>
-            </Row>
-
-            <Row>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <Row>
-                      <div className="d-flex justify-content-between align-items-center w-100 pb-1">
-                        <h4>Seller</h4>
-                        <button
-                          onClick={() =>
-                            history.push(`/seller/details/${shop?.seller?._id}`)
-                          }
-                          className="btn btn-success"
-                        >
-                          Details
-                        </button>
-                      </div>
-                      <hr />
-                    </Row>
-                    <Row>
-                      <Col
-                        lg={4}
-                        className="d-flex justify-content-center align-items-center"
-                      >
-                        <div>
-                          <img
-                            className="rounded-circle avatar-xl cursor-pointer"
-                            alt="partner"
-                            src={shop?.seller?.profile_photo}
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(shop?.seller?.profile_photo);
-                            }}
-                          />
-                        </div>
-                      </Col>
-                      <Col lg={8} className=" mt-5 mt-md-0">
-                        <div className="ps-4">
-                          <Info title="Name" value={shop?.seller?.name} />
-                          <Info
-                            title="Phone"
-                            value={shop?.seller?.phone_number}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
 
               {shop?.deals.length > 0 && (
-                <Col lg={4}>
+                <Col xl={5}>
                   <div className="mb-4">
                     <Paper className="py-2">
                       <h5 className="text-center">Deals List</h5>
@@ -398,7 +324,7 @@ const ShopDetails = () => {
                         shop.deals.map((deal, index) => (
                           <ul key={index} style={{ listStyleType: "square" }}>
                             <li>
-                              <div className="d-flex justify-content-between">
+                              <div className="d-flex justify-content-between px-3">
                                 <span
                                   style={{
                                     fontSize: "15px",
@@ -408,6 +334,11 @@ const ShopDetails = () => {
                                   {deal.name}
                                   {`-(${deal.status})`}
                                 </span>
+                                <i
+                                  className="fa fa-trash cursor-pointer"
+                                  style={{ color: "red" }}
+                                  onClick={() => deleteDeal(deal._id)}
+                                ></i>
                               </div>
                             </li>
 
@@ -427,24 +358,6 @@ const ShopDetails = () => {
                 </Col>
               )}
             </Row>
-
-            {/* Order list */}
-            <div>
-              <OrderTable orders={orders} loading={orderLoading} />
-              <Row>
-                <Col xl={12}>
-                  <div className="d-flex justify-content-center">
-                    <AppPagination
-                      paging={orderPaging}
-                      hasNextPage={orderHasNextPage}
-                      hasPreviousPage={orderHasPreviousPage}
-                      currentPage={orderCurrentPage}
-                      lisener={(page) => dispatch(getAllOrder(true, page, id))}
-                    />
-                  </div>
-                </Col>
-              </Row>
-            </div>
           </Container>
         </div>
         {/* DEAL */}
@@ -493,7 +406,7 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding-bottom: 1rem;
+  padding-bottom: 5px;
 
   @media (max-width: 600px) {
     flex-direction: column;

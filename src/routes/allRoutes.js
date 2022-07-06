@@ -237,7 +237,6 @@ const userRoutes = [
 
   // APP WALLET
 
-  { path: "/add-wallet/percentage-setting", component: PercentageSetting },
   { path: "/add-wallet/admin-log-history", component: AdminLogHistory },
   { path: "/add-wallet/seller-transactions", component: SellerTransactions },
   {
@@ -285,6 +284,7 @@ const userRoutes = [
 
   { path: "/admin/settings", component: AdminSettings },
   { path: "/app/settings", component: AppSettings },
+  { path: "/percentage-setting", component: PercentageSetting },
 
   // //calendar
   { path: "/calendar", component: Calendar },

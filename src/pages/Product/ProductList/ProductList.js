@@ -45,6 +45,7 @@ const ProductList = () => {
     currentPage,
     loading,
     products,
+    status,
   } = useSelector((state) => state.productReducer);
 
   const { account_type, _id: sellerId } = JSON.parse(
@@ -71,10 +72,17 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    if (searchKey || statusKey || typeKey || sortByKey || searchParams) {
+    if (
+      searchKey ||
+      statusKey ||
+      typeKey ||
+      sortByKey ||
+      searchParams ||
+      status
+    ) {
       callProductList(true);
     }
-  }, [searchKey, statusKey, typeKey, sortByKey, searchParams]);
+  }, [searchKey, statusKey, typeKey, sortByKey, searchParams, status]);
 
   return (
     <React.Fragment>

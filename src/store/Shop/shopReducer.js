@@ -140,18 +140,44 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case actionType.ADD_SHOP_DEAL_REQUEST_SUCCESS:
-      const filterd = state.shops.map((item) =>
-        item._id === payload._id ? payload : item
-      );
-
       return {
         ...state,
         loading: false,
         status: true,
-        products: filterd,
+        shops: state.shops.map((item) => {
+          if (item._id === payload._id) {
+            return payload;
+          }
+          return item;
+        }),
         error: null,
       };
     case actionType.ADD_SHOP_DEAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
+    // DELETE SHOP DEAL
+
+    case actionType.DELETE_SHOP_DEAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.DELETE_SHOP_DEAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shops: state.shops.filter((item) => item._id !== payload._id),
+        error: null,
+      };
+    case actionType.DELETE_SHOP_DEAL_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
