@@ -18,21 +18,17 @@ import {
   Modal,
 } from "reactstrap";
 
-import { getAllProduct } from "../../../store/Product/productAction";
-import AppPagination from "../../../components/AppPagination";
-
 import { Paper, Switch } from "@mui/material";
 
 import {
   deleteDealOfShop,
   setAsFeaturedShop,
   ShopLiveStatus,
+  updateShopStatus,
 } from "../../../store/Shop/shopAction";
 import DealForAdd from "../../../components/DealForAdd";
-import { getAllOrder } from "../../../store/order/orderAction";
-import ProductTable from "../../../components/ProductTable";
+
 import Lightbox from "react-image-lightbox";
-import OrderTable from "../../../components/OrderTable";
 import Info from "./../../../components/Info";
 
 const ShopDetails = () => {
@@ -172,6 +168,26 @@ const ShopDetails = () => {
                       className="me-3"
                     >
                       Add Deal
+                    </Button>
+                    <Button
+                      outline={true}
+                      color="success"
+                      onClick={() =>
+                        dispatch(
+                          updateShopStatus({
+                            id: shop?._id,
+                            status:
+                              shop?.shopStatus === "active"
+                                ? "deactive"
+                                : "active",
+                          })
+                        )
+                      }
+                      className="me-3"
+                    >
+                      {shop?.shopStatus === "active"
+                        ? "Deactivate"
+                        : "Activate"}
                     </Button>
                     <div>
                       <Switch
@@ -384,7 +400,7 @@ const ShopDetails = () => {
             </button>
           </div>
           <div className="modal-body">
-            <DealForAdd type="shop" item={shop} />
+            <DealForAdd type="shop" item={shop} shopType={shop?.shopType} />
           </div>
         </Modal>
       </GlobalWrapper>

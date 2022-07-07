@@ -19,7 +19,7 @@ import Lightbox from "react-image-lightbox";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Tooltip from "@mui/material/Tooltip";
 import AppPagination from "../../../components/AppPagination";
-import { deleteShop, getAllShop } from "../../../store/Shop/shopAction";
+import { getAllShop } from "../../../store/Shop/shopAction";
 import SweetAlert from "react-bootstrap-sweetalert";
 import requestApi from "../../../network/httpRequest";
 import { SINGLE_SELLER } from "../../../network/Api";
@@ -75,12 +75,6 @@ const SellerDetails = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  // DELETE SHOP
-
-  const handleDelete = (shopId) => {
-    dispatch(deleteShop(shopId));
   };
 
   //   ADD PRODUCT

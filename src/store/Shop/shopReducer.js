@@ -295,7 +295,7 @@ const shopReducer = (state = initialState, action) => {
         sortByKey: payload,
       };
 
-    case actionType.UPDATE_TYPE_KEY:
+    case actionType.UPDATE_SHOP_TYPE_KEY:
       return {
         ...state,
         typeKey: payload,
@@ -336,6 +336,27 @@ const shopReducer = (state = initialState, action) => {
         status: true,
       };
     case actionType.SET_FEATURED_SHOP_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.UPDATE_SHOP_STATUS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.UPDATE_SHOP_STATUS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+    case actionType.UPDATE_SHOP_STATUS_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

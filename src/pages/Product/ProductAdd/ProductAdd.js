@@ -103,6 +103,10 @@ const ProductAdd = () => {
     },
   ]);
 
+  const { account_type, _id: sellerId } = JSON.parse(
+    localStorage.getItem("admin")
+  );
+
   useEffect(() => {
     if (id) {
       const findProduct = products.find((item) => item._id == id);
@@ -121,7 +125,6 @@ const ProductAdd = () => {
       const shopId = searchParams.get("shopId");
       if (shopId) {
         const findShop = shops.find((item) => item._id == shopId);
-
         setType(findShop.shopType);
         setShop(findShop);
       }
@@ -195,7 +198,7 @@ const ProductAdd = () => {
   // ALL SHOP LIST
   useEffect(() => {
     if ((typeKey || searchKey) && type && !id) {
-      dispatch(getAllShop(true));
+      dispatch(getAllShop(true, account_type === "seller" ? sellerId : null));
     }
     return;
   }, [type, typeKey, searchKey, id]);

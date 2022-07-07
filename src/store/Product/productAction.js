@@ -6,6 +6,7 @@ import {
   EDIT_PRODUCT,
   ADD_PRODUCT_DEAL,
   UPDATE_PRODUCT_STATUS,
+  DELETE_PRODUCT_DEAL,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -134,7 +135,7 @@ export const editProduct = (values) => async (dispatch) => {
   }
 };
 
-//   DELETE
+//  UPDATE STATUS
 
 export const updateProductStatus = (values) => async (dispatch) => {
   console.log({ values });
@@ -240,4 +241,42 @@ export const updateProductType = (selectedType) => (dispatch) => {
     type: actionType.UPDATE_TYPE_KEY,
     payload: selectedType,
   });
+};
+
+// DELETE PRODUCT DEAL
+
+export const deleteDealOfProduct = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.DELETE_PRODUCT_DEAL_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, data = null },
+    } = await requestApi().request(DELETE_PRODUCT_DEAL, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data });
+
+    if (status) {
+      successMsg("Successfully deleted", "success");
+      dispatch({
+        type: actionType.DELETE_PRODUCT_DEAL_REQUEST_SUCCESS,
+        payload: data.shop,
+      });
+    } else {
+      successMsg(error, "error");
+      dispatch({
+        type: actionType.DELETE_PRODUCT_DEAL_REQUEST_FAIL,
+        paylaod: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.DELETE_PRODUCT_DEAL_REQUEST_FAIL,
+      paylaod: error.message,
+    });
+  }
 };

@@ -20,10 +20,12 @@ import Lightbox from "react-image-lightbox";
 import { Paper, Tooltip } from "@mui/material";
 import DealForAdd from "../../../components/DealForAdd";
 import Info from "./../../../components/Info";
+import { deleteDealOfProduct } from "../../../store/Product/productAction";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const { products, loading, status } = useSelector(
     (state) => state.productReducer
@@ -67,10 +69,10 @@ const ProductDetails = () => {
     }
   };
 
-  useEffect(() => {
-    if (modalCenter) {
-    }
-  }, [modalCenter]);
+  // useEffect(() => {
+  //   if (modalCenter) {
+  //   }
+  // }, [modalCenter]);
 
   // ADD DEAL
 
@@ -80,6 +82,17 @@ const ProductDetails = () => {
       callApi(product?._id);
     }
   }, [status]);
+
+  // DEAL DELETE
+
+  const deleteDeal = (dealId) => {
+    dispatch(
+      deleteDealOfProduct({
+        productId: id,
+        dealId,
+      })
+    );
+  };
 
   return (
     <React.Fragment>
@@ -205,7 +218,7 @@ const ProductDetails = () => {
 
             <Row>
               {product?.attributes.length > 0 && (
-                <Col lg={4}>
+                <Col lg={6}>
                   <div className="mb-4">
                     <Paper className="py-2">
                       <h5 className="text-center">Attributes List</h5>
@@ -279,7 +292,7 @@ const ProductDetails = () => {
                 </Col>
               )}
               {product?.deals.length > 0 && (
-                <Col lg={4}>
+                <Col lg={6}>
                   <div className="mb-4">
                     <Paper className="py-2">
                       <h5 className="text-center">Deals List</h5>
@@ -288,7 +301,7 @@ const ProductDetails = () => {
                         product.deals.map((deal, index) => (
                           <ul key={index} style={{ listStyleType: "square" }}>
                             <li>
-                              <div className="d-flex justify-content-between">
+                              <div className="d-flex justify-content-between px-3">
                                 <span
                                   style={{
                                     fontSize: "15px",
@@ -298,6 +311,11 @@ const ProductDetails = () => {
                                   {deal.name}
                                   {`-(${deal.status})`}
                                 </span>
+                                <i
+                                  className="fa fa-trash cursor-pointer"
+                                  style={{ color: "red" }}
+                                  onClick={() => deleteDeal(deal._id)}
+                                ></i>
                               </div>
                             </li>
 
@@ -347,7 +365,7 @@ const ProductDetails = () => {
             <DealForAdd
               type="product"
               item={product}
-              shopType={product?.shop?.shopType}
+              shopType={product?.type}
             />
           </div>
         </Modal>
@@ -355,18 +373,5 @@ const ProductDetails = () => {
     </React.Fragment>
   );
 };
-
-const Details = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Value = styled.h5`
-  color: #343a40;
-  /* font-style: italic; */
-  font-weight: 600;
-  margin-left: 4px;
-  /* padding-left: 5px; */
-`;
 
 export default ProductDetails;

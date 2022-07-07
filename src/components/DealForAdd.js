@@ -8,7 +8,7 @@ import { getAllDealForAdd } from "../store/Deal/dealAction";
 import { addProductDeal } from "../store/Product/productAction";
 import { addShopDeal } from "../store/Shop/shopAction";
 
-const DealForAdd = ({ type, item }) => {
+const DealForAdd = ({ type, item, shopType }) => {
   const dispatch = useDispatch();
   const { deals } = useSelector((state) => state.dealReducer);
   const { loading } = useSelector((state) => state.productReducer);
@@ -18,7 +18,7 @@ const DealForAdd = ({ type, item }) => {
   const [searchDealKey, setSearchDealKey] = useState("");
 
   useEffect(() => {
-    dispatch(getAllDealForAdd(type, item?.shopType));
+    dispatch(getAllDealForAdd(type, shopType));
   }, []);
 
   const addDeal = () => {
@@ -32,7 +32,7 @@ const DealForAdd = ({ type, item }) => {
       const findPercentage = item?.deals.find(
         (item) => item.option === "percentage"
       );
-      console.log({ findDoubleDeal, findPercentage });
+      // console.log({ findDoubleDeal, findPercentage });
       if (
         (deal.option === "percentage" && findDoubleDeal) ||
         (deal.option === "double_menu" && findPercentage)

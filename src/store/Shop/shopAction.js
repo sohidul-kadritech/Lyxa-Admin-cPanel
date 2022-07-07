@@ -13,6 +13,7 @@ import {
   EDIT_SHOP,
   SET_AS_FEATURED,
   SHOP_LIVE_STATUS,
+  UPDATE_SHOP_STATUS,
 } from "../../network/Api";
 import { successMsg } from "../../helpers/successMsg";
 
@@ -137,37 +138,37 @@ export const editShop = (values) => async (dispatch) => {
 
 //   DELETE
 
-export const deleteShop = (id) => async (dispatch) => {
-  try {
-    dispatch({
-      type: actionType.DELETE_SHOP_REQUEST_SEND,
-    });
-    const { data } = await requestApi().request(DELETE_SHOP, {
-      method: "POST",
-      data: { id },
-    });
+// export const deleteShop = (id) => async (dispatch) => {
+//   try {
+//     dispatch({
+//       type: actionType.DELETE_SHOP_REQUEST_SEND,
+//     });
+//     const { data } = await requestApi().request(DELETE_SHOP, {
+//       method: "POST",
+//       data: { id },
+//     });
 
-    if (data.status) {
-      successMsg(data.message, "success");
+//     if (data.status) {
+//       successMsg(data.message, "success");
 
-      dispatch({
-        type: actionType.DELETE_SHOP_REQUEST_SUCCESS,
-        payload: id,
-      });
-    } else {
-      successMsg(data.message, "error");
-      dispatch({
-        type: actionType.DELETE_SHOP_REQUEST_FAIL,
-        payload: data.message,
-      });
-    }
-  } catch (error) {
-    dispatch({
-      type: actionType.DELETE_SHOP_REQUEST_FAIL,
-      payload: error.message,
-    });
-  }
-};
+//       dispatch({
+//         type: actionType.DELETE_SHOP_REQUEST_SUCCESS,
+//         payload: id,
+//       });
+//     } else {
+//       successMsg(data.message, "error");
+//       dispatch({
+//         type: actionType.DELETE_SHOP_REQUEST_FAIL,
+//         payload: data.message,
+//       });
+//     }
+//   } catch (error) {
+//     dispatch({
+//       type: actionType.DELETE_SHOP_REQUEST_FAIL,
+//       payload: error.message,
+//     });
+//   }
+// };
 
 // ADD PRODUCT DEAL
 
@@ -181,6 +182,8 @@ export const addShopDeal = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
+
+    console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -464,6 +467,40 @@ export const deleteDealOfShop = (values) => async (dispatch) => {
     dispatch({
       type: actionType.DELETE_SHOP_DEAL_REQUEST_FAIL,
       paylaod: error.message,
+    });
+  }
+};
+
+// UPDATE STATUS
+
+export const updateShopStatus = (values) => async (dispatch) => {
+  console.log();
+  try {
+    dispatch({
+      type: actionType.UPDATE_SHOP_STATUS_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(UPDATE_SHOP_STATUS, {
+      method: "POST",
+      data: values,
+    });
+
+    if (data.status) {
+      successMsg(data.message, "success");
+
+      dispatch({
+        type: actionType.UPDATE_SHOP_STATUS_REQUEST_SUCCESS,
+      });
+    } else {
+      successMsg(data.message, "error");
+      dispatch({
+        type: actionType.UPDATE_SHOP_STATUS_REQUEST_FAIL,
+        payload: data.message,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.UPDATE_SHOP_STATUS_REQUEST_FAIL,
+      payload: error.message,
     });
   }
 };

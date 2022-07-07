@@ -82,6 +82,7 @@ export const ALL_CUISINE = ADMIN_ENDPOINT + "/cuisines";
 export const EDIT_CUISINE = ADMIN_ENDPOINT + "/cuisines/update";
 export const SET_AS_FEATURED = ADMIN_ENDPOINT + "/shop/add-feather-shop";
 export const DELETE_SHOP_DEAL = ADMIN_ENDPOINT + "/shop/delete-deal";
+export const UPDATE_SHOP_STATUS = ADMIN_ENDPOINT + "/shop/status";
 
 // PRODUCT
 
@@ -92,6 +93,8 @@ export const SINGLE_PRODUCT = ADMIN_ENDPOINT + "/product/product-details";
 export const DELETE_PRODUCT = ADMIN_ENDPOINT + "/product/delete";
 export const ADD_PRODUCT_DEAL = ADMIN_ENDPOINT + "/product/add-deal";
 export const UPDATE_PRODUCT_STATUS = ADMIN_ENDPOINT + "/product/status";
+
+export const DELETE_PRODUCT_DEAL = ADMIN_ENDPOINT + "/product/delete-deal";
 
 export const ADD_UNIT = ADMIN_ENDPOINT + "/unit/add";
 export const GET_ALL_UNIT = ADMIN_ENDPOINT + "/unit";

@@ -104,7 +104,7 @@ const productReducer = (state = initialState, action) => {
         error: payload,
       };
 
-    // DELETE
+    // STATUS UPDATE
 
     case actionType.UPDATE_PRODUCT_STATUS_REQUEST_SEND:
       return {
@@ -149,6 +149,31 @@ const productReducer = (state = initialState, action) => {
         error: null,
       };
     case actionType.ADD_PRODUCT_DEAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
+    // DELETE SHOP DEAL
+
+    case actionType.DELETE_PRODUCT_DEAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.DELETE_PRODUCT_DEAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shops: state.products.filter((item) => item._id !== payload._id),
+        error: null,
+      };
+    case actionType.DELETE_PRODUCT_DEAL_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
