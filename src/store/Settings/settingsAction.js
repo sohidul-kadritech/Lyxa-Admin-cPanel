@@ -1,8 +1,8 @@
-
 import { successMsg } from "../../helpers/successMsg";
 import {
   ADMINS_SETTINGS,
   APP_SETTINGS,
+  SET_DELIVERY_FEE,
   UPDATE_ADMINS_SETTINGS,
   UPDATE_APP_SETTINGS,
 } from "../../network/Api";
@@ -94,13 +94,13 @@ export const updateAdminSettings = () => async (dispatch, getState) => {
     });
 
     if (status) {
-        successMsg(message, "success")
+      successMsg(message, "success");
       dispatch({
         type: actionType.UPDATE_ADMIN_SETTINGS_REQUEST_SUCCESS,
         payload: data.adminSetting,
       });
     } else {
-        successMsg(message, "error")
+      successMsg(message, "error");
       dispatch({
         type: actionType.UPDATE_ADMIN_SETTINGS_REQUEST_FAIL,
         payload: error,
@@ -188,6 +188,42 @@ export const getAllAppSettings = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: actionType.ALL_APP_SETTINGS_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// ADD DELIVERY CHARGE
+
+export const addDeliveryCharge = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_DELIVERY_FEE_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(SET_DELIVERY_FEE, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data: data });
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.ADD_DELIVERY_FEE_REQUEST_SUCCESS,
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.ADD_DELIVERY_FEE_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_DELIVERY_FEE_REQUEST_FAIL,
       payload: error.message,
     });
   }

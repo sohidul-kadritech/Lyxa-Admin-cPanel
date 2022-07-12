@@ -136,7 +136,8 @@ export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance";
 
 // APP WALLET
 
-export const SET_DELIVERY_FEE = ADMIN_ENDPOINT + "/setting/delivery-charge";
+export const SET_DELIVERY_FEE =
+  ADMIN_ENDPOINT + "/wallet/percentage-setting-add";
 export const GET_DELIVERY_FEE =
   ADMIN_ENDPOINT + "/setting/get-global-delivery-charge";
 export const SELLER_TRX = ADMIN_ENDPOINT + "/wallet/seller";

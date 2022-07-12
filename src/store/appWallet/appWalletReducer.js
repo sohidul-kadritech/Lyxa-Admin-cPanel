@@ -7,43 +7,25 @@ const init = {
   status: false,
   deliveryFee: null,
   sellerTrxs: [],
-  sellerTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
-  sellerTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
+  sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  deliveryTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
-  deliveryTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
+  deliveryTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  deliveryTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   deliveryTrxs: [],
-  dropTrxStartDate: moment().startOf('month').format('YYYY-MM-DD'),
-  dropTrxEndDate: moment().endOf('month').format('YYYY-MM-DD'),
-  dropTrxs: []
+  dropTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  dropTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  dropTrxs: [],
 };
 
 const appWalletReducer = (state = init, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    //   ADD DELIVERY FEE
-    case actionTypes.ADD_DELIVERY_FEE_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true,
-      };
-    case actionTypes.ADD_DELIVERY_FEE_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        status: true,
-      };
-    case actionTypes.ADD_DELIVERY_FEE_REQUEST_FAIL:
-      return {
-        ...state,
-        loading: false,
-        error: payload,
-      };
     //   GET DELIVERY FEE
     case actionTypes.GET_DELIVERY_FEE_REQUEST_SEND:
       return {
@@ -117,7 +99,7 @@ const appWalletReducer = (state = init, action) => {
         deliveryTrxEndDate: payload,
       };
 
-      case actionTypes.GET_DELIVERY_TRX_REQUEST_SEND:
+    case actionTypes.GET_DELIVERY_TRX_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -143,9 +125,8 @@ const appWalletReducer = (state = init, action) => {
         error: payload,
       };
 
-      // DROP TRX
+    // DROP TRX
 
-      
     case actionTypes.DROP_TRX_START_DATE:
       return {
         ...state,
@@ -158,7 +139,7 @@ const appWalletReducer = (state = init, action) => {
         dropTrxEndDate: payload,
       };
 
-      case actionTypes.GET_DROP_TRX_REQUEST_SEND:
+    case actionTypes.GET_DROP_TRX_REQUEST_SEND:
       return {
         ...state,
         loading: true,

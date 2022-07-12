@@ -45,6 +45,7 @@ const OrdersList = () => {
     currentPage,
     orderType,
     orderSearchKey,
+    status,
   } = useSelector((state) => state.orderReducer);
 
   const { account_type, _id: sellerId } = JSON.parse(
@@ -83,6 +84,12 @@ const OrdersList = () => {
     orderSearchKey,
     searchParams.get("shopId"),
   ]);
+
+  useEffect(() => {
+    if (status) {
+      callOrderList(true);
+    }
+  }, [status]);
 
   return (
     <React.Fragment>

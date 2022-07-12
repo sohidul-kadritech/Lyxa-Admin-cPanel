@@ -45,14 +45,24 @@ const OrderTable = () => {
   const [deliveryBoy, setDeliveryBoy] = useState(null);
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
 
+  // UPDATE ORDER STATUS
+
+  const updateOrderStatus = (oId, shopId, orderStatus) => {
+    setIsUpdateStatus(!isUpdateStatus);
+    setOrderId(oId);
+    setShop(shopId);
+    setOrderStatus(orderStatus);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log({ orderId }, { deliveryBoy: deliveryBoy?._id });
     dispatch(
       orderUpdateStatus({
         orderId,
         orderStatus,
         shop,
-        deliveryBoy: deliveryBoy._id,
+        deliveryBoy: deliveryBoy?._id,
       })
     );
   };
@@ -60,7 +70,6 @@ const OrderTable = () => {
   useEffect(() => {
     if (status) {
       setIsUpdateStatus(false);
-      // dispatch(getAllOrder(true));
     }
   }, [status]);
 
@@ -71,6 +80,8 @@ const OrderTable = () => {
       dispatch(allDeliveryMan(true));
     }
   }, [orderStatus]);
+
+  // setDelivery boy
 
   return (
     <>
@@ -121,12 +132,15 @@ const OrderTable = () => {
                           <Tooltip title="Update Status">
                             <button
                               className="btn btn-info button me-md-0  me-2"
-                              onClick={() => {
-                                setIsUpdateStatus(!isUpdateStatus);
-                                setOrderId(item?._id);
-                                setShop(item?.shop?._id);
-                                setOrderStatus(item?.orderStatus);
-                              }}
+                              onClick={() =>
+                                updateOrderStatus(
+                                  item?._id,
+                                  item?.shop?._id,
+                                  item?.orderStatus,
+                                  item.deliveryBoy &&
+                                    setDeliveryBoy(item.deliveryBoy)
+                                )
+                              }
                             >
                               <i className="fa fa-arrow-up" />
                             </button>
@@ -211,6 +225,7 @@ const OrderTable = () => {
             {orderStatus === "accepted_delivery_boy" && (
               <Autocomplete
                 className="cursor-pointer mt-3"
+                value={deliveryBoy}
                 onChange={(event, newValue) => {
                   setDeliveryBoy(newValue);
                 }}

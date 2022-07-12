@@ -70,26 +70,24 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
       type: actionType.ORDER_UPDATE_STATUS_REQUEST_SEND,
     });
 
-    const {
-      data: { status, message, error, data = null },
-    } = await requestApi().request(ORDRE_UPDATE_STATUS, {
+    const { data } = await requestApi().request(ORDRE_UPDATE_STATUS, {
       method: "POST",
       data: values,
     });
 
     console.log({ data });
 
-    if (status) {
-      successMsg(message, "success");
+    if (data.status) {
+      successMsg(data.message, "success");
       dispatch({
         type: actionType.ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
         payload: data,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(data.error, "error");
       dispatch({
         type: actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL,
-        payload: error,
+        payload: data.error,
       });
     }
   } catch (error) {

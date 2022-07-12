@@ -1,63 +1,33 @@
 import { toast } from "react-toastify";
 import { successMsg } from "../../helpers/successMsg";
-import { DELIVERY_TRX, DROP_TRX, GET_DELIVERY_FEE, SELLER_TRX, SET_DELIVERY_FEE } from "../../network/Api";
+import {
+  DELIVERY_TRX,
+  DROP_TRX,
+  GET_DELIVERY_FEE,
+  SELLER_TRX,
+  SET_DELIVERY_FEE,
+} from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionTypes from "../actionType";
 
-// ADD DELIVERY CHARGE
+// GET DELIVERY FEE
 
-export const addDeliveryCharge = (values) => async (dispatch) => {
-  try {
-    dispatch({
-      type: actionTypes.ADD_DELIVERY_FEE_REQUEST_SEND,
-    });
-
-    const { data } = await requestApi().request(SET_DELIVERY_FEE, {
-      method: "POST",
-      data: values,
-    });
-
-    console.log({ data: data });
-
-    if (data.status) {
-      successMsg(data.message, "success")
-      dispatch({
-        type: actionTypes.ADD_DELIVERY_FEE_REQUEST_SUCCESS,
-      });
-    } else {
-      successMsg(data.message, "error")
-
-      dispatch({
-        type: actionTypes.ADD_DELIVERY_FEE_REQUEST_FAIL,
-        payload: data.error,
-      });
-    }
-  } catch (error) {
-    dispatch({
-      type: actionTypes.ADD_DELIVERY_FEE_REQUEST_FAIL,
-      payload: error.message,
-    });
-  }
-};
-
-// GET DELIVERY FEE 
-
-export const getDeliveryCharge = (refresh = false) => async (dispatch) => {
+export const getDeliveryCharge =
+  (refresh = false) =>
+  async (dispatch) => {
     try {
       dispatch({
         type: actionTypes.GET_DELIVERY_FEE_REQUEST_SEND,
       });
-  
-      const { data } = await requestApi().request(GET_DELIVERY_FEE);
-  
-      console.log({ data: data });
-  
-      if (data.status) {
 
-        
+      const { data } = await requestApi().request(GET_DELIVERY_FEE);
+
+      console.log({ data: data });
+
+      if (data.status) {
         dispatch({
           type: actionTypes.GET_DELIVERY_FEE_REQUEST_SUCCESS,
-          payload: data.data
+          payload: data.data,
         });
       } else {
         dispatch({
@@ -72,35 +42,36 @@ export const getDeliveryCharge = (refresh = false) => async (dispatch) => {
       });
     }
   };
-  
 
-  // GET SELLER TRX
+// GET SELLER TRX
 
-  export const getSellerTrx = (refresh = false, page) => async (dispatch, getState) => {
-    const {sellerTrxEndDate, sellerTrxStartDate, sellerTrxs} = getState().appWalletReducer;
+export const getSellerTrx =
+  (refresh = false, page) =>
+  async (dispatch, getState) => {
+    const { sellerTrxEndDate, sellerTrxStartDate, sellerTrxs } =
+      getState().appWalletReducer;
 
-    if(sellerTrxs.length < 1 || refresh){
+    if (sellerTrxs.length < 1 || refresh) {
       try {
         dispatch({
           type: actionTypes.GET_SELLER_TRX_REQUEST_SEND,
         });
-    
-        const { data } = await requestApi().request(SELLER_TRX,{
-          params:{
+
+        const { data } = await requestApi().request(SELLER_TRX, {
+          params: {
             page,
             pageSize: 50,
             startDate: sellerTrxStartDate,
-            endDate: sellerTrxEndDate
-          }
+            endDate: sellerTrxEndDate,
+          },
         });
-    
+
         console.log(data);
-    
+
         if (data.status) {
-  
           dispatch({
             type: actionTypes.GET_SELLER_TRX_REQUEST_SUCCESS,
-            payload: data.data
+            payload: data.data,
           });
         } else {
           dispatch({
@@ -117,70 +88,71 @@ export const getDeliveryCharge = (refresh = false) => async (dispatch) => {
     }
   };
 
-  // SELLER TRX START DATE AND END DATE 
+// SELLER TRX START DATE AND END DATE
 
-  export const updateSellerTrxStartDate = (startDate) => (dispatch) => {
-    console.log({ startDate });
-    dispatch({
-      type: actionTypes.SELLER_TRX_START_DATE,
-      payload: startDate,
-    });
-  };
-  
-  export const updateSellerTrxEndDate = (date) => (dispatch) => {
-    // console.log({ date });
-    dispatch({
-      type: actionTypes.SELLER_TRX_END_DATE,
-      payload: date,
-    });
-  };
+export const updateSellerTrxStartDate = (startDate) => (dispatch) => {
+  console.log({ startDate });
+  dispatch({
+    type: actionTypes.SELLER_TRX_START_DATE,
+    payload: startDate,
+  });
+};
 
+export const updateSellerTrxEndDate = (date) => (dispatch) => {
+  // console.log({ date });
+  dispatch({
+    type: actionTypes.SELLER_TRX_END_DATE,
+    payload: date,
+  });
+};
 
-  // DELIVERY TRX START AND END DATE
+// DELIVERY TRX START AND END DATE
 
-  export const updateDeliveryTrxStartDate = (startDate) => (dispatch) => {
-    console.log({ startDate });
-    dispatch({
-      type: actionTypes.DELIVERY_TRX_START_DATE,
-      payload: startDate,
-    });
-  };
-  
-  export const updateDeliveryTrxEndDate = (date) => (dispatch) => {
-    // console.log({ date });
-    dispatch({
-      type: actionTypes.DELIVERY_TRX_END_DATE,
-      payload: date,
-    });
-  };
+export const updateDeliveryTrxStartDate = (startDate) => (dispatch) => {
+  console.log({ startDate });
+  dispatch({
+    type: actionTypes.DELIVERY_TRX_START_DATE,
+    payload: startDate,
+  });
+};
 
-  // GET DELIVERY TRX
+export const updateDeliveryTrxEndDate = (date) => (dispatch) => {
+  // console.log({ date });
+  dispatch({
+    type: actionTypes.DELIVERY_TRX_END_DATE,
+    payload: date,
+  });
+};
 
-  export const getDeliveryTrx = (refresh = false, page) => async (dispatch, getState) => {
-    const {deliveryTrxEndDate, deliveryTrxStartDate, deliveryTrxs} = getState().appWalletReducer;
+// GET DELIVERY TRX
 
-    if(deliveryTrxs.length < 1 || refresh){
+export const getDeliveryTrx =
+  (refresh = false, page) =>
+  async (dispatch, getState) => {
+    const { deliveryTrxEndDate, deliveryTrxStartDate, deliveryTrxs } =
+      getState().appWalletReducer;
+
+    if (deliveryTrxs.length < 1 || refresh) {
       try {
         dispatch({
           type: actionTypes.GET_DELIVERY_TRX_REQUEST_SEND,
         });
-    
-        const { data } = await requestApi().request(DELIVERY_TRX,{
-          params:{
+
+        const { data } = await requestApi().request(DELIVERY_TRX, {
+          params: {
             page,
             pageSize: 50,
             startDate: deliveryTrxStartDate,
-            endDate: deliveryTrxEndDate
-          }
+            endDate: deliveryTrxEndDate,
+          },
         });
-    
+
         console.log(data);
-    
+
         if (data.status) {
-  
           dispatch({
             type: actionTypes.GET_DELIVERY_TRX_REQUEST_SUCCESS,
-            payload: data.data
+            payload: data.data,
           });
         } else {
           dispatch({
@@ -197,52 +169,53 @@ export const getDeliveryCharge = (refresh = false) => async (dispatch) => {
     }
   };
 
+// DROP TRANSACTIONS
 
-  // DROP TRANSACTIONS 
+export const updateDropTrxStartDate = (startDate) => (dispatch) => {
+  console.log({ startDate });
+  dispatch({
+    type: actionTypes.DROP_TRX_START_DATE,
+    payload: startDate,
+  });
+};
 
-  export const updateDropTrxStartDate = (startDate) => (dispatch) => {
-    console.log({ startDate });
-    dispatch({
-      type: actionTypes.DROP_TRX_START_DATE,
-      payload: startDate,
-    });
-  };
-  
-  export const updateDropTrxEndDate = (date) => (dispatch) => {
-    // console.log({ date });
-    dispatch({
-      type: actionTypes.DROP_TRX_END_DATE,
-      payload: date,
-    });
-  };
+export const updateDropTrxEndDate = (date) => (dispatch) => {
+  // console.log({ date });
+  dispatch({
+    type: actionTypes.DROP_TRX_END_DATE,
+    payload: date,
+  });
+};
 
-  // GET DELIVERY TRX
+// GET DELIVERY TRX
 
-  export const getDropTrx = (refresh = false, page) => async (dispatch, getState) => {
-    const {dropTrxEndDate, dropTrxStartDate, dropTrxs} = getState().appWalletReducer;
+export const getDropTrx =
+  (refresh = false, page) =>
+  async (dispatch, getState) => {
+    const { dropTrxEndDate, dropTrxStartDate, dropTrxs } =
+      getState().appWalletReducer;
 
-    if(dropTrxs.length < 1 || refresh){
+    if (dropTrxs.length < 1 || refresh) {
       try {
         dispatch({
           type: actionTypes.GET_DROP_TRX_REQUEST_SEND,
         });
-    
-        const { data } = await requestApi().request(DROP_TRX,{
-          params:{
+
+        const { data } = await requestApi().request(DROP_TRX, {
+          params: {
             page,
             pageSize: 50,
             startDate: dropTrxStartDate,
-            endDate: dropTrxEndDate
-          }
+            endDate: dropTrxEndDate,
+          },
         });
-    
+
         console.log(data);
-    
+
         if (data.status) {
-  
           dispatch({
             type: actionTypes.GET_DROP_TRX_REQUEST_SUCCESS,
-            payload: data.data
+            payload: data.data,
           });
         } else {
           dispatch({
@@ -258,5 +231,3 @@ export const getDeliveryCharge = (refresh = false) => async (dispatch) => {
       }
     }
   };
-
-
