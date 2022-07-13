@@ -47,10 +47,13 @@ const ProductList = () => {
     products,
     status,
   } = useSelector((state) => state.productReducer);
+  const { shops } = useSelector((state) => state.shopReducer);
 
   const { account_type, _id: sellerId } = JSON.parse(
     localStorage.getItem("admin")
   );
+
+  const [shop, setShop] = useState(null);
 
   useEffect(() => {
     if (account_type === "admin") {
@@ -84,6 +87,15 @@ const ProductList = () => {
     }
   }, [searchKey, statusKey, typeKey, sortByKey, searchParams, status]);
 
+  useEffect(() => {
+    if (searchParams.get("shopId")) {
+      const findShop = shops.find(
+        (item) => item._id === searchParams.get("shopId")
+      );
+      setShop(findShop);
+    }
+  }, [searchParams.get("shopId")]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -91,12 +103,13 @@ const ProductList = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={"List"}
-              title="Product"
+              breadcrumbItem={shop ? "Products" : "List"}
+              title={shop ? shop?.shopName : "Product"}
               loading={loading}
               callList={callProductList}
               isAddNew={true}
               addNewRoute="products/add"
+              params={`shopId=${shop?._id}`}
             />
 
             <Card>

@@ -87,6 +87,13 @@ export const adminMenuItem = [
         link: "/shops/add",
         isSubmenu: false,
       },
+      {
+        id: 62,
+        name: "Cuisines",
+        icon: "fas fa-clipboard-list",
+        link: "/shops/cuisines",
+        isSubmenu: false,
+      },
     ],
   },
   {

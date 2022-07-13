@@ -64,7 +64,8 @@
 .image__wrapper {
   height: 75px;
   max-width: 170px;
-
+  display: flex;
+  justify-content: center;
   @media (max-width: 1200px) {
     max-width: 100%;
   }

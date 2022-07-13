@@ -44,9 +44,10 @@ export const addShop = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
+    successMsg(error.message, "error");
     dispatch({
       type: actionType.ADD_SHOP_REQUEST_FAIL,
-      payload: error.message,
+      payload: error,
     });
   }
 };

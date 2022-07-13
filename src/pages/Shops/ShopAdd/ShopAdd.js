@@ -44,28 +44,22 @@ import {
   getLatLng,
 } from "react-places-autocomplete";
 import {
-  cuisinesList,
-  foodTypeOptions,
   liveStatusOptions,
-  shopDeliveryOptions,
-  shopStatusOptions2,
   shopTypeOptions2,
-  productVisibility,
   freeDeliveryOptions,
   statusOptions2,
 } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
 import formatBytes from "../../../common/imageFormatBytes";
-
-import moment from "moment";
+import { successMsg } from "../../../helpers/successMsg";
 
 const ShopAdd = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
 
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -98,7 +92,7 @@ const ShopAdd = () => {
   const [pinCode, setPinCode] = useState("");
   const [isCuisine, setIsCuisine] = useState(false);
   const [liveStatus, setLiveStatus] = useState("");
-  const [freeDelivery, setFreeDelivery] = useState("");
+
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
@@ -197,7 +191,6 @@ const ShopAdd = () => {
       value: "",
     });
     setLiveStatus(liveStatus);
-    setFreeDelivery(freeDelivery);
     setPinCode(address.pin);
     handleAddressSelect(address.address, address.placeId);
   };
@@ -238,17 +231,17 @@ const ShopAdd = () => {
   const submitShop = (e) => {
     e.preventDefault();
     if (!seller) {
-      return warningMessage("Select a seller");
+      return successMsg("Select a seller");
     }
     if (tags.items.length < 1) {
-      return warningMessage("Please Add Shop Tag");
+      return successMsg("Please Add Shop Tag");
     }
 
     if (!id && !address) {
-      return warningMessage("Select Shop Address");
+      return successMsg("Select Shop Address");
     }
     if (!shopLogo || !shopBanner || !shopPhotos) {
-      return warningMessage("Choose Image");
+      return successMsg("Choose Image");
     }
 
     uploadImages();
@@ -322,7 +315,6 @@ const ShopAdd = () => {
           shopStartTime,
           shopEndTime,
           shopName,
-          freeDelivery,
           isCuisine,
           minOrderAmount,
           email,
@@ -335,9 +327,7 @@ const ShopAdd = () => {
           shopDescription: "desrcriptions",
           delivery: delivery,
           tags: tags.items,
-
           liveStatus: liveStatus,
-
           cuisineType: cuisinesList,
           shopAddress: {
             address: fullAddress,
@@ -362,7 +352,7 @@ const ShopAdd = () => {
           shopName,
           shopEndTime,
           minOrderAmount,
-          isCuisine,
+          isCuisine: shopType === "food" ? true : false,
           phone_number: phone,
           shopAddress: {
             address: fullAddress,
@@ -377,18 +367,14 @@ const ShopAdd = () => {
             note: "",
           },
           seller: seller._id,
-
+          delivery: "pickup",
           shopType: shopType,
-
           shopStatus: shopStatus,
-          delivery: delivery,
-
           tags: tags.items,
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
           shopPhotos: photosUrl,
           shopDescription: "desrcriptions",
-
           cuisineType: cuisinesList,
           liveStatus: liveStatus,
         })
@@ -462,7 +448,6 @@ const ShopAdd = () => {
         setSearchCuisineKey("");
         setLiveStatus("");
         setIsCuisine(false);
-        setFreeDelivery("");
         window.scroll(0, 0);
       }
     }
@@ -499,19 +484,6 @@ const ShopAdd = () => {
     let list = [...selectedCuisines];
     list.splice(index, 1);
     setSelectedCuisines(list);
-  };
-
-  const warningMessage = (message) => {
-    toast.warn(message, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
   };
 
   return (
@@ -755,7 +727,7 @@ const ShopAdd = () => {
                         />
                       </div>
 
-                      {!id && (
+                      {/* {!id && (
                         <div className="mb-4">
                           <FormControl required fullWidth>
                             <InputLabel id="demo-simple-select-label">
@@ -775,7 +747,7 @@ const ShopAdd = () => {
                             </Select>
                           </FormControl>
                         </div>
-                      )}
+                      )} */}
 
                       {/* <div className="mb-4">
                         <FormControl required fullWidth>
@@ -935,7 +907,7 @@ const ShopAdd = () => {
                         </FormControl>
                       </div>
 
-                      {shopType == "food" && !id && (
+                      {/* {shopType == "food" && !id && (
                         <div className="form-check">
                           <input
                             className="form-check-input"
@@ -952,9 +924,9 @@ const ShopAdd = () => {
                             Is Cuisine?
                           </label>
                         </div>
-                      )}
+                      )} */}
 
-                      {isCuisine && (
+                      {shopType == "food" && (
                         <div className="mb-3">
                           <Autocomplete
                             className="cursor-pointer"

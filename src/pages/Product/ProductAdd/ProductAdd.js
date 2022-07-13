@@ -14,7 +14,7 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { Autocomplete, Box, Paper, TextField } from "@mui/material";
+import { Autocomplete, Box, Paper, TextField, Tooltip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -124,8 +124,8 @@ const ProductAdd = () => {
     if (searchParams) {
       const shopId = searchParams.get("shopId");
       if (shopId) {
-        const findShop = shops.find((item) => item._id == shopId);
-        setType(findShop.shopType);
+        const findShop = shops.find((item) => item._id === shopId.toString());
+        setType(findShop?.shopType);
         setShop(findShop);
       }
     }
@@ -520,22 +520,24 @@ const ProductAdd = () => {
                           }
                         />
                       </div>
-                      <div className="mb-4">
-                        <ShopAutocompleted
-                          value={shop}
-                          onChange={(event, newValue) => setShop(newValue)}
-                          searchKey={searchKey}
-                          onInputChange={(event, newInputValue) =>
-                            dispatch(updateShopSearchKey(newInputValue))
-                          }
-                          list={shops}
-                          disabled={
-                            !type || id || searchParams.get("shopId")
-                              ? true
-                              : false
-                          }
-                        />
-                      </div>
+                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
+                        <div className="mb-4">
+                          <ShopAutocompleted
+                            value={shop}
+                            onChange={(event, newValue) => setShop(newValue)}
+                            searchKey={searchKey}
+                            onInputChange={(event, newInputValue) =>
+                              dispatch(updateShopSearchKey(newInputValue))
+                            }
+                            list={shops}
+                            disabled={
+                              !type || id || searchParams.get("shopId")
+                                ? true
+                                : false
+                            }
+                          />
+                        </div>
+                      </Tooltip>
 
                       {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
                         <div className="mb-4">
@@ -625,52 +627,55 @@ const ProductAdd = () => {
                       </div>
                     </Col>
                     <Col lg={6}>
-                      <div className="mb-4">
-                        <Autocomplete
-                          className="cursor-pointer"
-                          required
-                          value={category}
-                          disabled={!type ? true : false}
-                          onChange={(event, newValue) => {
-                            setCategory(newValue);
-                          }}
-                          getOptionLabel={(option) => option.name}
-                          isOptionEqualToValue={(option, value) =>
-                            option._id == value._id
-                          }
-                          inputValue={searchCategoryKey}
-                          onInputChange={(event, newInputValue) => {
-                            setSearchCategoryKey(newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={categories.length > 0 ? categories : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select a Category"
-                              required
-                              name="category"
-                            />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
-                            >
-                              <img
-                                loading="lazy"
-                                width="60"
-                                src={option.image}
-                                alt=""
+                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
+                        <div className="mb-4">
+                          <Autocomplete
+                            className="cursor-pointer"
+                            required
+                            value={category}
+                            disabled={!type ? true : false}
+                            onChange={(event, newValue) => {
+                              setCategory(newValue);
+                            }}
+                            getOptionLabel={(option) => option.name}
+                            isOptionEqualToValue={(option, value) =>
+                              option._id == value._id
+                            }
+                            inputValue={searchCategoryKey}
+                            onInputChange={(event, newInputValue) => {
+                              setSearchCategoryKey(newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={categories.length > 0 ? categories : []}
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Select a Category"
+                                required
+                                name="category"
                               />
-                              {option.name}
-                            </Box>
-                          )}
-                        />
-                      </div>
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option._id}
+                              >
+                                <img
+                                  loading="lazy"
+                                  width="60"
+                                  src={option.image}
+                                  alt=""
+                                />
+                                {option.name}
+                              </Box>
+                            )}
+                          />
+                        </div>
+                      </Tooltip>
+
                       {category && (
                         <div className="mb-4">
                           <Autocomplete

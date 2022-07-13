@@ -413,8 +413,6 @@ const OrderDetails = () => {
                         </span>
                       </div>
                       <div className="item">
-                        {" "}
-                        className='value'
                         <span>Payable Total</span>
                         <span className="value">{order?.summary?.total}</span>
                       </div>

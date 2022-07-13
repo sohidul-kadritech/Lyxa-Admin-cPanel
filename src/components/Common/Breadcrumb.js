@@ -22,10 +22,16 @@ const Breadcrumb = ({
   isRefresh = true,
   isAddNew = false,
   addNewRoute = "",
+  params = "",
 }) => {
-  const [setting_Menu, setsetting_Menu] = useState(false);
-
   const history = useHistory();
+
+  const gotoAddNew = () => {
+    history.push({
+      pathname: `/${addNewRoute}`,
+      search: params,
+    });
+  };
 
   return (
     <Row className="align-items-center">
@@ -63,8 +69,8 @@ const Breadcrumb = ({
 
       <Col sm={6} className="d-flex justify-content-end cursor-pointer">
         {isAddNew && (
-          <Button className="me-3">
-            <Link to={`/${addNewRoute}`}>Add New</Link>
+          <Button className="me-3" onClick={gotoAddNew}>
+            Add New
           </Button>
         )}
 

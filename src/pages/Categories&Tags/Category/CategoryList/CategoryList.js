@@ -134,26 +134,27 @@ const CategoryList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
-                            <img
-                              onClick={() => {
-                                setIsZoom(true);
-                                setCatImg(item.image);
-                              }}
-                              className="img-fluid avater avater-lg cursor-pointer"
-                              alt=""
-                              src={item.image}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain",
-                              }}
-                            />
-                            {item?.name}
+                          <Th className="d-flex justify-content-center">
+                            <div className="image__wrapper">
+                              <img
+                                onClick={() => {
+                                  setIsZoom(true);
+                                  setCatImg(item.image);
+                                }}
+                                className="img-fluid avater avater-lg cursor-pointer"
+                                alt=""
+                                src={item.image}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                }}
+                              />
+                            </div>
                           </Th>
+                          <Td>{item?.name}</Td>
                           <Td>{item?.type}</Td>
                           <Td>{item?.status}</Td>
-                          <Td>{new Date(item?.status).toLocaleDateString()}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">
