@@ -9,6 +9,9 @@ const initialState = {
   deliveryFeePerKm: "",
   searchDeliveryBoyKm: [],
   dropCharges: [],
+  cancelReasons: [],
+  typeKey: "all",
+  activeStatus: "all",
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -147,6 +150,83 @@ const settingsReducer = (state = initialState, action) => {
         status: true,
       };
     case actionType.ADD_DELIVERY_FEE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+    // ADD CANCEL REASON
+
+    case actionType.ADD_REASON_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+    case actionType.ADD_REASON_REQUEST_SUCCESS:
+      return {
+        ...state,
+        cancelReasons: [...state.cancelReasons, payload],
+        loading: false,
+        status: true,
+      };
+    case actionType.ADD_REASON_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // ALL CANCEL REASON
+
+    case actionType.ALL_REASONS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+    case actionType.ALL_REASONS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        cancelReasons: payload,
+        loading: false,
+        status: false,
+      };
+    case actionType.ALL_REASONS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.UPDATE_REASON_TYPE_KEY:
+      return {
+        ...state,
+        typeKey: payload,
+      };
+
+    case actionType.UPDATE_REASON_STATUS_KEY:
+      return {
+        ...state,
+        activeStatus: payload,
+      };
+
+    case actionType.UPDATE_REASON_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+    case actionType.UPDATE_REASON_REQUEST_SUCCESS:
+      return {
+        ...state,
+        cancelReasons: state.cancelReasons.map((item) =>
+          item._id === payload._id ? payload : item
+        ),
+        loading: false,
+        status: true,
+      };
+
+    case actionType.UPDATE_REASON_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

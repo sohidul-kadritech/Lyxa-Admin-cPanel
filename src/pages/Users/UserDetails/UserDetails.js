@@ -22,6 +22,7 @@ const UserDetails = () => {
     if (id) {
       const findUser = users.find((user) => user.id == id);
       if (findUser) {
+        console.log({ findUser });
         setUser(findUser);
       } else {
         // console.log("call api---");
@@ -104,39 +105,5 @@ const UserDetails = () => {
     </React.Fragment>
   );
 };
-
-const ImageWrapper = styled.div`
-  text-align: center;
-  border-right: 1px solid black;
-  @media (max-width: 1200px) {
-    border-right: none;
-  }
-  img {
-    object-fit: contain;
-    width: 100%;
-    height: 90%;
-  }
-`;
-
-const Details = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  /* @media (max-width: 1200px) {
-    justify-content: center;
-  } */
-
-  .title {
-    color: black;
-    margin-right: 8px px;
-    font-weight: 600;
-    margin-right: 10px;
-  }
-  .value {
-    font-family: "themify";
-    font-weight: 600;
-    color: #0e0c0c;
-  }
-`;
 
 export default UserDetails;

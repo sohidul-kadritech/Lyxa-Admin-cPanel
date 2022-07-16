@@ -169,19 +169,19 @@ const UsersList = () => {
                             <Td>{"Order"}</Td>
                             <Td>
                               <ButtonWrapper>
-                                <Tooltip title="Transactions">
+                                <Tooltip title="See transactions">
                                   <button
-                                    className="btn btn-info me-xl-3"
+                                    className="btn btn-success me-xl-3"
                                     onClick={() =>
                                       history.push(
                                         `/users/transactions/${user._id}`
                                       )
                                     }
                                   >
-                                    <i className="ti-money" />
+                                    <i className="fas fa-exchange-alt" />
                                   </button>
                                 </Tooltip>
-                                <Tooltip title="Details">
+                                <Tooltip title="See details">
                                   <button
                                     className="btn btn-info me-xl-3"
                                     onClick={() =>
@@ -191,6 +191,16 @@ const UsersList = () => {
                                     <i className="fa fa-eye" />
                                   </button>
                                 </Tooltip>
+                                {/* <Tooltip title="Add/Edit Credit">
+                                  <button
+                                    className="btn btn-primary me-xl-3"
+                                    // onClick={() =>
+                                    //   history.push(`/users/details/${user._id}`)
+                                    // }
+                                  >
+                                    <i className="ti-money" />
+                                  </button>
+                                </Tooltip> */}
                               </ButtonWrapper>
                             </Td>
                           </Tr>

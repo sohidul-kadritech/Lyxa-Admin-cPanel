@@ -117,6 +117,9 @@ export const UPDATE_ADMINS_SETTINGS = "/admin/setting/admin-setting/edit";
 
 export const UPDATE_APP_SETTINGS = "/admin/setting/app-setting/edit";
 export const APP_SETTINGS = "/admin/setting/app-setting";
+export const ADD_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/add";
+export const UPDATE_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/edit";
+export const ALL_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel";
 
 // DEAL
 

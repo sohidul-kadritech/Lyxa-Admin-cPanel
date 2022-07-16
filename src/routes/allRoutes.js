@@ -167,12 +167,14 @@ import SellerTransactionDetails from "../pages/AppWallet/SellerTransactions/Sell
 import DeliveryTransactionsDetails from "../pages/AppWallet/DeliveryTransactions/DeliveryTransactionsDetails";
 import DropTransactionsDetails from "../pages/AppWallet/dropTransactions/dropTransactionsDetails";
 import UnitTypes from "../pages/Product/UnitTypes/UnitTypes";
+import CancelReason from "../pages/CancelReason/CancelReason";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
   { path: "/orders/list", component: OrdersList },
   { path: "/orders/details/:id", component: OrderDetails },
+  { path: "/orders/cancel-reason", component: CancelReason },
 
   { path: "/image-gallery", component: PagesGallery },
   { path: "/image-folder", component: ImageFolder },

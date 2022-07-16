@@ -201,6 +201,19 @@ export const statusOptions2 = [
   { label: "Inactive", value: "inactive" },
 ];
 
+export const cancelReasonOptions = [
+  { label: "Shop Cancel", value: "shopCancel" },
+  { label: "User Cancel", value: "userCancel" },
+  { label: "User Refund", value: "userRefund" },
+];
+
+export const cancelReasonOptions2 = [
+  { label: "All", value: "all" },
+  { label: "Shop Cancel", value: "shopCancel" },
+  { label: "User Cancel", value: "userCancel" },
+  { label: "User Refund", value: "userRefund" },
+];
+
 export const logoSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

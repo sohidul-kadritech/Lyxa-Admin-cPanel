@@ -25,7 +25,6 @@ import {
 } from "../../../store/DropPay/dropPayAction";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { updateSearchKey, userList } from "../../../store/Users/UsersAction";
-import { toast } from "react-toastify";
 import { successMsg } from "../../../helpers/successMsg";
 
 const DropPayList = () => {

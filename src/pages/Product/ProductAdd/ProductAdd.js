@@ -44,6 +44,7 @@ import ShopAutocompleted from "../../../components/ShopAutocompleted";
 import { successMsg } from "../../../helpers/successMsg";
 import SelectOption from "../../../components/SelectOption";
 import ProductAutocompleted from "../../../components/ProductAutocompleted";
+import { getAllUnitType } from "../../../store/unitType/unitTypeAction";
 
 const ProductAdd = () => {
   const dispatch = useDispatch();
@@ -59,6 +60,8 @@ const ProductAdd = () => {
   const { shops, searchKey, typeKey } = useSelector(
     (state) => state.shopReducer
   );
+
+  const { unitTypes } = useSelector((state) => state.unitTypeReducer);
 
   const {
     loading,
@@ -94,7 +97,7 @@ const ProductAdd = () => {
   const [attributeName, setAttributeName] = useState("");
   const [isRequiredAttribute, setIsRequiredAttribute] = useState(false);
   const [isMultipleAttribute, setIsMultipleAttribute] = useState(false);
-
+  const [unit, setUnit] = useState("");
   const [attributes, setAttributes] = useState([]);
   const [attributeItems, setAttributeItems] = useState([
     {
@@ -119,6 +122,10 @@ const ProductAdd = () => {
       }
     }
   }, [id]);
+
+  useEffect(() => {
+    dispatch(getAllUnitType(true));
+  }, []);
 
   useEffect(() => {
     if (searchParams) {
@@ -166,7 +173,10 @@ const ProductAdd = () => {
       addons,
       attributes,
       discount,
+      unit,
     } = product;
+
+    const findUnit = unitTypes?.find((item) => item.name === unit);
 
     setShop(shop);
     setCategory(category);
@@ -185,6 +195,7 @@ const ProductAdd = () => {
     setImage(images[0]);
     setAddons(addons);
     setAttributes(attributes);
+    setUnit(findUnit);
   };
 
   // ALL CATEGORY LIST
@@ -305,6 +316,7 @@ const ProductAdd = () => {
       attributes,
       addons: addonsData,
       cuisines,
+      unit: unit?.name,
     };
 
     if (id) {
@@ -502,6 +514,47 @@ const ProductAdd = () => {
                       </div>
 
                       <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={unit}
+                          onChange={(event, newValue) => {
+                            setUnit(newValue);
+                          }}
+                          getOptionLabel={(option) =>
+                            option.name ? option.name : ""
+                          }
+                          isOptionEqualToValue={(option, value) =>
+                            option?._id == value?._id
+                          }
+                          inputValue={cuisineSearchKey}
+                          onInputChange={(event, newInputValue) => {
+                            setCuisineSearchKey(newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={unitTypes.length > 0 ? unitTypes : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Select a Unit"
+                              required
+                              name="cuisine"
+                            />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option?._id}
+                            >
+                              {option?.name}
+                            </Box>
+                          )}
+                        />
+                      </div>
+
+                      <div className="mb-4">
                         <SelectOption
                           label="Type"
                           value={type}
@@ -516,7 +569,9 @@ const ProductAdd = () => {
                           }}
                           options={shopTypeOptions2}
                           disabled={
-                            searchParams.get("shopId") || id ? true : false
+                            searchParams.get("shopId") != undefined || id
+                              ? true
+                              : false
                           }
                         />
                       </div>
@@ -611,7 +666,7 @@ const ProductAdd = () => {
                           type="number"
                         />
                       </div>
-                      <div className="mb-4">
+                      {/* <div className="mb-4">
                         <TextField
                           id="previousPrice"
                           label="Discount(%)"
@@ -624,7 +679,7 @@ const ProductAdd = () => {
                           required
                           type="number"
                         />
-                      </div>
+                      </div> */}
                     </Col>
                     <Col lg={6}>
                       <Tooltip title={`${!type ? "Select Type First" : ""}`}>

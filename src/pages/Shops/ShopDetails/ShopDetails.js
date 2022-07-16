@@ -67,6 +67,7 @@ const ShopDetails = () => {
     // console.log(banner)
     if (data.status) {
       const { shop } = data.data;
+      console.log({ shop });
       if (shop) {
         const activeStatus = shop?.liveStatus == "online" ? true : false;
         setLiveStatus(activeStatus);
@@ -226,14 +227,8 @@ const ShopDetails = () => {
                     <Info title="Phone" value={shop?.phone_number} />
                     <Info title="Email" value={shop?.email} />
                     <Info title="Address" value={shop?.address.address} />
-                    <Info
-                      title="Delivery fee(per/km)"
-                      value={shop?.deliveryFeePerKm}
-                    />
-                    <Info
-                      title="Drop charge(per/km)"
-                      value={shop?.dropChargePerKm}
-                    />
+                    <Info title="Delivery fee" value={shop?.deliveryFeePerKm} />
+                    <Info title="Drop charge" value={shop?.dropChargePerKm} />
                     <Info
                       title="Free Delivery"
                       value={shop?.freeDelivery ? "Yes" : "No"}
