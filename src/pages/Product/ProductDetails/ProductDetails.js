@@ -40,6 +40,7 @@ const ProductDetails = () => {
     if (id) {
       const findProduct = products.find((item) => item._id === id);
       if (findProduct) {
+        console.log(findProduct);
         setProduct(findProduct);
       } else {
         callApi(id);
@@ -160,33 +161,21 @@ const ProductDetails = () => {
                   <Col xl={4}>
                     <div className="ps-0 ps-xl-3">
                       <Info title="Name" value={product?.name} />
-                      <Info
-                        title="Visibility"
-                        value={product?.productVisibility ? "Yes" : "No"}
-                      />
                       <Info title="Type" value={product?.type} />
+                      {product?.type === "food" && (
+                        <Info title="Food Type" value={product?.foodType} />
+                      )}
                       <Info
                         title="Minimum Order"
                         value={product?.orderQuantityMinimum}
                       />
-                      <Info
-                        title="Featured"
-                        value={product?.isFeatured ? "Yes" : "No"}
-                      />
                     </div>
                   </Col>
                   <Col xl={4}>
-                    <Info title="Price" value={product?.price} />
-                    <Info title="Discount" value={`${product?.discount}%`} />
+                    <Info title="Unit Type" value={product?.unit} />
+                    <Info title="Price" value={`${product?.price} NGN`} />
                     <Info title="Status" value={product?.status} />
-                    <Info
-                      title="Free Delivery"
-                      value={product?.freeDelivery ? "Yes" : "No"}
-                    />
-                    <Info
-                      title="Free Delivery"
-                      value={product?.freeDelivery ? "Yes" : "No"}
-                    />
+                    <Info title="SEO Title" value={product?.seoTitle} />
                   </Col>
                   <Col xl={4}>
                     <Info

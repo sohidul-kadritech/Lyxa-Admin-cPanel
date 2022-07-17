@@ -49,9 +49,7 @@ const ProductList = () => {
   } = useSelector((state) => state.productReducer);
   const { shops } = useSelector((state) => state.shopReducer);
 
-  const { account_type, _id: sellerId } = JSON.parse(
-    localStorage.getItem("admin")
-  );
+  const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
   const [shop, setShop] = useState(null);
 
@@ -60,6 +58,7 @@ const ProductList = () => {
       dispatch(updateShopType({ label: "All", value: "all" }));
       dispatch(updateShopSearchKey(""));
     }
+
     return;
   }, [account_type]);
 
@@ -68,8 +67,12 @@ const ProductList = () => {
     dispatch(
       getAllProduct(
         refresh,
-        searchParams.get("shopId"),
-        account_type === "seller" ? sellerId : null
+        searchParams.get("shopId")
+          ? searchParams.get("shopId")
+          : account_type === "shop"
+          ? Id
+          : null,
+        account_type === "seller" ? Id : null
       )
     );
   };
@@ -109,7 +112,7 @@ const ProductList = () => {
               callList={callProductList}
               isAddNew={true}
               addNewRoute="products/add"
-              params={`shopId=${shop?._id}`}
+              params={shop?._id ? `shopId=${shop?._id}` : null}
             />
 
             <Card>
@@ -183,8 +186,12 @@ const ProductList = () => {
                       dispatch(
                         getAllProduct(
                           true,
-                          searchParams.get("shopId"),
-                          account_type === "seller" ? sellerId : null,
+                          searchParams.get("shopId")
+                            ? searchParams.get("shopId")
+                            : account_type === "shop"
+                            ? Id
+                            : null,
+                          account_type === "seller" ? Id : null,
                           page
                         )
                       )

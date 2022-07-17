@@ -42,6 +42,20 @@ const CategoryList = () => {
   const [isZoom, setIsZoom] = useState(false);
   const [catImg, setCatImg] = useState("");
 
+  const {
+    account_type,
+    _id: Id,
+    shopType: adminShopType,
+  } = JSON.parse(localStorage.getItem("admin"));
+
+  useEffect(() => {
+    if (account_type === "shop") {
+      dispatch(updateCategoryShopType(adminShopType));
+    }
+
+    return;
+  }, [account_type]);
+
   useEffect(() => {
     if (shopType) {
       callCategoryList(true);
@@ -91,6 +105,7 @@ const CategoryList = () => {
                         id="demo-simple-select"
                         value={shopType}
                         label="Shop Type"
+                        disabled={account_type === "shop"}
                         onChange={(event) => {
                           dispatch(updateCategoryShopType(event.target.value));
                         }}

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const OrderTrackingMap = () => {
+const OrderTrackingMap = ({ pickup, dropoff }) => {
+  console.log({ pickup, dropoff });
+
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
   const [distance, setDistance] = useState("");
@@ -36,8 +38,8 @@ const OrderTrackingMap = () => {
   function calculateAndDisplayRoute(directionsService, directionsRenderer) {
     directionsService
       .route({
-        origin: { lat: 60.4843, lng: 15.434 },
-        destination: { lat: 57.2373, lng: 18.3767 },
+        origin: { lat: pickup?.latitude, lng: pickup?.longitude },
+        destination: { lat: dropoff?.latitude, lng: dropoff?.longitude },
         travelMode: google.maps.TravelMode.DRIVING,
       })
       .then((response) => {

@@ -53,7 +53,7 @@ export const logoutAdmin = () => (dispatch) => {
 };
 
 export const adminAuth = (user) => async (dispatch, getState) => {
-  console.log({ user });
+  // console.log({ user });
   try {
     // dispatch(loginUser(user));
 

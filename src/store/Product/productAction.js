@@ -14,7 +14,7 @@ import * as actionType from "../actionType";
 // ADD
 
 export const addProduct = (values) => async (dispatch) => {
-  // console.log({ values });
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_PRODUCT_REQUEST_SEND,
@@ -24,7 +24,7 @@ export const addProduct = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-    // console.log({ data });
+    console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");

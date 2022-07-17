@@ -16,7 +16,7 @@ const ShopAutocompleted = ({
       value={value}
       onChange={onChange}
       getOptionLabel={(option) => option.shopName}
-      isOptionEqualToValue={(option, item) => option._id == item._id}
+      isOptionEqualToValue={(option, item) => option?._id == item?._id}
       inputValue={searchKey}
       onInputChange={onInputChange}
       id="controllable-states-demo"

@@ -88,7 +88,6 @@ const ProductAdd = () => {
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
-
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
   const [addons, setAddons] = useState([]);
@@ -106,7 +105,7 @@ const ProductAdd = () => {
     },
   ]);
 
-  const { account_type, _id: sellerId } = JSON.parse(
+  const { account_type, _id: accountId } = JSON.parse(
     localStorage.getItem("admin")
   );
 
@@ -127,16 +126,22 @@ const ProductAdd = () => {
     dispatch(getAllUnitType(true));
   }, []);
 
+  // FIND SHOP BY SHOP ID
+
   useEffect(() => {
-    if (searchParams) {
+    if (searchParams || account_type === "shop") {
       const shopId = searchParams.get("shopId");
-      if (shopId) {
-        const findShop = shops.find((item) => item._id === shopId.toString());
-        setType(findShop?.shopType);
-        setShop(findShop);
+      if (shopId || accountId) {
+        const findShop = shops.find((item) => item._id === accountId || shopId);
+        if (findShop) {
+          setType(findShop?.shopType);
+          setShop(findShop);
+        } else {
+          history.push("/products/list", { replace: true });
+        }
       }
     }
-  }, [searchParams]);
+  }, [searchParams, account_type]);
 
   // CALL API FOR SINGLE PRODUCT
 
@@ -208,11 +213,13 @@ const ProductAdd = () => {
 
   // ALL SHOP LIST
   useEffect(() => {
-    if ((typeKey || searchKey) && type && !id) {
-      dispatch(getAllShop(true, account_type === "seller" ? sellerId : null));
+    if (account_type === "shop") {
+      dispatch(getAllShop(true));
+    } else if ((typeKey || searchKey) && type) {
+      dispatch(getAllShop(true, account_type === "seller" ? accountId : null));
     }
     return;
-  }, [type, typeKey, searchKey, id]);
+  }, [type, typeKey, searchKey, account_type]);
 
   // ALL SUB CATEGORY LIST
 
@@ -569,7 +576,9 @@ const ProductAdd = () => {
                           }}
                           options={shopTypeOptions2}
                           disabled={
-                            searchParams.get("shopId") != undefined || id
+                            searchParams.get("shopId") != undefined ||
+                            id ||
+                            account_type === "shop"
                               ? true
                               : false
                           }
@@ -586,7 +595,10 @@ const ProductAdd = () => {
                             }
                             list={shops}
                             disabled={
-                              !type || id || searchParams.get("shopId")
+                              !type ||
+                              id ||
+                              searchParams.get("shopId") ||
+                              account_type === "shop"
                                 ? true
                                 : false
                             }
@@ -694,7 +706,7 @@ const ProductAdd = () => {
                             }}
                             getOptionLabel={(option) => option.name}
                             isOptionEqualToValue={(option, value) =>
-                              option._id == value._id
+                              option?._id == value?._id
                             }
                             inputValue={searchCategoryKey}
                             onInputChange={(event, newInputValue) => {
@@ -743,7 +755,7 @@ const ProductAdd = () => {
                               option.name ? option.name : ""
                             }
                             isOptionEqualToValue={(option, value) =>
-                              option.id == value.id
+                              option?._id == value?._id
                             }
                             inputValue={searchSubCatKey}
                             onInputChange={(event, newInputValue) => {

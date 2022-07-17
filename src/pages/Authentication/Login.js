@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import MetaTags from "react-meta-tags";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Row, Col, CardBody, Card, Alert, Container } from "reactstrap";
 
@@ -18,12 +18,15 @@ import { adminAuth, apiError } from "../../store/actions";
 import logoSm from "../../assets/images/drop_logo.png";
 import { toast } from "react-toastify";
 import GlobalWrapper from "./../../components/GlobalWrapper";
-import styled from "styled-components";
+import { Switch } from "@mui/material";
+import { FormControlLabel } from "@material-ui/core";
 
 const Login = (props) => {
   const history = useHistory();
 
   const { admin, accessToken, message } = useSelector((state) => state.Login);
+
+  const [shopLogin, setShopLogin] = useState(false);
 
   useEffect(() => {
     // console.log(admin);
@@ -45,8 +48,7 @@ const Login = (props) => {
 
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
-    // console.log(props.history)
-    props.adminAuth(values, props.history);
+    props.adminAuth({ ...values, shopLogin }, props.history);
   };
 
   return (
@@ -88,6 +90,28 @@ const Login = (props) => {
                             {"Invalid Gmail/Password"}
                           </Alert>
                         ) : null}
+
+                        <div className="mb-3">
+                          {/* <Switch
+                            name="shopLogin"
+                            checked={shopLogin}
+                            onChange={(e) => {
+                              setShopLogin(e.target.checked);
+                            }}
+                            inputProps={{ "aria-label": "controlled" }}
+                          /> */}
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={shopLogin}
+                                onChange={(e) => {
+                                  setShopLogin(e.target.checked);
+                                }}
+                              />
+                            }
+                            label="Sign in as Shop"
+                          />
+                        </div>
 
                         <div className="mb-3">
                           <AvField

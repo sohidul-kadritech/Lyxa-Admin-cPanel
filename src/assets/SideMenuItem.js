@@ -573,7 +573,7 @@ export const shopMenuItem = [
     submenu: [
       {
         id: 41,
-        name: "Seller TRX",
+        name: "Shop TRX",
         icon: "fas fa-exchange-alt",
         link: "/add-wallet/seller-transactions",
         isSubmenu: false,

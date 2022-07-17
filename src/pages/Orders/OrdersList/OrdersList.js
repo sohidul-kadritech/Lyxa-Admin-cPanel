@@ -48,16 +48,18 @@ const OrdersList = () => {
     status,
   } = useSelector((state) => state.orderReducer);
 
-  const { account_type, _id: sellerId } = JSON.parse(
-    localStorage.getItem("admin")
-  );
+  const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
   const callOrderList = (refresh = false) => {
     dispatch(
       getAllOrder(
         refresh,
-        searchParams.get("shopId"),
-        account_type === "seller" ? sellerId : null
+        searchParams.get("shopId")
+          ? searchParams.get("shopId")
+          : account_type === "shop"
+          ? Id
+          : null,
+        account_type === "seller" ? Id : null
       )
     );
   };
@@ -214,8 +216,12 @@ const OrdersList = () => {
                       dispatch(
                         getAllOrder(
                           true,
-                          null,
-                          account_type === "seller" ? sellerId : null,
+                          searchParams.get("shopId")
+                            ? searchParams.get("shopId")
+                            : account_type === "shop"
+                            ? Id
+                            : null,
+                          account_type === "seller" ? Id : null,
                           page
                         )
                       )

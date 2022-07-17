@@ -36,11 +36,26 @@ const CategoryAdd = () => {
     (state) => state.categoryReducer
   );
 
+  const { account_type, shopType: adminShopType } = JSON.parse(
+    localStorage.getItem("admin")
+  );
+
   const [name, setName] = useState("");
   const [type, setType] = useState(null);
 
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (account_type === "shop") {
+      const finType = shopTypeOptions2.find(
+        (item) => item.value === adminShopType
+      );
+      setType(finType);
+    }
+
+    return;
+  }, [account_type]);
 
   useEffect(() => {
     if (id) {
@@ -167,7 +182,7 @@ const CategoryAdd = () => {
         history.goBack();
       } else {
         setName("");
-        setType(null);
+        setType(account_type !== "shop" ? null : type);
         setImage(null);
         window.scroll(0, 0);
       }
@@ -207,20 +222,22 @@ const CategoryAdd = () => {
                       />
                     </div>
                   </Col>
-                  <Col lg={6} className="mt-3 mt-lg-0">
-                    <Label>Shop Type</Label>
-                    <Select
-                      onChange={(event) => {
-                        setType(event);
-                      }}
-                      value={type}
-                      defaultValue={""}
-                      palceholder="Select Shop Type"
-                      options={shopTypeOptions2}
-                      classNamePrefix="select2-selection"
-                      required
-                    />
-                  </Col>
+                  {account_type !== "shop" && (
+                    <Col lg={6} className="mt-3 mt-lg-0">
+                      <Label>Shop Type</Label>
+                      <Select
+                        onChange={(event) => {
+                          setType(event);
+                        }}
+                        value={type}
+                        defaultValue={""}
+                        palceholder="Select Shop Type"
+                        options={shopTypeOptions2}
+                        classNamePrefix="select2-selection"
+                        required
+                      />
+                    </Col>
+                  )}
                 </Row>
 
                 {type?.value !== "food" && (

@@ -110,14 +110,13 @@ const OrderDetails = () => {
                       value={`${order?.deliveryDistance} KM`}
                     />
                     <Info
-                      title="Delivery Fee(Total)"
-                      value={order?.finalDeliveryCharge}
+                      title="Drop Fee From Delivery"
+                      value={`${order?.dropCharge?.dropChargeFromDelivery} NGN`}
                     />
                     <Info
-                      title="Delivery Fee(Per/Km)"
-                      value={order?.deliveryFeePerKm}
+                      title="Drop Fee From Order"
+                      value={`${order?.dropCharge?.dropChargeFromOrder} NGN`}
                     />
-                    <Info title="Drop Fee" value={order?.dropCharge} />
                   </Col>
 
                   <Col lg={6}>
@@ -310,8 +309,9 @@ const OrderDetails = () => {
                       <Th>Product</Th>
                       <Th>Type</Th>
                       <Th>Quantity</Th>
-                      <Th>Price</Th>
-                      <Th>Total Price</Th>
+                      <Th>Price(NGN)</Th>
+                      <Th>Discount(NGN)</Th>
+                      <Th>Total Price(NGN)</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
@@ -345,7 +345,8 @@ const OrderDetails = () => {
                           <Td>{item?.product?.type}</Td>
                           <Td>{item?.productQuantity}</Td>
                           <Td>{item?.productPrice}</Td>
-                          <Td>{item?.productTotalPrice}</Td>
+                          <Td>{item?.discount}</Td>
+                          <Td>{item?.finalPrice}</Td>
                         </Tr>
                       );
                     })}
@@ -363,27 +364,27 @@ const OrderDetails = () => {
                     <CardTitle className="h4">Delivery Address</CardTitle>
                     <hr />
                     <DeliveryAddress>
-                      <i className="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker-alt"></i>
                       <span className="ms-2 address ">
-                        {`Full Address: ${order?.orderDeliveryAddress?.address}`}
+                        {`Full Address: ${order?.dropOffLocation?.address}`}
                       </span>
                     </DeliveryAddress>
                     <DeliveryAddress>
-                      <i className="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker-alt"></i>
                       <span className="ms-2 address">
-                        {`State: ${order?.orderDeliveryAddress?.state}`}
+                        {`State: ${order?.dropOffLocation?.state}`}
                       </span>
                     </DeliveryAddress>
                     <DeliveryAddress>
-                      <i className="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker-alt"></i>
                       <span className="ms-2 address">
-                        {`City: ${order?.orderDeliveryAddress?.city}`}
+                        {`City: ${order?.dropOffLocation?.city}`}
                       </span>
                     </DeliveryAddress>
                     <DeliveryAddress>
-                      <i className="fa fa-map-marker"></i>
+                      <i className="fa fa-map-marker-alt"></i>
                       <span className="ms-2 address">
-                        {`Country: ${order?.orderDeliveryAddress?.country}`}
+                        {`Country: ${order?.dropOffLocation?.country}`}
                       </span>
                     </DeliveryAddress>
                   </CardBody>
@@ -397,24 +398,23 @@ const OrderDetails = () => {
 
                     <Summery>
                       <div className="item">
-                        <span>Subtotal</span>
+                        <span>Products Amount</span>
                         <span className="value">
-                          {order?.summary?.netPrice}
+                          {order?.summary?.productAmount} NGN
                         </span>
                       </div>
-                      {/* <div className='item'>
-                          <span>Coupon Discount</span>
-                          <span>{order?.summery?.coupon}</span>
-                        </div> */}
+
                       <div className="item">
                         <span>Delivery Charge</span>
                         <span className="value">
-                          {order?.summary?.deliveryCharge}
+                          {order?.summary?.deliveryFee} NGN
                         </span>
                       </div>
                       <div className="item">
                         <span>Payable Total</span>
-                        <span className="value">{order?.summary?.total}</span>
+                        <span className="value">
+                          {order?.summary?.totalAmount} NGN
+                        </span>
                       </div>
                     </Summery>
                   </CardBody>
@@ -424,7 +424,10 @@ const OrderDetails = () => {
 
             <Row>
               <Col md={12}>
-                <OrderTrackingMap />
+                <OrderTrackingMap
+                  pickup={order?.pickUpLocation}
+                  dropoff={order?.dropOffLocation}
+                />
               </Col>
             </Row>
           </Container>
@@ -436,13 +439,9 @@ const OrderDetails = () => {
 
 const DeliveryAddress = styled.div`
   .address {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 500;
     font-family: "Courier New", Courier, monospace;
-    &.value {
-      font-weight: "bold";
-      color: "green";
-    }
   }
 `;
 
@@ -460,6 +459,11 @@ const Summery = styled.div`
 
     &:last-child {
       border-bottom: none;
+    }
+
+    .value {
+      font-weight: bold;
+      color: green;
     }
   }
 `;
