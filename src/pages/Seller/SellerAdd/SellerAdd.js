@@ -106,9 +106,7 @@ const SellerAdd = () => {
       account_number,
       bank_name,
       company_name,
-      dob,
       email,
-      gender,
       name,
       phone_number,
       certificate_of_incorporation,
@@ -348,6 +346,8 @@ const SellerAdd = () => {
           sellerType,
           subType,
           sellerStatus,
+          gender: "male",
+          dob: "5/5/1997",
         })
       );
     }
@@ -526,6 +526,45 @@ const SellerAdd = () => {
                     </Row>
                   )}
 
+                  {!id && (
+                    <Row className="mt-4">
+                      <Col xl={6} className="mt-4 mt-xl-0">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Zip Code"
+                          variant="outlined"
+                          placeholder="Enter Zip Code"
+                          value={pin}
+                          onChange={(e) => setPin(e.target.value)}
+                          required
+                        />
+                      </Col>
+
+                      <Col xl={6}>
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Seller Type
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={sellerType}
+                            label="seller type"
+                            onChange={(e) => {
+                              setSellerType(e.target.value);
+                              setSubType("");
+                            }}
+                          >
+                            <MenuItem value="food">Food</MenuItem>
+                            <MenuItem value="grocery">Grocery</MenuItem>
+                            <MenuItem value="pharmacy">Pharmacy</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Col>
+                    </Row>
+                  )}
+
                   <Row className="mt-4">
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <TextField
@@ -556,14 +595,13 @@ const SellerAdd = () => {
                   <Row className="mt-4">
                     <Col xl={6}>
                       <TextField
-                        id="outlined-textarea"
-                        name="phone"
-                        label="Phone Number"
-                        placeholder="Enter Phone Number"
                         style={{ width: "100%" }}
-                        type="tel"
-                        value={phoneNum}
-                        onChange={(e) => setPhoneNum(e.target.value.toString())}
+                        id="outlined-basic"
+                        label="Account Name"
+                        variant="outlined"
+                        placeholder="Enter Account Name"
+                        value={accountName}
+                        onChange={(e) => setAccountName(e.target.value)}
                         required
                       />
                     </Col>
@@ -584,16 +622,18 @@ const SellerAdd = () => {
                   <Row className="mt-4">
                     <Col xl={6}>
                       <TextField
+                        id="outlined-textarea"
+                        name="phone"
+                        label="Phone Number"
+                        placeholder="Enter Phone Number"
                         style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Account Name"
-                        variant="outlined"
-                        placeholder="Enter Account Name"
-                        value={accountName}
-                        onChange={(e) => setAccountName(e.target.value)}
+                        type="tel"
+                        value={phoneNum}
+                        onChange={(e) => setPhoneNum(e.target.value.toString())}
                         required
                       />
                     </Col>
+
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
@@ -614,46 +654,8 @@ const SellerAdd = () => {
                     </Col>
                   </Row>
 
-                  {!id && (
-                    <Row className="mt-4">
-                      <Col xl={6}>
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Seller Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={sellerType}
-                            label="seller type"
-                            onChange={(e) => {
-                              setSellerType(e.target.value);
-                              setSubType("");
-                            }}
-                          >
-                            <MenuItem value="food">Food</MenuItem>
-                            <MenuItem value="grocery">Grocery</MenuItem>
-                            <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Col>
-                      <Col xl={6} className="mt-4 mt-xl-0">
-                        <TextField
-                          style={{ width: "100%" }}
-                          id="outlined-basic"
-                          label="Pin Code"
-                          variant="outlined"
-                          placeholder="Enter Pin Code"
-                          value={pin}
-                          onChange={(e) => setPin(e.target.value)}
-                          required
-                        />
-                      </Col>
-                    </Row>
-                  )}
-
                   <Row className="mt-4">
-                    <Col xl={6}>
+                    {/* <Col xl={6}>
                       {sellerType && sellerType == "food" && (
                         <FormControl fullWidth required>
                           <InputLabel id="demo-simple-select-label">
@@ -694,7 +696,7 @@ const SellerAdd = () => {
                           </Select>
                         </FormControl>
                       )}
-                    </Col>
+                    </Col> */}
                   </Row>
                   <Row className="mt-4">
                     <Col xl={6}>

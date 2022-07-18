@@ -11,6 +11,7 @@ import { successMsg } from "../../helpers/successMsg";
 
 // ADD
 export const addSeller = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SELLER_REQUEST_SEND,
@@ -19,6 +20,8 @@ export const addSeller = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
+
+    console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -140,7 +143,6 @@ export const deleteSeller = (id) => async (dispatch) => {
 
     if (data.status) {
       successMsg(data.message, "success");
- 
 
       dispatch({
         type: actionType.DELETE_SELLER_REQUEST_SUCCESS,

@@ -9,12 +9,13 @@ import { SINGLE_USER } from "../../../network/Api";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
+import OrderTable from "../../../components/OrderTable";
 
 const UserDetails = () => {
   const { id } = useParams();
   const history = useHistory();
 
-  const { loading, users } = useSelector((state) => state.usersReducer);
+  const { users } = useSelector((state) => state.usersReducer);
 
   const [user, setUser] = useState({});
 
@@ -22,10 +23,8 @@ const UserDetails = () => {
     if (id) {
       const findUser = users.find((user) => user.id == id);
       if (findUser) {
-        console.log({ findUser });
         setUser(findUser);
       } else {
-        // console.log("call api---");
         callApi(id);
       }
     } else {
@@ -99,6 +98,10 @@ const UserDetails = () => {
                 </Card>
               </Col>
             </Row>
+
+            <div>
+              <OrderTable />
+            </div>
           </Container>
         </div>
       </GlobalWrapper>
