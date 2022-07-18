@@ -47,8 +47,6 @@ const DealsList = () => {
     }
   }, [type]);
 
-
-
   const callDealList = (refresh = false) => {
     dispatch(getAllDeal(refresh));
   };
@@ -168,7 +166,7 @@ const DealsList = () => {
                                 }}
                               />
                             )}
-                            {item?.option}
+                            {item?.name}
                           </Th>
 
                           <Td>{item?.type}</Td>

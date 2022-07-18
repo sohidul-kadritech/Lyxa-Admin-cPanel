@@ -108,10 +108,7 @@ const DeliverymanDetails = () => {
                     <div>
                       <Info title="Name" value={deliveryMan?.name} />
                       <Info title="Email" value={deliveryMan?.email} />
-                      <Info
-                        title="Address"
-                        value={deliveryMan?.address?.address}
-                      />
+                      <Info title="Phone" value={deliveryMan?.number} />
 
                       <Info title="Status" value={deliveryMan?.status} />
                       <Info
@@ -127,7 +124,7 @@ const DeliverymanDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col xl={6}>
+              <Col lg={6}>
                 <Card>
                   <CardBody>
                     <div>

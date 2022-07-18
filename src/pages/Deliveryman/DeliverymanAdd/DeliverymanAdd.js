@@ -73,7 +73,6 @@ const DeliverymanAdd = () => {
     if (id) {
       const findDeliveryMan = deliveryMans.find((man) => man._id == id);
       if (findDeliveryMan) {
-
         updateData(findDeliveryMan);
         // handleAddressSelect()
       } else {
@@ -92,7 +91,6 @@ const DeliverymanAdd = () => {
         },
       });
       if (status) {
-
         updateData(data.delivery);
       } else {
       }
@@ -104,10 +102,21 @@ const DeliverymanAdd = () => {
   // UPDATE DATA
 
   const updateData = (data) => {
-    const { name, email, number, status,nationalIdDocument,vehicleRegistrationDocument,vehicleType, vehicleNumber } = data;
+    const {
+      name,
+      email,
+      number,
+      status,
+      nationalIdDocument,
+      vehicleRegistrationDocument,
+      vehicleType,
+      vehicleNumber,
+    } = data;
     const findStatus = activeOptions.find((option) => option.value === status);
-    const findVahicleType = DeliveryBoyVehicleOPtions.find((option) => option.value === vehicleType);
-
+    const findVahicleType = DeliveryBoyVehicleOPtions.find(
+      (option) => option.value === vehicleType
+    );
+    console.log({ data });
     setName(name);
     setEmail(email);
     setPhone(number);
@@ -116,13 +125,11 @@ const DeliverymanAdd = () => {
     setVehicleDoc(vehicleRegistrationDocument);
     setVehicleType(findVahicleType);
     setVehicleNum(vehicleNumber);
-
   };
 
   // ADDRESS CHANGE
 
   const handleAddressChange = (address) => {
-
     setSelectedAddress(address);
   };
 
@@ -233,7 +240,6 @@ const DeliverymanAdd = () => {
       });
 
       if (data.status) {
-
         return data.data.url;
       } else {
         console.log(data.error);
@@ -266,7 +272,7 @@ const DeliverymanAdd = () => {
           name,
           email,
           password,
-         number: phone,
+          number: phone,
           address: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -311,8 +317,6 @@ const DeliverymanAdd = () => {
       }
     }
   }, [status]);
-
-
 
   // IMAGE
 
@@ -369,7 +373,7 @@ const DeliverymanAdd = () => {
                         </div>
 
                         <div className="mb-4">
-                          <Label>Phone phone</Label>
+                          <Label>Phone</Label>
                           <input
                             className="form-control"
                             name="phone"
@@ -380,78 +384,7 @@ const DeliverymanAdd = () => {
                             onChange={(e) => setPhone(e.target.value)}
                           />
                         </div>
-                        {!id && (
-                          <div className="mb-4">
-                            <Label>Pin Code</Label>
-                            <input
-                              className="form-control"
-                              type="number"
-                              name="pin"
-                              placeholder="Enter Pin Code"
-                              required
-                              value={pin}
-                              onChange={(e) => setPin(e.target.value)}
-                            />
-                          </div>
-                        )}
 
-                        <div className="mb-4">
-                          <label className="control-label">Vehicle Type</label>
-                          <Select
-                            palceholder="Select Vahicle Type"
-                            options={DeliveryBoyVehicleOPtions}
-                            classNamePrefix="select2-selection"
-                            name="vahicaleType"
-                            required
-                            value={vehicleType}
-                            onChange={(e) => setVehicleType(e)}
-                            defaultValue={""}
-                          />
-                        </div>
-                      </Col>
-
-                      <Col lg={6}>
-                        <div className="mb-4">
-                          <Label>Email</Label>
-                          <input
-                            className="form-control"
-                            type="email"
-                            name="email"
-                            placeholder="Enter Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                          />
-                        </div>
-
-                        {id ? (
-                          <div className="mb-4">
-                            <label className="control-label">Status</label>
-                            <Select
-                              palceholder="Select Status"
-                              name="status"
-                              options={activeOptions}
-                              classNamePrefix="select2-selection"
-                              required
-                              value={activeStatus}
-                              onChange={(e) => setActiveStatus(e)}
-                              defaultValue={""}
-                            />
-                          </div>
-                        ) : (
-                          <div className="mb-4">
-                            <Label>Password</Label>
-                            <input
-                              className="form-control"
-                              type="text"
-                              name="password"
-                              placeholder="Enter Password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              required
-                            />
-                          </div>
-                        )}
                         {!id && (
                           <div className="mb-4">
                             <Label>Address</Label>
@@ -538,12 +471,85 @@ const DeliverymanAdd = () => {
                             </PlacesAutocomplete>
                           </div>
                         )}
+
+                        <div className="mb-4">
+                          <label className="control-label">Vehicle Type</label>
+                          <Select
+                            palceholder="Select Vahicle Type"
+                            options={DeliveryBoyVehicleOPtions}
+                            classNamePrefix="select2-selection"
+                            name="vahicaleType"
+                            required
+                            value={vehicleType}
+                            onChange={(e) => setVehicleType(e)}
+                            defaultValue={""}
+                          />
+                        </div>
+                      </Col>
+
+                      <Col lg={6}>
+                        <div className="mb-4">
+                          <Label>Email</Label>
+                          <input
+                            className="form-control"
+                            type="email"
+                            name="email"
+                            placeholder="Enter Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        {id ? (
+                          <div className="mb-4">
+                            <label className="control-label">Status</label>
+                            <Select
+                              palceholder="Select Status"
+                              name="status"
+                              options={activeOptions}
+                              classNamePrefix="select2-selection"
+                              required
+                              value={activeStatus}
+                              onChange={(e) => setActiveStatus(e)}
+                              defaultValue={""}
+                            />
+                          </div>
+                        ) : (
+                          <div className="mb-4">
+                            <Label>Password</Label>
+                            <input
+                              className="form-control"
+                              type="text"
+                              name="password"
+                              placeholder="Enter Password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              required
+                            />
+                          </div>
+                        )}
+                        {!id && (
+                          <div className="mb-4">
+                            <Label>Zip Code</Label>
+                            <input
+                              className="form-control"
+                              type="number"
+                              name="pin"
+                              placeholder="Enter Zip Code"
+                              required
+                              value={pin}
+                              onChange={(e) => setPin(e.target.value)}
+                            />
+                          </div>
+                        )}
+
                         <div className="mb-4">
                           <Label>Vehicle Number</Label>
                           <input
                             className="form-control"
                             type="text"
-                            name='vahicleNumber'
+                            name="vahicleNumber"
                             placeholder="Enter Vahicle Number"
                             value={vehicleNum}
                             onChange={(e) => setVehicleNum(e.target.value)}

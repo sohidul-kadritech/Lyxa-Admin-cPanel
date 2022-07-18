@@ -17,15 +17,15 @@ import {
   getAllAdminSettings,
   updateAdminSettings,
   updateGoogleMapApiKey,
-  updateSearchDeliveryBoyKm,  
-  removeSearchDeliveryBoyKm
+  updateSearchDeliveryBoyKm,
+  removeSearchDeliveryBoyKm,
 } from "../../store/Settings/settingsAction";
 import { toast } from "react-toastify";
 
 const AdminSettings = () => {
   const dispatch = useDispatch();
 
-  const { googleMapKey, loading,searchDeliveryBoyKm } = useSelector(
+  const { googleMapKey, loading, searchDeliveryBoyKm } = useSelector(
     (state) => state.settingsReducer
   );
 
@@ -38,22 +38,34 @@ const AdminSettings = () => {
   // DISPATCH AREA SEARCH KEY
 
   const handleKmAdd = (evt) => {
-
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
       let value = areaChangeKey.trim();
 
+      if (searchDeliveryBoyKm.length === 3) {
+        return toast.warn("Maximum 3 items can add", {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+
+      console.log({ value });
+
       if (value) {
-        setAreaChangeKey("")
-        dispatch(updateSearchDeliveryBoyKm(value))
+        setAreaChangeKey("");
+        dispatch(updateSearchDeliveryBoyKm(value));
       }
     }
   };
 
-  // DISPATCH REMOVE KM 
-
-
+  // DISPATCH REMOVE KM
 
   const updateSettings = () => {
     if (!googleMapKey) {
@@ -114,29 +126,28 @@ const AdminSettings = () => {
                       value={areaChangeKey}
                       type="number"
                       onKeyDown={handleKmAdd}
-                      onChange={e => setAreaChangeKey(e.target.value)}
-
+                      onChange={(e) => setAreaChangeKey(e.target.value)}
                       required
                     />
                     {searchDeliveryBoyKm.length > 0 && (
-                        <Paper className="mt-4 p-3">
-                          {searchDeliveryBoyKm.map((item, index) => (
-                            <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          ))}
-                        </Paper>
-                      )}
+                      <Paper className="mt-4 p-3">
+                        {searchDeliveryBoyKm.map((item, index) => (
+                          <div className="tag__wrapper" key={index}>
+                            {item}
+                            <button
+                              type="button"
+                              className="button"
+                              onClick={() =>
+                                dispatch(removeSearchDeliveryBoyKm(index))
+                              }
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                      </Paper>
+                    )}
                   </Col>
-
-                  
                 </Row>
 
                 <div className="d-flex justify-content-center mt-5 mb-2">

@@ -140,12 +140,12 @@ const DeliverymanList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Profile Pic</Th>
+                      {/* <Th>Profile Pic</Th> */}
                       <Th>Name</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
-                      <Th>Delivered Order</Th>
+                      {/* <Th>Delivered Order</Th> */}
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -160,7 +160,7 @@ const DeliverymanList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th className="d-flex justify-content-center align-items-center">
+                          {/* <Th className="d-flex justify-content-center align-items-center">
                             <div className="image__wrapper">
                               <img
                                 // onClick={() => {
@@ -177,12 +177,12 @@ const DeliverymanList = () => {
                                 }}
                               />
                             </div>
-                          </Th>
-                          <Td>{item?.name}</Td>
-                          <Td>{item.email}</Td>
-                          <Td>{item.phone_number}</Td>
+                          </Th> */}
+                          <Th>{item?.name}</Th>
+                          <Td>{item?.email}</Td>
+                          <Td>{item?.number}</Td>
                           <Td>{item.status}</Td>
-                          <Td>{"delivered order"}</Td>
+                          {/* <Td>{"delivered order"}</Td> */}
                           <Td>
                             <div>
                               <Tooltip title="Edit">

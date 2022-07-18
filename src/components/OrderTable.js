@@ -28,13 +28,9 @@ import { getAllOrder, orderUpdateStatus } from "../store/order/orderAction";
 import { useEffect } from "react";
 import { allDeliveryMan } from "../store/DeliveryMan/DeliveryManAction";
 
-const OrderTable = () => {
+const OrderTable = ({ orders = [], status, loading }) => {
   const history = useHistory();
   const dispatch = useDispatch();
-
-  const { orders, loading, status } = useSelector(
-    (state) => state.orderReducer
-  );
 
   const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
 
@@ -109,7 +105,7 @@ const OrderTable = () => {
                 </Tr>
               </Thead>
               <Tbody style={{ position: "relative" }}>
-                {orders.map((item, index) => {
+                {orders?.map((item, index) => {
                   return (
                     <Tr
                       key={index}
@@ -149,7 +145,7 @@ const OrderTable = () => {
                             <button
                               className="btn btn-info button"
                               onClick={() => {
-                                history.push(`/orders/details/${item._id}`);
+                                history.push(`/orders/details/${item?._id}`);
                               }}
                             >
                               <i className="fa fa-eye" />
@@ -167,7 +163,7 @@ const OrderTable = () => {
                 <Spinner animation="border" variant="success" />
               </div>
             )}
-            {!loading && orders.length < 1 && (
+            {!loading && orders?.length < 1 && (
               <div className="text-center">
                 <h4>No Order!</h4>
               </div>

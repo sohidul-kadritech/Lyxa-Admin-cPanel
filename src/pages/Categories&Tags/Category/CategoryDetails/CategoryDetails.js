@@ -38,6 +38,7 @@ import formatBytes from "../../../../common/imageFormatBytes";
 import { successMsg } from "../../../../helpers/successMsg";
 import Info from "../../../../components/Info";
 import Search from "../../../../components/Search";
+import { statusOptions, statusOptions2 } from "../../../../assets/staticData";
 
 const CategoryDetails = () => {
   const { id } = useParams();
@@ -71,17 +72,6 @@ const CategoryDetails = () => {
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const options = [
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-  ];
-
-  const filterOptions = [
-    { label: "All", value: "all" },
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-  ];
 
   useEffect(() => {
     if (id) {
@@ -134,7 +124,7 @@ const CategoryDetails = () => {
     const findSubCategory = subCategories.find((sub) => sub._id == subId);
 
     const { name, slug, status, image } = findSubCategory;
-    const findStatus = options.find((op) => op.value == status);
+    const findStatus = statusOptions2.find((op) => op.value == status);
 
     setName(name);
     setSlug(slug);
@@ -312,8 +302,8 @@ const CategoryDetails = () => {
                     </div>
 
                     <Row className="pt-3">
-                      <Col md={6}>
-                        {category ? (
+                      {category?.image && (
+                        <Col md={6}>
                           <div className="d-flex justify-content-center align-items-center flex-wrap ">
                             <img
                               className="rounded-circle avatar-xl cursor-pointer"
@@ -325,9 +315,12 @@ const CategoryDetails = () => {
                               }}
                             />
                           </div>
-                        ) : null}
-                      </Col>
-                      <Col md={6} className=" mt-5 mt-md-0">
+                        </Col>
+                      )}
+                      <Col
+                        md={category?.image ? 6 : 12}
+                        className=" mt-5 mt-md-0"
+                      >
                         <div className="ps-4 ">
                           <Info title="Name" value={category?.name} />
                           <Info title="Type" value={category?.type} />
@@ -340,303 +333,308 @@ const CategoryDetails = () => {
               </Col>
             </Row>
 
-            <Row>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <h5>{subCatId ? "Edit" : "Add"} Sub Category</h5>
-                    <hr />
-                    <div>
-                      <div className="mb-2">
-                        <Label>Name</Label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Enter Sub Category Name"
-                          value={name}
-                          onChange={handleChangeName}
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <Label>Status</Label>
-                        <Select
-                          onChange={(event) => {
-                            setActiveStatus(event);
-                          }}
-                          value={activeStatus}
-                          defaultValue={""}
-                          palceholder="Select Shop Type"
-                          options={options}
-                          classNamePrefix="select2-selection"
-                          required
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <Label>Upload Image</Label>
-                        <div>
-                          <Form>
-                            <Dropzone
-                              onDrop={(acceptedFiles) => {
-                                handleAcceptedFiles(acceptedFiles);
-                              }}
-                            >
-                              {({ getRootProps, getInputProps }) => (
-                                <div className="dropzone">
-                                  <div
-                                    className="dz-message needsclick"
-                                    {...getRootProps()}
-                                    // onClick={() => setmodal_fullscreen(true)}
-                                  >
-                                    <input {...getInputProps()} />
-                                    <div className="mb-3">
-                                      <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                    </div>
-                                    <h4>Drop files here or click to upload.</h4>
-                                  </div>
-                                </div>
-                              )}
-                            </Dropzone>
-                            <div
-                              className="dropzone-previews mt-3"
-                              id="file-previews"
-                            >
-                              {image && (
-                                <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                                  <div className="p-2">
-                                    <Row className="align-items-center position-relative">
-                                      <Col className="col-auto">
-                                        <img
-                                          data-dz-thumbnail=""
-                                          // height="80"
-                                          style={{
-                                            maxWidth: "80px",
-                                          }}
-                                          className=" bg-light"
-                                          src={
-                                            image.preview
-                                              ? image.preview
-                                              : image
-                                          }
-                                          alt=""
-                                        />
-                                      </Col>
-                                      <Col>
-                                        <Link
-                                          to="#"
-                                          className="text-muted font-weight-bold"
-                                        >
-                                          {image.name
-                                            ? image.name
-                                            : "Product Image"}
-                                        </Link>
-                                        <p className="mb-0">
-                                          <strong>
-                                            {image.formattedSize &&
-                                              image.formattedSize}
-                                          </strong>
-                                        </p>
-                                      </Col>
-
-                                      <div
-                                        className="position-absolute"
-                                        style={{
-                                          left: "0px",
-                                          top: "0px",
-                                          width: "100%",
-                                          display: "flex",
-                                          justifyContent: "flex-end",
-                                        }}
-                                      >
-                                        <i
-                                          onClick={() => setImage(null)}
-                                          className="mdi mdi-delete text-danger "
-                                          style={{
-                                            fontSize: "25px",
-                                            cursor: "pointer",
-                                          }}
-                                        ></i>
-                                      </div>
-                                    </Row>
-                                  </div>
-                                </Card>
-                              )}
-                            </div>
-                          </Form>
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-center">
-                        <Button
-                          onClick={submitSubCategory}
-                          color="success"
-                          className="px-5"
-                        >
-                          {loading ? (
-                            <Spinner
-                              animation="border"
-                              variant="info"
-                              size="sm"
-                            />
-                          ) : subCatId ? (
-                            "Edit"
-                          ) : (
-                            "Add"
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <Row>
-                      <Col lg={4}>
-                        <div className="mb-4">
-                          <label className="control-label">Status</label>
-                          <Select
-                            palceholder="Select Status"
-                            options={filterOptions}
-                            classNamePrefix="select2-selection"
-                            required
-                            value={subStatusKey}
-                            onChange={(e) => dispatch(updateSubCatStatusKey(e))}
+            {category?.type !== "food" && (
+              <Row>
+                <Col xl={6}>
+                  <Card>
+                    <CardBody>
+                      <h5>{subCatId ? "Edit" : "Add"} Sub Category</h5>
+                      <hr />
+                      <div>
+                        <div className="mb-2">
+                          <Label>Name</Label>
+                          <input
+                            className="form-control"
+                            type="text"
+                            placeholder="Enter Sub Category Name"
+                            value={name}
+                            onChange={handleChangeName}
                           />
                         </div>
-                      </Col>
-                      <Col lg={8}>
-                        <Search dispatchFunc={updateSubCatSearchKey} />
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-
-                <Card>
-                  <CardBody>
-                    <CardTitle className="h4 mb-2">Sub Category List</CardTitle>
-
-                    <Table
-                      id="tech-companies-1"
-                      className="table table__wrapper table-striped table-bordered table-hover text-center"
-                    >
-                      <Thead>
-                        <Tr>
-                          <Th>Image</Th>
-                          <Th>Name</Th>
-                          <Th>Status</Th>
-                          <Th>Action</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody style={{ position: "relative" }}>
-                        {subCategories.map((item, index) => {
-                          return (
-                            <Tr
-                              key={index}
-                              className="align-middle"
-                              style={{
-                                fontSize: "15px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              <Th style={{ height: "50px", maxWidth: "100px" }}>
-                                <img
-                                  onClick={() => {
-                                    setSelectedImg(item?.image);
-                                    setIsOpen(true);
-                                  }}
-                                  className="img-fluid cursor-pointer"
-                                  alt=""
-                                  src={item.image}
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "contain",
-                                  }}
-                                />
-                              </Th>
-
-                              <Td>{item.name}</Td>
-                              <Td>{item.status}</Td>
-                              <Td>
-                                <div>
-                                  <Tooltip title="Edit">
-                                    <button
-                                      className="btn btn-success me-3 button"
-                                      onClick={() =>
-                                        handleEditSubCategory(item._id)
-                                      }
+                        <div className="mb-2">
+                          <Label>Status</Label>
+                          <Select
+                            onChange={(event) => {
+                              setActiveStatus(event);
+                            }}
+                            value={activeStatus}
+                            defaultValue={""}
+                            palceholder="Select Shop Type"
+                            options={statusOptions2}
+                            classNamePrefix="select2-selection"
+                            required
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <Label>Upload Image</Label>
+                          <div>
+                            <Form>
+                              <Dropzone
+                                onDrop={(acceptedFiles) => {
+                                  handleAcceptedFiles(acceptedFiles);
+                                }}
+                              >
+                                {({ getRootProps, getInputProps }) => (
+                                  <div className="dropzone">
+                                    <div
+                                      className="dz-message needsclick"
+                                      {...getRootProps()}
+                                      // onClick={() => setmodal_fullscreen(true)}
                                     >
-                                      <i className="fa fa-edit" />
-                                    </button>
-                                  </Tooltip>
-                                  <Tooltip title="Delete">
-                                    <button
-                                      className="btn btn-danger button"
-                                      onClick={() => setconfirm_alert(true)}
-                                    >
-                                      <i className="fa fa-trash" />
-                                    </button>
-                                  </Tooltip>
-                                  {confirm_alert ? (
-                                    <SweetAlert
-                                      title="Are you sure?"
-                                      warning
-                                      showCancel
-                                      confirmButtonText="Yes, delete it!"
-                                      confirmBtnBsStyle="success"
-                                      cancelBtnBsStyle="danger"
-                                      onConfirm={() => {
-                                        handleDelete(item._id);
-                                        setconfirm_alert(false);
-                                        setsuccess_dlg(true);
-                                        setdynamic_title("Deleted");
-                                        setdynamic_description(
-                                          "Your file has been deleted."
-                                        );
-                                      }}
-                                      onCancel={() => setconfirm_alert(false)}
-                                    >
-                                      Are You Sure! You want to delete this
-                                      Shop.
-                                    </SweetAlert>
-                                  ) : null}
-                                </div>
-                              </Td>
-                            </Tr>
-                          );
-                        })}
-                      </Tbody>
-                    </Table>
-                    {!loading && subCategories.length < 1 && (
-                      <div className="text-center">
-                        <h4>No Data...</h4>
+                                      <input {...getInputProps()} />
+                                      <div className="mb-3">
+                                        <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                      </div>
+                                      <h4>
+                                        Drop files here or click to upload.
+                                      </h4>
+                                    </div>
+                                  </div>
+                                )}
+                              </Dropzone>
+                              <div
+                                className="dropzone-previews mt-3"
+                                id="file-previews"
+                              >
+                                {image && (
+                                  <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                    <div className="p-2">
+                                      <Row className="align-items-center position-relative">
+                                        <Col className="col-auto">
+                                          <img
+                                            data-dz-thumbnail=""
+                                            // height="80"
+                                            style={{
+                                              maxWidth: "80px",
+                                            }}
+                                            className=" bg-light"
+                                            src={
+                                              image.preview
+                                                ? image.preview
+                                                : image
+                                            }
+                                            alt=""
+                                          />
+                                        </Col>
+                                        <Col>
+                                          <Link
+                                            to="#"
+                                            className="text-muted font-weight-bold"
+                                          >
+                                            {image.name
+                                              ? image.name
+                                              : "Product Image"}
+                                          </Link>
+                                          <p className="mb-0">
+                                            <strong>
+                                              {image.formattedSize &&
+                                                image.formattedSize}
+                                            </strong>
+                                          </p>
+                                        </Col>
+
+                                        <div
+                                          className="position-absolute"
+                                          style={{
+                                            left: "0px",
+                                            top: "0px",
+                                            width: "100%",
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                          }}
+                                        >
+                                          <i
+                                            onClick={() => setImage(null)}
+                                            className="mdi mdi-delete text-danger "
+                                            style={{
+                                              fontSize: "25px",
+                                              cursor: "pointer",
+                                            }}
+                                          ></i>
+                                        </div>
+                                      </Row>
+                                    </div>
+                                  </Card>
+                                )}
+                              </div>
+                            </Form>
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-center">
+                          <Button
+                            onClick={submitSubCategory}
+                            color="success"
+                            className="px-5"
+                          >
+                            {loading ? (
+                              <Spinner
+                                animation="border"
+                                variant="info"
+                                size="sm"
+                              />
+                            ) : subCatId ? (
+                              "Edit"
+                            ) : (
+                              "Add"
+                            )}
+                          </Button>
+                        </div>
                       </div>
-                    )}
-                    {loading && (
-                      <div className="text-center">
-                        <Spinner animation="border" variant="info" />
-                      </div>
-                    )}
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col xl={6}>
+                  <Card>
+                    <CardBody>
+                      <Row>
+                        <Col lg={4}>
+                          <div className="mb-4">
+                            <label className="control-label">Status</label>
+                            <Select
+                              palceholder="Select Status"
+                              options={statusOptions}
+                              classNamePrefix="select2-selection"
+                              required
+                              value={subStatusKey}
+                              onChange={(e) =>
+                                dispatch(updateSubCatStatusKey(e))
+                              }
+                            />
+                          </div>
+                        </Col>
+                        <Col lg={8}>
+                          <Search dispatchFunc={updateSubCatSearchKey} />
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Card>
 
-            <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={subPaging}
-                    hasNextPage={subHasNextPage}
-                    hasPreviousPage={subHasPreviousPage}
-                    currentPage={subCurrentPage}
-                    lisener={(page) =>
-                      dispatch(callSubCategoryList(true, id, page))
-                    }
-                  />
-                </div>
-              </Col>
-            </Row>
+                  <Card>
+                    <CardBody>
+                      <CardTitle className="h4 mb-2">
+                        Sub Category List
+                      </CardTitle>
+
+                      <Table
+                        id="tech-companies-1"
+                        className="table table__wrapper table-striped table-bordered table-hover text-center"
+                      >
+                        <Thead>
+                          <Tr>
+                            <Th>Image</Th>
+                            <Th>Name</Th>
+                            <Th>Status</Th>
+                            <Th>Action</Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody style={{ position: "relative" }}>
+                          {subCategories.map((item, index) => {
+                            return (
+                              <Tr
+                                key={index}
+                                className="align-middle"
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                <Th
+                                  style={{ height: "50px", maxWidth: "100px" }}
+                                >
+                                  <img
+                                    onClick={() => {
+                                      setSelectedImg(item?.image);
+                                      setIsOpen(true);
+                                    }}
+                                    className="img-fluid cursor-pointer"
+                                    alt=""
+                                    src={item.image}
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "contain",
+                                    }}
+                                  />
+                                </Th>
+
+                                <Td>{item.name}</Td>
+                                <Td>{item.status}</Td>
+                                <Td>
+                                  <div>
+                                    <Tooltip title="Edit">
+                                      <button
+                                        className="btn btn-success me-3 button"
+                                        onClick={() =>
+                                          handleEditSubCategory(item._id)
+                                        }
+                                      >
+                                        <i className="fa fa-edit" />
+                                      </button>
+                                    </Tooltip>
+                                    <Tooltip title="Delete">
+                                      <button
+                                        className="btn btn-danger button"
+                                        onClick={() => setconfirm_alert(true)}
+                                      >
+                                        <i className="fa fa-trash" />
+                                      </button>
+                                    </Tooltip>
+                                    {confirm_alert ? (
+                                      <SweetAlert
+                                        title="Are you sure?"
+                                        warning
+                                        showCancel
+                                        confirmButtonText="Yes, delete it!"
+                                        confirmBtnBsStyle="success"
+                                        cancelBtnBsStyle="danger"
+                                        onConfirm={() => {
+                                          handleDelete(item._id);
+                                          setconfirm_alert(false);
+                                          setsuccess_dlg(true);
+                                          setdynamic_title("Deleted");
+                                          setdynamic_description(
+                                            "Your file has been deleted."
+                                          );
+                                        }}
+                                        onCancel={() => setconfirm_alert(false)}
+                                      >
+                                        Are You Sure! You want to delete this
+                                        Shop.
+                                      </SweetAlert>
+                                    ) : null}
+                                  </div>
+                                </Td>
+                              </Tr>
+                            );
+                          })}
+                        </Tbody>
+                      </Table>
+                      {!loading && subCategories.length < 1 && (
+                        <div className="text-center">
+                          <h4>No Data...</h4>
+                        </div>
+                      )}
+                      {loading && (
+                        <div className="text-center">
+                          <Spinner animation="border" variant="info" />
+                        </div>
+                      )}
+                    </CardBody>
+                  </Card>
+                  <div className="d-flex justify-content-center">
+                    <AppPagination
+                      paging={subPaging}
+                      hasNextPage={subHasNextPage}
+                      hasPreviousPage={subHasPreviousPage}
+                      currentPage={subCurrentPage}
+                      lisener={(page) =>
+                        dispatch(callSubCategoryList(true, id, page))
+                      }
+                    />
+                  </div>
+                </Col>
+              </Row>
+            )}
           </Container>
         </div>
       </GlobalWrapper>

@@ -3,6 +3,7 @@ import {
   ADD_USER,
   ALL_USERS,
   EDIT_USER,
+  USER_ORDERS,
   USER_TRANSACTIONS,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
@@ -23,7 +24,7 @@ export const userList =
 
         const { data } = await requestApi().request(ALL_USERS, {
           params: {
-             searchKey,
+            searchKey,
             page,
             pageSize: 30,
             sortBy: sortByKey.value,
@@ -150,3 +151,46 @@ export const updateSearchKey = (value) => (dispatch) => {
     payload: value,
   });
 };
+
+// USER ORDERS
+
+export const getUserAllOrder =
+  (refresh = false, userId, page = 1) =>
+  async (dispatch, getState) => {
+    const { orders } = getState().usersReducer;
+
+    if (orders.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.USER_ORDERS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(USER_ORDERS, {
+          params: {
+            userId,
+          },
+        });
+
+        console.log({ status, error, data });
+
+        if (status) {
+          dispatch({
+            type: actionType.USER_ORDERS_REQUEST_SUCCESS,
+            payload: data,
+          });
+        } else {
+          dispatch({
+            type: actionType.USER_ORDERS_REQUEST_FAIL,
+            payload: error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionType.USER_ORDERS_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    }
+  };

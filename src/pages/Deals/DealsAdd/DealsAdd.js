@@ -65,7 +65,7 @@ const DealsAdd = () => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
-        console.log({ findDeal });
+        updateData(findDeal);
       } else {
         callApi(id);
       }
@@ -105,16 +105,7 @@ const DealsAdd = () => {
 
   const updateData = (data) => {
     const { name, image, option, percentage, status, type } = data;
-
-    if (option === "others") {
-      const findTag = tags.find((item) => item._id === name);
-      if (findTag) {
-        setOtherDeal(findTag);
-      }
-    } else {
-      setName(name);
-    }
-
+    setName(name);
     setImage(image);
     setShopType(type);
     setDealType(option);
@@ -188,7 +179,7 @@ const DealsAdd = () => {
 
   const submitData = (image = null) => {
     const data = {
-      name: dealType === "others" ? otherDeal : name,
+      name,
       type: shopType,
       option: dealType,
       percentage,
@@ -243,7 +234,6 @@ const DealsAdd = () => {
                     <Col lg={4}>
                       <TextField
                         type="text"
-                        disabled={dealType === "others" ? true : false}
                         className="form-control"
                         placeholder="Enter Deal Name"
                         required
@@ -305,48 +295,6 @@ const DealsAdd = () => {
                     )}
                   </Row>
                   <Row className="mt-0 mt-lg-3">
-                    {dealType === "others" && (
-                      <Col lg={4} className="mt-3 my-lg-0">
-                        <Autocomplete
-                          className="cursor-pointer"
-                          value={otherDeal}
-                          onChange={(event, newValue) => {
-                            setOtherDeal(newValue);
-                          }}
-                          getOptionLabel={(option, index) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={(option, value) =>
-                            option._id == value._id
-                          }
-                          inputValue={tagSearchKey}
-                          onInputChange={(event, newInputValue) =>
-                            dispatch(updateTagsSearchKey(newInputValue))
-                          }
-                          id="controllable-states-demo"
-                          options={tags.length > 0 ? tags : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params, index) => (
-                            <TextField
-                              {...params}
-                              label="Select Tag"
-                              required
-                              name="tag"
-                            />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
-                            >
-                              {option.name}
-                            </Box>
-                          )}
-                        />
-                      </Col>
-                    )}
                     {dealType === "percentage" && (
                       <Col lg={4} className="mt-3 my-lg-0">
                         <TextField

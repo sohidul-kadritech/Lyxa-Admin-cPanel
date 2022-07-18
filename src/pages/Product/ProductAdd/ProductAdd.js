@@ -77,6 +77,7 @@ const ProductAdd = () => {
   const [searchCategoryKey, setSearchCategoryKey] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [searchSubCatKey, setSearchSubCatKey] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [tags, setTags] = useState({
     items: [],
     value: "",
@@ -136,8 +137,6 @@ const ProductAdd = () => {
         if (findShop) {
           setType(findShop?.shopType);
           setShop(findShop);
-        } else {
-          history.push("/products/list", { replace: true });
         }
       }
     }
@@ -179,6 +178,7 @@ const ProductAdd = () => {
       attributes,
       discount,
       unit,
+      quantity,
     } = product;
 
     const findUnit = unitTypes?.find((item) => item.name === unit);
@@ -201,6 +201,7 @@ const ProductAdd = () => {
     setAddons(addons);
     setAttributes(attributes);
     setUnit(findUnit);
+    setQuantity(quantity);
   };
 
   // ALL CATEGORY LIST
@@ -324,6 +325,7 @@ const ProductAdd = () => {
       addons: addonsData,
       cuisines,
       unit: unit?.name,
+      quantity,
     };
 
     if (id) {
@@ -435,6 +437,7 @@ const ProductAdd = () => {
           },
         ]);
         setImage(null);
+        setUnit(null);
         window.scroll(0, 0);
       }
     }
@@ -678,6 +681,24 @@ const ProductAdd = () => {
                           type="number"
                         />
                       </div>
+                      {type && type !== "food" && (
+                        <div className="mb-4">
+                          <TextField
+                            id="quantity"
+                            label="Quantity"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            placeholder="Ender quantity"
+                            autoComplete="off"
+                            value={quantity}
+                            onChange={(event) =>
+                              setQuantity(event.target.value)
+                            }
+                            required
+                            type="number"
+                          />
+                        </div>
+                      )}
                       {/* <div className="mb-4">
                         <TextField
                           id="previousPrice"

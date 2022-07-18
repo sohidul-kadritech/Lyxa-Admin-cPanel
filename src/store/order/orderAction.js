@@ -8,7 +8,6 @@ import { successMsg } from "./../../helpers/successMsg";
 export const getAllOrder =
   (refresh = false, shop, seller, page = 1) =>
   async (dispatch, getState) => {
-    console.log({ shop, seller });
     const {
       orders,
       typeKey,
