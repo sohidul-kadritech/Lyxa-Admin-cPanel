@@ -17,15 +17,21 @@ import {
 } from "reactstrap";
 import Lightbox from "react-image-lightbox";
 import { ImageWrapper } from "../../Shops/ShopDetails/ShopDetails";
-import { setDeliveryStatusFalse } from "../../../store/DeliveryMan/DeliveryManAction";
+import {
+  getDeliveryAllOrder,
+  setDeliveryStatusFalse,
+} from "../../../store/DeliveryMan/DeliveryManAction";
 import Info from "../../../components/Info";
+import OrderTable from "../../../components/OrderTable";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
+  const { deliveryMans, orders } = useSelector(
+    (state) => state.deliveryManReducer
+  );
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -33,17 +39,14 @@ const DeliverymanDetails = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(setDeliveryStatusFalse());
-
+      // dispatch(setDeliveryStatusFalse());
+      dispatch(getDeliveryAllOrder(true, id));
       const findMan = deliveryMans.find((man) => man._id == id);
       if (findMan) {
-        console.log({ findMan });
         setDeliveryMan(findMan);
       } else {
         callApi();
       }
-    } else {
-      history.push("/deliveryman/list", { replace: true });
     }
   }, [id]);
 
@@ -179,6 +182,10 @@ const DeliverymanDetails = () => {
                 </Card>
               </Col>
             </Row>
+
+            <div>
+              <OrderTable orders={orders} />
+            </div>
           </Container>
         </div>
       </GlobalWrapper>

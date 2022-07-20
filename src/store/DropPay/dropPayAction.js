@@ -1,5 +1,9 @@
 import { toast } from "react-toastify";
-import { ADD_USER_BALANCE, DROP_PAY_LIST, REMOVE_USER_BALANCE } from "../../network/Api";
+import {
+  ADD_USER_BALANCE,
+  DROP_PAY_LIST,
+  REMOVE_USER_BALANCE,
+} from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
@@ -53,7 +57,7 @@ export const getAllDropPay =
 //   ADD USER AMOUNT
 
 export const addUserAmount = (values) => async (dispatch) => {
-    console.log("add balance", values)
+  console.log("add balance", values);
   try {
     dispatch({
       type: actionType.ADD_USER_AMOUNT_REQUEST_SEND,
@@ -66,7 +70,7 @@ export const addUserAmount = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({data})
+    console.log({ data });
 
     if (status) {
       toast.success(message, {
@@ -108,63 +112,63 @@ export const addUserAmount = (values) => async (dispatch) => {
   }
 };
 
-//  WITHDRAW AMOUNT 
+//  WITHDRAW AMOUNT
 
 export const withdrawUserAmount = (values) => async (dispatch) => {
-    console.log("remove balance", values)
-    try {
-      dispatch({
-        type: actionType.REMOVE_USER_AMOUNT_REQUEST_SEND,
+  console.log("remove balance", values);
+  try {
+    dispatch({
+      type: actionType.REMOVE_USER_AMOUNT_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, message, error, data = null },
+    } = await requestApi().request(REMOVE_USER_BALANCE, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data });
+
+    if (status) {
+      toast.success(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
-  
-      const {
-        data: { status, message, error, data = null },
-      } = await requestApi().request(REMOVE_USER_BALANCE, {
-        method: "POST",
-        data: values,
+      dispatch({
+        type: actionType.REMOVE_USER_AMOUNT_REQUEST_SUCCESS,
+        payload: data,
+      });
+    } else {
+      toast.warn(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
 
-      console.log({data})
-  
-      if (status) {
-        toast.success(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        dispatch({
-          type: actionType.REMOVE_USER_AMOUNT_REQUEST_SUCCESS,
-          payload: data,
-        });
-      } else {
-        toast.warn(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-  
-        dispatch({
-          type: actionType.REMOVE_USER_AMOUNT_REQUEST_FAIL,
-          payload: error,
-        });
-      }
-    } catch (error) {
       dispatch({
         type: actionType.REMOVE_USER_AMOUNT_REQUEST_FAIL,
-        payload: error.message,
+        payload: error,
       });
     }
-  };
+  } catch (error) {
+    dispatch({
+      type: actionType.REMOVE_USER_AMOUNT_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 export const updateDropPaySortByKey = (type) => (dispatch) => {
   dispatch({

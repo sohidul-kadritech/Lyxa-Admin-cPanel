@@ -19,6 +19,7 @@ import { successMsg } from "../../helpers/successMsg";
 
 // ADD
 export const addShop = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SHOP_REQUEST_SEND,

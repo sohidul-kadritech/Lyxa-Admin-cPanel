@@ -13,6 +13,7 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  orders: [],
 };
 
 const deliveryManReducer = (state = initialState, action) => {
@@ -41,7 +42,7 @@ const deliveryManReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // GET ALL
+    // GET ALL
 
     case actionType.ALL_DELIVERY_MAN_REQUEST_SEND:
       return {
@@ -71,9 +72,9 @@ const deliveryManReducer = (state = initialState, action) => {
         loading: false,
       };
 
-      // EDIT 
+    // EDIT
 
-      case actionType.EDIT_DELIVERY_MAN_REQUEST_SEND:
+    case actionType.EDIT_DELIVERY_MAN_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -81,7 +82,9 @@ const deliveryManReducer = (state = initialState, action) => {
         status: false,
       };
     case actionType.EDIT_DELIVERY_MAN_REQUEST_SUCCESS:
-      const updateData = state.deliveryMans.map(man => man._id === payload._id ? payload : man)
+      const updateData = state.deliveryMans.map((man) =>
+        man._id === payload._id ? payload : man
+      );
       return {
         ...state,
         loading: false,
@@ -110,17 +113,44 @@ const deliveryManReducer = (state = initialState, action) => {
         statusKey: payload,
       };
 
-      case actionType.UPDATE_SEARCH_KEY:
+    case actionType.UPDATE_SEARCH_KEY:
       return {
         ...state,
         searchKey: payload,
       };
 
-      case actionType.SET_STATUS_FALSE:
+    case actionType.SET_STATUS_FALSE:
       return {
         ...state,
         status: false,
-      }
+      };
+
+    // ORDERS
+    case actionType.DELIVERYBOY_ORDERS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionType.DELIVERYBOY_ORDERS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        orders: payload,
+        // paginate: payload.paginate,
+        // paging: payload.paginate.metadata.paging,
+        // hasNextPage: payload.paginate.metadata.hasNextPage,
+        // currentPage: payload.paginate.metadata.page.currentPage,
+        // hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: true,
+      };
+
+    case actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
 
     default:
       return state;

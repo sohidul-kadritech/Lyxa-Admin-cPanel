@@ -133,10 +133,13 @@ const ProductAdd = () => {
     if (searchParams || account_type === "shop") {
       const shopId = searchParams.get("shopId");
       if (shopId || accountId) {
-        const findShop = shops.find((item) => item._id === accountId || shopId);
+        const findShop = shops?.find(
+          (item) => item._id === accountId || shopId
+        );
         if (findShop) {
           setType(findShop?.shopType);
           setShop(findShop);
+          dispatch(updateCategoryShopType(findShop?.shopType));
         }
       }
     }
@@ -384,7 +387,7 @@ const ProductAdd = () => {
     const data = {
       name: attributeName,
       required: isRequiredAttribute,
-      select: isMultipleAttribute && "multiple",
+      select: isMultipleAttribute ? "multiple" : "single",
       items: attributeItems,
     };
     setAttributes([...attributes, data]);

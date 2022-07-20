@@ -46,7 +46,6 @@ import {
 import {
   liveStatusOptions,
   shopTypeOptions2,
-  freeDeliveryOptions,
   statusOptions2,
 } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
@@ -75,7 +74,6 @@ const ShopAdd = () => {
 
   const [seller, setSeller] = useState(null);
   const [searchSellerKey, setSearchSellerKey] = useState("");
-  const [shopType, setShopType] = useState("");
   const [shopStartTime, setShopStartTime] = useState("");
   const [shopEndTime, setShopEndTime] = useState("");
   const [shopName, setShopName] = useState("");
@@ -121,6 +119,7 @@ const ShopAdd = () => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
+        // console.log(findShop);
         updateData(findShop);
       } else {
         callApi(id);
@@ -165,13 +164,12 @@ const ShopAdd = () => {
       shopPhotos,
       shopStartTimeText,
       shopStatus,
-      shopType,
       tags,
       liveStatus,
-      freeDelivery,
       address,
       email,
       phone_number,
+      cuisineType,
     } = values;
     setEmail(email);
     setPhone(phone_number);
@@ -179,7 +177,6 @@ const ShopAdd = () => {
     setShopBanner(shopBanner);
     setShopPhotos(shopPhotos[0]);
     setSeller(seller);
-    setShopType(shopType);
     setShopStartTime(shopStartTimeText);
     setShopEndTime(shopEndTimeText);
     setShopName(shopName);
@@ -193,6 +190,7 @@ const ShopAdd = () => {
     setLiveStatus(liveStatus);
     setPinCode(address.pin);
     handleAddressSelect(address.address, address.placeId);
+    setSelectedCuisines(cuisineType);
   };
 
   // TAGS
@@ -319,7 +317,7 @@ const ShopAdd = () => {
           minOrderAmount,
           email,
           phone_number: phone,
-          shopType: shopType,
+          shopType: seller.sellerType,
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
           shopPhotos: photosUrl,
@@ -352,7 +350,7 @@ const ShopAdd = () => {
           shopName,
           shopEndTime,
           minOrderAmount,
-          isCuisine: shopType === "food" ? true : false,
+          isCuisine: seller.sellerType === "food" ? true : false,
           phone_number: phone,
           shopAddress: {
             address: fullAddress,
@@ -368,7 +366,7 @@ const ShopAdd = () => {
           },
           seller: seller._id,
           delivery: "pickup",
-          shopType: shopType,
+          shopType: seller.sellerType,
           shopStatus: shopStatus,
           tags: tags.items,
           shopLogo: logoUrl,
@@ -428,7 +426,6 @@ const ShopAdd = () => {
         history.push("/shops/list");
       } else {
         setSeller(null);
-        setShopType("");
         setShopStartTime("");
         setShopEndTime("");
         setShopName("");
@@ -448,6 +445,9 @@ const ShopAdd = () => {
         setSearchCuisineKey("");
         setLiveStatus("");
         setIsCuisine(false);
+        setEmail("");
+        setPassword("");
+        setPhone("");
         window.scroll(0, 0);
       }
     }
@@ -475,7 +475,15 @@ const ShopAdd = () => {
   // CUISINES ADD
 
   const addNewCuisine = (item) => {
-    setSelectedCuisines([...selectedCuisines, item]);
+    if (item) {
+      const isExist = selectedCuisines.find(
+        (cuisine) => cuisine._id === item._id
+      );
+      if (isExist) {
+        return successMsg("Cuisine already added");
+      }
+      setSelectedCuisines([...selectedCuisines, item]);
+    }
   };
 
   // CUISINE REMOVE
@@ -495,61 +503,8 @@ const ShopAdd = () => {
               maintitle="Drop"
               breadcrumbItem={id ? "Edit" : "Add"}
               title="Shop"
-              // loading={loading}
-              // callList={callCarList}
               isRefresh={false}
             />
-
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col lg={6}>
-                    <Autocomplete
-                      className="cursor-pointer"
-                      disabled={
-                        id || searchParams.get("sellerId") ? true : false
-                      }
-                      value={seller}
-                      onChange={(event, newValue) => {
-                        setSeller(newValue);
-                      }}
-                      getOptionLabel={(option, index) =>
-                        option.name ? option.name : ""
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option?._id == value?._id
-                      }
-                      inputValue={searchSellerKey}
-                      onInputChange={(event, newInputValue) => {
-                        setSearchSellerKey(newInputValue);
-                      }}
-                      id="controllable-states-demo"
-                      options={sellers.length > 0 ? sellers : []}
-                      sx={{ width: "100%" }}
-                      renderInput={(params, index) => (
-                        <TextField {...params} label="Select a Seller" />
-                      )}
-                      renderOption={(props, option) => (
-                        <Box
-                          component="li"
-                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                          {...props}
-                          key={option._id}
-                        >
-                          <img
-                            loading="lazy"
-                            width="60"
-                            src={option.profile_photo}
-                            alt=""
-                          />
-                          {option.name}
-                        </Box>
-                      )}
-                    />
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
 
             <Card>
               <CardBody>
@@ -560,6 +515,50 @@ const ShopAdd = () => {
                       <hr />
                     </div>
                     <Col lg={6}>
+                      <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          disabled={
+                            id || searchParams.get("sellerId") ? true : false
+                          }
+                          value={seller}
+                          onChange={(event, newValue) => {
+                            setSeller(newValue);
+                          }}
+                          getOptionLabel={(option, index) =>
+                            option.name ? option.company_name : ""
+                          }
+                          isOptionEqualToValue={(option, value) =>
+                            option?._id === value?._id
+                          }
+                          inputValue={searchSellerKey}
+                          onInputChange={(event, newInputValue) => {
+                            setSearchSellerKey(newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={sellers.length > 0 ? sellers : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params, index) => (
+                            <TextField {...params} label="Select a Seller" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option._id}
+                            >
+                              <img
+                                loading="lazy"
+                                width="60"
+                                src={option.profile_photo}
+                                alt=""
+                              />
+                              {option.company_name}
+                            </Box>
+                          )}
+                        />
+                      </div>
                       <div className="mb-4">
                         <TextField
                           type="text"
@@ -624,18 +623,6 @@ const ShopAdd = () => {
                             ))}
                           </Select>
                         </FormControl>
-                      </div>
-
-                      <div className="mb-4">
-                        <TextField
-                          className="form-control"
-                          type="number"
-                          placeholder="Enter Minimum Order Amount"
-                          required
-                          label="Minimum Order"
-                          value={minOrderAmount}
-                          onChange={(e) => setMinOrderAmount(e.target.value)}
-                        />
                       </div>
 
                       <div className="mb-4">
@@ -719,9 +706,9 @@ const ShopAdd = () => {
                         <TextField
                           className="form-control"
                           type="number"
-                          placeholder="Enter Pin Code"
+                          placeholder="Enter Zip Code"
                           required
-                          label="Pin Code"
+                          label="Zip Code"
                           value={pinCode}
                           onChange={(e) => setPinCode(e.target.value)}
                         />
@@ -771,27 +758,6 @@ const ShopAdd = () => {
                       </div> */}
                     </Col>
                     <Col lg={6} className="mt-4 mt-lg-0">
-                      <div className="mb-4">
-                        <FormControl required fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Shop Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={shopType}
-                            onChange={(e) => setShopType(e.target.value)}
-                            label="Shop Type"
-                          >
-                            {shopTypeOptions2.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </div>
-
                       <div className="mb-4">
                         <TextField
                           type="email"
@@ -856,6 +822,18 @@ const ShopAdd = () => {
                           </FormControl>
                         </div>
                       )} */}
+
+                      <div className="mb-4">
+                        <TextField
+                          className="form-control"
+                          type="number"
+                          placeholder="Enter Minimum Order Amount"
+                          required
+                          label="Minimum Order"
+                          value={minOrderAmount}
+                          onChange={(e) => setMinOrderAmount(e.target.value)}
+                        />
+                      </div>
 
                       <div className="mb-4">
                         <div>
@@ -926,7 +904,7 @@ const ShopAdd = () => {
                         </div>
                       )} */}
 
-                      {shopType == "food" && (
+                      {seller?.sellerType == "food" && (
                         <div className="mb-3">
                           <Autocomplete
                             className="cursor-pointer"
@@ -937,7 +915,7 @@ const ShopAdd = () => {
                               option.name ? option.name : ""
                             }
                             isOptionEqualToValue={(option, value) =>
-                              option._id == value._id
+                              option._id === value._id
                             }
                             inputValue={searchCuisineKey}
                             onInputChange={(event, newInputValue) => {
@@ -956,7 +934,7 @@ const ShopAdd = () => {
                                 {...props}
                                 key={option._id}
                               >
-                                {option.name}
+                                {option?.name}
                               </Box>
                             )}
                           />
@@ -965,7 +943,7 @@ const ShopAdd = () => {
                             <Paper className="mt-4 p-3">
                               {selectedCuisines.map((item, index) => (
                                 <div className="tag__wrapper" key={index}>
-                                  {item.name}
+                                  {item?.name}
                                   <button
                                     type="button"
                                     className="button"

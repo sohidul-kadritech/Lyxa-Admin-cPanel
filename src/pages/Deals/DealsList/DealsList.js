@@ -170,7 +170,7 @@ const DealsList = () => {
                           </Th>
 
                           <Td>{item?.type}</Td>
-                          <Td>{item?.option}</Td>
+                          <Td>{`${item?.percentage ?? ""} ${item?.option}`}</Td>
                           <Td>{item?.status}</Td>
                           <Td>
                             <div>

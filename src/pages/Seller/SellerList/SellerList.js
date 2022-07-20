@@ -61,12 +61,12 @@ const SellerList = () => {
   }, []);
 
   useEffect(() => {
-    if (sortByKey || searchKey || statusKey || typeKey || subTypeKey) {
+    if (sortByKey || searchKey || statusKey || typeKey) {
       callSellerList(true);
     } else {
       callSellerList();
     }
-  }, [sortByKey, searchKey, statusKey, typeKey, subTypeKey]);
+  }, [sortByKey, searchKey, statusKey, typeKey]);
 
   const callSellerList = (refresh = false) => {
     dispatch(getAllSeller(refresh));
@@ -143,20 +143,6 @@ const SellerList = () => {
                   </Col>
                 </Row>
                 <Row className="d-flex justify-content-center">
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Sub Type</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sellerSubTypeOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={subTypeKey}
-                        onChange={(e) => dispatch(updateSellerSubTypeKey(e))}
-                        defaultValue={""}
-                      />
-                    </div>
-                  </Col>
                   <Col lg={8}>
                     <Search dispatchFunc={updateSellerSearchKey} />
                   </Col>

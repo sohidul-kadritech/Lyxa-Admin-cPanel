@@ -138,23 +138,6 @@ const SellerDetails = () => {
                     </div>
                     <hr className="my-2" />
                     <Row>
-                      {/* <Col
-                        lg={5}
-                        className="d-flex justify-content-center align-items-center"
-                      >
-                        <div>
-                          <img
-                            className="rounded-circle avatar-xl cursor-pointer"
-                            alt="seller"
-                            src={seller?.profile_photo}
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(seller?.profile_photo);
-                            }}
-                          />
-                        </div>
-                      </Col> */}
-
                       <div className="ps-4">
                         <Info title="Company" value={seller?.company_name} />
                         <Info title="Contact person" value={seller?.name} />
@@ -170,6 +153,7 @@ const SellerDetails = () => {
                         />
                         <Info title="Phone" value={seller?.phone_number} />
                         <Info title="Status" value={seller?.status} />
+                        <Info title="Seller type" value={seller?.sellerType} />
                       </div>
                     </Row>
                   </CardBody>

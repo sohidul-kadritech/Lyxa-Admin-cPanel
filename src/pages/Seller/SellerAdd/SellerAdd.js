@@ -527,8 +527,8 @@ const SellerAdd = () => {
                   )}
 
                   {!id && (
-                    <Row className="mt-4">
-                      <Col xl={6} className="mt-4 mt-xl-0">
+                    <Row className="mt-4 mt-xl-0">
+                      <Col xl={6} className="mt-0 mt-xl-4">
                         <TextField
                           style={{ width: "100%" }}
                           id="outlined-basic"
@@ -541,7 +541,7 @@ const SellerAdd = () => {
                         />
                       </Col>
 
-                      <Col xl={6}>
+                      <Col xl={6} className="mt-4">
                         <FormControl fullWidth required>
                           <InputLabel id="demo-simple-select-label">
                             Seller Type
@@ -565,7 +565,7 @@ const SellerAdd = () => {
                     </Row>
                   )}
 
-                  <Row className="mt-4">
+                  <Row className="mt-0 mt-xl-4">
                     <Col xl={6} className="mt-4 mt-xl-0">
                       <TextField
                         style={{ width: "100%" }}

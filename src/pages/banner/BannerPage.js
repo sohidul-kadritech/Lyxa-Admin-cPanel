@@ -127,6 +127,7 @@ const BannerPage = () => {
                   <Thead>
                     <Tr>
                       <Th data-priority="1">Images</Th>
+                      <Th data-priority="1">Title</Th>
                       <Th data-priority="1">Type</Th>
                       <Th data-priority="1">Status</Th>
                       <Th data-priority="3">Created At</Th>
@@ -138,7 +139,7 @@ const BannerPage = () => {
                     {list.map((item, index) => {
                       return (
                         <Tr key={index}>
-                          <Td style={{ height: "50px", maxWidth: "150px" }}>
+                          <Th style={{ height: "50px", maxWidth: "150px" }}>
                             <img
                               src={item.image}
                               style={{ width: "100px", maxHeight: "75px" }}
@@ -149,11 +150,12 @@ const BannerPage = () => {
                                 setBannerImg(item.image);
                               }}
                             />
-                          </Td>
-                          <Td>{item.type}</Td>
-                          <Td>{item.status}</Td>
+                          </Th>
+                          <Td>{item?.title}</Td>
+                          <Td>{item?.type}</Td>
+                          <Td>{item?.status}</Td>
                           <Td>
-                            {moment(item.createdAt).utc().format("YYYY-MM-DD")}
+                            {moment(item?.createdAt).utc().format("YYYY-MM-DD")}
                           </Td>
                           <Td>
                             <button
@@ -166,7 +168,7 @@ const BannerPage = () => {
                               className="btn btn-danger button"
                               onClick={() => {
                                 setconfirm_alert(true);
-                                setBannerId(item._id);
+                                setBannerId(item?._id);
                               }}
                             >
                               <i className="fa fa-trash" />

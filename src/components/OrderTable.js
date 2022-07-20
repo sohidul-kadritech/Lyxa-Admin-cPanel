@@ -29,6 +29,8 @@ import { useEffect } from "react";
 import { allDeliveryMan } from "../store/DeliveryMan/DeliveryManAction";
 
 const OrderTable = ({ orders = [], status, loading }) => {
+  console.log("orders----", orders);
+
   const history = useHistory();
   const dispatch = useDispatch();
 

@@ -110,6 +110,7 @@ export const SINGLE_DELIVERY_MAN =
   ADMIN_ENDPOINT + "/delivery-boy/get-single-delivery-boy";
 export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update";
 export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/track";
+export const DELIVERY_BOY_ORDERS = ADMIN_ENDPOINT + "/order/delivery";
 
 //  SETTINGS
 

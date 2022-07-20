@@ -167,7 +167,7 @@ const ShopTable = () => {
       )}
       {!loading && shops.length < 1 && (
         <div className="text-center">
-          <h4>No Product!</h4>
+          <h4>No Shop!</h4>
         </div>
       )}
     </div>

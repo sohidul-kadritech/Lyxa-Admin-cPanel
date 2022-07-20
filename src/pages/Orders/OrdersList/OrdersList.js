@@ -202,7 +202,7 @@ const OrdersList = () => {
             </Card>
 
             <div>
-              <OrderTable ordres={orders} status={status} loading={loading} />
+              <OrderTable orders={orders} status={status} loading={loading} />
             </div>
             <Row>
               <Col xl={12}>

@@ -65,7 +65,7 @@ export const sellerStatusOptions = [
 export const productStatusOptions = [
   { label: "All", value: "all" },
   { label: "Active", value: "active" },
-  { label: "Deactive", value: "deactive" },
+  { label: "Inactive", value: "inactive" },
 ];
 
 export const foodTypeOptions = [
@@ -121,16 +121,14 @@ export const pharmacyAndGroceryDeals = [
 
 export const DealsFilterOptions = [
   { label: "All", value: "all" },
-  { label: "Restaurant", value: "restaurant" },
+  { label: "Food", value: "restaurant" },
   { label: "Grocery", value: "grocery" },
   { label: "Pharmacy", value: "pharmacy" },
 ];
 
 export const foodTypeOptions2 = [
-  { label: "Meat", value: "meat" },
-  { label: "Vegetable", value: "vegetable" },
-  { label: "Fruit", value: "fruit" },
-  { label: "Other", value: "other" },
+  { label: "Veg", value: "meat" },
+  { label: "Non Veg", value: "non_veg" },
 ];
 
 export const userStatusOptions = [

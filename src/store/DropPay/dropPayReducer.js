@@ -7,8 +7,8 @@ const initialState = {
   transactions: [],
   status: false,
   sortByKey: { label: "ASC", value: "asc" },
-  startDate: moment().format("YYYY-MM-DD"),
-  endDate: moment().add(1, "M").format("YYYY-MM-DD"),
+  startDate: moment().startOf("month").format("YYYY-MM-DD"),
+  endDate: moment().endOf("month").format("YYYY-MM-DD"),
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -37,7 +37,7 @@ const dropPayReducer = (state = initialState, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: false
+        status: false,
       };
 
     case actionType.ALL_DROP_PAY_REQUEST_FAIL:
@@ -54,21 +54,45 @@ const dropPayReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
-        status: false
+        status: false,
       };
 
-      case actionType.ADD_USER_AMOUNT_REQUEST_SUCCESS:
+    case actionType.ADD_USER_AMOUNT_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
-        status: true
+        status: true,
       };
 
-      case actionType.ADD_USER_AMOUNT_REQUEST_FAIL:
+    case actionType.ADD_USER_AMOUNT_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
+      };
+
+    // REMOVE AMOUNT
+
+    case actionType.REMOVE_USER_AMOUNT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.REMOVE_USER_AMOUNT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.REMOVE_USER_AMOUNT_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
 
     case actionType.UPDATE_SORT_BY_KEY:

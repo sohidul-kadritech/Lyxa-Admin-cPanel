@@ -54,7 +54,6 @@ const DealsAdd = () => {
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [shopType, setShopType] = useState("");
   const [dealType, setDealType] = useState("");
-  const [otherDeal, setOtherDeal] = useState(null);
   const [image, setImage] = useState(null);
   const [percentage, setPercentage] = useState("");
   const [name, setName] = useState("");
@@ -257,7 +256,7 @@ const DealsAdd = () => {
                             }}
                             label="Shop Type"
                           >
-                            <MenuItem value="restaurant">Restaurant</MenuItem>
+                            <MenuItem value="restaurant">Food</MenuItem>
                             <MenuItem value="pharmacy">Pharmacy</MenuItem>
                             <MenuItem value="grocery">Grocery</MenuItem>
                           </Select>

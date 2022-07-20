@@ -261,7 +261,7 @@ const DeliverymanAdd = () => {
           number: phone,
           status: activeStatus.value,
           vehicleType: vehicleType.value,
-          vehicle_number: vehicleNum,
+          vehicleNumber: vehicleNum,
           nationalIdDocument: nidUrl,
           vehicleRegistrationDocument: docUrl,
         })
@@ -273,7 +273,7 @@ const DeliverymanAdd = () => {
           email,
           password,
           number: phone,
-          address: {
+          deliveryBoyAddress: {
             address: fullAddress,
             latitude: latLng.lat,
             longitude: latLng.lng,
@@ -286,7 +286,7 @@ const DeliverymanAdd = () => {
             note: "",
           },
           vehicleType: vehicleType.value,
-          vehicle_number: vehicleNum,
+          vehicleNumber: vehicleNum,
           nationalIdDocument: nidUrl,
           vehicleRegistrationDocument: docUrl,
         })

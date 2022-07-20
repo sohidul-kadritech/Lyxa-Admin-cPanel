@@ -3,6 +3,7 @@ import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_DELIVERY_MAN,
   ALL_DELIVERY_MAN,
+  DELIVERY_BOY_ORDERS,
   EDIT_DELIVERY_MAN,
   TRACK_DELIVERY_MAN,
 } from "../../network/Api";
@@ -203,3 +204,46 @@ export const setDeliveryStatusFalse = () => (dispatch) => {
     type: actionType.SET_STATUS_FALSE,
   });
 };
+
+// ORDER LIST
+
+export const getDeliveryAllOrder =
+  (refresh = false, deliveryId, page = 1) =>
+  async (dispatch, getState) => {
+    const { orders } = getState().deliveryManReducer;
+
+    if (orders.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.DELIVERYBOY_ORDERS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(DELIVERY_BOY_ORDERS, {
+          params: {
+            deliveryId,
+          },
+        });
+
+        console.log({ status, error, data });
+
+        if (status) {
+          dispatch({
+            type: actionType.DELIVERYBOY_ORDERS_REQUEST_SUCCESS,
+            payload: data,
+          });
+        } else {
+          dispatch({
+            type: actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL,
+            payload: error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    }
+  };

@@ -227,8 +227,14 @@ const ShopDetails = () => {
                     <Info title="Phone" value={shop?.phone_number} />
                     <Info title="Email" value={shop?.email} />
                     <Info title="Address" value={shop?.address.address} />
-                    <Info title="Delivery fee" value={shop?.deliveryFeePerKm} />
-                    <Info title="Drop charge" value={shop?.dropChargePerKm} />
+                    <Info
+                      title="Delivery fee"
+                      value={`${shop?.deliveryFeePerKm} NGN`}
+                    />
+                    <Info
+                      title="Drop charge"
+                      value={`${shop?.dropChargePerKm} NGN`}
+                    />
                     <Info
                       title="Free Delivery"
                       value={shop?.freeDelivery ? "Yes" : "No"}
@@ -236,6 +242,20 @@ const ShopDetails = () => {
 
                     {shop?.foodType && (
                       <Info title="Type" value={shop?.foodType} />
+                    )}
+                    {shop?.tags?.length > 0 && (
+                      <Info
+                        title="Tags"
+                        value={shop?.tags?.map((item) => item).join(", ")}
+                      />
+                    )}
+                    {shop?.cuisineType?.length > 0 && (
+                      <Info
+                        title="Cusines"
+                        value={shop?.cuisineType
+                          ?.map((item) => item.name)
+                          .join(", ")}
+                      />
                     )}
                   </Col>
                 </Row>

@@ -41,6 +41,8 @@ export const getAllOrder =
           },
         });
 
+        // console.log({ data });
+
         if (status) {
           dispatch({
             type: actionType.ALL_ORDERS_REQUEST_SUCCESS,
