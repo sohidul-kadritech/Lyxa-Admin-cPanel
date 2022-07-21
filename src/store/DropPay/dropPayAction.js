@@ -11,10 +11,10 @@ import * as actionType from "../actionType";
 export const getAllDropPay =
   (refresh = false, page = 1) =>
   async (dispatch, getState) => {
-    const { sortByKey, startDate, endDate, transactions } =
+    const { sortByKey, startDate, endDate, credits } =
       getState().dropPayReducer;
 
-    if (transactions.length < 1 || refresh) {
+    if (credits.length < 1 || refresh) {
       try {
         dispatch({
           type: actionType.ALL_DROP_PAY_REQUEST_SEND,
@@ -27,7 +27,7 @@ export const getAllDropPay =
             page: page,
             startDate,
             endDate,
-            sortBy: sortByKey.label,
+            sortBy: sortByKey.value,
             pageSize: 50,
           },
         });

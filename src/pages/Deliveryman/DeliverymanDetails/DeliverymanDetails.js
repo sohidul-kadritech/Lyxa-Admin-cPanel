@@ -43,6 +43,7 @@ const DeliverymanDetails = () => {
       dispatch(getDeliveryAllOrder(true, id));
       const findMan = deliveryMans.find((man) => man._id == id);
       if (findMan) {
+        console.log({ findMan });
         setDeliveryMan(findMan);
       } else {
         callApi();
@@ -112,7 +113,10 @@ const DeliverymanDetails = () => {
                       <Info title="Name" value={deliveryMan?.name} />
                       <Info title="Email" value={deliveryMan?.email} />
                       <Info title="Phone" value={deliveryMan?.number} />
-
+                      <Info
+                        title="Address"
+                        value={deliveryMan?.address?.address}
+                      />
                       <Info title="Status" value={deliveryMan?.status} />
                       <Info
                         title="Live Status"

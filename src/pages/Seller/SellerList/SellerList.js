@@ -162,6 +162,7 @@ const SellerList = () => {
                 >
                   <Thead>
                     <Tr>
+                      <Th>ID</Th>
                       <Th>Company Name</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
@@ -181,6 +182,11 @@ const SellerList = () => {
                             fontWeight: "500",
                           }}
                         >
+                          <Th>
+                            <div style={{ maxWidth: "120px" }}>
+                              <span>{item?._id}</span>
+                            </div>
+                          </Th>
                           <Td>{item?.company_name}</Td>
                           <Td>{item?.email}</Td>
                           <Td>{item?.phone_number}</Td>

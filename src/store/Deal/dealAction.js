@@ -13,6 +13,7 @@ import * as actionType from "../actionType";
 // ADD
 
 export const addDeal = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_DEAL_REQUEST_SEND,
@@ -37,6 +38,7 @@ export const addDeal = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
+    successMsg(error.message, "error");
     dispatch({
       type: actionType.ADD_DEAL_REQUEST_FAIL,
       payload: error.message,

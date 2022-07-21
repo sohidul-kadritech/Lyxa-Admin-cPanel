@@ -4,7 +4,7 @@ import moment from "moment";
 const initialState = {
   loading: false,
   error: null,
-  transactions: [],
+  credits: [],
   status: false,
   sortByKey: { label: "ASC", value: "asc" },
   startDate: moment().startOf("month").format("YYYY-MM-DD"),
@@ -31,7 +31,7 @@ const dropPayReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        transactions: payload.transactionList,
+        credits: payload.users,
         paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,

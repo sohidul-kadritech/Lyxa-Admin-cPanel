@@ -10,14 +10,21 @@ import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
 import OrderTable from "../../../components/OrderTable";
-import { getUserAllOrder } from "../../../store/Users/UsersAction";
+import {
+  getUserAllOrder,
+  updateUserStatus,
+} from "../../../store/Users/UsersAction";
 import UserCradit from "../../../components/UserCradit";
 
 const UserDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { users, orders } = useSelector((state) => state.usersReducer);
+  const {
+    users,
+    orders,
+    status: userStatus,
+  } = useSelector((state) => state.usersReducer);
   const { status } = useSelector((state) => state.dropPayReducer);
 
   const [user, setUser] = useState({});
@@ -32,38 +39,37 @@ const UserDetails = () => {
       } else {
         callApi(id);
       }
-    } else {
-      history.push("/users/list", { replace: true });
     }
   }, [id]);
 
   //   CALL API FOR SINGLE USER
 
   const callApi = async (userId) => {
-    try {
-      const { data } = await requestApi().request(SINGLE_USER, {
-        params: {
-          id: userId,
-        },
-      });
+    if (userId) {
+      try {
+        const { data } = await requestApi().request(SINGLE_USER, {
+          params: {
+            id: userId,
+          },
+        });
 
-      if (data.status) {
-        // console.log(data.data.user);
-        setUser(data.data.user);
+        if (data.status) {
+          setUser(data.data.user);
+        }
+      } catch (error) {
+        console.log(error);
       }
-
-      console.log("user data", data);
-    } catch (error) {
-      console.log(error);
+    } else {
+      history.push("/users/list", { replace: true });
     }
   };
 
   useEffect(() => {
-    if (status) {
+    if (status || userStatus) {
       setBalAddModal(false);
-      callApi(id);
+      callApi(user?._id);
     }
-  }, [status]);
+  }, [status, userStatus]);
 
   return (
     <React.Fragment>
@@ -75,20 +81,7 @@ const UserDetails = () => {
               breadcrumbItem="Details"
               title="User"
               isRefresh={false}
-              //   loading={loading}
-              //   callList={callColorList}
             />
-
-            {/* {isOpen && (
-              <Lightbox
-                mainSrc={selectedImg}
-                enableZoom={true}
-                imageCaption="img"
-                onCloseRequest={() => {
-                  setIsOpen(!isOpen);
-                }}
-              />
-            )} */}
 
             <Row>
               <Col md={6}>
@@ -102,12 +95,28 @@ const UserDetails = () => {
                       >
                         Add/Remove Credit
                       </Button>
+                      <Button
+                        outline={true}
+                        color="success"
+                        className="ms-3"
+                        onClick={() =>
+                          dispatch(
+                            updateUserStatus(
+                              user?._id,
+                              user?.status === "active" ? "inactive" : "active"
+                            )
+                          )
+                        }
+                      >
+                        {user?.status === "active" ? "Inactivate" : "Activate"}
+                      </Button>
                     </div>
                     <hr />
                     <Info title="Name" value={user?.name} />
                     <Info title="Email" value={user?.email} />
                     <Info title="Gender" value={user?.gender} />
                     <Info title="Balance" value={`${user?.tempBalance} NGN`} />
+                    <Info title="Total Order" value={user?.cards?.length} />
                     <Info
                       title="Birth Date"
                       value={new Date(user?.dob).toDateString()}

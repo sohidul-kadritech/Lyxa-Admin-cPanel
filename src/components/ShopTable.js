@@ -63,6 +63,7 @@ const ShopTable = () => {
       >
         <Thead>
           <Tr>
+            <Th>ID</Th>
             <Th>Logo</Th>
             <Th>Name</Th>
             <Th>Type</Th>
@@ -83,6 +84,11 @@ const ShopTable = () => {
                   fontWeight: "500",
                 }}
               >
+                <Td>
+                  <div style={{ maxWidth: "120px" }}>
+                    <span>{item?._id}</span>
+                  </div>
+                </Td>
                 <Th className="d-flex justify-content-center align-items-center">
                   <div className="image__wrapper">
                     <img

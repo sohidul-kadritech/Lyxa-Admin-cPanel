@@ -135,6 +135,7 @@ const usersReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
+        status: false,
       };
 
     case actionType.USER_ORDERS_REQUEST_SUCCESS:
@@ -147,12 +148,34 @@ const usersReducer = (state = initialState, action) => {
         // hasNextPage: payload.paginate.metadata.hasNextPage,
         // currentPage: payload.paginate.metadata.page.currentPage,
         // hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true,
+        status: false,
       };
 
     case actionType.USER_ORDERS_REQUEST_FAIL:
       return {
         ...state,
+        error: payload,
+      };
+
+    case actionType.UPDATE_USER_STATUS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.UPDATE_USER_STATUS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.UPDATE_USER_STATUS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
         error: payload,
       };
 

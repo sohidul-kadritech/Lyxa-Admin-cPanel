@@ -1,9 +1,11 @@
 import { toast } from "react-toastify";
+import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_USER,
   ALL_USERS,
   EDIT_USER,
   USER_ORDERS,
+  USER_STATUS,
   USER_TRANSACTIONS,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
@@ -194,3 +196,43 @@ export const getUserAllOrder =
       }
     }
   };
+
+// UPDATE USER STATUS
+
+export const updateUserStatus = (userId, status) => async (dispatch) => {
+  console.log({ userId, status });
+  try {
+    dispatch({
+      type: actionType.UPDATE_USER_STATUS_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(USER_STATUS, {
+      method: "POST",
+      data: {
+        id: userId,
+        status,
+      },
+    });
+
+    console.log({ data });
+
+    if (data.status) {
+      successMsg(data.message);
+      dispatch({
+        type: actionType.UPDATE_USER_STATUS_REQUEST_SUCCESS,
+        payload: data.data,
+      });
+    } else {
+      dispatch({
+        type: actionType.UPDATE_USER_STATUS_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (e) {
+    successMsg(e.message);
+    dispatch({
+      type: actionType.UPDATE_USER_STATUS_REQUEST_FAIL,
+      payload: e.error,
+    });
+  }
+};

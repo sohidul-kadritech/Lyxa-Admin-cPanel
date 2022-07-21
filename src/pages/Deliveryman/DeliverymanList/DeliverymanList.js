@@ -140,7 +140,7 @@ const DeliverymanList = () => {
                 >
                   <Thead>
                     <Tr>
-                      {/* <Th>Profile Pic</Th> */}
+                      <Th>ID</Th>
                       <Th>Name</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
@@ -160,24 +160,11 @@ const DeliverymanList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          {/* <Th className="d-flex justify-content-center align-items-center">
-                            <div className="image__wrapper">
-                              <img
-                                // onClick={() => {
-                                //   setIsOpen(true);
-                                //   setSelectedImg(item?.shopLogo);
-                                // }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item.image}
-                                style={{
-                                  // width: "100%",
-                                  height: "100%",
-                                  // objectFit: "contain",
-                                }}
-                              />
+                          <Td>
+                            <div style={{ maxWidth: "120px" }}>
+                              <span>{item?._id}</span>
                             </div>
-                          </Th> */}
+                          </Td>
                           <Th>{item?.name}</Th>
                           <Td>{item?.email}</Td>
                           <Td>{item?.number}</Td>

@@ -116,7 +116,6 @@ const DeliverymanAdd = () => {
     const findVahicleType = DeliveryBoyVehicleOPtions.find(
       (option) => option.value === vehicleType
     );
-    console.log({ data });
     setName(name);
     setEmail(email);
     setPhone(number);

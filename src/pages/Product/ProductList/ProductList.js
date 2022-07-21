@@ -6,7 +6,6 @@ import { Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
 import Select from "react-select";
 import {
   productStatusOptions,
-  productVisibility,
   shopTypeOptions,
   sortByOptions,
 } from "../../../assets/staticData";
@@ -17,7 +16,6 @@ import {
   updateProductSortByKey,
   updateProductStatusKey,
   updateProductType,
-  updateProductVisibilityByKey,
 } from "../../../store/Product/productAction";
 import AppPagination from "../../../components/AppPagination";
 import Search from "./../../../components/Search";

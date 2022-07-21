@@ -8,6 +8,7 @@ import {
   Container,
   Modal,
   Row,
+  Spinner,
 } from "reactstrap";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
@@ -23,17 +24,27 @@ import {
   addUserAmount,
   withdrawUserAmount,
 } from "../../../store/DropPay/dropPayAction";
-import { Autocomplete, Box, TextField } from "@mui/material";
 import { updateSearchKey, userList } from "../../../store/Users/UsersAction";
-import { successMsg } from "../../../helpers/successMsg";
+
 import UserCradit from "../../../components/UserCradit";
+import AppPagination from "../../../components/AppPagination";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 const DropPayList = () => {
   const dispatch = useDispatch();
 
-  const { loading, pays, sortByKey, startDate, endDate, status } = useSelector(
-    (state) => state.dropPayReducer
-  );
+  const {
+    loading,
+    credits,
+    sortByKey,
+    startDate,
+    endDate,
+    status,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+  } = useSelector((state) => state.dropPayReducer);
   const { searchKey } = useSelector((state) => state.usersReducer);
 
   const [balAddModal, setBalAddModal] = useState(false);
@@ -149,6 +160,78 @@ const DropPayList = () => {
                 </div>
               </CardBody>
             </Card>
+
+            {/* TABLE */}
+
+            <Card>
+              <CardBody>
+                <Row className="mb-3">
+                  <Col md={3} className="text-end" />
+                </Row>
+                <CardTitle className="h4">List</CardTitle>
+                <Table
+                  id="tech-companies-1"
+                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                >
+                  <Thead>
+                    <Tr>
+                      <Th>Customer Name</Th>
+                      <Th>Customer Email</Th>
+                      <Th>Deposit ID</Th>
+                      <Th>Amount</Th>
+                      <Th>Deposit by</Th>
+                      <Th>Date</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody style={{ position: "relative" }}>
+                    {credits.map((item, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          className="align-middle"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Td>{item?.name}</Td>
+                          <Td>{item?.email}</Td>
+                          <Td>{item?.balance}</Td>
+                          <Td>{item?.status}</Td>
+                          <Td>
+                            {new Date(item?.createdAt).toLocaleDateString()}
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+                {loading && (
+                  <div className="text-center">
+                    <Spinner animation="border" variant="info" />
+                  </div>
+                )}
+                {!loading && credits?.length < 1 && (
+                  <div className="text-center">
+                    <h4>No Data!</h4>
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+
+            <Row>
+              <Col xl={12}>
+                <div className="d-flex justify-content-center">
+                  <AppPagination
+                    paging={paging}
+                    hasNextPage={hasNextPage}
+                    hasPreviousPage={hasPreviousPage}
+                    currentPage={currentPage}
+                    lisener={(page) => dispatch(getAllDropPay(true, page))}
+                  />
+                </div>
+              </Col>
+            </Row>
           </Container>
         </div>
 

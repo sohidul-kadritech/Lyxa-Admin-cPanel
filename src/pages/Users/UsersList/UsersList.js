@@ -135,7 +135,7 @@ const UsersList = () => {
                 >
                   <Thead>
                     <Tr>
-                      {/* <Th>User ID</Th> */}
+                      <Th>ID</Th>
                       <Th>Name</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
@@ -158,7 +158,12 @@ const UsersList = () => {
                               fontWeight: "500",
                             }}
                           >
-                            <Th>{user?.name}</Th>
+                            <Th>
+                              <div style={{ maxWidth: "120px" }}>
+                                <span>{user?._id}</span>
+                              </div>
+                            </Th>
+                            <Td>{user?.name}</Td>
                             <Td>{user?.email}</Td>
                             <Td>{user?.phone_number}</Td>
                             <Td>{user?.gender}</Td>

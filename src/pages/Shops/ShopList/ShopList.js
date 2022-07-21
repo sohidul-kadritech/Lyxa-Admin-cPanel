@@ -22,12 +22,9 @@ import {
   updateShopType,
   updateSortByKey,
 } from "../../../store/Shop/shopAction";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Tooltip from "@mui/material/Tooltip";
 import AppPagination from "../../../components/AppPagination";
 import { useHistory } from "react-router-dom";
-import Lightbox from "react-image-lightbox";
-import SweetAlert from "react-bootstrap-sweetalert";
+
 import {
   liveStatusFilterOptions,
   shopStatusOptions,

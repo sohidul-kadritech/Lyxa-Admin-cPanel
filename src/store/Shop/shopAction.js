@@ -476,7 +476,6 @@ export const deleteDealOfShop = (values) => async (dispatch) => {
 // UPDATE STATUS
 
 export const updateShopStatus = (values) => async (dispatch) => {
-  console.log();
   try {
     dispatch({
       type: actionType.UPDATE_SHOP_STATUS_REQUEST_SEND,

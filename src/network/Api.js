@@ -48,6 +48,7 @@ export const ALL_USERS = ADMIN_ENDPOINT + "/user";
 export const SINGLE_USER = ADMIN_ENDPOINT + "/user/get-user-details";
 export const USER_TRANSACTIONS = ADMIN_ENDPOINT + "/user/get-user-transaction";
 export const USER_ORDERS = ADMIN_ENDPOINT + "/order/user";
+export const USER_STATUS = ADMIN_ENDPOINT + "/USER/update-status";
 
 // CATEGORY
 export const ADD_CATEGORY = ADMIN_ENDPOINT + "/category/add-category";
@@ -135,7 +136,7 @@ export const ALL_TAG = ADMIN_ENDPOINT + "/deal/get-tags";
 
 // DROP PAY
 
-export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay";
+export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay/get-amount-user-list";
 export const ADD_USER_BALANCE = ADMIN_ENDPOINT + "/user/add-balance";
 export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance";
 

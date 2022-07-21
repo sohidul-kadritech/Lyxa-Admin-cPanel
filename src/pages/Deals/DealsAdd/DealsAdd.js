@@ -59,6 +59,8 @@ const DealsAdd = () => {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeStatus, setActiveStatus] = useState("");
+  const [requiredImage, setRequiredImage] = useState(false);
+  const [tag, setTag] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -74,7 +76,7 @@ const DealsAdd = () => {
   // GET ALL TAGS
 
   useEffect(() => {
-    if (dealType === "others" || tagSearchKey) {
+    if (dealType === "others" && tagSearchKey) {
       dispatch(getAllTags());
     }
   }, [dealType, tagSearchKey]);
@@ -103,7 +105,10 @@ const DealsAdd = () => {
   // UPDATE DATA
 
   const updateData = (data) => {
-    const { name, image, option, percentage, status, type } = data;
+    const { name, image, option, percentage, status, type, tag } = data;
+    const findTag = tags.find((item) => item._id === tag?._id);
+    console.log({ findTag });
+    setTag(findTag);
     setName(name);
     setImage(image);
     setShopType(type);
@@ -163,11 +168,11 @@ const DealsAdd = () => {
   const submitDeal = (e) => {
     e.preventDefault();
 
-    if (shopType === "restaurant" && !image) {
+    if (requiredImage && !image) {
       return successMsg("Choose a image");
     }
 
-    if (shopType === "restaurant") {
+    if (shopType === "restaurant" && image) {
       uploadImage();
     } else {
       submitData();
@@ -182,7 +187,8 @@ const DealsAdd = () => {
       type: shopType,
       option: dealType,
       percentage,
-      image: shopType === "restaurant" ? image : null,
+      image,
+      tag: tag?._id,
     };
     if (id) {
       dispatch(
@@ -209,6 +215,7 @@ const DealsAdd = () => {
         setDealType("");
         setPercentage("");
         setImage(null);
+        setRequiredImage(false);
         window.scroll(0, 0);
       }
     }
@@ -253,6 +260,7 @@ const DealsAdd = () => {
                             onChange={(e) => {
                               setShopType(e.target.value);
                               setDealType("");
+                              setRequiredImage(false);
                             }}
                             label="Shop Type"
                           >
@@ -308,6 +316,49 @@ const DealsAdd = () => {
                         />
                       </Col>
                     )}
+                    {dealType === "others" && (
+                      <Col lg={4} className="mt-3 my-lg-0">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={tag}
+                          onChange={(event, newValue) => {
+                            console.log({ newValue });
+                            setTag(newValue);
+                          }}
+                          getOptionLabel={(option) =>
+                            option.name ? option.name : ""
+                          }
+                          isOptionEqualToValue={(option, value) =>
+                            option?._id === value?._id
+                          }
+                          inputValue={tagSearchKey}
+                          onInputChange={(event, newInputValue) => {
+                            dispatch(updateTagsSearchKey(newInputValue));
+                          }}
+                          id="controllable-states-demo"
+                          options={tags.length > 0 ? tags : []}
+                          sx={{ width: "100%" }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Select a TAg"
+                              required
+                              name="tag"
+                            />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option?._id}
+                            >
+                              {option?.name}
+                            </Box>
+                          )}
+                        />
+                      </Col>
+                    )}
                     {id && (
                       <Col lg={4}>
                         <div className="mt-3 my-lg-0">
@@ -333,8 +384,25 @@ const DealsAdd = () => {
                   </Row>
                 </CardBody>
               </Card>
-
               {shopType === "restaurant" && (
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    value={requiredImage}
+                    id="flexCheckDefault"
+                    onChange={(e) => setRequiredImage(e.target.checked)}
+                  />
+                  <label
+                    className="form-check-label ms-1"
+                    style={{ fontSize: "16px" }}
+                    htmlFor="flexCheckDefault"
+                  >
+                    Upload Image
+                  </label>
+                </div>
+              )}
+              {requiredImage && (
                 <Card>
                   <CardBody>
                     <CardTitle className="h4">Uplaod Image</CardTitle>

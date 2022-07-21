@@ -29,8 +29,6 @@ import { useEffect } from "react";
 import { allDeliveryMan } from "../store/DeliveryMan/DeliveryManAction";
 
 const OrderTable = ({ orders = [], status, loading }) => {
-  console.log("orders----", orders);
-
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -107,57 +105,60 @@ const OrderTable = ({ orders = [], status, loading }) => {
                 </Tr>
               </Thead>
               <Tbody style={{ position: "relative" }}>
-                {orders?.map((item, index) => {
-                  return (
-                    <Tr
-                      key={index}
-                      className="align-middle"
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "500",
-                      }}
-                    >
-                      <Th>{item?.orderId}</Th>
+                {orders.length > 0 &&
+                  orders?.map((item, index) => {
+                    return (
+                      <Tr
+                        key={index}
+                        className="align-middle"
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        <Th>{item?.orderId}</Th>
 
-                      <Td>{item?.user?.name}</Td>
-                      <Td>{item?.shop?.shopName}</Td>
-                      <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
-                      <Td>{item?.summary?.totalPrice}</Td>
-                      <Td>{item?.paymentMethod}</Td>
-                      <Td>{item?.orderStatus}</Td>
-                      <Td>
-                        <div>
-                          <Tooltip title="Update Status">
-                            <button
-                              className="btn btn-info button me-md-0  me-2"
-                              onClick={() =>
-                                updateOrderStatus(
-                                  item?._id,
-                                  item?.shop?._id,
-                                  item?.orderStatus,
-                                  item.deliveryBoy &&
-                                    setDeliveryBoy(item.deliveryBoy)
-                                )
-                              }
-                            >
-                              <i className="fa fa-arrow-up" />
-                            </button>
-                          </Tooltip>
-                          <Tooltip title="Details">
-                            <button
-                              className="btn btn-info button"
-                              onClick={() => {
-                                history.push(`/orders/details/${item?._id}`);
-                              }}
-                            >
-                              <i className="fa fa-eye" />
-                            </button>
-                          </Tooltip>
-                        </div>
-                      </Td>
-                    </Tr>
-                  );
-                })}
+                        <Td>{item?.user?.name}</Td>
+                        <Td>{item?.shop?.shopName}</Td>
+                        <Td>
+                          {new Date(item?.createdAt).toLocaleDateString()}
+                        </Td>
+                        <Td>{item?.summary?.totalPrice}</Td>
+                        <Td>{item?.paymentMethod}</Td>
+                        <Td>{item?.orderStatus}</Td>
+                        <Td>
+                          <div>
+                            <Tooltip title="Update Status">
+                              <button
+                                className="btn btn-info button me-md-0  me-2"
+                                onClick={() =>
+                                  updateOrderStatus(
+                                    item?._id,
+                                    item?.shop?._id,
+                                    item?.orderStatus,
+                                    item.deliveryBoy &&
+                                      setDeliveryBoy(item.deliveryBoy)
+                                  )
+                                }
+                              >
+                                <i className="fa fa-arrow-up" />
+                              </button>
+                            </Tooltip>
+                            <Tooltip title="Details">
+                              <button
+                                className="btn btn-info button"
+                                onClick={() => {
+                                  history.push(`/orders/details/${item?._id}`);
+                                }}
+                              >
+                                <i className="fa fa-eye" />
+                              </button>
+                            </Tooltip>
+                          </div>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
               </Tbody>
             </Table>
             {loading && (
