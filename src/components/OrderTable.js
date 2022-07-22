@@ -28,7 +28,7 @@ import { getAllOrder, orderUpdateStatus } from "../store/order/orderAction";
 import { useEffect } from "react";
 import { allDeliveryMan } from "../store/DeliveryMan/DeliveryManAction";
 
-const OrderTable = ({ orders = [], status, loading }) => {
+const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -87,7 +87,7 @@ const OrderTable = ({ orders = [], status, loading }) => {
             <Row className="mb-3">
               <Col md={3} className="text-end" />
             </Row>
-            <CardTitle className="h4"> Order List</CardTitle>
+            <CardTitle className="h4">Orders List</CardTitle>
             <Table
               id="tech-companies-1"
               className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -105,7 +105,7 @@ const OrderTable = ({ orders = [], status, loading }) => {
                 </Tr>
               </Thead>
               <Tbody style={{ position: "relative" }}>
-                {orders.length > 0 &&
+                {orders?.length > 0 &&
                   orders?.map((item, index) => {
                     return (
                       <Tr
@@ -128,22 +128,24 @@ const OrderTable = ({ orders = [], status, loading }) => {
                         <Td>{item?.orderStatus}</Td>
                         <Td>
                           <div>
-                            <Tooltip title="Update Status">
-                              <button
-                                className="btn btn-info button me-md-0  me-2"
-                                onClick={() =>
-                                  updateOrderStatus(
-                                    item?._id,
-                                    item?.shop?._id,
-                                    item?.orderStatus,
-                                    item.deliveryBoy &&
-                                      setDeliveryBoy(item.deliveryBoy)
-                                  )
-                                }
-                              >
-                                <i className="fa fa-arrow-up" />
-                              </button>
-                            </Tooltip>
+                            {!refused && (
+                              <Tooltip title="Update Status">
+                                <button
+                                  className="btn btn-info button me-md-0  me-2"
+                                  onClick={() =>
+                                    updateOrderStatus(
+                                      item?._id,
+                                      item?.shop?._id,
+                                      item?.orderStatus,
+                                      item.deliveryBoy &&
+                                        setDeliveryBoy(item.deliveryBoy)
+                                    )
+                                  }
+                                >
+                                  <i className="fa fa-arrow-up" />
+                                </button>
+                              </Tooltip>
+                            )}
                             <Tooltip title="Details">
                               <button
                                 className="btn btn-info button"

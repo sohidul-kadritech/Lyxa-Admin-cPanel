@@ -176,7 +176,7 @@ const UsersList = () => {
                               <ButtonWrapper>
                                 <Tooltip title="See transactions">
                                   <button
-                                    className="btn btn-success me-xl-3"
+                                    className="btn btn-success"
                                     onClick={() =>
                                       history.push(
                                         `/users/transactions/${user._id}`
@@ -188,7 +188,7 @@ const UsersList = () => {
                                 </Tooltip>
                                 <Tooltip title="See details">
                                   <button
-                                    className="btn btn-info me-xl-3"
+                                    className="btn btn-info"
                                     onClick={() =>
                                       history.push(`/users/details/${user._id}`)
                                     }

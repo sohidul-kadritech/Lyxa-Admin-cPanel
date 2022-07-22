@@ -199,6 +199,7 @@ export const getAllAppSettings = () => async (dispatch) => {
 // ADD DELIVERY CHARGE
 
 export const addDeliveryCharge = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_DELIVERY_FEE_REQUEST_SEND,

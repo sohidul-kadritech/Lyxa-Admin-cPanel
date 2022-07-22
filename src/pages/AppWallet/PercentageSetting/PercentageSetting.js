@@ -38,8 +38,8 @@ const PercentageSetting = () => {
   const [feeInfo, setFeeInfo] = useState({
     dropPercentageType: "",
     dropPercentage: "",
-    deliveryApplicable: "",
-    deliveryCharge: [],
+    deliveryApplicable: "app",
+    deliveryRange: [],
   });
 
   const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
@@ -49,8 +49,6 @@ const PercentageSetting = () => {
     deliveryPersonCut: 0,
   });
 
-  const [searchShopKey, setSearchShopKey] = useState("");
-  const [shop, setShop] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   // useEffect(() => {
@@ -95,11 +93,7 @@ const PercentageSetting = () => {
       return successMsg("Select Applied For ");
     }
 
-    if (deliveryApplicable === "shop" && !shop) {
-      return successMsg("Select a shop ");
-    }
-
-    if (feeInfo.deliveryCharge.length === 0) {
+    if (feeInfo.deliveryRange.length === 0) {
       return successMsg("Please add atleast one delivery charge", "error");
     }
 
@@ -111,7 +105,6 @@ const PercentageSetting = () => {
     dispatch(
       addDeliveryCharge({
         ...feeInfo,
-        shopId: feeInfo.deliveryApplied === "shop" ? shop?._id : null,
       })
     );
   };
@@ -142,7 +135,7 @@ const PercentageSetting = () => {
 
     setFeeInfo({
       ...feeInfo,
-      deliveryCharge: [...feeInfo.deliveryCharge, rangeWiseDeliveryCharge],
+      deliveryRange: [...feeInfo.deliveryRange, rangeWiseDeliveryCharge],
     });
     setModalOpen(false);
     setRangeWiseDeliveryCharge({
@@ -156,9 +149,9 @@ const PercentageSetting = () => {
   // DELETE DELIVERY CHARGE
 
   const deleteDeliveryCharge = (index) => {
-    let newDeliveryCharge = [...feeInfo.deliveryCharge];
+    let newDeliveryCharge = [...feeInfo.deliveryRange];
     newDeliveryCharge.splice(index, 1);
-    setFeeInfo({ ...feeInfo, deliveryCharge: newDeliveryCharge });
+    setFeeInfo({ ...feeInfo, deliveryRange: newDeliveryCharge });
   };
 
   return (
@@ -213,68 +206,6 @@ const PercentageSetting = () => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-4">
-                  <Col lg={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Applied For
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        name="deliveryApplied"
-                        value={feeInfo.deliveryApplicable}
-                        label="Shop Type"
-                        onChange={handleChange}
-                        required
-                      >
-                        <MenuItem value="shop">Shop</MenuItem>
-                        <MenuItem value="global">Global</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                  <Col lg={6} className="mt-4 mt-lg-0">
-                    {feeInfo.deliveryApplied === "shop" && (
-                      <Autocomplete
-                        className="cursor-pointer"
-                        value={shop}
-                        onChange={(event, newValue) => setShop(newValue)}
-                        getOptionLabel={(option) =>
-                          option.shopName ? option.shopName : ""
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchShopKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchShopKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={shops.length > 0 ? shops : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Shop" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.shopBanner}
-                              alt=""
-                            />
-                            {option.shopName}
-                          </Box>
-                        )}
-                      />
-                    )}
-                  </Col>
-                </Row>
 
                 <Row className="mt-4">
                   <Col lg={6}>
@@ -290,13 +221,13 @@ const PercentageSetting = () => {
                           <i className="fas fa-plus"></i>{" "}
                         </Button>
                       </div>
-                      {feeInfo.deliveryCharge.length > 0 && (
+                      {feeInfo.deliveryRange.length > 0 && (
                         <div className="mb-4">
                           <Paper className="py-2">
                             <h5 className="text-center">Charge List</h5>
                             <hr />
-                            {feeInfo.deliveryCharge.length > 0 &&
-                              feeInfo.deliveryCharge.map((item, index) => (
+                            {feeInfo?.deliveryRange?.length > 0 &&
+                              feeInfo?.deliveryRange?.map((item, index) => (
                                 <ul
                                   key={index}
                                   style={{ listStyleType: "square" }}
@@ -322,8 +253,8 @@ const PercentageSetting = () => {
                                         }
                                       ></i>
                                     </div>
-                                    <p className="mb-0">{`Charge: ${item.charge}`}</p>
-                                    <p>{`Delivery Person: ${item.deliveryPersonCut}`}</p>
+                                    <p className="mb-0">{`Charge: ${item.charge} NGN`}</p>
+                                    <p>{`Delivery Person: ${item.deliveryPersonCut} NGN`}</p>
                                   </li>
                                 </ul>
                               ))}

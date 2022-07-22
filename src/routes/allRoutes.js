@@ -168,6 +168,7 @@ import DeliveryTransactionsDetails from "../pages/AppWallet/DeliveryTransactions
 import DropTransactionsDetails from "../pages/AppWallet/dropTransactions/dropTransactionsDetails";
 import UnitTypes from "../pages/Product/UnitTypes/UnitTypes";
 import CancelReason from "../pages/CancelReason/CancelReason";
+import RefusedOrders from "../pages/Orders/RefusedOrders/RefusedOrders";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -175,6 +176,7 @@ const userRoutes = [
   { path: "/orders/list", component: OrdersList },
   { path: "/orders/details/:id", component: OrderDetails },
   { path: "/orders/cancel-reason", component: CancelReason },
+  { path: "/orders/refused", component: RefusedOrders },
 
   { path: "/image-gallery", component: PagesGallery },
   { path: "/image-folder", component: ImageFolder },
