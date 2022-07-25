@@ -60,12 +60,13 @@ const DealsAdd = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeStatus, setActiveStatus] = useState("");
   const [requiredImage, setRequiredImage] = useState(false);
-  const [tag, setTag] = useState(false);
+  const [tag, setTag] = useState("");
 
   useEffect(() => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
+        console.log({ findDeal });
         updateData(findDeal);
       } else {
         callApi(id);
@@ -106,8 +107,8 @@ const DealsAdd = () => {
 
   const updateData = (data) => {
     const { name, image, option, percentage, status, type, tag } = data;
-    const findTag = tags.find((item) => item._id === tag?._id);
-    console.log({ findTag });
+    const findTag = tags.find((item) => item._id === tag);
+
     setTag(findTag);
     setName(name);
     setImage(image);
@@ -322,7 +323,6 @@ const DealsAdd = () => {
                           className="cursor-pointer"
                           value={tag}
                           onChange={(event, newValue) => {
-                            console.log({ newValue });
                             setTag(newValue);
                           }}
                           getOptionLabel={(option) =>
@@ -341,7 +341,7 @@ const DealsAdd = () => {
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label="Select a TAg"
+                              label="Select a Tag"
                               required
                               name="tag"
                             />

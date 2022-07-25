@@ -126,10 +126,19 @@ export const updateNearByShopKey = (distance) => (dispatch) => {
   });
 };
 
+// MAX DISCOUNT AMOUTN UPDATE
+
+export const updateMaxDiscount = (amount) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_MAX_DISCOUNT,
+    payload: amount,
+  });
+};
+
 // UPDATE APP SETTINGS
 
 export const updateAppSettings = () => async (dispatch, getState) => {
-  const { nearByShopKm } = getState().settingsReducer;
+  const { nearByShopKm, maxDiscount } = getState().settingsReducer;
   try {
     dispatch({
       type: actionType.UPDATE_APP_SETTINGS_REQUEST_SEND,
@@ -141,8 +150,11 @@ export const updateAppSettings = () => async (dispatch, getState) => {
       method: "POST",
       data: {
         nearByShopKm,
+        maxDiscount,
       },
     });
+
+    console.log(data);
 
     if (status) {
       successMsg(message, "success");
@@ -176,6 +188,8 @@ export const getAllAppSettings = () => async (dispatch) => {
     const {
       data: { status, error, data },
     } = await requestApi().request(APP_SETTINGS);
+
+    console.log(data);
 
     if (status) {
       dispatch({

@@ -223,6 +223,8 @@ export const getDeliveryAllOrder =
         } = await requestApi().request(DELIVERY_BOY_ORDERS, {
           params: {
             deliveryId,
+            page,
+            pageSize: 50,
           },
         });
 

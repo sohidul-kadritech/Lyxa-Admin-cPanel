@@ -12,6 +12,7 @@ const initialState = {
   cancelReasons: [],
   typeKey: "all",
   activeStatus: "all",
+  maxDiscount: 0,
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -96,6 +97,12 @@ const settingsReducer = (state = initialState, action) => {
         nearByShopKm: payload,
       };
 
+    case actionType.UPDATE_MAX_DISCOUNT:
+      return {
+        ...state,
+        maxDiscount: payload,
+      };
+
     case actionType.UPDATE_APP_SETTINGS_REQUEST_SEND:
       return {
         ...state,
@@ -127,6 +134,7 @@ const settingsReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         nearByShopKm: payload.nearByShopKm,
+        maxDiscount: payload.maxDiscount,
       };
 
     case actionType.ALL_APP_SETTINGS_REQUEST_FAIL:

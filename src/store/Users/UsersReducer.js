@@ -142,12 +142,12 @@ const usersReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        orders: payload,
-        // paginate: payload.paginate,
-        // paging: payload.paginate.metadata.paging,
-        // hasNextPage: payload.paginate.metadata.hasNextPage,
-        // currentPage: payload.paginate.metadata.page.currentPage,
-        // hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        orders: payload.orders,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
         status: false,
       };
 

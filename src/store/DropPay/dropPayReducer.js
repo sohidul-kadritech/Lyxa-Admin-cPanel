@@ -31,7 +31,7 @@ const dropPayReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        credits: payload.users,
+        credits: payload.transactionList,
         paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,

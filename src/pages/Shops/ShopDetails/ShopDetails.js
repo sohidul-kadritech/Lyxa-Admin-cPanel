@@ -86,7 +86,7 @@ const ShopDetails = () => {
     dispatch(
       ShopLiveStatus({
         id: shop._id,
-        liveStatus: status ? "online" : "offline",
+        liveStatus: status ? "online" : "busy",
       })
     );
   };
@@ -179,16 +179,14 @@ const ShopDetails = () => {
                             id: shop?._id,
                             status:
                               shop?.shopStatus === "active"
-                                ? "deactive"
+                                ? "inactive"
                                 : "active",
                           })
                         )
                       }
                       className="me-3"
                     >
-                      {shop?.shopStatus === "active"
-                        ? "Deactivate"
-                        : "Activate"}
+                      {shop?.shopStatus === "active" ? "Inactive" : "Activate"}
                     </Button>
                     <div>
                       <Switch
@@ -197,7 +195,7 @@ const ShopDetails = () => {
                         inputProps={{ "aria-label": "controlled" }}
                       />
                       <Label className="mt-2">
-                        {liveStatus ? "Online" : "Offline"}
+                        {liveStatus ? "Online" : "Busy"}
                       </Label>
                     </div>
                   </div>

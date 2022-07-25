@@ -136,7 +136,7 @@ export const ALL_TAG = ADMIN_ENDPOINT + "/deal/get-tags";
 
 // DROP PAY
 
-export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay/get-amount-user-list";
+export const DROP_PAY_LIST = ADMIN_ENDPOINT + "/drop-pay";
 export const ADD_USER_BALANCE = ADMIN_ENDPOINT + "/user/add-balance";
 export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance";
 

@@ -15,6 +15,7 @@ import {
   updateUserStatus,
 } from "../../../store/Users/UsersAction";
 import UserCradit from "../../../components/UserCradit";
+import AppPagination from "../../../components/AppPagination";
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -24,6 +25,10 @@ const UserDetails = () => {
     users,
     orders,
     status: userStatus,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
   } = useSelector((state) => state.usersReducer);
   const { status } = useSelector((state) => state.dropPayReducer);
 
@@ -134,6 +139,21 @@ const UserDetails = () => {
             <div>
               <OrderTable ordres={orders} />
             </div>
+            <Row>
+              <Col xl={12}>
+                <div className="d-flex justify-content-center">
+                  <AppPagination
+                    paging={paging}
+                    hasNextPage={hasNextPage}
+                    hasPreviousPage={hasPreviousPage}
+                    currentPage={currentPage}
+                    lisener={(page) =>
+                      dispatch(getUserAllOrder(true, user?._id, page))
+                    }
+                  />
+                </div>
+              </Col>
+            </Row>
           </Container>
         </div>
 

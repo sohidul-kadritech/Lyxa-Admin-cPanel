@@ -23,15 +23,21 @@ import {
 } from "../../../store/DeliveryMan/DeliveryManAction";
 import Info from "../../../components/Info";
 import OrderTable from "../../../components/OrderTable";
+import AppPagination from "../../../components/AppPagination";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { deliveryMans, orders } = useSelector(
-    (state) => state.deliveryManReducer
-  );
+  const {
+    deliveryMans,
+    orders,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+  } = useSelector((state) => state.deliveryManReducer);
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -127,6 +133,10 @@ const DeliverymanDetails = () => {
                         title="Vahicle Type"
                         value={deliveryMan?.vehicleType}
                       />
+                      <Info
+                        title="Vahicle No"
+                        value={deliveryMan?.vehicleNumber}
+                      />
                     </div>
                   </CardBody>
                 </Card>
@@ -190,6 +200,23 @@ const DeliverymanDetails = () => {
             <div>
               <OrderTable orders={orders} />
             </div>
+            <Row>
+              <Col xl={12}>
+                <div className="d-flex justify-content-center">
+                  <AppPagination
+                    paging={paging}
+                    hasNextPage={hasNextPage}
+                    hasPreviousPage={hasPreviousPage}
+                    currentPage={currentPage}
+                    lisener={(page) =>
+                      dispatch(
+                        getDeliveryAllOrder(true, deliveryMan?._id, page)
+                      )
+                    }
+                  />
+                </div>
+              </Col>
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

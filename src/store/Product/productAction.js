@@ -2,7 +2,6 @@ import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_PRODUCT,
   ALL_PRODUCT,
-  DELETE_PRODUCT,
   EDIT_PRODUCT,
   ADD_PRODUCT_DEAL,
   UPDATE_PRODUCT_STATUS,
@@ -14,7 +13,6 @@ import * as actionType from "../actionType";
 // ADD
 
 export const addProduct = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_PRODUCT_REQUEST_SEND,
@@ -100,6 +98,7 @@ export const getAllProduct =
 // EDIT
 
 export const editProduct = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_PRODUCT_REQUEST_SEND,

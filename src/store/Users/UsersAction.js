@@ -172,6 +172,8 @@ export const getUserAllOrder =
         } = await requestApi().request(USER_ORDERS, {
           params: {
             userId,
+            page,
+            pageSize: 50,
           },
         });
 

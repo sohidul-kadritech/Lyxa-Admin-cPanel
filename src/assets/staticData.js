@@ -127,7 +127,7 @@ export const DealsFilterOptions = [
 ];
 
 export const foodTypeOptions2 = [
-  { label: "Veg", value: "meat" },
+  { label: "Veg", value: "veg" },
   { label: "Non Veg", value: "non_veg" },
 ];
 

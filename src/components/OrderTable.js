@@ -33,7 +33,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const dispatch = useDispatch();
 
   const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
-
   const [isUpdateStatus, setIsUpdateStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
   const [orderId, setOrderId] = useState("");

@@ -16,13 +16,15 @@ import GlobalWrapper from "../../components/GlobalWrapper";
 import {
   getAllAppSettings,
   updateAppSettings,
+  updateMaxDiscount,
   updateNearByShopKey,
 } from "../../store/Settings/settingsAction";
 import { toast } from "react-toastify";
+import { successMsg } from "../../helpers/successMsg";
 
 const AppSettings = () => {
   const dispatch = useDispatch();
-  const { nearByShopKm, loading } = useSelector(
+  const { nearByShopKm, loading, maxDiscount } = useSelector(
     (state) => state.settingsReducer
   );
 
@@ -32,15 +34,11 @@ const AppSettings = () => {
 
   const updateSettings = () => {
     if (!nearByShopKm) {
-      return toast.warn("Enter Near Shop Distance(KM)", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg("Enter Near By Shop Distance(KM)");
+    }
+
+    if (!maxDiscount) {
+      return successMsg("Enter Max Discount Amount");
     }
 
     dispatch(updateAppSettings());
@@ -66,12 +64,27 @@ const AppSettings = () => {
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
-                      label="Shop Distance(KM)"
+                      label="Near Shop Distance(KM)"
                       variant="outlined"
                       placeholder="Enter near shop Distance"
                       value={nearByShopKm}
                       onChange={(e) =>
                         dispatch(updateNearByShopKey(e.target.value))
+                      }
+                      type="number"
+                      required
+                    />
+                  </Col>
+                  <Col lg={6} className="mt-3 mt-lg-0">
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Max Discount(Amount)"
+                      variant="outlined"
+                      placeholder="Enter max discount amount"
+                      value={maxDiscount}
+                      onChange={(e) =>
+                        dispatch(updateMaxDiscount(e.target.value))
                       }
                       type="number"
                       required

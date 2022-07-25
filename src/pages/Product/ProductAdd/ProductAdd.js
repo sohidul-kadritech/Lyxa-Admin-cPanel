@@ -78,10 +78,6 @@ const ProductAdd = () => {
   const [subCategory, setSubCategory] = useState("");
   const [searchSubCatKey, setSearchSubCatKey] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [tags, setTags] = useState({
-    items: [],
-    value: "",
-  });
   const [name, setName] = useState("");
   const [foodType, setFoodType] = useState("");
   const [discount, setDiscount] = useState("");
@@ -171,7 +167,6 @@ const ProductAdd = () => {
       images,
       price,
       seoDescription,
-      tags,
       seoTitle,
       shop,
       subCategory,
@@ -195,11 +190,7 @@ const ProductAdd = () => {
     setType(type);
     setSeoTitle(seoTitle);
     setSeoDescription(seoDescription);
-    setFoodType(foodType ?? "");
-    setTags({
-      ...tags,
-      items: tags,
-    });
+    setFoodType(foodType);
     setImage(images[0]);
     setAddons(addons);
     setAttributes(attributes);
@@ -235,45 +226,41 @@ const ProductAdd = () => {
 
   // TAGS
 
-  const handleTagAdd = (evt) => {
-    if (["Enter", "Tab", ","].includes(evt.key)) {
-      evt.preventDefault();
+  // const handleTagAdd = (evt) => {
+  //   if (["Enter", "Tab", ","].includes(evt.key)) {
+  //     evt.preventDefault();
 
-      let value = tags.value.trim();
+  //     let value = tags.value.trim();
 
-      if (value) {
-        setTags({
-          items: [...tags.items, tags.value],
-          value: "",
-        });
-      }
-    }
-  };
+  //     if (value) {
+  //       setTags({
+  //         items: [...tags.items, tags.value],
+  //         value: "",
+  //       });
+  //     }
+  //   }
+  // };
 
   // TAG CHANGE
 
-  const handleTagChange = (evt) => {
-    setTags({
-      ...tags,
-      value: evt.target.value,
-    });
-  };
+  // const handleTagChange = (evt) => {
+  //   setTags({
+  //     ...tags,
+  //     value: evt.target.value,
+  //   });
+  // };
 
-  const handleTagDelete = (item) => {
-    setTags({
-      ...tags,
-      items: tags.items.filter((i) => i != item),
-    });
-  };
+  // const handleTagDelete = (item) => {
+  //   setTags({
+  //     ...tags,
+  //     items: tags.items.filter((i) => i != item),
+  //   });
+  // };
 
   // VALIDATION
 
   const submitProduct = (e) => {
     e.preventDefault();
-
-    if (tags.items.length < 1) {
-      return successMsg("Please add at least one tag", "error");
-    }
 
     if (!image) {
       return successMsg("Please Upload Image", "error");
@@ -323,7 +310,6 @@ const ProductAdd = () => {
       subCategory: subCategory?._id,
       seoTitle,
       seoDescription,
-      tags: tags.items,
       attributes,
       addons: addonsData,
       cuisines,
@@ -423,10 +409,6 @@ const ProductAdd = () => {
         setPrice("");
         setSeoTitle("");
         setSeoDescription("");
-        setTags({
-          items: [],
-          value: "",
-        });
         setType("");
 
         setAttributes([]);
@@ -827,7 +809,8 @@ const ProductAdd = () => {
                           required
                         />
                       </div>
-                      <div className="mb-4">
+
+                      {/* <div className="mb-4">
                         <TextField
                           id="seoTag"
                           label="SEO Tags"
@@ -856,7 +839,7 @@ const ProductAdd = () => {
                             ))}
                           </Paper>
                         )}
-                      </div>
+                      </div> */}
 
                       <div className="mb-4">
                         <TextField

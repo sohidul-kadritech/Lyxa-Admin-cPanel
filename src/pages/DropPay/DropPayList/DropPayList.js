@@ -177,7 +177,7 @@ const DropPayList = () => {
                     <Tr>
                       <Th>Customer Name</Th>
                       <Th>Customer Email</Th>
-                      <Th>Deposit ID</Th>
+                      {/* <Th>Deposit ID</Th> */}
                       <Th>Amount</Th>
                       <Th>Deposit by</Th>
                       <Th>Date</Th>
@@ -194,10 +194,14 @@ const DropPayList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Td>{item?.name}</Td>
-                          <Td>{item?.email}</Td>
-                          <Td>{item?.balance}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td>{item?.user?.name}</Td>
+                          <Td>{item?.user?.email}</Td>
+                          <Td>{item?.amount}</Td>
+                          <Td>
+                            {item?.type === "userPayAfterReceivedOrderByCard"
+                              ? "Card"
+                              : "Admin"}
+                          </Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
