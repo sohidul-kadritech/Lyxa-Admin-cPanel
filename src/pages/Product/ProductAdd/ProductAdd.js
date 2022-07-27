@@ -128,10 +128,10 @@ const ProductAdd = () => {
   useEffect(() => {
     if (searchParams || account_type === "shop") {
       const shopId = searchParams.get("shopId");
-      if (shopId || accountId) {
-        const findShop = shops?.find(
-          (item) => item._id === accountId || shopId
-        );
+      let shop = null;
+      shopId ? (shop = shopId) : (shop = accountId);
+      if (shop) {
+        const findShop = shops?.find((item) => item._id === shop);
         if (findShop) {
           setType(findShop?.shopType);
           setShop(findShop);
@@ -431,7 +431,7 @@ const ProductAdd = () => {
   // IMAGE
 
   const handleAcceptedFiles = (files, type) => {
-    console.log(files);
+    // console.log(files);
     files.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -508,46 +508,48 @@ const ProductAdd = () => {
                         />
                       </div>
 
-                      <div className="mb-4">
-                        <Autocomplete
-                          className="cursor-pointer"
-                          value={unit}
-                          onChange={(event, newValue) => {
-                            setUnit(newValue);
-                          }}
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={(option, value) =>
-                            option?._id == value?._id
-                          }
-                          inputValue={cuisineSearchKey}
-                          onInputChange={(event, newInputValue) => {
-                            setCuisineSearchKey(newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={unitTypes.length > 0 ? unitTypes : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select a Unit"
-                              required
-                              name="cuisine"
-                            />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option?._id}
-                            >
-                              {option?.name}
-                            </Box>
-                          )}
-                        />
-                      </div>
+                      {type !== "food" && (
+                        <div className="mb-4">
+                          <Autocomplete
+                            className="cursor-pointer"
+                            value={unit}
+                            onChange={(event, newValue) => {
+                              setUnit(newValue);
+                            }}
+                            getOptionLabel={(option) =>
+                              option.name ? option.name : ""
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option?._id == value?._id
+                            }
+                            inputValue={cuisineSearchKey}
+                            onInputChange={(event, newInputValue) => {
+                              setCuisineSearchKey(newInputValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={unitTypes.length > 0 ? unitTypes : []}
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Select a Unit"
+                                required
+                                name="cuisine"
+                              />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option?._id}
+                              >
+                                {option?.name}
+                              </Box>
+                            )}
+                          />
+                        </div>
+                      )}
 
                       <div className="mb-4">
                         <SelectOption
