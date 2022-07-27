@@ -313,6 +313,7 @@ const SellerAdd = () => {
           certificate_of_incorporation: certificateUrl,
           national_id: nidUrl,
           sellerContractPaper: contactUrl,
+          sellerStatus,
         })
       );
     } else {
@@ -346,8 +347,8 @@ const SellerAdd = () => {
           sellerType,
           subType,
           sellerStatus,
-          gender: "male",
-          dob: "5/5/1997",
+          // gender: "male",
+          // dob: "5/5/1997",
         })
       );
     }

@@ -18,15 +18,23 @@ import { adminAuth, apiError } from "../../store/actions";
 import logoSm from "../../assets/images/drop_logo.png";
 import { toast } from "react-toastify";
 import GlobalWrapper from "./../../components/GlobalWrapper";
-import { Switch } from "@mui/material";
+import {
+  FormControl,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Switch,
+} from "@mui/material";
 import { FormControlLabel } from "@material-ui/core";
 
 const Login = (props) => {
   const history = useHistory();
 
-  const { admin, accessToken, message } = useSelector((state) => state.Login);
+  const { admin, accessToken, message, loading } = useSelector(
+    (state) => state.Login
+  );
 
-  const [shopLogin, setShopLogin] = useState(false);
+  const [type, setType] = useState("admin");
 
   useEffect(() => {
     // console.log(admin);
@@ -48,7 +56,13 @@ const Login = (props) => {
 
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
-    props.adminAuth({ ...values, shopLogin }, props.history);
+    props.adminAuth({ ...values, type }, props.history);
+  };
+
+  // ROLL CHANGE
+
+  const handleLoginRoleChange = (e) => {
+    setType(e.target.value);
   };
 
   return (
@@ -91,26 +105,36 @@ const Login = (props) => {
                           </Alert>
                         ) : null}
 
-                        <div className="mb-3">
-                          {/* <Switch
-                            name="shopLogin"
-                            checked={shopLogin}
-                            onChange={(e) => {
-                              setShopLogin(e.target.checked);
-                            }}
-                            inputProps={{ "aria-label": "controlled" }}
-                          /> */}
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={shopLogin}
-                                onChange={(e) => {
-                                  setShopLogin(e.target.checked);
-                                }}
-                              />
-                            }
-                            label="Sign in as Shop"
-                          />
+                        <div className="mb-2">
+                          <FormControl>
+                            <FormLabel id="demo-controlled-radio-buttons-group">
+                              Login as
+                            </FormLabel>
+                            <RadioGroup
+                              aria-labelledby="demo-controlled-radio-buttons-group"
+                              name="controlled-radio-buttons-group"
+                              value={type}
+                              onChange={handleLoginRoleChange}
+                            >
+                              <div className="d-flex justify-content-center">
+                                <FormControlLabel
+                                  value="admin"
+                                  control={<Radio />}
+                                  label="Admin"
+                                />
+                                <FormControlLabel
+                                  value="seller"
+                                  control={<Radio />}
+                                  label="Seller"
+                                />
+                                <FormControlLabel
+                                  value="shop"
+                                  control={<Radio />}
+                                  label="Shop"
+                                />
+                              </div>
+                            </RadioGroup>
+                          </FormControl>
                         </div>
 
                         <div className="mb-3">
@@ -141,8 +165,9 @@ const Login = (props) => {
                             <button
                               className="btn btn-primary w-md waves-effect waves-light"
                               type="submit"
+                              disabled={loading}
                             >
-                              Log In
+                              {loading ? "Loading..." : "Log In"}
                             </button>
                           </Col>
                         </Row>

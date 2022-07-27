@@ -172,7 +172,9 @@ const ProductDetails = () => {
                     </div>
                   </Col>
                   <Col xl={4}>
-                    <Info title="Unit Type" value={product?.unit} />
+                    {product?.unit && (
+                      <Info title="Unit Type" value={product?.unit} />
+                    )}
                     <Info title="Price" value={`${product?.price} NGN`} />
                     <Info title="Status" value={product?.status} />
                     <Info title="SEO Title" value={product?.seoTitle} />

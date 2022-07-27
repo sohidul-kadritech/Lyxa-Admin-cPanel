@@ -95,6 +95,7 @@ export const getAllSeller =
 // EDIT
 
 export const editSeller = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_SELLER_REQUEST_SEND,

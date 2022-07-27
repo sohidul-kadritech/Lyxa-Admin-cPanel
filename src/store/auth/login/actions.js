@@ -11,13 +11,6 @@ import {
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
 
-export const loginUser = () => {
-  // console.log("request", user);
-  return {
-    type: LOGIN_USER,
-  };
-};
-
 export const loginSuccess = (admin, accessToken, message) => {
   // console.log(user);
   return {
@@ -53,9 +46,8 @@ export const logoutAdmin = () => (dispatch) => {
 };
 
 export const adminAuth = (user) => async (dispatch, getState) => {
-  // console.log({ user });
   try {
-    // dispatch(loginUser(user));
+    dispatch({ type: LOGIN_USER });
 
     const {
       data: { status, message, error, data = null },
