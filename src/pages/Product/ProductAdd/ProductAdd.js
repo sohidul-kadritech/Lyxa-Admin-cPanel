@@ -84,7 +84,7 @@ const ProductAdd = () => {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
-  const [seoDescription, setSeoDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
   const [addons, setAddons] = useState([]);
@@ -111,7 +111,7 @@ const ProductAdd = () => {
       const findProduct = products.find((item) => item._id == id);
 
       if (findProduct) {
-        // console.log({ findProduct });
+        console.log({ findProduct });
         setProductValue(findProduct);
       } else {
         callApi(id);
@@ -166,8 +166,8 @@ const ProductAdd = () => {
       name,
       images,
       price,
-      seoDescription,
-      seoTitle,
+      description,
+
       shop,
       subCategory,
       type,
@@ -188,8 +188,8 @@ const ProductAdd = () => {
     setDiscount(discount);
     setPrice(price);
     setType(type);
-    setSeoTitle(seoTitle);
-    setSeoDescription(seoDescription);
+
+    setDescription(description);
     setFoodType(foodType);
     setImage(images[0]);
     setAddons(addons);
@@ -308,8 +308,7 @@ const ProductAdd = () => {
       images: [url],
       category: category._id,
       subCategory: subCategory?._id,
-      seoTitle,
-      seoDescription,
+      description,
       attributes,
       addons: addonsData,
       cuisines,
@@ -408,7 +407,7 @@ const ProductAdd = () => {
         setDiscount("");
         setPrice("");
         setSeoTitle("");
-        setSeoDescription("");
+        setDescription("");
         setType("");
 
         setAttributes([]);
@@ -508,6 +507,30 @@ const ProductAdd = () => {
                         />
                       </div>
 
+                      <div className="mb-4">
+                        <SelectOption
+                          label="Type"
+                          value={type}
+                          onChange={(event) => {
+                            setType(event.target.value);
+                            dispatch(updateShopType(event.target.value));
+                            dispatch(
+                              updateCategoryShopType(event.target.value)
+                            );
+                            setShop(null);
+                            setCategory(null);
+                          }}
+                          options={shopTypeOptions2}
+                          disabled={
+                            searchParams.get("shopId") != undefined ||
+                            id ||
+                            account_type === "shop"
+                              ? true
+                              : false
+                          }
+                        />
+                      </div>
+
                       {type !== "food" && (
                         <div className="mb-4">
                           <Autocomplete
@@ -550,51 +573,6 @@ const ProductAdd = () => {
                           />
                         </div>
                       )}
-
-                      <div className="mb-4">
-                        <SelectOption
-                          label="Type"
-                          value={type}
-                          onChange={(event) => {
-                            setType(event.target.value);
-                            dispatch(updateShopType(event.target.value));
-                            dispatch(
-                              updateCategoryShopType(event.target.value)
-                            );
-                            setShop(null);
-                            setCategory(null);
-                          }}
-                          options={shopTypeOptions2}
-                          disabled={
-                            searchParams.get("shopId") != undefined ||
-                            id ||
-                            account_type === "shop"
-                              ? true
-                              : false
-                          }
-                        />
-                      </div>
-                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
-                        <div className="mb-4">
-                          <ShopAutocompleted
-                            value={shop}
-                            onChange={(event, newValue) => setShop(newValue)}
-                            searchKey={searchKey}
-                            onInputChange={(event, newInputValue) =>
-                              dispatch(updateShopSearchKey(newInputValue))
-                            }
-                            list={shops}
-                            disabled={
-                              !type ||
-                              id ||
-                              searchParams.get("shopId") ||
-                              account_type === "shop"
-                                ? true
-                                : false
-                            }
-                          />
-                        </div>
-                      </Tooltip>
 
                       {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
                         <div className="mb-4">
@@ -686,22 +664,30 @@ const ProductAdd = () => {
                           />
                         </div>
                       )}
-                      {/* <div className="mb-4">
-                        <TextField
-                          id="previousPrice"
-                          label="Discount(%)"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          placeholder="Ender Discount Percentage"
-                          autoComplete="off"
-                          value={discount}
-                          onChange={(event) => setDiscount(event.target.value)}
-                          required
-                          type="number"
-                        />
-                      </div> */}
                     </Col>
                     <Col lg={6}>
+                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
+                        <div className="mb-4">
+                          <ShopAutocompleted
+                            value={shop}
+                            onChange={(event, newValue) => setShop(newValue)}
+                            searchKey={searchKey}
+                            onInputChange={(event, newInputValue) =>
+                              dispatch(updateShopSearchKey(newInputValue))
+                            }
+                            list={shops}
+                            disabled={
+                              !type ||
+                              id ||
+                              searchParams.get("shopId") ||
+                              account_type === "shop"
+                                ? true
+                                : false
+                            }
+                          />
+                        </div>
+                      </Tooltip>
+
                       <Tooltip title={`${!type ? "Select Type First" : ""}`}>
                         <div className="mb-4">
                           <Autocomplete
@@ -799,7 +785,7 @@ const ProductAdd = () => {
                         </div>
                       )}
 
-                      <div className="mb-4">
+                      {/* <div className="mb-4">
                         <TextField
                           id="seo"
                           label="SEO Title"
@@ -810,7 +796,7 @@ const ProductAdd = () => {
                           onChange={(event) => setSeoTitle(event.target.value)}
                           required
                         />
-                      </div>
+                      </div> */}
 
                       {/* <div className="mb-4">
                         <TextField
@@ -846,13 +832,13 @@ const ProductAdd = () => {
                       <div className="mb-4">
                         <TextField
                           id="seo"
-                          label="SEO Description"
+                          label="Description"
                           variant="outlined"
                           style={{ width: "100%" }}
                           autoComplete="off"
-                          value={seoDescription}
+                          value={description}
                           onChange={(event) =>
-                            setSeoDescription(event.target.value)
+                            setDescription(event.target.value)
                           }
                           required
                           multiline

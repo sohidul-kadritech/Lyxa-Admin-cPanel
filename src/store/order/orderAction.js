@@ -41,7 +41,7 @@ export const getAllOrder =
           },
         });
 
-        // console.log({ data });
+        console.log({ data });
 
         if (status) {
           dispatch({

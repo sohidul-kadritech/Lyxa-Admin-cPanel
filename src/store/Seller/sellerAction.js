@@ -105,6 +105,8 @@ export const editSeller = (values) => async (dispatch) => {
       data: values,
     });
 
+    console.log({ data });
+
     if (data.status) {
       successMsg(data.message, "success");
 

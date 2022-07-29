@@ -4,6 +4,7 @@ import {
   ADMINS_SETTINGS,
   ALL_ORDER_CANCEL_REASON,
   APP_SETTINGS,
+  GET_DELIVERY_FEE,
   SET_DELIVERY_FEE,
   UPDATE_ADMINS_SETTINGS,
   UPDATE_APP_SETTINGS,
@@ -210,9 +211,9 @@ export const getAllAppSettings = () => async (dispatch) => {
   }
 };
 
-// ADD DELIVERY CHARGE
+// ADD PERCENTAGE SETTING
 
-export const addDeliveryCharge = (values) => async (dispatch) => {
+export const addPercentage = (values) => async (dispatch) => {
   console.log({ values });
   try {
     dispatch({
@@ -246,6 +247,41 @@ export const addDeliveryCharge = (values) => async (dispatch) => {
     });
   }
 };
+
+// GET PERCENTAGE SETTINGS
+
+export const getPercentageSetting =
+  (refresh = false) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: actionType.GET_PERCENTAGE_REQUEST_SEND,
+      });
+
+      const {
+        data: { status, error, data },
+      } = await requestApi().request(GET_DELIVERY_FEE);
+
+      console.log({ data });
+
+      if (status) {
+        dispatch({
+          type: actionType.GET_PERCENTAGE_REQUEST_SUCCESS,
+          payload: data.dropCharge[0],
+        });
+      } else {
+        dispatch({
+          type: actionType.GET_PERCENTAGE_REQUEST_FAIL,
+          payload: error,
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: actionType.GET_PERCENTAGE_REQUEST_FAIL,
+        payload: error.message,
+      });
+    }
+  };
 
 // ADD CANCELATION REASON
 

@@ -122,8 +122,11 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                         <Td>
                           {new Date(item?.createdAt).toLocaleDateString()}
                         </Td>
-                        <Td>{item?.summary?.totalPrice}</Td>
-                        <Td>{item?.paymentMethod}</Td>
+                        <Td>{item?.summary?.totalAmount}</Td>
+                        <Td>
+                          {item?.paymentMethod}{" "}
+                          {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
+                        </Td>
                         <Td>{item?.orderStatus}</Td>
                         <Td>
                           <div>

@@ -27,6 +27,13 @@ export const adminMenuItem = [
         link: "/orders/refused",
         isSubmenu: false,
       },
+      {
+        id: 22,
+        icon: "fas fa-times",
+        name: "Cancel Reason",
+        link: "/orders/cancel-reason",
+        isSubmenu: false,
+      },
     ],
   },
   {
@@ -304,13 +311,6 @@ export const adminMenuItem = [
         name: "Percentage Setting",
         icon: "ti-settings",
         link: "/percentage-setting",
-        isSubmenu: false,
-      },
-      {
-        id: 153,
-        icon: "fas fa-times",
-        name: "Cancel Reason",
-        link: "/orders/cancel-reason",
         isSubmenu: false,
       },
     ],

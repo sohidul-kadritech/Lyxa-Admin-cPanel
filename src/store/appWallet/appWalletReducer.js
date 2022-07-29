@@ -5,7 +5,6 @@ const init = {
   loading: false,
   error: null,
   status: false,
-  deliveryFee: null,
   sellerTrxs: [],
   sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
   sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
@@ -26,26 +25,6 @@ const appWalletReducer = (state = init, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    //   GET DELIVERY FEE
-    case actionTypes.GET_DELIVERY_FEE_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true,
-      };
-    case actionTypes.GET_DELIVERY_FEE_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        status: false,
-        deliveryFee: payload,
-      };
-    case actionTypes.GET_DELIVERY_FEE_REQUEST_FAIL:
-      return {
-        ...state,
-        loading: false,
-        error: payload,
-      };
-
     // SELLER TRX
     case actionTypes.SELLER_TRX_START_DATE:
       return {

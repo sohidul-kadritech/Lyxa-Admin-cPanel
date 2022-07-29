@@ -10,39 +10,6 @@ import {
 import requestApi from "../../network/httpRequest";
 import * as actionTypes from "../actionType";
 
-// GET DELIVERY FEE
-
-export const getDeliveryCharge =
-  (refresh = false) =>
-  async (dispatch) => {
-    try {
-      dispatch({
-        type: actionTypes.GET_DELIVERY_FEE_REQUEST_SEND,
-      });
-
-      const { data } = await requestApi().request(GET_DELIVERY_FEE);
-
-      console.log({ data: data });
-
-      if (data.status) {
-        dispatch({
-          type: actionTypes.GET_DELIVERY_FEE_REQUEST_SUCCESS,
-          payload: data.data,
-        });
-      } else {
-        dispatch({
-          type: actionTypes.GET_DELIVERY_FEE_REQUEST_FAIL,
-          payload: data.error,
-        });
-      }
-    } catch (error) {
-      dispatch({
-        type: actionTypes.GET_DELIVERY_FEE_REQUEST_FAIL,
-        payload: error.message,
-      });
-    }
-  };
-
 // GET SELLER TRX
 
 export const getSellerTrx =

@@ -113,7 +113,7 @@ const SellerAdd = () => {
       national_id,
       profile_photo,
       sellerContractPaper,
-      sellerStatus,
+      status,
     } = sellerData;
     setProfilePhoto(profile_photo);
     setCertificate(certificate_of_incorporation);
@@ -128,7 +128,7 @@ const SellerAdd = () => {
     setBankName(bank_name);
     setAccountName(account_name);
     setAccountNum(account_number);
-    setSellerStatus(sellerStatus);
+    setSellerStatus(status);
   };
 
   // IMAGE
@@ -347,8 +347,6 @@ const SellerAdd = () => {
           sellerType,
           subType,
           sellerStatus,
-          // gender: "male",
-          // dob: "5/5/1997",
         })
       );
     }

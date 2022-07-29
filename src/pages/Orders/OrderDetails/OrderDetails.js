@@ -109,20 +109,25 @@ const OrderDetails = () => {
                       title="Delivery Distance"
                       value={`${order?.deliveryDistance} KM`}
                     />
-                    <Info
+                    {/* <Info
                       title="Drop Fee From Delivery"
                       value={`${order?.dropCharge?.dropChargeFromDelivery} NGN`}
                     />
                     <Info
                       title="Drop Fee From Order"
                       value={`${order?.dropCharge?.dropChargeFromOrder} NGN`}
-                    />
+                    /> */}
+                    <Info title="Order Status" value={order?.orderStatus} />
+                    <Info title="Order Type" value={order?.orderType} />
                   </Col>
 
                   <Col lg={6}>
-                    <Info title="Order Status" value={order?.orderStatus} />
-                    <Info title="Order Type" value={order?.orderType} />
-                    <Info title="Payment Method" value={order?.paymentMethod} />
+                    <Info
+                      title="Payment Method"
+                      value={`${order?.paymentMethod} ${
+                        order?.selectPos !== "no" ? "(Pos)" : ""
+                      }`}
+                    />
                     <Info title="Payment Status" value={order?.paymentStatus} />
                     <Info
                       title="Order Time"
@@ -133,7 +138,7 @@ const OrderDetails = () => {
               </CardBody>
             </Card>
 
-            {/* TIMELINE AND CHAT */}
+            {/* TIMELINE AND SUMMARY */}
             <Row>
               <Col xl={6}>
                 <Card>
@@ -180,7 +185,166 @@ const OrderDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col xl={6}>
+
+              <Col lg={6}>
+                <Card>
+                  <CardBody>
+                    <CardTitle className="h4">Summary</CardTitle>
+                    <hr />
+
+                    <Summery>
+                      <div className="item">
+                        <span>Products Amount</span>
+                        <span className="value">
+                          {order?.summary?.productAmount} NGN
+                        </span>
+                      </div>
+
+                      <div className="item">
+                        <span>Delivery Charge</span>
+                        <span className="value">
+                          {order?.summary?.deliveryFee} NGN
+                        </span>
+                      </div>
+                      <div className="item">
+                        <span>Payable Total</span>
+                        <span className="value">
+                          {order?.summary?.totalAmount} NGN
+                        </span>
+                      </div>
+                    </Summery>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            {/* PRODUCT TABLE */}
+            <Card>
+              <CardBody>
+                <Row className="mb-3">
+                  <Col md={3} className="text-end" />
+                </Row>
+                <CardTitle className="h4"> Product List</CardTitle>
+                <Table
+                  id="tech-companies-1"
+                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                >
+                  <Thead>
+                    <Tr>
+                      <Th>Product</Th>
+                      <Th>Type</Th>
+                      <Th>Quantity</Th>
+                      <Th>Price(NGN)</Th>
+                      <Th>Discount(NGN)</Th>
+                      <Th>Total Price(NGN)</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody style={{ position: "relative" }}>
+                    {order?.productsDetails?.map((item, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          className="align-middle"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Th style={{ height: "50px", maxWidth: "150px" }}>
+                            <img
+                              onClick={() => {
+                                setIsZoom(true);
+                                setSelectedImg(item?.product?.images[0]);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt=""
+                              src={item?.product?.images[0]}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                              }}
+                            />
+                            <span>{item?.productName}</span>
+                            {item?.selectedAttributes.map((arr, index) => (
+                              <div key={index}>
+                                <span style={{ fontSize: "12px" }}>
+                                  {arr?.name}
+                                </span>
+                                {arr?.selectedItems?.map((item, index) => (
+                                  <p key={index} style={{ fontSize: "12px" }}>
+                                    {item?.name}
+                                  </p>
+                                ))}
+                              </div>
+                            ))}
+                          </Th>
+                          <Td>{item?.product?.type}</Td>
+                          <Td>{item?.productQuantity}</Td>
+                          <Td>{item?.productPrice}</Td>
+                          <Td>{item?.discount ?? 0}</Td>
+                          <Td>
+                            {item?.finalPrice}
+                            {/* {item?.selectedAttributes?.map((arr, index) =>
+                              arr?.selectedItems.reduce((acc, item) => {
+                                return acc + item?.extraPrice;
+                              }, item?.finalPrice)
+                            )} */}
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+              </CardBody>
+            </Card>
+
+            {/* ADDRESS AND SUMMERY */}
+
+            <Row>
+              <Col lg={6}>
+                <Card>
+                  <CardBody>
+                    <CardTitle className="h4">Delivery Address</CardTitle>
+                    <hr />
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address ">
+                        {`Full Address: ${order?.dropOffLocation?.address}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`State: ${order?.dropOffLocation?.state}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`City: ${order?.dropOffLocation?.city}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`Country: ${order?.dropOffLocation?.country}`}
+                      </span>
+                    </DeliveryAddress>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg={6}>
+                {order?.pickUpLocation && order?.dropOffLocation && (
+                  <OrderTrackingMap
+                    pickup={order?.pickUpLocation}
+                    dropoff={order?.dropOffLocation}
+                  />
+                )}
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={6}>
                 <Card>
                   <CardBody>
                     <CardTitle>Conversation(User & Delivery Body)</CardTitle>
@@ -291,143 +455,6 @@ const OrderDetails = () => {
                     </div>
                   </CardBody>
                 </Card>
-              </Col>
-            </Row>
-            {/* PRODUCT TABLE */}
-            <Card>
-              <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4"> Product List</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Product</Th>
-                      <Th>Type</Th>
-                      <Th>Quantity</Th>
-                      <Th>Price(NGN)</Th>
-                      <Th>Discount(NGN)</Th>
-                      <Th>Total Price(NGN)</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {order?.productsDetails?.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th style={{ height: "50px", maxWidth: "150px" }}>
-                            <img
-                              onClick={() => {
-                                setIsZoom(true);
-                                setSelectedImg(item?.product?.images[0]);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt=""
-                              src={item?.product?.images[0]}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain",
-                              }}
-                            />
-                            <span>{item?.productName}</span>
-                          </Th>
-                          <Td>{item?.product?.type}</Td>
-                          <Td>{item?.productQuantity}</Td>
-                          <Td>{item?.productPrice}</Td>
-                          <Td>{item?.discount}</Td>
-                          <Td>{item?.finalPrice}</Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-              </CardBody>
-            </Card>
-
-            {/* ADDRESS AND SUMMERY */}
-
-            <Row>
-              <Col lg={6}>
-                <Card>
-                  <CardBody>
-                    <CardTitle className="h4">Delivery Address</CardTitle>
-                    <hr />
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address ">
-                        {`Full Address: ${order?.dropOffLocation?.address}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`State: ${order?.dropOffLocation?.state}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`City: ${order?.dropOffLocation?.city}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`Country: ${order?.dropOffLocation?.country}`}
-                      </span>
-                    </DeliveryAddress>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg={6}>
-                <Card>
-                  <CardBody>
-                    <CardTitle className="h4">Summary</CardTitle>
-                    <hr />
-
-                    <Summery>
-                      <div className="item">
-                        <span>Products Amount</span>
-                        <span className="value">
-                          {order?.summary?.productAmount} NGN
-                        </span>
-                      </div>
-
-                      <div className="item">
-                        <span>Delivery Charge</span>
-                        <span className="value">
-                          {order?.summary?.deliveryFee} NGN
-                        </span>
-                      </div>
-                      <div className="item">
-                        <span>Payable Total</span>
-                        <span className="value">
-                          {order?.summary?.totalAmount} NGN
-                        </span>
-                      </div>
-                    </Summery>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md={12}>
-                <OrderTrackingMap
-                  pickup={order?.pickUpLocation}
-                  dropoff={order?.dropOffLocation}
-                />
               </Col>
             </Row>
           </Container>

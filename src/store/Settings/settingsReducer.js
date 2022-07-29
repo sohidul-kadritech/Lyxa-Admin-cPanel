@@ -8,7 +8,7 @@ const initialState = {
   nearByShopKm: 0,
   deliveryFeePerKm: "",
   searchDeliveryBoyKm: [],
-  dropCharges: [],
+  dropCharge: null,
   cancelReasons: [],
   typeKey: "all",
   activeStatus: "all",
@@ -144,7 +144,7 @@ const settingsReducer = (state = initialState, action) => {
         error: payload,
       };
 
-    //   ADD DELIVERY FEE
+    //   ADD PERCENTAGE
     case actionType.ADD_DELIVERY_FEE_REQUEST_SEND:
       return {
         ...state,
@@ -153,11 +153,32 @@ const settingsReducer = (state = initialState, action) => {
     case actionType.ADD_DELIVERY_FEE_REQUEST_SUCCESS:
       return {
         ...state,
-        dropCharges: [...state.dropCharges, payload],
+        dropCharge: payload,
         loading: false,
         status: true,
       };
     case actionType.ADD_DELIVERY_FEE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // GET PERCENTATE
+
+    case actionType.GET_PERCENTAGE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+    case actionType.GET_PERCENTAGE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        dropCharge: payload,
+        loading: false,
+        status: true,
+      };
+    case actionType.GET_PERCENTAGE_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

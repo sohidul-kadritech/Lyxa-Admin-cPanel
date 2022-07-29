@@ -25,15 +25,19 @@ import {
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { successMsg } from "../../../helpers/successMsg";
-import { addDeliveryCharge } from "../../../store/Settings/settingsAction";
+import {
+  addPercentage,
+  getPercentageSetting,
+} from "../../../store/Settings/settingsAction";
 
 import { getAllShop } from "../../../store/Shop/shopAction";
 
 const PercentageSetting = () => {
   const dispatch = useDispatch();
 
-  const { shops } = useSelector((state) => state.shopReducer);
-  const { loading, status } = useSelector((state) => state.settingsReducer);
+  const { loading, status, dropCharge } = useSelector(
+    (state) => state.settingsReducer
+  );
 
   const [feeInfo, setFeeInfo] = useState({
     dropPercentageType: "",
@@ -51,34 +55,20 @@ const PercentageSetting = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  // useEffect(() => {
-  //   callDeliveryFee(true);
-  // }, []);
+  useEffect(() => {
+    dispatch(getPercentageSetting());
+  }, []);
 
-  // const callDeliveryFee = (refresh = false) => {
-  //   dispatch(getDeliveryCharge(refresh));
-  // };
-
-  // useEffect(() => {
-  //   if (deliveryFee) {
-  //     setFeeInfo({
-  //       deliveryFeePerKm: deliveryFee.deliveryFeePerKm,
-  //       dropChargePerKm: deliveryFee.dropChargePerKm,
-  //     });
-  //   }
-  // }, [deliveryFee]);
+  useEffect(() => {
+    if (dropCharge) {
+      setFeeInfo(dropCharge);
+    }
+  }, [dropCharge]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFeeInfo({ ...feeInfo, [name]: value });
   };
-
-  // GET ALL SHOP
-  // useEffect(() => {
-  //   if (feeInfo.deliveryApplied === "shop") {
-  //     dispatch(getAllShop(true));
-  //   }
-  // }, [feeInfo?.deliveryApplied]);
 
   // VALIDATION
   const deliveryFeeSubmit = () => {
@@ -103,7 +93,7 @@ const PercentageSetting = () => {
 
   const submitData = () => {
     dispatch(
-      addDeliveryCharge({
+      addPercentage({
         ...feeInfo,
       })
     );
@@ -179,7 +169,7 @@ const PercentageSetting = () => {
                         id="demo-simple-select"
                         name="dropPercentageType"
                         value={feeInfo.dropPercentageType}
-                        label="Charge Type"
+                        label="Drop Charge Type"
                         onChange={handleChange}
                         required
                       >
@@ -191,7 +181,7 @@ const PercentageSetting = () => {
                   <Col lg={6} className="mt-4 mt-lg-0">
                     <TextField
                       style={{ width: "100%" }}
-                      label={`Charge (${
+                      label={`Drop Charge (${
                         feeInfo.dropPercentageType === "amount"
                           ? "Amount"
                           : "Percentage"
