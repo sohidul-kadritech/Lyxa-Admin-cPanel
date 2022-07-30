@@ -8,15 +8,12 @@ import {
   Card,
   CardBody,
   CardTitle,
-  Carousel,
   Col,
   Container,
   Row,
-  Spinner,
 } from "reactstrap";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Tooltip from "@mui/material/Tooltip";
 import AppPagination from "../../../components/AppPagination";
 import { getAllShop } from "../../../store/Shop/shopAction";
@@ -37,20 +34,14 @@ const SellerDetails = () => {
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
 
   useEffect(() => {
     if (id) {
-      dispatch(getAllShop(true, id));
       const findSeller = sellers.find((item) => item._id == id);
       if (findSeller) {
         console.log(findSeller);
         setSeller(findSeller);
       } else {
-        console.log("call api");
         callApi();
       }
     }
@@ -86,6 +77,13 @@ const SellerDetails = () => {
     });
   };
 
+  const percentageSettings = () => {
+    history.push({
+      pathname: "/percentage-setting",
+      search: `?sellerId=${id}`,
+    });
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -111,55 +109,49 @@ const SellerDetails = () => {
               />
             )}
 
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
+            <Card>
+              <CardBody>
+                <div className="d-flex justify-content-between">
+                  <CardTitle>Seller Informations</CardTitle>
+                  <div>
+                    <Button
+                      outline={true}
+                      color="success"
+                      className="me-3"
+                      onClick={() => percentageSettings()}
+                    >
+                      Percentage setting
+                    </Button>
+                    <Button
+                      color="primary"
+                      outline={true}
+                      onClick={() => history.push(`/seller/edit/${id}`)}
+                    >
+                      Edit
+                    </Button>
+                  </div>
+                </div>
+                <hr className="my-2" />
+                <Row>
+                  <Col lg={6}>
+                    <Info title="Company" value={seller?.company_name} />
+                    <Info title="Contact person" value={seller?.name} />
+                    <Info title="Email" value={seller?.email} />
+                    <Info title="Bank" value={seller?.bank_name} />
+                    <Info title="Account Name" value={seller?.account_name} />
+                  </Col>
+                  <Col lg={6}>
+                    <Info title="Account No" value={seller?.account_number} />
+                    <Info title="Phone" value={seller?.phone_number} />
+                    <Info title="Status" value={seller?.status} />
+                    <Info title="Seller type" value={seller?.sellerType} />
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
             <Row>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <div className="d-flex justify-content-between">
-                      <CardTitle>Seller Informations</CardTitle>
-                      <Button
-                        color="primary"
-                        onClick={() => history.push(`/seller/edit/${id}`)}
-                      >
-                        Edit
-                      </Button>
-                    </div>
-                    <hr className="my-2" />
-                    <Row>
-                      <div className="ps-4">
-                        <Info title="Company" value={seller?.company_name} />
-                        <Info title="Contact person" value={seller?.name} />
-                        <Info title="Email" value={seller?.email} />
-                        <Info title="Bank" value={seller?.bank_name} />
-                        <Info
-                          title="Account Name"
-                          value={seller?.account_name}
-                        />
-                        <Info
-                          title="Account No"
-                          value={seller?.account_number}
-                        />
-                        <Info title="Phone" value={seller?.phone_number} />
-                        <Info title="Status" value={seller?.status} />
-                        <Info title="Seller type" value={seller?.sellerType} />
-                      </div>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={6}>
+              <Col lg={6}>
                 {seller?.certificate_of_incorporation || seller?.national_id ? (
                   <Card>
                     <CardBody>
@@ -242,6 +234,69 @@ const SellerDetails = () => {
                   </Card>
                 ) : null}
               </Col>
+              <Col lg={6}>
+                <Card>
+                  <CardBody>
+                    <CardTitle>Drop Charge</CardTitle>
+                    <hr />
+                    <div>
+                      <h5>
+                        Charge:{" "}
+                        {`${seller?.dropCharge?.dropPercentage} ${
+                          seller?.dropCharge?.dropPercentageType === "amount"
+                            ? "NGN"
+                            : "%"
+                        }`}
+                      </h5>
+
+                      <div className="pt-2">
+                        <h6>Delivery Charge</h6>
+                        <hr />
+                        {seller?.dropCharge?.deliveryRange?.length > 0 &&
+                          seller?.dropCharge?.deliveryRange.map(
+                            (item, index) => (
+                              <ul
+                                key={index}
+                                style={{ listStyleType: "square" }}
+                              >
+                                <li>
+                                  <div className="d-flex justify-content-between flex-column">
+                                    <span
+                                      style={{
+                                        fontSize: "15px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
+                                      Charge: {`${item?.charge} NGN`}
+                                    </span>
+                                    <span
+                                      style={{
+                                        fontSize: "15px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
+                                      Delivery Person Cut:{" "}
+                                      {`${item?.deliveryPersonCut} NGN`}
+                                    </span>
+                                    <span
+                                      style={{
+                                        fontSize: "15px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
+                                      Range:{" "}
+                                      {`${item?.from} km - ${item?.to} km`}
+                                    </span>
+                                  </div>
+                                </li>
+                              </ul>
+                            )
+                          )}
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
             </Row>
 
             <Card>
@@ -254,7 +309,7 @@ const SellerDetails = () => {
                 </div>
                 <hr className="my-3" />
 
-                <ShopTable />
+                <ShopTable shops={seller?.shops} />
               </CardBody>
             </Card>
             <Row>
@@ -273,6 +328,33 @@ const SellerDetails = () => {
           </Container>
         </div>
       </GlobalWrapper>
+      {/* SELLER PERCENTAGE SETTINGS */}
+
+      {/* <Modal
+          isOpen={track}
+          toggle={() => {
+            setTrack(!track);
+          }}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">Tracking Delivery Boy</h5>
+            <button
+              type="button"
+              onClick={() => {
+                setTrack(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <TrackingDeliveryBoy />
+          </div>
+        </Modal> */}
     </React.Fragment>
   );
 };

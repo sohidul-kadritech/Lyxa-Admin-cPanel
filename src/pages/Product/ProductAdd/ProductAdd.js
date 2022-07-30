@@ -75,7 +75,7 @@ const ProductAdd = () => {
   const [cuisineSearchKey, setCuisineSearchKey] = useState("");
   const [category, setCategory] = useState(null);
   const [searchCategoryKey, setSearchCategoryKey] = useState("");
-  const [subCategory, setSubCategory] = useState("");
+  const [subCategory, setSubCategory] = useState(null);
   const [searchSubCatKey, setSearchSubCatKey] = useState("");
   const [quantity, setQuantity] = useState("");
   const [name, setName] = useState("");
@@ -83,7 +83,7 @@ const ProductAdd = () => {
   const [discount, setDiscount] = useState("");
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
-  const [seoTitle, setSeoTitle] = useState("");
+
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
@@ -166,7 +166,7 @@ const ProductAdd = () => {
       name,
       images,
       price,
-      description,
+      seoDescription,
 
       shop,
       subCategory,
@@ -189,7 +189,7 @@ const ProductAdd = () => {
     setPrice(price);
     setType(type);
 
-    setDescription(description);
+    setDescription(seoDescription);
     setFoodType(foodType);
     setImage(images[0]);
     setAddons(addons);
@@ -308,7 +308,7 @@ const ProductAdd = () => {
       images: [url],
       category: category._id,
       subCategory: subCategory?._id,
-      description,
+      seoDescription: description,
       attributes,
       addons: addonsData,
       cuisines,
@@ -406,7 +406,6 @@ const ProductAdd = () => {
         setName("");
         setDiscount("");
         setPrice("");
-        setSeoTitle("");
         setDescription("");
         setType("");
 

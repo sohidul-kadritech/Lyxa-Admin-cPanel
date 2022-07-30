@@ -17,11 +17,11 @@ import {
   Spinner,
 } from "reactstrap";
 
-const ShopTable = () => {
+const ShopTable = ({ shops = [] }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { shops, loading } = useSelector((state) => state.shopReducer);
+  const { loading } = useSelector((state) => state.shopReducer);
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);

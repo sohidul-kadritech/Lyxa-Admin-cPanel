@@ -251,38 +251,37 @@ export const addPercentage = (values) => async (dispatch) => {
 
 // GET PERCENTAGE SETTINGS
 
-export const getPercentageSetting =
-  (refresh = false) =>
-  async (dispatch, getState) => {
-    try {
+export const getPercentageSetting = (seller) => async (dispatch, getState) => {
+  console.log({ seller });
+  try {
+    dispatch({
+      type: actionType.GET_PERCENTAGE_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, data },
+    } = await requestApi().request(GET_DELIVERY_FEE);
+
+    console.log({ data });
+
+    if (status) {
       dispatch({
-        type: actionType.GET_PERCENTAGE_REQUEST_SEND,
+        type: actionType.GET_PERCENTAGE_REQUEST_SUCCESS,
+        payload: data.dropCharge[0],
       });
-
-      const {
-        data: { status, error, data },
-      } = await requestApi().request(GET_DELIVERY_FEE);
-
-      console.log({ data });
-
-      if (status) {
-        dispatch({
-          type: actionType.GET_PERCENTAGE_REQUEST_SUCCESS,
-          payload: data.dropCharge[0],
-        });
-      } else {
-        dispatch({
-          type: actionType.GET_PERCENTAGE_REQUEST_FAIL,
-          payload: error,
-        });
-      }
-    } catch (error) {
+    } else {
       dispatch({
         type: actionType.GET_PERCENTAGE_REQUEST_FAIL,
-        payload: error.message,
+        payload: error,
       });
     }
-  };
+  } catch (error) {
+    dispatch({
+      type: actionType.GET_PERCENTAGE_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 // ADD CANCELATION REASON
 

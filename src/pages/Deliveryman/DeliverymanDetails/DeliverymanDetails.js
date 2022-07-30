@@ -224,17 +224,4 @@ const DeliverymanDetails = () => {
   );
 };
 
-const Details = styled.div`
-  display: flex;
-  /* justify-content: space-between; */
-`;
-
-const Value = styled.h5`
-  color: #0321f3;
-  font-style: italic;
-  font-weight: 600;
-  margin-left: 4px;
-  /* padding-left: 5px; */
-`;
-
 export default DeliverymanDetails;

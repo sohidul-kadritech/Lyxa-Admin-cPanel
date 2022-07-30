@@ -44,7 +44,7 @@ const ShopList = () => {
     sortByKey,
     searchKey,
     loading,
-
+    shops,
     paging,
     hasNextPage,
     hasPreviousPage,
@@ -157,7 +157,7 @@ const ShopList = () => {
                 </Row>
                 <CardTitle className="h4"> Shop List</CardTitle>
 
-                <ShopTable />
+                <ShopTable shops={shops} />
               </CardBody>
             </Card>
             <Row>

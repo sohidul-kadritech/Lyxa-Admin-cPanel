@@ -8,8 +8,9 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { Table, Th, Thead, Tr } from "react-super-responsive-table";
 import { toast } from "react-toastify";
 import {
@@ -30,10 +31,11 @@ import {
   getPercentageSetting,
 } from "../../../store/Settings/settingsAction";
 
-import { getAllShop } from "../../../store/Shop/shopAction";
-
 const PercentageSetting = () => {
   const dispatch = useDispatch();
+  const { search } = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { loading, status, dropCharge } = useSelector(
     (state) => state.settingsReducer
@@ -42,7 +44,7 @@ const PercentageSetting = () => {
   const [feeInfo, setFeeInfo] = useState({
     dropPercentageType: "",
     dropPercentage: "",
-    deliveryApplicable: "app",
+    deliveryApplicable: "",
     deliveryRange: [],
   });
 
@@ -56,7 +58,7 @@ const PercentageSetting = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(getPercentageSetting());
+    dispatch(getPercentageSetting(searchParams.get("sellerId") ?? null));
   }, []);
 
   useEffect(() => {
