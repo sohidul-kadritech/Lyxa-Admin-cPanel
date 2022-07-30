@@ -123,6 +123,30 @@ const PercentageSetting = () => {
       return successMsg("Enter Delivery Person Charge", "error");
     }
 
+    if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
+      return successMsg("From Range should be less than To Range", "error");
+    }
+
+    const isExistCharge = feeInfo?.deliveryRange?.filter((item) => {
+      if (
+        rangeWiseDeliveryCharge.from >= item.from &&
+        rangeWiseDeliveryCharge.from <= item?.to
+      ) {
+        return item;
+      }
+
+      if (
+        rangeWiseDeliveryCharge.to >= item.from &&
+        rangeWiseDeliveryCharge.to <= item?.to
+      ) {
+        return item;
+      }
+    });
+
+    if (isExistCharge.length > 0) {
+      return successMsg("Range already exist", "error");
+    }
+
     setFeeInfo({
       ...feeInfo,
       deliveryRange: [...feeInfo.deliveryRange, rangeWiseDeliveryCharge],
@@ -155,6 +179,7 @@ const PercentageSetting = () => {
               breadcrumbItem={"Percentage Setting"}
               loading={loading}
               // callList={callDeliveryFee}
+              isRefresh={false}
             />
             <Card>
               <CardBody>
@@ -162,7 +187,7 @@ const PercentageSetting = () => {
                   <Col lg={6}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Charge Type
+                        Drop Charge Type
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -262,7 +287,7 @@ const PercentageSetting = () => {
                     color="primary"
                     onClick={deliveryFeeSubmit}
                   >
-                    {loading ? "Loading..." : "Add"}
+                    {loading ? "Loading..." : "Update"}
                   </Button>
                 </div>
               </CardBody>
@@ -280,7 +305,7 @@ const PercentageSetting = () => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">Add Deal</h5>
+            <h5 className="modal-title mt-0">Add Delivery Charge</h5>
             <button
               type="button"
               onClick={() => {

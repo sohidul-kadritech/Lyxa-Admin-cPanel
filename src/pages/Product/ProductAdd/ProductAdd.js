@@ -531,6 +531,28 @@ const ProductAdd = () => {
                         />
                       </div>
 
+                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
+                        <div className="mb-4">
+                          <ShopAutocompleted
+                            value={shop}
+                            onChange={(event, newValue) => setShop(newValue)}
+                            searchKey={searchKey}
+                            onInputChange={(event, newInputValue) =>
+                              dispatch(updateShopSearchKey(newInputValue))
+                            }
+                            list={shops}
+                            disabled={
+                              !type ||
+                              id ||
+                              searchParams.get("shopId") ||
+                              account_type === "shop"
+                                ? true
+                                : false
+                            }
+                          />
+                        </div>
+                      </Tooltip>
+
                       {type !== "food" && (
                         <div className="mb-4">
                           <Autocomplete
@@ -633,19 +655,7 @@ const ProductAdd = () => {
                           />
                         </div>
                       )}
-                      <div className="mb-4">
-                        <TextField
-                          id="netPrice"
-                          label="Net Price"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          autoComplete="off"
-                          value={price}
-                          onChange={(event) => setPrice(event.target.value)}
-                          required
-                          type="number"
-                        />
-                      </div>
+
                       {type && type !== "food" && (
                         <div className="mb-4">
                           <TextField
@@ -666,27 +676,19 @@ const ProductAdd = () => {
                       )}
                     </Col>
                     <Col lg={6}>
-                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
-                        <div className="mb-4">
-                          <ShopAutocompleted
-                            value={shop}
-                            onChange={(event, newValue) => setShop(newValue)}
-                            searchKey={searchKey}
-                            onInputChange={(event, newInputValue) =>
-                              dispatch(updateShopSearchKey(newInputValue))
-                            }
-                            list={shops}
-                            disabled={
-                              !type ||
-                              id ||
-                              searchParams.get("shopId") ||
-                              account_type === "shop"
-                                ? true
-                                : false
-                            }
-                          />
-                        </div>
-                      </Tooltip>
+                      <div className="mb-4">
+                        <TextField
+                          id="netPrice"
+                          label="Net Price"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={price}
+                          onChange={(event) => setPrice(event.target.value)}
+                          required
+                          type="number"
+                        />
+                      </div>
 
                       <Tooltip title={`${!type ? "Select Type First" : ""}`}>
                         <div className="mb-4">

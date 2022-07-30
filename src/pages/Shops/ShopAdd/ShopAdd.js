@@ -231,7 +231,7 @@ const ShopAdd = () => {
     if (!seller) {
       return successMsg("Select a seller");
     }
-    if (tags.items.length < 1) {
+    if (seller?.sellerType === "food" && tags.items.length < 1) {
       return successMsg("Please Add Shop Tag");
     }
 
@@ -539,7 +539,11 @@ const ShopAdd = () => {
                           options={sellers.length > 0 ? sellers : []}
                           sx={{ width: "100%" }}
                           renderInput={(params, index) => (
-                            <TextField {...params} label="Select a Seller" />
+                            <TextField
+                              {...params}
+                              label="Select a Seller"
+                              required
+                            />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -611,6 +615,7 @@ const ShopAdd = () => {
                             Status
                           </InputLabel>
                           <Select
+                            required
                             id="demo-simple-select"
                             value={shopStatus}
                             onChange={(e) => setShopStatus(e.target.value)}
@@ -846,6 +851,7 @@ const ShopAdd = () => {
                             label="Tag"
                           />
                         </div>
+
                         {tags.items.length > 0 && (
                           <Paper className="mt-4 p-3">
                             {tags.items.map((item, index) => (
@@ -870,6 +876,7 @@ const ShopAdd = () => {
                             Live Status
                           </InputLabel>
                           <Select
+                            required
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={liveStatus}

@@ -54,7 +54,22 @@ const OrderDetails = () => {
     }
   }, [id]);
 
-  // SHOW MAP
+  const calProductAmount = (product) => {
+    if (product.selectedAttributes.length > 0) {
+      let totalPrice = 0;
+      product.selectedAttributes.map((arr) => {
+        const itemPrice = arr?.selectedItems.reduce((arr, item) => {
+          return (arr += item?.extraPrice);
+        }, 0);
+
+        totalPrice += itemPrice;
+      });
+
+      return totalPrice + product?.productPrice;
+    } else {
+      return product?.productPrice;
+    }
+  };
 
   return (
     <React.Fragment>
@@ -231,9 +246,9 @@ const OrderDetails = () => {
                   <Thead>
                     <Tr>
                       <Th>Product</Th>
+                      <Th>Attributes</Th>
                       <Th>Type</Th>
                       <Th>Quantity</Th>
-                      <Th>Price(NGN)</Th>
                       <Th>Discount(NGN)</Th>
                       <Th>Total Price(NGN)</Th>
                     </Tr>
@@ -265,31 +280,30 @@ const OrderDetails = () => {
                               }}
                             />
                             <span>{item?.productName}</span>
-                            {item?.selectedAttributes.map((arr, index) => (
-                              <div key={index}>
-                                <span style={{ fontSize: "12px" }}>
-                                  {arr?.name}
-                                </span>
-                                {arr?.selectedItems?.map((item, index) => (
-                                  <p key={index} style={{ fontSize: "12px" }}>
-                                    {item?.name}
-                                  </p>
-                                ))}
-                              </div>
-                            ))}
                           </Th>
+                          <Td>
+                            {item?.selectedAttributes.length > 0
+                              ? item?.selectedAttributes.map((arr, index) => (
+                                  <div key={index}>
+                                    <span style={{ fontSize: "12px" }}>
+                                      {arr?.name}
+                                    </span>
+                                    {arr?.selectedItems?.map((item, index) => (
+                                      <p
+                                        key={index}
+                                        style={{ fontSize: "12px" }}
+                                      >
+                                        {item?.name}
+                                      </p>
+                                    ))}
+                                  </div>
+                                ))
+                              : "N/A"}
+                          </Td>
                           <Td>{item?.product?.type}</Td>
                           <Td>{item?.productQuantity}</Td>
-                          <Td>{item?.productPrice}</Td>
                           <Td>{item?.discount ?? 0}</Td>
-                          <Td>
-                            {item?.finalPrice}
-                            {/* {item?.selectedAttributes?.map((arr, index) =>
-                              arr?.selectedItems.reduce((acc, item) => {
-                                return acc + item?.extraPrice;
-                              }, item?.finalPrice)
-                            )} */}
-                          </Td>
+                          <Td>{calProductAmount(item)}</Td>
                         </Tr>
                       );
                     })}
@@ -343,120 +357,125 @@ const OrderDetails = () => {
               </Col>
             </Row>
 
-            <Row>
-              <Col md={6}>
-                <Card>
-                  <CardBody>
-                    <CardTitle>Conversation(User & Delivery Body)</CardTitle>
-                    <hr />
-                    <div className="chat-conversation">
-                      <SimpleBar style={{ height: "365px" }}>
-                        <ul
-                          className="conversation-list"
-                          data-simplebar
-                          style={{ maxHeight: "367px" }}
-                        >
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:00</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Hello!</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="Female"
-                              />
-                              <span className="time">10:01</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>
-                                  Hi, How are you? What about our next meeting?
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:04</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Yeah everything is fine</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:05</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>Wow that's great</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:08</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name mb-2">Smith</span>
+            {/* CHATS */}
 
+            {order?.chats.length > 0 && (
+              <Row>
+                <Col md={6}>
+                  <Card>
+                    <CardBody>
+                      <CardTitle>Conversation(User & Delivery Body)</CardTitle>
+                      <hr />
+                      <div className="chat-conversation">
+                        <SimpleBar style={{ height: "365px" }}>
+                          <ul
+                            className="conversation-list"
+                            data-simplebar
+                            style={{ maxHeight: "367px" }}
+                          >
+                            <li className="clearfix">
+                              <div className="chat-avatar">
                                 <img
-                                  src={smimg1}
-                                  alt=""
-                                  height="48"
-                                  className="rounded me-2"
+                                  src={user2}
+                                  className="avatar-xs rounded-circle"
+                                  alt="male"
                                 />
-                                <img
-                                  src={smimg2}
-                                  alt=""
-                                  height="48"
-                                  className="rounded"
-                                />
+                                <span className="time">10:00</span>
                               </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </SimpleBar>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
+                              <div className="conversation-text">
+                                <div className="ctext-wrap">
+                                  <span className="user-name">John Deo</span>
+                                  <p>Hello!</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li className="clearfix odd">
+                              <div className="chat-avatar">
+                                <img
+                                  src={user3}
+                                  className="avatar-xs rounded-circle"
+                                  alt="Female"
+                                />
+                                <span className="time">10:01</span>
+                              </div>
+                              <div className="conversation-text">
+                                <div className="ctext-wrap">
+                                  <span className="user-name">Smith</span>
+                                  <p>
+                                    Hi, How are you? What about our next
+                                    meeting?
+                                  </p>
+                                </div>
+                              </div>
+                            </li>
+                            <li className="clearfix">
+                              <div className="chat-avatar">
+                                <img
+                                  src={user2}
+                                  className="avatar-xs rounded-circle"
+                                  alt="male"
+                                />
+                                <span className="time">10:04</span>
+                              </div>
+                              <div className="conversation-text">
+                                <div className="ctext-wrap">
+                                  <span className="user-name">John Deo</span>
+                                  <p>Yeah everything is fine</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li className="clearfix odd">
+                              <div className="chat-avatar">
+                                <img
+                                  src={user3}
+                                  className="avatar-xs rounded-circle"
+                                  alt="male"
+                                />
+                                <span className="time">10:05</span>
+                              </div>
+                              <div className="conversation-text">
+                                <div className="ctext-wrap">
+                                  <span className="user-name">Smith</span>
+                                  <p>Wow that's great</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li className="clearfix odd">
+                              <div className="chat-avatar">
+                                <img
+                                  src={user3}
+                                  className="avatar-xs rounded-circle"
+                                  alt="male"
+                                />
+                                <span className="time">10:08</span>
+                              </div>
+                              <div className="conversation-text">
+                                <div className="ctext-wrap">
+                                  <span className="user-name mb-2">Smith</span>
+
+                                  <img
+                                    src={smimg1}
+                                    alt=""
+                                    height="48"
+                                    className="rounded me-2"
+                                  />
+                                  <img
+                                    src={smimg2}
+                                    alt=""
+                                    height="48"
+                                    className="rounded"
+                                  />
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </SimpleBar>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            )}
           </Container>
         </div>
       </GlobalWrapper>

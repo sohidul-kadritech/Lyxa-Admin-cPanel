@@ -231,6 +231,7 @@ export const addPercentage = (values) => async (dispatch) => {
       successMsg(data.message, "success");
       dispatch({
         type: actionType.ADD_DELIVERY_FEE_REQUEST_SUCCESS,
+        payload: data?.data?.dropCharge,
       });
     } else {
       successMsg(data.message, "error");

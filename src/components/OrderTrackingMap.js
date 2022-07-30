@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const OrderTrackingMap = ({ pickup, dropoff }) => {
-  console.log({ pickup, dropoff });
-
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
   const [distance, setDistance] = useState("");

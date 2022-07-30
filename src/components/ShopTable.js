@@ -112,15 +112,18 @@ const ShopTable = () => {
                 <Td>{item?.shopType}</Td>
                 <Td>{item?.shopStatus}</Td>
                 <Td>
-                  {item?.deals.length > 0 ? (
-                    <>
-                      <p>{item?.deals[0]?.option}</p>
-                      <p>{item?.deals[1]?.option}</p>
-                      <p>{item?.deals[2]?.option}</p>
-                    </>
-                  ) : (
-                    "N/A"
-                  )}
+                  {item?.deals.length > 0
+                    ? // <Td>
+                      //   <p>{item?.deals[0]?.name}</p>
+                      //   <p>{item?.deals[1]?.name}</p>
+                      //   <p>{item?.deals[2]?.option}</p>
+                      // </>
+                      item?.deals.map((item, index) => (
+                        <div key={index}>
+                          <p>{item?.name}</p>
+                        </div>
+                      ))
+                    : "N/A"}
                 </Td>
                 <Td>{item?.isFeatured ? "Yes" : "NO"}</Td>
                 <Td>
