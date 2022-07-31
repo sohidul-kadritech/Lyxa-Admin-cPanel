@@ -77,7 +77,7 @@ const Login = (props) => {
             <Row className="justify-content-center">
               <Col md={8} lg={6} xl={4}>
                 <Card className="overflow-hidden">
-                  <div className="bg-primary">
+                  <div className="bg-dark">
                     <div className="text-primary text-center p-4">
                       <h5 className="text-white font-size-20">
                         Welcome Back !
@@ -163,7 +163,7 @@ const Login = (props) => {
                         <Row className="mb-3">
                           <Col sm={12} className="text-center">
                             <button
-                              className="btn btn-primary w-md waves-effect waves-light"
+                              className="btn btn-dark w-md waves-effect waves-light"
                               type="submit"
                               disabled={loading}
                             >

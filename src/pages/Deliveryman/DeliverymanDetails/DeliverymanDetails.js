@@ -123,12 +123,20 @@ const DeliverymanDetails = () => {
                         title="Address"
                         value={deliveryMan?.address?.address}
                       />
+                      <Info
+                        title="Total Income"
+                        value={`${deliveryMan?.totalIncome} NGN`}
+                      />
+                      <Info
+                        title="Balance"
+                        value={`${deliveryMan?.balance} NGN`}
+                      />{" "}
+                      <Info title="Total Orders" value={orders?.length} />
                       <Info title="Status" value={deliveryMan?.status} />
                       <Info
                         title="Live Status"
                         value={deliveryMan?.liveStatus}
                       />
-
                       <Info
                         title="Vahicle Type"
                         value={deliveryMan?.vehicleType}

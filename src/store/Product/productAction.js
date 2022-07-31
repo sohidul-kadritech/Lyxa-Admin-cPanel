@@ -245,6 +245,7 @@ export const updateProductType = (selectedType) => (dispatch) => {
 // DELETE PRODUCT DEAL
 
 export const deleteDealOfProduct = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.DELETE_PRODUCT_DEAL_REQUEST_SEND,
@@ -257,13 +258,13 @@ export const deleteDealOfProduct = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+    console.log({ data, status, error });
 
     if (status) {
       successMsg("Successfully deleted", "success");
       dispatch({
         type: actionType.DELETE_PRODUCT_DEAL_REQUEST_SUCCESS,
-        payload: data.shop,
+        payload: data.product,
       });
     } else {
       successMsg(error, "error");

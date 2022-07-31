@@ -36,7 +36,11 @@ import {
 } from "../../../store/Shop/shopAction";
 import { useParams, useHistory, useLocation, Link } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
-import { IMAGE_UPLOAD, SINGLE_PRODUCT } from "../../../network/Api";
+import {
+  IMAGE_UPLOAD,
+  SINGLE_PRODUCT,
+  SINGLE_SHOP,
+} from "../../../network/Api";
 import { foodTypeOptions2, shopTypeOptions2 } from "../../../assets/staticData";
 import { updateShopType } from "./../../../store/Shop/shopAction";
 import formatBytes from "../../../common/imageFormatBytes";
@@ -126,7 +130,7 @@ const ProductAdd = () => {
   // FIND SHOP BY SHOP ID
 
   useEffect(() => {
-    if (searchParams || account_type === "shop") {
+    if (searchParams.get("shopId") || account_type === "shop") {
       const shopId = searchParams.get("shopId");
       let shop = null;
       shopId ? (shop = shopId) : (shop = accountId);
@@ -136,10 +140,31 @@ const ProductAdd = () => {
           setType(findShop?.shopType);
           setShop(findShop);
           dispatch(updateCategoryShopType(findShop?.shopType));
+        } else {
+          callShopApi(shop);
         }
       }
     }
   }, [searchParams, account_type]);
+
+  // FIND SHOP BY CALL API
+
+  const callShopApi = async (shopId) => {
+    const { data } = await requestApi().request(SINGLE_SHOP, {
+      params: {
+        id: shopId,
+      },
+    });
+
+    if (data.status) {
+      const { shop } = data.data;
+      setType(shop?.shopType);
+      setShop(shop);
+      dispatch(updateCategoryShopType(shop?.shopType));
+    } else {
+      history.push("/products/list", { replace: true });
+    }
+  };
 
   // CALL API FOR SINGLE PRODUCT
 
@@ -152,7 +177,8 @@ const ProductAdd = () => {
       });
 
       if (data.status) {
-        setProductValue(data.data.product);
+        const { product } = data.data;
+        setProductValue(product);
       }
     } else {
       history.push("/products/list", { replace: true });
@@ -167,7 +193,6 @@ const ProductAdd = () => {
       images,
       price,
       seoDescription,
-
       shop,
       subCategory,
       type,
@@ -188,7 +213,7 @@ const ProductAdd = () => {
     setDiscount(discount);
     setPrice(price);
     setType(type);
-
+    dispatch(updateCategoryShopType(type));
     setDescription(seoDescription);
     setFoodType(foodType);
     setImage(images[0]);
@@ -728,7 +753,7 @@ const ProductAdd = () => {
                                 <img
                                   loading="lazy"
                                   width="60"
-                                  src={option.image}
+                                  src={option?.image}
                                   alt=""
                                 />
                                 {option.name}

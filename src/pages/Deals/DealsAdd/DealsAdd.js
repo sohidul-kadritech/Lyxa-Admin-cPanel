@@ -196,7 +196,7 @@ const DealsAdd = () => {
         editDeal({
           ...data,
           id,
-          activeStatus,
+          status: activeStatus,
         })
       );
     } else {

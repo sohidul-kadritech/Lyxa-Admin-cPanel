@@ -187,7 +187,7 @@ const ProductDetails = () => {
                     />
                     {product?.subCategory && (
                       <Info
-                        title="Category"
+                        title="Subcategory"
                         value={product?.subCategory?.name}
                         link={`/category/details/${product?.subCategory?._id}`}
                       />
