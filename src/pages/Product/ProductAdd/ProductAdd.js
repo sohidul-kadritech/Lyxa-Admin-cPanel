@@ -700,20 +700,6 @@ const ProductAdd = () => {
                       )}
                     </Col>
                     <Col lg={6}>
-                      <div className="mb-4">
-                        <TextField
-                          id="netPrice"
-                          label="Net Price"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          autoComplete="off"
-                          value={price}
-                          onChange={(event) => setPrice(event.target.value)}
-                          required
-                          type="number"
-                        />
-                      </div>
-
                       <Tooltip title={`${!type ? "Select Type First" : ""}`}>
                         <div className="mb-4">
                           <Autocomplete
@@ -763,7 +749,7 @@ const ProductAdd = () => {
                         </div>
                       </Tooltip>
 
-                      {category && (
+                      {category && type !== "food" && (
                         <div className="mb-4">
                           <Autocomplete
                             className="cursor-pointer"
@@ -810,6 +796,20 @@ const ProductAdd = () => {
                           />
                         </div>
                       )}
+
+                      <div className="mb-4">
+                        <TextField
+                          id="netPrice"
+                          label="Net Price"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={price}
+                          onChange={(event) => setPrice(event.target.value)}
+                          required
+                          type="number"
+                        />
+                      </div>
 
                       {/* <div className="mb-4">
                         <TextField

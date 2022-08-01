@@ -50,6 +50,7 @@ const Details = styled.div`
     font-weight: 500;
     font-size: 15px;
     padding-left: 5px;
+    text-transform: capitalize;
     &:hover {
       color: ${({ link }) => link && "blue"};
       font-weight: ${({ link }) => link && "bold"};

@@ -77,7 +77,7 @@ const DealsAdd = () => {
   // GET ALL TAGS
 
   useEffect(() => {
-    if (dealType === "others" && tagSearchKey) {
+    if (dealType === "others" || tagSearchKey) {
       dispatch(getAllTags());
     }
   }, [dealType, tagSearchKey]);

@@ -155,8 +155,8 @@ const CreateAdmin = () => {
                     <hr />
                   </div>
                   {account_type === "admin" && (
-                    <Row>
-                      <Col xl={6}>
+                    <Row className="mb-3">
+                      <Col xl={6} className="mb-3 mb-xl-0">
                         <TextField
                           id="name"
                           label="Name"
@@ -169,7 +169,7 @@ const CreateAdmin = () => {
                         />
                       </Col>
 
-                      <Col xl={6} className="mt-3 mt-xl-0">
+                      <Col xl={6} className="mb-3 mb-xl-0">
                         <TextField
                           id="phoneNumber"
                           label="Phone Number"
@@ -185,8 +185,8 @@ const CreateAdmin = () => {
                       </Col>
                     </Row>
                   )}
-                  <Row className=" mb-4">
-                    <Col xl={6} className="mt-3 mt-xl-0">
+                  <Row className="mb-3">
+                    <Col xl={6} className="mb-3 mb-xl-0">
                       <TextField
                         id="email"
                         label="Email"
@@ -231,8 +231,9 @@ const CreateAdmin = () => {
                       )}
                     </Col>
                   </Row>
-                  <Row className="mb-4">
-                    <Col xl={6} className="mt-3 mt-xl-0">
+
+                  <Row className="mb-3">
+                    <Col xl={6} className="mb-3 mb-xl-0">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">
                           Role
@@ -253,7 +254,7 @@ const CreateAdmin = () => {
                     </Col>
                   </Row>
 
-                  <div className="pt-3 mt-3 d-flex justify-content-center">
+                  <div className="pb-3 mb-3 d-flex justify-content-center">
                     <Button
                       color="primary"
                       className="px-5"

@@ -96,9 +96,9 @@ const DealForAdd = ({ type, item, shopType }) => {
             component="li"
             sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
             {...props}
-            key={option._id}
+            key={option?._id}
           >
-            {option.option}
+            {option?.name}
             {option.option === "percentage" && `(${option.percentage}%)`}
           </Box>
         )}

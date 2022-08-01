@@ -65,7 +65,7 @@ const CategoryDetails = () => {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
-  const [image, setImage] = useState("");
+
   const [subCatId, setSubCatId] = useState(null);
   const [confirm_alert, setconfirm_alert] = useState(false);
   const [success_dlg, setsuccess_dlg] = useState(false);
@@ -128,7 +128,6 @@ const CategoryDetails = () => {
 
     setName(name);
     setSlug(slug);
-    setImage(image);
     setActiveStatus(findStatus);
 
     window.scroll(0, 0);
@@ -144,44 +143,15 @@ const CategoryDetails = () => {
     if (!activeStatus) {
       return successMsg("Select Status");
     }
-    if (!image) {
-      return successMsg("Select image");
-    }
 
-    uploadImage();
+    submitData();
   };
 
   // UPLOAD IMAGE
 
-  const uploadImage = async () => {
-    if (typeof image === "string") {
-      submitData(image);
-    } else {
-      try {
-        setIsLoading(true);
-        let formData = new FormData();
-        formData.append("image", image);
-
-        const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
-          data: formData,
-        });
-
-        if (data.status) {
-          setIsLoading(false);
-          submitData(data.data.url);
-        } else {
-          console.log(data.error);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-  };
-
   // SUBMIT DATA
 
-  const submitData = (url) => {
+  const submitData = () => {
     const newSlug = slug.split(" ").join("");
 
     if (subCatId) {
@@ -191,7 +161,6 @@ const CategoryDetails = () => {
           name,
           status: activeStatus.value,
           slug: newSlug,
-          image: url,
           category: id,
         })
       );
@@ -201,7 +170,6 @@ const CategoryDetails = () => {
           name,
           status: activeStatus.value,
           slug: newSlug,
-          image: url,
           categoryId: id,
         })
       );
@@ -209,17 +177,6 @@ const CategoryDetails = () => {
   };
 
   // IMAGE
-
-  const handleAcceptedFiles = (files, type) => {
-    files.map((file) =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-        formattedSize: formatBytes(file.size),
-      })
-    );
-
-    setImage(files[0]);
-  };
 
   // SUCCESS
 
@@ -229,7 +186,6 @@ const CategoryDetails = () => {
       setSlug("");
       setActiveStatus("");
       setSubCatId(null);
-      setImage(null);
     }
   }, [status]);
 
@@ -365,101 +321,6 @@ const CategoryDetails = () => {
                             required
                           />
                         </div>
-                        <div className="mb-3">
-                          <Label>Upload Image</Label>
-                          <div>
-                            <Form>
-                              <Dropzone
-                                onDrop={(acceptedFiles) => {
-                                  handleAcceptedFiles(acceptedFiles);
-                                }}
-                              >
-                                {({ getRootProps, getInputProps }) => (
-                                  <div className="dropzone">
-                                    <div
-                                      className="dz-message needsclick"
-                                      {...getRootProps()}
-                                      // onClick={() => setmodal_fullscreen(true)}
-                                    >
-                                      <input {...getInputProps()} />
-                                      <div className="mb-3">
-                                        <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                      </div>
-                                      <h4>
-                                        Drop files here or click to upload.
-                                      </h4>
-                                    </div>
-                                  </div>
-                                )}
-                              </Dropzone>
-                              <div
-                                className="dropzone-previews mt-3"
-                                id="file-previews"
-                              >
-                                {image && (
-                                  <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                                    <div className="p-2">
-                                      <Row className="align-items-center position-relative">
-                                        <Col className="col-auto">
-                                          <img
-                                            data-dz-thumbnail=""
-                                            // height="80"
-                                            style={{
-                                              maxWidth: "80px",
-                                            }}
-                                            className=" bg-light"
-                                            src={
-                                              image.preview
-                                                ? image.preview
-                                                : image
-                                            }
-                                            alt=""
-                                          />
-                                        </Col>
-                                        <Col>
-                                          <Link
-                                            to="#"
-                                            className="text-muted font-weight-bold"
-                                          >
-                                            {image.name
-                                              ? image.name
-                                              : "Product Image"}
-                                          </Link>
-                                          <p className="mb-0">
-                                            <strong>
-                                              {image.formattedSize &&
-                                                image.formattedSize}
-                                            </strong>
-                                          </p>
-                                        </Col>
-
-                                        <div
-                                          className="position-absolute"
-                                          style={{
-                                            left: "0px",
-                                            top: "0px",
-                                            width: "100%",
-                                            display: "flex",
-                                            justifyContent: "flex-end",
-                                          }}
-                                        >
-                                          <i
-                                            onClick={() => setImage(null)}
-                                            className="mdi mdi-delete text-danger "
-                                            style={{
-                                              fontSize: "25px",
-                                              cursor: "pointer",
-                                            }}
-                                          ></i>
-                                        </div>
-                                      </Row>
-                                    </div>
-                                  </Card>
-                                )}
-                              </div>
-                            </Form>
-                          </div>
-                        </div>
                         <div className="d-flex justify-content-center">
                           <Button
                             onClick={submitSubCategory}
@@ -521,7 +382,7 @@ const CategoryDetails = () => {
                       >
                         <Thead>
                           <Tr>
-                            <Th>Image</Th>
+                            <Th>SL</Th>
                             <Th>Name</Th>
                             <Th>Status</Th>
                             <Th>Action</Th>
@@ -538,27 +399,14 @@ const CategoryDetails = () => {
                                   fontWeight: "500",
                                 }}
                               >
-                                <Th
+                                <Td
                                   style={{ height: "50px", maxWidth: "100px" }}
                                 >
-                                  <img
-                                    onClick={() => {
-                                      setSelectedImg(item?.image);
-                                      setIsOpen(true);
-                                    }}
-                                    className="img-fluid cursor-pointer"
-                                    alt=""
-                                    src={item.image}
-                                    style={{
-                                      width: "100%",
-                                      height: "100%",
-                                      objectFit: "contain",
-                                    }}
-                                  />
-                                </Th>
+                                  {index + 1}
+                                </Td>
 
-                                <Td>{item.name}</Td>
-                                <Td>{item.status}</Td>
+                                <Th>{item?.name}</Th>
+                                <Td>{item?.status}</Td>
                                 <Td>
                                   <div>
                                     <Tooltip title="Edit">
@@ -599,7 +447,7 @@ const CategoryDetails = () => {
                                         onCancel={() => setconfirm_alert(false)}
                                       >
                                         Are You Sure! You want to delete this
-                                        Shop.
+                                        Sub Category.
                                       </SweetAlert>
                                     ) : null}
                                   </div>

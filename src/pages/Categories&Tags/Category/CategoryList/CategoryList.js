@@ -7,6 +7,7 @@ import {
   CardTitle,
   Col,
   Container,
+  Modal,
   Row,
   Spinner,
 } from "reactstrap";
@@ -41,6 +42,7 @@ const CategoryList = () => {
 
   const [isZoom, setIsZoom] = useState(false);
   const [catImg, setCatImg] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   const {
     account_type,
@@ -151,20 +153,24 @@ const CategoryList = () => {
                         >
                           <Th className="d-flex justify-content-center">
                             <div className="image__wrapper">
-                              <img
-                                onClick={() => {
-                                  setIsZoom(true);
-                                  setCatImg(item.image);
-                                }}
-                                className="img-fluid avater avater-lg cursor-pointer"
-                                alt=""
-                                src={item.image}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                }}
-                              />
+                              {item?.image ? (
+                                <img
+                                  onClick={() => {
+                                    setIsZoom(true);
+                                    setCatImg(item.image);
+                                  }}
+                                  className="img-fluid avater avater-lg cursor-pointer"
+                                  alt=""
+                                  src={item.image}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                  }}
+                                />
+                              ) : (
+                                "N/A"
+                              )}
                             </div>
                           </Th>
                           <Td>{item?.name}</Td>
@@ -182,7 +188,13 @@ const CategoryList = () => {
                                   <i className="fa fa-edit" />
                                 </button>
                               </Tooltip>
-                              <Tooltip title="Details">
+                              <Tooltip
+                                title={`${"Details"} ${
+                                  item?.type !== "food"
+                                    ? "& add subcagegory"
+                                    : ""
+                                }`}
+                              >
                                 <button
                                   className="btn btn-info button"
                                   onClick={() =>
@@ -227,6 +239,34 @@ const CategoryList = () => {
           </Container>
         </div>
       </GlobalWrapper>
+
+      {/* ADD SUB CATEGORY  */}
+
+      {/* <Modal
+        isOpen={openModal}
+        toggle={() => {
+          setOpenModal(!openModal);
+        }}
+        centered={true}
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Add/Remove User Cradit</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setOpenModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+
+        </div>
+      </Modal> */}
     </React.Fragment>
   );
 };
