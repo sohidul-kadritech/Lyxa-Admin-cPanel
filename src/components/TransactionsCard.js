@@ -3,16 +3,16 @@ import React from "react";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import styled from "styled-components";
 
-const TransactionsCard = () => {
+const TransactionsCard = ({ summary }) => {
   return (
     <CardWrapper>
-      {[1, 2, 3, 4, 5].map((item, index) => (
+      {summary.map((item, index) => (
         <div key={index} className="card hover-shadow">
           <Card>
             <CardContent className="content__wrapper cursor-pointer">
               <div>
-                <h5>100</h5>
-                <h6 className="text-danger">Total Transactions</h6>
+                <h5>{item?.value}</h5>
+                <h6 className="text-danger">{item?.title}</h6>
               </div>
               <CurrencyExchangeIcon className="text-success" />
             </CardContent>

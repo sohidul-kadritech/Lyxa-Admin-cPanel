@@ -61,10 +61,6 @@ const DeliveryTransactions = () => {
               callList={callTransList}
             />
 
-            <div>
-              <TransactionsCard />
-            </div>
-
             <Card>
               <CardBody>
                 <Row>
@@ -130,55 +126,41 @@ const DeliveryTransactions = () => {
                   <Thead>
                     <Tr>
                       <Th>Name</Th>
-                      <Th>Amount</Th>
-                      <Th>Payment Method</Th>
-                      <Th>admin Note</Th>
-                      <Th>User Note</Th>
-                      <Th>User Note</Th>
-
+                      <Th>Total Orders</Th>
+                      <Th>Total delivery fee</Th>
+                      <Th>Drop earning</Th>
+                      <Th>Unsettled amount</Th>
+                      <Th>Delivery earning</Th>
+                      <Th>Cash in hand</Th>
+                      <Th>Settled cash</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {deliveryTrxs.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th>{item?.deliveryBoy?.name}</Th>
+                    <Tr
+                      // key={index}
+                      className="align-middle cursor-pointer"
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "500",
+                      }}
+                      onClick={() =>
+                        history.push(
+                          history.push("/add-wallet/delivery-transactions/1")
+                        )
+                      }
+                    >
+                      <Th>Shuvo</Th>
 
-                          <Td>{item?.amount}</Td>
-                          <Td>{item?.paymentMethod}</Td>
-                          <Td style={{ maxWidth: "150px" }}>
-                            {item?.adminNote}
-                          </Td>
-                          <Td style={{ maxWidth: "150px" }}>
-                            {item?.userNote}
-                          </Td>
-                          <Td>
-                            <Tooltip title="Details">
-                              <button
-                                className="btn btn-info button"
-                                onClick={() =>
-                                  history.push(
-                                    `/add-wallet/delivery-transactions/details/${item._id}`
-                                  )
-                                }
-                              >
-                                <i className="fa fa-eye" />
-                              </button>
-                            </Tooltip>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
+                      <Td>10</Td>
+                      <Td>500</Td>
+                      <Td>200</Td>
+                      <Td>200</Td>
+                      <Td>200</Td>
+                      <Td>200</Td>
+                    </Tr>
                   </Tbody>
                 </Table>
-                {loading && (
+                {/* {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
@@ -187,7 +169,7 @@ const DeliveryTransactions = () => {
                   <div className="text-center">
                     <h4>No Order!</h4>
                   </div>
-                )}
+                )} */}
               </CardBody>
             </Card>
             <Row>

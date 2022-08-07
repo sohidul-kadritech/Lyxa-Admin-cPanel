@@ -45,6 +45,7 @@ import {
 } from "react-places-autocomplete";
 import {
   liveStatusOptions,
+  priceRangeOptions,
   shopTypeOptions2,
   statusOptions2,
 } from "../../../assets/staticData";
@@ -90,7 +91,7 @@ const ShopAdd = () => {
   const [pinCode, setPinCode] = useState("");
   const [isCuisine, setIsCuisine] = useState(false);
   const [liveStatus, setLiveStatus] = useState("");
-
+  const [expensive, setExpensive] = useState("");
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
@@ -170,6 +171,7 @@ const ShopAdd = () => {
       email,
       phone_number,
       cuisineType,
+      expensive,
     } = values;
     setEmail(email);
     setPhone(phone_number);
@@ -191,6 +193,7 @@ const ShopAdd = () => {
     setPinCode(address.pin);
     handleAddressSelect(address.address, address.placeId);
     setSelectedCuisines(cuisineType);
+    setExpensive(expensive);
   };
 
   // TAGS
@@ -327,6 +330,7 @@ const ShopAdd = () => {
           tags: tags.items,
           liveStatus: liveStatus,
           cuisineType: cuisinesList,
+          expensive,
           shopAddress: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -374,7 +378,8 @@ const ShopAdd = () => {
           shopPhotos: photosUrl,
           shopDescription: "desrcriptions",
           cuisineType: cuisinesList,
-          liveStatus: liveStatus,
+          liveStatus,
+          expensive,
         })
       );
     }
@@ -884,6 +889,28 @@ const ShopAdd = () => {
                             label="Live Status"
                           >
                             {liveStatusOptions.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+
+                      <div className="mb-4">
+                        <FormControl required fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            Price Range
+                          </InputLabel>
+                          <Select
+                            required
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={expensive}
+                            onChange={(e) => setExpensive(e.target.value)}
+                            label="Price range"
+                          >
+                            {priceRangeOptions.map((item, index) => (
                               <MenuItem key={index} value={item.value}>
                                 {item.label}
                               </MenuItem>

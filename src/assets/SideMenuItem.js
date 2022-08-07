@@ -223,14 +223,22 @@ export const adminMenuItem = [
         link: "/add-wallet/delivery-transactions",
         isSubmenu: false,
       },
+
       {
         id: 113,
-        name: "Admin TRX",
+        name: "Payment History",
         icon: "fas fa-exchange-alt",
-        link: "/add-wallet/drop-transactions",
+        link: "/add-wallet/payments-history",
         isSubmenu: false,
       },
     ],
+  },
+  {
+    id: 16,
+    name: "Tansactions",
+    icon: "fas fa-comment-dollar",
+    link: "/admin/tansactions",
+    isSubmenu: false,
   },
   {
     id: 12,
@@ -311,6 +319,13 @@ export const adminMenuItem = [
         name: "Percentage Setting",
         icon: "ti-settings",
         link: "/percentage-setting",
+        isSubmenu: false,
+      },
+      {
+        id: 153,
+        name: "Admin Log",
+        icon: "fas fa-exchange-alt",
+        link: "/admin/percentage-settings-history",
         isSubmenu: false,
       },
     ],

@@ -30,6 +30,7 @@ import DealForAdd from "../../../components/DealForAdd";
 
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
+import { successMsg } from "../../../helpers/successMsg";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -120,6 +121,24 @@ const ShopDetails = () => {
     );
   };
 
+  // UPDATE SHOP STATUS
+
+  const updateActiveStatus = () => {
+    if (shop?.seller?.status === "inactive") {
+      return successMsg(
+        "Seller is inactive. Please contact with your seller.",
+        "error"
+      );
+    } else {
+      dispatch(
+        updateShopStatus({
+          id: shop?._id,
+          status: shop?.shopStatus === "active" ? "inactive" : "active",
+        })
+      );
+    }
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -173,17 +192,7 @@ const ShopDetails = () => {
                     <Button
                       outline={true}
                       color="success"
-                      onClick={() =>
-                        dispatch(
-                          updateShopStatus({
-                            id: shop?._id,
-                            status:
-                              shop?.shopStatus === "active"
-                                ? "inactive"
-                                : "active",
-                          })
-                        )
-                      }
+                      onClick={() => updateActiveStatus()}
                       className="me-3"
                     >
                       {shop?.shopStatus === "active" ? "Inactive" : "Activate"}
@@ -237,6 +246,8 @@ const ShopDetails = () => {
                       title="Free Delivery"
                       value={shop?.freeDelivery ? "Yes" : "No"}
                     />
+
+                    <Info title="Price Range" value={shop?.expensive} />
 
                     {shop?.foodType && (
                       <Info title="Type" value={shop?.foodType} />

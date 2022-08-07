@@ -59,7 +59,7 @@ const SellerTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem="Seller Transactions"
+              breadcrumbItem="Sellers Transactions"
               title="App Wallet"
               loading={loading}
               callList={callTransList}
@@ -75,10 +75,6 @@ const SellerTransactions = () => {
                 }}
               />
             )}
-
-            <div>
-              <TransactionsCard />
-            </div>
 
             <Card>
               <CardBody>
@@ -141,76 +137,43 @@ const SellerTransactions = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Seller</Th>
-                      <Th>Shop</Th>
-                      <Th>Amount</Th>
-                      <Th>Status</Th>
-                      <Th>admin Note</Th>
+                      <Th>Company</Th>
+                      <Th>Order</Th>
+                      <Th>Oder amount</Th>
+                      <Th>Delivery fee</Th>
+                      <Th>Drop earning</Th>
+                      <Th>Unsettled amount</Th>
+                      <Th>Seller earning</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {sellerTrxs.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th>
-                            <img
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(
-                                  item?.shop?.seller?.profile_photo
-                                );
-                              }}
-                              className="avatar-xs rounded-circle me-2 cursor-pointer"
-                              alt=""
-                              src={item?.shop?.seller?.profile_photo}
-                            />
-                            <h6>{item?.shop?.seller?.name}</h6>
-                          </Th>
+                    <Tr
+                      // key={index}
+                      className="align-middle cursor-pointer"
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "500",
+                      }}
+                      onClick={() =>
+                        history.push(
+                          history.push(
+                            "/app-wallet/seller/shops-transactions/1"
+                          )
+                        )
+                      }
+                    >
+                      <Th>KFC</Th>
 
-                          <Td>
-                            <img
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(item?.shop?.shopLogo);
-                              }}
-                              className="avatar-xs rounded-circle me-2 cursor-pointer"
-                              alt=""
-                              src={item?.shop?.shopLogo}
-                            />
-                            <h6>{item?.shop?.shopName}</h6>
-                          </Td>
-                          <Td>{item?.amount}</Td>
-                          <Td>{item?.status}</Td>
-                          <Td style={{ maxWidth: "150px" }}>
-                            {item?.adminNote}
-                          </Td>
-                          <Td>
-                            <Tooltip title="Details">
-                              <button
-                                className="btn btn-info button"
-                                onClick={() =>
-                                  history.push(
-                                    `/add-wallet/seller-transactions/details/${item._id}`
-                                  )
-                                }
-                              >
-                                <i className="fa fa-eye" />
-                              </button>
-                            </Tooltip>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
+                      <Td>10</Td>
+                      <Td>500</Td>
+                      <Td>200</Td>
+                      <Td>200</Td>
+                      <Td>200</Td>
+                      <Td>200</Td>
+                    </Tr>
                   </Tbody>
                 </Table>
-                {loading && (
+                {/* {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
@@ -219,7 +182,7 @@ const SellerTransactions = () => {
                   <div className="text-center">
                     <h4>No Order!</h4>
                   </div>
-                )}
+                )} */}
               </CardBody>
             </Card>
             <Row>

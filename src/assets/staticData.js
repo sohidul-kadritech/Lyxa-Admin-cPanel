@@ -14,6 +14,13 @@ export const liveStatusOptions = [
   { label: "Offline", value: "offline" },
 ];
 
+export const priceRangeOptions = [
+  { label: "$", value: 1 },
+  { label: "$$", value: 2 },
+  { label: "$$$", value: 3 },
+  { label: "$$$$", value: 4 },
+];
+
 export const shopTypeOptions = [
   { label: "All", value: "all" },
   { label: "Food", value: "food" },

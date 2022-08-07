@@ -138,7 +138,7 @@ import OrdersList from "./../pages/Orders/OrdersList/OrdersList";
 import DealsList from "../pages/Deals/DealsList/DealsList";
 import DealsAdd from "../pages/Deals/DealsAdd/DealsAdd";
 import DropPayList from "../pages/DropPay/DropPayList/DropPayList";
-import transactions from "./../pages/Transactions/transactions";
+import transactions from "../pages/Transactions/Transactions";
 import PercentageSetting from "./../pages/AppWallet/PercentageSetting/PercentageSetting";
 import AdminLogHistory from "./../pages/AppWallet/AdminLogHistory/AdminLogHistory";
 import SellerTransactions from "./../pages/AppWallet/SellerTransactions/SellerTransactions";
@@ -162,13 +162,17 @@ import AppSettings from "../pages/AppSettings/AppSettings";
 import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
 import OrderDetails from "../pages/Orders/OrderDetails/OrderDetails";
 import ChatDetails from "../pages/Chat/ChatDetails/ChatDetails";
-import DropTransactions from "../pages/AppWallet/dropTransactions/DropTransactions";
-import SellerTransactionDetails from "../pages/AppWallet/SellerTransactions/SellerTransactionDetails";
-import DeliveryTransactionsDetails from "../pages/AppWallet/DeliveryTransactions/DeliveryTransactionsDetails";
-import DropTransactionsDetails from "../pages/AppWallet/dropTransactions/dropTransactionsDetails";
+import DropTransactions from "../pages/AppWallet/DropsTansactions/DropTransactions";
+
+import DropTransactionsDetails from "../pages/AppWallet/DropsTansactions/dropTransactionsDetails";
 import UnitTypes from "../pages/Product/UnitTypes/UnitTypes";
 import CancelReason from "../pages/CancelReason/CancelReason";
 import RefusedOrders from "../pages/Orders/RefusedOrders/RefusedOrders";
+import SingleDeliveryTransactions from "../pages/AppWallet/DeliveryTransactions/SingleDeliveryTransactions";
+import ShopsTransactions from "./../pages/AppWallet/SellerTransactions/ShopsTransactions";
+import SingleShopTransactions from "../pages/AppWallet/SellerTransactions/SingleShopTansactions";
+import Transactions from "../pages/Transactions/Transactions";
+import AdminLog from "../pages/AppWallet/PercentageSetting/AdminLog";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -244,16 +248,20 @@ const userRoutes = [
   { path: "/add-wallet/admin-log-history", component: AdminLogHistory },
   { path: "/add-wallet/seller-transactions", component: SellerTransactions },
   {
-    path: "/add-wallet/seller-transactions/details/:id",
-    component: SellerTransactionDetails,
+    path: "/app-wallet/seller/shops-transactions/:id",
+    component: ShopsTransactions,
+  },
+  {
+    path: "/add-wallet/shop-transactions/:id",
+    component: SingleShopTransactions,
   },
   {
     path: "/add-wallet/delivery-transactions",
     component: DeliveryTransactions,
   },
   {
-    path: "/add-wallet/delivery-transactions/details/:id",
-    component: DeliveryTransactionsDetails,
+    path: "/add-wallet/delivery-transactions/:id",
+    component: SingleDeliveryTransactions,
   },
   { path: "/add-wallet/payments-history", component: PaymentHistory },
   { path: "/add-wallet/drop-transactions", component: DropTransactions },
@@ -261,6 +269,8 @@ const userRoutes = [
     path: "/add-wallet/drop-transactions/details/:id",
     component: DropTransactionsDetails,
   },
+
+  { path: "/admin/tansactions", component: Transactions },
 
   // CHAT
 
@@ -289,6 +299,7 @@ const userRoutes = [
   { path: "/admin/settings", component: AdminSettings },
   { path: "/app/settings", component: AppSettings },
   { path: "/percentage-setting", component: PercentageSetting },
+  { path: "/admin/percentage-settings-history", component: AdminLog },
 
   // //calendar
   { path: "/calendar", component: Calendar },
