@@ -228,10 +228,11 @@ export const addPercentage = (values) => async (dispatch) => {
     console.log({ data: data });
 
     if (data.status) {
+      const { charge } = data?.data;
       successMsg(data.message, "success");
       dispatch({
         type: actionType.ADD_DELIVERY_FEE_REQUEST_SUCCESS,
-        payload: data?.data?.dropCharge,
+        payload: charge,
       });
     } else {
       successMsg(data.message, "error");
@@ -251,8 +252,7 @@ export const addPercentage = (values) => async (dispatch) => {
 
 // GET PERCENTAGE SETTINGS
 
-export const getPercentageSetting = (seller) => async (dispatch, getState) => {
-  console.log({ seller });
+export const getPercentageSetting = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: actionType.GET_PERCENTAGE_REQUEST_SEND,
@@ -262,12 +262,12 @@ export const getPercentageSetting = (seller) => async (dispatch, getState) => {
       data: { status, error, data },
     } = await requestApi().request(GET_DELIVERY_FEE);
 
-    console.log({ data });
+    // console.log({ data });
 
     if (status) {
       dispatch({
         type: actionType.GET_PERCENTAGE_REQUEST_SUCCESS,
-        payload: data.dropCharge[0],
+        payload: data?.charge,
       });
     } else {
       dispatch({

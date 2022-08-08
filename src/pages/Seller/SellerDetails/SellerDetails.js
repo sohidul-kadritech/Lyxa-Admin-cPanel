@@ -145,6 +145,14 @@ const SellerDetails = () => {
                     <Info title="Phone" value={seller?.phone_number} />
                     <Info title="Status" value={seller?.status} />
                     <Info title="Seller type" value={seller?.sellerType} />
+                    <Info
+                      title="Drop Charge"
+                      value={`${seller?.dropCharge?.dropPercentage} ${
+                        seller?.dropCharge?.dropPercentageType === "amount"
+                          ? "NGN"
+                          : "%"
+                      }`}
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -233,71 +241,6 @@ const SellerDetails = () => {
                     </CardBody>
                   </Card>
                 ) : null}
-              </Col>
-              <Col lg={6}>
-                {seller?.dropCharge && (
-                  <Card>
-                    <CardBody>
-                      <CardTitle>Drop Charge</CardTitle>
-                      <hr />
-                      <div>
-                        <h5>
-                          Charge:{" "}
-                          {`${seller?.dropCharge?.dropPercentage} ${
-                            seller?.dropCharge?.dropPercentageType === "amount"
-                              ? "NGN"
-                              : "%"
-                          }`}
-                        </h5>
-
-                        <div className="pt-2">
-                          <h6>Delivery Charge</h6>
-                          <hr />
-                          {seller?.dropCharge?.deliveryRange?.length > 0 &&
-                            seller?.dropCharge?.deliveryRange.map(
-                              (item, index) => (
-                                <ul
-                                  key={index}
-                                  style={{ listStyleType: "square" }}
-                                >
-                                  <li>
-                                    <div className="d-flex justify-content-between flex-column">
-                                      <span
-                                        style={{
-                                          fontSize: "15px",
-                                          fontWeight: "500",
-                                        }}
-                                      >
-                                        Charge: {`${item?.charge} NGN`}
-                                      </span>
-                                      <span
-                                        style={{
-                                          fontSize: "15px",
-                                          fontWeight: "500",
-                                        }}
-                                      >
-                                        Delivery Person Cut:{" "}
-                                        {`${item?.deliveryPersonCut} NGN`}
-                                      </span>
-                                      <span
-                                        style={{
-                                          fontSize: "15px",
-                                          fontWeight: "500",
-                                        }}
-                                      >
-                                        Range:{" "}
-                                        {`${item?.from} km - ${item?.to} km`}
-                                      </span>
-                                    </div>
-                                  </li>
-                                </ul>
-                              )
-                            )}
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-                )}
               </Col>
             </Row>
 

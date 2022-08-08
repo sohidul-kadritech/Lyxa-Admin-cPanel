@@ -37,33 +37,33 @@ const PercentageSetting = () => {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { loading, status, dropCharge } = useSelector(
-    (state) => state.settingsReducer
-  );
+  const { loading, dropCharge } = useSelector((state) => state.settingsReducer);
 
   const [feeInfo, setFeeInfo] = useState({
     dropPercentageType: "",
     dropPercentage: "",
-    deliveryApplicable: "",
-    deliveryRange: [],
   });
 
-  const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
-    from: 0,
-    to: 0,
-    charge: 0,
-    deliveryPersonCut: 0,
-  });
+  // const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
+  //   from: 0,
+  //   to: 0,
+  //   charge: 0,
+  //   deliveryPersonCut: 0,
+  // });
 
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(getPercentageSetting(searchParams.get("sellerId") ?? null));
+    dispatch(getPercentageSetting());
   }, []);
 
   useEffect(() => {
     if (dropCharge) {
-      setFeeInfo(dropCharge);
+      setFeeInfo({
+        ...feeInfo,
+        dropPercentageType: dropCharge.dropPercentageType,
+        dropPercentage: dropCharge.dropPercentage,
+      });
     }
   }, [dropCharge]);
 
@@ -74,19 +74,12 @@ const PercentageSetting = () => {
 
   // VALIDATION
   const deliveryFeeSubmit = () => {
-    const { dropPercentageType, dropPercentage, deliveryApplicable } = feeInfo;
+    const { dropPercentageType, dropPercentage } = feeInfo;
     if (!dropPercentageType) {
       return successMsg("Enter delivery charge type");
     }
     if (!dropPercentage) {
       return successMsg("Enter Drop charge");
-    }
-    if (!deliveryApplicable) {
-      return successMsg("Select Applied For ");
-    }
-
-    if (feeInfo.deliveryRange.length === 0) {
-      return successMsg("Please add atleast one delivery charge", "error");
     }
 
     submitData();
@@ -103,72 +96,72 @@ const PercentageSetting = () => {
 
   //  CHANGE RANGE WISE CHARGE EVENT
 
-  const changeRangeWiseCharge = (e) => {
-    const { name, value } = e.target;
-    setRangeWiseDeliveryCharge({ ...rangeWiseDeliveryCharge, [name]: value });
-  };
+  // const changeRangeWiseCharge = (e) => {
+  //   const { name, value } = e.target;
+  //   setRangeWiseDeliveryCharge({ ...rangeWiseDeliveryCharge, [name]: value });
+  // };
 
   // SUBMIT CHARGE RANGE WISE
 
-  const submitChargeRangeWise = (e) => {
-    e.preventDefault();
-    if (!rangeWiseDeliveryCharge.from) {
-      return successMsg("Enter From Range", "error");
-    }
-    if (!rangeWiseDeliveryCharge.to) {
-      return successMsg("Enter To Range", "error");
-    }
-    if (!rangeWiseDeliveryCharge.charge) {
-      return successMsg("Enter Charge", "error");
-    }
-    if (!rangeWiseDeliveryCharge.deliveryPersonCut) {
-      return successMsg("Enter Delivery Person Charge", "error");
-    }
+  // const submitChargeRangeWise = (e) => {
+  //   e.preventDefault();
+  //   if (!rangeWiseDeliveryCharge.from) {
+  //     return successMsg("Enter From Range", "error");
+  //   }
+  //   if (!rangeWiseDeliveryCharge.to) {
+  //     return successMsg("Enter To Range", "error");
+  //   }
+  //   if (!rangeWiseDeliveryCharge.charge) {
+  //     return successMsg("Enter Charge", "error");
+  //   }
+  //   if (!rangeWiseDeliveryCharge.deliveryPersonCut) {
+  //     return successMsg("Enter Delivery Person Charge", "error");
+  //   }
 
-    if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
-      return successMsg("From Range should be less than To Range", "error");
-    }
+  //   if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
+  //     return successMsg("From Range should be less than To Range", "error");
+  //   }
 
-    const isExistCharge = feeInfo?.deliveryRange?.filter((item) => {
-      if (
-        rangeWiseDeliveryCharge.from >= item.from &&
-        rangeWiseDeliveryCharge.from <= item?.to
-      ) {
-        return item;
-      }
+  //   const isExistCharge = feeInfo?.deliveryRange?.filter((item) => {
+  //     if (
+  //       rangeWiseDeliveryCharge.from >= item.from &&
+  //       rangeWiseDeliveryCharge.from <= item?.to
+  //     ) {
+  //       return item;
+  //     }
 
-      if (
-        rangeWiseDeliveryCharge.to >= item.from &&
-        rangeWiseDeliveryCharge.to <= item?.to
-      ) {
-        return item;
-      }
-    });
+  //     if (
+  //       rangeWiseDeliveryCharge.to >= item.from &&
+  //       rangeWiseDeliveryCharge.to <= item?.to
+  //     ) {
+  //       return item;
+  //     }
+  //   });
 
-    if (isExistCharge.length > 0) {
-      return successMsg("Range already exist", "error");
-    }
+  //   if (isExistCharge.length > 0) {
+  //     return successMsg("Range already exist", "error");
+  //   }
 
-    setFeeInfo({
-      ...feeInfo,
-      deliveryRange: [...feeInfo.deliveryRange, rangeWiseDeliveryCharge],
-    });
-    setModalOpen(false);
-    setRangeWiseDeliveryCharge({
-      from: 0,
-      to: 0,
-      charge: 0,
-      deliveryPersonCut: 0,
-    });
-  };
+  //   setFeeInfo({
+  //     ...feeInfo,
+  //     deliveryRange: [...feeInfo.deliveryRange, rangeWiseDeliveryCharge],
+  //   });
+  //   setModalOpen(false);
+  //   setRangeWiseDeliveryCharge({
+  //     from: 0,
+  //     to: 0,
+  //     charge: 0,
+  //     deliveryPersonCut: 0,
+  //   });
+  // };
 
   // DELETE DELIVERY CHARGE
 
-  const deleteDeliveryCharge = (index) => {
-    let newDeliveryCharge = [...feeInfo.deliveryRange];
-    newDeliveryCharge.splice(index, 1);
-    setFeeInfo({ ...feeInfo, deliveryRange: newDeliveryCharge });
-  };
+  // const deleteDeliveryCharge = (index) => {
+  //   let newDeliveryCharge = [...feeInfo.deliveryRange];
+  //   newDeliveryCharge.splice(index, 1);
+  //   setFeeInfo({ ...feeInfo, deliveryRange: newDeliveryCharge });
+  // };
 
   return (
     <React.Fragment>
@@ -224,7 +217,7 @@ const PercentageSetting = () => {
                   </Col>
                 </Row>
 
-                <Row className="mt-4">
+                {/* <Row className="mt-4">
                   <Col lg={6}>
                     <div>
                       <div className="d-flex mb-3">
@@ -280,7 +273,7 @@ const PercentageSetting = () => {
                       )}
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
 
                 <div className="d-flex justify-content-center mt-5">
                   <Button
@@ -299,7 +292,7 @@ const PercentageSetting = () => {
 
         {/* ADD RANGE WISE DELIVERY CHARGE MODAL */}
 
-        <Modal
+        {/* <Modal
           isOpen={modalOpen}
           toggle={() => {
             setModalOpen(!modalOpen);
@@ -349,16 +342,7 @@ const PercentageSetting = () => {
                     type="number"
                     required
                   />
-                  {/* {feeInfo.rangeWiseDeliveryCharge.length > 1 && (
-                        <i
-                          className="fas fa-trash cursor-pointer ms-1"
-                          style={{
-                            color: "red",
-                            fontSize: "18px",
-                          }}
-                          // onClick={() => removeAttributeItem(index)}
-                        ></i>
-                      )} */}
+
                 </Col>
               </Row>
               <Row className="mt-3">
@@ -402,7 +386,7 @@ const PercentageSetting = () => {
               </div>
             </Form>
           </div>
-        </Modal>
+        </Modal> */}
       </GlobalWrapper>
     </React.Fragment>
   );
