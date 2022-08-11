@@ -43,10 +43,11 @@ const SellerTransactions = () => {
   const [selectedImg, setSelectedImg] = useState(null);
 
   useEffect(() => {
-    if (sellerTrxStartDate || sellerTrxEndDate) {
-      callTransList(true);
-    }
-  }, [sellerTrxStartDate, sellerTrxEndDate]);
+    // if (sellerTrxStartDate || sellerTrxEndDate) {
+    //   callTransList(true);
+    // }
+    callTransList(true);
+  }, []);
 
   const callTransList = (refresh = false) => {
     dispatch(getSellerTrx(refresh));
@@ -148,9 +149,9 @@ const SellerTransactions = () => {
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
                     {sellerTrxs.length > 0 &&
-                      sellerTrxs.map((trx, index) => {
+                      sellerTrxs.map((trx, index) => (
                         <Tr
-                          // key={index}
+                          key={index}
                           className="align-middle cursor-pointer"
                           style={{
                             fontSize: "15px",
@@ -159,33 +160,33 @@ const SellerTransactions = () => {
                           onClick={() =>
                             history.push(
                               history.push(
-                                "/app-wallet/seller/shops-transactions/1"
+                                `/app-wallet/seller/shops-transactions/${trx?._id}`
                               )
                             )
                           }
                         >
-                          <Th>KFC</Th>
+                          <Th>{trx?.company_name}</Th>
 
-                          <Td>10</Td>
-                          <Td>500</Td>
-                          <Td>200</Td>
-                          <Td>200</Td>
-                          <Td>200</Td>
-                          <Td>200</Td>
-                        </Tr>;
-                      })}
+                          <Td>{trx?.totalOrder}</Td>
+                          <Td>{trx?.orderValue?.productAmount}</Td>
+                          <Td>{trx?.orderValue?.deliveryFee}</Td>
+                          <Td>{trx?.earning?.dropGet}</Td>
+                          <Td>{trx?.earning?.unSettleAmount}</Td>
+                          <Td>{trx?.earning?.settleAmount}</Td>
+                        </Tr>
+                      ))}
                   </Tbody>
                 </Table>
-                {/* {loading && (
+                {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
                 {!loading && sellerTrxs.length < 1 && (
                   <div className="text-center">
-                    <h4>No Order!</h4>
+                    <h4>No Transactions!</h4>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
             <Row>
