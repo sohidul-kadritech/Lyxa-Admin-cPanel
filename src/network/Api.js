@@ -124,6 +124,13 @@ export const ADD_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/add";
 export const UPDATE_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/edit";
 export const ALL_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel";
 
+export const SET_DELIVERY_FEE =
+  ADMIN_ENDPOINT + "/drop-charge/add-global-drop-charge";
+export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/drop-charge";
+
+export const UPDATE_DELIVERY_CUT =
+  ADMIN_ENDPOINT + "/drop-charge/add-global-delivery-cut";
+
 // DEAL
 
 export const ADD_DEAL = ADMIN_ENDPOINT + "/deal/add";
@@ -142,10 +149,7 @@ export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance";
 
 // APP WALLET
 
-export const SET_DELIVERY_FEE =
-  ADMIN_ENDPOINT + "/drop-charge/add-global-drop-charge";
-export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/drop-charge";
-export const SELLER_TRX = ADMIN_ENDPOINT + "/wallet/seller";
+export const SELLER_TRX = ADMIN_ENDPOINT + "/drop-wallet/sellers";
 export const DELIVERY_TRX = ADMIN_ENDPOINT + "/wallet/delivery-boy";
 export const DROP_TRX = ADMIN_ENDPOINT + "/wallet/admin";
 

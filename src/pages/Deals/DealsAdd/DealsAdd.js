@@ -189,7 +189,7 @@ const DealsAdd = () => {
       option: dealType,
       percentage,
       image,
-      tag: tag?._id,
+      tag: tag?.name,
     };
     if (id) {
       dispatch(

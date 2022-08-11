@@ -49,7 +49,7 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        sellerTrxs: payload.transactionList,
+        sellerTrxs: payload.sellers,
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,

@@ -22,6 +22,7 @@ import {
   Row,
   Form,
   Modal,
+  CardTitle,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -29,6 +30,7 @@ import { successMsg } from "../../../helpers/successMsg";
 import {
   addPercentage,
   getPercentageSetting,
+  updateDeliveryCut,
 } from "../../../store/Settings/settingsAction";
 
 const PercentageSetting = () => {
@@ -44,14 +46,16 @@ const PercentageSetting = () => {
     dropPercentage: "",
   });
 
-  // const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
-  //   from: 0,
-  //   to: 0,
-  //   charge: 0,
-  //   deliveryPersonCut: 0,
-  // });
+  const [deliveryCut, setDeliveryCut] = useState([]);
 
-  // const [modalOpen, setModalOpen] = useState(false);
+  const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
+    from: 0,
+    to: 0,
+    charge: 0,
+    deliveryPersonCut: 0,
+  });
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getPercentageSetting());
@@ -59,11 +63,13 @@ const PercentageSetting = () => {
 
   useEffect(() => {
     if (dropCharge) {
+      console.log({ dropCharge });
       setFeeInfo({
         ...feeInfo,
         dropPercentageType: dropCharge.dropPercentageType,
         dropPercentage: dropCharge.dropPercentage,
       });
+      setDeliveryCut(dropCharge?.deliveryRange);
     }
   }, [dropCharge]);
 
@@ -96,72 +102,76 @@ const PercentageSetting = () => {
 
   //  CHANGE RANGE WISE CHARGE EVENT
 
-  // const changeRangeWiseCharge = (e) => {
-  //   const { name, value } = e.target;
-  //   setRangeWiseDeliveryCharge({ ...rangeWiseDeliveryCharge, [name]: value });
-  // };
+  const changeRangeWiseCharge = (e) => {
+    const { name, value } = e.target;
+    setRangeWiseDeliveryCharge({ ...rangeWiseDeliveryCharge, [name]: value });
+  };
 
   // SUBMIT CHARGE RANGE WISE
 
-  // const submitChargeRangeWise = (e) => {
-  //   e.preventDefault();
-  //   if (!rangeWiseDeliveryCharge.from) {
-  //     return successMsg("Enter From Range", "error");
-  //   }
-  //   if (!rangeWiseDeliveryCharge.to) {
-  //     return successMsg("Enter To Range", "error");
-  //   }
-  //   if (!rangeWiseDeliveryCharge.charge) {
-  //     return successMsg("Enter Charge", "error");
-  //   }
-  //   if (!rangeWiseDeliveryCharge.deliveryPersonCut) {
-  //     return successMsg("Enter Delivery Person Charge", "error");
-  //   }
+  const submitChargeRangeWise = (e) => {
+    e.preventDefault();
 
-  //   if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
-  //     return successMsg("From Range should be less than To Range", "error");
-  //   }
+    if (!rangeWiseDeliveryCharge.from) {
+      return successMsg("Enter From Range", "error");
+    }
+    if (!rangeWiseDeliveryCharge.to) {
+      return successMsg("Enter To Range", "error");
+    }
+    if (!rangeWiseDeliveryCharge.charge) {
+      return successMsg("Enter Charge", "error");
+    }
+    if (!rangeWiseDeliveryCharge.deliveryPersonCut) {
+      return successMsg("Enter Delivery Person Charge", "error");
+    }
 
-  //   const isExistCharge = feeInfo?.deliveryRange?.filter((item) => {
-  //     if (
-  //       rangeWiseDeliveryCharge.from >= item.from &&
-  //       rangeWiseDeliveryCharge.from <= item?.to
-  //     ) {
-  //       return item;
-  //     }
+    if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
+      return successMsg("From Range should be less than To Range", "error");
+    }
 
-  //     if (
-  //       rangeWiseDeliveryCharge.to >= item.from &&
-  //       rangeWiseDeliveryCharge.to <= item?.to
-  //     ) {
-  //       return item;
-  //     }
-  //   });
+    const isExistCharge = deliveryCut?.filter((item) => {
+      if (
+        rangeWiseDeliveryCharge.from >= item.from &&
+        rangeWiseDeliveryCharge.from <= item?.to
+      ) {
+        return item;
+      }
 
-  //   if (isExistCharge.length > 0) {
-  //     return successMsg("Range already exist", "error");
-  //   }
+      if (
+        rangeWiseDeliveryCharge.to >= item.from &&
+        rangeWiseDeliveryCharge.to <= item?.to
+      ) {
+        return item;
+      }
+    });
 
-  //   setFeeInfo({
-  //     ...feeInfo,
-  //     deliveryRange: [...feeInfo.deliveryRange, rangeWiseDeliveryCharge],
-  //   });
-  //   setModalOpen(false);
-  //   setRangeWiseDeliveryCharge({
-  //     from: 0,
-  //     to: 0,
-  //     charge: 0,
-  //     deliveryPersonCut: 0,
-  //   });
-  // };
+    if (isExistCharge.length > 0) {
+      return successMsg("Range already exist", "error");
+    }
+
+    setDeliveryCut([...deliveryCut, rangeWiseDeliveryCharge]);
+    setModalOpen(false);
+    setRangeWiseDeliveryCharge({
+      from: 0,
+      to: 0,
+      charge: 0,
+      deliveryPersonCut: 0,
+    });
+  };
 
   // DELETE DELIVERY CHARGE
 
-  // const deleteDeliveryCharge = (index) => {
-  //   let newDeliveryCharge = [...feeInfo.deliveryRange];
-  //   newDeliveryCharge.splice(index, 1);
-  //   setFeeInfo({ ...feeInfo, deliveryRange: newDeliveryCharge });
-  // };
+  const deleteDeliveryCharge = (index) => {
+    let newDeliveryCharge = [...deliveryCut];
+    newDeliveryCharge.splice(index, 1);
+    setDeliveryCut([...newDeliveryCharge]);
+  };
+
+  // UPDATE DELIVERY CUT
+
+  const submitDeliveryCut = () => {
+    dispatch(updateDeliveryCut(deliveryCut));
+  };
 
   return (
     <React.Fragment>
@@ -178,6 +188,8 @@ const PercentageSetting = () => {
             />
             <Card>
               <CardBody>
+                <CardTitle>Drop Charge</CardTitle>
+                <hr />
                 <Row>
                   <Col lg={6}>
                     <FormControl fullWidth>
@@ -217,27 +229,103 @@ const PercentageSetting = () => {
                   </Col>
                 </Row>
 
-                {/* <Row className="mt-4">
+                <div className="d-flex justify-content-center mt-5">
+                  <Button
+                    disabled={loading}
+                    style={{ maxWidth: "200px", width: "100%" }}
+                    color="primary"
+                    onClick={deliveryFeeSubmit}
+                  >
+                    {loading ? "Loading..." : "Update"}
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardBody>
+                <CardTitle>Delivery Cut</CardTitle>
+                <hr />
+                <Form onSubmit={submitChargeRangeWise}>
+                  <Row className="mt-3">
+                    <Col sm={6}>
+                      <TextField
+                        id="variant name"
+                        label="Range From(km)"
+                        name="from"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        autoComplete="off"
+                        value={rangeWiseDeliveryCharge?.from}
+                        onChange={(event) => changeRangeWiseCharge(event)}
+                        type="number"
+                        required
+                      />
+                    </Col>
+                    <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                      <TextField
+                        name="to"
+                        label="Range To(km)"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        autoComplete="off"
+                        value={rangeWiseDeliveryCharge?.to}
+                        onChange={(event) => changeRangeWiseCharge(event)}
+                        type="number"
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="mt-3">
+                    <Col sm={6}>
+                      <TextField
+                        id="variant name"
+                        label="Charge"
+                        name="charge"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        autoComplete="off"
+                        value={rangeWiseDeliveryCharge?.charge}
+                        onChange={(event) => changeRangeWiseCharge(event)}
+                        type="number"
+                        required
+                      />
+                    </Col>
+                    <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                      <TextField
+                        name="deliveryPersonCut"
+                        label="Delivery Person Cut"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        autoComplete="off"
+                        value={rangeWiseDeliveryCharge?.deliveryPersonCut}
+                        onChange={(event) => changeRangeWiseCharge(event)}
+                        type="number"
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <div>
+                    <Button
+                      outline={true}
+                      color="primary"
+                      type="submit"
+                      className="mt-2"
+                    >
+                      Add Item
+                    </Button>
+                  </div>
+                </Form>
+                <Row className="mt-4">
                   <Col lg={6}>
                     <div>
-                      <div className="d-flex mb-3">
-                        <h5>Delivery Charge</h5>
-                        <Button
-                          color="success"
-                          outline={true}
-                          className="ms-3"
-                          onClick={() => setModalOpen(!modalOpen)}
-                        >
-                          <i className="fas fa-plus"></i>{" "}
-                        </Button>
-                      </div>
-                      {feeInfo.deliveryRange.length > 0 && (
+                      {deliveryCut?.length > 0 && (
                         <div className="mb-4">
                           <Paper className="py-2">
                             <h5 className="text-center">Charge List</h5>
                             <hr />
-                            {feeInfo?.deliveryRange?.length > 0 &&
-                              feeInfo?.deliveryRange?.map((item, index) => (
+                            {deliveryCut?.length > 0 &&
+                              deliveryCut?.map((item, index) => (
                                 <ul
                                   key={index}
                                   style={{ listStyleType: "square" }}
@@ -273,18 +361,21 @@ const PercentageSetting = () => {
                       )}
                     </div>
                   </Col>
-                </Row> */}
-
-                <div className="d-flex justify-content-center mt-5">
-                  <Button
-                    disabled={loading}
-                    style={{ maxWidth: "200px", width: "100%" }}
-                    color="primary"
-                    onClick={deliveryFeeSubmit}
-                  >
-                    {loading ? "Loading..." : "Update"}
-                  </Button>
-                </div>
+                </Row>
+                {deliveryCut?.length > 0 && (
+                  <div className="text-center">
+                    <Button
+                      style={{ maxWidth: "200px", width: "100%" }}
+                      color="success"
+                      size="lg"
+                      className="px-4"
+                      onClick={submitDeliveryCut}
+                      disabled={loading}
+                    >
+                      {loading ? "Loading..." : "Update"}
+                    </Button>
+                  </div>
+                )}
               </CardBody>
             </Card>
           </Container>
@@ -292,7 +383,7 @@ const PercentageSetting = () => {
 
         {/* ADD RANGE WISE DELIVERY CHARGE MODAL */}
 
-        {/* <Modal
+        <Modal
           isOpen={modalOpen}
           toggle={() => {
             setModalOpen(!modalOpen);
@@ -313,80 +404,8 @@ const PercentageSetting = () => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div className="modal-body">
-            <Form onSubmit={submitChargeRangeWise}>
-              <Row className="mt-3">
-                <Col sm={6}>
-                  <TextField
-                    id="variant name"
-                    label="Range From(km)"
-                    name="from"
-                    variant="outlined"
-                    style={{ width: "100%" }}
-                    autoComplete="off"
-                    value={rangeWiseDeliveryCharge?.from}
-                    onChange={(event) => changeRangeWiseCharge(event)}
-                    type="number"
-                    required
-                  />
-                </Col>
-                <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                  <TextField
-                    name="to"
-                    label="Range To(km)"
-                    variant="outlined"
-                    style={{ width: "100%" }}
-                    autoComplete="off"
-                    value={rangeWiseDeliveryCharge?.to}
-                    onChange={(event) => changeRangeWiseCharge(event)}
-                    type="number"
-                    required
-                  />
-
-                </Col>
-              </Row>
-              <Row className="mt-3">
-                <Col sm={6}>
-                  <TextField
-                    id="variant name"
-                    label="Charge"
-                    name="charge"
-                    variant="outlined"
-                    style={{ width: "100%" }}
-                    autoComplete="off"
-                    value={rangeWiseDeliveryCharge?.charge}
-                    onChange={(event) => changeRangeWiseCharge(event)}
-                    type="number"
-                    required
-                  />
-                </Col>
-                <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                  <TextField
-                    name="deliveryPersonCut"
-                    label="Delivery Person Cut"
-                    variant="outlined"
-                    style={{ width: "100%" }}
-                    autoComplete="off"
-                    value={rangeWiseDeliveryCharge?.deliveryPersonCut}
-                    onChange={(event) => changeRangeWiseCharge(event)}
-                    type="number"
-                    required
-                  />
-                </Col>
-              </Row>
-              <div>
-                <Button
-                  outline={true}
-                  color="primary"
-                  type="submit"
-                  className="mt-2"
-                >
-                  Add Item
-                </Button>
-              </div>
-            </Form>
-          </div>
-        </Modal> */}
+          <div className="modal-body"></div>
+        </Modal>
       </GlobalWrapper>
     </React.Fragment>
   );

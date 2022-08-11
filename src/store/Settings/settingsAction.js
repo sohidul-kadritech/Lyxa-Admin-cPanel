@@ -8,6 +8,7 @@ import {
   SET_DELIVERY_FEE,
   UPDATE_ADMINS_SETTINGS,
   UPDATE_APP_SETTINGS,
+  UPDATE_DELIVERY_CUT,
   UPDATE_ORDER_CANCEL_REASON,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
@@ -214,7 +215,6 @@ export const getAllAppSettings = () => async (dispatch) => {
 // ADD PERCENTAGE SETTING
 
 export const addPercentage = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_DELIVERY_FEE_REQUEST_SEND,
@@ -278,6 +278,42 @@ export const getPercentageSetting = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: actionType.GET_PERCENTAGE_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+export const updateDeliveryCut = (deliveryRange) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.UPDATE_DELIVERY_CUT_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, message, data },
+    } = await requestApi().request(UPDATE_DELIVERY_CUT, {
+      method: "POST",
+      data: {
+        deliveryRange,
+      },
+    });
+
+    if (status) {
+      successMsg(message, "success");
+      dispatch({
+        type: actionType.UPDATE_DELIVERY_CUT_REQUEST_SUCCESS,
+        payload: data.charge,
+      });
+    } else {
+      successMsg(message, "error");
+      dispatch({
+        type: actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL,
+        payload: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL,
       payload: error.message,
     });
   }

@@ -147,30 +147,33 @@ const SellerTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    <Tr
-                      // key={index}
-                      className="align-middle cursor-pointer"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "500",
-                      }}
-                      onClick={() =>
-                        history.push(
-                          history.push(
-                            "/app-wallet/seller/shops-transactions/1"
-                          )
-                        )
-                      }
-                    >
-                      <Th>KFC</Th>
+                    {sellerTrxs.length > 0 &&
+                      sellerTrxs.map((trx, index) => {
+                        <Tr
+                          // key={index}
+                          className="align-middle cursor-pointer"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                          onClick={() =>
+                            history.push(
+                              history.push(
+                                "/app-wallet/seller/shops-transactions/1"
+                              )
+                            )
+                          }
+                        >
+                          <Th>KFC</Th>
 
-                      <Td>10</Td>
-                      <Td>500</Td>
-                      <Td>200</Td>
-                      <Td>200</Td>
-                      <Td>200</Td>
-                      <Td>200</Td>
-                    </Tr>
+                          <Td>10</Td>
+                          <Td>500</Td>
+                          <Td>200</Td>
+                          <Td>200</Td>
+                          <Td>200</Td>
+                          <Td>200</Td>
+                        </Tr>;
+                      })}
                   </Tbody>
                 </Table>
                 {/* {loading && (
