@@ -10,6 +10,7 @@ import {
   CardTitle,
   Col,
   Container,
+  Modal,
   Row,
 } from "reactstrap";
 import styled from "styled-components";
@@ -22,24 +23,33 @@ import requestApi from "../../../network/httpRequest";
 import { SINGLE_SELLER } from "../../../network/Api";
 import Info from "./../../../components/Info";
 import ShopTable from "../../../components/ShopTable";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import DropCharge from "../../../components/DropCharge";
 
 const SellerDetails = () => {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { sellers } = useSelector((state) => state.sellerReducer);
+  const { sellers, status } = useSelector((state) => state.sellerReducer);
+
   const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.shopReducer);
 
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenPercentage, setIsOpenPercentage] = useState(false);
 
   useEffect(() => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
       if (findSeller) {
-        console.log(findSeller);
         setSeller(findSeller);
       } else {
         callApi();
@@ -77,12 +87,12 @@ const SellerDetails = () => {
     });
   };
 
-  const percentageSettings = () => {
-    history.push({
-      pathname: "/percentage-setting",
-      search: `?sellerId=${id}`,
-    });
-  };
+  useEffect(() => {
+    if (status) {
+      setIsOpenPercentage(false);
+      callApi();
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -118,9 +128,9 @@ const SellerDetails = () => {
                       outline={true}
                       color="success"
                       className="me-3"
-                      onClick={() => percentageSettings()}
+                      onClick={() => setIsOpenPercentage(!isOpenPercentage)}
                     >
-                      Percentage setting
+                      Update Drop Charge
                     </Button>
                     <Button
                       color="primary"
@@ -147,10 +157,8 @@ const SellerDetails = () => {
                     <Info title="Seller type" value={seller?.sellerType} />
                     <Info
                       title="Drop Charge"
-                      value={`${seller?.dropCharge?.dropPercentage} ${
-                        seller?.dropCharge?.dropPercentageType === "amount"
-                          ? "NGN"
-                          : "%"
+                      value={`${seller?.dropPercentage} ${
+                        seller?.dropPercentageType === "amount" ? "NGN" : "%"
                       }`}
                     />
                   </Col>
@@ -273,33 +281,40 @@ const SellerDetails = () => {
           </Container>
         </div>
       </GlobalWrapper>
+
       {/* SELLER PERCENTAGE SETTINGS */}
 
-      {/* <Modal
-          isOpen={track}
-          toggle={() => {
-            setTrack(!track);
-          }}
-          centered={true}
-        >
-          <div className="modal-header">
-            <h5 className="modal-title mt-0">Tracking Delivery Boy</h5>
-            <button
-              type="button"
-              onClick={() => {
-                setTrack(false);
-              }}
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <TrackingDeliveryBoy />
-          </div>
-        </Modal> */}
+      <Modal
+        isOpen={isOpenPercentage}
+        toggle={() => {
+          setIsOpenPercentage(!isOpenPercentage);
+        }}
+        centered={true}
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Tracking Delivery Boy</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpenPercentage(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div className="modal-body">
+          <DropCharge
+            chargeType={seller?.dropPercentageType}
+            chargeValue={seller?.dropPercentage}
+            type="seller"
+            seller={seller?._id}
+          />
+        </div>
+      </Modal>
     </React.Fragment>
   );
 };
@@ -311,19 +326,6 @@ const ImageWrapper = styled.div`
     width: 100%;
     height: 90%;
   }
-`;
-
-const Details = styled.div`
-  display: flex;
-  /* justify-content: space-between; */
-`;
-
-const Value = styled.h5`
-  color: #0321f3;
-  font-style: italic;
-  font-weight: 600;
-  margin-left: 4px;
-  /* padding-left: 5px; */
 `;
 
 export default SellerDetails;

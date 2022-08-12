@@ -5,7 +5,9 @@ const init = {
   loading: false,
   error: null,
   status: false,
+  sellersTrxs: [],
   sellerTrxs: [],
+  shopTrxs: [],
   sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
   sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   paginate: null,
@@ -38,6 +40,32 @@ const appWalletReducer = (state = init, action) => {
         sellerTrxEndDate: payload,
       };
 
+    case actionTypes.GET_SELLERS_TRX_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.GET_SELLERS_TRX_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        sellersTrxs: payload.sellers,
+        Paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: true,
+      };
+
+    case actionTypes.GET_SELLERS_TRX_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
     case actionTypes.GET_SELLER_TRX_REQUEST_SEND:
       return {
         ...state,
@@ -49,7 +77,33 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        sellerTrxs: payload.sellers,
+        sellerTrxs: payload,
+        // Paginate: payload.paginate,
+        // paging: payload.paginate.metadata.paging,
+        // hasNextPage: payload.paginate.metadata.hasNextPage,
+        // currentPage: payload.paginate.metadata.page.currentPage,
+        // hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: true,
+      };
+
+    case actionTypes.GET_SELLER_TRX_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionTypes.GET_SHOP_TRX_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.GET_SHOP_TRX_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        shopTrxs: payload.transections,
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
@@ -58,7 +112,7 @@ const appWalletReducer = (state = init, action) => {
         status: true,
       };
 
-    case actionTypes.GET_SELLER_TRX_REQUEST_FAIL:
+    case actionTypes.GET_SHOP_TRX_REQUEST_FAIL:
       return {
         ...state,
         error: payload,

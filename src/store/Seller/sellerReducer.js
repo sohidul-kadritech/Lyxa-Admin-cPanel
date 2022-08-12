@@ -172,6 +172,41 @@ const sellerReducer = (state = initialState, action) => {
         searchKey: payload,
       };
 
+    //  DROP CHARGE
+
+    case actionType.ADD_SELLER_DROP_CHARGE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.ADD_SELLER_DROP_CHARGE_REQUEST_SUCCESS:
+      const updateCharge = state.sellers.map((item) =>
+        item._id == payload._id
+          ? {
+              ...item,
+              dropPercentage: payload.dropPercentage,
+              dropPercentageType: payload.dropPercentageType,
+            }
+          : item
+      );
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        sellers: updateCharge,
+        error: null,
+      };
+    case actionType.ADD_SELLER_DROP_CHARGE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
     default:
       return state;
   }

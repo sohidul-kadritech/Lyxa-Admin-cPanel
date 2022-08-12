@@ -5,6 +5,7 @@ import {
   ALL_SELLER,
   DELETE_SELLER,
   EDIT_SELLER,
+  SELLER_DROP_CHARGE,
 } from "../../network/Api";
 import { toast } from "react-toastify";
 import { successMsg } from "../../helpers/successMsg";
@@ -217,4 +218,42 @@ export const updateSellerSearchKey = (value) => (dispatch) => {
     type: actionType.UPDATE_SEARCH_KEY,
     payload: value,
   });
+};
+
+// ADD SELLER DLIVERY CHARGE
+
+export const addSellerCharge = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_SELLER_DROP_CHARGE_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(SELLER_DROP_CHARGE, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data: data });
+
+    if (data.status) {
+      const { seller } = data?.data;
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.ADD_SELLER_DROP_CHARGE_REQUEST_SUCCESS,
+        payload: seller,
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.ADD_SELLER_DROP_CHARGE_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_SELLER_DROP_CHARGE_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
 };

@@ -25,10 +25,10 @@ import {
   CardTitle,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
+import DropCharge from "../../../components/DropCharge";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { successMsg } from "../../../helpers/successMsg";
 import {
-  addPercentage,
   getPercentageSetting,
   updateDeliveryCut,
 } from "../../../store/Settings/settingsAction";
@@ -39,12 +39,9 @@ const PercentageSetting = () => {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { loading, dropCharge } = useSelector((state) => state.settingsReducer);
-
-  const [feeInfo, setFeeInfo] = useState({
-    dropPercentageType: "",
-    dropPercentage: "",
-  });
+  const { loading, dropCharge, status } = useSelector(
+    (state) => state.settingsReducer
+  );
 
   const [deliveryCut, setDeliveryCut] = useState([]);
 
@@ -63,42 +60,9 @@ const PercentageSetting = () => {
 
   useEffect(() => {
     if (dropCharge) {
-      console.log({ dropCharge });
-      setFeeInfo({
-        ...feeInfo,
-        dropPercentageType: dropCharge.dropPercentageType,
-        dropPercentage: dropCharge.dropPercentage,
-      });
       setDeliveryCut(dropCharge?.deliveryRange);
     }
   }, [dropCharge]);
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFeeInfo({ ...feeInfo, [name]: value });
-  };
-
-  // VALIDATION
-  const deliveryFeeSubmit = () => {
-    const { dropPercentageType, dropPercentage } = feeInfo;
-    if (!dropPercentageType) {
-      return successMsg("Enter delivery charge type");
-    }
-    if (!dropPercentage) {
-      return successMsg("Enter Drop charge");
-    }
-
-    submitData();
-  };
-  // SUBMTI DATA TO SERVER
-
-  const submitData = () => {
-    dispatch(
-      addPercentage({
-        ...feeInfo,
-      })
-    );
-  };
 
   //  CHANGE RANGE WISE CHARGE EVENT
 
@@ -173,6 +137,12 @@ const PercentageSetting = () => {
     dispatch(updateDeliveryCut(deliveryCut));
   };
 
+  useEffect(() => {
+    if (status) {
+      setModalOpen(false);
+    }
+  }, [status]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -186,61 +156,12 @@ const PercentageSetting = () => {
               // callList={callDeliveryFee}
               isRefresh={false}
             />
-            <Card>
-              <CardBody>
-                <CardTitle>Drop Charge</CardTitle>
-                <hr />
-                <Row>
-                  <Col lg={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Drop Charge Type
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        name="dropPercentageType"
-                        value={feeInfo.dropPercentageType}
-                        label="Drop Charge Type"
-                        onChange={handleChange}
-                        required
-                      >
-                        <MenuItem value="amount">Amount</MenuItem>
-                        <MenuItem value="percentage">Percentage</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Col>
-                  <Col lg={6} className="mt-4 mt-lg-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      label={`Drop Charge (${
-                        feeInfo.dropPercentageType === "amount"
-                          ? "Amount"
-                          : "Percentage"
-                      })`}
-                      variant="outlined"
-                      placeholder="Enter Drop Charge"
-                      name="dropPercentage"
-                      value={feeInfo.dropPercentage}
-                      onChange={handleChange}
-                      type="number"
-                      required
-                    />
-                  </Col>
-                </Row>
 
-                <div className="d-flex justify-content-center mt-5">
-                  <Button
-                    disabled={loading}
-                    style={{ maxWidth: "200px", width: "100%" }}
-                    color="primary"
-                    onClick={deliveryFeeSubmit}
-                  >
-                    {loading ? "Loading..." : "Update"}
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
+            <DropCharge
+              chargeType={dropCharge?.dropPercentageType}
+              chargeValue={dropCharge?.dropPercentage}
+              type="global"
+            />
 
             <Card>
               <CardBody>

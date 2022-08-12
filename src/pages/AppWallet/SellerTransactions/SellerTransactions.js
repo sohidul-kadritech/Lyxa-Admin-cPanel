@@ -14,7 +14,7 @@ import TransactionsCard from "../../../components/TransactionsCard";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getSellerTrx,
+  getSellersTrx,
   updateSellerTrxEndDate,
   updateSellerTrxStartDate,
 } from "../../../store/appWallet/appWalletAction";
@@ -30,7 +30,7 @@ const SellerTransactions = () => {
 
   const {
     loading,
-    sellerTrxs,
+    sellersTrxs,
     sellerTrxStartDate,
     sellerTrxEndDate,
     paging,
@@ -39,18 +39,19 @@ const SellerTransactions = () => {
     hasPreviousPage,
   } = useSelector((state) => state.appWalletReducer);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedImg, setSelectedImg] = useState(null);
-
   useEffect(() => {
-    // if (sellerTrxStartDate || sellerTrxEndDate) {
-    //   callTransList(true);
-    // }
     callTransList(true);
   }, []);
 
   const callTransList = (refresh = false) => {
-    dispatch(getSellerTrx(refresh));
+    dispatch(getSellersTrx(refresh));
+  };
+
+  const sellerShopsTrxs = (sellerId, companyName) => {
+    history.push({
+      pathname: `/app-wallet/seller/shops-transactions/${sellerId}`,
+      search: `?seller=${companyName}`,
+    });
   };
 
   return (
@@ -65,17 +66,6 @@ const SellerTransactions = () => {
               loading={loading}
               callList={callTransList}
             />
-
-            {isOpen && (
-              <Lightbox
-                mainSrc={selectedImg}
-                enableZoom={true}
-                imageCaption="img"
-                onCloseRequest={() => {
-                  setIsOpen(!isOpen);
-                }}
-              />
-            )}
 
             <Card>
               <CardBody>
@@ -131,7 +121,7 @@ const SellerTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Seller Transactions List</CardTitle>
+                <CardTitle className="h4"> Sellers Transactions List</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -148,8 +138,8 @@ const SellerTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {sellerTrxs.length > 0 &&
-                      sellerTrxs.map((trx, index) => (
+                    {sellersTrxs.length > 0 &&
+                      sellersTrxs.map((trx, index) => (
                         <Tr
                           key={index}
                           className="align-middle cursor-pointer"
@@ -158,17 +148,13 @@ const SellerTransactions = () => {
                             fontWeight: "500",
                           }}
                           onClick={() =>
-                            history.push(
-                              history.push(
-                                `/app-wallet/seller/shops-transactions/${trx?._id}`
-                              )
-                            )
+                            sellerShopsTrxs(trx._id, trx?.company_name)
                           }
                         >
                           <Th>{trx?.company_name}</Th>
 
                           <Td>{trx?.totalOrder}</Td>
-                          <Td>{trx?.orderValue?.productAmount}</Td>
+                          <Td>{trx?.orderValue?.productAmount.toFixed(2)}</Td>
                           <Td>{trx?.orderValue?.deliveryFee}</Td>
                           <Td>{trx?.earning?.dropGet}</Td>
                           <Td>{trx?.earning?.unSettleAmount}</Td>
@@ -182,7 +168,7 @@ const SellerTransactions = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && sellerTrxs.length < 1 && (
+                {!loading && sellersTrxs.length < 1 && (
                   <div className="text-center">
                     <h4>No Transactions!</h4>
                   </div>
@@ -197,7 +183,7 @@ const SellerTransactions = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getSellerTrx(true, page))}
+                    lisener={(page) => dispatch(getSellersTrx(true, page))}
                   />
                 </div>
               </Col>

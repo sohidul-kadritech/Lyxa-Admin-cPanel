@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import {
   Button,
   Card,
@@ -9,6 +9,7 @@ import {
   Col,
   Container,
   Row,
+  Spinner,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -16,28 +17,38 @@ import Info from "../../../components/Info";
 import TransactionsCard from "../../../components/TransactionsCard";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Tooltip } from "@mui/material";
+import { getShopTrxs } from "../../../store/appWallet/appWalletAction";
+import AppPagination from "../../../components/AppPagination";
 
 const SingleShopTransactions = () => {
   const { id } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { search } = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { loading, deliveryTrxs } = useSelector(
-    (state) => state.appWalletReducer
-  );
+  const {
+    loading,
+    shopTrxs,
+    paging,
+    hasNextPage,
+    currentPage,
+    hasPreviousPage,
+  } = useSelector((state) => state.appWalletReducer);
 
-  const [trx, setTrx] = useState(null);
+  const [shop, setShop] = useState("");
+
+  useEffect(() => {
+    setShop(searchParams.get("shop"));
+  }, [searchParams]);
 
   useEffect(() => {
     if (id) {
-      const findTrx = deliveryTrxs.find((item) => item._id == id);
-      if (findTrx) {
-        console.log(findTrx);
-        setTrx(findTrx);
-      } else {
-        console.log("call api-------");
+      if (shopTrxs.length < 1) {
+        dispatch(getShopTrxs(true, id));
       }
     } else {
-      history.push("/add-wallet/delivery-transactions", { replace: true });
+      history.push("/add-wallet/seller-transactions", { replace: true });
     }
   }, [id]);
 
@@ -55,7 +66,7 @@ const SingleShopTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem="Delivery Boy Name"
+              breadcrumbItem={shop}
               title="App Wallet"
               isRefresh={false}
             />
@@ -69,7 +80,7 @@ const SingleShopTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <div class="d-flex justify-content-between pb-3">
+                <div className="d-flex justify-content-between pb-3">
                   <CardTitle className="h4"> Shop Transactions List</CardTitle>
                   <div>
                     <Button className="btn btn-success">
@@ -103,11 +114,9 @@ const SingleShopTransactions = () => {
                         fontSize: "15px",
                         fontWeight: "500",
                       }}
-                      onClick={() =>
-                        history.push(
-                          history.push("/add-wallet/shop-transactions/1")
-                        )
-                      }
+                      // onClick={() =>
+                      //   history.push("/add-wallet/shop-transactions/1")
+                      // }
                     >
                       <Th>1</Th>
 
@@ -119,19 +128,19 @@ const SingleShopTransactions = () => {
                     </Tr>
                   </Tbody>
                 </Table>
-                {/* {loading && (
+                {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && deliveryTrxs.length < 1 && (
+                {!loading && shopTrxs.length < 1 && (
                   <div className="text-center">
-                    <h4>No Order!</h4>
+                    <h4>No Tansactions!</h4>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
-            {/* <Row>
+            <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
@@ -139,11 +148,11 @@ const SingleShopTransactions = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getDeliveryTrx(true, page))}
+                    lisener={(page) => dispatch(getShopTrxs(true, id, page))}
                   />
                 </div>
               </Col>
-            </Row> */}
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

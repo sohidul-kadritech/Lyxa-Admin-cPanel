@@ -4,27 +4,29 @@ import {
   DELIVERY_TRX,
   DROP_TRX,
   GET_DELIVERY_FEE,
+  SELLERS_TRX,
   SELLER_TRX,
   SET_DELIVERY_FEE,
+  SHOP_TRX,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionTypes from "../actionType";
 
-// GET SELLER TRX
+// GET SELLERS TRX
 
-export const getSellerTrx =
+export const getSellersTrx =
   (refresh = false, page) =>
   async (dispatch, getState) => {
-    const { sellerTrxEndDate, sellerTrxStartDate, sellerTrxs } =
+    const { sellerTrxEndDate, sellerTrxStartDate, sellersTrxs } =
       getState().appWalletReducer;
 
-    if (sellerTrxs.length < 1 || refresh) {
+    if (sellersTrxs.length < 1 || refresh) {
       try {
         dispatch({
-          type: actionTypes.GET_SELLER_TRX_REQUEST_SEND,
+          type: actionTypes.GET_SELLERS_TRX_REQUEST_SEND,
         });
 
-        const { data } = await requestApi().request(SELLER_TRX, {
+        const { data } = await requestApi().request(SELLERS_TRX, {
           params: {
             page,
             pageSize: 50,
@@ -37,8 +39,52 @@ export const getSellerTrx =
 
         if (data.status) {
           dispatch({
-            type: actionTypes.GET_SELLER_TRX_REQUEST_SUCCESS,
+            type: actionTypes.GET_SELLERS_TRX_REQUEST_SUCCESS,
             payload: data.data,
+          });
+        } else {
+          dispatch({
+            type: actionTypes.GET_SELLERS_TRX_REQUEST_FAIL,
+            payload: data.error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionTypes.GET_SELLERS_TRX_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    }
+  };
+
+// GET SINGLE SELLER TRX
+
+export const getSellerTrx =
+  (refresh = false, sellerId, page) =>
+  async (dispatch, getState) => {
+    const { sellerTrxs } = getState().appWalletReducer;
+
+    if (sellerTrxs.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionTypes.GET_SELLER_TRX_REQUEST_SEND,
+        });
+
+        const { data } = await requestApi().request(SELLER_TRX, {
+          params: {
+            page,
+            pageSize: 50,
+            sellerId,
+          },
+        });
+
+        console.log("seller trx", data);
+
+        if (data.status) {
+          const { shops } = data.data;
+          dispatch({
+            type: actionTypes.GET_SELLER_TRX_REQUEST_SUCCESS,
+            payload: shops,
           });
         } else {
           dispatch({
@@ -49,6 +95,49 @@ export const getSellerTrx =
       } catch (error) {
         dispatch({
           type: actionTypes.GET_SELLER_TRX_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    }
+  };
+
+// GET SINGLE SHOP TRX
+
+export const getShopTrxs =
+  (refresh = false, shopId, page) =>
+  async (dispatch, getState) => {
+    const { shopTrxs } = getState().appWalletReducer;
+
+    if (shopTrxs.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionTypes.GET_SHOP_TRX_REQUEST_SEND,
+        });
+
+        const { data } = await requestApi().request(SHOP_TRX, {
+          params: {
+            page,
+            pageSize: 50,
+            shopId,
+          },
+        });
+
+        console.log("shop trx", data);
+
+        if (data.status) {
+          dispatch({
+            type: actionTypes.GET_SHOP_TRX_REQUEST_SUCCESS,
+            payload: data.data,
+          });
+        } else {
+          dispatch({
+            type: actionTypes.GET_SHOP_TRX_REQUEST_FAIL,
+            payload: data.error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionTypes.GET_SHOP_TRX_REQUEST_FAIL,
           payload: error.message,
         });
       }

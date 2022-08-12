@@ -198,7 +198,7 @@ export const updateShopFilter = (value) => (dispatch) => {
 
 // GET ALL TAGS
 
-export const getAllTags = (refresh) => async (dispatch, getState) => {
+export const getAllTags = (type) => async (dispatch, getState) => {
   const { tagSearchKey } = getState().dealReducer;
   try {
     dispatch({
@@ -209,6 +209,7 @@ export const getAllTags = (refresh) => async (dispatch, getState) => {
         page: 1,
         pageSize: 100,
         searchKey: tagSearchKey,
+        type: "food",
       },
     });
 

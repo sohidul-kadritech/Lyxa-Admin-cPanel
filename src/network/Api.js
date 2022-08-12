@@ -69,6 +69,7 @@ export const ALL_SELLER = ADMIN_ENDPOINT + "/seller";
 export const EDIT_SELLER = ADMIN_ENDPOINT + "/seller/update";
 export const DELETE_SELLER = ADMIN_ENDPOINT + "/seller/delete";
 export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details";
+export const SELLER_DROP_CHARGE = ADMIN_ENDPOINT + "/seller/add-drop-charge";
 
 // SHOP
 
@@ -149,7 +150,9 @@ export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance";
 
 // APP WALLET
 
-export const SELLER_TRX = ADMIN_ENDPOINT + "/drop-wallet/sellers";
+export const SELLERS_TRX = ADMIN_ENDPOINT + "/drop-wallet/sellers";
+export const SELLER_TRX = ADMIN_ENDPOINT + "/drop-wallet/seller/shops";
+export const SHOP_TRX = ADMIN_ENDPOINT + "/drop-wallet/seller/shops-details";
 export const DELIVERY_TRX = ADMIN_ENDPOINT + "/wallet/delivery-boy";
 export const DROP_TRX = ADMIN_ENDPOINT + "/wallet/admin";
 
