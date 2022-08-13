@@ -29,9 +29,18 @@ const ShopsTransactions = () => {
   const dispatch = useDispatch();
 
   const [seller, setSeller] = useState("");
+  const {
+    account_type,
+    _id: accountId,
+    name,
+  } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
-    setSeller(searchParams.get("seller"));
+    if (searchParams.get("seller")) {
+      setSeller(searchParams.get("seller"));
+    } else {
+      setSeller(name);
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -40,7 +49,7 @@ const ShopsTransactions = () => {
         dispatch(getSellerTrx(true, id));
       }
     } else {
-      history.push("/add-wallet/seller-transactions", { replace: true });
+      history.push("/", { replace: true });
     }
   }, [id]);
 

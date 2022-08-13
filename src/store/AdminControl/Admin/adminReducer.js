@@ -126,6 +126,54 @@ const adminReducer = (state = initialState, action) => {
         status: false,
       };
 
+    // ADD SELLER CREDENTIAL
+
+    case actionType.ADD_SELLER_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ADD_SELLER_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.ADD_SELLER_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // ADD SHOP CREDENTIAL
+
+    case actionType.ADD_SHOP_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ADD_SHOP_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.ADD_SHOP_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
     default:
       return state;
   }

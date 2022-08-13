@@ -1,5 +1,7 @@
 import {
   ADD_ADMIN,
+  ADD_SELLER_CREDENTIAL,
+  ADD_SHOP_CREDENTIAL,
   DELETE_ADMIN,
   EDIT_ADMIN,
   GET_ALL_ADMIN,
@@ -157,4 +159,80 @@ export const setStatusFalse = () => (dispatch) => {
   dispatch({
     type: actionType.SET_STATUS_FALSE,
   });
+};
+
+// ADD SELLER CREDENTIAL
+
+export const addSellerCredential = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_SELLER_CREDENTIAL_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(ADD_SELLER_CREDENTIAL, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data: data });
+
+    if (data.status) {
+      // const { seller } = data?.data;
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.ADD_SELLER_CREDENTIAL_REQUEST_SUCCESS,
+        // payload: seller,
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.ADD_SELLER_CREDENTIAL_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_SELLER_CREDENTIAL_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// ADD SHOP CREDENTIAL
+
+export const addShopCredential = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_SHOP_CREDENTIAL_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(ADD_SHOP_CREDENTIAL, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data: data });
+
+    if (data.status) {
+      // const { seller } = data?.data;
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.ADD_SHOP_CREDENTIAL_REQUEST_SUCCESS,
+        // payload: seller,
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.ADD_SHOP_CREDENTIAL_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_SHOP_CREDENTIAL_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
 };

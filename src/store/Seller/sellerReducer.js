@@ -207,6 +207,8 @@ const sellerReducer = (state = initialState, action) => {
         error: payload,
       };
 
+    // ADD CREDENTIAL
+
     default:
       return state;
   }

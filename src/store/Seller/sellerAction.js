@@ -2,6 +2,7 @@ import * as actionType from "../actionType";
 import requestApi from "../../network/httpRequest";
 import {
   ADD_SELLER,
+  ADD_SELLER_CREDENTIAL,
   ALL_SELLER,
   DELETE_SELLER,
   EDIT_SELLER,
@@ -233,7 +234,7 @@ export const addSellerCharge = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data: data });
+    // console.log({ data: data });
 
     if (data.status) {
       const { seller } = data?.data;

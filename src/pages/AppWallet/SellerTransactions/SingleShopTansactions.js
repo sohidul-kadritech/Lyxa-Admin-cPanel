@@ -38,8 +38,14 @@ const SingleShopTransactions = () => {
 
   const [shop, setShop] = useState("");
 
+  const { shopName } = JSON.parse(localStorage.getItem("admin"));
+
   useEffect(() => {
-    setShop(searchParams.get("shop"));
+    if (searchParams.get("seller")) {
+      setShop(searchParams.get("seller"));
+    } else {
+      setShop(shopName);
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -48,7 +54,7 @@ const SingleShopTransactions = () => {
         dispatch(getShopTrxs(true, id));
       }
     } else {
-      history.push("/add-wallet/seller-transactions", { replace: true });
+      history.push("/", { replace: true });
     }
   }, [id]);
 

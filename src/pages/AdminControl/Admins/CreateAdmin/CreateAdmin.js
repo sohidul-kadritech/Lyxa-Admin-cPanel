@@ -22,6 +22,8 @@ import {
 import { useDispatch } from "react-redux";
 import {
   addAdmin,
+  addSellerCredential,
+  addShopCredential,
   editAdmin,
 } from "../../../../store/AdminControl/Admin/adminAction";
 import { useSelector } from "react-redux";
@@ -56,7 +58,7 @@ const CreateAdmin = () => {
 
       if (findAdmin) {
         updateData(findAdmin);
-        console.log(findAdmin);
+        // console.log(findAdmin);
       } else {
         callApi(id);
       }
@@ -90,25 +92,43 @@ const CreateAdmin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (id) {
+    if (accountId === "admin") {
+      if (id) {
+        dispatch(
+          editAdmin({
+            id,
+            name,
+            email,
+            role,
+            number: phoneNumber,
+            status: activeStatus,
+          })
+        );
+      } else {
+        dispatch(
+          addAdmin({
+            name,
+            email,
+            password,
+            role,
+            number: phoneNumber,
+          })
+        );
+      }
+    } else if (account_type === "seller") {
       dispatch(
-        editAdmin({
-          id,
-          name,
+        addSellerCredential({
           email,
-          role,
-          number: phoneNumber,
-          status: activeStatus,
+          password,
+          sellerId: accountId,
         })
       );
     } else {
       dispatch(
-        addAdmin({
-          name,
+        addShopCredential({
           email,
           password,
-          role,
-          number: phoneNumber,
+          shopId: accountId,
         })
       );
     }
@@ -137,7 +157,13 @@ const CreateAdmin = () => {
             <Breadcrumb
               maintitle="Drop"
               breadcrumbItem={id ? "Edit" : "Create"}
-              title={account_type === "shop" ? "Shop Crediantial" : "Admin"}
+              title={
+                account_type === "shop"
+                  ? "Shop Crediantial"
+                  : account_type === "seller"
+                  ? "Seller Crediantial"
+                  : "Admin"
+              }
               // loading={loading}
               // callList={callCarList}
               isRefresh={false}
@@ -149,6 +175,8 @@ const CreateAdmin = () => {
                   <div className="py-3">
                     <h5>
                       {account_type === "shop"
+                        ? "Shop Crediantial Informations"
+                        : account_type === "Seller"
                         ? "Shop Crediantial Informations"
                         : "Admin Informations"}
                     </h5>
@@ -232,29 +260,31 @@ const CreateAdmin = () => {
                     </Col>
                   </Row>
 
-                  <Row className="mb-3">
-                    <Col xl={6} className="mb-3 mb-xl-0">
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Role
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={role}
-                          label="Role"
-                          onChange={(e) => setRole(e.target.value)}
-                        >
-                          <MenuItem value={"admin"}>Admin</MenuItem>
-                          <MenuItem value={"customer_service"}>
-                            Customer Service
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Col>
-                  </Row>
+                  {account_type === "admin" && (
+                    <Row className="mb-3">
+                      <Col xl={6} className="mb-3 mb-xl-0">
+                        <FormControl fullWidth required>
+                          <InputLabel id="demo-simple-select-label">
+                            Role
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={role}
+                            label="Role"
+                            onChange={(e) => setRole(e.target.value)}
+                          >
+                            <MenuItem value={"admin"}>Admin</MenuItem>
+                            <MenuItem value={"customer_service"}>
+                              Customer Service
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Col>
+                    </Row>
+                  )}
 
-                  <div className="pb-3 mb-3 d-flex justify-content-center">
+                  <div className="pt-3 my-3 d-flex justify-content-center">
                     <Button
                       color="primary"
                       className="px-5"

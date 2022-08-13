@@ -70,6 +70,8 @@ export const EDIT_SELLER = ADMIN_ENDPOINT + "/seller/update";
 export const DELETE_SELLER = ADMIN_ENDPOINT + "/seller/delete";
 export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details";
 export const SELLER_DROP_CHARGE = ADMIN_ENDPOINT + "/seller/add-drop-charge";
+export const ADD_SELLER_CREDENTIAL = ADMIN_ENDPOINT + "/seller/add-credential";
+export const ADD_SHOP_CREDENTIAL = ADMIN_ENDPOINT + "/shop/add-credential";
 
 // SHOP
 
