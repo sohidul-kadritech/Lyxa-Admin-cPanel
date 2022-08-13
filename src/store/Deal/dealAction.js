@@ -87,6 +87,7 @@ export const getAllDeal =
 // EDIT
 
 export const editDeal = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_DEAL_REQUEST_SEND,

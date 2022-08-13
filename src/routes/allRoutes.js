@@ -248,11 +248,11 @@ const userRoutes = [
   { path: "/add-wallet/admin-log-history", component: AdminLogHistory },
   { path: "/add-wallet/seller-transactions", component: SellerTransactions },
   {
-    path: "/app-wallet/seller/shops-transactions/:id",
+    path: "/app-wallet/seller/shops-transactions",
     component: ShopsTransactions,
   },
   {
-    path: "/add-wallet/shop-transactions/:id",
+    path: "/add-wallet/shop-transactions",
     component: SingleShopTransactions,
   },
   {
@@ -260,7 +260,7 @@ const userRoutes = [
     component: DeliveryTransactions,
   },
   {
-    path: "/add-wallet/delivery-transactions/:id",
+    path: "/add-wallet/delivery-transactions",
     component: SingleDeliveryTransactions,
   },
   { path: "/add-wallet/payments-history", component: PaymentHistory },

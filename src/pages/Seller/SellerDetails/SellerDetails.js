@@ -59,7 +59,8 @@ const SellerDetails = () => {
 
   // CALL API
 
-  const callApi = async () => {
+  const callApi = async (id) => {
+    console.log(id);
     try {
       const { data } = await requestApi().request(SINGLE_SELLER, {
         params: {
@@ -68,8 +69,8 @@ const SellerDetails = () => {
       });
 
       if (data.status) {
-        const { seller } = data.data;
-        setSeller(seller);
+        console.log(data);
+        // setSeller(seller);
       } else {
         history.push("/seller/list", { replace: true });
       }
@@ -90,7 +91,7 @@ const SellerDetails = () => {
   useEffect(() => {
     if (status) {
       setIsOpenPercentage(false);
-      callApi();
+      callApi(id);
     }
   }, [status]);
 

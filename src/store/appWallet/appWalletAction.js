@@ -62,6 +62,7 @@ export const getSellersTrx =
 export const getSellerTrx =
   (refresh = false, sellerId, page) =>
   async (dispatch, getState) => {
+    console.log({ sellerId });
     const { sellerTrxs } = getState().appWalletReducer;
 
     if (sellerTrxs.length < 1 || refresh) {

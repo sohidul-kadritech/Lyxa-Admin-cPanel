@@ -49,8 +49,8 @@ const SellerTransactions = () => {
 
   const sellerShopsTrxs = (sellerId, companyName) => {
     history.push({
-      pathname: `/app-wallet/seller/shops-transactions/${sellerId}`,
-      search: `?seller=${companyName}`,
+      pathname: `/app-wallet/seller/shops-transactions`,
+      search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
   };
 

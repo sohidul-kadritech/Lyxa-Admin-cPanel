@@ -17,7 +17,6 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { getSellerTrx } from "../../../store/appWallet/appWalletAction";
 
 const ShopsTransactions = () => {
-  const { id } = useParams();
   const { loading, sellerTrxs } = useSelector(
     (state) => state.appWalletReducer
   );
@@ -28,35 +27,34 @@ const ShopsTransactions = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [seller, setSeller] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const {
     account_type,
     _id: accountId,
-    name,
+    company_name,
   } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
-    if (searchParams.get("seller")) {
-      setSeller(searchParams.get("seller"));
-    } else {
-      setSeller(name);
-    }
-  }, [searchParams]);
+    searchParams.get("companyName")
+      ? setCompanyName(searchParams.get("companyName"))
+      : setCompanyName(company_name);
 
-  useEffect(() => {
-    if (id) {
-      if (sellerTrxs.length < 1) {
-        dispatch(getSellerTrx(true, id));
-      }
-    } else {
+    let id = null;
+    searchParams.get("sellerId")
+      ? (id = searchParams.get("sellerId"))
+      : (id = accountId);
+
+    dispatch(getSellerTrx(true, id));
+
+    if (!id) {
       history.push("/", { replace: true });
     }
-  }, [id]);
+  }, []);
 
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
-      pathname: `/add-wallet/shop-transactions/${shopId}`,
-      search: `?shop=${shopName}`,
+      pathname: `/add-wallet/shop-transactions`,
+      search: `?shopId=${shopId}&shopName=${shopName}`,
     });
   };
 
@@ -67,7 +65,7 @@ const ShopsTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={seller}
+              breadcrumbItem={companyName}
               title="App Wallet"
               isRefresh={false}
             />

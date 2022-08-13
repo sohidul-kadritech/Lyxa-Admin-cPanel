@@ -439,9 +439,6 @@ export const customerServiceMenuItem = [
   },
 ];
 
-const admin =
-  localStorage.getItem("admin") && JSON.parse(localStorage.getItem("admin"));
-
 export const sellerMenuItem = [
   {
     id: 1,
@@ -491,7 +488,7 @@ export const sellerMenuItem = [
         id: 41,
         name: "Shops TRX",
         icon: "fas fa-exchange-alt",
-        link: `/app-wallet/seller/shops-transactions/${admin?._id}`,
+        link: `/app-wallet/seller/shops-transactions`,
         isSubmenu: false,
       },
     ],
@@ -593,7 +590,7 @@ export const shopMenuItem = [
         id: 41,
         name: "Shop TRX",
         icon: "fas fa-exchange-alt",
-        link: `/add-wallet/shop-transactions/${admin?._id}`,
+        link: `/add-wallet/shop-transactions`,
         isSubmenu: false,
       },
     ],

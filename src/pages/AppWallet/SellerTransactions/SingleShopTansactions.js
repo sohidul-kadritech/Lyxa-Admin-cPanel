@@ -36,33 +36,42 @@ const SingleShopTransactions = () => {
     hasPreviousPage,
   } = useSelector((state) => state.appWalletReducer);
 
-  const [shop, setShop] = useState("");
+  const [shopName, setShopName] = useState("");
 
-  const { shopName } = JSON.parse(localStorage.getItem("admin"));
-
-  useEffect(() => {
-    if (searchParams.get("seller")) {
-      setShop(searchParams.get("seller"));
-    } else {
-      setShop(shopName);
-    }
-  }, [searchParams]);
+  const { shopName: name, _id: accountId } = JSON.parse(
+    localStorage.getItem("admin")
+  );
 
   useEffect(() => {
-    if (id) {
-      if (shopTrxs.length < 1) {
-        dispatch(getShopTrxs(true, id));
-      }
-    } else {
+    searchParams.get("shopName")
+      ? setShopName(searchParams.get("shopName"))
+      : setShopName(name);
+
+    let id = null;
+    searchParams.get("shopId")
+      ? (id = searchParams.get("shopId"))
+      : (id = accountId);
+
+    dispatch(getShopTrxs(true, id));
+
+    if (!id) {
       history.push("/", { replace: true });
     }
-  }, [id]);
+  }, []);
+
+  // useEffect(() => {
+  //   if (id) {
+  //     dispatch(getShopTrxs(true, id));
+  //   } else {
+  //     history.push("/", { replace: true });
+  //   }
+  // }, [id]);
 
   const summary = [
-    { title: "Drop Earning", value: 120 },
-    { title: "Shop Earning", value: 120 },
-    { title: "Unsetlled Amount", value: 100 },
-    { title: "Total Profit", value: 100 },
+    { title: "Drop Earning", value: 0 },
+    { title: "Shop Earning", value: 0 },
+    { title: "Unsetlled Amount", value: 0 },
+    { title: "Total Profit", value: 0 },
   ];
 
   return (
@@ -72,7 +81,7 @@ const SingleShopTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={shop}
+              breadcrumbItem={shopName}
               title="App Wallet"
               isRefresh={false}
             />
@@ -124,13 +133,13 @@ const SingleShopTransactions = () => {
                       //   history.push("/add-wallet/shop-transactions/1")
                       // }
                     >
-                      <Th>1</Th>
+                      <Th></Th>
 
-                      <Td>20</Td>
-                      <Td>20</Td>
-                      <Td>Make Payment</Td>
-                      <Td>10/10/10</Td>
-                      <Td>Shuvo</Td>
+                      <Td></Td>
+                      <Td></Td>
+                      <Td></Td>
+                      <Td></Td>
+                      <Td></Td>
                     </Tr>
                   </Tbody>
                 </Table>
