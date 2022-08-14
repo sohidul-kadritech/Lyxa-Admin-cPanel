@@ -16,15 +16,18 @@ import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDeliveryTrx,
+  updateDeliverySearchKey,
+  updateDeliverySortByKey,
   updateDeliveryTrxEndDate,
   updateDeliveryTrxStartDate,
 } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
-import { Tooltip } from "@mui/material";
 import { useHistory } from "react-router-dom";
+import Select from "react-select";
+import { sortByOptions } from "../../../assets/staticData";
+import Search from "./../../../components/Search";
 
 const DeliveryTransactions = () => {
-  const history = useHistory();
   const {
     loading,
     deliveryTrxs,
@@ -34,15 +37,18 @@ const DeliveryTransactions = () => {
     hasNextPage,
     currentPage,
     hasPreviousPage,
+    deliverySortByKey,
+    deliverySearchKey,
   } = useSelector((state) => state.appWalletReducer);
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
-    if (deliveryTrxStartDate || deliveryTrxEndDate) {
+    if (deliverySortByKey || deliverySearchKey) {
       callTransList(true);
     }
-  }, [deliveryTrxStartDate, deliveryTrxEndDate]);
+  }, [deliverySortByKey, deliverySearchKey]);
 
   const callTransList = (refresh = false) => {
     dispatch(getDeliveryTrx(refresh));
@@ -65,46 +71,19 @@ const DeliveryTransactions = () => {
               <CardBody>
                 <Row>
                   <Col lg={4}>
-                    <div className=" w-100">
-                      <label>Start Date</label>
-                      <div className="form-group mb-0 w-100">
-                        <Flatpickr
-                          className="form-control d-block"
-                          id="startDate"
-                          placeholder="Start Date"
-                          value={deliveryTrxStartDate}
-                          onChange={(selectedDates, dateStr, instance) =>
-                            dispatch(updateDeliveryTrxStartDate(dateStr))
-                          }
-                          options={{
-                            altInput: true,
-                            altFormat: "F j, Y",
-                            dateFormat: "Y-m-d",
-                          }}
-                        />
-                      </div>
+                    <div className="mb-4">
+                      <label className="control-label">Sort By</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sortByOptions}
+                        classNamePrefix="select2-selection"
+                        value={deliverySortByKey}
+                        onChange={(e) => dispatch(updateDeliverySortByKey(e))}
+                      />
                     </div>
                   </Col>
-                  <Col lg={4}>
-                    <div className=" mt-3 mt-lg-0 w-100">
-                      <label>End Date</label>
-                      <div className="form-group mb-0">
-                        <Flatpickr
-                          className="form-control w-100"
-                          id="endDate"
-                          placeholder="Select End Date"
-                          value={deliveryTrxEndDate}
-                          onChange={(selectedDates, dateStr, instance) =>
-                            dispatch(updateDeliveryTrxEndDate(dateStr))
-                          }
-                          options={{
-                            altInput: true,
-                            altFormat: "F j, Y",
-                            dateFormat: "Y-m-d",
-                          }}
-                        />
-                      </div>
-                    </div>
+                  <Col lg={8}>
+                    <Search dispatchFunc={updateDeliverySearchKey} />
                   </Col>
                 </Row>
               </CardBody>
@@ -136,28 +115,32 @@ const DeliveryTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    <Tr
-                      // key={index}
-                      className="align-middle cursor-pointer"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "500",
-                      }}
-                      onClick={() =>
-                        history.push(
-                          history.push("/add-wallet/delivery-transactions/1")
-                        )
-                      }
-                    >
-                      <Th>Shuvo</Th>
+                    {deliveryTrxs.length > 0 &&
+                      deliveryTrxs.map((item, index) => (
+                        <Tr
+                          key={index}
+                          className="align-middle cursor-pointer"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                          onClick={() =>
+                            history.push(
+                              `/add-wallet/single-delivery-transactions/${item._id}`
+                            )
+                          }
+                        >
+                          <Th>{item?.name}</Th>
 
-                      <Td>10</Td>
-                      <Td>500</Td>
-                      <Td>200</Td>
-                      <Td>200</Td>
-                      <Td>200</Td>
-                      <Td>200</Td>
-                    </Tr>
+                          <Td>{item?.totalOrder}</Td>
+                          <Td>0</Td>
+                          <Td>0</Td>
+                          <Td>0</Td>
+                          <Td>0</Td>
+                          <Td>0</Td>
+                          <Td>0</Td>
+                        </Tr>
+                      ))}
                   </Tbody>
                 </Table>
                 {/* {loading && (

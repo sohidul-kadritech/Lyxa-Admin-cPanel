@@ -145,6 +145,8 @@ const DropPayList = () => {
               </CardBody>
             </Card>
 
+            {/* TABLE */}
+
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between">
@@ -158,17 +160,7 @@ const DropPayList = () => {
                     Add/Remove Credit
                   </Button>
                 </div>
-              </CardBody>
-            </Card>
-
-            {/* TABLE */}
-
-            <Card>
-              <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4">List</CardTitle>
+                <hr />
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"

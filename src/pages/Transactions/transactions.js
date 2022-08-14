@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Tooltip } from "@mui/material";
@@ -10,10 +10,44 @@ import {
   Col,
   Container,
   Row,
+  Spinner,
 } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
+import Select from "react-select";
+import { accountsOptions, sortByOptions } from "../../assets/staticData";
+import Search from "../../components/Search";
+import {
+  getAllTransctions,
+  updateAllTrxAccountType,
+  updateAllTrxSearchKey,
+  updateAllTrxSortByKey,
+} from "../../store/appWallet/appWalletAction";
+import { useDispatch, useSelector } from "react-redux";
 
 const Transactions = () => {
+  const dispatch = useDispatch();
+  const {
+    loading,
+    allTrxs,
+    paging,
+    hasNextPage,
+    currentPage,
+    hasPreviousPage,
+    trxSortByKey,
+    trxSearchKey,
+    trxAccountType,
+  } = useSelector((state) => state.appWalletReducer);
+
+  useEffect(() => {
+    if (trxSortByKey || trxSearchKey || trxAccountType) {
+      callTransList(true);
+    }
+  }, [trxSortByKey, trxSearchKey, trxAccountType]);
+
+  const callTransList = (refresh = false) => {
+    dispatch(getAllTransctions(refresh));
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -22,8 +56,44 @@ const Transactions = () => {
             <Breadcrumb
               maintitle="Drop"
               breadcrumbItem="Transactions"
-              isRefresh={false}
+              loading={loading}
+              callList={callTransList}
             />
+
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col lg={3}>
+                    <div className="mb-4">
+                      <label className="control-label">Sort By</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sortByOptions}
+                        classNamePrefix="select2-selection"
+                        value={trxSortByKey}
+                        onChange={(e) => dispatch(updateAllTrxSortByKey(e))}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    <Search dispatchFunc={updateAllTrxSearchKey} />
+                  </Col>
+                  <Col lg={3}>
+                    <div className="mb-4">
+                      <label className="control-label">Account Type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={accountsOptions}
+                        classNamePrefix="select2-selection"
+                        value={trxAccountType}
+                        onChange={(e) => dispatch(updateAllTrxAccountType(e))}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+
             <Card>
               <CardBody>
                 <Row className="mb-3">
@@ -45,7 +115,7 @@ const Transactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {/* {deliveryTrxs.map((item, index) => {
+                    {allTrxs?.map((item, index) => {
                       return (
                         <Tr
                           key={index}
@@ -55,45 +125,30 @@ const Transactions = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>{item?.deliveryBoy?.name}</Th>
+                          <Th>{item?._id}</Th>
 
                           <Td>{item?.amount}</Td>
-                          <Td>{item?.paymentMethod}</Td>
-                          <Td style={{ maxWidth: "150px" }}>
-                            {item?.adminNote}
-                          </Td>
-                          <Td style={{ maxWidth: "150px" }}>
-                            {item?.userNote}
-                          </Td>
+
+                          <Td>{item?.type}</Td>
+                          <Td>{item?.paymentType}</Td>
                           <Td>
-                            <Tooltip title="Details">
-                              <button
-                                className="btn btn-info button"
-                                onClick={() =>
-                                  history.push(
-                                    `/add-wallet/delivery-transactions/details/${item._id}`
-                                  )
-                                }
-                              >
-                                <i className="fa fa-eye" />
-                              </button>
-                            </Tooltip>
+                            {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
                         </Tr>
                       );
-                    })} */}
+                    })}
                   </Tbody>
                 </Table>
-                {/* {loading && (
+                {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && deliveryTrxs.length < 1 && (
+                {!loading && allTrxs.length < 1 && (
                   <div className="text-center">
-                    <h4>No Order!</h4>
+                    <h4>No Transactions!</h4>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
             {/* <Row>

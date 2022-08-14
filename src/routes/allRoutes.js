@@ -260,7 +260,7 @@ const userRoutes = [
     component: DeliveryTransactions,
   },
   {
-    path: "/add-wallet/delivery-transactions",
+    path: "/add-wallet/single-delivery-transactions/:id",
     component: SingleDeliveryTransactions,
   },
   { path: "/add-wallet/payments-history", component: PaymentHistory },

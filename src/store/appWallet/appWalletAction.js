@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { successMsg } from "../../helpers/successMsg";
 import {
+  ALL_TRX,
   DELIVERY_TRX,
   DROP_TRX,
   GET_DELIVERY_FEE,
@@ -186,7 +187,7 @@ export const updateDeliveryTrxEndDate = (date) => (dispatch) => {
 export const getDeliveryTrx =
   (refresh = false, page) =>
   async (dispatch, getState) => {
-    const { deliveryTrxEndDate, deliveryTrxStartDate, deliveryTrxs } =
+    const { deliverySortByKey, deliverySearchKey, deliveryTrxs } =
       getState().appWalletReducer;
 
     if (deliveryTrxs.length < 1 || refresh) {
@@ -199,8 +200,8 @@ export const getDeliveryTrx =
           params: {
             page,
             pageSize: 50,
-            startDate: deliveryTrxStartDate,
-            endDate: deliveryTrxEndDate,
+            sortBy: deliverySortByKey.value,
+            searchKey: deliverySearchKey,
           },
         });
 
@@ -288,3 +289,88 @@ export const getDropTrx =
       }
     }
   };
+
+// DELIVERY BOY SORT BY KEY
+
+export const updateDeliverySortByKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_DELIVERY_SORT_BY_KEY,
+    payload: value,
+  });
+};
+
+export const updateDeliverySearchKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_DELIVERY_SEARCH_KEY,
+    payload: value,
+  });
+};
+
+// GET USER/DELIVERY/SELLER/SHOP/ADMIN TRX
+
+export const getAllTransctions =
+  (refresh = false, page) =>
+  async (dispatch, getState) => {
+    const { trxSortByKey, trxSearchKey, trxAccountType, allTrxs } =
+      getState().appWalletReducer;
+
+    if (allTrxs.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionTypes.GET_ALL_TRX_REQUEST_SEND,
+        });
+
+        const { data } = await requestApi().request(ALL_TRX, {
+          params: {
+            page,
+            pageSize: 50,
+            sortBy: trxSortByKey.value,
+            searchKey: trxSearchKey,
+            account: trxAccountType.value,
+          },
+        });
+
+        console.log(data);
+
+        if (data.status) {
+          dispatch({
+            type: actionTypes.GET_ALL_TRX_REQUEST_SUCCESS,
+            payload: data.data,
+          });
+        } else {
+          dispatch({
+            type: actionTypes.GET_ALL_TRX_REQUEST_FAIL,
+            payload: data.error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionTypes.GET_ALL_TRX_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    }
+  };
+
+// ALL TRANSACTIONS FILTER KEY
+
+export const updateAllTrxSortByKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_TRX_SORT_BY,
+    payload: value,
+  });
+};
+
+export const updateAllTrxSearchKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_TRX_SEARCH_KEY,
+    payload: value,
+  });
+};
+
+export const updateAllTrxAccountType = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_TRX_ACCOUNT_TYPE,
+    payload: value,
+  });
+};

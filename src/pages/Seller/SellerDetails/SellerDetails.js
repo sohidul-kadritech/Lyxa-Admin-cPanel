@@ -52,25 +52,24 @@ const SellerDetails = () => {
       if (findSeller) {
         setSeller(findSeller);
       } else {
-        callApi();
+        callApi(id);
       }
     }
   }, [id]);
 
   // CALL API
 
-  const callApi = async (id) => {
-    console.log(id);
+  const callApi = async (sellerId) => {
     try {
       const { data } = await requestApi().request(SINGLE_SELLER, {
         params: {
-          id,
+          id: sellerId,
         },
       });
 
       if (data.status) {
-        console.log(data);
-        // setSeller(seller);
+        const { seller } = data.data;
+        setSeller(seller);
       } else {
         history.push("/seller/list", { replace: true });
       }
@@ -293,7 +292,7 @@ const SellerDetails = () => {
         centered={true}
       >
         <div className="modal-header">
-          <h5 className="modal-title mt-0">Tracking Delivery Boy</h5>
+          <h5 className="modal-title mt-0">Update Drop Charge</h5>
           <button
             type="button"
             onClick={() => {

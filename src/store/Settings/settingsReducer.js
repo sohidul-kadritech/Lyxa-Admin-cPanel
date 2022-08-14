@@ -13,6 +13,12 @@ const initialState = {
   typeKey: "all",
   activeStatus: "all",
   maxDiscount: 0,
+  sellersDropCharge: [],
+  paginate: null,
+  paging: [],
+  hasNextPage: true,
+  currentPage: 1,
+  hasPreviousPage: false,
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -282,6 +288,38 @@ const settingsReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
+      };
+
+    // GET SELLERS DROP CHARGE
+
+    case actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        sellersDropCharge: payload.sellers,
+        error: null,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: false,
+      };
+
+    case actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        status: false,
+        loading: false,
       };
 
     default:

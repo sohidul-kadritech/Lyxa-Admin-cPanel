@@ -66,7 +66,7 @@ const DealsAdd = () => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
-        console.log({ findDeal });
+        // console.log({ findDeal });
         updateData(findDeal);
       } else {
         callApi(id);
@@ -217,6 +217,7 @@ const DealsAdd = () => {
         setPercentage("");
         setImage(null);
         setRequiredImage(false);
+        setTag("");
         window.scroll(0, 0);
       }
     }

@@ -7,20 +7,26 @@ const init = {
   status: false,
   sellersTrxs: [],
   sellerTrxs: [],
-  shopTrxs: [],
-  sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
-  sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  shopTrxs: {},
+  // sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  // sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  deliveryTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
-  deliveryTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  // deliveryTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  // deliveryTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   deliveryTrxs: [],
   dropTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
   dropTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   dropTrxs: [],
+  deliverySortByKey: { label: "Desc", value: "desc" },
+  deliverySearchKey: "",
+  trxSortByKey: { label: "Desc", value: "desc" },
+  trxSearchKey: "",
+  trxAccountType: { label: "All", value: "all" },
+  allTrxs: [],
 };
 
 const appWalletReducer = (state = init, action) => {
@@ -103,7 +109,7 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        shopTrxs: payload.transections,
+        shopTrxs: { trxs: payload.transections, shop: payload.shop },
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
@@ -143,7 +149,7 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        deliveryTrxs: payload.transactionList,
+        deliveryTrxs: payload.deliveryBoy,
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
@@ -193,6 +199,62 @@ const appWalletReducer = (state = init, action) => {
       };
 
     case actionTypes.GET_DROP_TRX_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionTypes.UPDATE_DELIVERY_SORT_BY_KEY:
+      return {
+        ...state,
+        deliverySortByKey: payload,
+      };
+
+    case actionTypes.UPDATE_DELIVERY_SEARCH_KEY:
+      return {
+        ...state,
+        deliverySearchKey: payload,
+      };
+
+    case actionTypes.UPDATE_TRX_SORT_BY:
+      return {
+        ...state,
+        trxSortByKey: payload,
+      };
+
+    case actionTypes.UPDATE_TRX_SEARCH_KEY:
+      return {
+        ...state,
+        trxSearchKey: payload,
+      };
+
+    case actionTypes.UPDATE_TRX_ACCOUNT_TYPE:
+      return {
+        ...state,
+        trxAccountType: payload,
+      };
+
+    case actionTypes.GET_ALL_TRX_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.GET_ALL_TRX_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        allTrxs: payload.transections,
+        Paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: true,
+      };
+
+    case actionTypes.GET_ALL_TRX_REQUEST_FAIL:
       return {
         ...state,
         error: payload,

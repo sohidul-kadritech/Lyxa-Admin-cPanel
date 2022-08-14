@@ -87,6 +87,15 @@ export const sellerSubTypeOptions = [
   { label: "Supermarkets ", value: "supermarkets " },
 ];
 
+export const accountsOptions = [
+  { label: "All", value: "all" },
+  { label: "Admin", value: "admin" },
+  { label: "User", value: "user" },
+  { label: "Delivery Boy", value: "deliveryBoy" },
+  { label: "Seller", value: "seller" },
+  { label: "Shop", value: "shop" },
+];
+
 export const productVisibility = [
   { label: "Visiable", value: true },
   { label: "Invisiable", value: false },

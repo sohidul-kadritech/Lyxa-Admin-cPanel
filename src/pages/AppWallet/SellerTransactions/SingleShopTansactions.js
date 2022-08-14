@@ -37,6 +37,7 @@ const SingleShopTransactions = () => {
   } = useSelector((state) => state.appWalletReducer);
 
   const [shopName, setShopName] = useState("");
+  // const [summary, setSummary] = useState([]);
 
   const { shopName: name, _id: accountId } = JSON.parse(
     localStorage.getItem("admin")
@@ -60,18 +61,17 @@ const SingleShopTransactions = () => {
   }, []);
 
   // useEffect(() => {
-  //   if (id) {
-  //     dispatch(getShopTrxs(true, id));
-  //   } else {
-  //     history.push("/", { replace: true });
+  //   const summary = {
+  //     drop
   //   }
-  // }, [id]);
+  // },[shopTrxs])
 
   const summary = [
-    { title: "Drop Earning", value: 0 },
-    { title: "Shop Earning", value: 0 },
-    { title: "Unsetlled Amount", value: 0 },
-    { title: "Total Profit", value: 0 },
+    { title: "Drop Earning", value: 120 },
+    { title: "Rider Earning", value: 120 },
+    { title: "Unsetlled Amount", value: 100 },
+    { title: "Total Profit", value: 100 },
+    { title: "Cash In Hand", value: 100 },
   ];
 
   return (

@@ -5,6 +5,7 @@ import {
   ALL_ORDER_CANCEL_REASON,
   APP_SETTINGS,
   GET_DELIVERY_FEE,
+  GET_SPECIAL_DROP_CHARGE,
   SET_DELIVERY_FEE,
   UPDATE_ADMINS_SETTINGS,
   UPDATE_APP_SETTINGS,
@@ -453,4 +454,37 @@ export const updateReasonStatusKey = (status) => (dispatch) => {
     type: actionType.UPDATE_REASON_STATUS_KEY,
     payload: status,
   });
+};
+
+//GET  SELLERS WHO HAS SPECIAL DROP CHARGE
+
+export const getSellerSpecialDropCharge = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, data },
+    } = await requestApi().request(GET_SPECIAL_DROP_CHARGE);
+
+    console.log({ data });
+
+    if (status) {
+      dispatch({
+        type: actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_SUCCESS,
+        payload: data,
+      });
+    } else {
+      dispatch({
+        type: actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_FAIL,
+        payload: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
 };

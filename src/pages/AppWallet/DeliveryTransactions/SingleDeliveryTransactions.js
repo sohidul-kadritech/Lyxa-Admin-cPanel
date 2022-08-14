@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   Col,
   Container,
   Row,
+  Spinner,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -16,10 +17,14 @@ import Info from "../../../components/Info";
 import TransactionsCard from "../../../components/TransactionsCard";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Tooltip } from "@mui/material";
+import requestApi from "../../../network/httpRequest";
+import { DELIVERY_TRX, SINGLE_DELIVERY_TRX } from "../../../network/Api";
+import AppPagination from "../../../components/AppPagination";
 
 const SingleDeliveryTransactions = () => {
   const { id } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const { loading, deliveryTrxs } = useSelector(
     (state) => state.appWalletReducer
@@ -29,13 +34,7 @@ const SingleDeliveryTransactions = () => {
 
   useEffect(() => {
     if (id) {
-      const findTrx = deliveryTrxs.find((item) => item._id == id);
-      if (findTrx) {
-        console.log(findTrx);
-        setTrx(findTrx);
-      } else {
-        console.log("call api-------");
-      }
+      callApi(id);
     } else {
       history.push("/add-wallet/delivery-transactions", { replace: true });
     }
@@ -49,6 +48,27 @@ const SingleDeliveryTransactions = () => {
     { title: "Cash In Hand", value: 100 },
   ];
 
+  const callApi = async (deiveryId, page = 1) => {
+    try {
+      const { data } = await requestApi().request(SINGLE_DELIVERY_TRX, {
+        params: {
+          deliveryBoyId: deiveryId,
+          page,
+          pageSize: 50,
+        },
+      });
+
+      if (data.status) {
+        setTrx(data.data);
+        console.log({ data });
+      } else {
+        history.push("/add-wallet/delivery-transactions", { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -56,7 +76,7 @@ const SingleDeliveryTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem="Delivery Boy Name"
+              breadcrumbItem={trx?.delivery?.name}
               title="App Wallet"
               isRefresh={false}
             />
@@ -70,7 +90,7 @@ const SingleDeliveryTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <div class="d-flex justify-content-between pb-3">
+                <div className="d-flex justify-content-between pb-3">
                   <CardTitle className="h4"> Shop Transactions List</CardTitle>
                   <div>
                     <Button className="btn btn-success">
@@ -120,31 +140,31 @@ const SingleDeliveryTransactions = () => {
                     </Tr>
                   </Tbody>
                 </Table>
-                {/* {loading && (
+                {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && deliveryTrxs.length < 1 && (
+                {!loading && trx?.transactions?.length < 1 && (
                   <div className="text-center">
-                    <h4>No Order!</h4>
+                    <h4>No Transactions!</h4>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
-            {/* <Row>
+            <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(getDeliveryTrx(true, page))}
+                    paging={trx?.paginate?.metadata?.paging}
+                    hasNextPage={trx?.paginate?.metadata?.hasNextPage}
+                    hasPreviousPage={trx?.paginate?.metadata?.hasPreviousPage}
+                    currentPage={trx?.paginate?.metadata?.currentPage}
+                    lisener={(page) => callApi(id, page)}
                   />
                 </div>
               </Col>
-            </Row> */}
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

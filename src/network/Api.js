@@ -134,6 +134,9 @@ export const GET_DELIVERY_FEE = ADMIN_ENDPOINT + "/drop-charge";
 export const UPDATE_DELIVERY_CUT =
   ADMIN_ENDPOINT + "/drop-charge/add-global-delivery-cut";
 
+export const GET_SPECIAL_DROP_CHARGE =
+  ADMIN_ENDPOINT + "/drop-charge/get-related-seller";
+
 // DEAL
 
 export const ADD_DEAL = ADMIN_ENDPOINT + "/deal/add";
@@ -155,8 +158,12 @@ export const REMOVE_USER_BALANCE = ADMIN_ENDPOINT + "/user/withdraw-balance";
 export const SELLERS_TRX = ADMIN_ENDPOINT + "/drop-wallet/sellers";
 export const SELLER_TRX = ADMIN_ENDPOINT + "/drop-wallet/seller/shops";
 export const SHOP_TRX = ADMIN_ENDPOINT + "/drop-wallet/seller/shops-details";
-export const DELIVERY_TRX = ADMIN_ENDPOINT + "/wallet/delivery-boy";
+export const DELIVERY_TRX =
+  ADMIN_ENDPOINT + "/drop-wallet/delivery-boy-transection";
+export const SINGLE_DELIVERY_TRX =
+  ADMIN_ENDPOINT + "/drop-wallet/single-delivery-boy-info";
 export const DROP_TRX = ADMIN_ENDPOINT + "/wallet/admin";
+export const ALL_TRX = ADMIN_ENDPOINT + "/drop-wallet/transection";
 
 // ORDERS
 

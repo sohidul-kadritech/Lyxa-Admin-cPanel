@@ -67,7 +67,7 @@ const SellerTransactions = () => {
               callList={callTransList}
             />
 
-            <Card>
+            {/* <Card>
               <CardBody>
                 <Row>
                   <Col lg={4}>
@@ -114,7 +114,7 @@ const SellerTransactions = () => {
                   </Col>
                 </Row>
               </CardBody>
-            </Card>
+            </Card> */}
 
             <Card>
               <CardBody>
@@ -156,9 +156,9 @@ const SellerTransactions = () => {
                           <Td>{trx?.totalOrder}</Td>
                           <Td>{trx?.orderValue?.productAmount.toFixed(2)}</Td>
                           <Td>{trx?.orderValue?.deliveryFee}</Td>
-                          <Td>{trx?.earning?.dropGet}</Td>
-                          <Td>{trx?.earning?.unSettleAmount}</Td>
-                          <Td>{trx?.earning?.settleAmount}</Td>
+                          <Td>{trx?.earning?.dropGet ?? 0}</Td>
+                          <Td>{trx?.earning?.unSettleAmount ?? 0}</Td>
+                          <Td>{trx?.earning?.settleAmount ?? 0}</Td>
                         </Tr>
                       ))}
                   </Tbody>

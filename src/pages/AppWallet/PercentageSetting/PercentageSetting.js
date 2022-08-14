@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { Table, Th, Thead, Tr } from "react-super-responsive-table";
+
 import { toast } from "react-toastify";
 import {
   Button,
@@ -30,8 +30,10 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import { successMsg } from "../../../helpers/successMsg";
 import {
   getPercentageSetting,
+  getSellerSpecialDropCharge,
   updateDeliveryCut,
 } from "../../../store/Settings/settingsAction";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 const PercentageSetting = () => {
   const dispatch = useDispatch();
@@ -39,11 +41,12 @@ const PercentageSetting = () => {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { loading, dropCharge, status } = useSelector(
+  const { loading, dropCharge, status, sellersDropCharge } = useSelector(
     (state) => state.settingsReducer
   );
 
   const [deliveryCut, setDeliveryCut] = useState([]);
+  const [isOpenSuggestion, setIsOpenSuggestion] = useState(false);
 
   const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
     from: 0,
@@ -52,11 +55,15 @@ const PercentageSetting = () => {
     deliveryPersonCut: 0,
   });
 
-  const [modalOpen, setModalOpen] = useState(false);
-
   useEffect(() => {
     dispatch(getPercentageSetting());
   }, []);
+
+  useEffect(() => {
+    if (isOpenSuggestion) {
+      dispatch(getSellerSpecialDropCharge());
+    }
+  }, [isOpenSuggestion]);
 
   useEffect(() => {
     if (dropCharge) {
@@ -114,7 +121,7 @@ const PercentageSetting = () => {
     }
 
     setDeliveryCut([...deliveryCut, rangeWiseDeliveryCharge]);
-    setModalOpen(false);
+
     setRangeWiseDeliveryCharge({
       from: 0,
       to: 0,
@@ -139,7 +146,7 @@ const PercentageSetting = () => {
 
   useEffect(() => {
     if (status) {
-      setModalOpen(false);
+      // setModalOpen(false);
     }
   }, [status]);
 
@@ -157,11 +164,26 @@ const PercentageSetting = () => {
               isRefresh={false}
             />
 
-            <DropCharge
-              chargeType={dropCharge?.dropPercentageType}
-              chargeValue={dropCharge?.dropPercentage}
-              type="global"
-            />
+            <Card>
+              <CardBody>
+                <div className="d-flex justify-content-between align-items-center">
+                  <CardTitle>Global Drop Charge</CardTitle>
+                  <Button
+                    outline={true}
+                    color="success"
+                    onClick={() => setIsOpenSuggestion(!isOpenSuggestion)}
+                  >
+                    See Sellers Special Charge
+                  </Button>
+                </div>
+                <hr />
+                <DropCharge
+                  chargeType={dropCharge?.dropPercentageType}
+                  chargeValue={dropCharge?.dropPercentage}
+                  type="global"
+                />
+              </CardBody>
+            </Card>
 
             <Card>
               <CardBody>
@@ -302,21 +324,19 @@ const PercentageSetting = () => {
           </Container>
         </div>
 
-        {/* ADD RANGE WISE DELIVERY CHARGE MODAL */}
-
         <Modal
-          isOpen={modalOpen}
+          isOpen={isOpenSuggestion}
           toggle={() => {
-            setModalOpen(!modalOpen);
+            setIsOpenSuggestion(!isOpenSuggestion);
           }}
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">Add Delivery Charge</h5>
+            <h5 className="modal-title mt-0">Update Drop Charge</h5>
             <button
               type="button"
               onClick={() => {
-                setModalOpen(false);
+                setIsOpenSuggestion(false);
               }}
               className="close"
               data-dismiss="modal"
@@ -325,7 +345,43 @@ const PercentageSetting = () => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div className="modal-body"></div>
+
+          <div className="modal-body">
+            {/* <Table
+                  id="tech-companies-1"
+                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                >
+                  <Thead>
+                    <Tr>
+                      <Th>Seller</Th>
+                      <Th>Charge Type</Th>
+                      <Th>Charge</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody style={{ position: "relative" }}>
+                    {sellersDropCharge.map((seller, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          className="align-middle"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Th>
+                            <div style={{ maxWidth: "120px" }}>
+                              <span>{seller?.company_name}</span>
+                            </div>
+                          </Th>
+                          <Td>{seller?.dropChargeType}</Td>
+                          <Td>{item?.email}</Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table> */}
+          </div>
         </Modal>
       </GlobalWrapper>
     </React.Fragment>
