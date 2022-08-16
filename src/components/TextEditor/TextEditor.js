@@ -20,18 +20,17 @@ import {
   ContentState,
   EditorState,
 } from "draft-js";
-import { addPolicy } from "./../../store/Policy/policyAction";
+
 import { useDispatch, useSelector } from "react-redux";
 import { convertToHTML } from "draft-convert";
 import htmlToDraft from "html-to-draftjs";
 import requestApi from "../../network/httpRequest";
-import { GET_SINGLE_POLICY } from "../../network/Api";
 
 const TextEditor = ({ title, type }) => {
   // console.log("content-----", content);
   const dispatch = useDispatch();
 
-  const { loading, policy } = useSelector((state) => state.policyReducer);
+  // const { loading, policy } = useSelector((state) => state.policyReducer);
 
   const [editorState, setEditorState] = useState(() => {
     EditorState.createEmpty();
@@ -40,38 +39,38 @@ const TextEditor = ({ title, type }) => {
   const [description, setDescription] = useState("");
 
   useState(() => {
-    const callApi = async () => {
-      try {
-        // console.log("call api--------", type);
-        const { data } = await requestApi().request(GET_SINGLE_POLICY, {
-          params: {
-            type: type,
-          },
-        });
-        if (data.message) {
-          const value = data.data.policies[type];
+    // const callApi = async () => {
+    //   try {
+    //     // console.log("call api--------", type);
+    //     const { data } = await requestApi().request(GET_SINGLE_POLICY, {
+    //       params: {
+    //         type: type,
+    //       },
+    //     });
+    //     if (data.message) {
+    //       const value = data.data.policies[type];
 
-          if (value != null) {
-            const contentBlock = htmlToDraft(value);
-            if (contentBlock) {
-              const contentState = ContentState.createFromBlockArray(
-                contentBlock.contentBlocks
-              );
-              const outputEditorState =
-                EditorState.createWithContent(contentState);
-              setEditorState(outputEditorState);
-            }
-          } else {
-            setEditorState(EditorState.createEmpty());
-          }
-        } else {
-          console.log(data.error);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    callApi();
+    //       if (value != null) {
+    //         const contentBlock = htmlToDraft(value);
+    //         if (contentBlock) {
+    //           const contentState = ContentState.createFromBlockArray(
+    //             contentBlock.contentBlocks
+    //           );
+    //           const outputEditorState =
+    //             EditorState.createWithContent(contentState);
+    //           setEditorState(outputEditorState);
+    //         }
+    //       } else {
+    //         setEditorState(EditorState.createEmpty());
+    //       }
+    //     } else {
+    //       console.log(data.error);
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    // callApi();
     return () => {
       setEditorState(EditorState.createEmpty()); // This worked for me
     };
@@ -90,8 +89,6 @@ const TextEditor = ({ title, type }) => {
       type: type,
       value: description,
     };
-
-    dispatch(addPolicy(data));
   };
   return (
     <React.Fragment>
@@ -103,6 +100,7 @@ const TextEditor = ({ title, type }) => {
                 <Card>
                   <CardBody>
                     <CardTitle className="h4">{title}</CardTitle>
+                    <hr />
                     <Form method="post">
                       <Editor
                         onEditorStateChange={updateDescription}
@@ -120,7 +118,7 @@ const TextEditor = ({ title, type }) => {
                         onClick={handleSubmit}
                         className="btn btn-md px-5"
                       >
-                        {loading ? (
+                        {/* {loading ? (
                           <Spinner
                             animation="border"
                             variant="info"
@@ -128,7 +126,8 @@ const TextEditor = ({ title, type }) => {
                           />
                         ) : (
                           "Submit"
-                        )}
+                        )} */}
+                        Update
                       </Button>
                     </div>
                   </CardBody>

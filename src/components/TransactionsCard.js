@@ -3,7 +3,7 @@ import React from "react";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import styled from "styled-components";
 
-const TransactionsCard = ({ summary }) => {
+const TransactionsCard = ({ summary = [] }) => {
   return (
     <CardWrapper>
       {summary.map((item, index) => (

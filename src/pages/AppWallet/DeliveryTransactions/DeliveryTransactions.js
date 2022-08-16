@@ -89,7 +89,7 @@ const DeliveryTransactions = () => {
               </CardBody>
             </Card>
 
-            <Card>
+            <Card className="table-data-hover">
               <CardBody>
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
@@ -105,8 +105,8 @@ const DeliveryTransactions = () => {
                   <Thead>
                     <Tr>
                       <Th>Name</Th>
-                      <Th>Total Orders</Th>
-                      <Th>Total delivery fee</Th>
+                      <Th>Orders</Th>
+                      <Th>Delivery fee</Th>
                       <Th>Drop earning</Th>
                       <Th>Unsettled amount</Th>
                       <Th>Delivery earning</Th>
@@ -130,29 +130,37 @@ const DeliveryTransactions = () => {
                             )
                           }
                         >
-                          <Th>{item?.name}</Th>
+                          <Th title="Click to see details">{item?.name}</Th>
 
                           <Td>{item?.totalOrder}</Td>
+                          <Td>
+                            {Number.isNaN(
+                              parseInt(item?.earning?.dropGet) +
+                                parseInt(item?.orderValue?.deliveryFee)
+                            )
+                              ? 0
+                              : parseInt(item?.earning?.dropGet) +
+                                parseInt(item?.orderValue?.deliveryFee)}
+                          </Td>
+                          <Td>{item?.earning?.dropGet ?? 0}</Td>
+                          <Td>{item?.earning?.unSettleAmount ?? 0}</Td>
+                          <Td>{item?.orderValue?.deliveryFee ?? 0}</Td>
                           <Td>0</Td>
-                          <Td>0</Td>
-                          <Td>0</Td>
-                          <Td>0</Td>
-                          <Td>0</Td>
-                          <Td>0</Td>
+                          <Td>{item?.earning?.settleAmount ?? 0}</Td>
                         </Tr>
                       ))}
                   </Tbody>
                 </Table>
-                {/* {loading && (
+                {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
                 {!loading && deliveryTrxs.length < 1 && (
                   <div className="text-center">
-                    <h4>No Order!</h4>
+                    <h4>No Transactions!</h4>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
             <Row>

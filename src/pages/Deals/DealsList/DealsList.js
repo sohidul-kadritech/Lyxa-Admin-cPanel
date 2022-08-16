@@ -40,6 +40,7 @@ const DealsList = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
+  const [dealId, setDealId] = useState("");
 
   useEffect(() => {
     if (type) {
@@ -53,8 +54,9 @@ const DealsList = () => {
 
   // DELETE DEAL
 
-  const handleDelete = (id) => {
-    dispatch(deleteDeal({ id }));
+  const handleDelete = () => {
+    console.log({ dealId });
+    dispatch(deleteDeal(dealId));
   };
 
   return (
@@ -189,6 +191,7 @@ const DealsList = () => {
                                   className="btn btn-danger button"
                                   onClick={() => {
                                     setconfirm_alert(true);
+                                    setDealId(item?._id);
                                   }}
                                 >
                                   <i className="fa fa-trash" />
@@ -203,7 +206,7 @@ const DealsList = () => {
                                   confirmBtnBsStyle="success"
                                   cancelBtnBsStyle="danger"
                                   onConfirm={() => {
-                                    handleDelete(item._id);
+                                    handleDelete();
                                     setconfirm_alert(false);
                                     setsuccess_dlg(true);
                                     setdynamic_title("Deleted");

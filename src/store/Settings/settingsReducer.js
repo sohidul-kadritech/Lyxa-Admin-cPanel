@@ -322,6 +322,29 @@ const settingsReducer = (state = initialState, action) => {
         loading: false,
       };
 
+    // DELETE SELLER DROP CHARGE
+
+    case actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+    case actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        sellersDropCharge: state.sellersDropCharge.filter(
+          (item) => item._id !== payload
+        ),
+        loading: false,
+        status: true,
+      };
+    case actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
     default:
       return state;
   }

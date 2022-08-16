@@ -20,7 +20,6 @@ import {
 } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import { Tooltip } from "@mui/material";
 
@@ -116,7 +115,7 @@ const SellerTransactions = () => {
               </CardBody>
             </Card> */}
 
-            <Card>
+            <Card className="table-data-hover">
               <CardBody>
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
@@ -124,7 +123,7 @@ const SellerTransactions = () => {
                 <CardTitle className="h4"> Sellers Transactions List</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table table__wrapper table-data-hover table-striped table-bordered table-hover text-center"
                 >
                   <Thead>
                     <Tr>
@@ -151,7 +150,9 @@ const SellerTransactions = () => {
                             sellerShopsTrxs(trx._id, trx?.company_name)
                           }
                         >
-                          <Th>{trx?.company_name}</Th>
+                          <Th title="Click to see details">
+                            {trx?.company_name}
+                          </Th>
 
                           <Td>{trx?.totalOrder}</Td>
                           <Td>{trx?.orderValue?.productAmount.toFixed(2)}</Td>

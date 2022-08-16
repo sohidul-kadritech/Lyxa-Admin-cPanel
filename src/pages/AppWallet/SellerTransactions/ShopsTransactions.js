@@ -70,7 +70,7 @@ const ShopsTransactions = () => {
               isRefresh={false}
             />
 
-            <Card>
+            <Card className="table-data-hover">
               <CardBody>
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
@@ -103,7 +103,7 @@ const ShopsTransactions = () => {
                           }}
                           onClick={() => gotToShopTrxs(trx._id, trx?.shopName)}
                         >
-                          <Th>{trx?.shopName}</Th>
+                          <Th title="Click to see Details">{trx?.shopName}</Th>
 
                           <Td>{trx?.totalOrder}</Td>
                           <Td>{trx?.orderValue?.productAmount.toFixed(2)}</Td>

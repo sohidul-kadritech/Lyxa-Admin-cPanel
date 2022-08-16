@@ -173,6 +173,7 @@ import ShopsTransactions from "./../pages/AppWallet/SellerTransactions/ShopsTran
 import SingleShopTransactions from "../pages/AppWallet/SellerTransactions/SingleShopTansactions";
 import Transactions from "../pages/Transactions/Transactions";
 import AdminLog from "../pages/AppWallet/PercentageSetting/AdminLog";
+import UserTermsAndConditions from "../pages/TermsAndConditons/UserTermsAndConditions";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -300,6 +301,10 @@ const userRoutes = [
   { path: "/app/settings", component: AppSettings },
   { path: "/percentage-setting", component: PercentageSetting },
   { path: "/admin/percentage-settings-history", component: AdminLog },
+
+  // TERMS AND CONDTIONS
+
+  { path: "/terms-and-conditions/user-app", component: UserTermsAndConditions },
 
   // //calendar
   { path: "/calendar", component: Calendar },

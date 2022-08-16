@@ -4,6 +4,7 @@ import {
   ADMINS_SETTINGS,
   ALL_ORDER_CANCEL_REASON,
   APP_SETTINGS,
+  DELETE_SELLER_SPECIAL_DROP_CHARGE,
   GET_DELIVERY_FEE,
   GET_SPECIAL_DROP_CHARGE,
   SET_DELIVERY_FEE,
@@ -458,7 +459,7 @@ export const updateReasonStatusKey = (status) => (dispatch) => {
 
 //GET  SELLERS WHO HAS SPECIAL DROP CHARGE
 
-export const getSellerSpecialDropCharge = () => async (dispatch) => {
+export const getSellerSpecialDropCharge = (page) => async (dispatch) => {
   try {
     dispatch({
       type: actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_SEND,
@@ -466,7 +467,12 @@ export const getSellerSpecialDropCharge = () => async (dispatch) => {
 
     const {
       data: { status, error, data },
-    } = await requestApi().request(GET_SPECIAL_DROP_CHARGE);
+    } = await requestApi().request(GET_SPECIAL_DROP_CHARGE, {
+      params: {
+        page,
+        pageSize: 50,
+      },
+    });
 
     console.log({ data });
 
@@ -484,6 +490,48 @@ export const getSellerSpecialDropCharge = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: actionType.SELLERS_SPECIAL_DROP_CHARGE_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// DELETE SELLER SPECIAL CHARGE
+
+export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(
+      DELETE_SELLER_SPECIAL_DROP_CHARGE,
+      {
+        method: "POST",
+        data: {
+          sellerId,
+        },
+      }
+    );
+
+    // console.log({ data: data });
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_SUCCESS,
+        payload: sellerId,
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_FAIL,
       payload: error.message,
     });
   }

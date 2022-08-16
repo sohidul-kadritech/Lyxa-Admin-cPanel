@@ -30,7 +30,8 @@ const SingleDeliveryTransactions = () => {
     (state) => state.appWalletReducer
   );
 
-  const [trx, setTrx] = useState(null);
+  const [trxs, setTrxs] = useState(null);
+  const [summary, setSummary] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -39,14 +40,6 @@ const SingleDeliveryTransactions = () => {
       history.push("/add-wallet/delivery-transactions", { replace: true });
     }
   }, [id]);
-
-  const summary = [
-    { title: "Drop Earning", value: 120 },
-    { title: "Rider Earning", value: 120 },
-    { title: "Unsetlled Amount", value: 100 },
-    { title: "Total Profit", value: 100 },
-    { title: "Cash In Hand", value: 100 },
-  ];
 
   const callApi = async (deiveryId, page = 1) => {
     try {
@@ -59,7 +52,7 @@ const SingleDeliveryTransactions = () => {
       });
 
       if (data.status) {
-        setTrx(data.data);
+        setTrxs(data.data);
         console.log({ data });
       } else {
         history.push("/add-wallet/delivery-transactions", { replace: true });
@@ -69,6 +62,34 @@ const SingleDeliveryTransactions = () => {
     }
   };
 
+  useEffect(() => {
+    if (trxs) {
+      const summaryList = [
+        {
+          title: "Drop Earning",
+          value: trxs?.deliveryBoy?.earning?.dropGet ?? 0,
+        },
+
+        {
+          title: "Unsetlled Amount",
+          value: trxs?.deliveryBoy?.earning?.unSettleAmount ?? 0,
+        },
+        {
+          title: "Rider Earning",
+          value: trxs?.deliveryBoy?.orderValue?.deliveryFee ?? 0,
+        },
+        {
+          title: "Total Profit",
+          value:
+            parseInt(trxs?.deliveryBoy?.earning?.unSettleAmount) +
+            parseInt(trxs?.deliveryBoy?.orderValue?.deliveryFee),
+        },
+        { title: "Cash In Hand", value: 0 },
+      ];
+      setSummary(summaryList);
+    }
+  }, [trxs]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -76,7 +97,7 @@ const SingleDeliveryTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem={trx?.delivery?.name}
+              breadcrumbItem={trxs?.delivery?.name}
               title="App Wallet"
               isRefresh={false}
             />
@@ -124,11 +145,11 @@ const SingleDeliveryTransactions = () => {
                         fontSize: "15px",
                         fontWeight: "500",
                       }}
-                      onClick={() =>
-                        history.push(
-                          history.push("/add-wallet/shop-transactions/1")
-                        )
-                      }
+                      // onClick={() =>
+                      //   history.push(
+                      //     history.push(`/add-wallet/shop-transactions/${}`)
+                      //   )
+                      // }
                     >
                       <Th>1</Th>
 
@@ -145,14 +166,14 @@ const SingleDeliveryTransactions = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && trx?.transactions?.length < 1 && (
+                {!loading && trxs?.transactions?.length < 1 && (
                   <div className="text-center">
                     <h4>No Transactions!</h4>
                   </div>
                 )}
               </CardBody>
             </Card>
-            <Row>
+            {/* <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
@@ -164,7 +185,7 @@ const SingleDeliveryTransactions = () => {
                   />
                 </div>
               </Col>
-            </Row>
+            </Row> */}
           </Container>
         </div>
       </GlobalWrapper>

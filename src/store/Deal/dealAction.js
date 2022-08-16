@@ -129,7 +129,9 @@ export const deleteDeal = (id) => async (dispatch) => {
     });
     const { data } = await requestApi().request(DELETE_DEAL, {
       method: "POST",
-      data: id,
+      data: {
+        id,
+      },
     });
 
     if (data.status) {

@@ -19,6 +19,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Tooltip } from "@mui/material";
 import { getShopTrxs } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
+import styled from "styled-components";
 
 const SingleShopTransactions = () => {
   const { id } = useParams();
@@ -37,7 +38,7 @@ const SingleShopTransactions = () => {
   } = useSelector((state) => state.appWalletReducer);
 
   const [shopName, setShopName] = useState("");
-  // const [summary, setSummary] = useState([]);
+  const [summary, setSummary] = useState([]);
 
   const { shopName: name, _id: accountId } = JSON.parse(
     localStorage.getItem("admin")
@@ -60,19 +61,28 @@ const SingleShopTransactions = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const summary = {
-  //     drop
-  //   }
-  // },[shopTrxs])
+  useEffect(() => {
+    const summaryList = [
+      { title: "Drop Earning", value: shopTrxs?.shop?.earning?.dropGet ?? 0 },
 
-  const summary = [
-    { title: "Drop Earning", value: 120 },
-    { title: "Rider Earning", value: 120 },
-    { title: "Unsetlled Amount", value: 100 },
-    { title: "Total Profit", value: 100 },
-    { title: "Cash In Hand", value: 100 },
-  ];
+      {
+        title: "Unsetlled Amount",
+        value: shopTrxs?.shop?.earning?.unSettleAmount ?? 0,
+      },
+      {
+        title: "Shop Earning",
+        value: shopTrxs?.shop?.orderValue?.deliveryFee ?? 0,
+      },
+      {
+        title: "Total Profit",
+        value:
+          parseInt(shopTrxs?.shop?.earning?.unSettleAmount) +
+          parseInt(shopTrxs?.shop?.orderValue?.deliveryFee),
+      },
+      { title: "Cash In Hand", value: 0 },
+    ];
+    setSummary(summaryList);
+  }, [shopTrxs]);
 
   return (
     <React.Fragment>
@@ -108,6 +118,7 @@ const SingleShopTransactions = () => {
                     </Button>
                   </div>
                 </div>
+
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -122,27 +133,29 @@ const SingleShopTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    <Tr
-                      // key={index}
-                      className="align-middle cursor-pointer"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "500",
-                      }}
-                      // onClick={() =>
-                      //   history.push("/add-wallet/shop-transactions/1")
-                      // }
-                    >
-                      <Th></Th>
+                    {shopTrxs?.trxs?.map((item, index) => (
+                      <Tooltip key={index} title="Click to see details">
+                        <Tr
+                          className="align-middle table-data cursor-pointer"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Th>{item?.autoTrxId}</Th>
 
-                      <Td></Td>
-                      <Td></Td>
-                      <Td></Td>
-                      <Td></Td>
-                      <Td></Td>
-                    </Tr>
+                          <Td>{item?.amount}</Td>
+                          <Td>{item?.type}</Td>
+                          <Td>
+                            {new Date(item?.createdAt).toLocaleDateString()}
+                          </Td>
+                          <Td></Td>
+                        </Tr>
+                      </Tooltip>
+                    ))}
                   </Tbody>
                 </Table>
+
                 {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />

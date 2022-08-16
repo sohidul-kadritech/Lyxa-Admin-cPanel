@@ -155,12 +155,14 @@ const SellerDetails = () => {
                     <Info title="Phone" value={seller?.phone_number} />
                     <Info title="Status" value={seller?.status} />
                     <Info title="Seller type" value={seller?.sellerType} />
-                    <Info
-                      title="Drop Charge"
-                      value={`${seller?.dropPercentage} ${
-                        seller?.dropPercentageType === "amount" ? "NGN" : "%"
-                      }`}
-                    />
+                    {seller?.dropPercentage && (
+                      <Info
+                        title="Drop Charge"
+                        value={`${seller?.dropPercentage} ${
+                          seller?.dropPercentageType === "amount" ? "NGN" : "%"
+                        }`}
+                      />
+                    )}
                   </Col>
                 </Row>
               </CardBody>

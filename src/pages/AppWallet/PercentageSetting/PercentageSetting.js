@@ -23,17 +23,22 @@ import {
   Form,
   Modal,
   CardTitle,
+  Spinner,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import DropCharge from "../../../components/DropCharge";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { successMsg } from "../../../helpers/successMsg";
 import {
+  deleteSellerSpecialDropCharge,
   getPercentageSetting,
   getSellerSpecialDropCharge,
   updateDeliveryCut,
 } from "../../../store/Settings/settingsAction";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import { Tooltip } from "@mui/material";
+import AppPagination from "../../../components/AppPagination";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const PercentageSetting = () => {
   const dispatch = useDispatch();
@@ -41,9 +46,16 @@ const PercentageSetting = () => {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { loading, dropCharge, status, sellersDropCharge } = useSelector(
-    (state) => state.settingsReducer
-  );
+  const {
+    loading,
+    dropCharge,
+    status,
+    sellersDropCharge,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+  } = useSelector((state) => state.settingsReducer);
 
   const [deliveryCut, setDeliveryCut] = useState([]);
   const [isOpenSuggestion, setIsOpenSuggestion] = useState(false);
@@ -54,6 +66,12 @@ const PercentageSetting = () => {
     charge: 0,
     deliveryPersonCut: 0,
   });
+
+  const [confirm_alert, setconfirm_alert] = useState(false);
+  const [success_dlg, setsuccess_dlg] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState("");
+  const [dynamic_description, setdynamic_description] = useState("");
+  const [sellerId, setSellerId] = useState("");
 
   useEffect(() => {
     dispatch(getPercentageSetting());
@@ -98,6 +116,15 @@ const PercentageSetting = () => {
 
     if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
       return successMsg("From Range should be less than To Range", "error");
+    }
+
+    if (
+      rangeWiseDeliveryCharge.deliveryPersonCut > rangeWiseDeliveryCharge.charge
+    ) {
+      return successMsg(
+        "Delivery person cut can't be getter than charge",
+        "error"
+      );
     }
 
     const isExistCharge = deliveryCut?.filter((item) => {
@@ -149,6 +176,10 @@ const PercentageSetting = () => {
       // setModalOpen(false);
     }
   }, [status]);
+
+  const deleteSellerDropCharge = () => {
+    dispatch(deleteSellerSpecialDropCharge(sellerId));
+  };
 
   return (
     <React.Fragment>
@@ -331,8 +362,20 @@ const PercentageSetting = () => {
           }}
           centered={true}
         >
+          {success_dlg ? (
+            <SweetAlert
+              success
+              title={dynamic_title}
+              onConfirm={() => {
+                setsuccess_dlg(false);
+              }}
+            >
+              {dynamic_description}
+            </SweetAlert>
+          ) : null}
+
           <div className="modal-header">
-            <h5 className="modal-title mt-0">Update Drop Charge</h5>
+            <h5 className="modal-title mt-0">Sellers Special Charge List</h5>
             <button
               type="button"
               onClick={() => {
@@ -347,40 +390,101 @@ const PercentageSetting = () => {
           </div>
 
           <div className="modal-body">
-            {/* <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Seller</Th>
-                      <Th>Charge Type</Th>
-                      <Th>Charge</Th>
+            <Table
+              id="tech-companies-1"
+              className="table table__wrapper table-striped table-bordered table-hover text-center"
+            >
+              <Thead>
+                <Tr>
+                  <Th>Seller</Th>
+                  <Th>Charge Type</Th>
+                  <Th>Charge</Th>
+                  <Th>Action</Th>
+                </Tr>
+              </Thead>
+              <Tbody style={{ position: "relative" }}>
+                {sellersDropCharge.map((seller, index) => {
+                  return (
+                    <Tr
+                      key={index}
+                      className="align-middle"
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "500",
+                      }}
+                    >
+                      <Th>
+                        <div style={{ maxWidth: "120px" }}>
+                          <span>{seller?.company_name}</span>
+                        </div>
+                      </Th>
+                      <Td>{seller?.dropPercentageType}</Td>
+                      <Td>{seller?.dropPercentage}</Td>
+                      <Td>
+                        <Tooltip title="Delete">
+                          <button
+                            className="btn btn-danger button"
+                            onClick={() => {
+                              setconfirm_alert(true);
+                              setSellerId(seller?._id);
+                            }}
+                          >
+                            <i className="fa fa-trash" />
+                          </button>
+                        </Tooltip>
+                        {confirm_alert ? (
+                          <SweetAlert
+                            title="Are you sure?"
+                            warning
+                            showCancel
+                            confirmButtonText="Yes, delete it!"
+                            confirmBtnBsStyle="success"
+                            cancelBtnBsStyle="danger"
+                            onConfirm={() => {
+                              deleteSellerDropCharge();
+                              setconfirm_alert(false);
+                              setsuccess_dlg(true);
+                              setdynamic_title("Deleted");
+                              setdynamic_description(
+                                "Charge has been deleted."
+                              );
+                            }}
+                            onCancel={() => setconfirm_alert(false)}
+                          >
+                            {`You want to delete ${seller?.company_name} drop charge.`}
+                          </SweetAlert>
+                        ) : null}
+                      </Td>
                     </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {sellersDropCharge.map((seller, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th>
-                            <div style={{ maxWidth: "120px" }}>
-                              <span>{seller?.company_name}</span>
-                            </div>
-                          </Th>
-                          <Td>{seller?.dropChargeType}</Td>
-                          <Td>{item?.email}</Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table> */}
+                  );
+                })}
+              </Tbody>
+            </Table>
+            {loading && (
+              <div className="text-center">
+                <Spinner animation="border" variant="info" />
+              </div>
+            )}
+            {!loading && sellersDropCharge.length < 1 && (
+              <div className="text-center">
+                <h4>No Data</h4>
+              </div>
+            )}
+            <Row>
+              <Col xl={12}>
+                <div className="d-flex justify-content-center">
+                  <AppPagination
+                    paging={paging}
+                    hasNextPage={hasNextPage}
+                    hasPreviousPage={hasPreviousPage}
+                    currentPage={currentPage}
+                    lisener={(page) =>
+                      dispatch(getSellerSpecialDropCharge(page))
+                    }
+                  />
+                </div>
+              </Col>
+            </Row>
           </div>
         </Modal>
       </GlobalWrapper>

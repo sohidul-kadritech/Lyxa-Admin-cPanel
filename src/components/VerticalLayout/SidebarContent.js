@@ -104,7 +104,7 @@ const SidebarContent = (props) => {
             </li> */}
 
             {props?.list?.map((item, index) => (
-              <li key={item.id}>
+              <li key={index}>
                 <Link
                   to={item.link}
                   className={`waves-effect ${item.isSubmenu && "has-arrow"}`}
@@ -115,7 +115,7 @@ const SidebarContent = (props) => {
                 {item.isSubmenu && (
                   <ul className="sub-menu" aria-expanded="false">
                     {item?.submenu?.map((sub, index) => (
-                      <li key={sub.id}>
+                      <li key={index}>
                         <Link to={sub.link}>
                           <i className={sub.icon} />
                           <span>{props.t(sub.name)} </span>

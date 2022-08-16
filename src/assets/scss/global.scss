@@ -81,3 +81,10 @@ input[type="date"]:focus::-webkit-datetime-edit {
 ::-webkit-scrollbar {
   display: none;
 }
+
+.table-data-hover {
+  .table-hover tbody tr:hover td,
+  .table-hover tbody tr:hover th {
+    color: green !important;
+  }
+}

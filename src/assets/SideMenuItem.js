@@ -330,6 +330,36 @@ export const adminMenuItem = [
       },
     ],
   },
+  {
+    id: 16,
+    name: "Terms and Conditions",
+    icon: "ti-settings",
+    link: "/#",
+    isSubmenu: true,
+    submenu: [
+      {
+        id: 160,
+        name: "User App",
+        icon: "ti-settings",
+        link: "/terms-and-conditions/user-app",
+        isSubmenu: false,
+      },
+      {
+        id: 161,
+        name: "Shop App",
+        icon: "ti-settings",
+        link: "/admin/terms-and-conditions/shop",
+        isSubmenu: false,
+      },
+      {
+        id: 162,
+        name: "Delivery App",
+        icon: "ti-settings",
+        link: "/admin/terms-and-conditions/shop",
+        isSubmenu: false,
+      },
+    ],
+  },
 ];
 
 export const customerServiceMenuItem = [
