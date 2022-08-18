@@ -223,14 +223,6 @@ export const adminMenuItem = [
         link: "/add-wallet/delivery-transactions",
         isSubmenu: false,
       },
-
-      {
-        id: 113,
-        name: "Payment History",
-        icon: "fas fa-exchange-alt",
-        link: "/add-wallet/payments-history",
-        isSubmenu: false,
-      },
     ],
   },
   {
@@ -348,14 +340,14 @@ export const adminMenuItem = [
         id: 161,
         name: "Shop App",
         icon: "ti-settings",
-        link: "/admin/terms-and-conditions/shop",
+        link: "/terms-and-conditions/shop-app",
         isSubmenu: false,
       },
       {
         id: 162,
         name: "Delivery App",
         icon: "ti-settings",
-        link: "/admin/terms-and-conditions/shop",
+        link: "/terms-and-conditions/delivery-app",
         isSubmenu: false,
       },
     ],

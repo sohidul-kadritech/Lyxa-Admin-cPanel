@@ -141,45 +141,45 @@ export const updateMaxDiscount = (amount) => (dispatch) => {
 
 // UPDATE APP SETTINGS
 
-export const updateAppSettings = () => async (dispatch, getState) => {
-  const { nearByShopKm, maxDiscount } = getState().settingsReducer;
-  try {
-    dispatch({
-      type: actionType.UPDATE_APP_SETTINGS_REQUEST_SEND,
-    });
-
-    const {
-      data: { status, error, message, data },
-    } = await requestApi().request(UPDATE_APP_SETTINGS, {
-      method: "POST",
-      data: {
-        nearByShopKm,
-        maxDiscount,
-      },
-    });
-
-    console.log(data);
-
-    if (status) {
-      successMsg(message, "success");
+export const updateAppSettings =
+  (conditionType, descriptions) => async (dispatch, getState) => {
+    const { appSettingsOptions } = getState().settingsReducer;
+    try {
       dispatch({
-        type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
-        payload: data.adminSetting,
+        type: actionType.UPDATE_APP_SETTINGS_REQUEST_SEND,
       });
-    } else {
-      successMsg(message, "error");
+
+      const {
+        data: { status, error, message, data },
+      } = await requestApi().request(UPDATE_APP_SETTINGS, {
+        method: "POST",
+        data: {
+          nearByShopKm: appSettingsOptions.nearByShopKm,
+          maxDiscount: appSettingsOptions.maxDiscount,
+          [conditionType]: descriptions,
+        },
+      });
+
+      if (status) {
+        successMsg(message, "success");
+        dispatch({
+          type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
+          payload: data.adminSetting,
+        });
+      } else {
+        successMsg(message, "error");
+        dispatch({
+          type: actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL,
+          payload: error,
+        });
+      }
+    } catch (error) {
       dispatch({
         type: actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL,
-        payload: error,
+        payload: error.message,
       });
     }
-  } catch (error) {
-    dispatch({
-      type: actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL,
-      payload: error.message,
-    });
-  }
-};
+  };
 
 // GET ALL APP SETTINGS
 
@@ -192,8 +192,6 @@ export const getAllAppSettings = () => async (dispatch) => {
     const {
       data: { status, error, data },
     } = await requestApi().request(APP_SETTINGS);
-
-    console.log(data);
 
     if (status) {
       dispatch({

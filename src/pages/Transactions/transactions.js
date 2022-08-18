@@ -23,6 +23,8 @@ import {
   updateAllTrxSortByKey,
 } from "../../store/appWallet/appWalletAction";
 import { useDispatch, useSelector } from "react-redux";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const Transactions = () => {
   const dispatch = useDispatch();
@@ -46,6 +48,41 @@ const Transactions = () => {
 
   const callTransList = (refresh = false) => {
     dispatch(getAllTransctions(refresh));
+  };
+
+  // GENERATE PDF
+
+  const downloadPdf = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = `Transactions`;
+    const headers = [["ID", "Amount", "Type", "Payment Method", "Date"]];
+    const marginLeft = 40;
+
+    const data = allTrxs.map((trx) => [
+      trx._id,
+      trx.amount,
+
+      trx?.type,
+      trx?.paymentType,
+      new Date(trx?.createdAt).toLocaleDateString(),
+    ]);
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: data,
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save(`Transactions.pdf`);
   };
 
   return (
@@ -99,7 +136,17 @@ const Transactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Transactions </CardTitle>
+                <div className="d-flex align-items-center justify-content-between">
+                  <CardTitle className="h4">Transactions</CardTitle>
+                  <Button
+                    outline={true}
+                    color="success"
+                    onClick={() => downloadPdf()}
+                  >
+                    Dowload PDF
+                  </Button>
+                </div>
+                <hr />
 
                 <Table
                   id="tech-companies-1"

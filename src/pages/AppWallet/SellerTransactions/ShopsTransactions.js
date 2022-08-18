@@ -10,11 +10,14 @@ import {
   Container,
   Row,
   Spinner,
+  Button,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { getSellerTrx } from "../../../store/appWallet/appWalletAction";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const ShopsTransactions = () => {
   const { loading, sellerTrxs } = useSelector(
@@ -58,6 +61,52 @@ const ShopsTransactions = () => {
     });
   };
 
+  // GENERATE PDF
+
+  const downloadPdf = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = `${companyName} Shops Transactions`;
+    const headers = [
+      [
+        "Shop",
+        "Total Orders",
+        "Order amount",
+        "Delivery fee",
+        "Drop earning",
+        "Unsettled amount",
+        "Shop earning",
+      ],
+    ];
+    const marginLeft = 40;
+
+    const data = sellerTrxs.map((trx) => [
+      trx.shopName,
+      trx.totalOrder,
+      trx?.orderValue?.productAmount.toFixed(2),
+      trx?.orderValue?.deliveryFee,
+      trx?.earning?.dropGet ?? 0,
+      trx?.earning?.unSettleAmount ?? 0,
+      trx?.earning?.settleAmount ?? 0,
+    ]);
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: data,
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save(`${companyName}_ShopsTransactions.pdf`);
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -75,7 +124,17 @@ const ShopsTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Shops Transactions List</CardTitle>
+                <div className="d-flex align-items-center justify-content-between">
+                  <CardTitle className="h4">Shops Transactions List</CardTitle>
+                  <Button
+                    outline={true}
+                    color="success"
+                    onClick={() => downloadPdf()}
+                  >
+                    Dowload PDF
+                  </Button>
+                </div>
+                <hr />
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"

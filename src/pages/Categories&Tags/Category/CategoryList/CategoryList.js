@@ -213,13 +213,16 @@ const CategoryList = () => {
                     })}
                   </Tbody>
                 </Table>
-                {/* {loading && (
-                    <Spinner
-                      style={{ position: "fixed", left: "50%", top: "50%" }}
-                      animation="border"
-                      variant="info"
-                    />
-                  )} */}
+                {loading && (
+                  <div className="text-center">
+                    <Spinner animation="border" variant="info" />
+                  </div>
+                )}
+                {!loading && categories.length < 1 && (
+                  <div className="text-center">
+                    <h4>No category add yet!</h4>
+                  </div>
+                )}
               </CardBody>
             </Card>
 

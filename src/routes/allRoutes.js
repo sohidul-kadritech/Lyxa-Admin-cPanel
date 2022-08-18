@@ -174,6 +174,8 @@ import SingleShopTransactions from "../pages/AppWallet/SellerTransactions/Single
 import Transactions from "../pages/Transactions/Transactions";
 import AdminLog from "../pages/AppWallet/PercentageSetting/AdminLog";
 import UserTermsAndConditions from "../pages/TermsAndConditons/UserTermsAndConditions";
+import ShopTermsAndConditions from "../pages/TermsAndConditons/ShopTermsAndConditions";
+import DeliveryTermsAndConditions from "../pages/TermsAndConditons/DeliveryTermsAndConditions";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -305,6 +307,11 @@ const userRoutes = [
   // TERMS AND CONDTIONS
 
   { path: "/terms-and-conditions/user-app", component: UserTermsAndConditions },
+  { path: "/terms-and-conditions/shop-app", component: ShopTermsAndConditions },
+  {
+    path: "/terms-and-conditions/delivery-app",
+    component: DeliveryTermsAndConditions,
+  },
 
   // //calendar
   { path: "/calendar", component: Calendar },

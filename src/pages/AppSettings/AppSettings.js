@@ -24,7 +24,7 @@ import { successMsg } from "../../helpers/successMsg";
 
 const AppSettings = () => {
   const dispatch = useDispatch();
-  const { nearByShopKm, loading, maxDiscount } = useSelector(
+  const { loading, appSettingsOptions } = useSelector(
     (state) => state.settingsReducer
   );
 
@@ -33,11 +33,11 @@ const AppSettings = () => {
   }, []);
 
   const updateSettings = () => {
-    if (!nearByShopKm) {
+    if (!appSettingsOptions.nearByShopKm) {
       return successMsg("Enter Near By Shop Distance(KM)");
     }
 
-    if (!maxDiscount) {
+    if (!appSettingsOptions.maxDiscount) {
       return successMsg("Enter Max Discount Amount");
     }
 
@@ -67,7 +67,7 @@ const AppSettings = () => {
                       label="Near Shop Distance(KM)"
                       variant="outlined"
                       placeholder="Enter near shop Distance"
-                      value={nearByShopKm}
+                      value={appSettingsOptions.nearByShopKm}
                       onChange={(e) =>
                         dispatch(updateNearByShopKey(e.target.value))
                       }
@@ -82,7 +82,7 @@ const AppSettings = () => {
                       label="Max Discount(Amount)"
                       variant="outlined"
                       placeholder="Enter max discount amount"
-                      value={maxDiscount}
+                      value={appSettingsOptions.maxDiscount}
                       onChange={(e) =>
                         dispatch(updateMaxDiscount(e.target.value))
                       }

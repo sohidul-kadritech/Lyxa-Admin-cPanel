@@ -10,6 +10,7 @@ import {
   Container,
   Row,
   Spinner,
+  Button,
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Flatpickr from "react-flatpickr";
@@ -26,6 +27,8 @@ import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { sortByOptions } from "../../../assets/staticData";
 import Search from "./../../../components/Search";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const DeliveryTransactions = () => {
   const {
@@ -52,6 +55,60 @@ const DeliveryTransactions = () => {
 
   const callTransList = (refresh = false) => {
     dispatch(getDeliveryTrx(refresh));
+  };
+
+  // GENERATE PDF
+
+  const downloadPdf = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = `Delivery Boys Transactions`;
+    const headers = [
+      [
+        "Name",
+        "Total Orders",
+        "Delivery fee",
+        "Drop earning",
+        "Unsettled amount",
+        "Delivery earning",
+        "Cash in hand",
+        "Settled cash",
+      ],
+    ];
+    const marginLeft = 40;
+
+    const data = deliveryTrxs.map((trx) => [
+      trx.name,
+      trx.totalOrder,
+      Number.isNaN(
+        parseInt(trx?.earning?.dropGet) + parseInt(trx?.orderValue?.deliveryFee)
+      )
+        ? 0
+        : parseInt(trx?.earning?.dropGet) +
+          parseInt(trx?.orderValue?.deliveryFee),
+
+      trx?.earning?.dropGet ?? 0,
+      trx?.earning?.unSettleAmount ?? 0,
+      trx?.orderValue?.deliveryFee,
+      trx?.earning?.cashInHand ?? 0,
+      trx?.earning?.settleAmount ?? 0,
+    ]);
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: data,
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save(`DeliveryBoysTransactions.pdf`);
   };
 
   return (
@@ -94,10 +151,19 @@ const DeliveryTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4">
-                  {" "}
-                  Delivery Transactions List
-                </CardTitle>
+                <div className="d-flex align-items-center justify-content-between">
+                  <CardTitle className="h4">
+                    Delivery Transactions List
+                  </CardTitle>
+                  <Button
+                    outline={true}
+                    color="success"
+                    onClick={() => downloadPdf()}
+                  >
+                    Dowload PDF
+                  </Button>
+                </div>
+                <hr />
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"

@@ -7,6 +7,7 @@ import {
   Container,
   Row,
   Spinner,
+  Button,
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -22,6 +23,8 @@ import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { useHistory } from "react-router-dom";
 import { Tooltip } from "@mui/material";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const SellerTransactions = () => {
   const dispatch = useDispatch();
@@ -51,6 +54,52 @@ const SellerTransactions = () => {
       pathname: `/app-wallet/seller/shops-transactions`,
       search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
+  };
+
+  // GENERATE PDF
+
+  const downloadPdf = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = "Seller Transactions";
+    const headers = [
+      [
+        "Seller",
+        "Total Orders",
+        "Order amount",
+        "Delivery fee",
+        "Drop earning",
+        "Unsettled amount",
+        "Seller earning",
+      ],
+    ];
+    const marginLeft = 40;
+
+    const data = sellersTrxs.map((trx) => [
+      trx.company_name,
+      trx.totalOrder,
+      trx?.orderValue?.productAmount.toFixed(2),
+      trx?.orderValue?.deliveryFee,
+      trx?.earning?.dropGet ?? 0,
+      trx?.earning?.unSettleAmount ?? 0,
+      trx?.earning?.settleAmount ?? 0,
+    ]);
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: data,
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save("sellerTransactions.pdf");
   };
 
   return (
@@ -120,7 +169,19 @@ const SellerTransactions = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Sellers Transactions List</CardTitle>
+                <div className="d-flex align-items-center justify-content-between">
+                  <CardTitle className="h4">
+                    Sellers Transactions List
+                  </CardTitle>
+                  <Button
+                    outline={true}
+                    color="success"
+                    onClick={() => downloadPdf()}
+                  >
+                    Dowload PDF
+                  </Button>
+                </div>
+                <hr />
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-data-hover table-striped table-bordered table-hover text-center"
@@ -129,7 +190,7 @@ const SellerTransactions = () => {
                     <Tr>
                       <Th>Company</Th>
                       <Th>Order</Th>
-                      <Th>Oder amount</Th>
+                      <Th>Order amount</Th>
                       <Th>Delivery fee</Th>
                       <Th>Drop earning</Th>
                       <Th>Unsettled amount</Th>

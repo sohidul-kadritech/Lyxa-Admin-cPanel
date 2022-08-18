@@ -5,8 +5,13 @@ const initialState = {
   status: false,
   error: null,
   googleMapKey: "",
-  nearByShopKm: 0,
-  deliveryFeePerKm: "",
+  appSettingsOptions: {
+    nearByShopKm: 0,
+    userAppTearmsAndConditions: "",
+    deliveryAppTearmsAndConditions: "",
+    shopAppTearmsAndConditions: "",
+    deliveryFeePerKm: "",
+  },
   searchDeliveryBoyKm: [],
   dropCharge: null,
   cancelReasons: [],
@@ -100,13 +105,19 @@ const settingsReducer = (state = initialState, action) => {
     case actionType.UPDATE_NEAR_BY_SHOP:
       return {
         ...state,
-        nearByShopKm: payload,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          nearByShopKm: payload,
+        },
       };
 
     case actionType.UPDATE_MAX_DISCOUNT:
       return {
         ...state,
-        maxDiscount: payload,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          maxDiscount: payload,
+        },
       };
 
     case actionType.UPDATE_APP_SETTINGS_REQUEST_SEND:
@@ -139,8 +150,7 @@ const settingsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        nearByShopKm: payload.nearByShopKm,
-        maxDiscount: payload.maxDiscount,
+        appSettingsOptions: payload,
       };
 
     case actionType.ALL_APP_SETTINGS_REQUEST_FAIL:

@@ -179,6 +179,10 @@ export const ORDRE_UPDATE_STATUS =
 export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request";
 export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
 
+// TERMS AND CONDITIONS
+
+export const ADD_TERMS_AND_CONDITIONS = ADMIN_ENDPOINT + "/";
+
 // IMAGE UPLOAD
 
 export const IMAGE_UPLOAD = "image/single-image-upload";

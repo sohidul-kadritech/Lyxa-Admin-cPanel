@@ -5,15 +5,15 @@ import GlobalWrapper from "../../components/GlobalWrapper";
 import TextEditor from "../../components/TextEditor/TextEditor";
 import { Container } from "reactstrap";
 
-const UserTermsAndConditions = () => {
+const ShopTermsAndConditions = () => {
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
             <TextEditor
-              title="User Terms and Condtions"
-              type="userAppTearmsAndConditions"
+              title="Shop Terms and Condtions"
+              type="shopAppTearmsAndConditions"
             />
           </Container>
         </div>
@@ -22,4 +22,4 @@ const UserTermsAndConditions = () => {
   );
 };
 
-export default UserTermsAndConditions;
+export default ShopTermsAndConditions;

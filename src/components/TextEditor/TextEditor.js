@@ -25,12 +25,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { convertToHTML } from "draft-convert";
 import htmlToDraft from "html-to-draftjs";
 import requestApi from "../../network/httpRequest";
+import Breadcrumb from "../Common/Breadcrumb";
+import {
+  getAllAppSettings,
+  updateAppSettings,
+} from "../../store/Settings/settingsAction";
+import { useEffect } from "react";
 
 const TextEditor = ({ title, type }) => {
-  // console.log("content-----", content);
   const dispatch = useDispatch();
 
-  // const { loading, policy } = useSelector((state) => state.policyReducer);
+  const { loading, appSettingsOptions } = useSelector(
+    (state) => state.settingsReducer
+  );
 
   const [editorState, setEditorState] = useState(() => {
     EditorState.createEmpty();
@@ -38,104 +45,81 @@ const TextEditor = ({ title, type }) => {
 
   const [description, setDescription] = useState("");
 
-  useState(() => {
-    // const callApi = async () => {
-    //   try {
-    //     // console.log("call api--------", type);
-    //     const { data } = await requestApi().request(GET_SINGLE_POLICY, {
-    //       params: {
-    //         type: type,
-    //       },
-    //     });
-    //     if (data.message) {
-    //       const value = data.data.policies[type];
-
-    //       if (value != null) {
-    //         const contentBlock = htmlToDraft(value);
-    //         if (contentBlock) {
-    //           const contentState = ContentState.createFromBlockArray(
-    //             contentBlock.contentBlocks
-    //           );
-    //           const outputEditorState =
-    //             EditorState.createWithContent(contentState);
-    //           setEditorState(outputEditorState);
-    //         }
-    //       } else {
-    //         setEditorState(EditorState.createEmpty());
-    //       }
-    //     } else {
-    //       console.log(data.error);
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    // callApi();
-    return () => {
-      setEditorState(EditorState.createEmpty()); // This worked for me
-    };
+  useEffect(() => {
+    dispatch(getAllAppSettings());
   }, []);
 
+  useState(() => {
+    if (appSettingsOptions) {
+      const contentBlock = htmlToDraft(appSettingsOptions[type]);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(
+          contentBlock.contentBlocks
+        );
+        const outputEditorState = EditorState.createWithContent(contentState);
+        setEditorState(outputEditorState);
+      }
+    }
+
+    return () => {
+      setEditorState(EditorState.createEmpty());
+    };
+  }, [appSettingsOptions]);
+
   const updateDescription = async (state) => {
-    // console.log("state value---", state);
     setEditorState(state);
     let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-    // console.log(currentContentAsHTML);
     setDescription(currentContentAsHTML);
   };
 
   const handleSubmit = () => {
-    const data = {
-      type: type,
-      value: description,
-    };
+    dispatch(updateAppSettings(type, description));
   };
   return (
     <React.Fragment>
       <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Row>
-              <Col>
-                <Card>
-                  <CardBody>
-                    <CardTitle className="h4">{title}</CardTitle>
-                    <hr />
-                    <Form method="post">
-                      <Editor
-                        onEditorStateChange={updateDescription}
-                        toolbarClassName="toolbarClassName"
-                        wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
-                        editorState={editorState}
-                        defaultEditorState={editorState}
-                      />
-                    </Form>
+        <Breadcrumb
+          maintitle="Drop"
+          breadcrumbItem={title}
+          // loading={loading}
+          // callList={callDeliveryFee}
+          isRefresh={false}
+        />
 
-                    <div className="button__wrapper py-4 text-center">
-                      <Button
-                        color="success"
-                        onClick={handleSubmit}
-                        className="btn btn-md px-5"
-                      >
-                        {/* {loading ? (
-                          <Spinner
-                            animation="border"
-                            variant="info"
-                            size="sm"
-                          />
-                        ) : (
-                          "Submit"
-                        )} */}
-                        Update
-                      </Button>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
-        </div>
+        <Row>
+          <Col>
+            <Card>
+              <CardBody>
+                <CardTitle className="h4">{title}</CardTitle>
+                <hr />
+                <Form method="post">
+                  <Editor
+                    onEditorStateChange={updateDescription}
+                    toolbarClassName="toolbarClassName"
+                    wrapperClassName="wrapperClassName"
+                    editorClassName="editorClassName"
+                    editorState={editorState}
+                    defaultEditorState={editorState}
+                  />
+                </Form>
+
+                <div className="button__wrapper py-4 text-center">
+                  <Button
+                    color="success"
+                    onClick={handleSubmit}
+                    className="btn btn-md px-5"
+                  >
+                    {loading ? (
+                      <Spinner animation="border" variant="info" size="sm" />
+                    ) : (
+                      "Update"
+                    )}
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
       </GlobalWrapper>
     </React.Fragment>
   );
