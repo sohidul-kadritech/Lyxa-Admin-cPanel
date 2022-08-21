@@ -168,6 +168,21 @@ export const SINGLE_DELIVERY_TRX =
 export const DROP_TRX = ADMIN_ENDPOINT + "/wallet/admin";
 export const ALL_TRX = ADMIN_ENDPOINT + "/drop-wallet/transection";
 
+export const SHOP_MAKE_PAYMENT =
+  ADMIN_ENDPOINT + "/drop-wallet/settle-amount-seller";
+
+export const SHOP_ADD_REMOVE_CREDIT =
+  ADMIN_ENDPOINT + "/drop-wallet/shop-amount-add-remove";
+
+export const SHOP_ADJUST_CASH =
+  ADMIN_ENDPOINT + "/drop-wallet/shop-cash-in-hand-adjust";
+
+export const RIDER_MAKE_PAYMENT =
+  ADMIN_ENDPOINT + "/drop-wallet/settle-amount-delivery-boy";
+
+export const RIDER_RECEIVED_PAYMENT =
+  ADMIN_ENDPOINT + "/drop-wallet/cash-received-from-delivery-boy";
+
 // ORDERS
 
 export const ORDER_LIST = ADMIN_ENDPOINT + "/order";

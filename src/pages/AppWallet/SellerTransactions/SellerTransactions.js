@@ -86,9 +86,9 @@ const SellerTransactions = () => {
       trx.totalOrder,
       trx?.orderValue?.productAmount.toFixed(2),
       trx?.orderValue?.deliveryFee,
-      trx?.earning?.dropGet ?? 0,
-      trx?.earning?.unSettleAmount ?? 0,
-      trx?.earning?.settleAmount ?? 0,
+      trx?.dropGetFromSeller ?? 0,
+      trx?.totalSellerUnsettle ?? 0,
+      trx?.totalSellerEarning ?? 0,
     ]);
 
     let content = {
@@ -218,9 +218,9 @@ const SellerTransactions = () => {
                           <Td>{trx?.totalOrder}</Td>
                           <Td>{trx?.orderValue?.productAmount.toFixed(2)}</Td>
                           <Td>{trx?.orderValue?.deliveryFee}</Td>
-                          <Td>{trx?.earning?.dropGet ?? 0}</Td>
-                          <Td>{trx?.earning?.unSettleAmount ?? 0}</Td>
-                          <Td>{trx?.earning?.settleAmount ?? 0}</Td>
+                          <Td>{trx?.dropGetFromSeller ?? 0}</Td>
+                          <Td>{trx?.totalSellerUnsettle ?? 0}</Td>
+                          <Td>{trx?.totalSellerEarning ?? 0}</Td>
                         </Tr>
                       ))}
                   </Tbody>

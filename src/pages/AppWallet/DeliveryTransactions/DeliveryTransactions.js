@@ -86,18 +86,18 @@ const DeliveryTransactions = () => {
     const data = deliveryTrxs.map((trx) => [
       trx.name,
       trx.totalOrder,
+      trx?.orderValue?.deliveryFee,
       Number.isNaN(
-        parseInt(trx?.earning?.dropGet) + parseInt(trx?.orderValue?.deliveryFee)
+        parseInt(trx?.orderValue?.deliveryFee) -
+          parseInt(trx?.deliveyBoyEarning)
       )
         ? 0
-        : parseInt(trx?.earning?.dropGet) +
-          parseInt(trx?.orderValue?.deliveryFee),
-
-      trx?.earning?.dropGet ?? 0,
-      trx?.earning?.unSettleAmount ?? 0,
-      trx?.orderValue?.deliveryFee,
-      trx?.earning?.cashInHand ?? 0,
-      trx?.earning?.settleAmount ?? 0,
+        : parseInt(trx?.orderValue?.deliveryFee) -
+          parseInt(trx?.deliveyBoyEarning),
+      trx?.totalUnSettleAmount,
+      trx?.deliveyBoyEarning,
+      trx?.cashInHand,
+      trx?.settleAmount,
     ]);
 
     let content = {
@@ -199,20 +199,20 @@ const DeliveryTransactions = () => {
                           <Th title="Click to see details">{item?.name}</Th>
 
                           <Td>{item?.totalOrder}</Td>
+                          <Td>{item?.orderValue?.deliveryFee}</Td>
                           <Td>
                             {Number.isNaN(
-                              parseInt(item?.earning?.dropGet) +
-                                parseInt(item?.orderValue?.deliveryFee)
+                              parseInt(item?.orderValue?.deliveryFee) -
+                                parseInt(item?.deliveyBoyEarning)
                             )
                               ? 0
-                              : parseInt(item?.earning?.dropGet) +
-                                parseInt(item?.orderValue?.deliveryFee)}
+                              : parseInt(item?.orderValue?.deliveryFee) -
+                                parseInt(item?.deliveyBoyEarning)}
                           </Td>
-                          <Td>{item?.earning?.dropGet ?? 0}</Td>
-                          <Td>{item?.earning?.unSettleAmount ?? 0}</Td>
-                          <Td>{item?.orderValue?.deliveryFee ?? 0}</Td>
-                          <Td>0</Td>
-                          <Td>{item?.earning?.settleAmount ?? 0}</Td>
+                          <Td>{item?.totalUnSettleAmount ?? 0}</Td>
+                          <Td>{item?.deliveyBoyEarning ?? 0}</Td>
+                          <Td>{item?.cashInHand}</Td>
+                          <Td>{item?.settleAmount ?? 0}</Td>
                         </Tr>
                       ))}
                   </Tbody>

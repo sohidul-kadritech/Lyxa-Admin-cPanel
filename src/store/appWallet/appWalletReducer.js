@@ -77,6 +77,7 @@ const appWalletReducer = (state = init, action) => {
         ...state,
         loading: true,
         error: null,
+        status: false,
       };
 
     case actionTypes.GET_SELLER_TRX_REQUEST_SUCCESS:
@@ -89,7 +90,7 @@ const appWalletReducer = (state = init, action) => {
         // hasNextPage: payload.paginate.metadata.hasNextPage,
         // currentPage: payload.paginate.metadata.page.currentPage,
         // hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true,
+        status: false,
       };
 
     case actionTypes.GET_SELLER_TRX_REQUEST_FAIL:
@@ -103,6 +104,7 @@ const appWalletReducer = (state = init, action) => {
         ...state,
         loading: true,
         error: null,
+        status: false,
       };
 
     case actionTypes.GET_SHOP_TRX_REQUEST_SUCCESS:
@@ -115,10 +117,81 @@ const appWalletReducer = (state = init, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true,
       };
 
     case actionTypes.GET_SHOP_TRX_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionTypes.SHOP_MAKE_PAYMENT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionTypes.SHOP_MAKE_PAYMENT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shopTrxs: {
+          ...state.shopTrxs,
+          trxs: [...state.shopTrxs.trxs, payload],
+        },
+      };
+
+    case actionTypes.SHOP_MAKE_PAYMENT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionTypes.SHOP_CREDIT_UPDATE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionTypes.SHOP_CREDIT_UPDATE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shopTrxs: {
+          ...state.shopTrxs,
+          trxs: [...state.shopTrxs.trxs, payload],
+        },
+      };
+
+    case actionTypes.SHOP_CREDIT_UPDATE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionTypes.SHOP_ADJUST_CASH_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionTypes.SHOP_ADJUST_CASH_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionTypes.SHOP_ADJUST_CASH_REQUEST_FAIL:
       return {
         ...state,
         error: payload,
@@ -143,6 +216,7 @@ const appWalletReducer = (state = init, action) => {
         ...state,
         loading: true,
         error: null,
+        status: false,
       };
 
     case actionTypes.GET_DELIVERY_TRX_REQUEST_SUCCESS:
@@ -155,10 +229,31 @@ const appWalletReducer = (state = init, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true,
+        status: false,
       };
 
     case actionTypes.GET_DELIVERY_TRX_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionTypes.RIDER_MAKE_PAYMENT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionTypes.RIDER_MAKE_PAYMENT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionTypes.RIDER_MAKE_PAYMENT_REQUEST_FAIL:
       return {
         ...state,
         error: payload,

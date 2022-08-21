@@ -249,6 +249,7 @@ const BannerPage = () => {
                                 src={item.image}
                                 className="img-thumbnail img__view"
                                 style={{ width: "100%", height: "100%" }}
+                                alt="Banner"
                               />
                               <div className="button__wrapper">
                                 <button

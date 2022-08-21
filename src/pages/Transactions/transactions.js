@@ -69,7 +69,7 @@ const Transactions = () => {
       trx._id,
       trx.amount,
 
-      trx?.type,
+      updateTrxType(trx?.type),
       trx?.paymentType,
       new Date(trx?.createdAt).toLocaleDateString(),
     ]);
@@ -83,6 +83,37 @@ const Transactions = () => {
     doc.text(title, marginLeft, 40);
     doc.autoTable(content);
     doc.save(`Transactions.pdf`);
+  };
+
+  const updateTrxType = (type) => {
+    let newType = "";
+    if (type === "adminSettlebalanceShop") {
+      newType = "Settle shop";
+    } else if (type === "adminAddBalanceShop") {
+      newType = "Add shop credit";
+    } else if (type === "sellerCashInHandAdjust") {
+      newType = "Adjust hand cash";
+    } else if (type === "adminRemoveBalanceShop") {
+      newType = "Remove shop credit";
+    } else if (type === "deliveryBoyAmountSettle") {
+      newType = "Settle Rider";
+    } else if (type === "deliveryBoyAdminAmountReceivedCash") {
+      newType = "Received rider cash";
+    } else if (
+      type === "adminGetPercentageFromOrder" ||
+      type === "deliveryBoyOrderDeliveredCash" ||
+      type === "sellerGetPaymentFromOrder" ||
+      type === "sellerGetPaymentFromOrderCash" ||
+      type === "adminWillGetPaymentFromShop"
+    ) {
+      newType = "Order";
+    } else if (type === "userTopUpBalance") {
+      newType = "Drop Pay";
+    } else {
+      newType = "Unknown";
+    }
+
+    return newType;
   };
 
   return (
@@ -176,7 +207,7 @@ const Transactions = () => {
 
                           <Td>{item?.amount}</Td>
 
-                          <Td>{item?.type}</Td>
+                          <Td>{updateTrxType(item?.type)}</Td>
                           <Td>{item?.paymentType}</Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}

@@ -91,9 +91,9 @@ const ShopsTransactions = () => {
       trx.totalOrder,
       trx?.orderValue?.productAmount.toFixed(2),
       trx?.orderValue?.deliveryFee,
-      trx?.earning?.dropGet ?? 0,
-      trx?.earning?.unSettleAmount ?? 0,
-      trx?.earning?.settleAmount ?? 0,
+      trx?.dropGetFromShop ?? 0,
+      trx?.totalShopUnsettle ?? 0,
+      trx?.totalShopEarning ?? 0,
     ]);
 
     let content = {
@@ -167,9 +167,9 @@ const ShopsTransactions = () => {
                           <Td>{trx?.totalOrder}</Td>
                           <Td>{trx?.orderValue?.productAmount.toFixed(2)}</Td>
                           <Td>{trx?.orderValue?.deliveryFee}</Td>
-                          <Td>{trx?.earning?.dropGet}</Td>
-                          <Td>{trx?.earning?.unSettleAmount}</Td>
-                          <Td>{trx?.earning?.settleAmount}</Td>
+                          <Td>{trx?.dropGetFromShop ?? 0}</Td>
+                          <Td>{trx?.totalShopUnsettle ?? 0}</Td>
+                          <Td>{trx?.totalShopEarning ?? 0}</Td>
                         </Tr>
                       ))}
                   </Tbody>

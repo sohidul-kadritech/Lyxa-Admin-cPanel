@@ -24,13 +24,14 @@ const TransactionsCard = ({ summary = [] }) => {
 };
 
 const CardWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(250px, 1fr));
-  grid-gap: calc(2em + 0.5vh) calc(1.5em + 1vmin);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   .card {
-    max-width: 350px;
+    max-width: 300px;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    margin-right: 15px;
     border: 1px solid lightgray;
     .content__wrapper {
       display: flex;

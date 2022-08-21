@@ -5,9 +5,14 @@ import {
   DELIVERY_TRX,
   DROP_TRX,
   GET_DELIVERY_FEE,
+  RIDER_MAKE_PAYMENT,
+  RIDER_RECEIVED_PAYMENT,
   SELLERS_TRX,
   SELLER_TRX,
   SET_DELIVERY_FEE,
+  SHOP_ADD_REMOVE_CREDIT,
+  SHOP_ADJUST_CASH,
+  SHOP_MAKE_PAYMENT,
   SHOP_TRX,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
@@ -108,6 +113,8 @@ export const getSellerTrx =
 export const getShopTrxs =
   (refresh = false, shopId, page) =>
   async (dispatch, getState) => {
+    console.log(shopId);
+
     const { shopTrxs } = getState().appWalletReducer;
 
     if (shopTrxs.length < 1 || refresh) {
@@ -120,7 +127,8 @@ export const getShopTrxs =
           params: {
             page,
             pageSize: 50,
-            shopId,
+            shopId: shopId.toString(),
+            sortBy: "desc",
           },
         });
 
@@ -145,6 +153,198 @@ export const getShopTrxs =
       }
     }
   };
+
+// SHOP MAKE PAYMENT
+
+export const shopMakePayment = (values) => async (dispatch) => {
+  console.log({ values });
+  try {
+    dispatch({
+      type: actionTypes.SHOP_MAKE_PAYMENT_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(SHOP_MAKE_PAYMENT, {
+      method: "POST",
+
+      data: values,
+    });
+
+    console.log("shop make payment", data);
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionTypes.SHOP_MAKE_PAYMENT_REQUEST_SUCCESS,
+        payload: data.data.transactionShop,
+      });
+    } else {
+      successMsg(data.error, "error");
+      dispatch({
+        type: actionTypes.SHOP_MAKE_PAYMENT_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionTypes.SHOP_MAKE_PAYMENT_REQUEST_FAIL,
+      payload: error.message,
+    });
+    toast.error(error.message);
+  }
+};
+
+// SHOP ADD / REMOVE CREDIT
+
+export const shopAddRemoveCredit = (values) => async (dispatch) => {
+  console.log({ values });
+  try {
+    dispatch({
+      type: actionTypes.SHOP_CREDIT_UPDATE_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(SHOP_ADD_REMOVE_CREDIT, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log("shop crdit update", data);
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionTypes.SHOP_CREDIT_UPDATE_REQUEST_SUCCESS,
+        payload: data.data.transactionShop,
+      });
+    } else {
+      successMsg(data.error, "error");
+      dispatch({
+        type: actionTypes.SHOP_CREDIT_UPDATE_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionTypes.SHOP_CREDIT_UPDATE_REQUEST_FAIL,
+      payload: error.message,
+    });
+    toast.error(error.message);
+  }
+};
+
+// SHOP ADJUST CASH
+
+export const adjustShopCash = (shopId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionTypes.SHOP_ADJUST_CASH_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(SHOP_ADJUST_CASH, {
+      method: "POST",
+      data: {
+        shopId,
+      },
+    });
+
+    console.log("shop crdit update", data);
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionTypes.SHOP_ADJUST_CASH_REQUEST_SUCCESS,
+        payload: data.data.transactionShop,
+      });
+    } else {
+      successMsg(data.error, "error");
+      dispatch({
+        type: actionTypes.SHOP_ADJUST_CASH_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionTypes.SHOP_ADJUST_CASH_REQUEST_FAIL,
+      payload: error.message,
+    });
+    toast.error(error.message);
+  }
+};
+
+// RIDER MAKE PAYMENT
+
+export const riderMakePayment = (values) => async (dispatch) => {
+  console.log({ values });
+  try {
+    dispatch({
+      type: actionTypes.RIDER_MAKE_PAYMENT_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(RIDER_MAKE_PAYMENT, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log("rider make payment", data);
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionTypes.RIDER_MAKE_PAYMENT_REQUEST_SUCCESS,
+        payload: data.data.transactionShop,
+      });
+    } else {
+      successMsg(data.error, "error");
+      dispatch({
+        type: actionTypes.RIDER_MAKE_PAYMENT_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionTypes.RIDER_MAKE_PAYMENT_REQUEST_FAIL,
+      payload: error.message,
+    });
+    toast.error(error.message);
+  }
+};
+
+// RIDER RECEIVED PAYMENT
+
+export const riderReceivedPayment = (values) => async (dispatch) => {
+  console.log({ values });
+  try {
+    dispatch({
+      type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(RIDER_RECEIVED_PAYMENT, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log("rider received payment", data);
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_SUCCESS,
+        payload: data.data.transactionShop,
+      });
+    } else {
+      successMsg(data.error, "error");
+      dispatch({
+        type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_FAIL,
+      payload: error.message,
+    });
+    successMsg.error(error.message, "error");
+  }
+};
 
 // SELLER TRX START DATE AND END DATE
 
