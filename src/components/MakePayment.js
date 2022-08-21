@@ -40,8 +40,6 @@ const MakePayment = ({
     } else {
       submitData();
     }
-
-    submitData();
   };
 
   const submitData = () => {

@@ -170,11 +170,12 @@ import RefusedOrders from "../pages/Orders/RefusedOrders/RefusedOrders";
 import SingleDeliveryTransactions from "../pages/AppWallet/DeliveryTransactions/SingleDeliveryTransactions";
 import ShopsTransactions from "./../pages/AppWallet/SellerTransactions/ShopsTransactions";
 import SingleShopTransactions from "../pages/AppWallet/SellerTransactions/SingleShopTansactions";
-import Transactions from "../pages/Transactions/Transactions";
+
 import AdminLog from "../pages/AppWallet/PercentageSetting/AdminLog";
 import UserTermsAndConditions from "../pages/TermsAndConditons/UserTermsAndConditions";
 import ShopTermsAndConditions from "../pages/TermsAndConditons/ShopTermsAndConditions";
 import DeliveryTermsAndConditions from "../pages/TermsAndConditons/DeliveryTermsAndConditions";
+import Transactions from "./../pages/Transactions/Transactions";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
