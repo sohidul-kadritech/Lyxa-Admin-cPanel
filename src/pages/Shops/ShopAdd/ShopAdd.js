@@ -82,7 +82,6 @@ const ShopAdd = () => {
   const [shopBanner, setShopBanner] = useState(null);
   const [shopPhotos, setShopPhotos] = useState(null);
   const [shopStatus, setShopStatus] = useState("");
-  const [delivery, setDelivery] = useState("");
   const [minOrderAmount, setMinOrderAmount] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
   const [address, setAddress] = useState("");
@@ -101,6 +100,8 @@ const ShopAdd = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [deliveryType, setDeliveryType] = useState("");
+  const [deliveryFee, setDeliveryFee] = useState("");
 
   // GET SELLER
 
@@ -120,7 +121,7 @@ const ShopAdd = () => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
-        // console.log(findShop);
+        console.log({ findShop });
         updateData(findShop);
       } else {
         callApi(id);
@@ -155,7 +156,6 @@ const ShopAdd = () => {
   // UPDATE DATA
   const updateData = async (values) => {
     const {
-      delivery,
       seller,
       minOrderAmount,
       shopBanner,
@@ -172,6 +172,8 @@ const ShopAdd = () => {
       phone_number,
       cuisineType,
       expensive,
+      deliveryFee,
+      deliveryType,
     } = values;
     setEmail(email);
     setPhone(phone_number);
@@ -183,7 +185,6 @@ const ShopAdd = () => {
     setShopEndTime(shopEndTimeText);
     setShopName(shopName);
     setShopStatus(shopStatus);
-    setDelivery(delivery);
     setMinOrderAmount(minOrderAmount);
     setTags({
       items: tags,
@@ -194,6 +195,8 @@ const ShopAdd = () => {
     handleAddressSelect(address.address, address.placeId);
     setSelectedCuisines(cuisineType);
     setExpensive(expensive);
+    setDeliveryFee(deliveryFee);
+    setDeliveryType(deliveryType);
   };
 
   // TAGS
@@ -326,11 +329,13 @@ const ShopAdd = () => {
           shopPhotos: photosUrl,
           shopStatus: shopStatus,
           shopDescription: "desrcriptions",
-          delivery: delivery,
+
           tags: tags.items,
           liveStatus: liveStatus,
           cuisineType: cuisinesList,
           expensive,
+          deliveryType,
+          deliveryFee: parseInt(deliveryFee),
           shopAddress: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -369,7 +374,6 @@ const ShopAdd = () => {
             note: "",
           },
           seller: seller._id,
-          delivery: "pickup",
           shopType: seller.sellerType,
           shopStatus: shopStatus,
           tags: tags.items,
@@ -380,6 +384,8 @@ const ShopAdd = () => {
           cuisineType: cuisinesList,
           liveStatus,
           expensive,
+          deliveryType,
+          deliveryFee: parseInt(deliveryFee),
         })
       );
     }
@@ -435,7 +441,6 @@ const ShopAdd = () => {
         setShopEndTime("");
         setShopName("");
         setShopStatus("");
-        setDelivery("");
         setMinOrderAmount(0);
         setTags({
           items: [],
@@ -724,29 +729,7 @@ const ShopAdd = () => {
                         />
                       </div>
 
-                      {/* {!id && (
-                        <div className="mb-4">
-                          <FormControl required fullWidth>
-                            <InputLabel id="demo-simple-select-label">
-                              Free Delivery
-                            </InputLabel>
-                            <Select
-                              id="demo-simple-select"
-                              value={freeDelivery}
-                              onChange={(e) => setFreeDelivery(e.target.value)}
-                              label="Free Delivery"
-                            >
-                              {freeDeliveryOptions.map((item, index) => (
-                                <MenuItem key={index} value={item.value}>
-                                  {item.label}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      )} */}
-
-                      {/* <div className="mb-4">
+                      <div className="mb-4">
                         <FormControl required fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Delivery Type
@@ -754,18 +737,30 @@ const ShopAdd = () => {
                           <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={delivery}
-                            onChange={(e) => setDelivery(e.target.value)}
+                            value={deliveryType}
+                            onChange={(e) => setDeliveryType(e.target.value)}
                             label="Delivery  Type"
                           >
-                            {shopDeliveryOptions.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
+                            <MenuItem value="self">Self</MenuItem>
+                            <MenuItem value="drop">Drop</MenuItem>
                           </Select>
                         </FormControl>
-                      </div> */}
+                      </div>
+
+                      {deliveryType === "self" && (
+                        <div className="mb-4">
+                          <TextField
+                            type="number"
+                            name="DeliveryFee"
+                            className="form-control"
+                            placeholder="Enter delivery fee"
+                            required
+                            label="Delivery Fee"
+                            value={deliveryFee}
+                            onChange={(e) => setDeliveryFee(e.target.value)}
+                          />
+                        </div>
+                      )}
                     </Col>
                     <Col lg={6} className="mt-4 mt-lg-0">
                       <div className="mb-4">
@@ -994,6 +989,7 @@ const ShopAdd = () => {
                     </Col>
                   </Row>
 
+                  {/* IMAGES */}
                   <Row className="mt-4">
                     <Col xl={6}>
                       <Label>Shop Logo</Label>

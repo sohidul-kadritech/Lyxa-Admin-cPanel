@@ -160,7 +160,7 @@ const DeliveryTransactions = () => {
                     color="success"
                     onClick={() => downloadPdf()}
                   >
-                    Dowload PDF
+                    Download PDF
                   </Button>
                 </div>
                 <hr />

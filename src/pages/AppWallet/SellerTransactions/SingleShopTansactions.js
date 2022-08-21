@@ -109,11 +109,11 @@ const SingleShopTransactions = () => {
         title: "Total Profit",
         value: Number.isNaN(
           parseInt(shopTrxs?.shop?.totalShopUnsettle) +
-            parseInt(shopTrxs?.shop?.orderValue?.deliveryFee)
+            parseInt(shopTrxs?.shop?.totalShopEarning)
         )
           ? 0
           : parseInt(shopTrxs?.shop?.totalShopUnsettle) +
-            parseInt(shopTrxs?.shop?.orderValue?.deliveryFee),
+            parseInt(shopTrxs?.shop?.totalShopEarning),
       },
       { title: "Cash In Hand", value: shopTrxs?.shop?.cashInHand },
     ];
@@ -208,7 +208,7 @@ const SingleShopTransactions = () => {
                         setconfirm_alert(true);
                       }}
                     >
-                      Adjust Hand Cash
+                      Settle cash to admin
                     </Button>
                   </div>
                 </div>

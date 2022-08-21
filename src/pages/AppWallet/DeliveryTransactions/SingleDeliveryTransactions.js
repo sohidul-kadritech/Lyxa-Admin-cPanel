@@ -142,14 +142,14 @@ const SingleDeliveryTransactions = () => {
                       className="btn btn-success"
                       onClick={() => setOpenReceivedModal(!openReceivedModal)}
                     >
-                      Received Payment
+                      Received Cash
                     </Button>
                     <Button
                       className="btn btn-info ms-4"
                       onClick={() => setIsMakePayment(!isMakePayment)}
                     >
                       {" "}
-                      Make Payment{" "}
+                      Make Payment
                     </Button>
                   </div>
                 </div>

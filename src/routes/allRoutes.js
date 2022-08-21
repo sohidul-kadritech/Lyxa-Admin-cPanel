@@ -138,7 +138,6 @@ import OrdersList from "./../pages/Orders/OrdersList/OrdersList";
 import DealsList from "../pages/Deals/DealsList/DealsList";
 import DealsAdd from "../pages/Deals/DealsAdd/DealsAdd";
 import DropPayList from "../pages/DropPay/DropPayList/DropPayList";
-import transactions from "../pages/Transactions/Transactions";
 import PercentageSetting from "./../pages/AppWallet/PercentageSetting/PercentageSetting";
 import AdminLogHistory from "./../pages/AppWallet/AdminLogHistory/AdminLogHistory";
 import SellerTransactions from "./../pages/AppWallet/SellerTransactions/SellerTransactions";
@@ -241,10 +240,6 @@ const userRoutes = [
 
   // DROP PAY
   { path: "/drop-pay", component: DropPayList },
-
-  // TRANSACTIONS
-
-  { path: "/transactions", component: transactions },
 
   // APP WALLET
 
