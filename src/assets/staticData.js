@@ -14,6 +14,12 @@ export const liveStatusOptions = [
   { label: "Offline", value: "offline" },
 ];
 
+export const accountTypeOptions = [
+  { label: "User", value: "user" },
+  { label: "Shop", value: "shop" },
+  { label: "Delivery boy", value: "deliveryBoy" },
+];
+
 export const priceRangeOptions = [
   { label: "$", value: 1 },
   { label: "$$", value: 2 },

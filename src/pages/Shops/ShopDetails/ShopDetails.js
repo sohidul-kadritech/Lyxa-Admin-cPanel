@@ -139,6 +139,16 @@ const ShopDetails = () => {
     }
   };
 
+  const updatePriceRange = (value) => {
+    return value === 1
+      ? "$"
+      : value === 2
+      ? "$$"
+      : value === "3"
+      ? "$$$"
+      : "$$$$";
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -236,18 +246,21 @@ const ShopDetails = () => {
                     <Info title="Address" value={shop?.address.address} />
                     <Info
                       title="Delivery fee"
-                      value={`${shop?.deliveryFeePerKm} NGN`}
+                      value={`${shop?.deliveryFee} NGN`}
                     />
-                    <Info
+                    {/* <Info
                       title="Drop charge"
                       value={`${shop?.dropChargePerKm} NGN`}
-                    />
+                    /> */}
                     <Info
                       title="Free Delivery"
                       value={shop?.freeDelivery ? "Yes" : "No"}
                     />
 
-                    <Info title="Price Range" value={shop?.expensive} />
+                    <Info
+                      title="Price Range"
+                      value={updatePriceRange(shop?.expensive)}
+                    />
 
                     {shop?.foodType && (
                       <Info title="Type" value={shop?.foodType} />

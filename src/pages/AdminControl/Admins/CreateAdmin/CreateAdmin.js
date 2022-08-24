@@ -48,7 +48,7 @@ const CreateAdmin = () => {
   const [role, setRole] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
 
-  const { account_type, _id: accountId } = JSON.parse(
+  const { account_type: accountType, _id: accountId } = JSON.parse(
     localStorage.getItem("admin")
   );
 
@@ -92,7 +92,8 @@ const CreateAdmin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (accountId === "admin") {
+    if (accountType === "admin") {
+      console.log("ceate admin");
       if (id) {
         dispatch(
           editAdmin({
@@ -115,7 +116,7 @@ const CreateAdmin = () => {
           })
         );
       }
-    } else if (account_type === "seller") {
+    } else if (accountType === "seller") {
       dispatch(
         addSellerCredential({
           email,
@@ -158,9 +159,9 @@ const CreateAdmin = () => {
               maintitle="Drop"
               breadcrumbItem={id ? "Edit" : "Create"}
               title={
-                account_type === "shop"
+                accountType === "shop"
                   ? "Shop Crediantial"
-                  : account_type === "seller"
+                  : accountType === "seller"
                   ? "Seller Crediantial"
                   : "Admin"
               }
@@ -174,15 +175,15 @@ const CreateAdmin = () => {
                 <CardBody>
                   <div className="py-3">
                     <h5>
-                      {account_type === "shop"
+                      {accountType === "shop"
                         ? "Shop Crediantial Informations"
-                        : account_type === "Seller"
+                        : accountType === "Seller"
                         ? "Shop Crediantial Informations"
                         : "Admin Informations"}
                     </h5>
                     <hr />
                   </div>
-                  {account_type === "admin" && (
+                  {accountType === "admin" && (
                     <Row className="mb-3">
                       <Col xl={6} className="mb-3 mb-xl-0">
                         <TextField
@@ -260,7 +261,7 @@ const CreateAdmin = () => {
                     </Col>
                   </Row>
 
-                  {account_type === "admin" && (
+                  {accountType === "admin" && (
                     <Row className="mb-3">
                       <Col xl={6} className="mb-3 mb-xl-0">
                         <FormControl fullWidth required>

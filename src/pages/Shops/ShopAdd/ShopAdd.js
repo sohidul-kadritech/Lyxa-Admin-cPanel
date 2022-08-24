@@ -120,8 +120,8 @@ const ShopAdd = () => {
   useEffect(() => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
+
       if (findShop) {
-        console.log({ findShop });
         updateData(findShop);
       } else {
         callApi(id);
@@ -173,7 +173,7 @@ const ShopAdd = () => {
       cuisineType,
       expensive,
       deliveryFee,
-      deliveryType,
+      haveOwnDeliveryBoy,
     } = values;
     setEmail(email);
     setPhone(phone_number);
@@ -195,8 +195,8 @@ const ShopAdd = () => {
     handleAddressSelect(address.address, address.placeId);
     setSelectedCuisines(cuisineType);
     setExpensive(expensive);
-    setDeliveryFee(deliveryFee);
-    setDeliveryType(deliveryType);
+    setDeliveryFee(haveOwnDeliveryBoy ? deliveryFee : 0);
+    setDeliveryType(haveOwnDeliveryBoy ? "self" : "drop");
   };
 
   // TAGS

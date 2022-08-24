@@ -56,11 +56,6 @@ const SingleShopTransactions = () => {
   const [isMakePayment, setIsMakePayment] = useState(false);
   const [openCreditModal, setOpenCreditModal] = useState(false);
   const [shopId, setShopId] = useState("");
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
-  const [error_dlg, seterror_dlg] = useState(false);
 
   const { shopName: name, _id: accountId } = JSON.parse(
     localStorage.getItem("admin")
@@ -68,7 +63,6 @@ const SingleShopTransactions = () => {
 
   useEffect(() => {
     if (searchParams.get("shopId") || accountId) {
-      console.log("call");
       searchParams.get("shopName")
         ? setShopName(searchParams.get("shopName"))
         : setShopName(name);
@@ -88,7 +82,7 @@ const SingleShopTransactions = () => {
   // CALL API TO GET SELLER TRANSACTIONS
 
   const callTransList = (refresh = false, IdOfShop) => {
-    dispatch(getShopTrxs(refresh, IdOfShop));
+    dispatch(getShopTrxs(refresh, IdOfShop ? IdOfShop : shopId));
   };
 
   // SUMMARY
@@ -115,7 +109,6 @@ const SingleShopTransactions = () => {
           : parseInt(shopTrxs?.shop?.totalShopUnsettle) +
             parseInt(shopTrxs?.shop?.totalShopEarning),
       },
-      { title: "Cash In Hand", value: shopTrxs?.shop?.cashInHand },
     ];
     setSummary(summaryList);
   }, [shopTrxs]);
@@ -128,48 +121,11 @@ const SingleShopTransactions = () => {
     }
   }, [status]);
 
-  const adjustCashInHandAmount = () => {
-    if (shopTrxs?.shop?.cashInHand <= 0) {
-      setconfirm_alert(false);
-      seterror_dlg(true);
-      setdynamic_title("Error");
-      setdynamic_description("Cash in hand is 0");
-    } else {
-      dispatch(adjustShopCash(shopId));
-      setconfirm_alert(false);
-      setsuccess_dlg(true);
-      setdynamic_title("Success");
-      setdynamic_description("Successfully adjust hand cash");
-    }
-  };
-
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : error_dlg ? (
-              <SweetAlert
-                error
-                title={dynamic_title}
-                onConfirm={() => {
-                  seterror_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
-
             <Breadcrumb
               maintitle="Drop"
               breadcrumbItem={shopName}
@@ -201,14 +157,6 @@ const SingleShopTransactions = () => {
                       onClick={() => setIsMakePayment(!isMakePayment)}
                     >
                       Make Payment
-                    </Button>
-                    <Button
-                      className="btn btn-danger ms-4"
-                      onClick={() => {
-                        setconfirm_alert(true);
-                      }}
-                    >
-                      Settle cash to admin
                     </Button>
                   </div>
                 </div>
@@ -298,26 +246,6 @@ const SingleShopTransactions = () => {
             />
           </div>
         </Modal>
-
-        {confirm_alert ? (
-          <SweetAlert
-            title="Are you sure?"
-            warning
-            showCancel
-            confirmButtonText="Yes, delete it!"
-            confirmBtnBsStyle="success"
-            cancelBtnBsStyle="danger"
-            // onConfirm={() => {
-
-            //   setconfirm_alert(false);
-            //   setsuccess_dlg(true);
-            //   setdynamic_title("Deleted");
-            //   setdynamic_description("Your file has been deleted.");
-            // }}
-            onConfirm={() => adjustCashInHandAmount()}
-            onCancel={() => setconfirm_alert(false)}
-          ></SweetAlert>
-        ) : null}
       </GlobalWrapper>
     </React.Fragment>
   );

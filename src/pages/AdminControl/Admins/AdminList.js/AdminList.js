@@ -99,7 +99,7 @@ const AdminList = () => {
                           <Td>{item?.email}</Td>
                           <Td>{item?.phone_number}</Td>
                           <Td>{item?.status}</Td>
-                          <Td>{"role"}</Td>
+                          <Td></Td>
                           <Td>
                             <div>
                               <button

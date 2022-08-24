@@ -233,6 +233,13 @@ export const adminMenuItem = [
     isSubmenu: false,
   },
   {
+    id: 18,
+    name: "Notifications",
+    icon: "fas fa-bell",
+    link: "/admin/send-notifications",
+    isSubmenu: false,
+  },
+  {
     id: 12,
     name: "Chat",
     icon: "fas fa-comment-dollar",
@@ -323,28 +330,28 @@ export const adminMenuItem = [
     ],
   },
   {
-    id: 16,
+    id: 17,
     name: "Terms and Conditions",
     icon: "ti-settings",
     link: "/#",
     isSubmenu: true,
     submenu: [
       {
-        id: 160,
+        id: 170,
         name: "User App",
         icon: "ti-settings",
         link: "/terms-and-conditions/user-app",
         isSubmenu: false,
       },
       {
-        id: 161,
+        id: 171,
         name: "Shop App",
         icon: "ti-settings",
         link: "/terms-and-conditions/shop-app",
         isSubmenu: false,
       },
       {
-        id: 162,
+        id: 172,
         name: "Delivery App",
         icon: "ti-settings",
         link: "/terms-and-conditions/delivery-app",

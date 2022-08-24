@@ -36,7 +36,6 @@ import ShopTable from "../../../components/ShopTable";
 
 const ShopList = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const {
     statusKey,

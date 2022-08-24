@@ -176,6 +176,7 @@ import UserTermsAndConditions from "../pages/TermsAndConditons/UserTermsAndCondi
 import ShopTermsAndConditions from "../pages/TermsAndConditons/ShopTermsAndConditions";
 import DeliveryTermsAndConditions from "../pages/TermsAndConditons/DeliveryTermsAndConditions";
 import Transactions from "./../pages/Transactions/Transactions";
+import SendNotifications from "../pages/Notifications/SendNotifications";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -308,6 +309,10 @@ const userRoutes = [
     path: "/terms-and-conditions/delivery-app",
     component: DeliveryTermsAndConditions,
   },
+
+  // NOTIFICATIONS
+
+  { path: "/admin/send-notifications", component: SendNotifications },
 
   // //calendar
   { path: "/calendar", component: Calendar },

@@ -50,6 +50,7 @@ const SellerDetails = () => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
       if (findSeller) {
+        console.log({ findSeller });
         setSeller(findSeller);
       } else {
         callApi(id);

@@ -19,7 +19,6 @@ import { successMsg } from "../../helpers/successMsg";
 
 // ADD
 export const addShop = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_SHOP_REQUEST_SEND,
@@ -105,7 +104,6 @@ export const getAllShop =
 // EDIT
 
 export const editShop = (values) => async (dispatch) => {
-  console.log("shop edit values", values);
   try {
     dispatch({
       type: actionType.EDIT_SHOP_REQUEST_SEND,
@@ -333,7 +331,6 @@ export const addCuisine = (name) => async (dispatch) => {
 // SET AS FEATURED SHOP
 
 export const setAsFeaturedShop = (values) => async (dispatch) => {
-  console.log("values", values);
   try {
     dispatch({
       type: actionType.SET_FEATURED_SHOP_REQUEST_SEND,
