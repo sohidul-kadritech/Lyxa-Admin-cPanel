@@ -33,6 +33,7 @@ import orderReducer from "./order/orderReducer";
 import chatReducer from "./chat/chatReducer";
 import socketReducer from "./socket/socketReducer";
 import unitTypeReducer from "./unitType/unitTypeReducer";
+import notificationReducer from "./Notification/notificationReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -64,6 +65,7 @@ const rootReducer = combineReducers({
   chatReducer,
   socketReducer,
   unitTypeReducer,
+  notificationReducer,
 });
 
 export default rootReducer;

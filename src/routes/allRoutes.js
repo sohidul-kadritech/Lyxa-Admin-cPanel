@@ -177,6 +177,7 @@ import ShopTermsAndConditions from "../pages/TermsAndConditons/ShopTermsAndCondi
 import DeliveryTermsAndConditions from "../pages/TermsAndConditons/DeliveryTermsAndConditions";
 import Transactions from "./../pages/Transactions/Transactions";
 import SendNotifications from "../pages/Notifications/SendNotifications";
+import NotificationsList from "../pages/Notifications/NotificationsList";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -313,6 +314,7 @@ const userRoutes = [
   // NOTIFICATIONS
 
   { path: "/admin/send-notifications", component: SendNotifications },
+  { path: "/admin/notifications/list", component: NotificationsList },
 
   // //calendar
   { path: "/calendar", component: Calendar },

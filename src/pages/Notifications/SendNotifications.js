@@ -20,6 +20,8 @@ import {
   Form,
   Row,
   Label,
+  Button,
+  Spinner,
 } from "reactstrap";
 import { accountTypeOptions } from "../../assets/staticData";
 import Breadcrumb from "../../components/Common/Breadcrumb";
@@ -40,6 +42,10 @@ import {
   allDeliveryMan,
   updateDeliveryManSearchKey,
 } from "../../store/DeliveryMan/DeliveryManAction";
+import { successMsg } from "../../helpers/successMsg";
+import requestApi from "../../network/httpRequest";
+import { IMAGE_UPLOAD } from "../../network/Api";
+import { createNotification } from "../../store/Notification/notificationAction";
 
 const SendNotifications = () => {
   const dispatch = useDispatch();
@@ -53,15 +59,19 @@ const SendNotifications = () => {
     (state) => state.deliveryManReducer
   );
 
+  const { status, loading } = useSelector((state) => state.notificationReducer);
+
   const [notification, setNotification] = useState({
     title: "",
     accountType: "",
     type: "",
-    user: "",
     description: "",
     descriptionHtml: "",
-    image: "",
+    image: null,
+    byAdmin: true,
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   const [editorState, setEditorState] = useState(() => {
     EditorState.createEmpty();
@@ -70,6 +80,7 @@ const SendNotifications = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNotification({ ...notification, [name]: value });
+    (name === "type" || name === "accountType") && setUser(null);
   };
 
   const handleAcceptedFiles = (files) => {
@@ -84,16 +95,14 @@ const SendNotifications = () => {
 
   const updateDescription = async (state) => {
     setEditorState(state);
-
-    let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-    let currentContextAsRow = convertToRaw(editorState.getCurrentContent())
-      .blocks[0].text;
+    let currentContentAsHTML =
+      editorState && convertToHTML(editorState?.getCurrentContent());
+    // // let currentContextAsRow = convertToRaw(editorState?.getCurrentContent())
+    //   ?.blocks[0]?.text;
     setNotification({
       ...notification,
       descriptionHtml: currentContentAsHTML,
-      description: currentContextAsRow,
     });
-    // setDescription(currentContentAsHTML);
   };
 
   // GET USER/SHOP/DELIVERY LIST
@@ -122,6 +131,76 @@ const SendNotifications = () => {
     riderSearchKey,
   ]);
 
+  const addNotification = (e) => {
+    // console.log()
+    e.preventDefault();
+    if (!notification.image) {
+      return successMsg("Upload a image", "error");
+    }
+    if (!notification.description) {
+      return successMsg("Enter descriptions", "error");
+    }
+
+    //  UPLAOD IMAGE TO SERVER
+
+    if (typeof notification.image === "string") {
+      submitData(notification.image);
+    } else {
+      imageUploadToServer();
+    }
+  };
+
+  const imageUploadToServer = async () => {
+    try {
+      setIsLoading(true);
+      let formData = new FormData();
+      formData.append("image", notification?.image);
+
+      const { data } = await requestApi().request(IMAGE_UPLOAD, {
+        method: "POST",
+        data: formData,
+      });
+
+      if (data.status) {
+        setIsLoading(false);
+        submitData(data.data.url);
+      } else {
+        setIsLoading(false);
+        return successMsg(data.error, "error");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      return successMsg("Something went wrong", "error");
+    }
+  };
+
+  // SUBMIT DATA
+
+  const submitData = (image) => {
+    dispatch(
+      createNotification({
+        ...notification,
+        image,
+        [notification.accountType]: user?._id ?? "",
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (status) {
+      setNotification({
+        title: "",
+        accountType: "",
+        type: "",
+        description: "",
+        descriptionHtml: "",
+        image: null,
+        byAdmin: true,
+      });
+      setUser(null);
+    }
+  }, [status]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -139,7 +218,7 @@ const SendNotifications = () => {
               <CardBody>
                 <CardTitle>Notification Infomations</CardTitle>
                 <hr />
-                <Form>
+                <Form onSubmit={addNotification}>
                   <Row>
                     <Col lg={6}>
                       <div className="mb-4">
@@ -302,12 +381,9 @@ const SendNotifications = () => {
                         {notification.type === "specific" && (
                           <Autocomplete
                             className="cursor-pointer"
-                            // value={seller}
+                            value={user}
                             onChange={(event, newValue) => {
-                              setNotification({
-                                ...notification,
-                                user: newValue._id,
-                              });
+                              setUser(newValue);
                             }}
                             getOptionLabel={(option, index) =>
                               option.name
@@ -381,11 +457,32 @@ const SendNotifications = () => {
                           editorClassName="editorClassName"
                           editorState={editorState}
                           defaultEditorState={editorState}
-                          // onChange={(e) => console.log(e.blocks[0].text)}
+                          onChange={(e) =>
+                            setNotification({
+                              ...notification,
+                              description: e.blocks[0].text,
+                            })
+                          }
                         />
                       </div>
                     </Col>
                   </Row>
+                  <div className="d-flex justify-content-center">
+                    <Button
+                      color="success"
+                      size="lg"
+                      className="px-4"
+                      type="submit"
+                      style={{ width: "150px" }}
+                      disabled={loading || isLoading}
+                    >
+                      {loading || isLoading ? (
+                        <Spinner color="danger" size="sm"></Spinner>
+                      ) : (
+                        "Submit"
+                      )}
+                    </Button>
+                  </div>
                 </Form>
               </CardBody>
             </Card>

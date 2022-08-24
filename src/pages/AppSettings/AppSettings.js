@@ -81,7 +81,7 @@ const AppSettings = () => {
                       id="outlined-basic"
                       label="Max Discount(Amount)"
                       variant="outlined"
-                      placeholder="Enter max discount amount"
+                      placeholder="Enter near shop Distance"
                       value={appSettingsOptions.maxDiscount}
                       onChange={(e) =>
                         dispatch(updateMaxDiscount(e.target.value))

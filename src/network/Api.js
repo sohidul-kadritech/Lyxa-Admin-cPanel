@@ -198,6 +198,11 @@ export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
 
 export const ADD_TERMS_AND_CONDITIONS = ADMIN_ENDPOINT + "/";
 
+// NOTIFICATION
+
+export const CREATE_NOTIFICATION = ADMIN_ENDPOINT + "/notification/add";
+export const GET_NOTIFICATIONS = ADMIN_ENDPOINT + "/notification";
+
 // IMAGE UPLOAD
 
 export const IMAGE_UPLOAD = "image/single-image-upload";

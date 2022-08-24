@@ -236,8 +236,24 @@ export const adminMenuItem = [
     id: 18,
     name: "Notifications",
     icon: "fas fa-bell",
-    link: "/admin/send-notifications",
-    isSubmenu: false,
+    link: "/#",
+    isSubmenu: true,
+    submenu: [
+      {
+        id: 180,
+        name: "List",
+        icon: "fas fa-clipboard-list",
+        link: "/admin/notifications/list",
+        isSubmenu: false,
+      },
+      {
+        id: 181,
+        name: "Add",
+        icon: "fas fa-plus-circle",
+        link: "/admin/send-notifications",
+        isSubmenu: false,
+      },
+    ],
   },
   {
     id: 12,
