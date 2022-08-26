@@ -22,6 +22,42 @@ import { DELIVERY_TRX, SINGLE_DELIVERY_TRX } from "../../../network/Api";
 import AppPagination from "../../../components/AppPagination";
 import TransactionsTable from "../../../components/TransactionsTable";
 import MakePayment from "../../../components/MakePayment";
+import PropTypes from "prop-types";
+import { Box, Tab, Typography } from "@mui/material";
+import { Tabs } from "@material-ui/core";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 const SingleDeliveryTransactions = () => {
   const { id } = useParams();
@@ -74,30 +110,22 @@ const SingleDeliveryTransactions = () => {
       const summaryList = [
         {
           title: "Drop Earning",
-          value: Number.isNaN(
-            parseInt(trxs?.deliveryBoy?.orderValue?.deliveryFee) -
-              parseInt(trxs?.deliveryBoy?.deliveyBoyEarning)
-          )
-            ? 0
-            : parseInt(trxs?.deliveryBoy?.orderValue?.deliveryFee) -
-              parseInt(trxs?.deliveryBoy?.deliveyBoyEarning),
+          value: trxs?.summary?.dropEarning,
         },
 
         {
           title: "Unsetlled Amount",
-          value: trxs?.deliveryBoy?.totalUnSettleAmount,
+          value: trxs?.summary?.totalUnSettleAmount,
         },
         {
           title: "Rider Earning",
-          value: trxs?.deliveryBoy?.deliveyBoyEarning,
+          value: trxs?.summary?.riderEarning,
         },
         {
           title: "Total Profit",
-          value:
-            parseInt(trxs?.deliveryBoy?.totalUnSettleAmount) +
-            parseInt(trxs?.deliveryBoy?.deliveyBoyEarning),
+          value: trxs?.summary?.totalProfitRider,
         },
-        { title: "Cash In Hand", value: trxs?.deliveryBoy?.cashInHand },
+        { title: "Cash In Hand", value: trxs?.summary?.totalCashInHand },
       ];
       setSummary(summaryList);
     }
@@ -110,6 +138,12 @@ const SingleDeliveryTransactions = () => {
       callApi(riderId);
     }
   }, [status]);
+
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   return (
     <React.Fragment>
@@ -127,7 +161,88 @@ const SingleDeliveryTransactions = () => {
               <TransactionsCard summary={summary} />
             </div>
 
-            <Card>
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                >
+                  <Tab label="Transactions List" {...a11yProps(0)} />
+                  <Tab label="Cash order List" {...a11yProps(1)} />
+                </Tabs>
+              </Box>
+              <TabPanel value={value} index={0}>
+                <Card>
+                  <CardBody>
+                    <Row className="mb-3">
+                      <Col md={3} className="text-end" />
+                    </Row>
+                    <div className="d-flex justify-content-between pb-3">
+                      <CardTitle className="h4"> Transactions List</CardTitle>
+                      <div>
+                        {/* <Button
+                          className="btn btn-success"
+                          onClick={() =>
+                            setOpenReceivedModal(!openReceivedModal)
+                          }
+                        >
+                          Received Cash
+                        </Button> */}
+                        <Button
+                          className="btn btn-info ms-4"
+                          onClick={() => setIsMakePayment(!isMakePayment)}
+                        >
+                          {" "}
+                          Make Payment
+                        </Button>
+                      </div>
+                    </div>
+
+                    <TransactionsTable
+                      trxs={trxs?.transections}
+                      loading={loading}
+                    />
+                  </CardBody>
+                </Card>
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                <Card>
+                  <CardBody>
+                    <Row className="mb-3">
+                      <Col md={3} className="text-end" />
+                    </Row>
+                    <div className="d-flex justify-content-between pb-3">
+                      <CardTitle className="h4"> Cash order list</CardTitle>
+                      <div>
+                        <Button
+                          className="btn btn-success"
+                          onClick={() =>
+                            setOpenReceivedModal(!openReceivedModal)
+                          }
+                        >
+                          Received Cash
+                        </Button>
+                        {/* <Button
+                          className="btn btn-info ms-4"
+                          onClick={() => setIsMakePayment(!isMakePayment)}
+                        >
+                          {" "}
+                          Make Payment
+                        </Button> */}
+                      </div>
+                    </div>
+
+                    <TransactionsTable
+                      trxs={trxs?.cashOrderList}
+                      loading={loading}
+                    />
+                  </CardBody>
+                </Card>
+              </TabPanel>
+            </Box>
+
+            {/* <Card>
               <CardBody>
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
@@ -159,7 +274,7 @@ const SingleDeliveryTransactions = () => {
                   loading={loading}
                 />
               </CardBody>
-            </Card>
+            </Card> */}
             <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">

@@ -111,7 +111,11 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         loading: false,
-        shopTrxs: { trxs: payload.transections, shop: payload.shop },
+        shopTrxs: {
+          trxs: payload.transections,
+          shop: payload.shop,
+          summary: payload.summary,
+        },
         Paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,

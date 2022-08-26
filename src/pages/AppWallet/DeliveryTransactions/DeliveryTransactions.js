@@ -84,20 +84,14 @@ const DeliveryTransactions = () => {
     const marginLeft = 40;
 
     const data = deliveryTrxs.map((trx) => [
-      trx.name,
-      trx.totalOrder,
-      trx?.orderValue?.deliveryFee,
-      Number.isNaN(
-        parseInt(trx?.orderValue?.deliveryFee) -
-          parseInt(trx?.deliveyBoyEarning)
-      )
-        ? 0
-        : parseInt(trx?.orderValue?.deliveryFee) -
-          parseInt(trx?.deliveyBoyEarning),
-      trx?.totalUnSettleAmount,
-      trx?.deliveyBoyEarning,
-      trx?.cashInHand,
-      trx?.settleAmount,
+      trx?.name,
+      trx?.summary?.totalOrder,
+      trx?.summary?.totalDeliveyFee,
+      trx?.summary?.dropEarning,
+      trx?.summary?.totalUnSettleAmount,
+      trx?.summary?.riderEarning,
+      trx?.summary.totalCashInHand,
+      trx?.summary.settleAmount,
     ]);
 
     let content = {
@@ -198,21 +192,13 @@ const DeliveryTransactions = () => {
                         >
                           <Th title="Click to see details">{item?.name}</Th>
 
-                          <Td>{item?.totalOrder}</Td>
-                          <Td>{item?.orderValue?.deliveryFee}</Td>
-                          <Td>
-                            {Number.isNaN(
-                              parseInt(item?.orderValue?.deliveryFee) -
-                                parseInt(item?.deliveyBoyEarning)
-                            )
-                              ? 0
-                              : parseInt(item?.orderValue?.deliveryFee) -
-                                parseInt(item?.deliveyBoyEarning)}
-                          </Td>
-                          <Td>{item?.totalUnSettleAmount ?? 0}</Td>
-                          <Td>{item?.deliveyBoyEarning ?? 0}</Td>
-                          <Td>{item?.cashInHand}</Td>
-                          <Td>{item?.settleAmount ?? 0}</Td>
+                          <Td>{item?.summary?.totalOrder}</Td>
+                          <Td>{item?.summary?.totalDeliveyFee}</Td>
+                          <Td>{item?.summary?.dropEarning}</Td>
+                          <Td>{item?.summary?.totalUnSettleAmount}</Td>
+                          <Td>{item?.summary?.riderEarning}</Td>
+                          <Td>{item?.summary.totalCashInHand}</Td>
+                          <Td>{item?.summary.settleAmount}</Td>
                         </Tr>
                       ))}
                   </Tbody>

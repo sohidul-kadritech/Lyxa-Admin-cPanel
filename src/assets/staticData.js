@@ -234,6 +234,19 @@ export const cancelReasonOptions2 = [
   { label: "User Refund", value: "userRefund" },
 ];
 
+export const userTypesOptions = [
+  { label: "All", value: "all" },
+  { label: "User", value: "user" },
+  { label: "Shop", value: "shop" },
+  { label: "Delivery Boy", value: "deliveryBoy" },
+];
+
+export const globalTypesOptions = [
+  { label: "All", value: "all" },
+  { label: "Global", value: "Global" },
+  { label: "Specific", value: "specific" },
+];
+
 export const logoSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

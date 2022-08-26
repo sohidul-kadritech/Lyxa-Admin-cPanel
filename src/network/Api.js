@@ -202,6 +202,8 @@ export const ADD_TERMS_AND_CONDITIONS = ADMIN_ENDPOINT + "/";
 
 export const CREATE_NOTIFICATION = ADMIN_ENDPOINT + "/notification/add";
 export const GET_NOTIFICATIONS = ADMIN_ENDPOINT + "/notification";
+export const UPDATE_NOTIFICATION_STATUS =
+  ADMIN_ENDPOINT + "/notification/delete";
 
 // IMAGE UPLOAD
 

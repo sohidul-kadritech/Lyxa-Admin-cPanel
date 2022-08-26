@@ -27,19 +27,15 @@ const MakePayment = ({
 
   const submitSettleAmount = (e) => {
     e.preventDefault();
-    if (settleAmount <= 0) {
-      return successMsg(
-        "Please enter a valid amount to settle the transaction",
-        "error"
-      );
-    } else if (settleAmount > unSettleAmount) {
-      return successMsg(
-        "Settle amount should be less than unsettled amount",
-        "error"
-      );
-    } else {
-      submitData();
-    }
+    //  if (settleAmount > unSettleAmount) {
+    //   return successMsg(
+    //     "Settle amount should be less than unsettled amount",
+    //     "error"
+    //   );
+    // } else {
+
+    // }
+    submitData();
   };
 
   const submitData = () => {

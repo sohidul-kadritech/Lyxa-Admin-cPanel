@@ -88,12 +88,12 @@ const ShopsTransactions = () => {
 
     const data = sellerTrxs.map((trx) => [
       trx.shopName,
-      trx.totalOrder,
-      trx?.orderValue?.productAmount.toFixed(2),
-      trx?.orderValue?.deliveryFee,
-      trx?.dropGetFromShop ?? 0,
-      trx?.totalShopUnsettle ?? 0,
-      trx?.totalShopEarning ?? 0,
+      trx?.summary?.totalOrder,
+      trx?.summary?.orderValue?.productAmount.toFixed(2),
+      trx?.summary?.orderValue?.deliveryFee,
+      trx?.summary?.totalDropGet,
+      trx?.summary?.totalShopUnsettle,
+      trx?.summary?.totalShopEarning,
     ]);
 
     let content = {
@@ -164,12 +164,14 @@ const ShopsTransactions = () => {
                         >
                           <Th title="Click to see Details">{trx?.shopName}</Th>
 
-                          <Td>{trx?.totalOrder}</Td>
-                          <Td>{trx?.orderValue?.productAmount.toFixed(2)}</Td>
-                          <Td>{trx?.orderValue?.deliveryFee}</Td>
-                          <Td>{trx?.dropGetFromShop ?? 0}</Td>
-                          <Td>{trx?.totalShopUnsettle ?? 0}</Td>
-                          <Td>{trx?.totalShopEarning ?? 0}</Td>
+                          <Td>{trx?.summary?.totalOrder}</Td>
+                          <Td>
+                            {trx?.summary?.orderValue?.productAmount.toFixed(2)}
+                          </Td>
+                          <Td>{trx?.summary?.orderValue?.deliveryFee}</Td>
+                          <Td>{trx?.summary?.totalDropGet}</Td>
+                          <Td>{trx?.summary?.totalShopUnsettle}</Td>
+                          <Td>{trx?.summary?.totalShopEarning}</Td>
                         </Tr>
                       ))}
                   </Tbody>

@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Spinner } from "reactstrap";
+
 const TransactionsTable = ({ trxs = [], loading }) => {
   const updateTrxType = (type) => {
     let newType = "";
@@ -37,6 +38,7 @@ const TransactionsTable = ({ trxs = [], loading }) => {
             <Th>transaction Type</Th>
             <Th>Date</Th>
             <Th>Admin</Th>
+            <Th>Action</Th>
           </Tr>
         </Thead>
         <Tbody style={{ position: "relative" }}>

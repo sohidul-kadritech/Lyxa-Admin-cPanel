@@ -10,6 +10,9 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  activeStatus: { label: "All", value: "all" },
+  accountType: { label: "All", value: "all" },
+  type: { label: "All", value: "all" },
 };
 
 const notificationReducer = (state = initialState, action) => {
@@ -66,6 +69,45 @@ const notificationReducer = (state = initialState, action) => {
         error: payload,
         status: false,
         loading: false,
+      };
+
+    case actionType.UPDATE_NOTIFICATION_STATUS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+    case actionType.UPDATE_NOTIFICATION_STATUS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.UPDATE_NOTIFICATION_STATUS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.UPDATE_NOTIFICATION_ACTIVE_STATUS:
+      return {
+        ...state,
+        activeStatus: payload,
+      };
+
+    case actionType.UPDATE_NOTIFICATION_ACCOUNT_TYPE:
+      return {
+        ...state,
+        accountType: payload,
+      };
+
+    case actionType.UPDATE_NOTIFICATION_TYPE:
+      return {
+        ...state,
+        type: payload,
       };
 
     default:

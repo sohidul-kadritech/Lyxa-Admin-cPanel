@@ -13,8 +13,20 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import AppPagination from "../../components/AppPagination";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllNotifications } from "../../store/Notification/notificationAction";
+import {
+  getAllNotifications,
+  updateNotificationAccountType,
+  updateNotificationActiveStatus,
+  updateNotificationStatus,
+  updateNotificationType,
+} from "../../store/Notification/notificationAction";
 import { Tooltip } from "@mui/material";
+import Select from "react-select";
+import {
+  productStatusOptions,
+  userTypesOptions,
+  globalTypesOptions,
+} from "./../../assets/staticData";
 
 const NotificationsList = () => {
   const dispatch = useDispatch();
@@ -26,15 +38,38 @@ const NotificationsList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    status,
+    activeStatus,
+    accountType,
+    type,
   } = useSelector((state) => state.notificationReducer);
 
   useEffect(() => {
-    callNotificationsList(true);
-  }, []);
+    if (activeStatus || accountType || type) {
+      callNotificationsList(true);
+    }
+  }, [activeStatus, accountType, type]);
 
   const callNotificationsList = (refresh = false) => {
     dispatch(getAllNotifications(refresh));
   };
+
+  // UPDATE STATUS
+
+  const updateStatus = (id, status) => {
+    dispatch(
+      updateNotificationStatus({
+        id,
+        status: status === "active" ? "inactive" : "active",
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (status) {
+      callNotificationsList(true);
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -48,6 +83,58 @@ const NotificationsList = () => {
               loading={loading}
               callList={callNotificationsList}
             />
+
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Active Status</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={productStatusOptions}
+                        classNamePrefix="select2-selection"
+                        value={activeStatus}
+                        onChange={(e) =>
+                          dispatch(updateNotificationActiveStatus(e))
+                        }
+                      />
+                    </div>
+                  </Col>
+
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Account Type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={userTypesOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={accountType}
+                        onChange={(e) =>
+                          dispatch(updateNotificationAccountType(e))
+                        }
+                        defaultValue={""}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={globalTypesOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={type}
+                        onChange={(e) => dispatch(updateNotificationType(e))}
+                        defaultValue={""}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
             <Card>
               <CardBody>
@@ -107,30 +194,30 @@ const NotificationsList = () => {
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
 
-                          {/* <Td>
+                          <Td>
                             <div>
-                              <Tooltip title="Edit">
+                              <Tooltip
+                                title={
+                                  item.status === "active"
+                                    ? "Deactive"
+                                    : "Active"
+                                }
+                              >
                                 <button
-                                  className="btn btn-success me-0 me-xl-2 button"
+                                  className={`btn ${
+                                    item.status === "active"
+                                      ? "btn-info"
+                                      : "btn-danger"
+                                  } button me-0 me-xl-2`}
                                   onClick={() =>
-                                    history.push(`/seller/edit/${item._id}`)
+                                    updateStatus(item?._id, item?.status)
                                   }
                                 >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button me-0 me-xl-2"
-                                  onClick={() =>
-                                    history.push(`/seller/details/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
+                                  <i className="fa fa-toggle-on" />
                                 </button>
                               </Tooltip>
                             </div>
-                          </Td> */}
+                          </Td>
                         </Tr>
                       );
                     })}

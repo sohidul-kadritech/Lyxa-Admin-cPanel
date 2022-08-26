@@ -89,25 +89,19 @@ const SingleShopTransactions = () => {
 
   useEffect(() => {
     const summaryList = [
-      { title: "Drop Earning", value: shopTrxs?.shop?.dropGetFromShop ?? 0 },
+      { title: "Drop Earning", value: shopTrxs?.summary?.totalDropGet },
 
       {
         title: "Unsetlled Amount",
-        value: shopTrxs?.shop?.totalShopUnsettle,
+        value: shopTrxs?.summary?.totalShopUnsettle,
       },
       {
         title: "Shop Earning",
-        value: shopTrxs?.shop?.totalShopEarning,
+        value: shopTrxs?.summary?.totalShopEarning,
       },
       {
         title: "Total Profit",
-        value: Number.isNaN(
-          parseInt(shopTrxs?.shop?.totalShopUnsettle) +
-            parseInt(shopTrxs?.shop?.totalShopEarning)
-        )
-          ? 0
-          : parseInt(shopTrxs?.shop?.totalShopUnsettle) +
-            parseInt(shopTrxs?.shop?.totalShopEarning),
+        value: shopTrxs?.summary?.toalShopProfile,
       },
     ];
     setSummary(summaryList);
