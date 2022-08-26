@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Spinner } from "reactstrap";
 
-const TransactionsTable = ({ trxs = [], loading }) => {
+const TransactionsTable = ({ trxs = [], loading, paymentSelect = false }) => {
   const updateTrxType = (type) => {
     let newType = "";
     if (type === "adminSettlebalanceShop") {
@@ -35,10 +35,10 @@ const TransactionsTable = ({ trxs = [], loading }) => {
           <Tr>
             <Th>ID</Th>
             <Th>Amount</Th>
-            <Th>transaction Type</Th>
+            <Th>Transaction Type</Th>
             <Th>Date</Th>
             <Th>Admin</Th>
-            <Th>Action</Th>
+            {paymentSelect && <Th>Select</Th>}
           </Tr>
         </Thead>
         <Tbody style={{ position: "relative" }}>
@@ -57,6 +57,21 @@ const TransactionsTable = ({ trxs = [], loading }) => {
               <Td>{updateTrxType(item?.type)}</Td>
               <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
               <Td>{item?.adminBy?.name}</Td>
+              {paymentSelect && (
+                <Td>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="flexCheckDefault"
+                    />
+                    {/* <label class="form-check-label" for="flexCheckDefault">
+                      Default checkbox
+                    </label> */}
+                  </div>
+                </Td>
+              )}
             </Tr>
           ))}
         </Tbody>

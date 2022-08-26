@@ -128,10 +128,7 @@ const OrderDetails = () => {
                       title="Drop Fee From Delivery"
                       value={`${order?.dropCharge?.dropChargeFromDelivery} NGN`}
                     />
-                    <Info
-                      title="Drop Fee From Order"
-                      value={`${order?.dropCharge?.dropChargeFromOrder} NGN`}
-                    /> */}
+                     */}
                     <Info title="Order Status" value={order?.orderStatus} />
                     <Info title="Order Type" value={order?.orderType} />
                   </Col>
@@ -148,6 +145,13 @@ const OrderDetails = () => {
                       title="Order Time"
                       value={new Date(order?.createdAt).toLocaleString()}
                     />
+                    {order?.deliveryBoy && (
+                      <Info
+                        title="Rider"
+                        value={order?.deliveryBoy?.name}
+                        link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
+                      />
+                    )}
                   </Col>
                 </Row>
               </CardBody>

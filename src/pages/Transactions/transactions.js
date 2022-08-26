@@ -208,7 +208,7 @@ const Transactions = () => {
                           <Td>{item?.amount}</Td>
 
                           <Td>{updateTrxType(item?.type)}</Td>
-                          <Td>{item?.paymentType}</Td>
+                          <Td>{item?.paymentMethod}</Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>

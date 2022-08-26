@@ -25,6 +25,7 @@ import MakePayment from "../../../components/MakePayment";
 import PropTypes from "prop-types";
 import { Box, Tab, Typography } from "@mui/material";
 import { Tabs } from "@material-ui/core";
+import styled from "styled-components";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -70,6 +71,7 @@ const SingleDeliveryTransactions = () => {
   const [isMakePayment, setIsMakePayment] = useState(false);
   const [openReceivedModal, setOpenReceivedModal] = useState(false);
   const [riderId, setRiderId] = useState(false);
+  const [selectedCash, setSelectedCash] = useState(0);
 
   const { status } = useSelector((state) => state.appWalletReducer);
 
@@ -214,6 +216,14 @@ const SingleDeliveryTransactions = () => {
                     </Row>
                     <div className="d-flex justify-content-between pb-3">
                       <CardTitle className="h4"> Cash order list</CardTitle>
+                      {selectedCash > 0 && (
+                        <SummaryWrapper>
+                          <div>
+                            <span className="title">Total Amount: </span>
+                            <span className="title">{selectedCash} NGN</span>
+                          </div>
+                        </SummaryWrapper>
+                      )}
                       <div>
                         <Button
                           className="btn btn-success"
@@ -236,6 +246,7 @@ const SingleDeliveryTransactions = () => {
                     <TransactionsTable
                       trxs={trxs?.cashOrderList}
                       loading={loading}
+                      paymentSelect={true}
                     />
                   </CardBody>
                 </Card>
@@ -317,7 +328,7 @@ const SingleDeliveryTransactions = () => {
         </div>
         <div className="modal-body">
           <MakePayment
-            unSettleAmount={trxs?.deliveryBoy?.totalUnSettleAmount}
+            unSettleAmount={trxs?.summary?.totalUnSettleAmount}
             id={trxs?.deliveryBoy?._id}
             type="rider"
           />
@@ -326,7 +337,7 @@ const SingleDeliveryTransactions = () => {
 
       {/* RECEIVED PAYMENT */}
 
-      <Modal
+      {/* <Modal
         isOpen={openReceivedModal}
         toggle={() => {
           setOpenReceivedModal(!openReceivedModal);
@@ -334,7 +345,7 @@ const SingleDeliveryTransactions = () => {
         centered={true}
       >
         <div className="modal-header">
-          <h5 className="modal-title mt-0">Make Payment</h5>
+          <h5 className="modal-title mt-0">Receive Payment</h5>
           <button
             type="button"
             onClick={() => {
@@ -348,16 +359,30 @@ const SingleDeliveryTransactions = () => {
           </button>
         </div>
         <div className="modal-body">
-          <MakePayment
-            unSettleAmount={trxs?.deliveryBoy?.cashInHand}
-            id={trxs?.deliveryBoy?._id}
-            type="rider"
-            receivedPayment={true}
-          />
+          <SummaryWrapper>
+            <div>
+              <span className="title">Total Amount: </span>
+              <span className="title">{25000} NGN</span>
+            </div>
+          </SummaryWrapper>
+          <div className="mt-3 d-flex justify-content-end">
+            <Button type="submit" color="success" disabled={loading}>
+              {loading ? "Receiving.." : "Receive"}
+            </Button>
+          </div>
         </div>
-      </Modal>
+      </Modal> */}
     </React.Fragment>
   );
 };
+
+const SummaryWrapper = styled.div`
+  padding: 10px 0px;
+
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+  }
+`;
 
 export default SingleDeliveryTransactions;

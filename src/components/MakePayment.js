@@ -8,13 +8,9 @@ import {
   riderReceivedPayment,
   shopMakePayment,
 } from "../store/appWallet/appWalletAction";
+import styled from "styled-components";
 
-const MakePayment = ({
-  unSettleAmount = 0,
-  id,
-  userType,
-  receivedPayment = false,
-}) => {
+const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
   const { loading } = useSelector((state) => state.appWalletReducer);
 
   const dispatch = useDispatch();
@@ -47,21 +43,22 @@ const MakePayment = ({
         })
       );
     } else {
-      if (receivedPayment) {
-        dispatch(
-          riderReceivedPayment({
-            deliveryBoyId: id,
-            amount: settleAmount,
-          })
-        );
-      } else {
-        dispatch(
-          riderMakePayment({
-            deliveryBoyId: id,
-            amount: settleAmount,
-          })
-        );
-      }
+      dispatch(
+        riderMakePayment({
+          deliveryBoyId: id,
+          amount: settleAmount,
+        })
+      );
+      // if (receivedPayment) {
+      //   dispatch(
+      //     riderReceivedPayment({
+      //       deliveryBoyId: id,
+      //       amount: settleAmount,
+      //     })
+      //   );
+      // } else {
+
+      // }
     }
   };
 
@@ -71,7 +68,7 @@ const MakePayment = ({
         <TextField
           style={{ width: "100%" }}
           id="outlined-basic"
-          label="Amount"
+          label="Settle Amount"
           type="number"
           variant="outlined"
           placeholder="Enter settle amount"
@@ -79,6 +76,38 @@ const MakePayment = ({
           onChange={(e) => setSettleAmount(e.target.value)}
           required
         />
+
+        <SummaryWrapper>
+          <div className="item">
+            <span className="title">Total Unsettled Amount: </span>
+            <span
+              className="title"
+              style={{ color: unSettleAmount < 0 ? "red" : "black" }}
+            >
+              {unSettleAmount} NGN
+            </span>
+          </div>
+          <div className="item">
+            <span className="title">Settle Amount: </span>
+            <span
+              className="title"
+              style={{ color: settleAmount < 0 ? "red" : "black" }}
+            >
+              {settleAmount} NGN
+            </span>
+          </div>
+          <div className="item remaining">
+            <span className="title">Remaining Unsettled Amount: </span>
+            <span
+              className="title"
+              style={{
+                color: unSettleAmount - settleAmount < 0 ? "red" : "black",
+              }}
+            >
+              {unSettleAmount - settleAmount} NGN
+            </span>
+          </div>
+        </SummaryWrapper>
 
         <div className="mt-3 d-flex justify-content-end">
           <Button
@@ -94,5 +123,26 @@ const MakePayment = ({
     </div>
   );
 };
+
+const SummaryWrapper = styled.div`
+  padding: 10px 0px;
+  margin-bottom: 15px;
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &.remaining {
+      border-top: 1px solid lightgray;
+      margin-top: 10px;
+    }
+  }
+
+  .title {
+    font-size: 15px;
+    font-weight: 400;
+  }
+`;
 
 export default MakePayment;

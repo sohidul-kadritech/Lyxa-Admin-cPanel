@@ -42,6 +42,7 @@ const NotificationsList = () => {
     activeStatus,
     accountType,
     type,
+    visibility,
   } = useSelector((state) => state.notificationReducer);
 
   useEffect(() => {
@@ -213,7 +214,15 @@ const NotificationsList = () => {
                                     updateStatus(item?._id, item?.status)
                                   }
                                 >
-                                  <i className="fa fa-toggle-on" />
+                                  {!loading ? (
+                                    <i className="fa fa-toggle-on" />
+                                  ) : (
+                                    <Spinner
+                                      animation="border"
+                                      variant="info"
+                                      size="sm"
+                                    />
+                                  )}
                                 </button>
                               </Tooltip>
                             </div>

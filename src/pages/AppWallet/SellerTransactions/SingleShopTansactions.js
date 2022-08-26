@@ -201,7 +201,7 @@ const SingleShopTransactions = () => {
           </div>
           <div className="modal-body">
             <MakePayment
-              unSettleAmount={shopTrxs?.shop?.totalShopUnsettle}
+              unSettleAmount={shopTrxs?.summary?.totalShopUnsettle}
               id={shopTrxs?.shop?._id}
               userType="shop"
             />
