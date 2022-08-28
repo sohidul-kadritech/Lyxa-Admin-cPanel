@@ -26,6 +26,9 @@ import PropTypes from "prop-types";
 import { Box, Tab, Typography } from "@mui/material";
 import { Tabs } from "@material-ui/core";
 import styled from "styled-components";
+import { TrxType } from "../../../components/updateTrxsType";
+import { successMsg } from "../../../helpers/successMsg";
+import { riderReceivedPayment } from "../../../store/appWallet/appWalletAction";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,7 +74,8 @@ const SingleDeliveryTransactions = () => {
   const [isMakePayment, setIsMakePayment] = useState(false);
   const [openReceivedModal, setOpenReceivedModal] = useState(false);
   const [riderId, setRiderId] = useState(false);
-  const [selectedCash, setSelectedCash] = useState(0);
+  const [selectedCash, setSelectedCash] = useState([]);
+  const [totalSelectedAmount, setTotalSelectdAmount] = useState(0);
 
   const { status } = useSelector((state) => state.appWalletReducer);
 
@@ -138,13 +142,42 @@ const SingleDeliveryTransactions = () => {
       setIsMakePayment(false);
       setOpenReceivedModal(false);
       callApi(riderId);
+      setSelectedCash([]);
+      setTotalSelectdAmount(0);
     }
   }, [status]);
 
-  const [value, setValue] = React.useState(0);
+  const [tabItem, setTabItem] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTabItem(newValue);
+  };
+
+  const cashReceived = (checked, trx) => {
+    if (checked) {
+      setSelectedCash([...selectedCash, trx]);
+      setTotalSelectdAmount((prev) => prev + trx.amount);
+    } else {
+      let newList = selectedCash.filter((item) => item._id !== trx._id);
+      setSelectedCash(newList);
+      setTotalSelectdAmount((prev) => prev - trx.amount);
+    }
+  };
+
+  //  RECEIVED CASH
+
+  const receivedCashFromRider = () => {
+    if (selectedCash.length === 0) {
+      return successMsg("Select atleast one transactions");
+    } else {
+      const trxIds = selectedCash.map((item) => item._id);
+      dispatch(
+        riderReceivedPayment({
+          deliveryBoyId: trxs?.deliveryBoy?._id,
+          idList: trxIds,
+        })
+      );
+    }
   };
 
   return (
@@ -166,7 +199,7 @@ const SingleDeliveryTransactions = () => {
             <Box sx={{ width: "100%" }}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
-                  value={value}
+                  value={tabItem}
                   onChange={handleChange}
                   aria-label="basic tabs example"
                 >
@@ -174,7 +207,7 @@ const SingleDeliveryTransactions = () => {
                   <Tab label="Cash order List" {...a11yProps(1)} />
                 </Tabs>
               </Box>
-              <TabPanel value={value} index={0}>
+              <TabPanel value={tabItem} index={0}>
                 <Card>
                   <CardBody>
                     <Row className="mb-3">
@@ -183,14 +216,6 @@ const SingleDeliveryTransactions = () => {
                     <div className="d-flex justify-content-between pb-3">
                       <CardTitle className="h4"> Transactions List</CardTitle>
                       <div>
-                        {/* <Button
-                          className="btn btn-success"
-                          onClick={() =>
-                            setOpenReceivedModal(!openReceivedModal)
-                          }
-                        >
-                          Received Cash
-                        </Button> */}
                         <Button
                           className="btn btn-info ms-4"
                           onClick={() => setIsMakePayment(!isMakePayment)}
@@ -208,84 +233,97 @@ const SingleDeliveryTransactions = () => {
                   </CardBody>
                 </Card>
               </TabPanel>
-              <TabPanel value={value} index={1}>
+              <TabPanel value={tabItem} index={1}>
                 <Card>
                   <CardBody>
                     <Row className="mb-3">
                       <Col md={3} className="text-end" />
                     </Row>
-                    <div className="d-flex justify-content-between pb-3">
+                    <div className="d-flex justify-content-between pb-3 align-items-center">
                       <CardTitle className="h4"> Cash order list</CardTitle>
-                      {selectedCash > 0 && (
+                      {totalSelectedAmount > 0 && (
                         <SummaryWrapper>
                           <div>
                             <span className="title">Total Amount: </span>
-                            <span className="title">{selectedCash} NGN</span>
+                            <span className="title">
+                              {totalSelectedAmount} NGN
+                            </span>
                           </div>
                         </SummaryWrapper>
                       )}
                       <div>
                         <Button
                           className="btn btn-success"
-                          onClick={() =>
-                            setOpenReceivedModal(!openReceivedModal)
-                          }
+                          onClick={receivedCashFromRider}
+                          disabled={loading}
                         >
-                          Received Cash
+                          {loading ? "Receiving..." : "Received Cash"}
                         </Button>
-                        {/* <Button
-                          className="btn btn-info ms-4"
-                          onClick={() => setIsMakePayment(!isMakePayment)}
-                        >
-                          {" "}
-                          Make Payment
-                        </Button> */}
                       </div>
                     </div>
 
-                    <TransactionsTable
-                      trxs={trxs?.cashOrderList}
-                      loading={loading}
-                      paymentSelect={true}
-                    />
+                    <Table
+                      id="tech-companies-1"
+                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                    >
+                      <Thead>
+                        <Tr>
+                          <Th>ID</Th>
+                          <Th>Amount</Th>
+                          <Th>Transaction Type</Th>
+                          <Th>Date</Th>
+                          <Th>Select</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody style={{ position: "relative" }}>
+                        {trxs?.cashOrderList?.map((item, index) => (
+                          <Tr
+                            key={index}
+                            className="align-middle table-data cursor-pointer"
+                            style={{
+                              fontSize: "15px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            <Th>{item?.autoTrxId}</Th>
+
+                            <Td>{item?.amount}</Td>
+                            <Td>{TrxType(item?.type)}</Td>
+                            <Td>
+                              {new Date(item?.createdAt).toLocaleDateString()}
+                            </Td>
+                            <Td>
+                              <div className="form-check d-flex justify-content-center">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  value=""
+                                  id="flexCheckDefault"
+                                  onChange={(e) =>
+                                    cashReceived(e.target.checked, item)
+                                  }
+                                />
+                              </div>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                    {loading && (
+                      <div className="text-center">
+                        <Spinner animation="border" variant="success" />
+                      </div>
+                    )}
+                    {!loading && trxs?.cashOrderList.length < 1 && (
+                      <div className="text-center">
+                        <h4>No Tansactions!</h4>
+                      </div>
+                    )}
                   </CardBody>
                 </Card>
               </TabPanel>
             </Box>
 
-            {/* <Card>
-              <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <div className="d-flex justify-content-between pb-3">
-                  <CardTitle className="h4">
-                    {" "}
-                    Delivery boy Transactions List
-                  </CardTitle>
-                  <div>
-                    <Button
-                      className="btn btn-success"
-                      onClick={() => setOpenReceivedModal(!openReceivedModal)}
-                    >
-                      Received Cash
-                    </Button>
-                    <Button
-                      className="btn btn-info ms-4"
-                      onClick={() => setIsMakePayment(!isMakePayment)}
-                    >
-                      {" "}
-                      Make Payment
-                    </Button>
-                  </div>
-                </div>
-
-                <TransactionsTable
-                  trxs={trxs?.transections}
-                  loading={loading}
-                />
-              </CardBody>
-            </Card> */}
             <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
@@ -334,44 +372,6 @@ const SingleDeliveryTransactions = () => {
           />
         </div>
       </Modal>
-
-      {/* RECEIVED PAYMENT */}
-
-      {/* <Modal
-        isOpen={openReceivedModal}
-        toggle={() => {
-          setOpenReceivedModal(!openReceivedModal);
-        }}
-        centered={true}
-      >
-        <div className="modal-header">
-          <h5 className="modal-title mt-0">Receive Payment</h5>
-          <button
-            type="button"
-            onClick={() => {
-              setOpenReceivedModal(false);
-            }}
-            className="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div className="modal-body">
-          <SummaryWrapper>
-            <div>
-              <span className="title">Total Amount: </span>
-              <span className="title">{25000} NGN</span>
-            </div>
-          </SummaryWrapper>
-          <div className="mt-3 d-flex justify-content-end">
-            <Button type="submit" color="success" disabled={loading}>
-              {loading ? "Receiving.." : "Receive"}
-            </Button>
-          </div>
-        </div>
-      </Modal> */}
     </React.Fragment>
   );
 };
@@ -380,8 +380,9 @@ const SummaryWrapper = styled.div`
   padding: 10px 0px;
 
   .title {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 500;
+    color: black;
   }
 `;
 

@@ -359,6 +359,26 @@ const appWalletReducer = (state = init, action) => {
         error: payload,
       };
 
+    case actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
     default:
       return state;
   }

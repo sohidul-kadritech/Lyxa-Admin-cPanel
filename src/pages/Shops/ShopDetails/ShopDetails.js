@@ -231,13 +231,17 @@ const ShopDetails = () => {
                     <Info title="Start Time" value={shop?.shopStartTimeText} />
                     <Info title="End Time" value={shop?.shopEndTimeText} />
                     <Info title="Shop Type" value={shop?.shopType} />
-                    <Info title="Delivery" value={shop?.delivery} />
                     <Info
                       title="Featured"
                       value={shop?.isFeatured ? "Yes" : "No"}
                     />
                     <Info title="Minimum Order" value={shop?.minOrderAmount} />
                     <Info title="Status" value={shop?.shopStatus} />
+                    <Info
+                      title="Rating"
+                      isRating={true}
+                      rating={shop?.rating}
+                    />
                   </Col>
 
                   <Col xl={6}>

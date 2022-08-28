@@ -125,7 +125,7 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
 };
 
 const SummaryWrapper = styled.div`
-  padding: 10px 0px;
+  padding: 15px 0px 0px 0px;
   margin-bottom: 15px;
 
   .item {

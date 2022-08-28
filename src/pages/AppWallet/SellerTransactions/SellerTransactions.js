@@ -87,7 +87,7 @@ const SellerTransactions = () => {
       trx?.summary.orderValue?.productAmount.toFixed(2),
       trx?.summary.orderValue?.deliveryFee,
       trx?.summary.totalDropGet,
-      trx?.summary.totalSellerUnsettle,
+      trx?.summary.totalSellerUnsettle.toFixed(2),
       trx?.summary.totalSellerEarning,
     ]);
 
@@ -221,7 +221,9 @@ const SellerTransactions = () => {
                           </Td>
                           <Td>{trx?.summary?.orderValue?.deliveryFee}</Td>
                           <Td>{trx?.summary?.totalDropGet}</Td>
-                          <Td>{trx?.summary?.totalSellerUnsettle}</Td>
+                          <Td>
+                            {trx?.summary?.totalSellerUnsettle.toFixed(2)}
+                          </Td>
                           <Td>{trx?.summary?.totalSellerEarning}</Td>
                         </Tr>
                       ))}

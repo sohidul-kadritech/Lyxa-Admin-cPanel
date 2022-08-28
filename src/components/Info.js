@@ -2,9 +2,9 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { Tooltip } from "@mui/material";
+import { Rating, Tooltip } from "@mui/material";
 
-const Info = ({ title, value, link }) => {
+const Info = ({ title, value = "", link, isRating = false, rating = 0 }) => {
   const history = useHistory();
 
   return (
@@ -13,12 +13,16 @@ const Info = ({ title, value, link }) => {
         <span>{title} </span>
       </div>
       <Tooltip title={`${link ? "See details" : ""}`}>
-        <span
-          className={`${link && "cursor-pointer"} value }`}
-          onClick={() => history.push(link)}
-        >
-          {value}
-        </span>
+        {isRating ? (
+          <Rating name="read-only" value={rating} readOnly />
+        ) : (
+          <span
+            className={`${link && "cursor-pointer"} value }`}
+            onClick={() => history.push(link)}
+          >
+            {value}
+          </span>
+        )}
       </Tooltip>
     </Details>
   );

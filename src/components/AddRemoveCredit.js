@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Form } from "reactstrap";
 import {
   FormControl,
+  FormControlLabel,
+  FormLabel,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
 } from "@mui/material";
@@ -46,6 +50,24 @@ const AddRemoveCredit = ({ userType, id, dropAmount, userAmount }) => {
   return (
     <div>
       <Form className="mb-4" onSubmit={submitCredit}>
+        <FormControl>
+          <FormLabel id="demo-radio-buttons-group-label">Type</FormLabel>
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            row
+            // defaultValue="female"
+            onChange={(e) => setTypeOfCredit(e.target.value)}
+            name="radio-buttons-group"
+          >
+            <FormControlLabel value="add" control={<Radio />} label="Add" />
+            <FormControlLabel
+              value="remove"
+              control={<Radio />}
+              label="Remove"
+            />
+          </RadioGroup>
+        </FormControl>
+
         <TextField
           style={{ width: "100%" }}
           id="outlined-basic"
@@ -53,13 +75,13 @@ const AddRemoveCredit = ({ userType, id, dropAmount, userAmount }) => {
           type="number"
           variant="outlined"
           placeholder="Enter settle amount"
-          className="mb-2"
+          className="mt-2"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           required
         />
 
-        <FormControl fullWidth required className="mb-2">
+        {/* <FormControl fullWidth required className="mb-2">
           <InputLabel id="demo-simple-select-label">Type</InputLabel>
           <Select
             required
@@ -71,7 +93,7 @@ const AddRemoveCredit = ({ userType, id, dropAmount, userAmount }) => {
             <MenuItem value="add">Add</MenuItem>
             <MenuItem value="remove">Remove</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
 
         <div className="mt-3 d-flex justify-content-end">
           <Button type="submit" color="success" disabled={loading}>

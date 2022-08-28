@@ -1,30 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Spinner } from "reactstrap";
+import { TrxType } from "./updateTrxsType";
 
-const TransactionsTable = ({ trxs = [], loading, paymentSelect = false }) => {
-  const updateTrxType = (type) => {
-    let newType = "";
-    if (type === "adminSettlebalanceShop") {
-      newType = "Settle shop";
-    } else if (type === "adminAddBalanceShop") {
-      newType = "Add shop credit";
-    } else if (type === "sellerCashInHandAdjust") {
-      newType = "Adjust hand cash";
-    } else if (type === "adminRemoveBalanceShop") {
-      newType = "Remove shop credit";
-    } else if (type === "deliveryBoyAmountSettle") {
-      newType = "Settle Rider";
-    } else if (type === "deliveryBoyAdminAmountReceivedCash") {
-      newType = "Received rider cash";
-    } else {
-      newType = "Unknown";
-    }
-
-    return newType;
-  };
-
+const TransactionsTable = ({ trxs = [], loading }) => {
   return (
     <div>
       <Table
@@ -38,7 +18,6 @@ const TransactionsTable = ({ trxs = [], loading, paymentSelect = false }) => {
             <Th>Transaction Type</Th>
             <Th>Date</Th>
             <Th>Admin</Th>
-            {paymentSelect && <Th>Select</Th>}
           </Tr>
         </Thead>
         <Tbody style={{ position: "relative" }}>
@@ -54,24 +33,9 @@ const TransactionsTable = ({ trxs = [], loading, paymentSelect = false }) => {
               <Th>{item?.autoTrxId}</Th>
 
               <Td>{item?.amount}</Td>
-              <Td>{updateTrxType(item?.type)}</Td>
+              <Td>{TrxType(item?.type)}</Td>
               <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
               <Td>{item?.adminBy?.name}</Td>
-              {paymentSelect && (
-                <Td>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="flexCheckDefault"
-                    />
-                    {/* <label class="form-check-label" for="flexCheckDefault">
-                      Default checkbox
-                    </label> */}
-                  </div>
-                </Td>
-              )}
             </Tr>
           ))}
         </Tbody>
