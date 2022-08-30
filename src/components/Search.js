@@ -2,10 +2,10 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
-const Search = ({ dispatchFunc }) => {
+const Search = ({ dispatchFunc, placeholder = "Search here..." }) => {
   // SEARCH
 
-//   console.log({dispatchFunc})
+  //   console.log({dispatchFunc})
 
   const dispatch = useDispatch();
 
@@ -41,7 +41,7 @@ const Search = ({ dispatchFunc }) => {
           <input
             className="form-control"
             type="search"
-            placeholder="Search Here..."
+            placeholder={placeholder}
             id="search"
             onChange={searchKeyListener}
           />

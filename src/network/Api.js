@@ -189,6 +189,8 @@ export const ORDER_LIST = ADMIN_ENDPOINT + "/order";
 export const ORDRE_UPDATE_STATUS =
   ADMIN_ENDPOINT + "/order/update-order-status";
 
+export const SEND_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag";
+
 // CHAT
 
 export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request";

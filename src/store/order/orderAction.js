@@ -1,4 +1,8 @@
-import { ORDER_LIST, ORDRE_UPDATE_STATUS } from "../../network/Api";
+import {
+  ORDER_LIST,
+  ORDRE_UPDATE_STATUS,
+  SEND_ORDER_FLAG,
+} from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 import { successMsg } from "./../../helpers/successMsg";
@@ -94,6 +98,43 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// ORDER FLAG
+
+export const sentOrderFlag = (values) => async (dispatch) => {
+  console.log({ values });
+  try {
+    dispatch({
+      type: actionType.SEND_ORDER_FLAG_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(SEND_ORDER_FLAG, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data });
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.SEND_ORDER_FLAG_REQUEST_SUCCESS,
+        payload: data,
+      });
+    } else {
+      successMsg(data.error, "error");
+      dispatch({
+        type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
       payload: error.message,
     });
   }

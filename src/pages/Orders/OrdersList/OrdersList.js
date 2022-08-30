@@ -195,7 +195,10 @@ const OrdersList = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-                    <Search dispatchFunc={updateOrderSearchKey} />
+                    <Search
+                      placeholder="Search by Order Id"
+                      dispatchFunc={updateOrderSearchKey}
+                    />
                   </Col>
                 </Row>
               </CardBody>

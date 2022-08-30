@@ -16,7 +16,7 @@ import {
   Row,
 } from "reactstrap";
 import Lightbox from "react-image-lightbox";
-import { ImageWrapper } from "../../Shops/ShopDetails/ShopDetails";
+
 import {
   getDeliveryAllOrder,
   setDeliveryStatusFalse,
@@ -24,6 +24,7 @@ import {
 import Info from "../../../components/Info";
 import OrderTable from "../../../components/OrderTable";
 import AppPagination from "../../../components/AppPagination";
+import Flags from "../../../components/Flags";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
@@ -202,6 +203,9 @@ const DeliverymanDetails = () => {
                     </Row>
                   </CardBody>
                 </Card>
+                {deliveryMan.flags.length > 0 && (
+                  <Flags flags={deliveryMan?.flags} />
+                )}
               </Col>
             </Row>
 
@@ -231,5 +235,14 @@ const DeliverymanDetails = () => {
     </React.Fragment>
   );
 };
+
+const ImageWrapper = styled.div`
+  text-align: center;
+  img {
+    object-fit: contain;
+    width: 100%;
+    height: 90%;
+  }
+`;
 
 export default DeliverymanDetails;

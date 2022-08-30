@@ -72,10 +72,11 @@ const SingleDeliveryTransactions = () => {
   const [summary, setSummary] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isMakePayment, setIsMakePayment] = useState(false);
-  const [openReceivedModal, setOpenReceivedModal] = useState(false);
+
   const [riderId, setRiderId] = useState(false);
   const [selectedCash, setSelectedCash] = useState([]);
   const [totalSelectedAmount, setTotalSelectdAmount] = useState(0);
+  const [selected, setSelected] = useState(false);
 
   const { status } = useSelector((state) => state.appWalletReducer);
 
@@ -137,16 +138,6 @@ const SingleDeliveryTransactions = () => {
     }
   }, [trxs]);
 
-  useEffect(() => {
-    if (status) {
-      setIsMakePayment(false);
-      setOpenReceivedModal(false);
-      callApi(riderId);
-      setSelectedCash([]);
-      setTotalSelectdAmount(0);
-    }
-  }, [status]);
-
   const [tabItem, setTabItem] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -155,6 +146,7 @@ const SingleDeliveryTransactions = () => {
 
   const cashReceived = (checked, trx) => {
     if (checked) {
+      setSelected(checked);
       setSelectedCash([...selectedCash, trx]);
       setTotalSelectdAmount((prev) => prev + trx.amount);
     } else {
@@ -179,6 +171,16 @@ const SingleDeliveryTransactions = () => {
       );
     }
   };
+
+  useEffect(() => {
+    if (status) {
+      setIsMakePayment(false);
+      callApi(riderId);
+      setSelectedCash([]);
+      setTotalSelectdAmount(0);
+      setSelected(false);
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -297,7 +299,8 @@ const SingleDeliveryTransactions = () => {
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
-                                  value=""
+                                  // value={selected}
+                                  // defaultValue={false}
                                   id="flexCheckDefault"
                                   onChange={(e) =>
                                     cashReceived(e.target.checked, item)

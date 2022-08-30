@@ -171,7 +171,7 @@ const UsersList = () => {
                             <Td>
                               {new Date(user?.createdAt).toLocaleDateString()}
                             </Td>
-                            <Td>{user?.cards?.length}</Td>
+                            <Td>{user?.totalOrder ?? 0}</Td>
                             <Td>
                               <ButtonWrapper>
                                 <Tooltip title="See transactions">

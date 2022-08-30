@@ -33,6 +33,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
 import OrderTrackingMap from "../../../components/OrderTrackingMap";
+import Flags from "../../../components/Flags";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -234,6 +235,10 @@ const OrderDetails = () => {
                     </Summery>
                   </CardBody>
                 </Card>
+
+                {order?.flaged && (
+                  <Flags flags={order.flag} isFromOrder={true} />
+                )}
               </Col>
             </Row>
             {/* PRODUCT TABLE */}

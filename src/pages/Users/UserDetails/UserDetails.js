@@ -16,6 +16,7 @@ import {
 } from "../../../store/Users/UsersAction";
 import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
+import Flags from "../../../components/Flags";
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -89,7 +90,7 @@ const UserDetails = () => {
             />
 
             <Row>
-              <Col md={6}>
+              <Col lg={6}>
                 <Card>
                   <CardBody>
                     <div className="mb-3">
@@ -133,6 +134,9 @@ const UserDetails = () => {
                     />
                   </CardBody>
                 </Card>
+              </Col>
+              <Col lg={6}>
+                {user?.flags?.length > 0 && <Flags flags={user?.flags} />}
               </Col>
             </Row>
 

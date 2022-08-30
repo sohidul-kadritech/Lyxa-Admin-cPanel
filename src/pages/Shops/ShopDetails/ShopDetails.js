@@ -31,6 +31,7 @@ import DealForAdd from "../../../components/DealForAdd";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
 import { successMsg } from "../../../helpers/successMsg";
+import Flags from "../../../components/Flags";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -289,7 +290,7 @@ const ShopDetails = () => {
             </Card>
 
             <Row>
-              <Col xl={7}>
+              <Col lg={7}>
                 {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
                   <Card>
                     <CardBody>
@@ -372,7 +373,7 @@ const ShopDetails = () => {
               </Col>
 
               {shop?.deals.length > 0 && (
-                <Col xl={5}>
+                <Col lg={5}>
                   <div className="mb-4">
                     <Paper className="py-2">
                       <h5 className="text-center">Deals List</h5>
@@ -415,6 +416,12 @@ const ShopDetails = () => {
                 </Col>
               )}
             </Row>
+
+            <Row>
+              <Col lg={6}>
+                {shop.flags.length > 0 && <Flags flags={shop?.flags} />}
+              </Col>
+            </Row>
           </Container>
         </div>
         {/* DEAL */}
@@ -449,7 +456,7 @@ const ShopDetails = () => {
   );
 };
 
-export const ImageWrapper = styled.div`
+const ImageWrapper = styled.div`
   text-align: center;
   img {
     object-fit: contain;
@@ -469,5 +476,7 @@ const HeaderWrapper = styled.div`
     flex-direction: column;
   }
 `;
+
+const DealsWrapper = styled.div``;
 
 export default ShopDetails;
