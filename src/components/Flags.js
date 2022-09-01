@@ -1,8 +1,13 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Card, CardBody, CardTitle } from "reactstrap";
 import styled from "styled-components";
+import { DeleteOrderFlag } from "../store/order/orderAction";
+import Info from "./Info";
 
 const Flags = ({ flags = [], isFromOrder = false }) => {
+  const dispatch = useDispatch();
+
   return (
     <Card>
       <CardBody>
@@ -11,21 +16,32 @@ const Flags = ({ flags = [], isFromOrder = false }) => {
         <FlagsWrapper>
           {flags.length > 0 &&
             flags.map((item, index) => (
-              <div key={index}>
-                {!isFromOrder ? (
-                  <span className="order_id">{`Order Id: ${item?.orderId?.orderId}`}</span>
-                ) : (
-                  <span className="order_id">{`Flag Sent: ${
-                    item?.shop ? "Shop /" : ""
-                  }  ${item?.delivery ? "Rider /" : ""}  ${
-                    item?.user ? "User" : ""
-                  }`}</span>
-                )}
-                <div className="comment_wrapper">
-                  <span className="comment_title">Comment: </span>
-                  <p className="comment">{item?.comment}</p>
+              <div key={index} className="d-flex">
+                <div className="info_wrapper">
+                  <Info
+                    title={
+                      isFromOrder
+                        ? item?.user
+                          ? "User"
+                          : item?.shop
+                          ? "Shop"
+                          : "Delivery Boy"
+                        : item?.orderId?.orderId
+                    }
+                    value={item?.comment}
+                    flagOrderRoute={
+                      !isFromOrder && `/orders/details/${item?.orderId?._id}`
+                    }
+                  />
                 </div>
-                <hr />
+                {isFromOrder && (
+                  <div
+                    className="delete_btn_wrapper"
+                    onClick={() => dispatch(DeleteOrderFlag(item?._id))}
+                  >
+                    <i className="fa fa-trash cursor-pointer"></i>
+                  </div>
+                )}
               </div>
             ))}
         </FlagsWrapper>
@@ -35,10 +51,25 @@ const Flags = ({ flags = [], isFromOrder = false }) => {
 };
 
 const FlagsWrapper = styled.div`
-  max-height: 300px;
-  overflow: hidden scroll;
+  /* max-height: 250px;
+  overflow: hidden scroll; */
 
-  .order_id {
+  .info_wrapper {
+    flex: 1;
+  }
+  .delete_btn_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid lightgray;
+    height: 50px; */
+    padding: 0px 3px;
+
+    .fa-trash {
+      color: red;
+    }
+  }
+  /* .order_id {
     font-size: 15px;
     font-weight: 500;
   }
@@ -53,7 +84,7 @@ const FlagsWrapper = styled.div`
       max-height: 60px;
       overflow: hidden scroll;
     }
-  }
+  } */
 `;
 
 export default Flags;

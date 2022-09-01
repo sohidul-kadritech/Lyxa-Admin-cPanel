@@ -11,7 +11,7 @@ export const liveStatusFilterOptions = [
 
 export const liveStatusOptions = [
   { label: "Online", value: "online" },
-  { label: "Offline", value: "offline" },
+  { label: "Busy", value: "busy" },
 ];
 
 export const accountTypeOptions = [

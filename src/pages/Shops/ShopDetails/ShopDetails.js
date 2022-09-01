@@ -240,8 +240,17 @@ const ShopDetails = () => {
                     <Info title="Status" value={shop?.shopStatus} />
                     <Info
                       title="Rating"
-                      isRating={true}
-                      rating={shop?.rating}
+                      value={
+                        shop?.rating === 4
+                          ? "Excellent"
+                          : shop?.rating === 3
+                          ? "Very good"
+                          : shop?.rating === 2
+                          ? "Good"
+                          : shop?.rating === 1
+                          ? "Bad"
+                          : ""
+                      }
                     />
                   </Col>
 
@@ -290,7 +299,7 @@ const ShopDetails = () => {
             </Card>
 
             <Row>
-              <Col lg={7}>
+              <Col xl={7}>
                 {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
                   <Card>
                     <CardBody>
@@ -373,7 +382,7 @@ const ShopDetails = () => {
               </Col>
 
               {shop?.deals.length > 0 && (
-                <Col lg={5}>
+                <Col xl={5}>
                   <div className="mb-4">
                     <Paper className="py-2">
                       <h5 className="text-center">Deals List</h5>
@@ -419,7 +428,7 @@ const ShopDetails = () => {
 
             <Row>
               <Col lg={6}>
-                {shop.flags.length > 0 && <Flags flags={shop?.flags} />}
+                {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />}
               </Col>
             </Row>
           </Container>

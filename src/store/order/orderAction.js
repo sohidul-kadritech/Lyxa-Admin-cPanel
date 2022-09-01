@@ -1,4 +1,5 @@
 import {
+  DELETE_ORDER_FLAG,
   ORDER_LIST,
   ORDRE_UPDATE_STATUS,
   SEND_ORDER_FLAG,
@@ -135,6 +136,42 @@ export const sentOrderFlag = (values) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+export const DeleteOrderFlag = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.DELETE_ORDER_FLAG_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(DELETE_ORDER_FLAG, {
+      method: "POST",
+      data: {
+        id,
+      },
+    });
+
+    console.log({ data });
+
+    if (data.status) {
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.DELETE_ORDER_FLAG_REQUEST_SUCCESS,
+        payload: data,
+      });
+    } else {
+      successMsg(data.error, "error");
+      dispatch({
+        type: actionType.DELETE_ORDER_FLAG_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.DELETE_ORDER_FLAG_REQUEST_FAIL,
       payload: error.message,
     });
   }

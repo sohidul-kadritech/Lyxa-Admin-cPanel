@@ -82,18 +82,18 @@ const CreateAdmin = () => {
   };
 
   const updateData = (data) => {
-    const { email, name, phone_number, status } = data;
+    const { email, name, phone_number, status, adminType } = data;
 
     setName(name);
     setEmail(email);
     setPhoneNumber(phone_number);
     setActiveStatus(status);
+    setRole(adminType);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (accountType === "admin") {
-      console.log("ceate admin");
       if (id) {
         dispatch(
           editAdmin({
@@ -103,6 +103,7 @@ const CreateAdmin = () => {
             role,
             number: phoneNumber,
             status: activeStatus,
+            adminType: role,
           })
         );
       } else {
@@ -113,6 +114,7 @@ const CreateAdmin = () => {
             password,
             role,
             number: phoneNumber,
+            adminType: role,
           })
         );
       }
@@ -276,7 +278,7 @@ const CreateAdmin = () => {
                             onChange={(e) => setRole(e.target.value)}
                           >
                             <MenuItem value={"admin"}>Admin</MenuItem>
-                            <MenuItem value={"customer_service"}>
+                            <MenuItem value={"customerService"}>
                               Customer Service
                             </MenuItem>
                           </Select>

@@ -134,7 +134,10 @@ const DeliveryTransactions = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-                    <Search dispatchFunc={updateDeliverySearchKey} />
+                    <Search
+                      placeholder="Search by rider name or email or phone number"
+                      dispatchFunc={updateDeliverySearchKey}
+                    />
                   </Col>
                 </Row>
               </CardBody>

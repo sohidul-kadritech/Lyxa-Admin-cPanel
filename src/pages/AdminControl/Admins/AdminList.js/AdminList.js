@@ -99,7 +99,11 @@ const AdminList = () => {
                           <Td>{item?.email}</Td>
                           <Td>{item?.phone_number}</Td>
                           <Td>{item?.status}</Td>
-                          <Td></Td>
+                          <Td>
+                            {item?.adminType === "customerService"
+                              ? "Customer Service"
+                              : "Admin"}
+                          </Td>
                           <Td>
                             <div>
                               <button

@@ -121,7 +121,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   // UPDATE IS FLAGED  OR NOT
 
   const updateIsFlaged = (flags) => {
-    console.log({ flags });
     const isUser = flags.find((item) => item?.user);
     const isShop = flags.find((item) => item?.shop);
     const isRider = flags.find((item) => item?.delivery);
@@ -132,7 +131,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       rider: isRider ? true : false,
     });
     setIsFlaged({
-      ...accountType,
+      ...isFlaged,
       user: isUser && true,
       shop: isShop && true,
       rider: isRider && true,
@@ -237,7 +236,13 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                         <Td>
                           <ButtonWrapper>
                             {!refused && (
-                              <Tooltip title="Update Status">
+                              <Tooltip
+                                title={
+                                  item?.orderStatus !== "delivered"
+                                    ? "Update Status"
+                                    : ""
+                                }
+                              >
                                 <button
                                   className="btn btn-info button me-1"
                                   disabled={item?.orderStatus === "delivered"}
@@ -267,7 +272,11 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                             </Tooltip>
                             <Tooltip title="Flag">
                               <button
-                                className="btn btn-success button me-1"
+                                className={`btn  button me-1 ${
+                                  item?.flag?.length > 0
+                                    ? "btn-warning"
+                                    : "btn-success"
+                                }`}
                                 onClick={() => {
                                   setOpenFlagModal(!openFlagModal);
                                   setSelectFlagOrder(item);
@@ -421,83 +430,90 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           </button>
         </div>
         <div className="modal-body">
-          <Form onSubmit={submitOrderFlag}>
-            <div className="mb-4">
-              <TextField
-                type="text"
-                className="form-control"
-                placeholder="Enter comment here"
-                required
-                label="Comment"
-                name="comment"
-                multiline
-                maxRows="4"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
+          {isFlaged.shop && isFlaged.user && isFlaged ? (
+            <div>
+              <h5>Everyone has been Flaged!.</h5>
+              <span>Please go to order details to see flag information.</span>
             </div>
-            <div className="mb-4"></div>
+          ) : (
+            <Form onSubmit={submitOrderFlag}>
+              <div className="mb-4">
+                <TextField
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter comment here"
+                  required
+                  label="Comment"
+                  name="comment"
+                  multiline
+                  maxRows="4"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </div>
+              <div className="mb-4"></div>
 
-            <div className="mb-4">
-              <FormControl component="fieldset" variant="standard">
-                <FormLabel component="legend">Select Account</FormLabel>
-                <FormGroup row>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={accountType.user}
-                        onChange={FlagAccountChange}
-                        name="user"
-                        disabled={isFlaged.user}
-                      />
-                    }
-                    label="User"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={accountType.shop}
-                        onChange={FlagAccountChange}
-                        name="shop"
-                        disabled={!selectFlagOrder?.shop || isFlaged.shop}
-                      />
-                    }
-                    label="Shop"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={accountType.rider}
-                        onChange={FlagAccountChange}
-                        name="rider"
-                        disabled={
-                          !selectFlagOrder?.deliveryBoy || isFlaged.rider
-                        }
-                      />
-                    }
-                    label="Delivery boy"
-                  />
-                </FormGroup>
-              </FormControl>
-            </div>
+              <div className="mb-4">
+                <FormControl component="fieldset" variant="standard">
+                  <FormLabel component="legend">Select Account</FormLabel>
+                  <FormGroup row>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={accountType.user}
+                          onChange={FlagAccountChange}
+                          name="user"
+                          disabled={isFlaged.user}
+                        />
+                      }
+                      label="User"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={accountType.shop}
+                          onChange={FlagAccountChange}
+                          name="shop"
+                          disabled={!selectFlagOrder?.shop || isFlaged.shop}
+                        />
+                      }
+                      label="Shop"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={accountType.rider}
+                          onChange={FlagAccountChange}
+                          name="rider"
+                          disabled={
+                            !selectFlagOrder?.deliveryBoy || isFlaged.rider
+                          }
+                        />
+                      }
+                      label="Delivery boy"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </div>
 
-            <div className="d-flex justify-content-center">
-              <Button
-                color="success"
-                size="lg"
-                className="px-4"
-                type="submit"
-                style={{ width: "150px" }}
-                disabled={loading}
-              >
-                {loading ? (
-                  <Spinner color="danger" size="sm"></Spinner>
-                ) : (
-                  "Send"
-                )}
-              </Button>
-            </div>
-          </Form>
+              <div className="d-flex justify-content-center">
+                <Button
+                  color="success"
+                  size="lg"
+                  className="px-4"
+                  type="submit"
+                  style={{ width: "150px" }}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Spinner color="danger" size="sm"></Spinner>
+                  ) : (
+                    "Send"
+                  )}
+                </Button>
+              </div>
+            </Form>
+          )}
         </div>
       </Modal>
     </>

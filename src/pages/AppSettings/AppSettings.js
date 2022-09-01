@@ -67,7 +67,7 @@ const AppSettings = () => {
                       label="Near Shop Distance(KM)"
                       variant="outlined"
                       placeholder="Enter near shop Distance"
-                      value={appSettingsOptions.nearByShopKm}
+                      value={appSettingsOptions?.nearByShopKm}
                       onChange={(e) =>
                         dispatch(updateNearByShopKey(e.target.value))
                       }
@@ -82,7 +82,7 @@ const AppSettings = () => {
                       label="Max Discount(Amount)"
                       variant="outlined"
                       placeholder="Enter near shop Distance"
-                      value={appSettingsOptions.maxDiscount}
+                      value={appSettingsOptions?.maxDiscount}
                       onChange={(e) =>
                         dispatch(updateMaxDiscount(e.target.value))
                       }

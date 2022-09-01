@@ -34,11 +34,14 @@ import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
 import OrderTrackingMap from "../../../components/OrderTrackingMap";
 import Flags from "../../../components/Flags";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import ReactDOMServer from "react-dom/server";
 
 const OrderDetails = () => {
   const { id } = useParams();
   const { orders } = useSelector((state) => state.orderReducer);
-
+  // const pdfRef = useRef(null);
   const [order, setOrder] = useState(null);
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -72,6 +75,57 @@ const OrderDetails = () => {
     }
   };
 
+  // GENEREATE ORDER PDF
+
+  const downloadPdf = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(14);
+
+    const title = "Order Informations";
+    const shopName = `Shop Name : ${order?.shop?.shopName}. `;
+    const price = `Price : ${order?.summary?.totalAmount} NGN.`;
+    const address = `Address : ${order?.dropOffLocation?.address}.`;
+    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${
+      order?.selectPos !== "no" ? "(Pos)" : ""
+    }`;
+
+    const orderTime = `Order Time : ${new Date(
+      order?.createdAt
+    ).toLocaleString()}`;
+
+    const headers = [
+      ["Product", "Type", "Quantity", "Discount(NGN)", "Total Price(NGN)"],
+    ];
+    const marginLeft = 40;
+
+    const productData = order?.productsDetails.map((item) => [
+      item?.productName,
+      item?.product?.type,
+      item?.productQuantity,
+      item?.discount ?? 0,
+      calProductAmount(item),
+    ]);
+
+    let content = {
+      startY: 170,
+      head: headers,
+      body: productData,
+    };
+
+    doc.text(title, 220, 30);
+    doc.text(shopName, marginLeft, 60);
+    doc.text(price, marginLeft, 80);
+    doc.text(address, marginLeft, 100);
+    doc.text(paymentMethod, marginLeft, 120);
+    doc.text(orderTime, marginLeft, 140);
+    doc.autoTable(content);
+    doc.save("order.pdf");
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -100,7 +154,16 @@ const OrderDetails = () => {
 
             <Card>
               <CardBody>
-                <CardTitle>Order Details</CardTitle>
+                <div className="d-flex align-items-center justify-content-between">
+                  <CardTitle className="h4">Order Details</CardTitle>
+                  <Button
+                    outline={true}
+                    color="success"
+                    onClick={() => downloadPdf()}
+                  >
+                    Download PDF
+                  </Button>
+                </div>
                 <hr />
                 <Row className="text-center">
                   <Col lg={6}>
@@ -117,7 +180,7 @@ const OrderDetails = () => {
                     {order?.deliveryBoy && (
                       <Info
                         title="Delivery Boy"
-                        value={order?.shop?.shopName}
+                        value={order?.deliveryBoy?.name}
                         link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
                       />
                     )}
@@ -125,11 +188,6 @@ const OrderDetails = () => {
                       title="Delivery Distance"
                       value={`${order?.deliveryDistance} KM`}
                     />
-                    {/* <Info
-                      title="Drop Fee From Delivery"
-                      value={`${order?.dropCharge?.dropChargeFromDelivery} NGN`}
-                    />
-                     */}
                     <Info title="Order Status" value={order?.orderStatus} />
                     <Info title="Order Type" value={order?.orderType} />
                   </Col>
@@ -206,7 +264,7 @@ const OrderDetails = () => {
                 </Card>
               </Col>
 
-              <Col lg={6}>
+              <Col xl={6}>
                 <Card>
                   <CardBody>
                     <CardTitle className="h4">Summary</CardTitle>
@@ -236,7 +294,7 @@ const OrderDetails = () => {
                   </CardBody>
                 </Card>
 
-                {order?.flaged && (
+                {order?.flag.length > 0 && (
                   <Flags flags={order.flag} isFromOrder={true} />
                 )}
               </Col>
@@ -321,7 +379,7 @@ const OrderDetails = () => {
               </CardBody>
             </Card>
 
-            {/* ADDRESS AND SUMMERY */}
+            {/* ADDRESS AND MAP */}
 
             <Row>
               <Col lg={6}>

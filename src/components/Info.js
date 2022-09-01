@@ -1,29 +1,33 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { Rating, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 
-const Info = ({ title, value = "", link, isRating = false, rating = 0 }) => {
+const Info = ({ title, value = "", link, flagOrderRoute }) => {
   const history = useHistory();
 
   return (
-    <Details link={link}>
+    <Details link={link} flagOrder={flagOrderRoute}>
       <div className="title">
-        <span>{title} </span>
-      </div>
-      <Tooltip title={`${link ? "See details" : ""}`}>
-        {isRating ? (
-          <Rating name="read-only" value={rating} readOnly />
-        ) : (
+        <Tooltip title={`${flagOrderRoute ? "Go to Order" : ""}`}>
           <span
-            className={`${link && "cursor-pointer"} value }`}
+            className={`${flagOrderRoute && "cursor-pointer"}  }`}
+            onClick={() => history.push(flagOrderRoute)}
+          >
+            {title}
+          </span>
+        </Tooltip>
+      </div>
+      <div className="value">
+        <Tooltip title={`${link ? "See details" : ""}`}>
+          <span
+            className={`${link && "cursor-pointer"}  }`}
             onClick={() => history.push(link)}
           >
             {value}
           </span>
-        )}
-      </Tooltip>
+        </Tooltip>
+      </div>
     </Details>
   );
 };
@@ -33,18 +37,29 @@ const Details = styled.div`
   align-items: center;
   border: 1px solid lightgray;
   border-bottom: none;
+  /* padding: 5px; */
+  /* max-height: 50px;
+  overflow: hidden scroll; */
+  /* height: 50px; */
   &:last-child {
     border-bottom: 1px solid lightgray;
   }
   .title {
-    width: 120px;
-    border-right: 1px solid lightgray;
-    padding: 10px;
+    width: 170px;
+    /* border-right: 1px solid lightgray; */
+    /* padding: 10px; */
     color: black;
     font-weight: 500;
-
-    @media (max-width: 1200px) {
-      width: 150px;
+    padding-left: 5px;
+    /* @media (max-width: 1200px) {
+      width: 170px;
+    } */
+    span {
+      &:hover {
+        color: ${({ flagOrder }) => flagOrder && "blue"};
+        font-weight: ${({ flagOrder }) => flagOrder && "bold"};
+      }
+      text-decoration: ${({ flagOrder }) => flagOrder && "underline"};
     }
   }
 
@@ -55,6 +70,12 @@ const Details = styled.div`
     font-size: 15px;
     padding-left: 5px;
     text-transform: capitalize;
+    border-left: 1px solid lightgray;
+    padding: 4px;
+    /* overflow: hidden scroll;
+    height: 100%; */
+    display: flex;
+    align-items: center;
     &:hover {
       color: ${({ link }) => link && "blue"};
       font-weight: ${({ link }) => link && "bold"};

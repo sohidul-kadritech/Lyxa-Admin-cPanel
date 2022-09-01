@@ -203,7 +203,7 @@ const DeliverymanDetails = () => {
                     </Row>
                   </CardBody>
                 </Card>
-                {deliveryMan.flags.length > 0 && (
+                {deliveryMan?.flags?.length > 0 && (
                   <Flags flags={deliveryMan?.flags} />
                 )}
               </Col>

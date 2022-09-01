@@ -190,6 +190,7 @@ export const ORDRE_UPDATE_STATUS =
   ADMIN_ENDPOINT + "/order/update-order-status";
 
 export const SEND_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag";
+export const DELETE_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag/delete";
 
 // CHAT
 

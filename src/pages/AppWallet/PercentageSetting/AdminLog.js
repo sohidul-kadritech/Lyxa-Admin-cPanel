@@ -58,12 +58,12 @@ const AdminLog = () => {
                         fontWeight: "500",
                       }}
                     >
-                      <Th>1</Th>
+                      <Th></Th>
 
-                      <Td>20</Td>
-                      <Td>20</Td>
-                      <Td>Make Payment</Td>
-                      <Td>Shuvo</Td>
+                      <Td></Td>
+                      <Td></Td>
+                      <Td></Td>
+                      <Td></Td>
                     </Tr>
                   </Tbody>
                 </Table>

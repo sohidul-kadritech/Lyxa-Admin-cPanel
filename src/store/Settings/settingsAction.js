@@ -193,6 +193,8 @@ export const getAllAppSettings = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(APP_SETTINGS);
 
+    console.log({ data });
+
     if (status) {
       dispatch({
         type: actionType.ALL_APP_SETTINGS_REQUEST_SUCCESS,
