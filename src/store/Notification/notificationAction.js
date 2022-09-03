@@ -8,6 +8,7 @@ import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 export const createNotification = (values) => async (dispatch) => {
+  console.log({ values });
   try {
     dispatch({
       type: actionType.CREATE_NOTIFICATION_REQUEST_SEND,

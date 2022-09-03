@@ -186,6 +186,7 @@ export const RIDER_RECEIVED_PAYMENT =
 // ORDERS
 
 export const ORDER_LIST = ADMIN_ENDPOINT + "/order";
+export const SINGLE_ORDER = ADMIN_ENDPOINT + "/order/single-details";
 export const ORDRE_UPDATE_STATUS =
   ADMIN_ENDPOINT + "/order/update-order-status";
 

@@ -25,7 +25,7 @@ import user2 from "../../../assets/images/users/user-2.jpg";
 import user3 from "../../../assets/images/users/user-3.jpg";
 import smimg1 from "../../../assets/images/small/img-1.jpg";
 import smimg2 from "../../../assets/images/small/img-2.jpg";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -36,11 +36,13 @@ import OrderTrackingMap from "../../../components/OrderTrackingMap";
 import Flags from "../../../components/Flags";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import ReactDOMServer from "react-dom/server";
+import requestApi from "../../../network/httpRequest";
+import { SINGLE_ORDER } from "../../../network/Api";
 
 const OrderDetails = () => {
   const { id } = useParams();
-  const { orders } = useSelector((state) => state.orderReducer);
+  const { orders, status } = useSelector((state) => state.orderReducer);
+  const history = useHistory();
   // const pdfRef = useRef(null);
   const [order, setOrder] = useState(null);
   const [isZoom, setIsZoom] = useState(false);
@@ -53,10 +55,29 @@ const OrderDetails = () => {
         console.log({ findOrder });
         setOrder(findOrder);
       } else {
-        console.log("call api");
+        callApi(id);
       }
     }
   }, [id]);
+
+  // CALL API FOR ORDER
+
+  const callApi = async (shopId) => {
+    const { data } = await requestApi().request(SINGLE_ORDER, {
+      params: {
+        id: shopId,
+      },
+    });
+    // console.log(banner)
+    if (data.status) {
+      const { order } = data.data;
+      if (order) {
+        setOrder(order);
+      } else {
+        history.push("/orders/list", { replace: true });
+      }
+    }
+  };
 
   const calProductAmount = (product) => {
     if (product.selectedAttributes.length > 0) {
@@ -72,6 +93,15 @@ const OrderDetails = () => {
       return totalPrice + product?.productPrice;
     } else {
       return product?.productPrice;
+    }
+  };
+
+  // GET ATTRIBUTE
+
+  const getProductAttribute = (attributes) => {
+    if (attributes.length > 0) {
+      const attributeName = attributes.map((att) => att?.name);
+      return attributeName;
     }
   };
 
@@ -98,12 +128,20 @@ const OrderDetails = () => {
     ).toLocaleString()}`;
 
     const headers = [
-      ["Product", "Type", "Quantity", "Discount(NGN)", "Total Price(NGN)"],
+      [
+        "Product",
+        "Attribute",
+        "Type",
+        "Quantity",
+        "Discount(NGN)",
+        "Total Price(NGN)",
+      ],
     ];
     const marginLeft = 40;
 
     const productData = order?.productsDetails.map((item) => [
       item?.productName,
+      getProductAttribute(item?.selectedAttributes) ?? "",
       item?.product?.type,
       item?.productQuantity,
       item?.discount ?? 0,
@@ -123,8 +161,14 @@ const OrderDetails = () => {
     doc.text(paymentMethod, marginLeft, 120);
     doc.text(orderTime, marginLeft, 140);
     doc.autoTable(content);
-    doc.save("order.pdf");
+    doc.save(`${order.orderId}.pdf`);
   };
+
+  useEffect(() => {
+    if (status) {
+      window.location.reload();
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -320,7 +364,7 @@ const OrderDetails = () => {
                       <Th>Total Price(NGN)</Th>
                     </Tr>
                   </Thead>
-                  <Tbody style={{ position: "relative" }}>
+                  <Tbody style={{ position: "relative" }} id="table-data">
                     {order?.productsDetails?.map((item, index) => {
                       return (
                         <Tr
@@ -330,8 +374,9 @@ const OrderDetails = () => {
                             fontSize: "15px",
                             fontWeight: "500",
                           }}
+                          id="table-content"
                         >
-                          <Th style={{ height: "50px", maxWidth: "150px" }}>
+                          <Td className="image__wrapper">
                             <img
                               onClick={() => {
                                 setIsZoom(true);
@@ -347,15 +392,15 @@ const OrderDetails = () => {
                               }}
                             />
                             <span>{item?.productName}</span>
-                          </Th>
+                          </Td>
                           <Td>
                             {item?.selectedAttributes.length > 0
-                              ? item?.selectedAttributes.map((arr, index) => (
+                              ? item?.selectedAttributes.map((att, index) => (
                                   <div key={index}>
                                     <span style={{ fontSize: "12px" }}>
-                                      {arr?.name}
+                                      {att?.name}
                                     </span>
-                                    {arr?.selectedItems?.map((item, index) => (
+                                    {att?.selectedItems?.map((item, index) => (
                                       <p
                                         key={index}
                                         style={{ fontSize: "12px" }}

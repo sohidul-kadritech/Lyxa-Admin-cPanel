@@ -430,7 +430,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           </button>
         </div>
         <div className="modal-body">
-          {isFlaged.shop && isFlaged.user && isFlaged ? (
+          {isFlaged.shop && isFlaged.user && isFlaged.rider ? (
             <div>
               <h5>Everyone has been Flaged!.</h5>
               <span>Please go to order details to see flag information.</span>

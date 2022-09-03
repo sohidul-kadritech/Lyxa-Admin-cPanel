@@ -248,6 +248,10 @@ const ShopAdd = () => {
       return successMsg("Choose Image");
     }
 
+    if (deliveryType === "self" && !deliveryFee) {
+      return successMsg("Enter Delivery fee");
+    }
+
     uploadImages();
 
     // submitData();
@@ -335,7 +339,7 @@ const ShopAdd = () => {
           cuisineType: cuisinesList,
           expensive,
           deliveryType,
-          deliveryFee: parseInt(deliveryFee),
+          deliveryFee: deliveryType === "self" ? parseInt(deliveryFee) : 0,
           shopAddress: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -385,7 +389,7 @@ const ShopAdd = () => {
           liveStatus,
           expensive,
           deliveryType,
-          deliveryFee: parseInt(deliveryFee),
+          deliveryFee: deliveryType === "self" ? parseInt(deliveryFee) : 0,
         })
       );
     }
@@ -738,7 +742,10 @@ const ShopAdd = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={deliveryType}
-                            onChange={(e) => setDeliveryType(e.target.value)}
+                            onChange={(e) => {
+                              setDeliveryType(e.target.value);
+                              setDeliveryFee(0);
+                            }}
                             label="Delivery  Type"
                           >
                             <MenuItem value="self">Self</MenuItem>
@@ -751,7 +758,7 @@ const ShopAdd = () => {
                         <div className="mb-4">
                           <TextField
                             type="number"
-                            name="DeliveryFee"
+                            name="deliveryFee"
                             className="form-control"
                             placeholder="Enter delivery fee"
                             required

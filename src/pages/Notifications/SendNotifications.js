@@ -134,9 +134,9 @@ const SendNotifications = () => {
   const addNotification = (e) => {
     // console.log()
     e.preventDefault();
-    if (!notification.image) {
-      return successMsg("Upload a image", "error");
-    }
+    // if (!notification.image) {
+    //   return successMsg("Upload a image", "error");
+    // }
     if (!notification.description) {
       return successMsg("Enter descriptions", "error");
     }
@@ -180,8 +180,8 @@ const SendNotifications = () => {
     dispatch(
       createNotification({
         ...notification,
-        image,
-        [notification.accountType]: user?._id ?? "",
+        image: null,
+        [notification.accountType]: user?._id,
       })
     );
   };
@@ -198,6 +198,7 @@ const SendNotifications = () => {
         byAdmin: true,
       });
       setUser(null);
+      setEditorState(EditorState.createEmpty());
     }
   }, [status]);
 

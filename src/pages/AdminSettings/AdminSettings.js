@@ -56,7 +56,7 @@ const AdminSettings = () => {
         });
       }
 
-      console.log({ value });
+      // console.log({ value });
 
       if (value) {
         setAreaChangeKey("");
@@ -115,38 +115,6 @@ const AdminSettings = () => {
                       }
                       required
                     />
-                  </Col>
-                  <Col lg={4} className="my-3 my-lg-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Delivery Boy Around Area"
-                      variant="outlined"
-                      placeholder="Press Enter delivery boy find Around Area"
-                      value={areaChangeKey}
-                      type="number"
-                      onKeyDown={handleKmAdd}
-                      onChange={(e) => setAreaChangeKey(e.target.value)}
-                      required
-                    />
-                    {searchDeliveryBoyKm.length > 0 && (
-                      <Paper className="mt-4 p-3">
-                        {searchDeliveryBoyKm.map((item, index) => (
-                          <div className="tag__wrapper" key={index}>
-                            {item}
-                            <button
-                              type="button"
-                              className="button"
-                              onClick={() =>
-                                dispatch(removeSearchDeliveryBoyKm(index))
-                              }
-                            >
-                              &times;
-                            </button>
-                          </div>
-                        ))}
-                      </Paper>
-                    )}
                   </Col>
                 </Row>
 

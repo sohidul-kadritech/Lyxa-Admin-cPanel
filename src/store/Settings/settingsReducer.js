@@ -11,8 +11,10 @@ const initialState = {
     deliveryAppTearmsAndConditions: "",
     shopAppTearmsAndConditions: "",
     deliveryFeePerKm: "",
+    maxDiscount: 0,
+    searchDeliveryBoyKm: [],
   },
-  searchDeliveryBoyKm: [],
+
   dropCharge: null,
   cancelReasons: [],
   typeKey: "all",
@@ -46,15 +48,24 @@ const settingsReducer = (state = initialState, action) => {
     case actionType.UPDATE_SEARCH_DELIVERY_BOY_KM:
       return {
         ...state,
-        searchDeliveryBoyKm: [...state.searchDeliveryBoyKm, payload],
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          searchDeliveryBoyKm: [
+            ...state.appSettingsOptions.searchDeliveryBoyKm,
+            payload,
+          ],
+        },
       };
 
     case actionType.REMOVE_SEARCH_DELIVERY_BOY_KM:
-      let list = [...state.searchDeliveryBoyKm];
+      let list = [...state.appSettingsOptions.searchDeliveryBoyKm];
       list.splice(payload, 1);
       return {
         ...state,
-        searchDeliveryBoyKm: list,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          searchDeliveryBoyKm: list,
+        },
       };
 
     case actionType.ALL_ADMIN_SETTINGS_REQUEST_SEND:

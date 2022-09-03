@@ -104,6 +104,7 @@ export const getAllShop =
 // EDIT
 
 export const editShop = (values) => async (dispatch) => {
+  // console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_SHOP_REQUEST_SEND,

@@ -13,6 +13,10 @@ const Flags = ({ flags = [], isFromOrder = false }) => {
       <CardBody>
         <CardTitle>Flags</CardTitle>
         <hr />
+        <div className="d-flex">
+          <h5>{isFromOrder ? "Account" : "Order ID"}</h5>
+          <h5 style={{ marginLeft: "120px" }}>Comment</h5>
+        </div>
         <FlagsWrapper>
           {flags.length > 0 &&
             flags.map((item, index) => (
@@ -51,8 +55,8 @@ const Flags = ({ flags = [], isFromOrder = false }) => {
 };
 
 const FlagsWrapper = styled.div`
-  /* max-height: 250px;
-  overflow: hidden scroll; */
+  max-height: 400px;
+  overflow: hidden scroll;
 
   .info_wrapper {
     flex: 1;
@@ -61,30 +65,12 @@ const FlagsWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    /* border: 1px solid lightgray;
-    height: 50px; */
     padding: 0px 3px;
 
     .fa-trash {
       color: red;
     }
   }
-  /* .order_id {
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  .comment_wrapper {
-    margin-top: 10px;
-    .comment_title {
-      font-size: 15px;
-      font-weight: 500;
-    }
-    .comment {
-      max-height: 60px;
-      overflow: hidden scroll;
-    }
-  } */
 `;
 
 export default Flags;

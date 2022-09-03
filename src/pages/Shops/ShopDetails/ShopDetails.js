@@ -236,7 +236,10 @@ const ShopDetails = () => {
                       title="Featured"
                       value={shop?.isFeatured ? "Yes" : "No"}
                     />
-                    <Info title="Minimum Order" value={shop?.minOrderAmount} />
+                    <Info
+                      title="Minimum Order"
+                      value={`${shop?.minOrderAmount} NGN`}
+                    />
                     <Info title="Status" value={shop?.shopStatus} />
                     <Info
                       title="Rating"
@@ -258,10 +261,12 @@ const ShopDetails = () => {
                     <Info title="Phone" value={shop?.phone_number} />
                     <Info title="Email" value={shop?.email} />
                     <Info title="Address" value={shop?.address.address} />
-                    <Info
-                      title="Delivery fee"
-                      value={`${shop?.deliveryFee} NGN`}
-                    />
+                    {shop?.haveOwnDeliveryBoy && (
+                      <Info
+                        title="Delivery fee"
+                        value={`${shop?.deliveryFee ?? 0} NGN`}
+                      />
+                    )}
                     {/* <Info
                       title="Drop charge"
                       value={`${shop?.dropChargePerKm} NGN`}

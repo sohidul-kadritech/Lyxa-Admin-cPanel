@@ -157,6 +157,7 @@ export const updateAppSettings =
           nearByShopKm: appSettingsOptions.nearByShopKm,
           maxDiscount: appSettingsOptions.maxDiscount,
           [conditionType]: descriptions,
+          searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
         },
       });
 
