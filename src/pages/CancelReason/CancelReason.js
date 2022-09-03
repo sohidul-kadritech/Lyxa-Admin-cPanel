@@ -82,6 +82,7 @@ const CancelReason = () => {
 
   useEffect(() => {
     if (status) {
+      setId(null);
       setOpenModal(false);
     }
   }, [status]);
@@ -138,7 +139,17 @@ const CancelReason = () => {
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center">
                   <CardTitle className="h4"> Reason List</CardTitle>
-                  <Button onClick={() => setOpenModal(!openModal)}>
+                  <Button
+                    onClick={() => {
+                      setOpenModal(!openModal);
+                      setCancelReason({
+                        name: "",
+                        type: "",
+                        status: "",
+                      });
+                      setId(null);
+                    }}
+                  >
                     Add New
                   </Button>
                 </div>

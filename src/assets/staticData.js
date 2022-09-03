@@ -222,15 +222,17 @@ export const statusOptions2 = [
 ];
 
 export const cancelReasonOptions = [
-  { label: "Shop Cancel", value: "shopCancel" },
-  { label: "User Cancel", value: "userCancel" },
+  { label: "Shop", value: "shopCancel" },
+  { label: "Admin", value: "admin" },
+  { label: "User", value: "userCancel" },
   { label: "User Refund", value: "userRefund" },
 ];
 
 export const cancelReasonOptions2 = [
   { label: "All", value: "all" },
-  { label: "Shop Cancel", value: "shopCancel" },
-  { label: "User Cancel", value: "userCancel" },
+  { label: "Shop", value: "shopCancel" },
+  { label: "Admin", value: "admin" },
+  { label: "User", value: "userCancel" },
   { label: "User Refund", value: "userRefund" },
 ];
 

@@ -19,7 +19,7 @@ export const createNotification = (values) => async (dispatch) => {
       data: values,
     });
 
-    // console.log(data);
+    console.log(data);
 
     if (data.status) {
       successMsg(data.message, "success");

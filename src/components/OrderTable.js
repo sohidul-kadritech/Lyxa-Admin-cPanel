@@ -43,15 +43,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { users, searchKey: userSearchKey } = useSelector(
-    (state) => state.usersReducer
-  );
-  const { searchKey: shopSearchKey, shops } = useSelector(
-    (state) => state.shopReducer
-  );
-  const { deliveryMans, searchKey: riderSearchKey } = useSelector(
-    (state) => state.deliveryManReducer
-  );
+  const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
 
   const [isUpdateStatus, setIsUpdateStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
@@ -60,6 +52,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const [deliveryBoy, setDeliveryBoy] = useState(null);
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
   const [openFlagModal, setOpenFlagModal] = useState(false);
+  const [openCancelModal, setOpenCancelModal] = useState(false);
   const [selectFlagOrder, setSelectFlagOrder] = useState(null);
   const [comment, setComment] = useState("");
   const [accountType, setAccountType] = useState({
@@ -179,6 +172,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     );
   };
 
+  // GET ALL CANCEL REASON
+
+  useEffect(() => {});
+
   return (
     <>
       <div>
@@ -289,7 +286,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                             <Tooltip title="Cancel Order">
                               <button
                                 className="btn btn-danger button"
-                                // onClick={() => goToShopOrderList(item._id)}
+                                onClick={() =>
+                                  setOpenCancelModal(!openCancelModal)
+                                }
                               >
                                 <i className="fa fa-times-circle"></i>
                               </button>
@@ -514,6 +513,67 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               </div>
             </Form>
           )}
+        </div>
+      </Modal>
+
+      {/* CANCEL ORDER */}
+      <Modal
+        isOpen={openCancelModal}
+        toggle={() => {
+          setOpenCancelModal(!openCancelModal);
+        }}
+        centered={true}
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Cancel Order</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setOpenCancelModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <Form>
+            <Autocomplete
+              className="cursor-pointer mt-3"
+              value={deliveryBoy}
+              onChange={(event, newValue) => {
+                setDeliveryBoy(newValue);
+              }}
+              getOptionLabel={(option, index) =>
+                option.name ? option.name : ""
+              }
+              isOptionEqualToValue={(option, value) =>
+                option?._id == value?._id
+              }
+              inputValue={deliverySearchKey}
+              onInputChange={(event, newInputValue) => {
+                setDeliverySearchKey(newInputValue);
+              }}
+              id="controllable-states-demo"
+              options={deliveryMans.length > 0 ? deliveryMans : []}
+              sx={{ width: "100%" }}
+              renderInput={(params, index) => (
+                <TextField {...params} label="Select a cancel reason" />
+              )}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                  {...props}
+                  key={option._id}
+                >
+                  {option.name}
+                </Box>
+              )}
+            />
+          </Form>
         </div>
       </Modal>
     </>

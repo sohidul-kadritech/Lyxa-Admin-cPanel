@@ -435,6 +435,9 @@ const ShopDetails = () => {
               <Col lg={6}>
                 {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />}
               </Col>
+              <Col lg={6}>
+                {/* {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />} */}
+              </Col>
             </Row>
           </Container>
         </div>

@@ -143,6 +143,7 @@ export const updateMaxDiscount = (amount) => (dispatch) => {
 
 export const updateAppSettings =
   (conditionType, descriptions) => async (dispatch, getState) => {
+    console.log({ descriptions });
     const { appSettingsOptions } = getState().settingsReducer;
     try {
       dispatch({
@@ -165,7 +166,7 @@ export const updateAppSettings =
         successMsg(message, "success");
         dispatch({
           type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
-          payload: data.adminSetting,
+          payload: data.appSetting,
         });
       } else {
         successMsg(message, "error");
@@ -353,6 +354,7 @@ export const addCancelReason = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
+    successMsg(error, "error");
     dispatch({
       type: actionType.ADD_REASON_REQUEST_FAIL,
       payload: error.message,

@@ -166,7 +166,7 @@ const OrderDetails = () => {
 
   useEffect(() => {
     if (status) {
-      window.location.reload();
+      callApi(id);
     }
   }, [status]);
 
@@ -234,6 +234,21 @@ const OrderDetails = () => {
                     />
                     <Info title="Order Status" value={order?.orderStatus} />
                     <Info title="Order Type" value={order?.orderType} />
+                    <Info title="Order Type" value={order?.orderType} />
+                    <Info
+                      title="Rating"
+                      value={
+                        order?.review === 4
+                          ? "Excellent"
+                          : order?.review === 3
+                          ? "Very good"
+                          : order?.review === 2
+                          ? "Good"
+                          : order?.review === 1
+                          ? "Bad"
+                          : ""
+                      }
+                    />
                   </Col>
 
                   <Col lg={6}>
@@ -255,6 +270,7 @@ const OrderDetails = () => {
                         link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
                       />
                     )}
+                    <Info title="Comment" value={order?.reviewDes} />
                   </Col>
                 </Row>
               </CardBody>

@@ -248,7 +248,7 @@ const ShopAdd = () => {
       return successMsg("Choose Image");
     }
 
-    if (deliveryType === "self" && !deliveryFee) {
+    if (deliveryType === "self" && deliveryFee < 0) {
       return successMsg("Enter Delivery fee");
     }
 

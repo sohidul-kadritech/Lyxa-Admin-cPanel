@@ -29,9 +29,11 @@ import {
   updateAppSettings,
 } from "../../store/Settings/settingsAction";
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
-const TextEditor = ({ title, type }) => {
+const TextEditor = ({ title, type = "" }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { loading, appSettingsOptions } = useSelector(
     (state) => state.settingsReducer
@@ -48,7 +50,9 @@ const TextEditor = ({ title, type }) => {
   }, []);
 
   useState(() => {
-    if (appSettingsOptions) {
+    // console.log("call", appSettingsOptions);
+
+    if (appSettingsOptions[type]) {
       const contentBlock = htmlToDraft(appSettingsOptions[type]);
       if (contentBlock) {
         const contentState = ContentState.createFromBlockArray(
@@ -57,12 +61,14 @@ const TextEditor = ({ title, type }) => {
         const outputEditorState = EditorState.createWithContent(contentState);
         setEditorState(outputEditorState);
       }
+    } else {
+      history.push("/");
     }
 
-    return () => {
-      setEditorState(EditorState.createEmpty());
-    };
-  }, [appSettingsOptions]);
+    // return () => {
+    //   setEditorState(EditorState.createEmpty());
+    // };
+  }, []);
 
   const updateDescription = async (state) => {
     setEditorState(state);
@@ -78,6 +84,7 @@ const TextEditor = ({ title, type }) => {
       <GlobalWrapper>
         <Breadcrumb
           maintitle="Drop"
+          // title={title}
           breadcrumbItem={title}
           // loading={loading}
           // callList={callDeliveryFee}

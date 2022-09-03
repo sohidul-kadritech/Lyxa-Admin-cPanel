@@ -67,7 +67,6 @@ const SendNotifications = () => {
     type: "",
     description: "",
     descriptionHtml: "",
-    image: null,
     byAdmin: true,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -81,16 +80,6 @@ const SendNotifications = () => {
     const { name, value } = e.target;
     setNotification({ ...notification, [name]: value });
     (name === "type" || name === "accountType") && setUser(null);
-  };
-
-  const handleAcceptedFiles = (files) => {
-    files.map((file) =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-        formattedSize: formatBytes(file.size),
-      })
-    );
-    setNotification({ ...notification, image: files[0] });
   };
 
   const updateDescription = async (state) => {
@@ -132,55 +121,23 @@ const SendNotifications = () => {
   ]);
 
   const addNotification = (e) => {
-    // console.log()
     e.preventDefault();
-    // if (!notification.image) {
-    //   return successMsg("Upload a image", "error");
-    // }
+
     if (!notification.description) {
       return successMsg("Enter descriptions", "error");
     }
 
     //  UPLAOD IMAGE TO SERVER
 
-    if (typeof notification.image === "string") {
-      submitData(notification.image);
-    } else {
-      imageUploadToServer();
-    }
-  };
-
-  const imageUploadToServer = async () => {
-    try {
-      setIsLoading(true);
-      let formData = new FormData();
-      formData.append("image", notification?.image);
-
-      const { data } = await requestApi().request(IMAGE_UPLOAD, {
-        method: "POST",
-        data: formData,
-      });
-
-      if (data.status) {
-        setIsLoading(false);
-        submitData(data.data.url);
-      } else {
-        setIsLoading(false);
-        return successMsg(data.error, "error");
-      }
-    } catch (error) {
-      setIsLoading(false);
-      return successMsg("Something went wrong", "error");
-    }
+    submitData();
   };
 
   // SUBMIT DATA
 
-  const submitData = (image) => {
+  const submitData = () => {
     dispatch(
       createNotification({
         ...notification,
-        image: null,
         [notification.accountType]: user?._id,
       })
     );
@@ -194,7 +151,6 @@ const SendNotifications = () => {
         type: "",
         description: "",
         descriptionHtml: "",
-        image: null,
         byAdmin: true,
       });
       setUser(null);
@@ -254,100 +210,6 @@ const SendNotifications = () => {
                             ))}
                           </Select>
                         </FormControl>
-                      </div>
-                      <div className="mb-5">
-                        <Label>Image</Label>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles);
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
-                            </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {notification.image && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        notification?.image.preview
-                                          ? notification?.image.preview
-                                          : notification?.image
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {notification?.image?.name
-                                        ? notification?.image?.name
-                                        : "Image"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {notification?.image?.formattedSize &&
-                                          notification?.image?.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      onClick={() =>
-                                        setNotification({
-                                          ...notification,
-                                          image: null,
-                                        })
-                                      }
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          )}
-                        </div>
                       </div>
                     </Col>
                     <Col lg={6}>
@@ -449,6 +311,10 @@ const SendNotifications = () => {
                           />
                         )}
                       </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
                       <div className="mb-4">
                         <Label>Descriptions</Label>
                         <Editor
