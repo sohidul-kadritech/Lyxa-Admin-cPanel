@@ -69,7 +69,7 @@ export const getAllShop =
         const { data } = await requestApi().request(ALL_SHOP, {
           params: {
             page: page,
-            pageSize: 10,
+            pageSize: 40,
             sortBy: sortByKey.value,
             searchKey,
             type: typeKey.value ? typeKey.value : typeKey,

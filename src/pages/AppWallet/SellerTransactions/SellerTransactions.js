@@ -215,7 +215,7 @@ const SellerTransactions = () => {
 
                           <Td>{trx?.summary?.totalOrder}</Td>
                           <Td>
-                            {trx?.summary?.orderValue?.productAmount.toFixed(2)}
+                            {trx?.summary?.orderValue?.totalAmount.toFixed(2)}
                           </Td>
                           <Td>{trx?.summary?.orderValue?.deliveryFee}</Td>
                           <Td>{trx?.summary?.totalDropGet}</Td>

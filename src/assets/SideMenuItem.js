@@ -23,7 +23,7 @@ export const adminMenuItem = [
       {
         id: 21,
         icon: "fas fa-cart-plus",
-        name: "Canceled Orders",
+        name: "Cancelled Orders",
         link: "/orders/refused",
         isSubmenu: false,
       },

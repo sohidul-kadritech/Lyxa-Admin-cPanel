@@ -112,10 +112,10 @@ const ShopAdd = () => {
   // GET CUISINES
 
   useEffect(() => {
-    if (isCuisine) {
+    if (seller?.sellerType === "food") {
       dispatch(getAllCuisine(true));
     }
-  }, [isCuisine]);
+  }, [seller?.sellerType === "food"]);
 
   useEffect(() => {
     if (id) {
@@ -323,7 +323,7 @@ const ShopAdd = () => {
           shopStartTime,
           shopEndTime,
           shopName,
-          isCuisine,
+          isCuisine: seller.sellerType === "food" ? true : false,
           minOrderAmount,
           email,
           phone_number: phone,

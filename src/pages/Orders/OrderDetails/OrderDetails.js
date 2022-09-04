@@ -52,7 +52,6 @@ const OrderDetails = () => {
     if (id) {
       const findOrder = orders.find((order) => order._id == id);
       if (findOrder) {
-        console.log({ findOrder });
         setOrder(findOrder);
       } else {
         callApi(id);
@@ -270,7 +269,9 @@ const OrderDetails = () => {
                         link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
                       />
                     )}
-                    <Info title="Comment" value={order?.reviewDes} />
+                    {order?.reviewDes && (
+                      <Info title="User Review" value={order?.reviewDes} />
+                    )}
                   </Col>
                 </Row>
               </CardBody>

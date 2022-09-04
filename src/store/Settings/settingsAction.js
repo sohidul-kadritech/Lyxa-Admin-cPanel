@@ -316,6 +316,7 @@ export const updateDeliveryCut = (deliveryRange) => async (dispatch) => {
       });
     }
   } catch (error) {
+    successMsg(error.message, "error");
     dispatch({
       type: actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL,
       payload: error.message,
@@ -354,7 +355,7 @@ export const addCancelReason = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
-    successMsg(error, "error");
+    successMsg(error.message, "error");
     dispatch({
       type: actionType.ADD_REASON_REQUEST_FAIL,
       payload: error.message,
@@ -403,7 +404,7 @@ export const updateCancelReason = (values) => async (dispatch) => {
 // GET ALL CANCEL REASONS
 
 export const getAllCancelReasons =
-  (refresh = false) =>
+  (refresh = false, adminType ) =>
   async (dispatch, getState) => {
     const { cancelReasons, typeKey, activeStatus } = getState().settingsReducer;
 
@@ -417,7 +418,7 @@ export const getAllCancelReasons =
           data: { status, error, data },
         } = await requestApi().request(ALL_ORDER_CANCEL_REASON, {
           params: {
-            type: typeKey,
+            type: adminType ?? typeKey,
             status: activeStatus,
           },
         });

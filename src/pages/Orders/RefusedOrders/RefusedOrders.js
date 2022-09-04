@@ -13,7 +13,7 @@ const RefusedOrders = () => {
   const { orders, loading, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.orderReducer);
 
-  const [refusedOrders, setRefusedOrders] = useState(null);
+  const [cancelledOrders, setCancelledOrders] = useState(null);
 
   useEffect(() => {
     allOrderList(true);
@@ -24,7 +24,11 @@ const RefusedOrders = () => {
   };
 
   useEffect(() => {
-    setRefusedOrders(orders.filter((order) => order.status === "refused"));
+    if (orders.length > 0) {
+      setCancelledOrders(
+        orders.filter((order) => order.orderStatus === "cancelled")
+      );
+    }
   }, [orders]);
 
   return (
@@ -41,7 +45,7 @@ const RefusedOrders = () => {
             />
 
             <OrderTable
-              orders={refusedOrders}
+              orders={cancelledOrders}
               loading={loading}
               refused={true}
             />

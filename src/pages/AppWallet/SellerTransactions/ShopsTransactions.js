@@ -18,9 +18,12 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { getSellerTrx } from "../../../store/appWallet/appWalletAction";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import { Select } from "@mui/material";
+import  Flatpickr  from 'react-flatpickr';
+import moment from "moment";
 
 const ShopsTransactions = () => {
-  const { loading, sellerTrxs } = useSelector(
+  const { loading, sellerTrxs,  } = useSelector(
     (state) => state.appWalletReducer
   );
 
@@ -31,6 +34,9 @@ const ShopsTransactions = () => {
   const dispatch = useDispatch();
 
   const [companyName, setCompanyName] = useState("");
+  const [startDate, setStartDate] = useState(moment().startOf("month").format("YYYY-MM-DD"));
+  const [endDate, setEndDate] = useState(moment().endOf("month").format("YYYY-MM-DD"));
+  const [filterTrxs, setFilterTrxs] = useState([]);
   const {
     account_type,
     _id: accountId,
@@ -53,6 +59,15 @@ const ShopsTransactions = () => {
       history.push("/", { replace: true });
     }
   }, []);
+
+
+  useEffect(()=>{
+    if(startDate || endDate){
+      const newList = sellerTrxs.filter((item) => item.createdAt >= startDate && item.createdAt <= endDate);
+      
+      setFilterTrxs(newList);
+    }
+  },[startDate, endDate])
 
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
@@ -119,6 +134,59 @@ const ShopsTransactions = () => {
               isRefresh={false}
             />
 
+            <Card>
+              <CardBody>
+                <Row>
+                <Col lg={6}>
+                    <div className="d-flex my-3 my-md-0 ">
+                      <div className=" w-100">
+                        <label>Start Date</label>
+                        <div className="form-group mb-0 w-100">
+                          <Flatpickr
+                            className="form-control d-block"
+                            id="startDate"
+                            placeholder="Start Date"
+                            value={startDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              setStartDate(dateStr)
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="ms-2 w-100">
+                        <label>End Date</label>
+                        <div className="form-group mb-0">
+                          <Flatpickr
+                            className="form-control w-100"
+                            id="endDate"
+                            placeholder="Select End Date"
+                            value={endDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              setEndDate(dateStr)
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+
+                  <Col >
+                  </Col>
+                </Row>
+                
+              </CardBody>
+            </Card>
+
             <Card className="table-data-hover">
               <CardBody>
                 <Row className="mb-3">
@@ -143,7 +211,7 @@ const ShopsTransactions = () => {
                     <Tr>
                       <Th>Shop</Th>
                       <Th>Order</Th>
-                      <Th>Oder amount</Th>
+                      <Th>Order amount</Th>
                       <Th>Delivery fee</Th>
                       <Th>Drop earning</Th>
                       <Th>Unsettled amount</Th>
@@ -151,8 +219,8 @@ const ShopsTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {sellerTrxs.length > 0 &&
-                      sellerTrxs.map((trx, index) => (
+                    {filterTrxs.length > 0 &&
+                      filterTrxs.map((trx, index) => (
                         <Tr
                           key={index}
                           className="align-middle cursor-pointer"
@@ -181,7 +249,7 @@ const ShopsTransactions = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && sellerTrxs.length < 1 && (
+                {!loading && filterTrxs.length < 1 && (
                   <div className="text-center">
                     <h4>No Transations!</h4>
                   </div>

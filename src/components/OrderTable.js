@@ -29,6 +29,7 @@ import {
 import { orderStatusOptions } from "../assets/staticData";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  cancelOrderByAdmin,
   getAllOrder,
   orderUpdateStatus,
   sentOrderFlag,
@@ -38,12 +39,14 @@ import { allDeliveryMan } from "../store/DeliveryMan/DeliveryManAction";
 import styled from "styled-components";
 import { userList } from "../store/Users/UsersAction";
 import { successMsg } from "../helpers/successMsg";
+import { getAllCancelReasons } from "../store/Settings/settingsAction";
 
 const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
   const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
+  const { cancelReasons } = useSelector((state) => state.settingsReducer);
 
   const [isUpdateStatus, setIsUpdateStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
@@ -55,6 +58,12 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [selectFlagOrder, setSelectFlagOrder] = useState(null);
   const [comment, setComment] = useState("");
+  const [isOtherReason, setIsOtherReason] = useState(false);
+  const [orderCancel, setOrderCancel] = useState({
+    cancelReason: "",
+    orderId: null,
+    otherReason: "",
+  });
   const [accountType, setAccountType] = useState({
     user: false,
     shop: false,
@@ -174,7 +183,23 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
 
   // GET ALL CANCEL REASON
 
-  useEffect(() => {});
+  useEffect(() => {
+    if (openCancelModal) {
+      dispatch(getAllCancelReasons(true, "admin"));
+    }
+  }, [openCancelModal]);
+
+  // CANCEL ORDER
+
+  const submitOrderCancel = (e) => {
+    e.preventDefault();
+    dispatch(
+      cancelOrderByAdmin({
+        ...orderCancel,
+        cancelReason: orderCancel?.cancelReason?._id ?? "",
+      })
+    );
+  };
 
   return (
     <>
@@ -267,32 +292,43 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                 <i className="fa fa-eye" />
                               </button>
                             </Tooltip>
-                            <Tooltip title="Flag">
-                              <button
-                                className={`btn  button me-1 ${
-                                  item?.flag?.length > 0
-                                    ? "btn-warning"
-                                    : "btn-success"
-                                }`}
-                                onClick={() => {
-                                  setOpenFlagModal(!openFlagModal);
-                                  setSelectFlagOrder(item);
-                                  updateIsFlaged(item?.flag);
-                                }}
-                              >
-                                <i className="fa fa-flag"></i>
-                              </button>
-                            </Tooltip>
-                            <Tooltip title="Cancel Order">
-                              <button
-                                className="btn btn-danger button"
-                                onClick={() =>
-                                  setOpenCancelModal(!openCancelModal)
-                                }
-                              >
-                                <i className="fa fa-times-circle"></i>
-                              </button>
-                            </Tooltip>
+                            {item?.orderStatus !== "cancelled" && (
+                              <Tooltip title="Flag">
+                                <button
+                                  className={`btn  button me-1 ${
+                                    item?.flag?.length > 0
+                                      ? "btn-warning"
+                                      : "btn-success"
+                                  }`}
+                                  onClick={() => {
+                                    setOpenFlagModal(!openFlagModal);
+                                    setSelectFlagOrder(item);
+                                    updateIsFlaged(item?.flag);
+                                  }}
+                                >
+                                  <i className="fa fa-flag"></i>
+                                </button>
+                              </Tooltip>
+                            )}
+                            {item?.orderStatus !== "cancelled" && (
+                              <Tooltip title="Cancel Order">
+                                <button
+                                  className="btn btn-danger button"
+                                  onClick={() => {
+                                    setOpenCancelModal(!openCancelModal);
+                                    setOrderCancel({
+                                      ...orderCancel,
+                                      cancelReason: "",
+                                      otherReason: "",
+                                      orderId: item?._id,
+                                    });
+                                    setIsOtherReason(false);
+                                  }}
+                                >
+                                  <i className="fa fa-times-circle"></i>
+                                </button>
+                              </Tooltip>
+                            )}
                           </ButtonWrapper>
                         </Td>
                       </Tr>
@@ -539,12 +575,17 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           </button>
         </div>
         <div className="modal-body">
-          <Form>
+          <Form onSubmit={submitOrderCancel}>
             <Autocomplete
               className="cursor-pointer mt-3"
-              value={deliveryBoy}
+              disabled={isOtherReason}
+              value={orderCancel.cancelReason}
               onChange={(event, newValue) => {
-                setDeliveryBoy(newValue);
+                setOrderCancel({
+                  ...orderCancel,
+                  cancelReason: newValue,
+                  otherReason: "",
+                });
               }}
               getOptionLabel={(option, index) =>
                 option.name ? option.name : ""
@@ -557,22 +598,78 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 setDeliverySearchKey(newInputValue);
               }}
               id="controllable-states-demo"
-              options={deliveryMans.length > 0 ? deliveryMans : []}
+              options={cancelReasons.length > 0 ? cancelReasons : []}
               sx={{ width: "100%" }}
               renderInput={(params, index) => (
-                <TextField {...params} label="Select a cancel reason" />
+                <TextField
+                  {...params}
+                  label="Select a cancel reason"
+                  required={!isOtherReason}
+                />
               )}
               renderOption={(props, option) => (
                 <Box
                   component="li"
                   sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                   {...props}
-                  key={option._id}
+                  key={option?._id}
                 >
-                  {option.name}
+                  {option?.name}
                 </Box>
               )}
             />
+
+            <div className="mt-2">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isOtherReason}
+                    onChange={(e) => setIsOtherReason(e.target.checked)}
+                    name="otherReason"
+                  />
+                }
+                label="Send other reason"
+              />
+            </div>
+
+            {isOtherReason && (
+              <div className="mt-2">
+                <TextField
+                  type="text"
+                  multiline
+                  className="form-control"
+                  placeholder="Type other reason"
+                  maxRows={4}
+                  required={isOtherReason}
+                  label="Other reason"
+                  value={orderCancel.otherReason}
+                  onChange={(e) =>
+                    setOrderCancel({
+                      ...orderCancel,
+                      otherReason: e.target.value,
+                      cancelReason: null,
+                    })
+                  }
+                />
+              </div>
+            )}
+
+            <div className="d-flex justify-content-center my-3">
+              <Button
+                color="success"
+                size="lg"
+                className="px-4"
+                type="submit"
+                style={{ width: "120px" }}
+                disabled={loading}
+              >
+                {loading ? (
+                  <Spinner color="danger" size="sm"></Spinner>
+                ) : (
+                  "Cancel"
+                )}
+              </Button>
+            </div>
           </Form>
         </div>
       </Modal>

@@ -66,32 +66,15 @@ const SendNotifications = () => {
     accountType: "",
     type: "",
     description: "",
-    descriptionHtml: "",
     byAdmin: true,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(null);
 
-  const [editorState, setEditorState] = useState(() => {
-    EditorState.createEmpty();
-  });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNotification({ ...notification, [name]: value });
     (name === "type" || name === "accountType") && setUser(null);
-  };
-
-  const updateDescription = async (state) => {
-    setEditorState(state);
-    let currentContentAsHTML =
-      editorState && convertToHTML(editorState?.getCurrentContent());
-    // // let currentContextAsRow = convertToRaw(editorState?.getCurrentContent())
-    //   ?.blocks[0]?.text;
-    setNotification({
-      ...notification,
-      descriptionHtml: currentContentAsHTML,
-    });
   };
 
   // GET USER/SHOP/DELIVERY LIST
@@ -150,11 +133,9 @@ const SendNotifications = () => {
         accountType: "",
         type: "",
         description: "",
-        descriptionHtml: "",
         byAdmin: true,
       });
       setUser(null);
-      setEditorState(EditorState.createEmpty());
     }
   }, [status]);
 
@@ -210,6 +191,21 @@ const SendNotifications = () => {
                             ))}
                           </Select>
                         </FormControl>
+                      </div>
+
+                      <div className="mb-4">
+                        <TextField
+                          type="text"
+                          multiline
+                          className="form-control"
+                          placeholder="Enter notification descriptions"
+                          required
+                          label="descriptions"
+                          name="descriptions"
+                          maxRows={5}
+                          value={notification.description}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </Col>
                     <Col lg={6}>
@@ -313,7 +309,7 @@ const SendNotifications = () => {
                       </div>
                     </Col>
                   </Row>
-                  <Row>
+                  {/* <Row>
                     <Col>
                       <div className="mb-4">
                         <Label>Descriptions</Label>
@@ -333,8 +329,8 @@ const SendNotifications = () => {
                         />
                       </div>
                     </Col>
-                  </Row>
-                  <div className="d-flex justify-content-center">
+                  </Row> */}
+                  <div className="d-flex justify-content-center mt-3">
                     <Button
                       color="success"
                       size="lg"

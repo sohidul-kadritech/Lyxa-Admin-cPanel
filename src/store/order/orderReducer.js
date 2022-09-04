@@ -121,6 +121,30 @@ const orderReducer = (state = initialState, action) => {
         error: payload,
       };
 
+    // CANCEL ORDER
+
+    case actionType.CANCEL_ORDER_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.CANCEL_ORDER_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.CANCEL_ORDER_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
     // FILTERS
     case actionType.UPDATE_ORDER_SORT_BY_FILTER:
       return {
