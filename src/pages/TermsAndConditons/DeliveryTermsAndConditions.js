@@ -11,10 +11,7 @@ const DeliveryTermsAndConditions = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <TextEditor
-              title="Delivery Terms and Condtions"
-              type="deliveryAppTearmsAndConditions"
-            />
+            <TextEditor title="Delivery Terms and Condtions" type="delivery" />
           </Container>
         </div>
       </GlobalWrapper>

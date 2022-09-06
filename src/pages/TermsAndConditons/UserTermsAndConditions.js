@@ -11,10 +11,7 @@ const UserTermsAndConditions = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <TextEditor
-              title="User Terms and Condtions"
-              type="userAppTearmsAndConditions"
-            />
+            <TextEditor title="User Terms and Condtions" type="user" />
           </Container>
         </div>
       </GlobalWrapper>

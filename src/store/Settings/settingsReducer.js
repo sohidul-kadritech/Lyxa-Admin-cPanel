@@ -7,9 +7,6 @@ const initialState = {
   googleMapKey: "",
   appSettingsOptions: {
     nearByShopKm: 0,
-    userAppTearmsAndConditions: "",
-    deliveryAppTearmsAndConditions: "",
-    shopAppTearmsAndConditions: "",
     deliveryFeePerKm: "",
     maxDiscount: 0,
     searchDeliveryBoyKm: [],

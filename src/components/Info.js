@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Tooltip } from "@mui/material";
 
-const Info = ({ title, value = "", link, flagOrderRoute }) => {
+const Info = ({ title, value = "", link, flagOrderRoute, valueTwo = "" }) => {
   const history = useHistory();
 
   return (
@@ -18,7 +18,7 @@ const Info = ({ title, value = "", link, flagOrderRoute }) => {
           </span>
         </Tooltip>
       </div>
-      <div className="value">
+      <div className="value valueOne">
         <Tooltip title={`${link ? "See details" : ""}`}>
           <span
             className={`${link && "cursor-pointer"}  }`}
@@ -28,6 +28,11 @@ const Info = ({ title, value = "", link, flagOrderRoute }) => {
           </span>
         </Tooltip>
       </div>
+      {valueTwo && (
+        <div className="value valueTwo">
+          <span>{valueTwo}</span>
+        </div>
+      )}
     </Details>
   );
 };
@@ -37,23 +42,16 @@ const Details = styled.div`
   align-items: center;
   border: 1px solid lightgray;
   border-bottom: none;
-  /* padding: 5px; */
-  /* max-height: 50px;
-  overflow: hidden scroll; */
-  /* height: 50px; */
+
   &:last-child {
     border-bottom: 1px solid lightgray;
   }
   .title {
     width: 170px;
-    /* border-right: 1px solid lightgray; */
-    /* padding: 10px; */
+
     color: black;
     font-weight: 500;
     padding-left: 5px;
-    /* @media (max-width: 1200px) {
-      width: 170px;
-    } */
     span {
       &:hover {
         color: ${({ flagOrder }) => flagOrder && "blue"};
@@ -64,7 +62,6 @@ const Details = styled.div`
   }
 
   .value {
-    flex: 1;
     color: green;
     font-weight: 500;
     font-size: 15px;
@@ -81,6 +78,12 @@ const Details = styled.div`
       font-weight: ${({ link }) => link && "bold"};
     }
     text-decoration: ${({ link }) => link && "underline"};
+    &.valueOne {
+      flex: 1;
+    }
+    &.valueTwo {
+      width: 40px !important;
+    }
   }
 `;
 

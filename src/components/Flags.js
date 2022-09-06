@@ -23,6 +23,7 @@ const Flags = ({
           <h5 style={{ marginLeft: "120px" }}>
             {!isReview ? "Comments" : "Order Reviews"}
           </h5>
+          {isReview && <h5 style={{ marginLeft: "140px" }}>Rating</h5>}
         </div>
         <FlagsWrapper>
           {!isReview
@@ -62,6 +63,7 @@ const Flags = ({
                     <Info
                       title={item?.order?.orderId}
                       value={item?.review}
+                      valueTwo={item?.rating}
                       flagOrderRoute={
                         !isFromOrder && `/orders/details/${item?.order?._id}`
                       }

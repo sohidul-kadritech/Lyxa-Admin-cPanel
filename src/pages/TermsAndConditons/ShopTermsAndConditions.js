@@ -11,10 +11,7 @@ const ShopTermsAndConditions = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <TextEditor
-              title="Shop Terms and Condtions"
-              type="shopAppTearmsAndConditions"
-            />
+            <TextEditor title="Shop Terms and Condtions" type="shop" />
           </Container>
         </div>
       </GlobalWrapper>

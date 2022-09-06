@@ -432,13 +432,13 @@ const ShopDetails = () => {
             </Row>
 
             <Row>
-              <Col lg={6}>
-                {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />}
-              </Col>
-              <Col lg={6}>
+              <Col xl={6}>
                 {shop?.reviews?.length > 0 && (
                   <Flags reviews={shop?.reviews} isReview={true} />
                 )}
+              </Col>
+              <Col xl={6}>
+                {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />}
               </Col>
             </Row>
           </Container>

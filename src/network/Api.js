@@ -210,6 +210,12 @@ export const GET_NOTIFICATIONS = ADMIN_ENDPOINT + "/notification";
 export const UPDATE_NOTIFICATION_STATUS =
   ADMIN_ENDPOINT + "/notification/delete";
 
+// TERMS AND CONDITIONS
+
+export const UPDATE_CONDITION =
+  ADMIN_ENDPOINT + "/setting/app-setting/terms/edit";
+export const GET_CONDITION = ADMIN_ENDPOINT + "/setting/app-setting/terms";
+
 // IMAGE UPLOAD
 
 export const IMAGE_UPLOAD = "image/single-image-upload";

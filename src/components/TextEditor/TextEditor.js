@@ -30,54 +30,76 @@ import {
 } from "../../store/Settings/settingsAction";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import {
+  getTermAndCondition,
+  updateTermAndCondition,
+} from "../../store/termsAndConditions/termsAndConditionAction";
+import { GET_CONDITION } from "../../network/Api";
 
 const TextEditor = ({ title, type = "" }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, appSettingsOptions } = useSelector(
-    (state) => state.settingsReducer
+  const { loading, description } = useSelector(
+    (state) => state.termsAndConditonReducer
   );
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [editorState, setEditorState] = useState(() => {
     EditorState.createEmpty();
   });
 
-  const [description, setDescription] = useState("");
-
-  useEffect(() => {
-    dispatch(getAllAppSettings());
-  }, []);
+  const [condition, setCondition] = useState("");
 
   useState(() => {
-    // console.log("call", appSettingsOptions);
+    const callApi = async () => {
+      setIsLoading(true);
+      try {
+        // console.log("call api--------", type);
+        const { data } = await requestApi().request(GET_CONDITION, {
+          params: {
+            type: type,
+          },
+        });
+        if (data.message) {
+          const value = data.data;
 
-    if (appSettingsOptions[type]) {
-      const contentBlock = htmlToDraft(appSettingsOptions[type]);
-      if (contentBlock) {
-        const contentState = ContentState.createFromBlockArray(
-          contentBlock.contentBlocks
-        );
-        const outputEditorState = EditorState.createWithContent(contentState);
-        setEditorState(outputEditorState);
+          if (value != null) {
+            const contentBlock = htmlToDraft(value);
+            if (contentBlock) {
+              const contentState = ContentState.createFromBlockArray(
+                contentBlock.contentBlocks
+              );
+              const outputEditorState =
+                EditorState.createWithContent(contentState);
+              setEditorState(outputEditorState);
+              setIsLoading(false);
+            }
+          } else {
+            setEditorState(EditorState.createEmpty());
+          }
+        } else {
+          console.log(data.error);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } else {
-      history.push("/");
-    }
-
-    // return () => {
-    //   setEditorState(EditorState.createEmpty());
-    // };
+    };
+    callApi();
+    return () => {
+      setEditorState(EditorState.createEmpty()); // This worked for me
+    };
   }, []);
 
   const updateDescription = async (state) => {
     setEditorState(state);
-    let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-    setDescription(currentContentAsHTML);
+    let currentContentAsHTML = convertToHTML(editorState?.getCurrentContent());
+    setCondition(currentContentAsHTML);
   };
 
   const handleSubmit = () => {
-    dispatch(updateAppSettings(type, description));
+    dispatch(updateTermAndCondition(type, condition));
   };
   return (
     <React.Fragment>
@@ -95,9 +117,14 @@ const TextEditor = ({ title, type = "" }) => {
           <Col>
             <Card>
               <CardBody>
-                <CardTitle className="h4">{title}</CardTitle>
+                <div className="d-flex justify-content-between">
+                  <CardTitle className="h4">{title}</CardTitle>
+                  {isLoading && (
+                    <Spinner animation="border" variant="info" size="lg" />
+                  )}
+                </div>
                 <hr />
-                <Form method="post">
+                <Form>
                   <Editor
                     onEditorStateChange={updateDescription}
                     toolbarClassName="toolbarClassName"

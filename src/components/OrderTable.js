@@ -660,13 +660,13 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 size="lg"
                 className="px-4"
                 type="submit"
-                style={{ width: "120px" }}
+                // style={{ width: "120px" }}
                 disabled={loading}
               >
                 {loading ? (
                   <Spinner color="danger" size="sm"></Spinner>
                 ) : (
-                  "Cancel"
+                  "Confirm cancel order"
                 )}
               </Button>
             </div>

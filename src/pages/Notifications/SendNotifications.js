@@ -200,7 +200,7 @@ const SendNotifications = () => {
                           className="form-control"
                           placeholder="Enter notification descriptions"
                           required
-                          label="descriptions"
+                          label="Descriptions"
                           name="descriptions"
                           maxRows={5}
                           value={notification.description}

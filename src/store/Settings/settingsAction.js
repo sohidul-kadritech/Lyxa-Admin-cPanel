@@ -141,47 +141,45 @@ export const updateMaxDiscount = (amount) => (dispatch) => {
 
 // UPDATE APP SETTINGS
 
-export const updateAppSettings =
-  (conditionType, descriptions) => async (dispatch, getState) => {
-    console.log({ descriptions });
-    const { appSettingsOptions } = getState().settingsReducer;
-    try {
+export const updateAppSettings = () => async (dispatch, getState) => {
+  // console.log({ descriptions });
+  const { appSettingsOptions } = getState().settingsReducer;
+  try {
+    dispatch({
+      type: actionType.UPDATE_APP_SETTINGS_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, error, message, data },
+    } = await requestApi().request(UPDATE_APP_SETTINGS, {
+      method: "POST",
+      data: {
+        nearByShopKm: appSettingsOptions.nearByShopKm,
+        maxDiscount: appSettingsOptions.maxDiscount,
+        searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
+      },
+    });
+
+    if (status) {
+      successMsg(message, "success");
       dispatch({
-        type: actionType.UPDATE_APP_SETTINGS_REQUEST_SEND,
+        type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
+        payload: data.appSetting,
       });
-
-      const {
-        data: { status, error, message, data },
-      } = await requestApi().request(UPDATE_APP_SETTINGS, {
-        method: "POST",
-        data: {
-          nearByShopKm: appSettingsOptions.nearByShopKm,
-          maxDiscount: appSettingsOptions.maxDiscount,
-          [conditionType]: descriptions,
-          searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
-        },
-      });
-
-      if (status) {
-        successMsg(message, "success");
-        dispatch({
-          type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
-          payload: data.appSetting,
-        });
-      } else {
-        successMsg(message, "error");
-        dispatch({
-          type: actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL,
-          payload: error,
-        });
-      }
-    } catch (error) {
+    } else {
+      successMsg(message, "error");
       dispatch({
         type: actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL,
-        payload: error.message,
+        payload: error,
       });
     }
-  };
+  } catch (error) {
+    dispatch({
+      type: actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 // GET ALL APP SETTINGS
 
@@ -404,7 +402,7 @@ export const updateCancelReason = (values) => async (dispatch) => {
 // GET ALL CANCEL REASONS
 
 export const getAllCancelReasons =
-  (refresh = false, adminType ) =>
+  (refresh = false, adminType) =>
   async (dispatch, getState) => {
     const { cancelReasons, typeKey, activeStatus } = getState().settingsReducer;
 
