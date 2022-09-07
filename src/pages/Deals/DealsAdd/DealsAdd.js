@@ -32,7 +32,6 @@ import {
 import { Link, useHistory, useParams } from "react-router-dom";
 import { IMAGE_UPLOAD, SINGLE_DEAL } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
-import { toast } from "react-toastify";
 import {
   addDeal,
   editDeal,
@@ -66,7 +65,6 @@ const DealsAdd = () => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
       if (findDeal) {
-        // console.log({ findDeal });
         updateData(findDeal);
       } else {
         callApi(id);
@@ -78,7 +76,7 @@ const DealsAdd = () => {
 
   useEffect(() => {
     if (dealType === "others" || tagSearchKey) {
-      dispatch(getAllTags());
+      dispatch(getAllTags("food"));
     }
   }, [dealType, tagSearchKey]);
 
@@ -93,10 +91,10 @@ const DealsAdd = () => {
         if (status) {
           updateData(data.deal);
         } else {
-          console.log(error);
+          successMsg(error, "error");
         }
       } catch (error) {
-        console.log(error.message);
+        successMsg(error, "error");
       }
     } else {
       history.push("/deals/list", { replace: true });
@@ -388,7 +386,7 @@ const DealsAdd = () => {
               {shopType === "restaurant" && (
                 <div className="form-check">
                   <input
-                    className="form-check-input"
+                    className="form-check-input cursor-pointer"
                     type="checkbox"
                     value={requiredImage}
                     id="flexCheckDefault"

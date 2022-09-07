@@ -14,6 +14,12 @@ const initialState = {
   currentPage: 1,
   hasPreviousPage: false,
   orders: [],
+  riderAllActiveStatus: [],
+  statusPaginate: null,
+  statusPaging: [],
+  statusHasNextPage: true,
+  statusCurrentPage: 1,
+  statusHasPreviousPage: false,
 };
 
 const deliveryManReducer = (state = initialState, action) => {
@@ -147,6 +153,33 @@ const deliveryManReducer = (state = initialState, action) => {
       };
 
     case actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionType.TRACK_DELIVERY_MAN_REQUEST_SEND:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        riderAllActiveStatus: payload.trackingData,
+        statusPaginate: payload.paginate,
+        statusPaging: payload.paginate.metadata.paging,
+        statusHasNextPage: payload.paginate.metadata.hasNextPage,
+        statusCurrentPage: payload.paginate.metadata.page.currentPage,
+        statusHasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: true,
+      };
+
+    case actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL:
       return {
         ...state,
         error: payload,

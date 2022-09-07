@@ -13,7 +13,6 @@ import * as actionType from "../actionType";
 // ADD
 
 export const addDeal = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.ADD_DEAL_REQUEST_SEND,
@@ -87,7 +86,6 @@ export const getAllDeal =
 // EDIT
 
 export const editDeal = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.EDIT_DEAL_REQUEST_SEND,
@@ -201,7 +199,7 @@ export const updateShopFilter = (value) => (dispatch) => {
 
 // GET ALL TAGS
 
-export const getAllTags = (type) => async (dispatch, getState) => {
+export const getAllTags = (typeValue) => async (dispatch, getState) => {
   const { tagSearchKey } = getState().dealReducer;
   try {
     dispatch({
@@ -212,11 +210,9 @@ export const getAllTags = (type) => async (dispatch, getState) => {
         page: 1,
         pageSize: 100,
         searchKey: tagSearchKey,
-        type: "food",
+        type: typeValue,
       },
     });
-
-    console.log(data);
 
     if (data.status) {
       dispatch({

@@ -50,7 +50,6 @@ const ShopDetails = () => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
-        console.log({ findShop });
         const activeStatus = findShop?.liveStatus == "online" ? true : false;
         setLiveStatus(activeStatus);
         setShop(findShop);
@@ -66,10 +65,9 @@ const ShopDetails = () => {
         id: shopId,
       },
     });
-    // console.log(banner)
+
     if (data.status) {
       const { shop } = data.data;
-      console.log({ shop });
       if (shop) {
         const activeStatus = shop?.liveStatus == "online" ? true : false;
         setLiveStatus(activeStatus);

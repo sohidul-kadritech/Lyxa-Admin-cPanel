@@ -53,6 +53,10 @@ import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
 import formatBytes from "../../../common/imageFormatBytes";
 import { successMsg } from "../../../helpers/successMsg";
+import {
+  getAllTags,
+  updateTagsSearchKey,
+} from "../../../store/Deal/dealAction";
 
 const ShopAdd = () => {
   const dispatch = useDispatch();
@@ -66,6 +70,9 @@ const ShopAdd = () => {
   const { sellers } = useSelector((state) => state.sellerReducer);
   const { loading, status, shops, cuisines } = useSelector(
     (state) => state.shopReducer
+  );
+  const { tags: allTags, tagSearchKey } = useSelector(
+    (state) => state.dealReducer
   );
 
   const [tags, setTags] = useState({
@@ -88,7 +95,6 @@ const ShopAdd = () => {
   const [latLng, setLatLng] = useState({});
   const [fullAddress, setFullAddress] = useState("");
   const [pinCode, setPinCode] = useState("");
-  const [isCuisine, setIsCuisine] = useState(false);
   const [liveStatus, setLiveStatus] = useState("");
   const [expensive, setExpensive] = useState("");
   const [country, setCountry] = useState("");
@@ -142,6 +148,7 @@ const ShopAdd = () => {
       history.push("/shop/list", { replace: true });
     }
   };
+
   // FIND SELLER
   useEffect(() => {
     if (searchParams) {
@@ -199,28 +206,38 @@ const ShopAdd = () => {
     setDeliveryType(haveOwnDeliveryBoy ? "self" : "drop");
   };
 
-  // TAGS
+  // GET ALL TAGS
+
+  useEffect(() => {
+    if (seller || tagSearchKey) {
+      dispatch(getAllTags(seller?.sellerType));
+    }
+  }, [seller]);
+
+  // TAGS ADD
 
   const handleTagAdd = (evt) => {
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
-
-      let value = tags.value.trim();
+      let value = evt.target.value.trim();
 
       if (value) {
         setTags({
-          items: [...tags.items, tags.value],
+          items: [...tags.items, value],
           value: "",
         });
       }
     }
   };
 
-  const handleTagChange = (evt) => {
-    setTags({
-      ...tags,
-      value: evt.target.value,
-    });
+  const handleTagChange = (item) => {
+    // console.log({ item });
+    if (item) {
+      setTags({
+        ...tags,
+        items: [...tags.items, item.name],
+      });
+    }
   };
 
   const handleTagDelete = (item) => {
@@ -229,6 +246,8 @@ const ShopAdd = () => {
       items: tags.items.filter((i) => i != item),
     });
   };
+
+  console.log({ tags });
 
   // SUBMIT SELLER
 
@@ -458,7 +477,6 @@ const ShopAdd = () => {
         setSelectedCuisines([]);
         setSearchCuisineKey("");
         setLiveStatus("");
-        setIsCuisine(false);
         setEmail("");
         setPassword("");
         setPhone("");
@@ -812,29 +830,6 @@ const ShopAdd = () => {
                         />
                       </div>
 
-                      {/* {shopType == "food" && (
-                        <div className="mb-4">
-                          <FormControl required fullWidth>
-                            <InputLabel id="demo-simple-select-label">
-                              Food Type
-                            </InputLabel>
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              value={foodType}
-                              onChange={(e) => setFoodType(e.target.value)}
-                              label="Food Type"
-                            >
-                              {foodTypeOptions.map((item, index) => (
-                                <MenuItem key={index} value={item.value}>
-                                  {item.label}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      )} */}
-
                       <div className="mb-4">
                         <TextField
                           className="form-control"
@@ -849,13 +844,51 @@ const ShopAdd = () => {
 
                       <div className="mb-4">
                         <div>
-                          <TextField
+                          {/* <TextField
                             value={tags.value}
                             placeholder="Type Tag Name and press `Enter`..."
                             onKeyDown={handleTagAdd}
                             onChange={handleTagChange}
                             className="form-control"
                             label="Tag"
+                          /> */}
+                          <Autocomplete
+                            className="cursor-pointer"
+                            value={tags.value}
+                            onChange={(event, newValue) => {
+                              handleTagChange(newValue);
+                            }}
+                            getOptionLabel={(option) =>
+                              option.name ? option.name : ""
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option?._id === value?._id
+                            }
+                            inputValue={tagSearchKey}
+                            onInputChange={(event, newInputValue) => {
+                              dispatch(updateTagsSearchKey(newInputValue));
+                            }}
+                            id="controllable-states-demo"
+                            options={allTags.length > 0 ? allTags : []}
+                            sx={{ width: "100%" }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Select a Tag"
+                                name="tag"
+                                onKeyDown={handleTagAdd}
+                              />
+                            )}
+                            renderOption={(props, option) => (
+                              <Box
+                                component="li"
+                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                {...props}
+                                key={option?._id}
+                              >
+                                {option?.name}
+                              </Box>
+                            )}
                           />
                         </div>
 
@@ -920,25 +953,6 @@ const ShopAdd = () => {
                           </Select>
                         </FormControl>
                       </div>
-
-                      {/* {shopType == "food" && !id && (
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={isCuisine}
-                            id="flexCheckDefault"
-                            onChange={(e) => setIsCuisine(e.target.checked)}
-                          />
-                          <label
-                            className="form-check-label ms-1"
-                            style={{ fontSize: "16px" }}
-                            htmlFor="flexCheckDefault"
-                          >
-                            Is Cuisine?
-                          </label>
-                        </div>
-                      )} */}
 
                       {seller?.sellerType == "food" && (
                         <div className="mb-3">

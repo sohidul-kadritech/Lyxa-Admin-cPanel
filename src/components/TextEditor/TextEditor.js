@@ -56,7 +56,6 @@ const TextEditor = ({ title, type = "" }) => {
     const callApi = async () => {
       setIsLoading(true);
       try {
-        // console.log("call api--------", type);
         const { data } = await requestApi().request(GET_CONDITION, {
           params: {
             type: type,

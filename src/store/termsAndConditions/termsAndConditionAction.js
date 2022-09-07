@@ -27,8 +27,6 @@ export const updateTermAndCondition =
         },
       });
 
-      console.log({ data });
-
       if (status) {
         successMsg(message, "success");
         dispatch({
@@ -60,8 +58,6 @@ export const getTermAndCondition = (type) => async (dispatch) => {
         type,
       },
     });
-
-    console.log({ data });
 
     if (status) {
       successMsg(message, "success");

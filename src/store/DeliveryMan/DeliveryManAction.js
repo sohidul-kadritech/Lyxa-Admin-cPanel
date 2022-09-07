@@ -73,6 +73,8 @@ export const allDeliveryMan =
           },
         });
 
+        console.log({ data });
+
         if (status) {
           dispatch({
             type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
@@ -137,7 +139,7 @@ export const editDeliveryMan = (values) => async (dispatch) => {
 
 // TRACKING DELIVERY Boy
 
-export const trackDeliveryBoy = (id) => async (dispatch) => {
+export const trackDeliveryBoy = (id, page) => async (dispatch) => {
   try {
     dispatch({
       type: actionType.TRACK_DELIVERY_MAN_REQUEST_SEND,
@@ -146,7 +148,11 @@ export const trackDeliveryBoy = (id) => async (dispatch) => {
     const {
       data: { status, error, message, data = null },
     } = await requestApi().request(TRACK_DELIVERY_MAN, {
-      id,
+      params: {
+        id,
+        page,
+        pageSize: 25,
+      },
     });
 
     console.log({ data });
@@ -154,7 +160,7 @@ export const trackDeliveryBoy = (id) => async (dispatch) => {
     if (status) {
       dispatch({
         type: actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS,
-        payload: data.delivery,
+        payload: data,
       });
     } else {
       successMsg(error, "error");
@@ -166,7 +172,7 @@ export const trackDeliveryBoy = (id) => async (dispatch) => {
     }
   } catch (error) {
     dispatch({
-      type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
+      type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
       payload: error.message,
     });
   }

@@ -149,7 +149,6 @@ const NotificationsList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image</Th>
                       <Th>Title</Th>
                       <Th>Account Type</Th>
                       <Th>Type</Th>
@@ -169,25 +168,7 @@ const NotificationsList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
-                            <div className="image__wrapper">
-                              <img
-                                // onClick={() => {
-                                //   setIsOpen(true);
-                                //   setSelectedImg(item?.shopLogo);
-                                // }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item.image}
-                                style={{
-                                  // width: "100%",
-                                  height: "100%",
-                                  // objectFit: "contain",
-                                }}
-                              />
-                            </div>
-                          </Th>
-                          <Td>{item?.title}</Td>
+                          <Th style={{ maxWidth: "200px" }}>{item?.title}</Th>
                           <Td>{item?.accountType}</Td>
                           <Td>{item?.type}</Td>
                           <Td>{item?.status}</Td>

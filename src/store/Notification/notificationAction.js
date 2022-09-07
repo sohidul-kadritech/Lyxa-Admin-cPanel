@@ -8,7 +8,6 @@ import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 export const createNotification = (values) => async (dispatch) => {
-  console.log({ values });
   try {
     dispatch({
       type: actionType.CREATE_NOTIFICATION_REQUEST_SEND,
@@ -18,8 +17,6 @@ export const createNotification = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
-    console.log(data);
 
     if (data.status) {
       successMsg(data.message, "success");

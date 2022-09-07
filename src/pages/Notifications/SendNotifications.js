@@ -201,7 +201,7 @@ const SendNotifications = () => {
                           placeholder="Enter notification descriptions"
                           required
                           label="Descriptions"
-                          name="descriptions"
+                          name="description"
                           maxRows={5}
                           value={notification.description}
                           onChange={handleInputChange}

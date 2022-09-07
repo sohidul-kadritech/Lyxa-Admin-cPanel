@@ -22,7 +22,6 @@ import {
 } from "../../../assets/staticData";
 import {
   allDeliveryMan,
-  trackDeliveryBoy,
   updateDeliveryManSearchKey,
   updateDeliveryManSortByKey,
   updateDeliveryManStatusKey,
@@ -60,15 +59,6 @@ const DeliverymanList = () => {
   const callDeliveryManList = (refresh = false) => {
     dispatch(allDeliveryMan(refresh));
   };
-
-  // TRACK DELIVERY
-
-  useEffect(() => {
-    if (track && id) {
-      dispatch(trackDeliveryBoy(id));
-    }
-    return;
-  }, [track, id]);
 
   return (
     <React.Fragment>
@@ -145,7 +135,7 @@ const DeliverymanList = () => {
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
-                      {/* <Th>Delivered Order</Th> */}
+                      <Th>Live Status</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -168,8 +158,12 @@ const DeliverymanList = () => {
                           <Th>{item?.name}</Th>
                           <Td>{item?.email}</Td>
                           <Td>{item?.number}</Td>
-                          <Td>{item.status}</Td>
-                          {/* <Td>{"delivered order"}</Td> */}
+                          <Td>{item?.status}</Td>
+                          <Td>
+                            {item?.liveStatus === "online"
+                              ? "Available"
+                              : "Unavailable"}
+                          </Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">
@@ -196,15 +190,26 @@ const DeliverymanList = () => {
                                   <i className="fa fa-eye" />
                                 </button>
                               </Tooltip>
-                              <Tooltip title="Tracking">
+                              <Tooltip title="See rider location">
                                 <button
                                   className="btn btn-warning button me-0 me-lg-2"
+                                  // onClick={() => {
+                                  //   setTrack(true);
+                                  //   setId(item._id);
+                                  // }}
+                                >
+                                  <i className="fa fa-map-marker" />
+                                </button>
+                              </Tooltip>
+                              <Tooltip title="See rider active status">
+                                <button
+                                  className="btn btn-primary button me-0 me-lg-2"
                                   onClick={() => {
                                     setTrack(true);
                                     setId(item._id);
                                   }}
                                 >
-                                  <i className="fa fa-map-marker" />
+                                  <i className="fa fa-toggle-on" />
                                 </button>
                               </Tooltip>
                             </div>
@@ -253,7 +258,7 @@ const DeliverymanList = () => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">Tracking Delivery Boy</h5>
+            <h5 className="modal-title mt-0">Delivery boy all active status</h5>
             <button
               type="button"
               onClick={() => {
@@ -266,8 +271,11 @@ const DeliverymanList = () => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div className="modal-body">
-            <TrackingDeliveryBoy />
+          <div
+            className="modal-body py-1"
+            style={{ maxHeight: "550px", overflow: "hidden scroll" }}
+          >
+            <TrackingDeliveryBoy riderId={id} />
           </div>
         </Modal>
       </GlobalWrapper>
