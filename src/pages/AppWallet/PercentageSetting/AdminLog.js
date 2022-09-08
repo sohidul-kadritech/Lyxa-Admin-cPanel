@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import {
   Button,
@@ -12,12 +12,40 @@ import {
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import Info from "../../../components/Info";
-import TransactionsCard from "../../../components/TransactionsCard";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { Tooltip } from "@mui/material";
+import Select from "react-select";
+import { adminLogTypeOptions, sortByOptions } from "../../../assets/staticData";
+import {
+  getAdminLogHistory,
+  updateAdminLogSortKey,
+  updateAdminLogTypeKey,
+} from "../../../store/Settings/settingsAction";
+import moment from "moment";
+import AppPagination from "./../../../components/AppPagination";
 
 const AdminLog = () => {
+  const dispatch = useDispatch();
+  const {
+    loading,
+    adminLogType,
+    logSortBy,
+    adminLogs,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+  } = useSelector((state) => state.settingsReducer);
+
+  useEffect(() => {
+    if (adminLogType || logSortBy) {
+      callLogList(true);
+    }
+  }, [adminLogType, logSortBy]);
+
+  const callLogList = (refresh = false) => {
+    dispatch(getAdminLogHistory(refresh));
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -27,8 +55,40 @@ const AdminLog = () => {
               maintitle="Drop"
               breadcrumbItem="Percentage Settings History"
               title="Admin"
-              isRefresh={false}
+              loading={loading}
+              callList={callLogList}
             />
+
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Sort By</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={sortByOptions}
+                        classNamePrefix="select2-selection"
+                        value={logSortBy}
+                        onChange={(e) => dispatch(updateAdminLogSortKey(e))}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={4}>
+                    <div className="mb-4">
+                      <label className="control-label">Type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={adminLogTypeOptions}
+                        classNamePrefix="select2-selection"
+                        value={adminLogType}
+                        onChange={(e) => dispatch(updateAdminLogTypeKey(e))}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
             <Card>
               <CardBody>
@@ -42,44 +102,39 @@ const AdminLog = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>ID</Th>
-                      <Th>Amount</Th>
-                      <Th>transaction Type</Th>
+                      <Th>Admin Name</Th>
+                      <Th>Role</Th>
                       <Th>Date</Th>
-                      <Th>Admin</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    <Tr
-                      // key={index}
-                      className="align-middle cursor-pointer"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "500",
-                      }}
-                    >
-                      <Th></Th>
-
-                      <Td></Td>
-                      <Td></Td>
-                      <Td></Td>
-                      <Td></Td>
-                    </Tr>
+                    {adminLogs?.map((item, index) => (
+                      <Tr
+                        key={index}
+                        className="align-middle"
+                        style={{
+                          fontSize: "15px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        <Th>{item?.admin?.name}</Th>
+                        <Td>{item?.admin?.adminType}</Td>
+                        <Td>
+                          {moment(item?.date).format("MMMM Do YYYY, h:mm:ss a")}
+                        </Td>
+                      </Tr>
+                    ))}
                   </Tbody>
                 </Table>
-                {/* {loading && (
+
+                {!loading && adminLogs.length < 1 && (
                   <div className="text-center">
-                    <Spinner animation="border" variant="success" />
+                    <h4>No History!</h4>
                   </div>
                 )}
-                {!loading && deliveryTrxs.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Order!</h4>
-                  </div>
-                )} */}
               </CardBody>
             </Card>
-            {/* <Row>
+            <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
@@ -87,11 +142,11 @@ const AdminLog = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getDeliveryTrx(true, page))}
+                    lisener={(page) => dispatch(getAdminLogHistory(true, page))}
                   />
                 </div>
               </Col>
-            </Row> */}
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

@@ -2,6 +2,7 @@ import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_ORDER_CANCEL_REASON,
   ADMINS_SETTINGS,
+  ADMIN_LOGS_HISTORY,
   ALL_ORDER_CANCEL_REASON,
   APP_SETTINGS,
   DELETE_SELLER_SPECIAL_DROP_CHARGE,
@@ -537,4 +538,64 @@ export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
       payload: error.message,
     });
   }
+};
+
+// GET ALL ADMIN LOG HISTORY
+
+export const getAdminLogHistory =
+  (refresh = false, page = 1) =>
+  async (dispatch, getState) => {
+    const { adminLogType, logSortBy, adminLogs } = getState().settingsReducer;
+
+    if (adminLogs.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.ALL_AMDIN_LOGS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data },
+        } = await requestApi().request(ADMIN_LOGS_HISTORY, {
+          params: {
+            type: adminLogType.value,
+            sortBy: logSortBy.value,
+            page,
+            pageSize: 50,
+          },
+        });
+
+        if (status) {
+          dispatch({
+            type: actionType.ALL_AMDIN_LOGS_REQUEST_SUCCESS,
+            payload: data,
+          });
+        } else {
+          dispatch({
+            type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
+            payload: error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    }
+  };
+
+// ADMIN LOG HISTORY FILTER
+
+export const updateAdminLogTypeKey = (type) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_ADMIN_LOG_TYPE_KEY,
+    payload: type,
+  });
+};
+
+export const updateAdminLogSortKey = (key) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_ADMIN_SORT_KEY,
+    payload: key,
+  });
 };

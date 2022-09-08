@@ -62,6 +62,7 @@ const Login = (props) => {
   // ROLL CHANGE
 
   const handleLoginRoleChange = (e) => {
+    console.log(e.target.value);
     setType(e.target.value);
   };
 
@@ -116,11 +117,16 @@ const Login = (props) => {
                               value={type}
                               onChange={handleLoginRoleChange}
                             >
-                              <div className="d-flex justify-content-center">
+                              <div className="d-flex justify-content-center flex-wrap">
                                 <FormControlLabel
                                   value="admin"
                                   control={<Radio />}
                                   label="Admin"
+                                />
+                                <FormControlLabel
+                                  value="customerService"
+                                  control={<Radio />}
+                                  label="Customer Service"
                                 />
                                 <FormControlLabel
                                   value="seller"

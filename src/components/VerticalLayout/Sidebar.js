@@ -24,7 +24,7 @@ const Sidebar = (props) => {
             list={
               account_type === "admin"
                 ? adminMenuItem
-                : account_type === "customer_service"
+                : account_type === "customerService"
                 ? customerServiceMenuItem
                 : account_type === "seller"
                 ? sellerMenuItem

@@ -249,6 +249,18 @@ export const globalTypesOptions = [
   { label: "Specific", value: "specific" },
 ];
 
+export const adminLogTypeOptions = [
+  { label: "All", value: "all" },
+  { label: "Max Discount", value: "maxDiscount" },
+  { label: "Near By ShopKm", value: "nearByShopKm" },
+  { label: "Search Delivery Boy Km", value: "searchDeliveryBoyKm" },
+  { label: "Global Drop Charge", value: "globalDropCharge" },
+  { label: "Global Delivery Cut", value: "globalDeliveryCut" },
+  { label: "Specific Seller Drop Charge", value: "specificSellerDropCharge" },
+  { label: "Specific Seller Delivery Cut", value: "specificSellerDeliveryCut" },
+  { label: "Seller Drop Charge Reset", value: "sellerDropChargeReset" },
+];
+
 export const logoSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

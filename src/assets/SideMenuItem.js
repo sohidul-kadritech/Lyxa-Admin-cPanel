@@ -406,13 +406,6 @@ export const customerServiceMenuItem = [
         link: "/seller/list",
         isSubmenu: false,
       },
-      {
-        id: 31,
-        name: "Add",
-        icon: "fas fa-plus-circle",
-        link: "/seller/add",
-        isSubmenu: false,
-      },
     ],
   },
   {
@@ -427,13 +420,6 @@ export const customerServiceMenuItem = [
         name: "List",
         icon: "fas fa-clipboard-list",
         link: "/shops/list",
-        isSubmenu: false,
-      },
-      {
-        id: 41,
-        name: "Add",
-        icon: "fas fa-plus-circle",
-        link: "/shops/add",
         isSubmenu: false,
       },
       {

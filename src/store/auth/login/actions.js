@@ -10,6 +10,7 @@ import {
 } from "./actionTypes";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
+import { successMsg } from "../../../helpers/successMsg";
 
 export const loginSuccess = (admin, accessToken, message) => {
   // console.log(user);
@@ -69,7 +70,7 @@ export const adminAuth = (user) => async (dispatch, getState) => {
 
       dispatch(loginSuccess(data.admin, data.admin.token, message));
     } else {
-      console.log(message);
+      successMsg(error, "error");
       dispatch(apiError(message));
     }
   } catch (error) {

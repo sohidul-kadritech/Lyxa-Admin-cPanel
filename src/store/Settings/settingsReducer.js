@@ -23,6 +23,9 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  adminLogType: { label: "All", value: "all" },
+  logSortBy: { label: "Desc", value: "desc" },
+  adminLogs: [],
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -361,6 +364,51 @@ const settingsReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
+      };
+
+    // ADMIN LOG
+
+    case actionType.UPDATE_ADMIN_LOG_TYPE_KEY:
+      return {
+        ...state,
+        adminLogType: payload,
+      };
+
+    case actionType.UPDATE_ADMIN_SORT_KEY:
+      return {
+        ...state,
+        logSortBy: payload,
+      };
+
+    // ADMIN LOG HISTORY LIST
+
+    case actionType.ALL_AMDIN_LOGS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ALL_AMDIN_LOGS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        adminLogs: payload.logs,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: false,
+      };
+
+    case actionType.ALL_AMDIN_LOGS_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        status: false,
+        loading: false,
       };
 
     default:

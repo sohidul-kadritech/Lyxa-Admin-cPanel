@@ -55,7 +55,7 @@ export const getAllNotifications =
 
         const { data } = await requestApi().request(GET_NOTIFICATIONS, {
           params: {
-            page: page,
+            page,
             pageSize: 50,
             status: activeStatus.value,
             type: type.value,

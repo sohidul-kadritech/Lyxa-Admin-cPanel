@@ -140,6 +140,8 @@ export const GET_SPECIAL_DROP_CHARGE =
 export const DELETE_SELLER_SPECIAL_DROP_CHARGE =
   ADMIN_ENDPOINT + "/drop-charge/seller-drop-charge-reset";
 
+export const ADMIN_LOGS_HISTORY = ADMIN_ENDPOINT + "/setting/admin-logs";
+
 // DEAL
 
 export const ADD_DEAL = ADMIN_ENDPOINT + "/deal/add";
