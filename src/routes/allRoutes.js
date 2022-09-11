@@ -162,7 +162,6 @@ import UserTransaction from "../pages/Users/UserTransaction/UserTransaction";
 import OrderDetails from "../pages/Orders/OrderDetails/OrderDetails";
 import ChatDetails from "../pages/Chat/ChatDetails/ChatDetails";
 import DropTransactions from "../pages/AppWallet/DropsTansactions/DropTransactions";
-
 import DropTransactionsDetails from "../pages/AppWallet/DropsTansactions/dropTransactionsDetails";
 import UnitTypes from "../pages/Product/UnitTypes/UnitTypes";
 import CancelReason from "../pages/CancelReason/CancelReason";
@@ -175,7 +174,7 @@ import AdminLog from "../pages/AppWallet/PercentageSetting/AdminLog";
 import UserTermsAndConditions from "../pages/TermsAndConditons/UserTermsAndConditions";
 import ShopTermsAndConditions from "../pages/TermsAndConditons/ShopTermsAndConditions";
 import DeliveryTermsAndConditions from "../pages/TermsAndConditons/DeliveryTermsAndConditions";
-import Transactions from "./../pages/Transactions/Transactions";
+import Transactions from "../pages/Transactions/Transactions";
 import SendNotifications from "../pages/Notifications/SendNotifications";
 import NotificationsList from "../pages/Notifications/NotificationsList";
 

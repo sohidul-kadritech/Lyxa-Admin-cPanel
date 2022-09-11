@@ -30,6 +30,7 @@ import { orderStatusOptions } from "../assets/staticData";
 import { useDispatch, useSelector } from "react-redux";
 import {
   cancelOrderByAdmin,
+  getAllActiveDeliveryMan,
   getAllOrder,
   orderUpdateStatus,
   sentOrderFlag,
@@ -45,14 +46,15 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { deliveryMans } = useSelector((state) => state.deliveryManReducer);
+ 
   const { cancelReasons } = useSelector((state) => state.settingsReducer);
+  const { activeDelieryBoys  } = useSelector((state) =>  state.orderReducer);
 
   const [isUpdateStatus, setIsUpdateStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
   const [orderId, setOrderId] = useState("");
   const [shop, setShop] = useState(null);
-  const [deliveryBoy, setDeliveryBoy] = useState(null);
+  const [deliveryBoy, setDeliveryBoy] = useState('');
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
   const [openFlagModal, setOpenFlagModal] = useState(false);
   const [openCancelModal, setOpenCancelModal] = useState(false);
@@ -116,7 +118,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
 
   useEffect(() => {
     if (orderStatus === "accepted_delivery_boy") {
-      dispatch(allDeliveryMan(true));
+      dispatch(getAllActiveDeliveryMan(orderId));
     }
   }, [orderStatus]);
 
@@ -273,7 +275,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                       item?._id,
                                       item?.shop?._id,
                                       item?.orderStatus,
-                                      item.deliveryBoy &&
+                                      item?.deliveryBoy &&
                                         setDeliveryBoy(item.deliveryBoy)
                                     )
                                   }
@@ -400,6 +402,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               <Autocomplete
                 className="cursor-pointer mt-3"
                 value={deliveryBoy}
+
                 onChange={(event, newValue) => {
                   setDeliveryBoy(newValue);
                 }}
@@ -414,7 +417,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                   setDeliverySearchKey(newInputValue);
                 }}
                 id="controllable-states-demo"
-                options={deliveryMans.length > 0 ? deliveryMans : []}
+                options={activeDelieryBoys?.length > 0 ? activeDelieryBoys : []}
                 sx={{ width: "100%" }}
                 renderInput={(params, index) => (
                   <TextField {...params} label="Select a Delivery Boy" />

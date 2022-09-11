@@ -3,13 +3,14 @@ import GoogleMapReact from "google-map-react";
 import { logoSvg } from "../assets/staticData";
 // import GoogleMap from "google-map-react";
 
-const AnyReactComponent = () => (
+const AnyReactComponent = ({text}) => (
   <div>
-    <span>{logoSvg}</span>
+    <span>{text}</span>
   </div>
 );
 
-const Map = () => {
+const Map = ({lat = 0, lng= 0 }) => {
+
   const defaultProps = {
     center: {
       lat: 23.8103,
@@ -19,7 +20,7 @@ const Map = () => {
   };
 
   return (
-    <div style={{ height: "250px", width: "100%" }}>
+    <div style={{ height: "640px", width: "100%" }}>
       <GoogleMapReact
         bootstrapURLKeys={{
           key: "AIzaSyA_ciMsx74Ck21Firr3yS0xwvL7M7gonf8",
@@ -30,7 +31,7 @@ const Map = () => {
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
-        <AnyReactComponent lat={23.8479} lng={90.2576} />
+        <AnyReactComponent lat={lat}  lng={lng} text={logoSvg} />
       </GoogleMapReact>
     </div>
   );

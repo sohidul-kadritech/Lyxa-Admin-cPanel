@@ -106,6 +106,7 @@ const DeliverymanDetails = () => {
                   <CardBody>
                     <div className="d-flex justify-content-between">
                       <CardTitle>Delivery Man Informations</CardTitle>
+                      <div>
                       <Button
                         outline={true}
                         color="primary"
@@ -113,9 +114,17 @@ const DeliverymanDetails = () => {
                       >
                         Edit
                       </Button>
+                      <Button
+                        outline={true}
+                        color="primary"
+                        onClick={() => history.push(`/add-wallet/single-delivery-transactions/${id}`)}
+                        className='ms-2'
+                      >
+                        Payment history
+                      </Button>
+                      </div>
                     </div>
                     <hr className="my-2" />
-
                     <div>
                       <Info title="Name" value={deliveryMan?.name} />
                       <Info title="Email" value={deliveryMan?.email} />

@@ -195,6 +195,7 @@ export const ORDRE_UPDATE_STATUS =
 export const SEND_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag";
 export const DELETE_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag/delete";
 export const CANCEL_ORDER = ADMIN_ENDPOINT + "/order/cancel-order";
+export const ACTIVE_DEIVERY_BOYS= ADMIN_ENDPOINT + "/order/get-nearby-delivery-boy-order";
 
 // CHAT
 

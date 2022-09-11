@@ -42,10 +42,6 @@ const TrackingDeliveryBoy = ({ riderId }) => {
       <GlobalWrapper>
         <Card>
           <CardBody>
-            <CardTitle className="h4">
-              {riderAllActiveStatus[0]?.delivery?.name}
-            </CardTitle>
-            <hr />
             <Table
               id="tech-companies-1"
               className="table table__wrapper table-striped table-bordered table-hover text-center"

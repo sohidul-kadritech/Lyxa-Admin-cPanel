@@ -1,4 +1,5 @@
 import {
+  ACTIVE_DEIVERY_BOYS,
   CANCEL_ORDER,
   DELETE_ORDER_FLAG,
   ORDER_LIST,
@@ -47,7 +48,7 @@ export const getAllOrder =
           },
         });
 
-        console.log({ data });
+
 
         if (status) {
           dispatch({
@@ -82,7 +83,7 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+ 
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -108,7 +109,7 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
 // ORDER FLAG
 
 export const sentOrderFlag = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.SEND_ORDER_FLAG_REQUEST_SEND,
@@ -119,7 +120,7 @@ export const sentOrderFlag = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -157,7 +158,7 @@ export const DeleteOrderFlag = (id) => async (dispatch) => {
       },
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -193,7 +194,7 @@ export const cancelOrderByAdmin = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -259,3 +260,45 @@ export const updateOrderByShopType = (type) => (dispatch) => {
     payload: type,
   });
 };
+
+
+// GET ACTIVE DELIVERY BOY
+
+
+export const getAllActiveDeliveryMan =
+  (orderId) =>
+  async (dispatch, getState) => {
+      
+      try {
+        dispatch({
+          type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(ACTIVE_DEIVERY_BOYS, {
+          params: {
+            orderId
+          },
+        });
+
+
+        if (status) {
+          dispatch({
+            type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SUCCESS,
+            payload: data?.nearByDeliveryBoys,
+          });
+        } else {
+          dispatch({
+            type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
+            payload: error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    
+  };

@@ -73,6 +73,8 @@ export const allDeliveryMan =
           },
         });
 
+
+
         if (status) {
           dispatch({
             type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
@@ -153,7 +155,7 @@ export const trackDeliveryBoy =
         },
       });
 
-      console.log({ data });
+
 
       if (status) {
         dispatch({
@@ -232,7 +234,7 @@ export const getDeliveryAllOrder =
           },
         });
 
-        console.log({ status, error, data });
+  
 
         if (status) {
           dispatch({

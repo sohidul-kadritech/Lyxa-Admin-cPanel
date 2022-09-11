@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Search from "./../../../components/Search";
 import TrackingDeliveryBoy from "../../../components/TrackingDeliveryBoy";
+import Map from "../../../components/Map";
 
 const DeliverymanList = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,10 @@ const DeliverymanList = () => {
   } = useSelector((state) => state.deliveryManReducer);
 
   const [track, setTrack] = useState(false);
+  const [openActiveStatus, setOpenActiveStatus] = useState(false);
   const [id, setId] = useState(null);
+  const [deliveryBoyName, setDeliveryBoyName] = useState('');
+  const [rider, setRider] = useState(null);
 
   useEffect(() => {
     if (sortByKey || statusKey || searchKey) {
@@ -190,13 +194,13 @@ const DeliverymanList = () => {
                                   <i className="fa fa-eye" />
                                 </button>
                               </Tooltip>
-                              <Tooltip title="See rider location">
+                              <Tooltip title="See rider current location">
                                 <button
                                   className="btn btn-warning button me-0 me-lg-2"
-                                  // onClick={() => {
-                                  //   setTrack(true);
-                                  //   setId(item._id);
-                                  // }}
+                                  onClick={() => {
+                                    setTrack(true);
+                                    setRider(item)
+                                  }}
                                 >
                                   <i className="fa fa-map-marker" />
                                 </button>
@@ -205,8 +209,9 @@ const DeliverymanList = () => {
                                 <button
                                   className="btn btn-primary button me-0 me-lg-2"
                                   onClick={() => {
-                                    setTrack(true);
+                                    setOpenActiveStatus(true);
                                     setId(item._id);
+                                    setDeliveryBoyName(item?.name);
                                   }}
                                 >
                                   <i className="fa fa-toggle-on" />
@@ -248,7 +253,37 @@ const DeliverymanList = () => {
           </Container>
         </div>
 
-        {/* TRACK DELIVERY BOY */}
+        {/* ACTIVE STATUS OF DELIVERY BOY */}
+
+        <Modal
+          isOpen={openActiveStatus}
+          toggle={() => setOpenActiveStatus(!openActiveStatus)}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">{deliveryBoyName}</h5>
+            <button
+              type="button"
+              onClick={() => {
+                setOpenActiveStatus(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div
+            className="modal-body py-1"
+          // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
+          >
+            <TrackingDeliveryBoy riderId={id} />
+          </div>
+        </Modal>
+
+
+        {/* DELIVERY BOY CURRENT LOCATION */}
 
         <Modal
           isOpen={track}
@@ -258,7 +293,7 @@ const DeliverymanList = () => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">Delivery boy all active status</h5>
+            <h5 className="modal-title mt-0">{rider?.name}</h5>
             <button
               type="button"
               onClick={() => {
@@ -273,11 +308,12 @@ const DeliverymanList = () => {
           </div>
           <div
             className="modal-body py-1"
-            style={{ maxHeight: "550px", overflow: "hidden scroll" }}
+          // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
           >
-            <TrackingDeliveryBoy riderId={id} />
+            {rider?.location ? <Map lat={rider?.location?.coordinates[0]} lng={rider?.location?.coordinates[1]} /> : <h5>No location found!</h5>}
           </div>
         </Modal>
+
       </GlobalWrapper>
     </React.Fragment>
   );

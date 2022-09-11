@@ -17,6 +17,7 @@ const initialState = {
   hasPreviousPage: false,
   orderType: { label: "All", value: "all" },
   orderSearchKey: "",
+  activeDelieryBoys: []
 };
 
 const orderReducer = (state = initialState, action) => {
@@ -178,6 +179,32 @@ const orderReducer = (state = initialState, action) => {
       return {
         ...state,
         orderSearchKey: payload,
+      };
+
+
+      // ACTIVE DELIVERY BOSY
+
+      case actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ACTIVE_DELIVERY_MANS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        activeDelieryBoys: payload,
+        status: false,
+      };
+
+    case actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
 
     default:
