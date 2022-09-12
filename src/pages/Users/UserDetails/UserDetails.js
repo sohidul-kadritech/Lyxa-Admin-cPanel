@@ -32,6 +32,7 @@ const UserDetails = () => {
     currentPage,
   } = useSelector((state) => state.usersReducer);
   const { status } = useSelector((state) => state.dropPayReducer);
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   const [user, setUser] = useState({});
   const [balAddModal, setBalAddModal] = useState(false);
@@ -101,7 +102,7 @@ const UserDetails = () => {
                       >
                         Add/Remove Credit
                       </Button>
-                      <Button
+                      { (account_type === 'admin' && adminType === 'admin') && <Button
                         outline={true}
                         color="success"
                         className="ms-3"
@@ -115,7 +116,7 @@ const UserDetails = () => {
                         }
                       >
                         {user?.status === "active" ? "Inactivate" : "Activate"}
-                      </Button>
+                      </Button>}
                     </div>
                     <hr />
                     <Info title="Name" value={user?.name} />

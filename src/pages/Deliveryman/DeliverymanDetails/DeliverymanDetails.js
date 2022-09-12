@@ -39,6 +39,7 @@ const DeliverymanDetails = () => {
     hasPreviousPage,
     currentPage,
   } = useSelector((state) => state.deliveryManReducer);
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -114,14 +115,14 @@ const DeliverymanDetails = () => {
                       >
                         Edit
                       </Button>
-                      <Button
+                      {(account_type === 'admin' && adminType === 'admin') && <Button
                         outline={true}
                         color="primary"
                         onClick={() => history.push(`/add-wallet/single-delivery-transactions/${id}`)}
                         className='ms-2'
                       >
                         Payment history
-                      </Button>
+                      </Button>}
                       </div>
                     </div>
                     <hr className="my-2" />

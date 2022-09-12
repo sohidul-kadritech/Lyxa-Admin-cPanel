@@ -50,6 +50,7 @@ const ShopList = () => {
     currentPage,
     liveStatus,
   } = useSelector((state) => state.shopReducer);
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
     dispatch(setShopStatusFalse());
@@ -78,7 +79,7 @@ const ShopList = () => {
               title="Shop"
               loading={loading}
               callList={callShopList}
-              isAddNew={true}
+              isAddNew={account_type === 'admin' && adminType !== 'customerService'}
               addNewRoute="shops/add"
             />
 

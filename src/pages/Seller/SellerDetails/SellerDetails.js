@@ -40,6 +40,7 @@ const SellerDetails = () => {
 
   const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.shopReducer);
+    const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -259,9 +260,9 @@ const SellerDetails = () => {
               <CardBody>
                 <div className="d-flex justify-content-between">
                   <CardTitle className="h4"> Shop List</CardTitle>
-                  <Button color="success" onClick={addNewProduct}>
+                  {(account_type === 'admin' && adminType === 'admin') && <Button color="success" onClick={addNewProduct}>
                     Add Shop
-                  </Button>
+                  </Button>}
                 </div>
                 <hr className="my-3" />
 

@@ -155,6 +155,7 @@ export const trackDeliveryBoy =
         },
       });
 
+      console.log({data});
 
 
       if (status) {

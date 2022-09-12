@@ -78,6 +78,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     rider: false,
   });
 
+
+  const { account_type } = JSON.parse(localStorage.getItem("admin"));
+
   // UPDATE ORDER STATUS
 
   const updateOrderStatus = (oId, shopId, orderStatus) => {
@@ -259,31 +262,33 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                         </Td>
                         <Td>
                           <ButtonWrapper>
-                            {!refused && (
-                              <Tooltip
-                                title={
-                                  item?.orderStatus !== "delivered"
-                                    ? "Update Status"
-                                    : ""
-                                }
-                              >
-                                <button
-                                  className="btn btn-info button me-1"
-                                  disabled={item?.orderStatus === "delivered"}
-                                  onClick={() =>
-                                    updateOrderStatus(
-                                      item?._id,
-                                      item?.shop?._id,
-                                      item?.orderStatus,
-                                      item?.deliveryBoy &&
-                                        setDeliveryBoy(item.deliveryBoy)
-                                    )
+                         
+                              {!refused && (
+                                <Tooltip
+                                  title={
+                                    item?.orderStatus !== "delivered"
+                                      ? "Update Status"
+                                      : ""
                                   }
                                 >
-                                  <i className="fa fa-arrow-up" />
-                                </button>
-                              </Tooltip>
-                            )}
+                                  <button
+                                    className="btn btn-info button me-1"
+                                    disabled={item?.orderStatus === "delivered"}
+                                    onClick={() =>
+                                      updateOrderStatus(
+                                        item?._id,
+                                        item?.shop?._id,
+                                        item?.orderStatus,
+                                        item?.deliveryBoy &&
+                                          setDeliveryBoy(item.deliveryBoy)
+                                      )
+                                    }
+                                  >
+                                    <i className="fa fa-arrow-up" />
+                                  </button>
+                                </Tooltip>
+                              )}
+                         
                             <Tooltip title="Details">
                               <button
                                 className="btn btn-info button me-1"
@@ -294,6 +299,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                 <i className="fa fa-eye" />
                               </button>
                             </Tooltip>
+                            {account_type === 'admin' && <div>
                             {item?.orderStatus !== "cancelled" && (
                               <Tooltip title="Flag">
                                 <button
@@ -331,6 +337,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                 </button>
                               </Tooltip>
                             )}
+                              </div>}
                           </ButtonWrapper>
                         </Td>
                       </Tr>

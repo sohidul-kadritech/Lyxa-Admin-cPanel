@@ -25,6 +25,7 @@ const ShopTable = ({ shops = [] }) => {
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   // GO TO SHOP PRODUCT LIST
 
@@ -146,14 +147,14 @@ const ShopTable = ({ shops = [] }) => {
                         <i className="fa fa-eye" />
                       </button>
                     </Tooltip>
-                    <Tooltip title="See products">
+                    {(account_type === 'admin' && adminType !== 'customerService') && <Tooltip title="See products">
                       <button
                         className="btn btn-success button me-1"
                         onClick={() => goToShopProductList(item._id)}
                       >
                         <i className="fab fa-product-hunt"></i>
                       </button>
-                    </Tooltip>
+                    </Tooltip>}
                     <Tooltip title="See orders">
                       <button
                         className="btn btn-primary button"

@@ -14,7 +14,7 @@ import {
 } from "../../assets/SideMenuItem";
 
 const Sidebar = (props) => {
-  const { account_type } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   return (
     <React.Fragment>
@@ -22,9 +22,9 @@ const Sidebar = (props) => {
         <div data-simplebar className="h-100">
           <SidebarContent
             list={
-              account_type === "admin"
+              (account_type === "admin" && adminType === 'admin')
                 ? adminMenuItem
-                : account_type === "customerService"
+                : (account_type === "admin" && adminType === 'customerService')
                 ? customerServiceMenuItem
                 : account_type === "seller"
                 ? sellerMenuItem

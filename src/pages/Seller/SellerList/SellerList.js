@@ -55,6 +55,7 @@ const SellerList = () => {
     typeKey,
     subTypeKey,
   } = useSelector((state) => state.sellerReducer);
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
     dispatch(setSellerStatusFalse());
@@ -83,7 +84,7 @@ const SellerList = () => {
               title="Seller"
               loading={loading}
               callList={callSellerList}
-              isAddNew={true}
+              isAddNew={adminType === 'admin' && account_type === 'admin' }
               addNewRoute="seller/add"
             />
 
