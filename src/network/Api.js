@@ -2,7 +2,7 @@
 // export const FTP_URL = "http://localhost:1000";
 
 export const API_URL = "https://node.drop-deliveryapp.com/";
-export const SOCKET_CONNECTION = "https://node.drop-deliveryapp.com/";
+export const SOCKET_CONNECTION = "https://node.drop-deliveryapp.com";
 
 const ADMIN_ENDPOINT = "admin";
 
@@ -195,12 +195,15 @@ export const ORDRE_UPDATE_STATUS =
 export const SEND_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag";
 export const DELETE_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag/delete";
 export const CANCEL_ORDER = ADMIN_ENDPOINT + "/order/cancel-order";
-export const ACTIVE_DEIVERY_BOYS= ADMIN_ENDPOINT + "/order/get-nearby-delivery-boy-order";
+export const ACTIVE_DEIVERY_BOYS = ADMIN_ENDPOINT + "/order/get-nearby-delivery-boy-order";
 
 // CHAT
 
 export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request";
 export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
+export const SEND_MESSAGE = ADMIN_ENDPOINT + "/user-chat-request/send-message";
+export const SINGLE_CHAT = ADMIN_ENDPOINT + "/user-chat-request/send-message";
+
 
 // TERMS AND CONDITIONS
 

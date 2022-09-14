@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import PropTypes from 'prop-types'
 import { Switch, BrowserRouter as Router } from "react-router-dom"
 import { connect, useDispatch } from "react-redux"
@@ -17,7 +17,9 @@ import NonAuthLayout from "./components/NonAuthLayout"
 
 // Import scss
 import "./assets/scss/theme.scss"
-import { socketConnect } from "./store/socket/socketAction"
+import { socketConnect } from "./store/socket/socketAction";
+
+import { SOCKET_CONNECTION } from "./network/Api"
 
 
 const App = props => {
@@ -26,7 +28,12 @@ const App = props => {
 
   useEffect(() => {
     dispatch(socketConnect());
+
+
   }, []);
+
+
+
 
   function getLayout() {
 
@@ -61,7 +68,7 @@ const App = props => {
             />
           ))}
 
-        {userRoutes.map((route, idx) => (
+          {userRoutes.map((route, idx) => (
             <Authmiddleware
               path={route.path}
               layout={Layout}

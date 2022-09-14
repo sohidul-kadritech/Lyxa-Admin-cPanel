@@ -21,40 +21,70 @@ import SimpleBar from "simplebar-react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { acceptChatReq } from "../../../store/chat/chatAction";
+import { acceptChatReq, sendMsgToUser } from "../../../store/chat/chatAction";
+import { TextField } from "@mui/material";
 
 const ChatDetails = () => {
   const { id } = useParams();
 
   const dispatch = useDispatch();
 
-  const { requests } = useSelector((state) => state.chatReducer);
-  const  { socket } = useSelector((state) => state.socketReducer);
+  const { chatRequests, status, msgSendSuccess, loading } = useSelector((state) => state.chatReducer);
+  const { socket } = useSelector((state) => state.socketReducer);
+  const { account_type, adminType, token } = JSON.parse(localStorage.getItem("admin"));
 
   const [request, setRequest] = useState(null);
-  const  [text, setText] = useState('')
-
-  useEffect(() => {
-
-    if(socket) {
-      socket.emit('join_user_and_admin_chat', {room: id});
-      socket.on('join_user_and_admin_chat_received', (data)=>{
-        console.log(data)
-      });
-    }
-  },[socket])
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (id) {
-      const findReq = requests.find((item) => item._id == id);
-      setRequest(findReq);
+      const findReq = chatRequests.find((item) => item._id == id);
+
+      if (findReq) {
+        setRequest(findReq);
+      } else {
+        // callApi(id);
+        console.log("call api")
+      }
+
     }
   }, [id]);
 
-  const sendMsg = () =>{
-    if(socket) {
-      socket.emit('join_user_and_admin_chat_send', {room: id, message: text});
+  // const callApi = async (chatId) => {
+  //   const { data } = await requestApi().request(SINGLE_SHOP, {
+  //     params: {
+  //       id: shopId,
+  //     },
+  //   });
+
+  //   if (data.status) {
+  //     const { shop } = data.data;
+  //     if (shop) {
+  //       const activeStatus = shop?.liveStatus == "online" ? true : false;
+  //       setLiveStatus(activeStatus);
+  //       setShop(shop);
+  //     } else {
+  //       history.push("/shops/list", { replace: true });
+  //     }
+  //   }
+  // };
+
+  useEffect(() => {
+
+    if (socket && request) {
+      socket.on('user_and_admin_chat_send_admin', (data) => {
+        console.log(data)
+      });
     }
+  }, [socket])
+
+
+
+  const sendMsg = () => {
+    dispatch(sendMsgToUser({
+      id,
+      message
+    }))
   }
 
   // ACCEPT REQUEST
@@ -63,6 +93,20 @@ const ChatDetails = () => {
     // console.log(bannerId)
     dispatch(acceptChatReq(id));
   };
+
+  useEffect(() => {
+    if (request?.status === 'accepted' && socket) {
+      socket.emit('join_user_and_admin_chat', { room: id, data: { token } });
+    }
+    return;
+  }, [request?.status])
+
+  useEffect(() => {
+    if (msgSendSuccess && socket) {
+      socket.emit('user_and_admin_chat_send_admin', { room: id, data: { message } });
+    }
+    return;
+  }, [msgSendSuccess])
 
   return (
     <React.Fragment>
@@ -81,8 +125,8 @@ const ChatDetails = () => {
                 <Card>
                   <CardBody>
                     <div className='d-flex justify-content-between align-items-center'>
-                    <CardTitle>Conversation</CardTitle>
-                    <strong style={{color: request?.status === 'pending' ? 'blue' :  request?.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase'}}>{request?.status}</strong>
+                      <CardTitle>Conversation</CardTitle>
+                      <strong style={{ color: request?.status === 'pending' ? 'blue' : request?.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase' }}>{request?.status}</strong>
                     </div>
                     <hr />
                     <div className="chat-conversation">
@@ -112,14 +156,14 @@ const ChatDetails = () => {
                                         {request?.user?.name}
                                       </span>
                                       <strong>
-                                         {chat?.message}.
+                                        {chat?.message}.
                                       </strong>
                                     </div>
                                   </div>
                                 </li>
                               )}
 
-                              {chat?.type  === "admin" && (
+                              {chat?.type === "admin" && (
                                 <li className="clearfix odd">
                                   <div className="chat-avatar">
                                     <img
@@ -134,7 +178,7 @@ const ChatDetails = () => {
                                         {request?.admin?.name}
                                       </span>
                                       <strong>
-                                      {chat?.message}.
+                                        {chat?.message}.
                                       </strong>
                                     </div>
                                   </div>
@@ -146,30 +190,34 @@ const ChatDetails = () => {
                       </SimpleBar>
                       {request?.status === 'pending' && (
                         <div className="text-center py-3">
-                          <h5>Select a option!</h5>
+                          <h5>Confirm Request or Reject!</h5>
                           <Button color='primary' outline={true} onClick={handleAccept}>Accept</Button>
                           <Button color='danger' outline={true} className='ms-3'>Reject</Button>
                         </div>
-                      ) } 
-                      
-                       {request?.status === 'accepted' && <Row className="mt-3 pt-1">
-                        <Col md="9" className="chat-inputbar col-8">
-                          <Input
-                            type="text"
-                            className="chat-input"
-                            placeholder="Enter your text"
-                            onChange={(e)=> setText(e.target.value)}
+                      )}
+
+                      {request?.status === 'accepted' && <Row className="mt-3 pt-1">
+                        <Col md={9} className="chat-inputbar">
+                          <TextField
+                            id="standard-multiline-flexible"
+                            label="Message"
+                            multiline
+                            variant="standard"
+                            className="chat-input w-100"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                           />
                         </Col>
-                        <Col md="3" className="chat-send col-4">
+                        <Col md={3} className="chat-send">
                           <div className="d-grid">
                             <Button
                               onClick={sendMsg}
                               type="submit"
                               color="success"
                               className="btn-block"
+                              disabled={loading}
                             >
-                              Send
+                              {loading ? 'Sending' : 'Send'}
                             </Button>
                           </div>
                         </Col>
@@ -189,7 +237,7 @@ const ChatDetails = () => {
                     </Row>
                     <Row>
                       <Col
-                      
+
                         className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
                       >
                         <div className="ps-4 w-100">

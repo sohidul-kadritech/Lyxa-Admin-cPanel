@@ -179,7 +179,7 @@ export const DeliveryBoyVehicleOPtions = [
   { label: "Bycycle", value: "cycle" },
 ];
 
-export const ChatOPtions = [
+export const chatOPtions = [
   { label: "All", value: "all" },
   { label: "Pending", value: "pending" },
   { label: "Accepted", value: "accepted" },

@@ -19,26 +19,24 @@ export const socketConnect = () => async (dispatch, getState) => {
         //     type: "user",
         //     platform: "web"
         // },
-    });
-
-    console.log({socket})
+      });
 
 
-      
-        socket.on("connect", () => {
-          console.log("socket connected");
-          dispatch({
-            type: actionType.SOCKET_CONNECT_SUCCESS,
-            payload: socket,
-          });
 
-          socket.emit("request_drop_room_join", {
-            token: localStorage.getItem("accessToken"),
-            type: "admin",
-            platform: "web",
-          });
+      socket.on("connect", () => {
+        console.log("socket connected");
+        dispatch({
+          type: actionType.SOCKET_CONNECT_SUCCESS,
+          payload: socket,
         });
-     
+
+        socket.emit("join_drop", {
+          token: localStorage.getItem("accessToken"),
+          type: "admin",
+          platform: "app",
+        });
+      });
+
     } catch (error) {
       dispatch({
         type: actionType.SOCKET_CONNECT_FAIL,

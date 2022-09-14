@@ -14,7 +14,7 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Select from "react-select";
-import { ChatOPtions, sortByOptions } from "../../assets/staticData";
+import { chatOPtions, sortByOptions } from "../../assets/staticData";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllChat,
@@ -24,17 +24,17 @@ import {
 } from "../../store/chat/chatAction";
 import { Tooltip } from "@mui/material";
 import { useHistory } from "react-router-dom";
-import SweetAlert from "react-bootstrap-sweetalert";
+
 
 const Chat = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, requests, sortByKey, typeKey } = useSelector(
+  const { loading, chatRequests, sortByKey, typeKey } = useSelector(
     (state) => state.chatReducer
   );
 
- 
+
   useEffect(() => {
     if (sortByKey || typeKey) {
       callChatList(true);
@@ -45,7 +45,7 @@ const Chat = () => {
     dispatch(getAllChat(refresh));
   };
 
-  
+
 
   return (
     <React.Fragment>
@@ -80,7 +80,7 @@ const Chat = () => {
                       <label className="control-label">Type</label>
                       <Select
                         palceholder="Select Status"
-                        options={ChatOPtions}
+                        options={chatOPtions}
                         classNamePrefix="select2-selection"
                         value={typeKey}
                         onChange={(e) => dispatch(updateChatType(e))}
@@ -112,7 +112,7 @@ const Chat = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {requests?.map((item, index) => {
+                    {chatRequests?.map((item, index) => {
                       return (
                         <Tr
                           key={index}
@@ -123,9 +123,8 @@ const Chat = () => {
                           }}
                         >
                           <Th>{item?.user?.name}</Th>
-
-                          <Td>{item?.reasonMessage}</Td>
-                          <Td style={{color: item?.status === 'pending' ? 'blue' :  item?.status === 'accepted' ? 'green' : item?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase'}}>{item?.status}</Td>
+                          <Td>{item?.reasonMessage ?? 'N/A'}</Td>
+                          <Td style={{ color: item?.status === 'pending' ? 'blue' : item?.status === 'accepted' ? 'green' : item?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase' }}>{item?.status}</Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
@@ -137,15 +136,15 @@ const Chat = () => {
                                   className="btn btn-info button me-2"
                                   onClick={() => {
                                     history.push(
-                                      `/customer-support/details/${item._id}`
+                                      `/customer-support/details/${item?._id}`
                                     );
                                   }}
                                 >
                                   <i className="fa fa-eye" />
                                 </button>
-                                
+
                               </Tooltip>
-                           
+
                             </div>
                           </Td>
                         </Tr>
@@ -158,7 +157,7 @@ const Chat = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && requests.length < 1 && (
+                {!loading && chatRequests?.length < 1 && (
                   <div className="text-center">
                     <h4>No Chat!</h4>
                   </div>
