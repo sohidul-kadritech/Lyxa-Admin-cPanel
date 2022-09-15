@@ -257,7 +257,7 @@ const SingleDeliveryTransactions = () => {
                         <Button
                           className="btn btn-success"
                           onClick={receivedCashFromRider}
-                          disabled={loading}
+                          disabled={loading || trxs?.cashOrderList.length < 1}
                         >
                           {loading ? "Receiving..." : "Received Cash"}
                         </Button>

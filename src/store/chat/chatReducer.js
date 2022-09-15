@@ -87,7 +87,7 @@ const chatReducer = (state = initialState, action) => {
         loading: false,
         msgSendSuccess: true,
         chatRequests: state.chatRequests.map((item) =>
-          item._id === payload._id ? payload : item
+          item._id === payload._id ? { ...item, chats: payload?.chats } : item
         )
       };
 

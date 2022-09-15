@@ -14,7 +14,7 @@ const initialState = {
   currentPage: 1,
   hasPreviousPage: false,
   orders: [],
-  riderAllActiveStatus: [],
+  riderAllActivity: [],
   statusPaginate: null,
   statusPaging: [],
   statusHasNextPage: true,
@@ -170,7 +170,7 @@ const deliveryManReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        riderAllActiveStatus: payload.trackingData,
+        riderAllActivity: payload.activity,
         statusPaginate: payload.paginate,
         statusPaging: payload.paginate.metadata.paging,
         statusHasNextPage: payload.paginate.metadata.hasNextPage,

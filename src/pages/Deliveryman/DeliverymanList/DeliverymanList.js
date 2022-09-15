@@ -31,6 +31,8 @@ import { useHistory } from "react-router-dom";
 import Search from "./../../../components/Search";
 import TrackingDeliveryBoy from "../../../components/TrackingDeliveryBoy";
 import Map from "../../../components/Map";
+import moment from "moment";
+import Info from "../../../components/Info";
 
 const DeliverymanList = () => {
   const dispatch = useDispatch();
@@ -261,7 +263,7 @@ const DeliverymanList = () => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">{deliveryBoyName}</h5>
+            <h5 className="modal-title mt-0">{`${deliveryBoyName} activity`}</h5>
             <button
               type="button"
               onClick={() => {
@@ -293,7 +295,7 @@ const DeliverymanList = () => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">{rider?.name}</h5>
+            <h5 className="modal-title mt-0">Delivery boy current location.</h5>
             <button
               type="button"
               onClick={() => {
@@ -310,7 +312,13 @@ const DeliverymanList = () => {
             className="modal-body py-1"
           // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
           >
-            {rider?.location ? <Map lat={rider?.location?.coordinates[0]} lng={rider?.location?.coordinates[1]} /> : <h5>No location found!</h5>}
+
+            <div className='my-3'>
+              <Info title='Name' value={rider?.name} />
+              <Info title='Checking time' value={moment(new Date()).format("MMMM Do YYYY, h:mm:ss a")} />
+            </div>
+
+            {rider?.location ? <Map lat={rider?.location?.coordinates[0]} lng={rider?.location?.coordinates[1]} /> : <h5 className="text-center">No location found!</h5>}
           </div>
         </Modal>
 

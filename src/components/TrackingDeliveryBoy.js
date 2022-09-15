@@ -23,7 +23,7 @@ const TrackingDeliveryBoy = ({ riderId }) => {
     statusHasNextPage,
     statusHasPreviousPage,
     statusCurrentPage,
-    riderAllActiveStatus,
+    riderAllActivity,
   } = useSelector((state) => state.deliveryManReducer);
 
   const dispatch = useDispatch();
@@ -37,6 +37,17 @@ const TrackingDeliveryBoy = ({ riderId }) => {
     return;
   }, [riderId]);
 
+  const calcActiveTime = (inTime, outTime) => {
+    const startTime = moment(inTime, "HH:mm:ss a");
+    const endTime = moment(outTime, "HH:mm:ss a");
+    const duration = moment.duration(endTime.diff(startTime));
+    const hours = parseInt(duration.asHours());
+    const minutes = parseInt(duration.asMinutes()) % 60;
+
+    return `${hours > 0 ? `${hours}h` : ''} ${minutes} min's`
+
+  }
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -48,12 +59,14 @@ const TrackingDeliveryBoy = ({ riderId }) => {
             >
               <Thead>
                 <Tr>
-                  <Th>Status</Th>
-                  <Th>Time</Th>
+                  <Th>Date</Th>
+                  <Th>Time In</Th>
+                  <Th>Time Out</Th>
+                  <Th>Active Time</Th>
                 </Tr>
               </Thead>
               <Tbody style={{ position: "relative" }}>
-                {riderAllActiveStatus?.map((item, index) => {
+                {riderAllActivity?.map((item, index) => {
                   return (
                     <Tr
                       key={index}
@@ -63,21 +76,30 @@ const TrackingDeliveryBoy = ({ riderId }) => {
                         fontWeight: "500",
                       }}
                     >
-                      <Th>{item?.status}</Th>
+                      <Th>{moment(item?.Date).format("D-MM-YYYY")}</Th>
                       <Td>
-                        {moment(item?.time).format("MMMM Do YYYY, h:mm:ss a")}
+                        {moment(item?.timeIn).format("h:mm:ss a")}
+                      </Td>
+                      <Td>
+
+                        {moment(item?.timeOut).format("h:mm:ss a")}
+                      </Td>
+                      <Td>
+
+                        {calcActiveTime(item?.timeIn, item?.timeOut)}
                       </Td>
                     </Tr>
                   );
                 })}
               </Tbody>
             </Table>
+
             {loading && (
               <div className="text-center">
                 <Spinner animation="border" variant="info" />
               </div>
             )}
-            {!loading && riderAllActiveStatus.length < 1 && (
+            {!loading && riderAllActivity?.length < 1 && (
               <div className="text-center">
                 <h4>No Status yet!</h4>
               </div>

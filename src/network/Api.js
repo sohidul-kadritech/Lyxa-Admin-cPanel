@@ -113,7 +113,7 @@ export const ALL_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy";
 export const SINGLE_DELIVERY_MAN =
   ADMIN_ENDPOINT + "/delivery-boy/get-single-delivery-boy";
 export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update";
-export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/track";
+export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/time";
 export const DELIVERY_BOY_ORDERS = ADMIN_ENDPOINT + "/order/delivery";
 
 //  SETTINGS
@@ -202,7 +202,7 @@ export const ACTIVE_DEIVERY_BOYS = ADMIN_ENDPOINT + "/order/get-nearby-delivery-
 export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request";
 export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
 export const SEND_MESSAGE = ADMIN_ENDPOINT + "/user-chat-request/send-message";
-export const SINGLE_CHAT = ADMIN_ENDPOINT + "/user-chat-request/send-message";
+export const SINGLE_CHAT = ADMIN_ENDPOINT + "//user-chat-request/single-details";
 
 
 // TERMS AND CONDITIONS

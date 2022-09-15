@@ -404,43 +404,43 @@ export const updateCancelReason = (values) => async (dispatch) => {
 
 export const getAllCancelReasons =
   (refresh = false, adminType) =>
-  async (dispatch, getState) => {
-    const { cancelReasons, typeKey, activeStatus } = getState().settingsReducer;
+    async (dispatch, getState) => {
+      const { cancelReasons, typeKey, activeStatus } = getState().settingsReducer;
 
-    if (refresh || cancelReasons.length > 1) {
-      try {
-        dispatch({
-          type: actionType.ALL_REASONS_REQUEST_SEND,
-        });
-
-        const {
-          data: { status, error, data },
-        } = await requestApi().request(ALL_ORDER_CANCEL_REASON, {
-          params: {
-            type: adminType ?? typeKey,
-            status: activeStatus,
-          },
-        });
-
-        if (status) {
+      if (refresh || cancelReasons.length > 1) {
+        try {
           dispatch({
-            type: actionType.ALL_REASONS_REQUEST_SUCCESS,
-            payload: data.cancelReason,
+            type: actionType.ALL_REASONS_REQUEST_SEND,
           });
-        } else {
+
+          const {
+            data: { status, error, data },
+          } = await requestApi().request(ALL_ORDER_CANCEL_REASON, {
+            params: {
+              type: adminType ?? typeKey,
+              status: activeStatus,
+            },
+          });
+
+          if (status) {
+            dispatch({
+              type: actionType.ALL_REASONS_REQUEST_SUCCESS,
+              payload: data.cancelReason,
+            });
+          } else {
+            dispatch({
+              type: actionType.ALL_REASONS_REQUEST_FAIL,
+              payload: error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.ALL_REASONS_REQUEST_FAIL,
-            payload: error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.ALL_REASONS_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // CANCEL REASON TYPE UPDATE
 
@@ -544,45 +544,47 @@ export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
 
 export const getAdminLogHistory =
   (refresh = false, page = 1) =>
-  async (dispatch, getState) => {
-    const { adminLogType, logSortBy, adminLogs } = getState().settingsReducer;
+    async (dispatch, getState) => {
+      const { adminLogType, logSortBy, adminLogs } = getState().settingsReducer;
 
-    if (adminLogs.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.ALL_AMDIN_LOGS_REQUEST_SEND,
-        });
-
-        const {
-          data: { status, error, data },
-        } = await requestApi().request(ADMIN_LOGS_HISTORY, {
-          params: {
-            type: adminLogType.value,
-            sortBy: logSortBy.value,
-            page,
-            pageSize: 50,
-          },
-        });
-
-        if (status) {
+      if (adminLogs.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.ALL_AMDIN_LOGS_REQUEST_SUCCESS,
-            payload: data,
+            type: actionType.ALL_AMDIN_LOGS_REQUEST_SEND,
           });
-        } else {
+
+          const {
+            data: { status, error, data },
+          } = await requestApi().request(ADMIN_LOGS_HISTORY, {
+            params: {
+              type: adminLogType.value,
+              sortBy: logSortBy.value,
+              page,
+              pageSize: 50,
+            },
+          });
+
+          console.log({ data });
+
+          if (status) {
+            dispatch({
+              type: actionType.ALL_AMDIN_LOGS_REQUEST_SUCCESS,
+              payload: data,
+            });
+          } else {
+            dispatch({
+              type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
+              payload: error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
-            payload: error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // ADMIN LOG HISTORY FILTER
 

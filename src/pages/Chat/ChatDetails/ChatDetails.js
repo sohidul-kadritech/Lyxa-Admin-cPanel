@@ -19,19 +19,22 @@ import user1 from "../../../assets/images/user1.jpg";
 
 import SimpleBar from "simplebar-react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { acceptChatReq, sendMsgToUser } from "../../../store/chat/chatAction";
-import { TextField } from "@mui/material";
+import { TextField, Tooltip } from "@mui/material";
+import { SINGLE_CHAT } from "../../../network/Api";
+import requestApi from "../../../network/httpRequest";
 
 const ChatDetails = () => {
   const { id } = useParams();
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { chatRequests, status, msgSendSuccess, loading } = useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
-  const { account_type, adminType, token } = JSON.parse(localStorage.getItem("admin"));
+  const { token } = JSON.parse(localStorage.getItem("admin"));
 
   const [request, setRequest] = useState(null);
   const [message, setMessage] = useState('');
@@ -43,31 +46,29 @@ const ChatDetails = () => {
       if (findReq) {
         setRequest(findReq);
       } else {
-        // callApi(id);
-        console.log("call api")
+        callApi(id);
+
       }
 
     }
   }, [id]);
 
-  // const callApi = async (chatId) => {
-  //   const { data } = await requestApi().request(SINGLE_SHOP, {
-  //     params: {
-  //       id: shopId,
-  //     },
-  //   });
+  const callApi = async (chatId) => {
+    const { data } = await requestApi().request(SINGLE_CHAT, {
+      params: {
+        id: chatId,
+      },
+    });
 
-  //   if (data.status) {
-  //     const { shop } = data.data;
-  //     if (shop) {
-  //       const activeStatus = shop?.liveStatus == "online" ? true : false;
-  //       setLiveStatus(activeStatus);
-  //       setShop(shop);
-  //     } else {
-  //       history.push("/shops/list", { replace: true });
-  //     }
-  //   }
-  // };
+    if (data.status) {
+      const { chatRequest } = data.data;
+      if (chatRequest) {
+        setRequest(chatRequest);
+      } else {
+        history.push("/customer-support", { replace: true });
+      }
+    }
+  };
 
   useEffect(() => {
 
@@ -104,7 +105,9 @@ const ChatDetails = () => {
   useEffect(() => {
     if (msgSendSuccess && socket) {
       socket.emit('user_and_admin_chat_send_admin', { room: id, data: { message } });
+
     }
+
     return;
   }, [msgSendSuccess])
 
@@ -125,12 +128,12 @@ const ChatDetails = () => {
                 <Card>
                   <CardBody>
                     <div className='d-flex justify-content-between align-items-center'>
-                      <CardTitle>Conversation</CardTitle>
+                      <CardTitle>{`Conversion with ${request?.user?.name}`}</CardTitle>
                       <strong style={{ color: request?.status === 'pending' ? 'blue' : request?.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase' }}>{request?.status}</strong>
                     </div>
                     <hr />
                     <div className="chat-conversation">
-                      <SimpleBar style={{ maxHeight: "330px", height: '100%' }}>
+                      <SimpleBar style={{ maxHeight: "300px", height: '100%', overflow: 'hidden scroll' }}>
                         <ul
                           className="conversation-list"
                           data-simplebar
@@ -144,17 +147,18 @@ const ChatDetails = () => {
                               {chat?.type === "user" && (
                                 <li className="clearfix">
                                   <div className="chat-avatar">
-                                    <img
-                                      src={user1}
-                                      className="avatar-xs rounded-circle cursor-pointer"
-                                      alt="Admin"
-                                    />
+                                    <Tooltip title='See user details'>
+                                      <img
+                                        src={user1}
+                                        className="avatar-xs rounded-circle cursor-pointer"
+                                        alt="Admin"
+                                        onClick={() => history.push(`/users/details/${request?.user?._id}`)}
+                                      />
+                                    </Tooltip>
                                   </div>
                                   <div className="conversation-text color-primary" >
                                     <div className="ctext-wrap">
-                                      <span className="user-name">
-                                        {request?.user?.name}
-                                      </span>
+
                                       <strong>
                                         {chat?.message}.
                                       </strong>
@@ -170,13 +174,12 @@ const ChatDetails = () => {
                                       src={user1}
                                       className="avatar-xs rounded-circle"
                                       alt="Admin"
+
                                     />
                                   </div>
                                   <div className="conversation-text">
                                     <div className="ctext-wrap">
-                                      <span className="user-name">
-                                        {request?.admin?.name}
-                                      </span>
+
                                       <strong>
                                         {chat?.message}.
                                       </strong>
@@ -229,26 +232,19 @@ const ChatDetails = () => {
               <Col lg={6}>
                 <Card>
                   <CardBody>
-                    <Row>
-                      <div className=" w-100 pb-1">
-                        <h4>User Profile</h4>
-                      </div>
-                      <hr />
-                    </Row>
+
+                    <div className=" w-100 pb-1">
+                      <h4>Default chat</h4>
+                    </div>
+                    <hr />
+
                     <Row>
                       <Col
 
                         className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
                       >
                         <div className="ps-4 w-100">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{request?.user?.name}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Gmail:</h5>
-                            <Value>{request?.user?.email}</Value>
-                          </Details>
+
                         </div>
                       </Col>
                     </Row>
