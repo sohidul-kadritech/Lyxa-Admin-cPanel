@@ -28,19 +28,17 @@ const ProfileMenu = props => {
 
   const [username, setusername] = useState("Admin");
   // const { accessToken } = useSelector(state => state.login);
-  const {loading, status} = useSelector((state) => state.Profile);
+  const { loading, status } = useSelector((state) => state.Profile);
 
-  const history = useHistory();
-  const dispatch = useDispatch();
 
   const [isChangePass, setIsChangePass] = useState(false);
 
-  useEffect(()=>{
-    if(status){
+  useEffect(() => {
+    if (status) {
       setIsChangePass(false);
     }
-  },[status])
-  
+  }, [status])
+
 
   useEffect(
     () => {
@@ -87,11 +85,11 @@ const ProfileMenu = props => {
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
           <DropdownItem tag="a" href="/profile">
-           <i className="fa fa-user font-size-16 align-baseline me-2" />
+            <i className="fa fa-user font-size-16 align-baseline me-2" />
             {props.t("Profile")}
           </DropdownItem>
           <DropdownItem tag="a" onClick={() => setIsChangePass(!isChangePass)}>
-           <i className="fa fa-lock font-size-16 align-baseline me-2" />
+            <i className="fa fa-lock font-size-16 align-baseline me-2" />
             {props.t("Change Password")}
           </DropdownItem>
           <div className="dropdown-divider" />
@@ -105,30 +103,30 @@ const ProfileMenu = props => {
       {/* CHANGE PASSWORD */}
 
       <Modal
-          isOpen={isChangePass}
-          toggle={() => {
-            setIsChangePass(!isChangePass);
-          }}
-          centered={true}
-        >
-          <div className="modal-header">
-            <h5 className="modal-title mt-0">Change Password</h5>
-            <button
-              type="button"
-              onClick={() => {
-                setIsChangePass(false);
-              }}
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <ChangePassword />
-          </div>
-        </Modal>
+        isOpen={isChangePass}
+        toggle={() => {
+          setIsChangePass(!isChangePass);
+        }}
+        centered={true}
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Change Password</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setIsChangePass(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <ChangePassword />
+        </div>
+      </Modal>
     </React.Fragment>
   );
 };
