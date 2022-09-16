@@ -9,7 +9,6 @@ import {
   Modal
 } from "reactstrap";
 
-import { useHistory } from "react-router-dom";
 
 //i18n
 import { withTranslation } from "react-i18next";
@@ -19,7 +18,7 @@ import { withRouter, Link } from "react-router-dom";
 
 // users
 import user1 from "../../../assets/images/users/user-4.jpg";
-import { logoutAdmin } from "./../../../store/auth/login/actions";
+
 import ChangePassword from './../ChangePassword';
 
 const ProfileMenu = props => {
