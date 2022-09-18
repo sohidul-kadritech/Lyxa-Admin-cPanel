@@ -169,7 +169,7 @@ const SellerTransactions = () => {
                 </Row>
                 <div className="d-flex align-items-center justify-content-between">
                   <CardTitle className="h4">
-                    Sellers Transactions List
+                    Sellers Wallets List
                   </CardTitle>
                   <Button
                     outline={true}

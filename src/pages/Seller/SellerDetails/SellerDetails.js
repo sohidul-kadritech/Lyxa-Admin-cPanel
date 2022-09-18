@@ -40,7 +40,7 @@ const SellerDetails = () => {
 
   const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.shopReducer);
-    const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -121,7 +121,7 @@ const SellerDetails = () => {
               />
             )}
 
-            <Card>
+            <Card className="card-height">
               <CardBody>
                 <div className="d-flex justify-content-between">
                   <CardTitle>Seller Informations</CardTitle>
@@ -160,9 +160,8 @@ const SellerDetails = () => {
                     {seller?.dropPercentage && (
                       <Info
                         title="Drop Charge"
-                        value={`${seller?.dropPercentage} ${
-                          seller?.dropPercentageType === "amount" ? "NGN" : "%"
-                        }`}
+                        value={`${seller?.dropPercentage} ${seller?.dropPercentageType === "amount" ? "NGN" : "%"
+                          }`}
                       />
                     )}
                   </Col>
@@ -173,7 +172,7 @@ const SellerDetails = () => {
             <Row>
               <Col lg={6}>
                 {seller?.certificate_of_incorporation || seller?.national_id ? (
-                  <Card>
+                  <Card className="card-height">
                     <CardBody>
                       <div>
                         <CardTitle>Seller Photos</CardTitle>

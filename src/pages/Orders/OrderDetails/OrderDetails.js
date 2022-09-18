@@ -118,9 +118,8 @@ const OrderDetails = () => {
     const shopName = `Shop Name : ${order?.shop?.shopName}. `;
     const price = `Price : ${order?.summary?.totalAmount} NGN.`;
     const address = `Address : ${order?.dropOffLocation?.address}.`;
-    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${
-      order?.selectPos !== "no" ? "(Pos)" : ""
-    }`;
+    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""
+      }`;
 
     const orderTime = `Order Time : ${new Date(
       order?.createdAt
@@ -195,7 +194,7 @@ const OrderDetails = () => {
 
             {/* ORDER INFORMATIONS */}
 
-            <Card>
+            <Card className="card-height">
               <CardBody>
                 <div className="d-flex align-items-center justify-content-between">
                   <CardTitle className="h4">Order Details</CardTitle>
@@ -240,12 +239,12 @@ const OrderDetails = () => {
                         order?.review === 4
                           ? "Excellent"
                           : order?.review === 3
-                          ? "Very good"
-                          : order?.review === 2
-                          ? "Good"
-                          : order?.review === 1
-                          ? "Bad"
-                          : ""
+                            ? "Very good"
+                            : order?.review === 2
+                              ? "Good"
+                              : order?.review === 1
+                                ? "Bad"
+                                : ""
                       }
                     />
                   </Col>
@@ -253,9 +252,8 @@ const OrderDetails = () => {
                   <Col lg={6}>
                     <Info
                       title="Payment Method"
-                      value={`${order?.paymentMethod} ${
-                        order?.selectPos !== "no" ? "(Pos)" : ""
-                      }`}
+                      value={`${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""
+                        }`}
                     />
                     <Info title="Payment Status" value={order?.paymentStatus} />
                     <Info
@@ -280,7 +278,7 @@ const OrderDetails = () => {
             {/* TIMELINE AND SUMMARY */}
             <Row>
               <Col xl={6}>
-                <Card>
+                <Card className='card-height'>
                   <CardBody>
                     <CardTitle>Order Timeline</CardTitle>
                     <hr />
@@ -413,20 +411,20 @@ const OrderDetails = () => {
                           <Td>
                             {item?.selectedAttributes.length > 0
                               ? item?.selectedAttributes.map((att, index) => (
-                                  <div key={index}>
-                                    <span style={{ fontSize: "12px" }}>
-                                      {att?.name}
-                                    </span>
-                                    {att?.selectedItems?.map((item, index) => (
-                                      <p
-                                        key={index}
-                                        style={{ fontSize: "12px" }}
-                                      >
-                                        {item?.name}
-                                      </p>
-                                    ))}
-                                  </div>
-                                ))
+                                <div key={index}>
+                                  <span style={{ fontSize: "12px" }}>
+                                    {att?.name}
+                                  </span>
+                                  {att?.selectedItems?.map((item, index) => (
+                                    <p
+                                      key={index}
+                                      style={{ fontSize: "12px" }}
+                                    >
+                                      {item?.name}
+                                    </p>
+                                  ))}
+                                </div>
+                              ))
                               : "N/A"}
                           </Td>
                           <Td>{item?.product?.type}</Td>

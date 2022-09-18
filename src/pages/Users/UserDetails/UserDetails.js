@@ -92,7 +92,7 @@ const UserDetails = () => {
 
             <Row>
               <Col lg={6}>
-                <Card>
+                <Card className="card-height">
                   <CardBody>
                     <div className="mb-3">
                       <Button
@@ -102,7 +102,7 @@ const UserDetails = () => {
                       >
                         Add/Remove Credit
                       </Button>
-                      { (account_type === 'admin' && adminType === 'admin') && <Button
+                      {(account_type === 'admin' && adminType === 'admin') && <Button
                         outline={true}
                         color="success"
                         className="ms-3"

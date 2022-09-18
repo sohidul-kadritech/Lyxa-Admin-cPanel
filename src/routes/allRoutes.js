@@ -315,88 +315,77 @@ const userRoutes = [
   { path: "/admin/send-notifications", component: SendNotifications },
   { path: "/admin/notifications/list", component: NotificationsList },
 
-  // //calendar
-  { path: "/calendar", component: Calendar },
 
-  // //profile
-  { path: "/profile", component: UserProfile },
 
-  //Email
-  { path: "/email-inbox", component: EmailInbox },
-  { path: "/email-read", component: EmailRead },
-  { path: "/email-compose", component: EmailCompose },
+  // this route should be at the end of all other routes
+  // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
+];
 
-  // Email Template
-  { path: "/email-template-alert", component: Emailtemplatealert },
-  { path: "/email-template-basic", component: Emailtemplatebasic },
-  { path: "/email-template-billing", component: Emailtemplatebilling },
+const customerServiceRoutes = [
 
-  //Charts
-  { path: "/apex-charts", component: ChartApex },
-  { path: "/chartist-charts", component: ChartistChart },
-  { path: "/chartjs-charts", component: ChartjsChart },
-  { path: "/e-charts", component: EChart },
-  { path: "/sparkline-charts", component: SparklineChart },
+  { path: "/orders/list", component: OrdersList },
+  { path: "/orders/details/:id", component: OrderDetails },
+  { path: "/users/list", component: UsersList },
+  { path: "/users/details/:id", component: UserDetails },
+  { path: "/seller/list", component: SellerList },
+  { path: "/seller/details/:id", component: SellerDetails },
+  { path: "/shops/list", component: ShopList },
+  { path: "/shops/details/:id", component: ShopDetails },
+  { path: "/shops/cuisines", component: Cuisine },
+  { path: "/deliveryman/list", component: DeliverymanList },
+  { path: "/deliveryman/details/:id", component: DeliverymanDetails },
+  { path: "/deliveryman/add", component: DeliverymanAdd },
+  { path: "/drop-pay", component: DropPayList },
+  { path: "/customer-support", component: Chat },
+  { path: "/customer-support/details/:id", component: ChatDetails },
+  // this route should be at the end of all other routes
+  { path: "/", exact: true, component: () => <Redirect to="/orders/list" /> },
+];
 
-  // Icons
-  { path: "/icons-dripicons", component: IconDripicons },
-  { path: "/icons-materialdesign", component: IconMaterialdesign },
-  { path: "/icons-fontawesome", component: IconFontawesome },
-  { path: "/icons-ion", component: IconIon },
-  { path: "/icons-themify", component: ThemifyIcon },
-  { path: "/icons-typicons", component: TypiconsIcon },
+const sellerRoutes = [
+  { path: "/dashboard", component: Dashboard },
+  { path: "/orders/list", component: OrdersList },
+  { path: "/orders/details/:id", component: OrderDetails },
+  { path: "/products/list", component: ProductList },
+  { path: "/products/add", component: ProductAdd },
+  { path: "/products/edit/:id", component: ProductAdd },
+  { path: "/products/details/:id", component: ProductDetails },
+  {
+    path: "/app-wallet/seller/shops-transactions",
+    component: ShopsTransactions,
+  },
+  { path: "/admin/list", component: AdminList },
+  { path: "/admin/create", component: CreateAdmin },
 
-  // Tables
-  { path: "/tables-basic", component: BasicTables },
-  { path: "/tables-datatable", component: DatatableTables },
-  { path: "/tables-responsive", component: ResponsiveTables },
-  { path: "/tables-editable", component: EditableTables },
+  { path: "/categories/list", component: CategoryList },
+  { path: "/categories/add", component: CategoryAdd },
+  { path: "/categories/edit/:id", component: CategoryAdd },
+  { path: "/category/details/:id", component: CategoryDetails },
 
-  // Maps
-  { path: "/maps-google", component: MapsGoogle },
-  { path: "/maps-vector", component: MapsVector },
-  { path: "/maps-leaflet", component: MapsLeaflet },
+  // this route should be at the end of all other routes
+  { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
+];
 
-  // Forms
-  { path: "/form-elements", component: FormElements },
-  { path: "/form-advanced", component: FormAdvanced },
-  { path: "/form-editors", component: FormEditors },
-  { path: "/form-mask", component: FormMask },
-  { path: "/form-repeater", component: FormRepeater },
-  { path: "/form-uploads", component: FormUpload },
-  { path: "/form-wizard", component: FormWizard },
-  { path: "/form-validation", component: FormValidations },
-  { path: "/form-xeditable", component: FormXeditable },
 
-  // Ui
-  { path: "/ui-alerts", component: UiAlert },
-  { path: "/ui-buttons", component: UiButtons },
-  { path: "/ui-cards", component: UiCards },
-  { path: "/ui-carousel", component: UiCarousel },
-  { path: "/ui-colors", component: UiColors },
-  { path: "/ui-dropdowns", component: UiDropdown },
-  { path: "/ui-general", component: UiGeneral },
-  { path: "/ui-grid", component: UiGrid },
-  { path: "/ui-images", component: UiImages },
-  { path: "/ui-lightbox", component: UiLightbox },
-  { path: "/ui-modals", component: UiModal },
-  { path: "/ui-progressbars", component: UiProgressbar },
-  { path: "/ui-sweet-alert", component: UiSweetAlert },
-  { path: "/ui-tabs-accordions", component: UiTabsAccordions },
-  { path: "/ui-typography", component: UiTypography },
-  { path: "/ui-video", component: UiVideo },
-  { path: "/ui-session-timeout", component: UiSessionTimeout },
-  { path: "/ui-rating", component: UiRating },
-  { path: "/ui-rangeslider", component: UiRangeSlider },
+const shopRoutes = [
+  { path: "/dashboard", component: Dashboard },
+  { path: "/orders/list", component: OrdersList },
+  { path: "/orders/details/:id", component: OrderDetails },
+  { path: "/products/list", component: ProductList },
+  { path: "/products/add", component: ProductAdd },
+  { path: "/products/edit/:id", component: ProductAdd },
+  { path: "/products/details/:id", component: ProductDetails },
+  {
+    path: "/add-wallet/shop-transactions",
+    component: SingleShopTransactions,
+  },
+  { path: "/admin/list", component: AdminList },
+  { path: "/admin/create", component: CreateAdmin },
 
-  //Utility
-  { path: "/pages-starter", component: PagesStarter },
-  { path: "/pages-timeline", component: PagesTimeline },
-  { path: "/pages-invoice", component: PagesInvoice },
-  { path: "/pages-directory", component: PagesDirectory },
-  { path: "/pages-faqs", component: PagesFaqs },
-  { path: "/pages-pricing", component: PagesPricing },
-  { path: "/pages-gallery", component: PagesGallery },
+  { path: "/categories/list", component: CategoryList },
+  { path: "/categories/add", component: CategoryAdd },
+  { path: "/categories/edit/:id", component: CategoryAdd },
+  { path: "/category/details/:id", component: CategoryDetails },
 
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
@@ -434,4 +423,4 @@ const authRoutes = [
   // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
 ];
 
-export { userRoutes, authRoutes };
+export { userRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };

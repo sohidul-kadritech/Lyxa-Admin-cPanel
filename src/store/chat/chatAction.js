@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { ACCEPT_CHAT, CHAT_LIST, SEND_MESSAGE } from "../../network/Api";
+import { ACCEPT_CHAT, CHAT_LIST, REJECT_CHAT, SEND_MESSAGE } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
@@ -102,7 +102,60 @@ export const acceptChatReq = (id) => async (dispatch) => {
 };
 
 
+// REJECT CHAT REQUEST
 
+export const rejectChatReq = (id) => async (dispatch) => {
+
+  try {
+    dispatch({
+      type: actionType.REJECT_CHAT_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(REJECT_CHAT, {
+      method: "POST",
+      data: { id },
+    });
+
+    console.log({ data });
+
+    if (data.status) {
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.REJECT_CHAT_REQUEST_SUCCESS,
+        payload: data?.data?.request,
+      });
+    } else {
+      toast.success(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.REJECT_CHAT_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.REJECT_CHAT_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 // SEND MESSEGE TO USER 
 

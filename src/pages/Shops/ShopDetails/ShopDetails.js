@@ -142,10 +142,10 @@ const ShopDetails = () => {
     return value === 1
       ? "$"
       : value === 2
-      ? "$$"
-      : value === "3"
-      ? "$$$"
-      : "$$$$";
+        ? "$$"
+        : value === "3"
+          ? "$$$"
+          : "$$$$";
   };
 
   return (
@@ -219,7 +219,7 @@ const ShopDetails = () => {
                   </div>
                 </HeaderWrapper>
                 <hr />
-                <Row>
+                <Row className='card-height'>
                   <Col xl={6}>
                     <Info
                       title="Seller"
@@ -245,12 +245,12 @@ const ShopDetails = () => {
                         shop?.rating === 4
                           ? "Excellent"
                           : shop?.rating === 3
-                          ? "Very good"
-                          : shop?.rating === 2
-                          ? "Good"
-                          : shop?.rating === 1
-                          ? "Bad"
-                          : ""
+                            ? "Very good"
+                            : shop?.rating === 2
+                              ? "Good"
+                              : shop?.rating === 1
+                                ? "Bad"
+                                : ""
                       }
                     />
                   </Col>
@@ -302,9 +302,20 @@ const ShopDetails = () => {
             </Card>
 
             <Row>
-              <Col xl={7}>
+              <Col xl={6}>
+                {shop?.reviews?.length > 0 && (
+                  <Flags reviews={shop?.reviews} isReview={true} />
+                )}
+              </Col>
+              <Col xl={6}>
+                {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />}
+              </Col>
+            </Row>
+
+            <Row >
+              <Col xl={7} >
                 {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
-                  <Card>
+                  <Card className="card-height">
                     <CardBody>
                       <div>
                         <CardTitle>Shop Photos</CardTitle>
@@ -387,7 +398,7 @@ const ShopDetails = () => {
               {shop?.deals.length > 0 && (
                 <Col xl={5}>
                   <div className="mb-4">
-                    <Paper className="py-2">
+                    <Paper className="py-2 card-height">
                       <h5 className="text-center">Deals List</h5>
                       <hr />
                       {shop.deals.length > 0 &&
@@ -427,17 +438,6 @@ const ShopDetails = () => {
                   </div>
                 </Col>
               )}
-            </Row>
-
-            <Row>
-              <Col xl={6}>
-                {shop?.reviews?.length > 0 && (
-                  <Flags reviews={shop?.reviews} isReview={true} />
-                )}
-              </Col>
-              <Col xl={6}>
-                {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />}
-              </Col>
             </Row>
           </Container>
         </div>

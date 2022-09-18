@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from "react"
 import PropTypes from 'prop-types'
-import { Switch, BrowserRouter as Router } from "react-router-dom"
-import { connect, useDispatch } from "react-redux"
+import { Switch, BrowserRouter as Router, useHistory, Route, Redirect } from "react-router-dom"
+import { connect, useDispatch, useSelector } from "react-redux"
 
 // Import Routes all
-import { userRoutes, authRoutes } from "./routes/allRoutes"
+import { userRoutes, sellerRoutes, customerServiceRoutes, shopRoutes } from "./routes/allRoutes"
 
 // Import all middleware
 import Authmiddleware from "./routes/middleware/Authmiddleware"
@@ -20,15 +20,38 @@ import "./assets/scss/theme.scss"
 import { socketConnect } from "./store/socket/socketAction";
 
 import { SOCKET_CONNECTION } from "./network/Api"
+import Login from "./pages/Authentication/Login"
+
 
 
 const App = props => {
 
   const dispatch = useDispatch();
+  const history = useHistory();
+  const [routeList, setRouteList] = useState([]);
+
+  const { admin: { account_type, adminType } } = useSelector(state => state.Login);
+
+  useEffect(() => {
+
+    if (account_type === 'admin' && adminType !== 'customerService') {
+      setRouteList(userRoutes)
+    } else if (account_type === 'admin' && adminType === 'customerService') {
+      setRouteList(customerServiceRoutes)
+    } else if (account_type === 'seller') {
+      setRouteList(sellerRoutes)
+    } else if (account_type === 'shop') {
+      setRouteList(shopRoutes)
+    } else {
+      history.push('/login')
+
+    }
+
+  }, [account_type]);
+
 
   useEffect(() => {
     dispatch(socketConnect());
-
 
   }, []);
 
@@ -58,7 +81,7 @@ const App = props => {
     <React.Fragment>
       <Router>
         <Switch>
-          {authRoutes.map((route, idx) => (
+          {/* {authRoutes.map((route, idx) => (
             <Authmiddleware
               path={route.path}
               layout={NonAuthLayout}
@@ -66,9 +89,18 @@ const App = props => {
               key={idx}
               isAuthProtected={false}
             />
-          ))}
+          ))} */}
 
-          {userRoutes.map((route, idx) => (
+
+          <Authmiddleware
+            path={'/login'}
+            layout={NonAuthLayout}
+            component={Login}
+            isAuthProtected={false}
+          />
+
+
+          {routeList?.map((route, idx) => (
             <Authmiddleware
               path={route.path}
               layout={Layout}

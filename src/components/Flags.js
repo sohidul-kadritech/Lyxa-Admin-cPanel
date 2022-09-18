@@ -14,7 +14,7 @@ const Flags = ({
   const dispatch = useDispatch();
 
   return (
-    <Card>
+    <Card className='card-height'>
       <CardBody>
         <CardTitle>{!isReview ? "Flags" : "Order Reviews"}</CardTitle>
         <hr />
@@ -28,49 +28,49 @@ const Flags = ({
         <FlagsWrapper>
           {!isReview
             ? flags.length > 0 &&
-              flags.map((item, index) => (
-                <div key={index} className="d-flex">
-                  <div className="info_wrapper">
-                    <Info
-                      title={
-                        isFromOrder
-                          ? item?.user
-                            ? "User"
-                            : item?.shop
+            flags.map((item, index) => (
+              <div key={index} className="d-flex">
+                <div className="info_wrapper">
+                  <Info
+                    title={
+                      isFromOrder
+                        ? item?.user
+                          ? "User"
+                          : item?.shop
                             ? "Shop"
                             : "Delivery Boy"
-                          : item?.orderId?.orderId
-                      }
-                      value={item?.comment}
-                      flagOrderRoute={
-                        !isFromOrder && `/orders/details/${item?.orderId?._id}`
-                      }
-                    />
-                  </div>
-                  {isFromOrder && (
-                    <div
-                      className="delete_btn_wrapper"
-                      onClick={() => dispatch(DeleteOrderFlag(item?._id))}
-                    >
-                      <i className="fa fa-trash cursor-pointer"></i>
-                    </div>
-                  )}
+                        : item?.orderId?.orderId
+                    }
+                    value={item?.comment}
+                    flagOrderRoute={
+                      !isFromOrder && `/orders/details/${item?.orderId?._id}`
+                    }
+                  />
                 </div>
-              ))
+                {isFromOrder && (
+                  <div
+                    className="delete_btn_wrapper"
+                    onClick={() => dispatch(DeleteOrderFlag(item?._id))}
+                  >
+                    <i className="fa fa-trash cursor-pointer"></i>
+                  </div>
+                )}
+              </div>
+            ))
             : reviews.map((item, index) => (
-                <div key={index} className="d-flex">
-                  <div className="info_wrapper">
-                    <Info
-                      title={item?.order?.orderId}
-                      value={item?.review}
-                      valueTwo={item?.rating}
-                      flagOrderRoute={
-                        !isFromOrder && `/orders/details/${item?.order?._id}`
-                      }
-                    />
-                  </div>
+              <div key={index} className="d-flex">
+                <div className="info_wrapper">
+                  <Info
+                    title={item?.order?.orderId}
+                    value={item?.review}
+                    valueTwo={item?.rating}
+                    flagOrderRoute={
+                      !isFromOrder && `/orders/details/${item?.order?._id}`
+                    }
+                  />
                 </div>
-              ))}
+              </div>
+            ))}
         </FlagsWrapper>
       </CardBody>
     </Card>
@@ -78,8 +78,7 @@ const Flags = ({
 };
 
 const FlagsWrapper = styled.div`
-  max-height: 400px;
-  overflow: hidden scroll;
+
 
   .info_wrapper {
     flex: 1;

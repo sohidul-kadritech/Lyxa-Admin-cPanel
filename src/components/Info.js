@@ -62,7 +62,7 @@ const Details = styled.div`
   }
 
   .value {
-    color: green;
+    color: #02a499;
     font-weight: 500;
     font-size: 15px;
     padding-left: 5px;

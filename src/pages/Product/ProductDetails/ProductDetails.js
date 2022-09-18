@@ -120,7 +120,7 @@ const ProductDetails = () => {
               />
             )}
 
-            <Card>
+            <Card className="card-height">
               <CardBody>
                 <div className="d-flex justify-content-between">
                   <CardTitle>Product Informations</CardTitle>
@@ -211,7 +211,7 @@ const ProductDetails = () => {
               {product?.attributes.length > 0 && (
                 <Col lg={6}>
                   <div className="mb-4">
-                    <Paper className="py-2">
+                    <Paper className="py-2 card-height">
                       <h5 className="text-center">Attributes List</h5>
                       <hr />
                       {product.attributes.length > 0 &&
@@ -249,7 +249,7 @@ const ProductDetails = () => {
               {product?.addons?.length > 0 && (
                 <Col lg={4}>
                   <div className="mb-4">
-                    <Paper className="py-2">
+                    <Paper className="py-2 card-height">
                       <h5 className="text-center">Addons List</h5>
                       <hr />
                       {product?.addons?.length > 0 &&
@@ -285,7 +285,7 @@ const ProductDetails = () => {
               {product?.deals.length > 0 && (
                 <Col lg={6}>
                   <div className="mb-4">
-                    <Paper className="py-2">
+                    <Paper className="py-2 card-height">
                       <h5 className="text-center">Deals List</h5>
                       <hr />
                       {product.deals.length > 0 &&

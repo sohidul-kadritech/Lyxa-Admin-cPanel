@@ -14,7 +14,7 @@ import {
 import { withTranslation } from "react-i18next";
 // Redux
 import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link, useHistory } from "react-router-dom";
 
 // users
 import user1 from "../../../assets/images/users/user-4.jpg";
@@ -31,6 +31,7 @@ const ProfileMenu = props => {
 
 
   const [isChangePass, setIsChangePass] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     if (status) {
@@ -61,7 +62,8 @@ const ProfileMenu = props => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("admin");
     window.location.reload(true);
-    // history.push("/login", {replace: true})
+    // history.push("/login", { replace: true })
+    // <Redirect to="/dashboard" />
   };
 
   return (

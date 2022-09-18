@@ -103,26 +103,26 @@ const DeliverymanDetails = () => {
 
             <Row>
               <Col lg={6}>
-                <Card>
+                <Card className="card-height">
                   <CardBody>
                     <div className="d-flex justify-content-between">
                       <CardTitle>Delivery Man Informations</CardTitle>
                       <div>
-                      <Button
-                        outline={true}
-                        color="primary"
-                        onClick={() => history.push(`/deliveryman/edit/${id}`)}
-                      >
-                        Edit
-                      </Button>
-                      {(account_type === 'admin' && adminType === 'admin') && <Button
-                        outline={true}
-                        color="primary"
-                        onClick={() => history.push(`/add-wallet/single-delivery-transactions/${id}`)}
-                        className='ms-2'
-                      >
-                        Payment history
-                      </Button>}
+                        <Button
+                          outline={true}
+                          color="primary"
+                          onClick={() => history.push(`/deliveryman/edit/${id}`)}
+                        >
+                          Edit
+                        </Button>
+                        {(account_type === 'admin' && adminType === 'admin') && <Button
+                          outline={true}
+                          color="primary"
+                          onClick={() => history.push(`/add-wallet/single-delivery-transactions/${id}`)}
+                          className='ms-2'
+                        >
+                          Payment history
+                        </Button>}
                       </div>
                     </div>
                     <hr className="my-2" />
@@ -161,62 +161,66 @@ const DeliverymanDetails = () => {
                 </Card>
               </Col>
               <Col lg={6}>
-                <Card>
-                  <CardBody>
-                    <div>
-                      <CardTitle>Images</CardTitle>
-                      <hr />
-                    </div>
-                    <Row>
-                      <Col md={6}>
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(deliveryMan?.nationalIdDocument);
-                            }}
-                            className="img-fluid cursor-pointer"
-                            alt="Veltrix"
-                            src={deliveryMan?.nationalIdDocument}
-                            width="100%"
-                          />
-                          <small>NID</small>
-                        </ImageWrapper>
-                      </Col>
-                      <Col md={6}>
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(deliveryMan?.nationalIdDocument);
-                            }}
-                            className="img-fluid cursor-pointer"
-                            alt="Veltrix"
-                            src={deliveryMan?.vehicleRegistrationDocument}
-                            width="100%"
-                          />
-                          <small>Vahicle Document</small>
-                        </ImageWrapper>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
+
                 {deliveryMan?.flags?.length > 0 && (
                   <Flags flags={deliveryMan?.flags} />
                 )}
               </Col>
+            </Row>
+
+            <Row>
+              <Card className="card-height">
+                <CardBody>
+                  <div>
+                    <CardTitle>Images</CardTitle>
+                    <hr />
+                  </div>
+                  <Row>
+                    <Col md={6}>
+                      <ImageWrapper
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          padding: "10px 0px",
+                        }}
+                      >
+                        <img
+                          onClick={() => {
+                            setIsOpen(true);
+                            setSelectedImg(deliveryMan?.nationalIdDocument);
+                          }}
+                          className="img-fluid cursor-pointer"
+                          alt="Veltrix"
+                          src={deliveryMan?.nationalIdDocument}
+                          width="100%"
+                        />
+                        <small>NID</small>
+                      </ImageWrapper>
+                    </Col>
+                    <Col md={6}>
+                      <ImageWrapper
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          padding: "10px 0px",
+                        }}
+                      >
+                        <img
+                          onClick={() => {
+                            setIsOpen(true);
+                            setSelectedImg(deliveryMan?.nationalIdDocument);
+                          }}
+                          className="img-fluid cursor-pointer"
+                          alt="Veltrix"
+                          src={deliveryMan?.vehicleRegistrationDocument}
+                          width="100%"
+                        />
+                        <small>Vahicle Document</small>
+                      </ImageWrapper>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
             </Row>
 
             <div>

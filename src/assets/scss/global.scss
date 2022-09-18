@@ -66,6 +66,7 @@
   max-width: 170px;
   display: flex;
   justify-content: center;
+
   @media (max-width: 1200px) {
     max-width: 100%;
   }
@@ -74,6 +75,7 @@
 input[type="date"]:required:invalid::-webkit-datetime-edit {
   color: transparent;
 }
+
 input[type="date"]:focus::-webkit-datetime-edit {
   color: black !important;
 }
@@ -83,8 +85,14 @@ input[type="date"]:focus::-webkit-datetime-edit {
 }
 
 .table-data-hover {
+
   .table-hover tbody tr:hover td,
   .table-hover tbody tr:hover th {
     color: green !important;
   }
+}
+
+.card-height {
+  height: 400px;
+  overflow: hidden scroll;
 }

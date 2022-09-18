@@ -51,49 +51,49 @@ export const addDeliveryMan = (values) => async (dispatch) => {
 
 export const allDeliveryMan =
   (refresh, page = 1) =>
-  async (dispatch, getState) => {
-    const { deliveryMans, sortByKey, statusKey, searchKey } =
-      getState().deliveryManReducer;
+    async (dispatch, getState) => {
+      const { deliveryMans, sortByKey, statusKey, searchKey } =
+        getState().deliveryManReducer;
 
-    if (refresh || deliveryMans.length < 1) {
-      try {
-        dispatch({
-          type: actionType.ALL_DELIVERY_MAN_REQUEST_SEND,
-        });
-
-        const {
-          data: { status, error, data = null },
-        } = await requestApi().request(ALL_DELIVERY_MAN, {
-          params: {
-            page,
-            pageSize: 50,
-            searchKey,
-            sortBy: sortByKey.value,
-            status: statusKey.value,
-          },
-        });
-
-
-
-        if (status) {
+      if (refresh || deliveryMans.length < 1) {
+        try {
           dispatch({
-            type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
-            payload: data,
+            type: actionType.ALL_DELIVERY_MAN_REQUEST_SEND,
           });
-        } else {
+
+          const {
+            data: { status, error, data = null },
+          } = await requestApi().request(ALL_DELIVERY_MAN, {
+            params: {
+              page,
+              pageSize: 50,
+              searchKey,
+              sortBy: sortByKey.value,
+              status: statusKey.value,
+            },
+          });
+
+
+
+          if (status) {
+            dispatch({
+              type: actionType.ALL_DELIVERY_MAN_REQUEST_SUCCESS,
+              payload: data,
+            });
+          } else {
+            dispatch({
+              type: actionType.ALL_DELIVERY_MAN_REQUEST_FAIL,
+              payload: error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.ALL_DELIVERY_MAN_REQUEST_FAIL,
-            payload: error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.ALL_DELIVERY_MAN_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 //   EDIT
 
@@ -139,45 +139,65 @@ export const editDeliveryMan = (values) => async (dispatch) => {
 
 export const trackDeliveryBoy =
   (id, page = 1) =>
-  async (dispatch) => {
-    try {
-      dispatch({
-        type: actionType.TRACK_DELIVERY_MAN_REQUEST_SEND,
-      });
+    async (dispatch, getState) => {
 
-      const {
-        data: { status, error, message, data = null },
-      } = await requestApi().request(TRACK_DELIVERY_MAN, {
-        params: {
-          id,
-          page,
-          pageSize: 25,
-        },
-      });
+      const { startDate, endDate } = getState().deliveryManReducer;
 
-      console.log({data});
-
-
-      if (status) {
+      try {
         dispatch({
-          type: actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS,
-          payload: data,
+          type: actionType.TRACK_DELIVERY_MAN_REQUEST_SEND,
         });
-      } else {
-        successMsg(error, "error");
 
+        const {
+          data: { status, error, message, data = null },
+        } = await requestApi().request(TRACK_DELIVERY_MAN, {
+          params: {
+            id,
+            page,
+            pageSize: 15,
+            startDate,
+            endDate
+          },
+        });
+
+        console.log({ data });
+
+
+        if (status) {
+          dispatch({
+            type: actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS,
+            payload: data,
+          });
+        } else {
+          successMsg(error, "error");
+
+          dispatch({
+            type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
+            payload: error,
+          });
+        }
+      } catch (error) {
         dispatch({
           type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
-          payload: error,
+          payload: error.message,
         });
       }
-    } catch (error) {
-      dispatch({
-        type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
-        payload: error.message,
-      });
-    }
-  };
+    };
+
+
+export const updateActivityStartDate = (startDate) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_ACTIVITY_START_DATE,
+    payload: startDate,
+  });
+};
+
+export const updateActivityEndDate = (date) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_ACTIVITY_END_DATE,
+    payload: date,
+  });
+};
 
 //   SORT BY KEY
 
@@ -216,43 +236,43 @@ export const setDeliveryStatusFalse = () => (dispatch) => {
 
 export const getDeliveryAllOrder =
   (refresh = false, deliveryId, page = 1) =>
-  async (dispatch, getState) => {
-    const { orders } = getState().deliveryManReducer;
+    async (dispatch, getState) => {
+      const { orders } = getState().deliveryManReducer;
 
-    if (orders.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.DELIVERYBOY_ORDERS_REQUEST_SEND,
-        });
-
-        const {
-          data: { status, error, data = null },
-        } = await requestApi().request(DELIVERY_BOY_ORDERS, {
-          params: {
-            deliveryId,
-            page,
-            pageSize: 50,
-          },
-        });
-
-  
-
-        if (status) {
+      if (orders.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.DELIVERYBOY_ORDERS_REQUEST_SUCCESS,
-            payload: data,
+            type: actionType.DELIVERYBOY_ORDERS_REQUEST_SEND,
           });
-        } else {
+
+          const {
+            data: { status, error, data = null },
+          } = await requestApi().request(DELIVERY_BOY_ORDERS, {
+            params: {
+              deliveryId,
+              page,
+              pageSize: 50,
+            },
+          });
+
+
+
+          if (status) {
+            dispatch({
+              type: actionType.DELIVERYBOY_ORDERS_REQUEST_SUCCESS,
+              payload: data,
+            });
+          } else {
+            dispatch({
+              type: actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL,
+              payload: error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL,
-            payload: error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };

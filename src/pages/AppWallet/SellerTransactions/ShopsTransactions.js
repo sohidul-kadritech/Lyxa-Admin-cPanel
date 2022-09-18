@@ -19,11 +19,11 @@ import { getSellerTrx } from "../../../store/appWallet/appWalletAction";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { Select } from "@mui/material";
-import  Flatpickr  from 'react-flatpickr';
+import Flatpickr from 'react-flatpickr';
 import moment from "moment";
 
 const ShopsTransactions = () => {
-  const { loading, sellerTrxs,  } = useSelector(
+  const { loading, sellerTrxs, } = useSelector(
     (state) => state.appWalletReducer
   );
 
@@ -34,9 +34,9 @@ const ShopsTransactions = () => {
   const dispatch = useDispatch();
 
   const [companyName, setCompanyName] = useState("");
-  const [startDate, setStartDate] = useState(moment().startOf("month").format("YYYY-MM-DD"));
-  const [endDate, setEndDate] = useState(moment().endOf("month").format("YYYY-MM-DD"));
-  const [filterTrxs, setFilterTrxs] = useState([]);
+  // const [startDate, setStartDate] = useState(moment().startOf("month").format("YYYY-MM-DD"));
+  // const [endDate, setEndDate] = useState(moment().endOf("month").format("YYYY-MM-DD"));
+  // const [filterTrxs, setFilterTrxs] = useState([]);
   const {
     account_type,
     _id: accountId,
@@ -61,13 +61,13 @@ const ShopsTransactions = () => {
   }, []);
 
 
-  useEffect(()=>{
-    if(startDate || endDate){
-      const newList = sellerTrxs.filter((item) => item.createdAt >= startDate && item.createdAt <= endDate);
-      
-      setFilterTrxs(newList);
-    }
-  },[startDate, endDate])
+  // useEffect(()=>{
+  //   if(startDate || endDate){
+  //     const newList = sellerTrxs.filter((item) => item.createdAt >= startDate && item.createdAt <= endDate);
+
+  //     setFilterTrxs(newList);
+  //   }
+  // },[startDate, endDate])
 
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
@@ -137,7 +137,7 @@ const ShopsTransactions = () => {
             <Card>
               <CardBody>
                 <Row>
-                <Col lg={6}>
+                  {/* <Col lg={6}>
                     <div className="d-flex my-3 my-md-0 ">
                       <div className=" w-100">
                         <label>Start Date</label>
@@ -178,12 +178,12 @@ const ShopsTransactions = () => {
                         </div>
                       </div>
                     </div>
-                  </Col>
+                  </Col> */}
 
                   <Col >
                   </Col>
                 </Row>
-                
+
               </CardBody>
             </Card>
 
@@ -193,7 +193,7 @@ const ShopsTransactions = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <div className="d-flex align-items-center justify-content-between">
-                  <CardTitle className="h4">Shops Transactions List</CardTitle>
+                  <CardTitle className="h4">Shops Wallets List</CardTitle>
                   <Button
                     outline={true}
                     color="success"
@@ -219,8 +219,8 @@ const ShopsTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {filterTrxs.length > 0 &&
-                      filterTrxs.map((trx, index) => (
+                    {sellerTrxs.length > 0 &&
+                      sellerTrxs.map((trx, index) => (
                         <Tr
                           key={index}
                           className="align-middle cursor-pointer"
@@ -236,10 +236,10 @@ const ShopsTransactions = () => {
                           <Td>
                             {trx?.summary?.orderValue?.productAmount.toFixed(2)}
                           </Td>
-                          <Td>{trx?.summary?.orderValue?.deliveryFee}</Td>
-                          <Td>{trx?.summary?.totalDropGet}</Td>
-                          <Td>{trx?.summary?.totalShopUnsettle}</Td>
-                          <Td>{trx?.summary?.totalShopEarning}</Td>
+                          <Td>{trx?.summary?.orderValue?.deliveryFee ?? 0}</Td>
+                          <Td>{trx?.summary?.totalDropGet ?? 0}</Td>
+                          <Td>{trx?.summary?.totalShopUnsettle ?? 0}</Td>
+                          <Td>{trx?.summary?.totalShopEarning ?? 0}</Td>
                         </Tr>
                       ))}
                   </Tbody>
@@ -249,7 +249,7 @@ const ShopsTransactions = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && filterTrxs.length < 1 && (
+                {!loading && sellerTrxs.length < 1 && (
                   <div className="text-center">
                     <h4>No Transations!</h4>
                   </div>

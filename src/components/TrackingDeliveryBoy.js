@@ -10,11 +10,12 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { trackDeliveryBoy } from "../store/DeliveryMan/DeliveryManAction";
+import { trackDeliveryBoy, updateActivityEndDate, updateActivityStartDate } from "../store/DeliveryMan/DeliveryManAction";
 import GlobalWrapper from "./GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import AppPagination from "./AppPagination";
 import moment from "moment";
+import Flatpickr from 'react-flatpickr';
 
 const TrackingDeliveryBoy = ({ riderId }) => {
   const {
@@ -24,6 +25,8 @@ const TrackingDeliveryBoy = ({ riderId }) => {
     statusHasPreviousPage,
     statusCurrentPage,
     riderAllActivity,
+    startDate,
+    endDate
   } = useSelector((state) => state.deliveryManReducer);
 
   const dispatch = useDispatch();
@@ -32,14 +35,16 @@ const TrackingDeliveryBoy = ({ riderId }) => {
 
   useEffect(() => {
     if (riderId) {
-      dispatch(trackDeliveryBoy(riderId));
+      if (startDate || endDate) {
+        dispatch(trackDeliveryBoy(riderId));
+      }
     }
     return;
-  }, [riderId]);
+  }, [riderId, startDate, endDate]);
 
   const calcActiveTime = (inTime, outTime) => {
-    const startTime = moment(inTime, "HH:mm:ss a");
-    const endTime = moment(outTime, "HH:mm:ss a");
+    const startTime = moment(inTime, "HH:mm a");
+    const endTime = moment(outTime, "HH:mm a");
     const duration = moment.duration(endTime.diff(startTime));
     const hours = parseInt(duration.asHours());
     const minutes = parseInt(duration.asMinutes()) % 60;
@@ -53,6 +58,48 @@ const TrackingDeliveryBoy = ({ riderId }) => {
       <GlobalWrapper>
         <Card>
           <CardBody>
+
+            <div className="d-flex my-3  ">
+              <div className=" w-100">
+                <label>Start Date</label>
+                <div className="form-group mb-0 w-100">
+                  <Flatpickr
+                    className="form-control d-block"
+                    id="startDate"
+                    placeholder="Start Date"
+                    value={startDate}
+                    onChange={(selectedDates, dateStr, instance) =>
+                      dispatch(updateActivityStartDate(dateStr))
+                    }
+                    options={{
+                      altInput: true,
+                      altFormat: "F j, Y",
+                      dateFormat: "Y-m-d",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="ms-2 w-100">
+                <label>End Date</label>
+                <div className="form-group mb-0">
+                  <Flatpickr
+                    className="form-control w-100"
+                    id="endDate"
+                    placeholder="Select End Date"
+                    value={endDate}
+                    onChange={(selectedDates, dateStr, instance) =>
+                      dispatch(updateActivityEndDate(dateStr))
+                    }
+                    options={{
+                      altInput: true,
+                      altFormat: "F j, Y",
+                      dateFormat: "Y-m-d",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
             <Table
               id="tech-companies-1"
               className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -78,11 +125,11 @@ const TrackingDeliveryBoy = ({ riderId }) => {
                     >
                       <Th>{moment(item?.Date).format("D-MM-YYYY")}</Th>
                       <Td>
-                        {moment(item?.timeIn).format("h:mm:ss a")}
+                        {moment(item?.timeIn).format("h:mm a")}
                       </Td>
                       <Td>
 
-                        {moment(item?.timeOut).format("h:mm:ss a")}
+                        {moment(item?.timeOut).format("h:mm a")}
                       </Td>
                       <Td>
 

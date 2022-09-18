@@ -164,7 +164,7 @@ const DeliverymanList = () => {
                           <Th>{item?.name}</Th>
                           <Td>{item?.email}</Td>
                           <Td>{item?.number}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             {item?.liveStatus === "online"
                               ? "Available"

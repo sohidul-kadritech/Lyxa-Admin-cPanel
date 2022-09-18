@@ -11,7 +11,7 @@ const initialState = {
   loading: false,
   admin: localStorage.getItem("admin")
     ? JSON.parse(localStorage.getItem("admin"))
-    : null,
+    : { account_type: '', adminType: '' },
   message: "",
   accessToken: localStorage.getItem("accessToken")
     ? localStorage.getItem("accessToken")

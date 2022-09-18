@@ -98,6 +98,32 @@ const chatReducer = (state = initialState, action) => {
         loading: false
       };
 
+    case actionType.REJECT_CHAT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.REJECT_CHAT_REQUEST_SUCCESS:
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        chatRequests: state.chatRequests.map((item) =>
+          item._id === payload._id ? { ...item, status: payload.status } : item
+        )
+      };
+
+    case actionType.REJECT_CHAT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        loading: false
+      };
+
     // FILTERS
     case actionType.UPDATE_CHAT_SORT_BY_FILTER:
       return {

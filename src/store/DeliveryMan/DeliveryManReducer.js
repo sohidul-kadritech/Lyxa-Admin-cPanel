@@ -1,3 +1,4 @@
+import moment from "moment";
 import * as actionType from "../actionType";
 
 const initialState = {
@@ -20,6 +21,8 @@ const initialState = {
   statusHasNextPage: true,
   statusCurrentPage: 1,
   statusHasPreviousPage: false,
+  startDate: moment().startOf("month").format("YYYY-MM-DD"),
+  endDate: moment().endOf("month").format("YYYY-MM-DD"),
 };
 
 const deliveryManReducer = (state = initialState, action) => {
@@ -183,6 +186,17 @@ const deliveryManReducer = (state = initialState, action) => {
       return {
         ...state,
         error: payload,
+      };
+
+    case actionType.UPDATE_ACTIVITY_START_DATE:
+      return {
+        ...state,
+        startDate: payload,
+      };
+    case actionType.UPDATE_ACTIVITY_END_DATE:
+      return {
+        ...state,
+        endDate: payload,
       };
 
     default:

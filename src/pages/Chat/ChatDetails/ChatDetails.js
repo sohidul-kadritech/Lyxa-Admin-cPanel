@@ -21,7 +21,7 @@ import SimpleBar from "simplebar-react";
 import styled from "styled-components";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { acceptChatReq, sendMsgToUser } from "../../../store/chat/chatAction";
+import { acceptChatReq, rejectChatReq, sendMsgToUser } from "../../../store/chat/chatAction";
 import { TextField, Tooltip } from "@mui/material";
 import { SINGLE_CHAT } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
@@ -41,14 +41,16 @@ const ChatDetails = () => {
 
   useEffect(() => {
     if (id) {
-      const findReq = chatRequests.find((item) => item._id == id);
+      // const findReq = chatRequests.find((item) => item._id == id);
 
-      if (findReq) {
-        setRequest(findReq);
-      } else {
-        callApi(id);
+      // if (findReq) {
+      //   setRequest(findReq);
+      // } else {
 
-      }
+
+      // }
+
+      callApi(id);
 
     }
   }, [id]);
@@ -63,6 +65,7 @@ const ChatDetails = () => {
     if (data.status) {
       const { chatRequest } = data.data;
       if (chatRequest) {
+        console.log({ chatRequest })
         setRequest(chatRequest);
       } else {
         history.push("/customer-support", { replace: true });
@@ -110,6 +113,13 @@ const ChatDetails = () => {
 
     return;
   }, [msgSendSuccess])
+
+  useEffect(() => {
+    if (status) {
+
+      callApi(request?._id);
+    }
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -195,7 +205,7 @@ const ChatDetails = () => {
                         <div className="text-center py-3">
                           <h5>Confirm Request or Reject!</h5>
                           <Button color='primary' outline={true} onClick={handleAccept}>Accept</Button>
-                          <Button color='danger' outline={true} className='ms-3'>Reject</Button>
+                          <Button color='danger' onClick={() => dispatch(rejectChatReq(id))} outline={true} className='ms-3'>Reject</Button>
                         </div>
                       )}
 
@@ -230,7 +240,7 @@ const ChatDetails = () => {
                 </Card>
               </Col>
               <Col lg={6}>
-                <Card>
+                <Card className="card-height">
                   <CardBody>
 
                     <div className=" w-100 pb-1">
@@ -273,7 +283,7 @@ const ChatDetails = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {/* {orders.map((item, index) => {
+                    {request?.orders?.map((item, index) => {
                       return (
                         <Tr
                           key={index}
@@ -290,7 +300,7 @@ const ChatDetails = () => {
                           </Td>
                           <Td>{item?.orderStatus}</Td>
                           <Td>{item?.paymentStatus}</Td>
-                          <Td>{item.summery?.total}</Td>
+                          <Td>{item?.summery?.totalAmount}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Details">
@@ -307,19 +317,19 @@ const ChatDetails = () => {
                           </Td>
                         </Tr>
                       );
-                    })} */}
+                    })}
                   </Tbody>
                 </Table>
-                {/* {loading && (
+                {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && orders.length < 1 && (
+                {!loading && request?.orders?.length < 1 && (
                   <div className="text-center">
                     <h4>No Order!</h4>
                   </div>
-                )} */}
+                )}
               </CardBody>
             </Card>
           </Container>
