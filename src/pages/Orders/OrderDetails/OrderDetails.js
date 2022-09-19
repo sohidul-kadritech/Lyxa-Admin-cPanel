@@ -27,7 +27,7 @@ import smimg1 from "../../../assets/images/small/img-1.jpg";
 import smimg2 from "../../../assets/images/small/img-2.jpg";
 import { useHistory, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
@@ -38,6 +38,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import requestApi from "../../../network/httpRequest";
 import { SINGLE_ORDER } from "../../../network/Api";
+import user1 from "../../../assets/images/user1.jpg";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -323,8 +324,8 @@ const OrderDetails = () => {
                 </Card>
               </Col>
 
-              <Col xl={6}>
-                <Card>
+              <Col xl={6} >
+                <Card className='card-height'>
                   <CardBody>
                     <CardTitle className="h4">Summary</CardTitle>
                     <hr />
@@ -358,6 +359,126 @@ const OrderDetails = () => {
                 )}
               </Col>
             </Row>
+
+
+            {/* ADDRESS AND MAP */}
+
+            <Row>
+              <Col lg={6}>
+                <Card className="card-height">
+                  <CardBody>
+                    <CardTitle className="h4">Delivery Address</CardTitle>
+                    <hr />
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address ">
+                        {`Full Address: ${order?.dropOffLocation?.address}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`State: ${order?.dropOffLocation?.state}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`City: ${order?.dropOffLocation?.city}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`Country: ${order?.dropOffLocation?.country}`}
+                      </span>
+                    </DeliveryAddress>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg={6} className='card-height'>
+                {order?.pickUpLocation && order?.dropOffLocation && (
+                  <OrderTrackingMap
+                    pickup={order?.pickUpLocation}
+                    dropoff={order?.dropOffLocation}
+                  />
+                )}
+              </Col>
+            </Row>
+
+            {/* CHATS */}
+
+            <Row>
+              <Col md={6}>
+                <Card>
+                  <CardBody>
+                    <CardTitle>Conversation(User & Delivery Body)</CardTitle>
+                    <hr />
+                    <div className="chat-conversation">
+                      <SimpleBar style={{ height: "235px", overflow: 'hidden scroll' }}>
+                        <ul
+                          className="conversation-list"
+                          data-simplebar
+                          style={{
+                            maxHeight: "300px",
+                            width: "100%",
+                          }}
+                        >
+                          {order?.chats?.length > 0 ? order?.chats?.map((chat, index, arr) => (
+                            <div key={index}>
+                              {chat?.type === "user" && (
+                                <li className="clearfix">
+                                  <div className="chat-avatar">
+                                    <Tooltip title='See user details'>
+                                      <img
+                                        src={user1}
+                                        className="avatar-xs rounded-circle cursor-pointer"
+                                        alt="User"
+                                      // onClick={() => history.push(`/users/details/${request?.user?._id}`)}>
+                                      />
+                                    </Tooltip>
+                                  </div>
+                                  <div className="conversation-text color-primary" >
+                                    <div className="ctext-wrap">
+
+                                      <strong>
+                                        {chat?.message}.
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </li>
+                              )}
+
+                              {chat?.type === "deliveryBoy" && (
+                                <li className="clearfix odd">
+                                  <div className="chat-avatar">
+                                    <img
+                                      src={user1}
+                                      className="avatar-xs rounded-circle"
+                                      alt="Delivery Boy"
+
+                                    />
+                                  </div>
+                                  <div className="conversation-text">
+                                    <div className="ctext-wrap">
+
+                                      <strong>
+                                        {chat?.message}.
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </li>
+                              )}
+                            </div>
+                          )) : <h5 className="text-center">No Conversions!</h5>}
+                        </ul>
+                      </SimpleBar>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+
             {/* PRODUCT TABLE */}
             <Card>
               <CardBody>
@@ -439,170 +560,6 @@ const OrderDetails = () => {
               </CardBody>
             </Card>
 
-            {/* ADDRESS AND MAP */}
-
-            <Row>
-              <Col lg={6}>
-                <Card>
-                  <CardBody>
-                    <CardTitle className="h4">Delivery Address</CardTitle>
-                    <hr />
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address ">
-                        {`Full Address: ${order?.dropOffLocation?.address}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`State: ${order?.dropOffLocation?.state}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`City: ${order?.dropOffLocation?.city}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`Country: ${order?.dropOffLocation?.country}`}
-                      </span>
-                    </DeliveryAddress>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg={6}>
-                {order?.pickUpLocation && order?.dropOffLocation && (
-                  <OrderTrackingMap
-                    pickup={order?.pickUpLocation}
-                    dropoff={order?.dropOffLocation}
-                  />
-                )}
-              </Col>
-            </Row>
-
-            {/* CHATS */}
-
-            {order?.chats.length > 0 && (
-              <Row>
-                <Col md={6}>
-                  <Card>
-                    <CardBody>
-                      <CardTitle>Conversation(User & Delivery Body)</CardTitle>
-                      <hr />
-                      <div className="chat-conversation">
-                        <SimpleBar style={{ height: "365px" }}>
-                          <ul
-                            className="conversation-list"
-                            data-simplebar
-                            style={{ maxHeight: "367px" }}
-                          >
-                            <li className="clearfix">
-                              <div className="chat-avatar">
-                                <img
-                                  src={user2}
-                                  className="avatar-xs rounded-circle"
-                                  alt="male"
-                                />
-                                <span className="time">10:00</span>
-                              </div>
-                              <div className="conversation-text">
-                                <div className="ctext-wrap">
-                                  <span className="user-name">John Deo</span>
-                                  <p>Hello!</p>
-                                </div>
-                              </div>
-                            </li>
-                            <li className="clearfix odd">
-                              <div className="chat-avatar">
-                                <img
-                                  src={user3}
-                                  className="avatar-xs rounded-circle"
-                                  alt="Female"
-                                />
-                                <span className="time">10:01</span>
-                              </div>
-                              <div className="conversation-text">
-                                <div className="ctext-wrap">
-                                  <span className="user-name">Smith</span>
-                                  <p>
-                                    Hi, How are you? What about our next
-                                    meeting?
-                                  </p>
-                                </div>
-                              </div>
-                            </li>
-                            <li className="clearfix">
-                              <div className="chat-avatar">
-                                <img
-                                  src={user2}
-                                  className="avatar-xs rounded-circle"
-                                  alt="male"
-                                />
-                                <span className="time">10:04</span>
-                              </div>
-                              <div className="conversation-text">
-                                <div className="ctext-wrap">
-                                  <span className="user-name">John Deo</span>
-                                  <p>Yeah everything is fine</p>
-                                </div>
-                              </div>
-                            </li>
-                            <li className="clearfix odd">
-                              <div className="chat-avatar">
-                                <img
-                                  src={user3}
-                                  className="avatar-xs rounded-circle"
-                                  alt="male"
-                                />
-                                <span className="time">10:05</span>
-                              </div>
-                              <div className="conversation-text">
-                                <div className="ctext-wrap">
-                                  <span className="user-name">Smith</span>
-                                  <p>Wow that's great</p>
-                                </div>
-                              </div>
-                            </li>
-                            <li className="clearfix odd">
-                              <div className="chat-avatar">
-                                <img
-                                  src={user3}
-                                  className="avatar-xs rounded-circle"
-                                  alt="male"
-                                />
-                                <span className="time">10:08</span>
-                              </div>
-                              <div className="conversation-text">
-                                <div className="ctext-wrap">
-                                  <span className="user-name mb-2">Smith</span>
-
-                                  <img
-                                    src={smimg1}
-                                    alt=""
-                                    height="48"
-                                    className="rounded me-2"
-                                  />
-                                  <img
-                                    src={smimg2}
-                                    alt=""
-                                    height="48"
-                                    className="rounded"
-                                  />
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                        </SimpleBar>
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Col>
-              </Row>
-            )}
           </Container>
         </div>
       </GlobalWrapper>
@@ -636,7 +593,7 @@ const Summery = styled.div`
 
     .value {
       font-weight: bold;
-      color: green;
+      color: #02a499;
     }
   }
 `;

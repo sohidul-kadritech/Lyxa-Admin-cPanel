@@ -162,65 +162,66 @@ const DeliverymanDetails = () => {
               </Col>
               <Col lg={6}>
 
-                {deliveryMan?.flags?.length > 0 && (
-                  <Flags flags={deliveryMan?.flags} />
-                )}
+
+                <Flags flags={deliveryMan?.flags} />
+
               </Col>
             </Row>
 
             <Row>
-              <Card className="card-height">
-                <CardBody>
-                  <div>
-                    <CardTitle>Images</CardTitle>
-                    <hr />
-                  </div>
-                  <Row>
-                    <Col md={6}>
-                      <ImageWrapper
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          padding: "10px 0px",
-                        }}
-                      >
-                        <img
-                          onClick={() => {
-                            setIsOpen(true);
-                            setSelectedImg(deliveryMan?.nationalIdDocument);
+              <Col lg={6}>
+                <Card className="card-height">
+                  <CardBody>
+                    <div>
+                      <CardTitle>Images</CardTitle>
+                      <hr />
+                    </div>
+                    <Row>
+                      <Col md={6}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
                           }}
-                          className="img-fluid cursor-pointer"
-                          alt="Veltrix"
-                          src={deliveryMan?.nationalIdDocument}
-                          width="100%"
-                        />
-                        <small>NID</small>
-                      </ImageWrapper>
-                    </Col>
-                    <Col md={6}>
-                      <ImageWrapper
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          padding: "10px 0px",
-                        }}
-                      >
-                        <img
-                          onClick={() => {
-                            setIsOpen(true);
-                            setSelectedImg(deliveryMan?.nationalIdDocument);
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(deliveryMan?.nationalIdDocument);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt="NID"
+                            src={deliveryMan?.nationalIdDocument}
+                            width="100%"
+                          />
+                          <small>NID</small>
+                        </ImageWrapper>
+                      </Col>
+                      <Col md={6}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
                           }}
-                          className="img-fluid cursor-pointer"
-                          alt="Veltrix"
-                          src={deliveryMan?.vehicleRegistrationDocument}
-                          width="100%"
-                        />
-                        <small>Vahicle Document</small>
-                      </ImageWrapper>
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(deliveryMan?.nationalIdDocument);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt="Vahicle Document"
+                            src={deliveryMan?.vehicleRegistrationDocument}
+                            width="100%"
+                          />
+                          <small>Vahicle Document</small>
+                        </ImageWrapper>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card></Col>
             </Row>
 
             <div>

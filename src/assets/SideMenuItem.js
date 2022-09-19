@@ -422,13 +422,6 @@ export const customerServiceMenuItem = [
         link: "/shops/list",
         isSubmenu: false,
       },
-      {
-        id: 42,
-        name: "Cuisines",
-        icon: "fas fa-clipboard-list",
-        link: "/shops/cuisines",
-        isSubmenu: false,
-      },
     ],
   },
   {
@@ -535,7 +528,7 @@ export const sellerMenuItem = [
         id: 50,
         name: "List",
         icon: "fas fa-clipboard-list",
-        link: "/admin/list",
+        link: "/seller/credentials/list",
         isSubmenu: false,
       },
       {

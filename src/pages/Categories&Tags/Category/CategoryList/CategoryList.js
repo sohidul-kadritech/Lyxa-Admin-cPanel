@@ -48,11 +48,12 @@ const CategoryList = () => {
     account_type,
     _id: Id,
     shopType: adminShopType,
+    sellerType
   } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
-    if (account_type === "shop") {
-      dispatch(updateCategoryShopType(adminShopType));
+    if (account_type === "shop" || account_type === 'seller') {
+      dispatch(updateCategoryShopType(adminShopType ? adminShopType : sellerType));
     }
 
     return;
@@ -107,7 +108,7 @@ const CategoryList = () => {
                         id="demo-simple-select"
                         value={shopType}
                         label="Shop Type"
-                        disabled={account_type === "shop"}
+                        disabled={account_type === "shop" || account_type === "seller"}
                         onChange={(event) => {
                           dispatch(updateCategoryShopType(event.target.value));
                         }}
@@ -189,11 +190,10 @@ const CategoryList = () => {
                                 </button>
                               </Tooltip>
                               <Tooltip
-                                title={`${"Details"} ${
-                                  item?.type !== "food"
-                                    ? "& add subcagegory"
-                                    : ""
-                                }`}
+                                title={`${"Details"} ${item?.type !== "food"
+                                  ? "& add subcagegory"
+                                  : ""
+                                  }`}
                               >
                                 <button
                                   className="btn btn-info button"

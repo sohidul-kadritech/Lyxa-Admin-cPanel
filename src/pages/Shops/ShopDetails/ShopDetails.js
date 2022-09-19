@@ -303,26 +303,48 @@ const ShopDetails = () => {
 
             <Row>
               <Col xl={6}>
-                {shop?.reviews?.length > 0 && (
-                  <Flags reviews={shop?.reviews} isReview={true} />
-                )}
+
+                <Flags reviews={shop?.reviews} isReview={true} />
+
               </Col>
               <Col xl={6}>
-                {shop?.flags?.length > 0 && <Flags flags={shop?.flags} />}
+                <Flags flags={shop?.flags} />
               </Col>
             </Row>
 
             <Row >
-              <Col xl={7} >
-                {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
-                  <Card className="card-height">
-                    <CardBody>
-                      <div>
-                        <CardTitle>Shop Photos</CardTitle>
-                        <hr />
-                      </div>
-                      <Row>
-                        <Col md={4}>
+              <Col xl={6} >
+
+                <Card className="card-height">
+                  <CardBody>
+                    <div>
+                      <CardTitle>Shop Photos</CardTitle>
+                      <hr />
+                    </div>
+                    {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (<Row>
+                      <Col md={4}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
+                          }}
+                        >
+                          <img
+                            className="img-fluid cursor-pointer cursor-pointer"
+                            alt="partner"
+                            src={shop?.shopLogo}
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(shop?.shopLogo);
+                            }}
+                            width="100%"
+                          />
+                          <small>Shop Logo</small>
+                        </ImageWrapper>
+                      </Col>
+                      <Col md={4}>
+                        {shop.shopBanner ? (
                           <ImageWrapper
                             style={{
                               width: "100%",
@@ -331,77 +353,56 @@ const ShopDetails = () => {
                             }}
                           >
                             <img
-                              className="img-fluid cursor-pointer cursor-pointer"
-                              alt="partner"
-                              src={shop?.shopLogo}
                               onClick={() => {
                                 setIsOpen(true);
-                                setSelectedImg(shop?.shopLogo);
+                                setSelectedImg(shop?.shopBanner);
                               }}
+                              className="img-fluid cursor-pointer"
+                              alt="shop banner"
+                              src={shop?.shopBanner}
                               width="100%"
                             />
-                            <small>Shop Logo</small>
+                            <small>Shop Banner</small>
                           </ImageWrapper>
-                        </Col>
-                        <Col md={4}>
-                          {shop.shopBanner ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
+                        ) : null}
+                      </Col>
+                      <Col md={4}>
+                        {shop.shopPhotos ? (
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
+                            }}
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(shop?.shopPhotos[0]);
                               }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(shop?.shopBanner);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="shop banner"
-                                src={shop?.shopBanner}
-                                width="100%"
-                              />
-                              <small>Shop Banner</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                        <Col md={4}>
-                          {shop.shopPhotos ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(shop?.shopPhotos[0]);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="shopPhoto"
-                                src={shop?.shopPhotos[0]}
-                                width="100%"
-                              />
-                              <small>Shop Photos</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </Card>
-                ) : null}
+                              className="img-fluid cursor-pointer"
+                              alt="shopPhoto"
+                              src={shop?.shopPhotos[0]}
+                              width="100%"
+                            />
+                            <small>Shop Photos</small>
+                          </ImageWrapper>
+                        ) : null}
+                      </Col>
+                    </Row>) : <h5 className="text-center">No Photos</h5>}
+                  </CardBody>
+                </Card>
+
               </Col>
 
-              {shop?.deals.length > 0 && (
-                <Col xl={5}>
-                  <div className="mb-4">
-                    <Paper className="py-2 card-height">
+
+              <Col xl={6}>
+                <div className="mb-4">
+                  <Card className="py-2 card-height">
+                    <CardBody>
                       <h5 className="text-center">Deals List</h5>
                       <hr />
-                      {shop.deals.length > 0 &&
+                      {shop.deals.length > 0 ?
                         shop.deals.map((deal, index) => (
                           <ul key={index} style={{ listStyleType: "square" }}>
                             <li>
@@ -433,11 +434,12 @@ const ShopDetails = () => {
                               </li>
                             </ul>
                           </ul>
-                        ))}
-                    </Paper>
-                  </div>
-                </Col>
-              )}
+                        )) : <h5 className="text-center"> No Deals </h5>}
+                    </CardBody>
+                  </Card>
+                </div>
+              </Col>
+
             </Row>
           </Container>
         </div>

@@ -5,6 +5,7 @@ const initialState = {
   admins: [],
   error: null,
   status: false,
+  sellerCredentials: []
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -144,6 +145,29 @@ const adminReducer = (state = initialState, action) => {
       };
 
     case actionType.ADD_SELLER_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.GET_SELLER_CREDENTIALS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.GET_SELLER_CREDENTIALS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        sellerCredentials: payload
+      };
+
+    case actionType.GET_SELLER_CREDENTIALS_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

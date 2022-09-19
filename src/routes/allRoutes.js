@@ -177,6 +177,7 @@ import DeliveryTermsAndConditions from "../pages/TermsAndConditons/DeliveryTerms
 import Transactions from "../pages/Transactions/Transactions";
 import SendNotifications from "../pages/Notifications/SendNotifications";
 import NotificationsList from "../pages/Notifications/NotificationsList";
+import SellerCredentialsList from "../pages/Seller/SellerCredentials/SellerCredentialsList";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -318,7 +319,7 @@ const userRoutes = [
 
 
   // this route should be at the end of all other routes
-  // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
+  { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
 const customerServiceRoutes = [
@@ -331,7 +332,6 @@ const customerServiceRoutes = [
   { path: "/seller/details/:id", component: SellerDetails },
   { path: "/shops/list", component: ShopList },
   { path: "/shops/details/:id", component: ShopDetails },
-  { path: "/shops/cuisines", component: Cuisine },
   { path: "/deliveryman/list", component: DeliverymanList },
   { path: "/deliveryman/details/:id", component: DeliverymanDetails },
   { path: "/deliveryman/add", component: DeliverymanAdd },
@@ -354,7 +354,7 @@ const sellerRoutes = [
     path: "/app-wallet/seller/shops-transactions",
     component: ShopsTransactions,
   },
-  { path: "/admin/list", component: AdminList },
+  { path: "/seller/credentials/list", component: SellerCredentialsList },
   { path: "/admin/create", component: CreateAdmin },
 
   { path: "/categories/list", component: CategoryList },
@@ -402,22 +402,7 @@ const authRoutes = [
   { path: "/pages-404", component: Pages404 },
   { path: "/pages-500", component: Pages500 },
 
-  // Authentication Inner
-  { path: "/pages-login", component: Login1 },
-  { path: "/pages-login-2", component: Login2 },
-  { path: "/pages-register", component: Register1 },
-  { path: "/pages-register-2", component: Register2 },
-  { path: "/page-recoverpw", component: Recoverpw },
-  { path: "/page-recoverpw-2", component: Recoverpw2 },
-  { path: "/pages-forgot-pwd", component: ForgetPwd1 },
-  { path: "/auth-lock-screen", component: LockScreen },
-  { path: "/auth-lock-screen-2", component: LockScreen2 },
-  { path: "/page-confirm-mail", component: ConfirmMail },
-  { path: "/page-confirm-mail-2", component: ConfirmMail2 },
-  { path: "/auth-email-verification", component: EmailVerification },
-  { path: "/auth-email-verification-2", component: EmailVerification2 },
-  { path: "/auth-two-step-verification", component: TwostepVerification },
-  { path: "/auth-two-step-verification-2", component: TwostepVerification2 },
+
 
   // this route should be at the end of all other routes
   // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }

@@ -71,7 +71,7 @@ export const DELETE_SELLER = ADMIN_ENDPOINT + "/seller/delete";
 export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details";
 export const SELLER_DROP_CHARGE = ADMIN_ENDPOINT + "/seller/add-drop-charge";
 export const ADD_SELLER_CREDENTIAL = ADMIN_ENDPOINT + "/seller/add-credential";
-export const ADD_SHOP_CREDENTIAL = ADMIN_ENDPOINT + "/shop/add-credential";
+export const GET_SELLER_CREDENTIALS = ADMIN_ENDPOINT + "/seller/credential";
 
 // SHOP
 
@@ -88,6 +88,7 @@ export const EDIT_CUISINE = ADMIN_ENDPOINT + "/cuisines/update";
 export const SET_AS_FEATURED = ADMIN_ENDPOINT + "/shop/add-feather-shop";
 export const DELETE_SHOP_DEAL = ADMIN_ENDPOINT + "/shop/delete-deal";
 export const UPDATE_SHOP_STATUS = ADMIN_ENDPOINT + "/shop/status";
+export const ADD_SHOP_CREDENTIAL = ADMIN_ENDPOINT + "/shop/add-credential";
 
 // PRODUCT
 

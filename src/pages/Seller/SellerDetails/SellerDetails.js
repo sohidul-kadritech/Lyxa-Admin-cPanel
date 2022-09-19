@@ -169,91 +169,7 @@ const SellerDetails = () => {
               </CardBody>
             </Card>
 
-            <Row>
-              <Col lg={6}>
-                {seller?.certificate_of_incorporation || seller?.national_id ? (
-                  <Card className="card-height">
-                    <CardBody>
-                      <div>
-                        <CardTitle>Seller Photos</CardTitle>
-                        <hr />
-                      </div>
-                      <Row>
-                        <Col md={4}>
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
-                            }}
-                          >
-                            <img
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(seller?.profile_photo);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt="Veltrix"
-                              src={seller?.profile_photo}
-                              width="100%"
-                            />
-                            <small>Company image</small>
-                          </ImageWrapper>
-                        </Col>
-                        <Col md={4}>
-                          {seller?.certificate_of_incorporation ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(
-                                    seller?.certificate_of_incorporation
-                                  );
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="Veltrix"
-                                src={seller?.certificate_of_incorporation}
-                                width="100%"
-                              />
-                              <small>Certificate of incorporation</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                        <Col md={4}>
-                          {seller?.national_id ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(seller?.national_id);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="Veltrix"
-                                src={seller?.national_id}
-                                width="100%"
-                              />
-                              <small>National Id</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </Card>
-                ) : null}
-              </Col>
-            </Row>
+
 
             <Card>
               <CardBody>
@@ -279,6 +195,92 @@ const SellerDetails = () => {
                     lisener={(page) => dispatch(getAllShop(true, id, page))}
                   />
                 </div>
+              </Col>
+            </Row>
+
+            <Row >
+              <Col lg={6}>
+
+                <Card className="card-height">
+                  <CardBody>
+                    <div>
+                      <CardTitle>Seller Photos</CardTitle>
+                      <hr />
+                    </div>
+                    {seller?.certificate_of_incorporation || seller?.national_id ? (<Row>
+                      <Col md={4}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
+                          }}
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(seller?.profile_photo);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt="Veltrix"
+                            src={seller?.profile_photo}
+                            width="100%"
+                          />
+                          <small>Company image</small>
+                        </ImageWrapper>
+                      </Col>
+                      <Col md={4}>
+                        {seller?.certificate_of_incorporation ? (
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
+                            }}
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(
+                                  seller?.certificate_of_incorporation
+                                );
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt="Veltrix"
+                              src={seller?.certificate_of_incorporation}
+                              width="100%"
+                            />
+                            <small>Certificate of incorporation</small>
+                          </ImageWrapper>
+                        ) : null}
+                      </Col>
+                      <Col md={4}>
+                        {seller?.national_id ? (
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
+                            }}
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(seller?.national_id);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt="Veltrix"
+                              src={seller?.national_id}
+                              width="100%"
+                            />
+                            <small>National Id</small>
+                          </ImageWrapper>
+                        ) : null}
+                      </Col>
+                    </Row>) : <h5 className="text-center">No Photos</h5>}
+                  </CardBody>
+                </Card>
+
               </Col>
             </Row>
           </Container>

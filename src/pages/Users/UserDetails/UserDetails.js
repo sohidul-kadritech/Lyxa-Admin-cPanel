@@ -137,7 +137,7 @@ const UserDetails = () => {
                 </Card>
               </Col>
               <Col lg={6}>
-                {user?.flags?.length > 0 && <Flags flags={user?.flags} />}
+                <Flags flags={user?.flags} />
               </Col>
             </Row>
 

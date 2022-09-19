@@ -52,47 +52,47 @@ export const addSeller = (values) => async (dispatch) => {
 
 export const getAllSeller =
   (refresh = false, page = 1) =>
-  async (dispatch, getState) => {
-    const { sellers, sortByKey, searchKey, statusKey, typeKey, subTypeKey } =
-      getState().sellerReducer;
+    async (dispatch, getState) => {
+      const { sellers, sortByKey, searchKey, statusKey, typeKey, subTypeKey } =
+        getState().sellerReducer;
 
-    if (sellers.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.GET_ALL_SELLER_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(ALL_SELLER, {
-          params: {
-            page: page,
-            pageSize: 50,
-            sortBy: sortByKey.value,
-            sellerStatus: statusKey.value,
-            sellerType: typeKey.value,
-            subType: subTypeKey.value,
-            searchKey,
-          },
-        });
-
-        if (data.status) {
+      if (sellers.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.GET_ALL_SELLER_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionType.GET_ALL_SELLER_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(ALL_SELLER, {
+            params: {
+              page: page,
+              pageSize: 50,
+              sortBy: sortByKey.value,
+              sellerStatus: statusKey.value,
+              sellerType: typeKey.value,
+              subType: subTypeKey.value,
+              searchKey,
+            },
+          });
+
+          if (data.status) {
+            dispatch({
+              type: actionType.GET_ALL_SELLER_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_ALL_SELLER_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.GET_ALL_SELLER_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.GET_ALL_SELLER_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // EDIT
 
@@ -258,3 +258,6 @@ export const addSellerCharge = (values) => async (dispatch) => {
     });
   }
 };
+
+// GET SELLER CREDENTIALS
+

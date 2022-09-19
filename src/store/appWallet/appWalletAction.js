@@ -22,137 +22,138 @@ import * as actionTypes from "../actionType";
 
 export const getSellersTrx =
   (refresh = false, page) =>
-  async (dispatch, getState) => {
-    const { sellerTrxEndDate, sellerTrxStartDate, sellersTrxs } =
-      getState().appWalletReducer;
+    async (dispatch, getState) => {
+      const { sellerTrxEndDate, sellerTrxStartDate, sellersTrxs } =
+        getState().appWalletReducer;
 
-    if (sellersTrxs.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionTypes.GET_SELLERS_TRX_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(SELLERS_TRX, {
-          params: {
-            page,
-            pageSize: 50,
-            startDate: sellerTrxStartDate,
-            endDate: sellerTrxEndDate,
-          },
-        });
-
-        console.log(data);
-
-        if (data.status) {
+      if (sellersTrxs.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionTypes.GET_SELLERS_TRX_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionTypes.GET_SELLERS_TRX_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(SELLERS_TRX, {
+            params: {
+              page,
+              pageSize: 50,
+              startDate: sellerTrxStartDate,
+              endDate: sellerTrxEndDate,
+            },
+          });
+
+          console.log(data);
+
+          if (data.status) {
+            dispatch({
+              type: actionTypes.GET_SELLERS_TRX_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionTypes.GET_SELLERS_TRX_REQUEST_FAIL,
+              payload: data.error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionTypes.GET_SELLERS_TRX_REQUEST_FAIL,
-            payload: data.error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionTypes.GET_SELLERS_TRX_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // GET SINGLE SELLER TRX
 
 export const getSellerTrx =
   (refresh = false, sellerId, page) =>
-  async (dispatch, getState) => {
-    console.log({ sellerId });
-    const { sellerTrxs } = getState().appWalletReducer;
+    async (dispatch, getState) => {
+      console.log({ sellerId });
+      const { sellerTrxs } = getState().appWalletReducer;
 
-    if (sellerTrxs.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionTypes.GET_SELLER_TRX_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(SELLER_TRX, {
-          params: {
-            page,
-            pageSize: 50,
-            sellerId,
-          },
-        });
-
-        console.log("seller trx", data);
-
-        if (data.status) {
-          const { shops } = data.data;
+      if (sellerTrxs.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionTypes.GET_SELLER_TRX_REQUEST_SUCCESS,
-            payload: shops,
+            type: actionTypes.GET_SELLER_TRX_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(SELLER_TRX, {
+            params: {
+              page,
+              pageSize: 50,
+              sellerId,
+            },
+          });
+
+          console.log("seller trx", data);
+
+          if (data.status) {
+            const { shops } = data.data;
+            dispatch({
+              type: actionTypes.GET_SELLER_TRX_REQUEST_SUCCESS,
+              payload: shops,
+            });
+          } else {
+            dispatch({
+              type: actionTypes.GET_SELLER_TRX_REQUEST_FAIL,
+              payload: data.error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionTypes.GET_SELLER_TRX_REQUEST_FAIL,
-            payload: data.error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionTypes.GET_SELLER_TRX_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // GET SINGLE SHOP TRX
 
 export const getShopTrxs =
   (refresh = false, shopId, page) =>
-  async (dispatch, getState) => {
-    console.log(shopId);
+    async (dispatch, getState) => {
+      console.log(shopId);
 
-    const { shopTrxs } = getState().appWalletReducer;
+      const { shopTrxs } = getState().appWalletReducer;
 
-    if (shopTrxs.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionTypes.GET_SHOP_TRX_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(SHOP_TRX, {
-          params: {
-            page,
-            pageSize: 50,
-            shopId: shopId.toString(),
-            sortBy: "desc",
-          },
-        });
-
-        console.log("shop trx", data);
-
-        if (data.status) {
+      if (shopTrxs.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionTypes.GET_SHOP_TRX_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionTypes.GET_SHOP_TRX_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(SHOP_TRX, {
+            method: 'POST',
+            data: {
+              page,
+              pageSize: 50,
+              shopId: shopId.toString(),
+              sortBy: "desc",
+            },
+          });
+
+          console.log("shop trx", data);
+
+          if (data.status) {
+            dispatch({
+              type: actionTypes.GET_SHOP_TRX_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionTypes.GET_SHOP_TRX_REQUEST_FAIL,
+              payload: data.error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionTypes.GET_SHOP_TRX_REQUEST_FAIL,
-            payload: data.error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionTypes.GET_SHOP_TRX_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // SHOP MAKE PAYMENT
 
@@ -165,7 +166,6 @@ export const shopMakePayment = (values) => async (dispatch) => {
 
     const { data } = await requestApi().request(SHOP_MAKE_PAYMENT, {
       method: "POST",
-
       data: values,
     });
 
@@ -390,46 +390,46 @@ export const updateDeliveryTrxEndDate = (date) => (dispatch) => {
 
 export const getDeliveryTrx =
   (refresh = false, page) =>
-  async (dispatch, getState) => {
-    const { deliverySortByKey, deliverySearchKey, deliveryTrxs } =
-      getState().appWalletReducer;
+    async (dispatch, getState) => {
+      const { deliverySortByKey, deliverySearchKey, deliveryTrxs } =
+        getState().appWalletReducer;
 
-    if (deliveryTrxs.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionTypes.GET_DELIVERY_TRX_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(DELIVERY_TRX, {
-          params: {
-            page,
-            pageSize: 50,
-            sortBy: deliverySortByKey.value,
-            searchKey: deliverySearchKey,
-          },
-        });
-
-        console.log(data);
-
-        if (data.status) {
+      if (deliveryTrxs.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionTypes.GET_DELIVERY_TRX_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionTypes.GET_DELIVERY_TRX_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(DELIVERY_TRX, {
+            params: {
+              page,
+              pageSize: 50,
+              sortBy: deliverySortByKey.value,
+              searchKey: deliverySearchKey,
+            },
+          });
+
+          console.log(data);
+
+          if (data.status) {
+            dispatch({
+              type: actionTypes.GET_DELIVERY_TRX_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionTypes.GET_DELIVERY_TRX_REQUEST_FAIL,
+              payload: data.error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionTypes.GET_DELIVERY_TRX_REQUEST_FAIL,
-            payload: data.error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionTypes.GET_DELIVERY_TRX_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // DROP TRANSACTIONS
 
@@ -453,46 +453,46 @@ export const updateDropTrxEndDate = (date) => (dispatch) => {
 
 export const getDropTrx =
   (refresh = false, page) =>
-  async (dispatch, getState) => {
-    const { dropTrxEndDate, dropTrxStartDate, dropTrxs } =
-      getState().appWalletReducer;
+    async (dispatch, getState) => {
+      const { dropTrxEndDate, dropTrxStartDate, dropTrxs } =
+        getState().appWalletReducer;
 
-    if (dropTrxs.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionTypes.GET_DROP_TRX_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(DROP_TRX, {
-          params: {
-            page,
-            pageSize: 50,
-            startDate: dropTrxStartDate,
-            endDate: dropTrxEndDate,
-          },
-        });
-
-        console.log(data);
-
-        if (data.status) {
+      if (dropTrxs.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionTypes.GET_DROP_TRX_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionTypes.GET_DROP_TRX_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(DROP_TRX, {
+            params: {
+              page,
+              pageSize: 50,
+              startDate: dropTrxStartDate,
+              endDate: dropTrxEndDate,
+            },
+          });
+
+          console.log(data);
+
+          if (data.status) {
+            dispatch({
+              type: actionTypes.GET_DROP_TRX_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionTypes.GET_DROP_TRX_REQUEST_FAIL,
+              payload: data.error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionTypes.GET_DROP_TRX_REQUEST_FAIL,
-            payload: data.error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionTypes.GET_DROP_TRX_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // DELIVERY BOY SORT BY KEY
 
@@ -514,47 +514,47 @@ export const updateDeliverySearchKey = (value) => (dispatch) => {
 
 export const getAllTransctions =
   (refresh = false, page) =>
-  async (dispatch, getState) => {
-    const { trxSortByKey, trxSearchKey, trxAccountType, allTrxs } =
-      getState().appWalletReducer;
+    async (dispatch, getState) => {
+      const { trxSortByKey, trxSearchKey, trxAccountType, allTrxs } =
+        getState().appWalletReducer;
 
-    if (allTrxs.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionTypes.GET_ALL_TRX_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(ALL_TRX, {
-          params: {
-            page,
-            pageSize: 50,
-            sortBy: trxSortByKey.value,
-            searchKey: trxSearchKey,
-            account: trxAccountType.value,
-          },
-        });
-
-        console.log(data);
-
-        if (data.status) {
+      if (allTrxs.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionTypes.GET_ALL_TRX_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionTypes.GET_ALL_TRX_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(ALL_TRX, {
+            params: {
+              page,
+              pageSize: 50,
+              sortBy: trxSortByKey.value,
+              searchKey: trxSearchKey,
+              account: trxAccountType.value,
+            },
+          });
+
+          console.log(data);
+
+          if (data.status) {
+            dispatch({
+              type: actionTypes.GET_ALL_TRX_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionTypes.GET_ALL_TRX_REQUEST_FAIL,
+              payload: data.error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionTypes.GET_ALL_TRX_REQUEST_FAIL,
-            payload: data.error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionTypes.GET_ALL_TRX_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // ALL TRANSACTIONS FILTER KEY
 

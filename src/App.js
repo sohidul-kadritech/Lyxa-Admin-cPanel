@@ -42,8 +42,9 @@ const App = props => {
       setRouteList(sellerRoutes)
     } else if (account_type === 'shop') {
       setRouteList(shopRoutes)
-    } else {
-      history.push('/login')
+    }
+    else {
+      setRouteList([])
 
     }
 
@@ -100,7 +101,7 @@ const App = props => {
           />
 
 
-          {routeList?.map((route, idx) => (
+          {routeList.length > 0 ? routeList?.map((route, idx) => (
             <Authmiddleware
               path={route.path}
               layout={Layout}
@@ -109,7 +110,9 @@ const App = props => {
               isAuthProtected={true}
               exact
             />
-          ))}
+          )) : <Redirect
+            to={{ pathname: "/login", state: { from: props.location } }}
+          />}
         </Switch>
       </Router>
     </React.Fragment>

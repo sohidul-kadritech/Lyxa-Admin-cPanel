@@ -13,8 +13,7 @@ import {
   Spinner,
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import user2 from "../../../assets/images/users/user-2.jpg";
-import user3 from "../../../assets/images/users/user-3.jpg";
+
 import user1 from "../../../assets/images/user1.jpg";
 
 import SimpleBar from "simplebar-react";
@@ -143,7 +142,7 @@ const ChatDetails = () => {
                     </div>
                     <hr />
                     <div className="chat-conversation">
-                      <SimpleBar style={{ maxHeight: "300px", height: '100%', overflow: 'hidden scroll' }}>
+                      <SimpleBar style={{ height: "235px", overflow: 'hidden scroll' }}>
                         <ul
                           className="conversation-list"
                           data-simplebar

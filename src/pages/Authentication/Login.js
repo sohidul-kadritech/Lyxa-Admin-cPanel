@@ -102,7 +102,7 @@ const Login = (props) => {
                       >
                         {props.error ? (
                           <Alert color="danger">
-                            {"Invalid Gmail/Password"}
+                            {"Invalid Email/Password"}
                           </Alert>
                         ) : null}
 

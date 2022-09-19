@@ -62,7 +62,7 @@ export const adminAuth = (user) => async (dispatch, getState) => {
     if (status) {
       // const {name , token, email, status, number} = admin;
       // const adminInfo = {name, email, status, number}
-      console.log({ data });
+
 
       localStorage.setItem("accessToken", data.admin.token);
       localStorage.setItem("admin", JSON.stringify(data.admin));

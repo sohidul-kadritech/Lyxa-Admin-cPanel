@@ -208,123 +208,122 @@ const ProductDetails = () => {
             </Card>
 
             <Row>
-              {product?.attributes.length > 0 && (
-                <Col lg={6}>
-                  <div className="mb-4">
-                    <Paper className="py-2 card-height">
-                      <h5 className="text-center">Attributes List</h5>
-                      <hr />
-                      {product.attributes.length > 0 &&
-                        product.attributes.map((attribute, index) => (
-                          <ul key={index} style={{ listStyleType: "square" }}>
-                            <li>
-                              <div className="d-flex justify-content-between">
-                                <span
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "500",
-                                  }}
-                                >
-                                  {attribute.name}
-                                  {attribute.required ? "(Required)" : ""}
-                                </span>
-                              </div>
-                            </li>
-                            {attribute.items.map((item, index) => (
-                              <ul key={index}>
-                                <li>
-                                  <span>{item.name}-</span>
-                                  <span className="ms-1">
-                                    {item.extraPrice}
-                                  </span>
-                                </li>
-                              </ul>
-                            ))}
-                          </ul>
-                        ))}
-                    </Paper>
-                  </div>
-                </Col>
-              )}
-              {product?.addons?.length > 0 && (
-                <Col lg={4}>
-                  <div className="mb-4">
-                    <Paper className="py-2 card-height">
-                      <h5 className="text-center">Addons List</h5>
-                      <hr />
-                      {product?.addons?.length > 0 &&
-                        product?.addons?.map((item, index) => (
-                          <ul key={index} style={{ listStyleType: "square" }}>
-                            <li>
-                              <div className="d-flex justify-content-between">
-                                <div>
-                                  <img
-                                    loading="lazy"
-                                    width="60"
-                                    src={item.images[0]}
-                                    alt=""
-                                  />
-                                  <span
-                                    style={{
-                                      fontSize: "15px",
-                                      fontWeight: "500",
-                                      marginLeft: "10px",
-                                    }}
-                                  >
-                                    {item.name}
-                                  </span>
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                        ))}
-                    </Paper>
-                  </div>
-                </Col>
-              )}
-              {product?.deals.length > 0 && (
-                <Col lg={6}>
-                  <div className="mb-4">
-                    <Paper className="py-2 card-height">
-                      <h5 className="text-center">Deals List</h5>
-                      <hr />
-                      {product.deals.length > 0 &&
-                        product.deals.map((deal, index) => (
-                          <ul key={index} style={{ listStyleType: "square" }}>
-                            <li>
-                              <div className="d-flex justify-content-between px-3">
-                                <span
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "500",
-                                  }}
-                                >
-                                  {deal.name}
-                                  {`-(${deal.status})`}
-                                </span>
-                                <i
-                                  className="fa fa-trash cursor-pointer"
-                                  style={{ color: "red" }}
-                                  onClick={() => deleteDeal(deal._id)}
-                                ></i>
-                              </div>
-                            </li>
 
-                            <ul>
+              <Col lg={6}>
+                <div className="mb-4">
+                  <Paper className="py-2 card-height">
+                    <h5 className="text-center">Attributes List</h5>
+                    <hr />
+                    {product.attributes.length > 0 ?
+                      product.attributes.map((attribute, index) => (
+                        <ul key={index} style={{ listStyleType: "square" }}>
+                          <li>
+                            <div className="d-flex justify-content-between">
+                              <span
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                {attribute.name}
+                                {attribute.required ? "(Required)" : ""}
+                              </span>
+                            </div>
+                          </li>
+                          {attribute.items.map((item, index) => (
+                            <ul key={index}>
                               <li>
-                                <span>{deal.type}-</span>
+                                <span>{item.name}-</span>
                                 <span className="ms-1">
-                                  {deal.option}
-                                  {deal.percentage && `(${deal.percentage}%)`}
+                                  {item.extraPrice}
                                 </span>
                               </li>
                             </ul>
+                          ))}
+                        </ul>
+                      )) : <h5 className="text-center">No Attributes!</h5>}
+                  </Paper>
+                </div>
+              </Col>
+
+
+              <Col lg={6}>
+                <div className="mb-4">
+                  <Paper className="py-2 card-height">
+                    <h5 className="text-center">Addons List</h5>
+                    <hr />
+                    {product?.addons?.length > 0 ?
+                      product?.addons?.map((item, index) => (
+                        <ul key={index} style={{ listStyleType: "square" }}>
+                          <li>
+                            <div className="d-flex justify-content-between">
+                              <div>
+                                <img
+                                  loading="lazy"
+                                  width="60"
+                                  src={item.images[0]}
+                                  alt=""
+                                />
+                                <span
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "500",
+                                    marginLeft: "10px",
+                                  }}
+                                >
+                                  {item.name}
+                                </span>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                      )) : <h5 className="text-center">No Addons!</h5>}
+                  </Paper>
+                </div>
+              </Col>
+
+              <Col lg={6}>
+                <div className="mb-4">
+                  <Paper className="py-2 card-height">
+                    <h5 className="text-center">Deals List</h5>
+                    <hr />
+                    {product.deals.length > 0 ?
+                      product.deals.map((deal, index) => (
+                        <ul key={index} style={{ listStyleType: "square" }}>
+                          <li>
+                            <div className="d-flex justify-content-between px-3">
+                              <span
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                {deal.name}
+                                {`-(${deal.status})`}
+                              </span>
+                              <i
+                                className="fa fa-trash cursor-pointer"
+                                style={{ color: "red" }}
+                                onClick={() => deleteDeal(deal._id)}
+                              ></i>
+                            </div>
+                          </li>
+
+                          <ul>
+                            <li>
+                              <span>{deal.type}-</span>
+                              <span className="ms-1">
+                                {deal.option}
+                                {deal.percentage && `(${deal.percentage}%)`}
+                              </span>
+                            </li>
                           </ul>
-                        ))}
-                    </Paper>
-                  </div>
-                </Col>
-              )}
+                        </ul>
+                      )) : <h5 className="text-center">No Deals!</h5>}
+                  </Paper>
+                </div>
+              </Col>
+
             </Row>
           </Container>
         </div>

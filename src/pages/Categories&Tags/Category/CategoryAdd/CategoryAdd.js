@@ -36,7 +36,7 @@ const CategoryAdd = () => {
     (state) => state.categoryReducer
   );
 
-  const { account_type, shopType: adminShopType } = JSON.parse(
+  const { account_type, shopType, sellerType = '' } = JSON.parse(
     localStorage.getItem("admin")
   );
 
@@ -47,10 +47,10 @@ const CategoryAdd = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (account_type === "shop") {
+    if (account_type === "shop" || account_type === "seller") {
       const finType = shopTypeOptions2.find(
-        (item) => item.value === adminShopType
-      );
+        (item) => item.value === shopType ? shopType : sellerType
+      )
       setType(finType);
     }
 
@@ -131,10 +131,10 @@ const CategoryAdd = () => {
         if (data.status) {
           submitData(data.data.url);
         } else {
-          console.log(data.error);
+          successMsg(data.error, 'error')
         }
       } catch (error) {
-        console.log(error.message);
+        successMsg(error.message, 'error')
       }
     }
   };
@@ -222,7 +222,7 @@ const CategoryAdd = () => {
                       />
                     </div>
                   </Col>
-                  {account_type !== "shop" && (
+                  {account_type !== "shop" || account_type !== "seller" && (
                     <Col lg={6} className="mt-3 mt-lg-0">
                       <Label>Shop Type</Label>
                       <Select
@@ -256,7 +256,7 @@ const CategoryAdd = () => {
                                 <div
                                   className="dz-message needsclick"
                                   {...getRootProps()}
-                                  // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                                 >
                                   <input {...getInputProps()} />
                                   <div className="mb-3">

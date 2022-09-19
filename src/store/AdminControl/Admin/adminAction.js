@@ -5,6 +5,7 @@ import {
   DELETE_ADMIN,
   EDIT_ADMIN,
   GET_ALL_ADMIN,
+  GET_SELLER_CREDENTIALS,
 } from "../../../network/Api";
 import * as actionType from "../../actionType";
 import requestApi from "./../../../network/httpRequest";
@@ -49,38 +50,38 @@ export const addAdmin = (adminData) => async (dispatch) => {
 
 export const getAllAdmin =
   (refresh = false) =>
-  async (dispatch, getState) => {
-    const { admins } = getState().adminReducer;
+    async (dispatch, getState) => {
+      const { admins } = getState().adminReducer;
 
-    if ((admins && admins.length < 1) || refresh) {
-      try {
-        dispatch({
-          type: actionType.GET_ALL_ADMIN_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(GET_ALL_ADMIN);
-
-        console.log(data);
-
-        if (data.status) {
+      if ((admins && admins.length < 1) || refresh) {
+        try {
           dispatch({
-            type: actionType.GET_ALL_ADMIN_REQUEST_SUCCESS,
-            payload: data.data.Admins,
+            type: actionType.GET_ALL_ADMIN_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(GET_ALL_ADMIN);
+
+          console.log(data);
+
+          if (data.status) {
+            dispatch({
+              type: actionType.GET_ALL_ADMIN_REQUEST_SUCCESS,
+              payload: data.data.Admins,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_ALL_ADMIN_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.GET_ALL_ADMIN_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.GET_ALL_ADMIN_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // DELETE
 
@@ -236,3 +237,45 @@ export const addShopCredential = (values) => async (dispatch) => {
     });
   }
 };
+
+// GET SELLER CREDENTIALS
+
+export const getAllSellerCredentials =
+  (refresh = false, id) =>
+    async (dispatch, getState) => {
+      const { sellerCredentials } = getState().adminReducer;
+
+      if ((sellerCredentials && sellerCredentials.length < 1) || refresh) {
+        try {
+          dispatch({
+            type: actionType.GET_SELLER_CREDENTIALS_REQUEST_SEND,
+          });
+
+          const { data } = await requestApi().request(GET_SELLER_CREDENTIALS, {
+            params: {
+              id
+            }
+          });
+
+          console.log('seller credentials', data);
+
+          if (data.status) {
+            const { childSellers } = data?.data?.credentials;
+            dispatch({
+              type: actionType.GET_SELLER_CREDENTIALS_REQUEST_SUCCESS,
+              payload: childSellers,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_SELLER_CREDENTIALS_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
+          dispatch({
+            type: actionType.GET_SELLER_CREDENTIALS_REQUEST_FAIL,
+            payload: error.message,
+          });
+        }
+      }
+    };
