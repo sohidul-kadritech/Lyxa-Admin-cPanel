@@ -1,11 +1,14 @@
 import { successMsg } from "../../helpers/successMsg";
 import {
+  ADD_DEFAULT_CHAT,
   ADD_ORDER_CANCEL_REASON,
   ADMINS_SETTINGS,
   ADMIN_LOGS_HISTORY,
   ALL_ORDER_CANCEL_REASON,
   APP_SETTINGS,
   DELETE_SELLER_SPECIAL_DROP_CHARGE,
+  EDIT_DEFAULT_CHAT,
+  GET_DEFAULT_CHAT,
   GET_DELIVERY_FEE,
   GET_SPECIAL_DROP_CHARGE,
   SET_DELIVERY_FEE,
@@ -601,3 +604,130 @@ export const updateAdminLogSortKey = (key) => (dispatch) => {
     payload: key,
   });
 };
+
+
+// DEFAULT CHAT MESSAGE
+
+export const getDefaultMessage = (refresh) => async (dispatch, getState) => {
+
+  const { defualtMessages, searchKey } = getState().settingsReducer;
+
+  if (defualtMessages > 1 || refresh) {
+    try {
+      dispatch({
+        type: actionType.ALL_DEFAULT_CHAT_REQUEST_SEND,
+      });
+
+      const {
+        data: { status, error, data },
+      } = await requestApi().request(GET_DEFAULT_CHAT, {
+        params: {
+          search: searchKey
+        }
+      });
+
+      // console.log(data)
+
+      if (status) {
+        dispatch({
+          type: actionType.ALL_DEFAULT_CHAT_REQUEST_SUCCESS,
+          payload: data?.messages,
+        });
+      } else {
+        dispatch({
+          type: actionType.ALL_DEFAULT_CHAT_REQUEST_FAIL,
+          payload: error,
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: actionType.ALL_DEFAULT_CHAT_REQUEST_FAIL,
+        payload: error.message,
+      });
+    }
+  }
+};
+
+
+export const addDefaultMsg = (msg) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_DEFAULT_CHAT_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(ADD_DEFAULT_CHAT, {
+      method: "POST",
+      data: {
+        message: msg
+      },
+    });
+
+    console.log({ data: data });
+
+    if (data.status) {
+      const { message } = data?.data;
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.ADD_DEFAULT_CHAT_REQUEST_SUCCESS,
+        payload: message,
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.ADD_DEFAULT_CHAT_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_DEFAULT_CHAT_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+export const editDefaultMsg = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.EDIT_DEFAULT_CHAT_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(EDIT_DEFAULT_CHAT, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data: data });
+
+    if (data.status) {
+      const { message } = data?.data;
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.EDIT_DEFAULT_CHAT_REQUEST_SUCCESS,
+        payload: message,
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.EDIT_DEFAULT_CHAT_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    successMsg(error.message, "error");
+    dispatch({
+      type: actionType.EDIT_DEFAULT_CHAT_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+export const updateDefaultSearchKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_DEFAULT_MESSAGE_SEARCH_KEY,
+    payload: value,
+  });
+};
+

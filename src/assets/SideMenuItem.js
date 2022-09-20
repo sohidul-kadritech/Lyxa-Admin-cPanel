@@ -343,6 +343,13 @@ export const adminMenuItem = [
         link: "/admin/percentage-settings-history",
         isSubmenu: false,
       },
+      {
+        id: 154,
+        name: "Default Message",
+        icon: "fas fa-exchange-alt",
+        link: "/admin/default-chat-message",
+        isSubmenu: false,
+      },
     ],
   },
   {

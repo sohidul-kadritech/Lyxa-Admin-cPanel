@@ -46,6 +46,64 @@ const AdminLog = () => {
     dispatch(getAdminLogHistory(refresh));
   };
 
+  // HISTORY TYPE 
+
+  const historyType = (type) => {
+    let newType = '';
+    if (type === 'maxDiscount') {
+      newType = 'Max Discount'
+    } else if (type === 'nearByShopKm') {
+      newType = 'Near By ShopKm'
+    } else if (type === 'searchDeliveryBoyKm') {
+      newType = 'Search Delivery Boy Km'
+    } else if (type === 'globalDropCharge') {
+      newType = 'Global Drop Charge'
+    } else if (type === 'globalDeliveryCut') {
+      newType = 'Global Delivery Cut'
+    } else if (type === 'specificSellerDropCharge') {
+      newType = 'Specific Seller Drop Charge'
+    } else if (type === 'specificSellerDeliveryCut') {
+      newType = 'Specific Seller Delivery Cut'
+    } else if (type === 'sellerDropChargeReset') {
+      newType = 'Seller Drop Charge Reset'
+    } else {
+      newType = 'Unknown'
+    }
+
+    return newType;
+  }
+
+  // GET NEW VALUE
+
+  // const getNewValue = (value) => {
+  //   let newValue = null;
+
+  //   if (typeof value === 'Number' || typeof value === 'String') {
+  //     newValue = value;
+  //   } else if (Array.isArray(value)) {
+  //     if (value.length > 1) {
+  //       let list = []
+  //       value.map(item => {
+  //         if (typeof item === 'number') {
+
+  //           list = [...list, item]
+
+  //         } else {
+  //           list = [...list, item?.deliveryPersonCut];
+
+  //         }
+  //       })
+  //       newValue = list;
+  //     } else {
+  //       newValue = value[0]
+  //     }
+  //   } else {
+  //     newValue = 0
+  //   }
+
+  //   return newValue;
+  // }
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -102,9 +160,11 @@ const AdminLog = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Admin Name</Th>
-                      <Th>Role</Th>
-                      <Th>Date</Th>
+                      <Th>Type</Th>
+                      <Th>Old Value</Th>
+                      <Th>New Value</Th>
+                      <Th>Admin</Th>
+                      <Th>Created Date</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
@@ -117,8 +177,13 @@ const AdminLog = () => {
                           fontWeight: "500",
                         }}
                       >
-                        <Th>{item?.admin?.name}</Th>
-                        <Td>{item?.admin?.adminType}</Td>
+                        <Th>{historyType(item?.type)}</Th>
+                        {/* <Td>{item?.type === "globalDropCharge" ? `${item?.oldValue?.dropPercentage} ${item?.oldValue?.dropPercentageType === 'amount' ? 'NGN' : '%'}` : item?.type === "specificSellerDeliveryCut" ? item?.oldValue[0] : }</Td> */}
+                        <Td>{ }</Td>
+                        <Td>{ }</Td>
+                        <Td>
+                          {item?.admin?.name}
+                        </Td>
                         <Td>
                           {moment(item?.date).format("MMMM Do YYYY, h:mm:ss a")}
                         </Td>

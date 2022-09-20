@@ -354,9 +354,9 @@ const OrderDetails = () => {
                   </CardBody>
                 </Card>
 
-                {order?.flag.length > 0 && (
-                  <Flags flags={order.flag} isFromOrder={true} />
-                )}
+
+                <Flags flags={order.flag} isFromOrder={true} />
+
               </Col>
             </Row>
 

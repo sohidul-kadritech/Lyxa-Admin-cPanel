@@ -26,6 +26,8 @@ const initialState = {
   adminLogType: { label: "All", value: "all" },
   logSortBy: { label: "Desc", value: "desc" },
   adminLogs: [],
+  defualtMessages: [],
+  searchKey: ''
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -409,6 +411,84 @@ const settingsReducer = (state = initialState, action) => {
         error: payload,
         status: false,
         loading: false,
+      };
+
+    // DEFAULT MESSAGES
+
+    case actionType.ALL_DEFAULT_CHAT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ALL_DEFAULT_CHAT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        defualtMessages: payload,
+        status: false,
+      };
+
+    case actionType.ALL_DEFAULT_CHAT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        status: false,
+        loading: false,
+      };
+
+    case actionType.ADD_DEFAULT_CHAT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ADD_DEFAULT_CHAT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        defualtMessages: [...state.defualtMessages, payload],
+        status: true,
+      };
+
+    case actionType.ADD_DEFAULT_CHAT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        loading: false,
+      };
+
+    case actionType.EDIT_DEFAULT_CHAT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.EDIT_DEFAULT_CHAT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        defualtMessages: state.defualtMessages.map((item) => item._id === payload._id ? payload : item),
+        status: true,
+      };
+
+    case actionType.EDIT_DEFAULT_CHAT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        loading: false,
+      };
+
+    case actionType.UPDATE_DEFAULT_MESSAGE_SEARCH_KEY:
+      return {
+        ...state,
+        searchKey: payload,
       };
 
     default:

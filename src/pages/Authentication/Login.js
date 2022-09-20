@@ -50,7 +50,11 @@ const Login = (props) => {
         progress: undefined,
       });
 
-      history.push("/dashboard");
+      if (admin.account_type == 'admin' && admin?.adminType === 'customerService') {
+        history.push("/orders/list");
+      } else {
+        history.push("/dashboard");
+      }
     }
   }, [accessToken]);
 

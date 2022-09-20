@@ -178,6 +178,7 @@ import Transactions from "../pages/Transactions/Transactions";
 import SendNotifications from "../pages/Notifications/SendNotifications";
 import NotificationsList from "../pages/Notifications/NotificationsList";
 import SellerCredentialsList from "../pages/Seller/SellerCredentials/SellerCredentialsList";
+import DefaultChat from "../pages/DefaultChat/DefaultChat";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -301,6 +302,7 @@ const userRoutes = [
   { path: "/app/settings", component: AppSettings },
   { path: "/percentage-setting", component: PercentageSetting },
   { path: "/admin/percentage-settings-history", component: AdminLog },
+  { path: "/admin/default-chat-message", component: DefaultChat },
 
   // TERMS AND CONDTIONS
 
