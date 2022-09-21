@@ -355,67 +355,25 @@ const OrderDetails = () => {
                 </Card>
 
 
-                <Flags flags={order.flag} isFromOrder={true} />
+
 
               </Col>
             </Row>
 
 
-            {/* ADDRESS AND MAP */}
+            {/* Flags and Chat */}
 
             <Row>
               <Col lg={6}>
-                <Card className="card-height">
-                  <CardBody>
-                    <CardTitle className="h4">Delivery Address</CardTitle>
-                    <hr />
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address ">
-                        {`Full Address: ${order?.dropOffLocation?.address}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`State: ${order?.dropOffLocation?.state}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`City: ${order?.dropOffLocation?.city}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`Country: ${order?.dropOffLocation?.country}`}
-                      </span>
-                    </DeliveryAddress>
-                  </CardBody>
-                </Card>
+                <Flags flags={order?.flag} isFromOrder={true} />
               </Col>
-              <Col lg={6} className='card-height'>
-                {order?.pickUpLocation && order?.dropOffLocation && (
-                  <OrderTrackingMap
-                    pickup={order?.pickUpLocation}
-                    dropoff={order?.dropOffLocation}
-                  />
-                )}
-              </Col>
-            </Row>
-
-            {/* CHATS */}
-
-            <Row>
-              <Col md={6}>
+              <Col lg={6}>
                 <Card>
                   <CardBody>
                     <CardTitle>Conversation(User & Delivery Body)</CardTitle>
                     <hr />
                     <div className="chat-conversation">
-                      <SimpleBar style={{ height: "235px", overflow: 'hidden scroll' }}>
+                      <SimpleBar style={{ height: "300px", overflow: 'hidden scroll' }}>
                         <ul
                           className="conversation-list"
                           data-simplebar
@@ -478,6 +436,52 @@ const OrderDetails = () => {
                 </Card>
               </Col>
             </Row>
+
+            {/* ADDRESS AND MAP */}
+
+            <Row>
+              <Col lg={6}>
+                <Card className="card-height">
+                  <CardBody>
+                    <CardTitle className="h4">Delivery Address</CardTitle>
+                    <hr />
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address ">
+                        {`Full Address: ${order?.dropOffLocation?.address}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`State: ${order?.dropOffLocation?.state}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`City: ${order?.dropOffLocation?.city}`}
+                      </span>
+                    </DeliveryAddress>
+                    <DeliveryAddress>
+                      <i className="fa fa-map-marker-alt"></i>
+                      <span className="ms-2 address">
+                        {`Country: ${order?.dropOffLocation?.country}`}
+                      </span>
+                    </DeliveryAddress>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg={6} className='card-height'>
+                {order?.pickUpLocation && order?.dropOffLocation && (
+                  <OrderTrackingMap
+                    pickup={order?.pickUpLocation}
+                    dropoff={order?.dropOffLocation}
+                  />
+                )}
+              </Col>
+            </Row>
+
 
             {/* PRODUCT TABLE */}
             <Card>

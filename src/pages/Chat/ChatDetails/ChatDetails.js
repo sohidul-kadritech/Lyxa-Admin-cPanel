@@ -24,6 +24,7 @@ import { acceptChatReq, rejectChatReq, sendMsgToUser } from "../../../store/chat
 import { TextField, Tooltip } from "@mui/material";
 import { SINGLE_CHAT } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
+import ChatMessageTable from "../../../components/ChatMessageTable";
 
 const ChatDetails = () => {
   const { id } = useParams();
@@ -31,7 +32,7 @@ const ChatDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { chatRequests, status, msgSendSuccess, loading } = useSelector((state) => state.chatReducer);
+  const { chatRequests, status, msgSendSuccess, loading, selectedMsg } = useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
 
@@ -64,7 +65,7 @@ const ChatDetails = () => {
     if (data.status) {
       const { chatRequest } = data.data;
       if (chatRequest) {
-        console.log({ chatRequest })
+
         setRequest(chatRequest);
       } else {
         history.push("/customer-support", { replace: true });
@@ -81,6 +82,15 @@ const ChatDetails = () => {
     }
   }, [socket])
 
+
+  useEffect(() => {
+
+    if (socket && request) {
+      socket.on('user_and_admin_chat_send_admin', (data) => {
+        console.log(data)
+      });
+    }
+  }, [socket])
 
 
   const sendMsg = () => {
@@ -105,18 +115,18 @@ const ChatDetails = () => {
   }, [request?.status])
 
   useEffect(() => {
-    if (msgSendSuccess && socket) {
-      socket.emit('user_and_admin_chat_send_admin', { room: id, data: { message } });
-
+    if (selectedMsg) {
+      setMessage(selectedMsg);
     }
 
     return;
-  }, [msgSendSuccess])
+  }, [selectedMsg])
 
   useEffect(() => {
     if (status) {
 
-      callApi(request?._id);
+      callApi(id);
+      setMessage("")
     }
   }, [status]);
 
@@ -253,7 +263,7 @@ const ChatDetails = () => {
                         className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
                       >
                         <div className="ps-4 w-100">
-
+                          <ChatMessageTable isFromChat={true} />
                         </div>
                       </Col>
                     </Row>

@@ -402,8 +402,8 @@ const ShopDetails = () => {
                     <CardBody>
                       <h5 className="text-center">Deals List</h5>
                       <hr />
-                      {shop.deals.length > 0 ?
-                        shop.deals.map((deal, index) => (
+                      {shop?.deals?.length > 0 ?
+                        shop?.deals?.map((deal, index) => (
                           <ul key={index} style={{ listStyleType: "square" }}>
                             <li>
                               <div className="d-flex justify-content-between px-3">
@@ -413,23 +413,23 @@ const ShopDetails = () => {
                                     fontWeight: "500",
                                   }}
                                 >
-                                  {deal.name}
-                                  {`-(${deal.status})`}
+                                  {deal?.name}
+                                  {`-(${deal?.status})`}
                                 </span>
                                 <i
                                   className="fa fa-trash cursor-pointer"
                                   style={{ color: "red" }}
-                                  onClick={() => deleteDeal(deal._id)}
+                                  onClick={() => deleteDeal(deal?._id)}
                                 ></i>
                               </div>
                             </li>
 
                             <ul>
                               <li>
-                                <span>{deal.type}-</span>
+                                <span>{deal?.type}-</span>
                                 <span className="ms-1">
-                                  {deal.option}
-                                  {deal.percentage && `(${deal.percentage}%)`}
+                                  {deal?.option}
+                                  {deal?.percentage && `(${deal?.percentage}%)`}
                                 </span>
                               </li>
                             </ul>

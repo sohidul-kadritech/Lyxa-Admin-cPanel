@@ -352,6 +352,10 @@ const sellerRoutes = [
   { path: "/products/add", component: ProductAdd },
   { path: "/products/edit/:id", component: ProductAdd },
   { path: "/products/details/:id", component: ProductDetails },
+  { path: "/shops/list", component: ShopList },
+  { path: "/shops/add", component: ShopAdd },
+  { path: "/shops/edit/:id", component: ShopAdd },
+  { path: "/shops/details/:id", component: ShopDetails },
   {
     path: "/app-wallet/seller/shops-transactions",
     component: ShopsTransactions,

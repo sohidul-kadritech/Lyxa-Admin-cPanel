@@ -12,7 +12,7 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  msgSendSuccess: false
+  selectedMsg: ''
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -77,7 +77,7 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
-        msgSendSuccess: false,
+        status: false,
       };
 
     case actionType.SEND_MSG_TO_USER_REQUEST_SUCCESS:
@@ -85,7 +85,7 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        msgSendSuccess: true,
+        status: true,
         chatRequests: state.chatRequests.map((item) =>
           item._id === payload._id ? { ...item, chats: payload?.chats } : item
         )
@@ -135,6 +135,12 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         typeKey: payload,
+      };
+
+    case actionType.SELECT_DEFAULT_MSG:
+      return {
+        ...state,
+        selectedMsg: payload,
       };
 
     default:

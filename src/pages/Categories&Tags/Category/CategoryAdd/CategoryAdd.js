@@ -222,7 +222,7 @@ const CategoryAdd = () => {
                       />
                     </div>
                   </Col>
-                  {account_type !== "shop" || account_type !== "seller" && (
+                  {(account_type !== "shop" && account_type !== "seller") && (
                     <Col lg={6} className="mt-3 mt-lg-0">
                       <Label>Shop Type</Label>
                       <Select

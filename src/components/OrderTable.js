@@ -46,9 +46,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
- 
+
   const { cancelReasons } = useSelector((state) => state.settingsReducer);
-  const { activeDelieryBoys  } = useSelector((state) =>  state.orderReducer);
+  const { activeDelieryBoys } = useSelector((state) => state.orderReducer);
 
   const [isUpdateStatus, setIsUpdateStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
@@ -109,6 +109,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       setOpenFlagModal(false);
       setSelectFlagOrder(null);
       setComment("");
+      setOpenCancelModal(false);
       setAccountType({
         user: false,
         shop: false,
@@ -180,8 +181,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           flagedRider && rider
             ? ""
             : rider
-            ? selectFlagOrder?.deliveryBoy?._id
-            : "",
+              ? selectFlagOrder?.deliveryBoy?._id
+              : "",
       })
     );
   };
@@ -262,33 +263,33 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                         </Td>
                         <Td>
                           <ButtonWrapper>
-                         
-                              {!refused && (
-                                <Tooltip
-                                  title={
-                                    item?.orderStatus !== "delivered"
-                                      ? "Update Status"
-                                      : ""
+
+                            {!refused && (
+                              <Tooltip
+                                title={
+                                  item?.orderStatus !== "delivered"
+                                    ? "Update Status"
+                                    : ""
+                                }
+                              >
+                                <button
+                                  className="btn btn-info button me-1"
+                                  disabled={item?.orderStatus === "delivered"}
+                                  onClick={() =>
+                                    updateOrderStatus(
+                                      item?._id,
+                                      item?.shop?._id,
+                                      item?.orderStatus,
+                                      item?.deliveryBoy &&
+                                      setDeliveryBoy(item.deliveryBoy)
+                                    )
                                   }
                                 >
-                                  <button
-                                    className="btn btn-info button me-1"
-                                    disabled={item?.orderStatus === "delivered"}
-                                    onClick={() =>
-                                      updateOrderStatus(
-                                        item?._id,
-                                        item?.shop?._id,
-                                        item?.orderStatus,
-                                        item?.deliveryBoy &&
-                                          setDeliveryBoy(item.deliveryBoy)
-                                      )
-                                    }
-                                  >
-                                    <i className="fa fa-arrow-up" />
-                                  </button>
-                                </Tooltip>
-                              )}
-                         
+                                  <i className="fa fa-arrow-up" />
+                                </button>
+                              </Tooltip>
+                            )}
+
                             <Tooltip title="Details">
                               <button
                                 className="btn btn-info button me-1"
@@ -300,44 +301,43 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                               </button>
                             </Tooltip>
                             {account_type === 'admin' && <div>
-                            {item?.orderStatus !== "cancelled" && (
-                              <Tooltip title="Flag">
-                                <button
-                                  className={`btn  button me-1 ${
-                                    item?.flag?.length > 0
-                                      ? "btn-warning"
-                                      : "btn-success"
-                                  }`}
-                                  onClick={() => {
-                                    setOpenFlagModal(!openFlagModal);
-                                    setSelectFlagOrder(item);
-                                    updateIsFlaged(item?.flag);
-                                  }}
-                                >
-                                  <i className="fa fa-flag"></i>
-                                </button>
-                              </Tooltip>
-                            )}
-                            {item?.orderStatus !== "cancelled" && (
-                              <Tooltip title="Cancel Order">
-                                <button
-                                  className="btn btn-danger button"
-                                  onClick={() => {
-                                    setOpenCancelModal(!openCancelModal);
-                                    setOrderCancel({
-                                      ...orderCancel,
-                                      cancelReason: "",
-                                      otherReason: "",
-                                      orderId: item?._id,
-                                    });
-                                    setIsOtherReason(false);
-                                  }}
-                                >
-                                  <i className="fa fa-times-circle"></i>
-                                </button>
-                              </Tooltip>
-                            )}
-                              </div>}
+                              {item?.orderStatus !== "cancelled" && (
+                                <Tooltip title="Flag">
+                                  <button
+                                    className={`btn  button me-1 ${item?.flag?.length > 0
+                                        ? "btn-warning"
+                                        : "btn-success"
+                                      }`}
+                                    onClick={() => {
+                                      setOpenFlagModal(!openFlagModal);
+                                      setSelectFlagOrder(item);
+                                      updateIsFlaged(item?.flag);
+                                    }}
+                                  >
+                                    <i className="fa fa-flag"></i>
+                                  </button>
+                                </Tooltip>
+                              )}
+                              {item?.orderStatus !== "cancelled" && (
+                                <Tooltip title="Cancel Order">
+                                  <button
+                                    className="btn btn-danger button"
+                                    onClick={() => {
+                                      setOpenCancelModal(!openCancelModal);
+                                      setOrderCancel({
+                                        ...orderCancel,
+                                        cancelReason: "",
+                                        otherReason: "",
+                                        orderId: item?._id,
+                                      });
+                                      setIsOtherReason(false);
+                                    }}
+                                  >
+                                    <i className="fa fa-times-circle"></i>
+                                  </button>
+                                </Tooltip>
+                              )}
+                            </div>}
                           </ButtonWrapper>
                         </Td>
                       </Tr>

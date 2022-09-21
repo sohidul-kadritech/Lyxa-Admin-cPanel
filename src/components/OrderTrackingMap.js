@@ -56,7 +56,7 @@ const OrderTrackingMap = ({ pickup, dropoff }) => {
     <div
       ref={mapRef}
       className="map"
-      style={{ width: "100%", height: "250px" }}
+      style={{ width: "100%", height: "400px" }}
     ></div>
   );
 };

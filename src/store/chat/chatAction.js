@@ -229,3 +229,10 @@ export const updateChatType = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const selectDefaultMsg = (msg) => (dispatch) => {
+  dispatch({
+    type: actionType.SELECT_DEFAULT_MSG,
+    payload: msg,
+  });
+};

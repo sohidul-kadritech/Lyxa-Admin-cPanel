@@ -50,7 +50,7 @@ import {
   statusOptions2,
 } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
-import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
+import { IMAGE_UPLOAD, SINGLE_SELLER, SINGLE_SHOP } from "../../../network/Api";
 import formatBytes from "../../../common/imageFormatBytes";
 import { successMsg } from "../../../helpers/successMsg";
 import {
@@ -109,6 +109,10 @@ const ShopAdd = () => {
   const [deliveryType, setDeliveryType] = useState("");
   const [deliveryFee, setDeliveryFee] = useState("");
 
+  const { account_type, _id: accountId } = JSON.parse(
+    localStorage.getItem("admin")
+  );
+
   // GET SELLER
 
   useEffect(() => {
@@ -130,15 +134,15 @@ const ShopAdd = () => {
       if (findShop) {
         updateData(findShop);
       } else {
-        callApi(id);
+        callApi(id, SINGLE_SHOP,);
       }
     }
   }, [id]);
 
-  const callApi = async (shopId) => {
-    const { data } = await requestApi().request(SINGLE_SHOP, {
+  const callApi = async (sId, route) => {
+    const { data } = await requestApi().request(route, {
       params: {
-        id: shopId,
+        id: sId,
       },
     });
 
@@ -158,7 +162,39 @@ const ShopAdd = () => {
         setSeller(findSeller);
       }
     }
-  }, [searchParams]);
+    if (searchParams.get("sellerId") || account_type === "seller") {
+      const paramsId = searchParams.get("sellerId");
+      let sellerId = null;
+      paramsId ? (sellerId = paramsId) : (sellerId = accountId);
+      if (sellerId) {
+        const findSeller = sellers.find((item) => item._id == sellerId);
+        if (findSeller) {
+
+          setSeller(findSeller);
+          // dispatch(updateCategoryShopType(findShop?.shopType));
+        } else {
+          callSellerApi(sellerId);
+        }
+      }
+    }
+  }, [searchParams, account_type]);
+
+
+  // CALL API FOR SELLER 
+
+  const callSellerApi = async (sellerId) => {
+    const { data } = await requestApi().request(SINGLE_SELLER, {
+      params: {
+        id: sellerId,
+      },
+    });
+    if (data.status) {
+      const { seller } = data.data;
+      setSeller(seller);
+    } else {
+      history.push("/", { replace: true });
+    }
+  };
 
   // UPDATE DATA
   const updateData = async (values) => {
@@ -551,7 +587,7 @@ const ShopAdd = () => {
                         <Autocomplete
                           className="cursor-pointer"
                           disabled={
-                            id || searchParams.get("sellerId") ? true : false
+                            id || searchParams.get("sellerId") || account_type === 'seller' ? true : false
                           }
                           value={seller}
                           onChange={(event, newValue) => {
@@ -618,9 +654,9 @@ const ShopAdd = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          // inputProps={{
-                          //   step: 300, // 5 min
-                          // }}
+                        // inputProps={{
+                        //   step: 300, // 5 min
+                        // }}
                         />
                       </div>
                       <div className="mb-4">
@@ -635,9 +671,9 @@ const ShopAdd = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          // inputProps={{
-                          //   step: 300, // 5 min
-                          // }}
+                        // inputProps={{
+                        //   step: 300, // 5 min
+                        // }}
                         />
                       </div>
 
@@ -709,13 +745,13 @@ const ShopAdd = () => {
                                   // inline style for demonstration purpose
                                   const style = suggestion.active
                                     ? {
-                                        backgroundColor: "#fafafa",
-                                        cursor: "pointer",
-                                      }
+                                      backgroundColor: "#fafafa",
+                                      cursor: "pointer",
+                                    }
                                     : {
-                                        backgroundColor: "#ffffff",
-                                        cursor: "pointer",
-                                      };
+                                      backgroundColor: "#ffffff",
+                                      cursor: "pointer",
+                                    };
                                   return (
                                     <div
                                       // style={{padding: "20px 0px !important"}}
@@ -1025,7 +1061,7 @@ const ShopAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
@@ -1116,7 +1152,7 @@ const ShopAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
@@ -1210,7 +1246,7 @@ const ShopAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">

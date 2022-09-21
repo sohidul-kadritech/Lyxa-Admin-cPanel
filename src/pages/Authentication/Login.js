@@ -50,7 +50,7 @@ const Login = (props) => {
         progress: undefined,
       });
 
-      if (admin.account_type == 'admin' && admin?.adminType === 'customerService') {
+      if (admin?.account_type == 'admin' && admin?.adminType === 'customerService') {
         history.push("/orders/list");
       } else {
         history.push("/dashboard");
@@ -60,13 +60,14 @@ const Login = (props) => {
 
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
+    // console.log({ values, type });
     props.adminAuth({ ...values, type }, props.history);
   };
 
   // ROLL CHANGE
 
   const handleLoginRoleChange = (e) => {
-    console.log(e.target.value);
+
     setType(e.target.value);
   };
 

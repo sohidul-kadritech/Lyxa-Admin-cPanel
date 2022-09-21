@@ -50,7 +50,7 @@ const ShopList = () => {
     currentPage,
     liveStatus,
   } = useSelector((state) => state.shopReducer);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
     dispatch(setShopStatusFalse());
@@ -65,7 +65,7 @@ const ShopList = () => {
   }, [statusKey, typeKey, sortByKey, searchKey, liveStatus]);
 
   const callShopList = (refresh = false) => {
-    dispatch(getAllShop(refresh));
+    dispatch(getAllShop(refresh, account_type === 'seller' && Id));
   };
 
   return (
@@ -152,9 +152,7 @@ const ShopList = () => {
 
             <Card>
               <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
+
                 <CardTitle className="h4"> Shop List</CardTitle>
 
                 <ShopTable shops={shops} />

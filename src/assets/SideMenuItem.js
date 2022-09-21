@@ -486,6 +486,30 @@ export const sellerMenuItem = [
     isSubmenu: false,
   },
   {
+    id: 7,
+    name: "Shops",
+    icon: "fas fa-home",
+    link: "/#",
+    isSubmenu: true,
+    submenu: [
+      {
+        id: 70,
+        name: "List",
+        icon: "fas fa-clipboard-list",
+        link: "/shops/list",
+        isSubmenu: false,
+      },
+      {
+        id: 71,
+        name: "Add",
+        icon: "fas fa-plus-circle",
+        link: "/shops/add",
+        isSubmenu: false,
+      },
+
+    ],
+  },
+  {
     id: 3,
     name: "Products",
     icon: "fa fa-cube",
