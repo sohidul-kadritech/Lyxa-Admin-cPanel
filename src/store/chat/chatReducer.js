@@ -12,7 +12,8 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  selectedMsg: ''
+  selectedMsg: '',
+  isSelected: true
 };
 
 const chatReducer = (state = initialState, action) => {

@@ -49,6 +49,7 @@ import { successMsg } from "../../../helpers/successMsg";
 import SelectOption from "../../../components/SelectOption";
 import ProductAutocompleted from "../../../components/ProductAutocompleted";
 import { getAllUnitType } from "../../../store/unitType/unitTypeAction";
+import { callApi } from "../../../components/SingleApiCall";
 
 const ProductAdd = () => {
   const dispatch = useDispatch();
@@ -110,15 +111,19 @@ const ProductAdd = () => {
     localStorage.getItem("admin")
   );
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       const findProduct = products.find((item) => item._id == id);
 
       if (findProduct) {
-        console.log({ findProduct });
         setProductValue(findProduct);
       } else {
-        callApi(id);
+        const data = await callApi(id, SINGLE_PRODUCT, 'product')
+        if (data) {
+          setProductValue(data);
+        } else {
+          history.push("/products/list", { replace: true });
+        }
       }
     }
   }, [id]);
@@ -129,7 +134,7 @@ const ProductAdd = () => {
 
   // FIND SHOP BY SHOP ID
 
-  useEffect(() => {
+  useEffect(async () => {
     if (searchParams.get("shopId") || account_type === "shop") {
       const shopId = searchParams.get("shopId");
       let shop = null;
@@ -141,49 +146,20 @@ const ProductAdd = () => {
           setShop(findShop);
           dispatch(updateCategoryShopType(findShop?.shopType));
         } else {
-          callShopApi(shop);
+          const data = await callApi(id, SINGLE_SHOP, 'shop')
+          if (data) {
+            setType(data?.shopType);
+            setShop(data);
+            dispatch(updateCategoryShopType(data?.shopType));
+          } else {
+            history.push("/products/list", { replace: true });
+          }
         }
       }
     }
   }, [searchParams, account_type]);
 
-  // FIND SHOP BY CALL API
 
-  const callShopApi = async (shopId) => {
-    const { data } = await requestApi().request(SINGLE_SHOP, {
-      params: {
-        id: shopId,
-      },
-    });
-
-    if (data.status) {
-      const { shop } = data.data;
-      setType(shop?.shopType);
-      setShop(shop);
-      dispatch(updateCategoryShopType(shop?.shopType));
-    } else {
-      history.push("/products/list", { replace: true });
-    }
-  };
-
-  // CALL API FOR SINGLE PRODUCT
-
-  const callApi = async (pId) => {
-    if (pId) {
-      const { data } = await requestApi().request(SINGLE_PRODUCT, {
-        params: {
-          id: pId,
-        },
-      });
-
-      if (data.status) {
-        const { product } = data.data;
-        setProductValue(product);
-      }
-    } else {
-      history.push("/products/list", { replace: true });
-    }
-  };
 
   // SET PRODUCT VALUE
   const setProductValue = (product) => {
@@ -547,8 +523,8 @@ const ProductAdd = () => {
                           options={shopTypeOptions2}
                           disabled={
                             searchParams.get("shopId") != undefined ||
-                            id ||
-                            account_type === "shop"
+                              id ||
+                              account_type === "shop"
                               ? true
                               : false
                           }
@@ -567,9 +543,9 @@ const ProductAdd = () => {
                             list={shops}
                             disabled={
                               !type ||
-                              id ||
-                              searchParams.get("shopId") ||
-                              account_type === "shop"
+                                id ||
+                                searchParams.get("shopId") ||
+                                account_type === "shop"
                                 ? true
                                 : false
                             }
@@ -1056,15 +1032,13 @@ const ProductAdd = () => {
                                               fontWeight: "500",
                                             }}
                                           >
-                                            {`${attribute.name} ${
-                                              attribute.required
-                                                ? "(Required)"
-                                                : ""
-                                            } ${
-                                              attribute.select === "multiple"
+                                            {`${attribute.name} ${attribute.required
+                                              ? "(Required)"
+                                              : ""
+                                              } ${attribute.select === "multiple"
                                                 ? "(Multiple)"
                                                 : "(Single)"
-                                            }`}
+                                              }`}
                                             {/* {attribute.name}
                                             {attribute.required
                                               ? "(Required)"
@@ -1211,7 +1185,7 @@ const ProductAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">

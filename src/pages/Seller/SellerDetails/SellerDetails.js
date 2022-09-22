@@ -31,6 +31,7 @@ import {
   TextField,
 } from "@mui/material";
 import DropCharge from "../../../components/DropCharge";
+import { callApi } from "../../../components/SingleApiCall";
 
 const SellerDetails = () => {
   const { id } = useParams();
@@ -47,38 +48,25 @@ const SellerDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenPercentage, setIsOpenPercentage] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
       if (findSeller) {
         console.log({ findSeller });
         setSeller(findSeller);
       } else {
-        callApi(id);
+
+        const data = await callApi(id, SINGLE_SELLER, 'seller')
+        if (data) {
+          setSeller(data);
+        } else {
+          history.push("/seller/list", { replace: true });
+        }
+
       }
     }
   }, [id]);
 
-  // CALL API
-
-  const callApi = async (sellerId) => {
-    try {
-      const { data } = await requestApi().request(SINGLE_SELLER, {
-        params: {
-          id: sellerId,
-        },
-      });
-
-      if (data.status) {
-        const { seller } = data.data;
-        setSeller(seller);
-      } else {
-        history.push("/seller/list", { replace: true });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   //   ADD PRODUCT
 

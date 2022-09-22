@@ -171,7 +171,7 @@ const NotificationsList = () => {
                           <Th style={{ maxWidth: "200px" }}>{item?.title}</Th>
                           <Td>{item?.accountType}</Td>
                           <Td>{item?.type}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
@@ -186,11 +186,10 @@ const NotificationsList = () => {
                                 }
                               >
                                 <button
-                                  className={`btn ${
-                                    item.status === "active"
+                                  className={`btn ${item.status === "active"
                                       ? "btn-info"
                                       : "btn-danger"
-                                  } button me-0 me-xl-2`}
+                                    } button me-0 me-xl-2`}
                                   onClick={() =>
                                     updateStatus(item?._id, item?.status)
                                   }

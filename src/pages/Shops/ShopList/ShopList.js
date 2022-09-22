@@ -65,7 +65,7 @@ const ShopList = () => {
   }, [statusKey, typeKey, sortByKey, searchKey, liveStatus]);
 
   const callShopList = (refresh = false) => {
-    dispatch(getAllShop(refresh, account_type === 'seller' && Id));
+    dispatch(getAllShop(refresh, account_type === 'seller' ? Id : null));
   };
 
   return (
@@ -166,7 +166,7 @@ const ShopList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllShop(true, null, page))}
+                    lisener={(page) => dispatch(getAllShop(true, account_type === 'seller' ? Id : null, page))}
                   />
                 </div>
               </Col>

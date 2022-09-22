@@ -25,6 +25,7 @@ import Info from "../../../components/Info";
 import OrderTable from "../../../components/OrderTable";
 import AppPagination from "../../../components/AppPagination";
 import Flags from "../../../components/Flags";
+import { callApi } from "../../../components/SingleApiCall";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
@@ -45,38 +46,25 @@ const DeliverymanDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       // dispatch(setDeliveryStatusFalse());
       dispatch(getDeliveryAllOrder(true, id));
       const findMan = deliveryMans.find((man) => man._id == id);
       if (findMan) {
-        console.log({ findMan });
         setDeliveryMan(findMan);
       } else {
-        callApi();
+        const data = await callApi(id, SINGLE_DELIVERY_MAN, 'delivery')
+        if (data) {
+          setDeliveryMan(data);
+        } else {
+          history.push("/deliveryman/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
-  const callApi = async () => {
-    try {
-      const {
-        data: { status, error, data = null },
-      } = await requestApi().request(SINGLE_DELIVERY_MAN, {
-        params: {
-          id,
-        },
-      });
-      if (status) {
-        setDeliveryMan(data.delivery);
-      } else {
-        history.push("/deliveryman/list", { replace: true });
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+
 
   return (
     <React.Fragment>

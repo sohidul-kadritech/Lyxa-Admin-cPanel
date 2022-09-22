@@ -57,6 +57,7 @@ import {
   getAllTags,
   updateTagsSearchKey,
 } from "../../../store/Deal/dealAction";
+import { callApi } from "../../../components/SingleApiCall";
 
 const ShopAdd = () => {
   const dispatch = useDispatch();
@@ -127,41 +128,29 @@ const ShopAdd = () => {
     }
   }, [seller?.sellerType === "food"]);
 
-  useEffect(() => {
+
+  useEffect(async () => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
 
       if (findShop) {
         updateData(findShop);
       } else {
-        callApi(id, SINGLE_SHOP,);
+        // callApi(id, SINGLE_SHOP,);
+        const data = await callApi(id, SINGLE_SHOP, 'shop')
+        if (data) {
+          updateData(data);
+        } else {
+          history.push("/shops/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
-  const callApi = async (sId, route) => {
-    const { data } = await requestApi().request(route, {
-      params: {
-        id: sId,
-      },
-    });
 
-    if (data.status) {
-      updateData(data.data.shop);
-    } else {
-      history.push("/shop/list", { replace: true });
-    }
-  };
 
   // FIND SELLER
-  useEffect(() => {
-    if (searchParams) {
-      const sellerId = searchParams.get("sellerId");
-      if (sellerId) {
-        const findSeller = sellers.find((item) => item._id == sellerId);
-        setSeller(findSeller);
-      }
-    }
+  useEffect(async () => {
     if (searchParams.get("sellerId") || account_type === "seller") {
       const paramsId = searchParams.get("sellerId");
       let sellerId = null;
@@ -169,32 +158,20 @@ const ShopAdd = () => {
       if (sellerId) {
         const findSeller = sellers.find((item) => item._id == sellerId);
         if (findSeller) {
-
           setSeller(findSeller);
-          // dispatch(updateCategoryShopType(findShop?.shopType));
         } else {
-          callSellerApi(sellerId);
+          const data = await callApi(id, SINGLE_SELLER, 'seller')
+          if (data) {
+            setSeller(data);
+          } else {
+            history.push("/shops/list", { replace: true });
+          }
         }
       }
     }
   }, [searchParams, account_type]);
 
 
-  // CALL API FOR SELLER 
-
-  const callSellerApi = async (sellerId) => {
-    const { data } = await requestApi().request(SINGLE_SELLER, {
-      params: {
-        id: sellerId,
-      },
-    });
-    if (data.status) {
-      const { seller } = data.data;
-      setSeller(seller);
-    } else {
-      history.push("/", { replace: true });
-    }
-  };
 
   // UPDATE DATA
   const updateData = async (values) => {
@@ -283,7 +260,7 @@ const ShopAdd = () => {
     });
   };
 
-  console.log({ tags });
+
 
   // SUBMIT SELLER
 

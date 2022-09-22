@@ -126,7 +126,7 @@ const BannerPage = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th data-priority="1">Images</Th>
+                      <Th data-priority="1">Image</Th>
                       <Th data-priority="1">Title</Th>
                       <Th data-priority="1">Type</Th>
                       <Th data-priority="1">Status</Th>
@@ -153,7 +153,7 @@ const BannerPage = () => {
                           </Th>
                           <Td>{item?.title}</Td>
                           <Td>{item?.type}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             {moment(item?.createdAt).utc().format("YYYY-MM-DD")}
                           </Td>

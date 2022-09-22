@@ -32,6 +32,7 @@ import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
 import { successMsg } from "../../../helpers/successMsg";
 import Flags from "../../../components/Flags";
+import { callApi } from "../../../components/SingleApiCall";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -46,7 +47,7 @@ const ShopDetails = () => {
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
@@ -54,29 +55,19 @@ const ShopDetails = () => {
         setLiveStatus(activeStatus);
         setShop(findShop);
       } else {
-        callApi(id);
+        // callApi(id);
+        const data = await callApi(id, SINGLE_SHOP, 'shop')
+        if (data) {
+          const activeStatus = data?.liveStatus == "online" ? true : false;
+          setLiveStatus(activeStatus);
+          setShop(data);
+        } else {
+          history.push("/shops/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
-  const callApi = async (shopId) => {
-    const { data } = await requestApi().request(SINGLE_SHOP, {
-      params: {
-        id: shopId,
-      },
-    });
-
-    if (data.status) {
-      const { shop } = data.data;
-      if (shop) {
-        const activeStatus = shop?.liveStatus == "online" ? true : false;
-        setLiveStatus(activeStatus);
-        setShop(shop);
-      } else {
-        history.push("/shops/list", { replace: true });
-      }
-    }
-  };
 
   // CHANGE LIVE STATUS
 

@@ -34,6 +34,7 @@ import { IMAGE_UPLOAD, SINGLE_SELLER } from "../../../network/Api";
 import moment from "moment";
 import { foodTypeOptions } from "../../../assets/staticData";
 import formatBytes from "../../../common/imageFormatBytes";
+import { callApi } from "../../../components/SingleApiCall";
 
 const SellerAdd = () => {
   const dispatch = useDispatch();
@@ -69,35 +70,23 @@ const SellerAdd = () => {
   const [city, setCity] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
 
       if (findSeller) {
         updateSellerData(findSeller);
       } else {
-        callApi(id);
+        const data = await callApi(id, SINGLE_SELLER, 'seller')
+        if (data) {
+          updateSellerData(data);
+        } else {
+          history.push("/seller/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
-  const callApi = async (sellerId) => {
-    try {
-      const { data } = await requestApi().request(SINGLE_SELLER, {
-        params: {
-          id: sellerId,
-        },
-      });
-
-      if (data.status) {
-        updateSellerData(data.data.seller);
-      } else {
-        console.log(data.error);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   // SET SELLER DATA
   const updateSellerData = (sellerData) => {
@@ -481,13 +470,13 @@ const SellerAdd = () => {
                                   // inline style for demonstration purpose
                                   const style = suggestion.active
                                     ? {
-                                        backgroundColor: "#fafafa",
-                                        cursor: "pointer",
-                                      }
+                                      backgroundColor: "#fafafa",
+                                      cursor: "pointer",
+                                    }
                                     : {
-                                        backgroundColor: "#ffffff",
-                                        cursor: "pointer",
-                                      };
+                                      backgroundColor: "#ffffff",
+                                      cursor: "pointer",
+                                    };
                                   return (
                                     <div
                                       // style={{padding: "20px 0px !important"}}
@@ -711,7 +700,7 @@ const SellerAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} name="profile" />
                                 <div className="mb-3">
@@ -803,7 +792,7 @@ const SellerAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
@@ -897,7 +886,7 @@ const SellerAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
@@ -981,7 +970,7 @@ const SellerAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">

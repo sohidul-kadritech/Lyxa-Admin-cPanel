@@ -84,7 +84,7 @@ const SellerList = () => {
               title="Seller"
               loading={loading}
               callList={callSellerList}
-              isAddNew={adminType === 'admin' && account_type === 'admin' }
+              isAddNew={adminType === 'admin' && account_type === 'admin'}
               addNewRoute="seller/add"
             />
 
@@ -191,7 +191,7 @@ const SellerList = () => {
                           <Td>{item?.company_name}</Td>
                           <Td>{item?.email}</Td>
                           <Td>{item?.phone_number}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>

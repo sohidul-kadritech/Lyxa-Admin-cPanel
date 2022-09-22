@@ -39,6 +39,7 @@ import "jspdf-autotable";
 import requestApi from "../../../network/httpRequest";
 import { SINGLE_ORDER } from "../../../network/Api";
 import user1 from "../../../assets/images/user1.jpg";
+import { callApi } from "../../../components/SingleApiCall";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -49,35 +50,40 @@ const OrderDetails = () => {
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       const findOrder = orders.find((order) => order._id == id);
       if (findOrder) {
         setOrder(findOrder);
       } else {
-        callApi(id);
+        const data = await callApi(id, SINGLE_ORDER, 'order')
+        if (data) {
+          setOrder(data);
+        } else {
+          history.push("/orders/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
   // CALL API FOR ORDER
 
-  const callApi = async (shopId) => {
-    const { data } = await requestApi().request(SINGLE_ORDER, {
-      params: {
-        id: shopId,
-      },
-    });
-    // console.log(banner)
-    if (data.status) {
-      const { order } = data.data;
-      if (order) {
-        setOrder(order);
-      } else {
-        history.push("/orders/list", { replace: true });
-      }
-    }
-  };
+  // const callApi = async (shopId) => {
+  //   const { data } = await requestApi().request(SINGLE_ORDER, {
+  //     params: {
+  //       id: shopId,
+  //     },
+  //   });
+  //   // console.log(banner)
+  //   if (data.status) {
+  //     const { order } = data.data;
+  //     if (order) {
+  //       setOrder(order);
+  //     } else {
+  //       history.push("/orders/list", { replace: true });
+  //     }
+  //   }
+  // };
 
   const calProductAmount = (product) => {
     if (product.selectedAttributes.length > 0) {
@@ -245,7 +251,7 @@ const OrderDetails = () => {
                               ? "Good"
                               : order?.review === 1
                                 ? "Bad"
-                                : ""
+                                : 'No Rating'
                       }
                     />
                   </Col>

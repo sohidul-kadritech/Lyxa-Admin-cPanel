@@ -140,6 +140,7 @@ const deliveryManReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
+        status: false
       };
 
     case actionType.DELIVERYBOY_ORDERS_REQUEST_SUCCESS:
@@ -152,7 +153,6 @@ const deliveryManReducer = (state = initialState, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true,
       };
 
     case actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL:

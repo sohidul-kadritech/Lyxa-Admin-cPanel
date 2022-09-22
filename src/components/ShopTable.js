@@ -101,9 +101,7 @@ const ShopTable = ({ shops = [] }) => {
                       alt=""
                       src={item.shopLogo}
                       style={{
-                        // width: "100%",
-                        height: "100%",
-                        // objectFit: "contain",
+                        objectFit: "contain",
                       }}
                     />
                   </div>
@@ -111,7 +109,7 @@ const ShopTable = ({ shops = [] }) => {
 
                 <Td>{item?.shopName}</Td>
                 <Td>{item?.shopType}</Td>
-                <Td>{item?.shopStatus}</Td>
+                <Td style={{ color: item?.shopStatus === 'active' ? 'green' : 'red' }}>{item?.shopStatus}</Td>
                 <Td>
                   {item?.deals.length > 0
                     ? item?.deals.map((item, index) => (

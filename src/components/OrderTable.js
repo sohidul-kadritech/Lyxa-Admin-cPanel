@@ -292,7 +292,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
 
                             <Tooltip title="Details">
                               <button
-                                className="btn btn-info button me-1"
+                                className="btn btn-info button"
                                 onClick={() => {
                                   history.push(`/orders/details/${item?._id}`);
                                 }}
@@ -305,8 +305,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                 <Tooltip title="Flag">
                                   <button
                                     className={`btn  button me-1 ${item?.flag?.length > 0
-                                        ? "btn-warning"
-                                        : "btn-success"
+                                      ? "btn-warning"
+                                      : "btn-success"
                                       }`}
                                     onClick={() => {
                                       setOpenFlagModal(!openFlagModal);

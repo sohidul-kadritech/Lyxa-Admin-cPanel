@@ -1,13 +1,25 @@
-export const callApi = async (sId, api, type, route) => {
-    const { data } = await requestApi().request(api, {
-        params: {
-            id: sId,
-        },
-    });
+// import React from "react";
+// import { useHistory } from "react-router-dom";
+import requestApi from "../network/httpRequest";
 
-    if (data.status) {
-        return data.data[type];
-    } else {
-        history.push(`${route}`, { replace: true });
+// const history = useHistory();
+
+export const callApi = async (sId, api, type) => {
+
+    try {
+        const { data } = await requestApi().request(api, {
+            params: {
+                id: sId,
+            },
+        });
+
+        if (data.status) {
+            return data.data[type];
+        }
+    } catch (e) {
+        console.log(e.message);
     }
+
+
+
 };

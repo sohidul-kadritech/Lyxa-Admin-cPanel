@@ -173,7 +173,7 @@ const DealsList = () => {
 
                           <Td>{item?.type}</Td>
                           <Td>{`${item?.percentage ?? ""} ${item?.option}`}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">

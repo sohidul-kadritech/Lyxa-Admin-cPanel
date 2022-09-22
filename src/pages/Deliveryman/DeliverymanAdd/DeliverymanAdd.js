@@ -38,6 +38,7 @@ import { IMAGE_UPLOAD, SINGLE_DELIVERY_MAN } from "../../../network/Api";
 import { useHistory } from "react-router-dom";
 import Dropzone from "react-dropzone";
 import formatBytes from "../../../common/imageFormatBytes";
+import { callApi } from "../../../components/SingleApiCall";
 
 const DeliverymanAdd = () => {
   const dispatch = useDispatch();
@@ -69,35 +70,24 @@ const DeliverymanAdd = () => {
 
   // ID FROM PARAMSnumber
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       const findDeliveryMan = deliveryMans.find((man) => man._id == id);
       if (findDeliveryMan) {
         updateData(findDeliveryMan);
-        // handleAddressSelect()
+
       } else {
-        callApi(id);
+        const data = await callApi(id, SINGLE_DELIVERY_MAN, 'delivery')
+        if (data) {
+          updateData(data);
+        } else {
+          history.push("/deliveryman/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
-  const callApi = async (manId) => {
-    try {
-      const {
-        data: { status, error, data = null },
-      } = await requestApi().request(SINGLE_DELIVERY_MAN, {
-        params: {
-          id: manId,
-        },
-      });
-      if (status) {
-        updateData(data.delivery);
-      } else {
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   // UPDATE DATA
 
@@ -437,13 +427,13 @@ const DeliverymanAdd = () => {
                                       // inline style for demonstration purpose
                                       const style = suggestion.active
                                         ? {
-                                            backgroundColor: "#fafafa",
-                                            cursor: "pointer",
-                                          }
+                                          backgroundColor: "#fafafa",
+                                          cursor: "pointer",
+                                        }
                                         : {
-                                            backgroundColor: "#ffffff",
-                                            cursor: "pointer",
-                                          };
+                                          backgroundColor: "#ffffff",
+                                          cursor: "pointer",
+                                        };
                                       return (
                                         <div
                                           // style={{padding: "20px 0px !important"}}
@@ -572,7 +562,7 @@ const DeliverymanAdd = () => {
                                 <div
                                   className="dz-message needsclick"
                                   {...getRootProps()}
-                                  // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                                 >
                                   <input {...getInputProps()} />
                                   <div className="mb-3">
@@ -657,7 +647,7 @@ const DeliverymanAdd = () => {
                                 <div
                                   className="dz-message needsclick"
                                   {...getRootProps()}
-                                  // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                                 >
                                   <input {...getInputProps()} />
                                   <div className="mb-3">

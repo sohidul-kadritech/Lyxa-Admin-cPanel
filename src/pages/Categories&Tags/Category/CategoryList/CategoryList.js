@@ -176,7 +176,7 @@ const CategoryList = () => {
                           </Th>
                           <Td>{item?.name}</Td>
                           <Td>{item?.type}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">

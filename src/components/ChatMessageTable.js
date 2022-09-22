@@ -88,7 +88,7 @@ const ChatMessageTable = ({ isFromChat = false }) => {
                   <Th>SL</Th>
                   <Th>Message</Th>
                   {!isFromChat && <Th>Created Date</Th>}
-                  <Th>Active</Th>
+                  <Th>Action</Th>
                 </Tr>
               </Thead>
               <Tbody style={{ position: "relative" }}>

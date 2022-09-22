@@ -17,6 +17,7 @@ import {
 import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
 import Flags from "../../../components/Flags";
+import { callApi } from "../../../components/SingleApiCall";
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -37,39 +38,23 @@ const UserDetails = () => {
   const [user, setUser] = useState({});
   const [balAddModal, setBalAddModal] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       dispatch(getUserAllOrder(true, id));
       const findUser = users.find((user) => user.id == id);
       if (findUser) {
         setUser(findUser);
       } else {
-        callApi(id);
+        const data = await callApi(id, SINGLE_USER, 'user')
+        if (data) {
+          setUser(data);
+        } else {
+          history.push("/users/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
-  //   CALL API FOR SINGLE USER
-
-  const callApi = async (userId) => {
-    if (userId) {
-      try {
-        const { data } = await requestApi().request(SINGLE_USER, {
-          params: {
-            id: userId,
-          },
-        });
-
-        if (data.status) {
-          setUser(data.data.user);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      history.push("/users/list", { replace: true });
-    }
-  };
 
   useEffect(() => {
     if (status || userStatus) {

@@ -81,8 +81,7 @@ const ProductTable = ({ products, loading }) => {
                         alt=""
                         src={item?.images[0]}
                         style={{
-                          width: "100%",
-                          height: "100%",
+                          objectFit: 'contain'
                         }}
                       />
                     </div>
@@ -94,7 +93,7 @@ const ProductTable = ({ products, loading }) => {
                     <p>{item?.price}</p>
                     <p>{item?.shopEndTimeText}</p>
                   </Td>
-                  <Td>{item?.status}</Td>
+                  <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                   <Td>
                     <div>
                       <Tooltip title="Edit">
@@ -118,16 +117,14 @@ const ProductTable = ({ products, loading }) => {
                         </button>
                       </Tooltip>
                       <Tooltip
-                        title={`${
-                          item.status === "active" ? "Deactivate" : "Activate"
-                        }`}
+                        title={`${item.status === "active" ? "Deactivate" : "Activate"
+                          }`}
                       >
                         <button
-                          className={`btn button ${
-                            item.status === "active"
-                              ? "btn-danger"
-                              : "btn-success"
-                          } me-1`}
+                          className={`btn button ${item.status === "active"
+                            ? "btn-danger"
+                            : "btn-success"
+                            } me-1`}
                           onClick={() => updateStatus(item._id, item.status)}
                         >
                           <i
