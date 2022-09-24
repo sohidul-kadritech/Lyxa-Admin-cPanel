@@ -5,7 +5,8 @@ const initialState = {
   admins: [],
   error: null,
   status: false,
-  sellerCredentials: []
+  sellerCredentials: [],
+  shopCredentials: []
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -174,6 +175,29 @@ const adminReducer = (state = initialState, action) => {
         error: payload,
       };
 
+    case actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        sellerCredentials: payload
+      };
+
+    case actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
     // ADD SHOP CREDENTIAL
 
     case actionType.ADD_SHOP_CREDENTIAL_REQUEST_SEND:
@@ -197,6 +221,55 @@ const adminReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
       };
+
+
+    case actionType.GET_SHOP_CREDENTIALS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.GET_SHOP_CREDENTIALS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shopCredentials: payload
+      };
+
+    case actionType.GET_SHOP_CREDENTIALS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+
+    case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shopCredentials: payload
+      };
+
+    case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
 
     default:
       return state;

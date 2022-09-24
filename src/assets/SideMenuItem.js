@@ -661,7 +661,7 @@ export const shopMenuItem = [
         id: 50,
         name: "List",
         icon: "fas fa-clipboard-list",
-        link: "/admin/list",
+        link: "/shop/credentials/list",
         isSubmenu: false,
       },
       {

@@ -143,10 +143,20 @@ export const updateMaxDiscount = (amount) => (dispatch) => {
   });
 };
 
+
+// UPDATE DROP  CREDIT 
+
+export const updateDropCreditLimit = (amount) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_DROP_CREDIT_LIMIT,
+    payload: amount,
+  });
+};
+
 // UPDATE APP SETTINGS
 
 export const updateAppSettings = () => async (dispatch, getState) => {
-  // console.log({ descriptions });
+
   const { appSettingsOptions } = getState().settingsReducer;
   try {
     dispatch({
@@ -161,6 +171,7 @@ export const updateAppSettings = () => async (dispatch, getState) => {
         nearByShopKm: appSettingsOptions.nearByShopKm,
         maxDiscount: appSettingsOptions.maxDiscount,
         searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
+        maxCustomerServiceValue: appSettingsOptions.maxCustomerServiceValue
       },
     });
 
@@ -197,7 +208,7 @@ export const getAllAppSettings = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(APP_SETTINGS);
 
-    console.log({ data });
+
 
     if (status) {
       dispatch({
@@ -231,7 +242,7 @@ export const addPercentage = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data: data });
+
 
     if (data.status) {
       const { charge } = data?.data;
@@ -268,7 +279,7 @@ export const getPercentageSetting = () => async (dispatch, getState) => {
       data: { status, error, data },
     } = await requestApi().request(GET_DELIVERY_FEE);
 
-    // console.log({ data });
+
 
     if (status) {
       dispatch({
@@ -339,7 +350,7 @@ export const addCancelReason = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data: data });
+
 
     if (data.status) {
       const { cancelReason } = data.data;
@@ -378,7 +389,7 @@ export const updateCancelReason = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data: data });
+
 
     if (data.status) {
       const { cancelReason } = data.data;
@@ -480,7 +491,7 @@ export const getSellerSpecialDropCharge = (page) => async (dispatch) => {
       },
     });
 
-    console.log({ data });
+
 
     if (status) {
       dispatch({
@@ -519,7 +530,7 @@ export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
       }
     );
 
-    // console.log({ data: data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -567,7 +578,7 @@ export const getAdminLogHistory =
             },
           });
 
-          console.log({ data });
+
 
           if (status) {
             dispatch({
@@ -626,7 +637,7 @@ export const getDefaultMessage = (refresh) => async (dispatch, getState) => {
         }
       });
 
-      // console.log(data)
+
 
       if (status) {
         dispatch({
@@ -662,7 +673,7 @@ export const addDefaultMsg = (msg) => async (dispatch) => {
       },
     });
 
-    console.log({ data: data });
+
 
     if (data.status) {
       const { message } = data?.data;
@@ -698,7 +709,7 @@ export const editDefaultMsg = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data: data });
+
 
     if (data.status) {
       const { message } = data?.data;

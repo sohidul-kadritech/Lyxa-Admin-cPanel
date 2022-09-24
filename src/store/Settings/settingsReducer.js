@@ -10,6 +10,7 @@ const initialState = {
     deliveryFeePerKm: "",
     maxDiscount: 0,
     searchDeliveryBoyKm: [],
+    maxCustomerServiceValue: 0
   },
 
   dropCharge: null,
@@ -23,7 +24,7 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  adminLogType: { label: "All", value: "all" },
+  adminLogType: { label: "Max Discount", value: "maxDiscount" },
   logSortBy: { label: "Desc", value: "desc" },
   adminLogs: [],
   defualtMessages: [],
@@ -133,6 +134,15 @@ const settingsReducer = (state = initialState, action) => {
         },
       };
 
+    case actionType.UPDATE_DROP_CREDIT_LIMIT:
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          maxCustomerServiceValue: payload,
+        },
+      };
+
     case actionType.UPDATE_APP_SETTINGS_REQUEST_SEND:
       return {
         ...state,
@@ -234,6 +244,9 @@ const settingsReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
       };
+
+
+
 
     // ADD CANCEL REASON
 

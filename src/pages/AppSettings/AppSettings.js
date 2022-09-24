@@ -17,6 +17,7 @@ import {
   getAllAppSettings,
   removeSearchDeliveryBoyKm,
   updateAppSettings,
+  updateDropCreditLimit,
   updateMaxDiscount,
   updateNearByShopKey,
   updateSearchDeliveryBoyKm,
@@ -93,23 +94,9 @@ const AppSettings = () => {
               <CardBody>
                 <CardTitle>Informations</CardTitle>
                 <hr />
-                <Row>
-                  <Col lg={4}>
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Near Shop Distance(KM)"
-                      variant="outlined"
-                      placeholder="Enter near shop Distance"
-                      value={appSettingsOptions?.nearByShopKm}
-                      onChange={(e) =>
-                        dispatch(updateNearByShopKey(e.target.value))
-                      }
-                      type="number"
-                      required
-                    />
-                  </Col>
-                  <Col lg={4} className="mt-3 mt-lg-0">
+
+                <Row >
+                  <Col lg={6} >
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
@@ -124,7 +111,39 @@ const AppSettings = () => {
                       required
                     />
                   </Col>
-                  <Col lg={4} className="my-3 my-lg-0">
+                  <Col lg={6} >
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Drop pay limit credit"
+                      variant="outlined"
+                      placeholder="Enter drop pay limit credit "
+                      value={appSettingsOptions?.maxCustomerServiceValue}
+                      onChange={(e) =>
+                        dispatch(updateDropCreditLimit(e.target.value))
+                      }
+                      type="number"
+                      required
+                    />
+                  </Col>
+                </Row>
+                <Row className="mt-3">
+                  <Col lg={6} className="mt-3 mt-lg-0">
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Near Shop Distance(KM)"
+                      variant="outlined"
+                      placeholder="Enter near shop Distance"
+                      value={appSettingsOptions?.nearByShopKm}
+                      onChange={(e) =>
+                        dispatch(updateNearByShopKey(e.target.value))
+                      }
+                      type="number"
+                      required
+                    />
+                  </Col>
+                  <Col lg={6} className="my-3 my-lg-0">
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
@@ -159,6 +178,7 @@ const AppSettings = () => {
                     )}
                   </Col>
                 </Row>
+
 
                 <div className="d-flex justify-content-center mt-5 mb-2">
                   <Button

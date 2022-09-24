@@ -66,6 +66,8 @@ const AdminLog = () => {
       newType = 'Specific Seller Delivery Cut'
     } else if (type === 'sellerDropChargeReset') {
       newType = 'Seller Drop Charge Reset'
+    } else if (type === 'maxCustomerServiceValue') {
+      newType = 'Max Customer Service Value'
     } else {
       newType = 'Unknown'
     }
@@ -73,36 +75,31 @@ const AdminLog = () => {
     return newType;
   }
 
-  // GET NEW VALUE
+  // GET OLD VALUE
 
-  // const getNewValue = (value) => {
-  //   let newValue = null;
+  const getValue = (type, value) => {
 
-  //   if (typeof value === 'Number' || typeof value === 'String') {
-  //     newValue = value;
-  //   } else if (Array.isArray(value)) {
-  //     if (value.length > 1) {
-  //       let list = []
-  //       value.map(item => {
-  //         if (typeof item === 'number') {
+    if (type && value) {
+      if (type === 'maxDiscount' || type === 'maxCustomerServiceValue' || type === 'nearByShopKm') {
+        return value
+      } else if (type === 'searchDeliveryBoyKm') {
+        return value.map((item, index) => <p key={index}>{item}</p>)
 
-  //           list = [...list, item]
+      } else if (type === 'globalDropCharge' || type === 'specificSellerDropCharge' || type === 'sellerDropChargeReset') {
 
-  //         } else {
-  //           list = [...list, item?.deliveryPersonCut];
+        return <span>{`${value?.dropPercentage ?? 0} ${value?.dropPercentageType === 'parcentage' ? '%' : 'NGN'}`}</span>
 
-  //         }
-  //       })
-  //       newValue = list;
-  //     } else {
-  //       newValue = value[0]
-  //     }
-  //   } else {
-  //     newValue = 0
-  //   }
+      } else if (type === 'globalDeliveryCut' || type === 'specificSellerDeliveryCut') {
+        return value.map((item, index) => <p key={index}>{`(${item?.from} - ${item?.to} km)- charge:${item?.charge} rider:${item?.deliveryPersonCut}`}</p>)
+      } else {
+        return 0
+      }
 
-  //   return newValue;
-  // }
+    } else {
+      return 0
+    }
+  }
+
 
   return (
     <React.Fragment>
@@ -153,7 +150,7 @@ const AdminLog = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4">Percentage History</CardTitle>
+                <CardTitle className="h4">Admin Logs History</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -178,14 +175,14 @@ const AdminLog = () => {
                         }}
                       >
                         <Th>{historyType(item?.type)}</Th>
-                        {/* <Td>{item?.type === "globalDropCharge" ? `${item?.oldValue?.dropPercentage} ${item?.oldValue?.dropPercentageType === 'amount' ? 'NGN' : '%'}` : item?.type === "specificSellerDeliveryCut" ? item?.oldValue[0] : }</Td> */}
-                        <Td>{ }</Td>
-                        <Td>{ }</Td>
+
+                        <Td>{getValue(item?.type, item?.oldValue)}</Td>
+                        <Td>{getValue(item?.type, item?.newValue)}</Td>
                         <Td>
                           {item?.admin?.name}
                         </Td>
                         <Td>
-                          {moment(item?.date).format("MMMM Do YYYY, h:mm:ss a")}
+                          {moment(item?.date).format("MMMM Do YYYY")}
                         </Td>
                       </Tr>
                     ))}

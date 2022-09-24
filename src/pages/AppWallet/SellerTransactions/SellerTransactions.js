@@ -17,12 +17,14 @@ import {
   getSellersTrx,
   updateSellerTrxEndDate,
   updateSellerTrxStartDate,
+  updateSellerWalletSearchKey,
 } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { useHistory } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import Search from "../../../components/Search";
 
 const SellerTransactions = () => {
   const dispatch = useDispatch();
@@ -33,6 +35,7 @@ const SellerTransactions = () => {
     sellersTrxs,
     sellerTrxStartDate,
     sellerTrxEndDate,
+    sellerSearchKey,
     paging,
     hasNextPage,
     currentPage,
@@ -40,8 +43,10 @@ const SellerTransactions = () => {
   } = useSelector((state) => state.appWalletReducer);
 
   useEffect(() => {
-    callTransList(true);
-  }, []);
+    if (sellerTrxStartDate || sellerTrxEndDate || sellerSearchKey) {
+      callTransList(true);
+    }
+  }, [sellerTrxStartDate, sellerTrxEndDate, sellerSearchKey]);
 
   const callTransList = (refresh = false) => {
     dispatch(getSellersTrx(refresh));
@@ -107,13 +112,12 @@ const SellerTransactions = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Drop"
-              breadcrumbItem="Sellers Transactions"
-              title="App Wallet"
+              breadcrumbItem="Sellers Wallet"
               loading={loading}
               callList={callTransList}
             />
 
-            {/* <Card>
+            <Card>
               <CardBody>
                 <Row>
                   <Col lg={4}>
@@ -123,7 +127,7 @@ const SellerTransactions = () => {
                         <Flatpickr
                           className="form-control d-block"
                           id="startDate"
-                          placeholder="Start Date"
+                          placeholder="Select Start Date"
                           value={sellerTrxStartDate}
                           onChange={(selectedDates, dateStr, instance) =>
                             dispatch(updateSellerTrxStartDate(dateStr))
@@ -159,8 +163,13 @@ const SellerTransactions = () => {
                     </div>
                   </Col>
                 </Row>
+                <Row className=" mt-4">
+                  <Col lg={8} >
+                    <Search dispatchFunc={updateSellerWalletSearchKey} placeholder="Search by Company id or Id" />
+                  </Col>
+                </Row>
               </CardBody>
-            </Card> */}
+            </Card>
 
             <Card className="table-data-hover">
               <CardBody>
@@ -215,9 +224,9 @@ const SellerTransactions = () => {
 
                           <Td>{trx?.summary?.totalOrder}</Td>
                           <Td>
-                            {trx?.summary?.orderValue?.totalAmount.toFixed(2)}
+                            {trx?.summary?.orderValue?.totalAmount.toFixed(2) ?? 0}
                           </Td>
-                          <Td>{trx?.summary?.orderValue?.deliveryFee}</Td>
+                          <Td>{trx?.summary?.orderValue?.deliveryFee ?? 0}</Td>
                           <Td>{trx?.summary?.totalDropGet}</Td>
                           <Td>
                             {trx?.summary?.totalSellerUnsettle.toFixed(2)}

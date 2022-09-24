@@ -1,16 +1,15 @@
 import React, { useEffect } from "react";
 import { Container, Spinner } from "reactstrap";
-import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSellerCredentials } from "../../../store/AdminControl/Admin/adminAction";
+import { getAllSellerCredentials, getAllShopCredentials } from "../../../store/AdminControl/Admin/adminAction";
 import CredentialsTable from "../../../components/CredentialsTable";
 
 
-const SellerCredentialsList = () => {
+const ShopCredentialsList = () => {
 
-    const { loading, sellerCredentials } = useSelector((state) => state.adminReducer);
+    const { loading, shopCredentials } = useSelector((state) => state.adminReducer);
     const dispatch = useDispatch();
     const { account_type: accountType, _id: accountId } = JSON.parse(
         localStorage.getItem("admin")
@@ -22,7 +21,7 @@ const SellerCredentialsList = () => {
 
 
     const callList = (refresh = false) => {
-        dispatch(getAllSellerCredentials(refresh, accountId));
+        dispatch(getAllShopCredentials(refresh, accountId));
     }
 
     return (
@@ -31,14 +30,14 @@ const SellerCredentialsList = () => {
                 <div className="page-content" >
                     <Container fluid={true}>
                         <Breadcrumb
-                            maintitle="Seller"
+                            maintitle="Shop"
                             breadcrumbItem={"Credentials"}
                             loading={loading}
                             callList={callList}
                             isAddNew={true}
                             addNewRoute={"admin/create"}
                         />
-                        <CredentialsTable data={sellerCredentials} loading={loading} type='seller' />
+                        <CredentialsTable data={shopCredentials} loading={loading} type='shop' />
                     </Container>
                 </div>
             </GlobalWrapper>
@@ -49,4 +48,4 @@ const SellerCredentialsList = () => {
 
 
 
-export default SellerCredentialsList;
+export default ShopCredentialsList;

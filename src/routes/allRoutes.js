@@ -179,6 +179,7 @@ import SendNotifications from "../pages/Notifications/SendNotifications";
 import NotificationsList from "../pages/Notifications/NotificationsList";
 import SellerCredentialsList from "../pages/Seller/SellerCredentials/SellerCredentialsList";
 import DefaultChat from "../pages/DefaultChat/DefaultChat";
+import ShopCredentialsList from "../pages/Shops/ShopCredentials/ShopCredentialsList";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -385,7 +386,7 @@ const shopRoutes = [
     path: "/add-wallet/shop-transactions",
     component: SingleShopTransactions,
   },
-  { path: "/admin/list", component: AdminList },
+  { path: "/shop/credentials/list", component: ShopCredentialsList },
   { path: "/admin/create", component: CreateAdmin },
 
   { path: "/categories/list", component: CategoryList },

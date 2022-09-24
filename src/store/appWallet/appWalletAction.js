@@ -41,7 +41,7 @@ export const getSellersTrx =
             },
           });
 
-          console.log(data);
+
 
           if (data.status) {
             dispatch({
@@ -68,8 +68,8 @@ export const getSellersTrx =
 export const getSellerTrx =
   (refresh = false, sellerId, page) =>
     async (dispatch, getState) => {
-      console.log({ sellerId });
-      const { sellerTrxs } = getState().appWalletReducer;
+
+      const { sellerTrxs, sellerTrxStartDate, sellerTrxEndDate, sellerSearchKey } = getState().appWalletReducer;
 
       if (sellerTrxs.length < 1 || refresh) {
         try {
@@ -82,6 +82,9 @@ export const getSellerTrx =
               page,
               pageSize: 50,
               sellerId,
+              startDate: sellerTrxStartDate,
+              endDate: sellerTrxEndDate,
+              searchKey: sellerSearchKey
             },
           });
 
@@ -357,10 +360,18 @@ export const updateSellerTrxStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateSellerTrxEndDate = (date) => (dispatch) => {
-  // console.log({ date });
   dispatch({
     type: actionTypes.SELLER_TRX_END_DATE,
     payload: date,
+  });
+};
+
+
+export const updateSellerWalletSearchKey = (searchKey) => (dispatch) => {
+
+  dispatch({
+    type: actionTypes.SELLER_WALLET_SEARCH_KEY,
+    payload: searchKey,
   });
 };
 

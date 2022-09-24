@@ -68,8 +68,8 @@ const ProductList = () => {
         searchParams.get("shopId")
           ? searchParams.get("shopId")
           : account_type === "shop"
-          ? Id
-          : null,
+            ? Id
+            : null,
         account_type === "seller" ? Id : null
       )
     );
@@ -129,7 +129,7 @@ const ProductList = () => {
                     </div>
                   </Col>
 
-                  <Col lg={4}>
+                  {(account_type !== 'seller' && account_type !== 'shop') && <Col lg={4}>
                     <div className="mb-4">
                       <label className="control-label">Type</label>
                       <Select
@@ -142,7 +142,7 @@ const ProductList = () => {
                         defaultValue={""}
                       />
                     </div>
-                  </Col>
+                  </Col>}
                   <Col lg={4}>
                     <div className="mb-4">
                       <label className="control-label">Status</label>
@@ -187,8 +187,8 @@ const ProductList = () => {
                           searchParams.get("shopId")
                             ? searchParams.get("shopId")
                             : account_type === "shop"
-                            ? Id
-                            : null,
+                              ? Id
+                              : null,
                           account_type === "seller" ? Id : null,
                           page
                         )

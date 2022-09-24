@@ -98,8 +98,7 @@ const ShopList = () => {
                       />
                     </div>
                   </Col>
-
-                  <Col lg={4}>
+                  {account_type !== 'seller' && <Col lg={4}>
                     <div className="mb-4">
                       <label className="control-label">Type</label>
                       <Select
@@ -112,7 +111,8 @@ const ShopList = () => {
                         defaultValue={""}
                       />
                     </div>
-                  </Col>
+                  </Col>}
+
                   <Col lg={4}>
                     <div className="mb-4">
                       <label className="control-label">Status</label>

@@ -250,7 +250,7 @@ export const globalTypesOptions = [
 ];
 
 export const adminLogTypeOptions = [
-  { label: "All", value: "all" },
+
   { label: "Max Discount", value: "maxDiscount" },
   { label: "Near By ShopKm", value: "nearByShopKm" },
   { label: "Search Delivery Boy Km", value: "searchDeliveryBoyKm" },
@@ -259,6 +259,7 @@ export const adminLogTypeOptions = [
   { label: "Specific Seller Drop Charge", value: "specificSellerDropCharge" },
   { label: "Specific Seller Delivery Cut", value: "specificSellerDeliveryCut" },
   { label: "Seller Drop Charge Reset", value: "sellerDropChargeReset" },
+  { label: "Max Customer Service Value", value: "maxCustomerServiceValue" },
 ];
 
 export const logoSvg = (

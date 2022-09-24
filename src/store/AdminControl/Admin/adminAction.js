@@ -6,6 +6,9 @@ import {
   EDIT_ADMIN,
   GET_ALL_ADMIN,
   GET_SELLER_CREDENTIALS,
+  GET_SHOP_CREDENTIALS,
+  REMOVE_SELLER_CREDENTIAL,
+  REMOVE_SHOP_CREDENTIAL,
 } from "../../../network/Api";
 import * as actionType from "../../actionType";
 import requestApi from "./../../../network/httpRequest";
@@ -213,7 +216,6 @@ export const addShopCredential = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data: data });
 
     if (data.status) {
       // const { seller } = data?.data;
@@ -257,7 +259,6 @@ export const getAllSellerCredentials =
             }
           });
 
-          console.log('seller credentials', data);
 
           if (data.status) {
             const { childSellers } = data?.data?.credentials;
@@ -279,3 +280,134 @@ export const getAllSellerCredentials =
         }
       }
     };
+
+// REMOVE SELLER CREDENTIALS
+
+
+export const removeSellerCredential = (sellerId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_SEND,
+    })
+
+    const { data } = await requestApi().request(REMOVE_SELLER_CREDENTIAL, {
+      method: "POST",
+      data: {
+        sellerId
+      },
+
+
+    });
+
+    console.log({ data })
+
+    if (data.status) {
+      const { childSellers } = data?.data?.remaining;
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_SUCCESS,
+        payload: childSellers
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+
+  } catch (e) {
+    successMsg(e.message, "error");
+
+    dispatch({
+      type: actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_FAIL,
+      payload: e.message,
+    });
+  }
+}
+
+
+// GET ALL SHOP CREDENTIALS 
+
+export const getAllShopCredentials =
+  (refresh = false, id) =>
+    async (dispatch, getState) => {
+      const { sellerCredentials } = getState().adminReducer;
+
+      if ((sellerCredentials && sellerCredentials.length < 1) || refresh) {
+        try {
+          dispatch({
+            type: actionType.GET_SHOP_CREDENTIALS_REQUEST_SEND,
+          });
+
+          const { data } = await requestApi().request(GET_SHOP_CREDENTIALS, {
+            params: {
+              id
+            }
+          });
+
+
+          if (data.status) {
+            const { credentials } = data?.data?.credentials;
+            dispatch({
+              type: actionType.GET_SHOP_CREDENTIALS_REQUEST_SUCCESS,
+              payload: credentials,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_SHOP_CREDENTIALS_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
+          dispatch({
+            type: actionType.GET_SHOP_CREDENTIALS_REQUEST_FAIL,
+            payload: error.message,
+          });
+        }
+      }
+    };
+
+
+export const removeShopCredential = (shopId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_SEND,
+    })
+
+    const { data } = await requestApi().request(REMOVE_SHOP_CREDENTIAL, {
+      method: "POST",
+      data: {
+        shopId
+      },
+
+
+    });
+
+
+    if (data.status) {
+      const { credentials } = data?.data?.remaining;
+      successMsg(data.message, "success");
+      dispatch({
+        type: actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_SUCCESS,
+        payload: credentials
+      });
+    } else {
+      successMsg(data.message, "error");
+
+      dispatch({
+        type: actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+
+  } catch (e) {
+    successMsg(e.message, "error");
+
+    dispatch({
+      type: actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_FAIL,
+      payload: e.message,
+    });
+  }
+}

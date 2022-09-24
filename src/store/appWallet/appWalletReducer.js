@@ -8,8 +8,9 @@ const init = {
   sellersTrxs: [],
   sellerTrxs: [],
   shopTrxs: {},
-  // sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
-  // sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  sellerSearchKey: '',
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -44,6 +45,13 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         sellerTrxEndDate: payload,
+        // new Date(payload + 1).format("YYYY-MM-DD")
+      };
+
+    case actionTypes.SELLER_WALLET_SEARCH_KEY:
+      return {
+        ...state,
+        sellerSearchKey: payload,
       };
 
     case actionTypes.GET_SELLERS_TRX_REQUEST_SEND:
