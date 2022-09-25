@@ -21,11 +21,19 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import Info from "../../../components/Info";
 import TransactionsCard from "../../../components/TransactionsCard";
 
-import { TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Box, TextField, Tooltip } from "@mui/material";
 import {
   adjustShopCash,
   getShopTrxs,
   shopMakePayment,
+  updateShopAmountRange,
+  updateShopAmountRangeType,
+  updateShopOrderBy,
+  updateShopSearchKey,
+  updateShopTrxBy,
+  updateShopTrxEndDate,
+  updateShopTrxStartDate,
+  updateShopTrxType,
 } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
 import styled from "styled-components";
@@ -33,7 +41,11 @@ import { successMsg } from "../../../helpers/successMsg";
 import MakePayment from "../../../components/MakePayment";
 import AddRemoveCredit from "../../../components/AddRemoveCredit";
 import TransactionsTable from "../../../components/TransactionsTable";
-import SweetAlert from "react-bootstrap-sweetalert";
+import Select from "react-select";
+import Search from "../../../components/Search";
+import Flatpickr from 'react-flatpickr';
+import { shopTrxsAmountFilterOptions, shopTrxsTypeOptions, sortByOptions } from "../../../assets/staticData";
+import { getAllAdmin } from "../../../store/AdminControl/Admin/adminAction";
 
 const SingleShopTransactions = () => {
   const history = useHistory();
@@ -49,6 +61,14 @@ const SingleShopTransactions = () => {
     currentPage,
     hasPreviousPage,
     status,
+    shopTrxStartDate,
+    shopTrxEndDate,
+    shopTrxOrderBy,
+    shopTrxType,
+    shopTrxAmountRangeType,
+    shopTrxAmountRange,
+    shopSearchKey,
+    shopTrxBy
   } = useSelector((state) => state.appWalletReducer);
 
   const [shopName, setShopName] = useState("");
@@ -56,10 +76,17 @@ const SingleShopTransactions = () => {
   const [isMakePayment, setIsMakePayment] = useState(false);
   const [openCreditModal, setOpenCreditModal] = useState(false);
   const [shopId, setShopId] = useState("");
+  const [adminSearchKey, setAdminSearchKey] = useState('');
 
   const { shopName: name, _id: accountId } = JSON.parse(
     localStorage.getItem("admin")
   );
+
+  const { admins } = useSelector((state) => state.adminReducer);
+
+  useEffect(() => {
+    dispatch(getAllAdmin(true));
+  }, [])
 
   useEffect(() => {
     if (searchParams.get("shopId") || accountId) {
@@ -71,13 +98,15 @@ const SingleShopTransactions = () => {
         ? (id = searchParams.get("shopId"))
         : (id = accountId);
       if (id) {
-        callTransList(true, id);
+        if (shopTrxStartDate || shopTrxEndDate || shopTrxOrderBy || shopTrxType || shopSearchKey || (shopTrxAmountRangeType && shopTrxAmountRange) || shopTrxBy) {
+          callTransList(true, id);
+        }
         setShopId(id);
       }
     } else {
       history.push("/", { replace: true });
     }
-  }, [searchParams, accountId]);
+  }, [searchParams, accountId, shopTrxStartDate, shopTrxEndDate, shopTrxOrderBy, shopTrxType, shopTrxAmountRangeType, shopTrxAmountRange, shopSearchKey, shopTrxBy]);
 
   // CALL API TO GET SELLER TRANSACTIONS
 
@@ -131,6 +160,165 @@ const SingleShopTransactions = () => {
             <div>
               <TransactionsCard summary={summary} />
             </div>
+
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col lg={6}>
+                    <div className="d-flex my-3 my-md-0 ">
+                      <div className=" w-100">
+                        <label>Start Date</label>
+                        <div className="form-group mb-0 w-100">
+                          <Flatpickr
+                            className="form-control d-block"
+                            id="startDate"
+                            placeholder="Select Start Date"
+                            value={shopTrxStartDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateShopTrxStartDate(dateStr))
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="ms-2 w-100">
+                        <label>End Date</label>
+                        <div className="form-group mb-0">
+                          <Flatpickr
+                            className="form-control w-100"
+                            id="endDate"
+                            placeholder="Select End Date"
+                            value={shopTrxEndDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateShopTrxEndDate(dateStr))
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col lg={6} className='mt-2 mt-lg-0'>
+                    <Search dispatchFunc={updateShopSearchKey} placeholder="Search by id" />
+                  </Col>
+                </Row>
+
+                <Row className="mt-2">
+                  <Col lg={3}>
+                    <div>
+                      <label className="control-label"> Transaction Type</label>
+                      <Select
+                        palceholder="Select Type"
+                        options={shopTrxsTypeOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={shopTrxType}
+                        onChange={(e) => dispatch(updateShopTrxType(e))}
+
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={3} className="mt-2 mt-lg-0">
+                    <div>
+                      <label className="control-label">Amount Order By</label>
+                      <Select
+                        palceholder="Select Order By"
+                        options={sortByOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={shopTrxOrderBy}
+                        onChange={(e) => dispatch(updateShopOrderBy(e))}
+
+                      />
+                    </div>
+                  </Col>
+
+                  <Col lg={4} className="mt-2 mt-lg-0">
+                    <div>
+                      <Label>Amount Range</Label>
+                      <input
+                        className="form-control"
+                        type="number"
+                        placeholder="Enter a amount "
+                        value={shopTrxAmountRange}
+                        onChange={(e) => dispatch(updateShopAmountRange(e.target.value))}
+                      />
+                    </div>
+                  </Col>
+
+                  {shopTrxAmountRange > 0 && <Col lg={2} className="mt-2 mt-lg-0">
+                    <div>
+                      <Label>Amount Filter Type</Label>
+                      <Select
+                        palceholder="Select Order By"
+                        options={shopTrxsAmountFilterOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={shopTrxAmountRangeType}
+                        onChange={(e) => dispatch(updateShopAmountRangeType(e))}
+
+                      />
+                    </div>
+                  </Col>}
+
+                </Row>
+
+                <Row className="mt-3">
+                  <Col lg={4}>
+                    <label>Transaction By</label>
+                    <AdminFilter>
+                      <Autocomplete
+                        className="cursor-pointer"
+
+                        value={shopTrxBy}
+                        onChange={(event, newValue) => {
+                          dispatch(updateShopTrxBy(newValue));
+                        }}
+                        getOptionLabel={(option, index) =>
+                          option.name ? option.name : ""
+                        }
+                        isOptionEqualToValue={(option, value) =>
+                          option?._id === value?._id
+                        }
+                        inputValue={adminSearchKey}
+                        onInputChange={(event, newInputValue) => {
+                          setAdminSearchKey(newInputValue);
+                        }}
+                        id="controllable-states-demo"
+                        options={admins.length > 0 ? admins : []}
+                        sx={{ width: "100%" }}
+                        renderInput={(params, index) => (
+                          <TextField
+                            {...params}
+                            label="Select a Seller"
+                            style={{ padding: '0 !important' }}
+                          />
+                        )}
+                        renderOption={(props, option) => (
+                          <Box
+                            component="li"
+                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                            {...props}
+                            key={option._id}
+                          >
+                            {option.name}
+                          </Box>
+                        )}
+                      />
+                    </AdminFilter>
+                  </Col>
+                </Row>
+
+              </CardBody>
+            </Card>
 
             <Card>
               <CardBody>
@@ -244,5 +432,13 @@ const SingleShopTransactions = () => {
     </React.Fragment>
   );
 };
+
+const AdminFilter = styled.div`
+
+.css-dd2h8b-MuiAutocomplete-root .MuiOutlinedInput-root .MuiAutocomplete-input{
+  padding: 3px 0px !important;
+}
+
+`;
 
 export default SingleShopTransactions;

@@ -15,15 +15,17 @@ import {
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { getSellerTrx } from "../../../store/appWallet/appWalletAction";
+import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate, } from "../../../store/appWallet/appWalletAction";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { Select } from "@mui/material";
 import Flatpickr from 'react-flatpickr';
 import moment from "moment";
+import { shopsTrxsFilterOptions } from "../../../assets/staticData";
+import Select from "react-select";
+import { successMsg } from "../../../helpers/successMsg";
 
 const ShopsTransactions = () => {
-  const { loading, sellerTrxs, } = useSelector(
+  const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = useSelector(
     (state) => state.appWalletReducer
   );
 
@@ -34,9 +36,10 @@ const ShopsTransactions = () => {
   const dispatch = useDispatch();
 
   const [companyName, setCompanyName] = useState("");
-  // const [startDate, setStartDate] = useState(moment().startOf("month").format("YYYY-MM-DD"));
-  // const [endDate, setEndDate] = useState(moment().endOf("month").format("YYYY-MM-DD"));
-  // const [filterTrxs, setFilterTrxs] = useState([]);
+  const [filteredTrxs, setFilteredTrxs] = useState([]);
+  const [filterType, setFilterType] = useState('');
+  const [fromNum, setFromNum] = useState(0);
+  const [toNum, setToNum] = useState(0);
   const {
     account_type,
     _id: accountId,
@@ -44,30 +47,33 @@ const ShopsTransactions = () => {
   } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
-    searchParams.get("companyName")
-      ? setCompanyName(searchParams.get("companyName"))
-      : setCompanyName(company_name);
+    if (shopsTrxStartDate || shopsTrxEndDate) {
+      searchParams.get("companyName")
+        ? setCompanyName(searchParams.get("companyName"))
+        : setCompanyName(company_name);
 
-    let id = null;
-    searchParams.get("sellerId")
-      ? (id = searchParams.get("sellerId"))
-      : (id = accountId);
+      let id = null;
+      searchParams.get("sellerId")
+        ? (id = searchParams.get("sellerId"))
+        : (id = accountId);
 
-    dispatch(getSellerTrx(true, id));
+      dispatch(getSellerTrx(true, id));
 
-    if (!id) {
-      history.push("/", { replace: true });
+      if (!id) {
+        history.push("/", { replace: true });
+      }
     }
-  }, []);
+  }, [shopsTrxStartDate, shopsTrxEndDate]);
 
 
-  // useEffect(()=>{
-  //   if(startDate || endDate){
-  //     const newList = sellerTrxs.filter((item) => item.createdAt >= startDate && item.createdAt <= endDate);
-
-  //     setFilterTrxs(newList);
-  //   }
-  // },[startDate, endDate])
+  useEffect(() => {
+    if (sellerTrxs.length > 0) {
+      setFilteredTrxs(sellerTrxs);
+      setFilterType('');
+      setToNum(0);
+      setFromNum(0);
+    }
+  }, [sellerTrxs])
 
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
@@ -122,6 +128,25 @@ const ShopsTransactions = () => {
     doc.save(`${companyName}_ShopsTransactions.pdf`);
   };
 
+  // filter 
+
+  const filterTrx = () => {
+
+    const { value } = filterType;
+
+    const newList = sellerTrxs.filter((item) => (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] >= fromNum : item.summary[value] >= fromNum) && (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] <= toNum : item.summary[value] <= toNum));
+    console.log(newList)
+    setFilteredTrxs(newList);
+
+  }
+
+  const clearFilter = () => {
+    setFilteredTrxs(sellerTrxs);
+    setFilterType('');
+    setToNum(0);
+    setFromNum(0);
+  }
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -137,7 +162,7 @@ const ShopsTransactions = () => {
             <Card>
               <CardBody>
                 <Row>
-                  {/* <Col lg={6}>
+                  <Col lg={6}>
                     <div className="d-flex my-3 my-md-0 ">
                       <div className=" w-100">
                         <label>Start Date</label>
@@ -146,9 +171,9 @@ const ShopsTransactions = () => {
                             className="form-control d-block"
                             id="startDate"
                             placeholder="Start Date"
-                            value={startDate}
+                            value={shopsTrxStartDate}
                             onChange={(selectedDates, dateStr, instance) =>
-                              setStartDate(dateStr)
+                              dispatch(updateShopsTrxStartDate(dateStr))
                             }
                             options={{
                               altInput: true,
@@ -165,9 +190,9 @@ const ShopsTransactions = () => {
                             className="form-control w-100"
                             id="endDate"
                             placeholder="Select End Date"
-                            value={endDate}
+                            value={shopsTrxEndDate}
                             onChange={(selectedDates, dateStr, instance) =>
-                              setEndDate(dateStr)
+                              dispatch(updateShopsTrxEndDate(dateStr))
                             }
                             options={{
                               altInput: true,
@@ -178,9 +203,49 @@ const ShopsTransactions = () => {
                         </div>
                       </div>
                     </div>
-                  </Col> */}
+                  </Col>
+                </Row>
 
-                  <Col >
+                <Row className="mt-3">
+                  <Col lg={4}>
+                    <div>
+                      <label className="control-label">Type</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={shopsTrxsFilterOptions}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={filterType}
+                        onChange={(e) => setFilterType(e)}
+
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={6} >
+                    <label className="control-label">Enter Number</label>
+                    <div className="d-flex justify-content-between align-items-center">
+
+                      <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Enter From Number"
+                        value={fromNum}
+                        onChange={(e) => setFromNum(e.target.value)}
+                      />
+                      <span className="mx-1">To</span>
+                      <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Enter To Number"
+                        value={toNum}
+                        onChange={(e) => setToNum(e.target.value)}
+                      />
+
+                    </div>
+                  </Col>
+                  <Col lg={2} className='d-flex align-items-center mt-3'>
+                    <Button disabled={!filterType || !fromNum || !toNum} className='btn btn-success' onClick={filterTrx}>Filter</Button>
+                    <Button disabled={!filterType || !fromNum || !toNum} className='btn btn-warning ms-2' onClick={clearFilter}>Clear</Button>
                   </Col>
                 </Row>
 
@@ -219,8 +284,8 @@ const ShopsTransactions = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {sellerTrxs.length > 0 &&
-                      sellerTrxs.map((trx, index) => (
+                    {filteredTrxs.length > 0 &&
+                      filteredTrxs.map((trx, index) => (
                         <Tr
                           key={index}
                           className="align-middle cursor-pointer"
@@ -234,7 +299,7 @@ const ShopsTransactions = () => {
 
                           <Td>{trx?.summary?.totalOrder}</Td>
                           <Td>
-                            {trx?.summary?.orderValue?.productAmount.toFixed(2)}
+                            {trx?.summary?.orderValue?.productAmount.toFixed(2) ?? 0}
                           </Td>
                           <Td>{trx?.summary?.orderValue?.deliveryFee ?? 0}</Td>
                           <Td>{trx?.summary?.totalDropGet ?? 0}</Td>
@@ -249,7 +314,7 @@ const ShopsTransactions = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && sellerTrxs.length < 1 && (
+                {!loading && filteredTrxs.length < 1 && (
                   <div className="text-center">
                     <h4>No Transations!</h4>
                   </div>

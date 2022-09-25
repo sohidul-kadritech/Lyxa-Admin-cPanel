@@ -69,7 +69,7 @@ export const getSellerTrx =
   (refresh = false, sellerId, page) =>
     async (dispatch, getState) => {
 
-      const { sellerTrxs, sellerTrxStartDate, sellerTrxEndDate, sellerSearchKey } = getState().appWalletReducer;
+      const { sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = getState().appWalletReducer;
 
       if (sellerTrxs.length < 1 || refresh) {
         try {
@@ -82,9 +82,8 @@ export const getSellerTrx =
               page,
               pageSize: 50,
               sellerId,
-              startDate: sellerTrxStartDate,
-              endDate: sellerTrxEndDate,
-              searchKey: sellerSearchKey
+              startDate: shopsTrxStartDate,
+              endDate: shopsTrxEndDate,
             },
           });
 
@@ -116,9 +115,9 @@ export const getSellerTrx =
 export const getShopTrxs =
   (refresh = false, shopId, page) =>
     async (dispatch, getState) => {
-      console.log(shopId);
 
-      const { shopTrxs } = getState().appWalletReducer;
+
+      const { shopTrxs, shopSearchKey, shopTrxStartDate, shopTrxEndDate, shopTrxType: { value }, shopTrxOrderBy: { value: orderBy }, shopTrxAmountRange, shopTrxAmountRangeType: { value: rangeType }, shopTrxBy } = getState().appWalletReducer;
 
       if (shopTrxs.length < 1 || refresh) {
         try {
@@ -133,6 +132,17 @@ export const getShopTrxs =
               pageSize: 50,
               shopId: shopId.toString(),
               sortBy: "desc",
+              tnxFilter: {
+
+                startDate: shopTrxStartDate,
+                endDate: shopTrxEndDate,
+                type: [value],
+                searchKey: shopSearchKey,
+                amountBy: orderBy,
+                amountRange: shopTrxAmountRange,
+                amountRangeType: rangeType,
+                adminBy: shopTrxBy?._id
+              }
             },
           });
 
@@ -520,6 +530,79 @@ export const updateDeliverySearchKey = (value) => (dispatch) => {
     payload: value,
   });
 };
+
+export const updateShopsTrxStartDate = (startDate) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOPS_TRX_START_DATE,
+    payload: startDate,
+  });
+};
+
+export const updateShopsTrxEndDate = (date) => (dispatch) => {
+  // console.log({ date });
+  dispatch({
+    type: actionTypes.SHOPS_TRX_END_DATE,
+    payload: date,
+  });
+};
+
+export const updateShopTrxStartDate = (startDate) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOP_TRX_START_DATE,
+    payload: startDate,
+  });
+};
+
+export const updateShopTrxEndDate = (date) => (dispatch) => {
+  // console.log({ date });
+  dispatch({
+    type: actionTypes.SHOP_TRX_END_DATE,
+    payload: date,
+  });
+};
+
+export const updateShopSearchKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOP_WALLET_SEARCH_KEY,
+    payload: value,
+  });
+};
+
+export const updateShopTrxType = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOP_WALLET_TYPE,
+    payload: value,
+  });
+};
+
+export const updateShopOrderBy = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOP_WALLET_ORDER_BY,
+    payload: value,
+  });
+};
+
+export const updateShopAmountRange = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOP_WALLET_AMOUNT_RANGE,
+    payload: parseInt(value),
+  });
+};
+
+export const updateShopAmountRangeType = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOP_WALLET_AMOUNT_RANGE_TYPE,
+    payload: value,
+  });
+};
+
+export const updateShopTrxBy = (value) => (dispatch) => {
+  dispatch({
+    type: actionTypes.SHOP_WALLET_CREATED_BY,
+    payload: value,
+  });
+};
+
 
 // GET USER/DELIVERY/SELLER/SHOP/ADMIN TRX
 

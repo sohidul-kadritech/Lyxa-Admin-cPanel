@@ -249,6 +249,29 @@ export const globalTypesOptions = [
   { label: "Specific", value: "specific" },
 ];
 
+export const shopsTrxsFilterOptions = [
+  { label: "Select Option", value: "" },
+  { label: "Order", value: "totalOrder" },
+  { label: "Order Amount", value: "productAmount" },
+  { label: "Delivery Fee", value: "deliveryFee" },
+  { label: "Drop Earning", value: "totalDropGet" },
+  { label: "Unsettled Amount", value: "totalShopUnsettle" },
+  { label: "Shop earning", value: "totalShopEarning" },
+];
+
+export const shopTrxsTypeOptions = [
+  { label: "Add Balance", value: "adminAddBalanceShop" },
+  { label: "Remove Balance", value: "adminRemoveBalanceShop" },
+  { label: "Settle Balance", value: "adminSettlebalanceShop" },
+];
+
+export const shopTrxsAmountFilterOptions = [
+  { label: "Select Type", value: "" },
+  { label: "Less Then", value: "<" },
+  { label: "Greater Then", value: ">" },
+  { label: "Equal", value: "=" },
+];
+
 export const adminLogTypeOptions = [
 
   { label: "Max Discount", value: "maxDiscount" },

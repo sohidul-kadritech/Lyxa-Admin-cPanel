@@ -10,7 +10,17 @@ const init = {
   shopTrxs: {},
   sellerTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
   sellerTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  shopsTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  shopsTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  shopTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  shopTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   sellerSearchKey: '',
+  shopTrxType: { label: "Add Balance", value: "adminAddBalanceShop" },
+  shopTrxOrderBy: { label: "Desc", value: "desc" },
+  shopTrxAmountRange: 0,
+  shopTrxAmountRangeType: '',
+  shopSearchKey: '',
+  shopTrxBy: '',
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -44,8 +54,32 @@ const appWalletReducer = (state = init, action) => {
     case actionTypes.SELLER_TRX_END_DATE:
       return {
         ...state,
-        sellerTrxEndDate: payload,
-        // new Date(payload + 1).format("YYYY-MM-DD")
+        shopsTrxEndDate: payload,
+      };
+
+    // SHOPS TRX
+    case actionTypes.SHOPS_TRX_START_DATE:
+      return {
+        ...state,
+        shopsTrxStartDate: payload,
+      };
+
+    case actionTypes.SHOPS_TRX_END_DATE:
+      return {
+        ...state,
+        shopsTrxEndDate: payload
+      };
+
+    case actionTypes.SHOP_WALLET_TYPE:
+      return {
+        ...state,
+        shopTrxType: payload
+      };
+
+    case actionTypes.SHOP_WALLET_CREATED_BY:
+      return {
+        ...state,
+        shopTrxBy: payload
       };
 
     case actionTypes.SELLER_WALLET_SEARCH_KEY:
@@ -53,6 +87,31 @@ const appWalletReducer = (state = init, action) => {
         ...state,
         sellerSearchKey: payload,
       };
+
+    case actionTypes.SHOP_WALLET_ORDER_BY:
+      return {
+        ...state,
+        shopTrxOrderBy: payload,
+      };
+
+    case actionTypes.SHOP_WALLET_SEARCH_KEY:
+      return {
+        ...state,
+        shopSearchKey: payload,
+      };
+
+    case actionTypes.SHOP_WALLET_AMOUNT_RANGE:
+      return {
+        ...state,
+        shopTrxAmountRange: payload,
+      };
+
+    case actionTypes.SHOP_WALLET_AMOUNT_RANGE_TYPE:
+      return {
+        ...state,
+        shopTrxAmountRangeType: payload,
+      };
+
 
     case actionTypes.GET_SELLERS_TRX_REQUEST_SEND:
       return {
