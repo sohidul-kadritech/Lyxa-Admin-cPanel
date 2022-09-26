@@ -13,7 +13,7 @@ import { successMsg } from "../../helpers/successMsg";
 
 // ADD
 export const addSeller = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_SELLER_REQUEST_SEND,
@@ -23,7 +23,7 @@ export const addSeller = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -97,7 +97,7 @@ export const getAllSeller =
 // EDIT
 
 export const editSeller = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_SELLER_REQUEST_SEND,
@@ -107,7 +107,7 @@ export const editSeller = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -234,7 +234,7 @@ export const addSellerCharge = (values) => async (dispatch) => {
       data: values,
     });
 
-    // console.log({ data: data });
+
 
     if (data.status) {
       const { seller } = data?.data;

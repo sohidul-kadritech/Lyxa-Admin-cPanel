@@ -14,61 +14,61 @@ import { successMsg } from "./../../helpers/successMsg";
 
 export const getAllOrder =
   (refresh = false, shop, seller, page = 1) =>
-  async (dispatch, getState) => {
-    const {
-      orders,
-      typeKey,
-      startDate,
-      endDate,
-      sortByKey,
-      orderSearchKey,
-      orderType,
-    } = getState().orderReducer;
+    async (dispatch, getState) => {
+      const {
+        orders,
+        typeKey,
+        startDate,
+        endDate,
+        sortByKey,
+        orderSearchKey,
+        orderType,
+      } = getState().orderReducer;
 
-    if (orders.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.ALL_ORDERS_REQUEST_SEND,
-        });
-
-        const {
-          data: { status, error, data = null },
-        } = await requestApi().request(ORDER_LIST, {
-          params: {
-            page,
-            pageSize: 50,
-            startDate,
-            endDate,
-            orderType: orderType.value,
-            sortBy: sortByKey.value,
-            type: typeKey.value,
-            searchKey: orderSearchKey,
-            shop,
-            seller,
-          },
-        });
-
-
-
-        if (status) {
+      if (orders.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.ALL_ORDERS_REQUEST_SUCCESS,
-            payload: data,
+            type: actionType.ALL_ORDERS_REQUEST_SEND,
           });
-        } else {
+
+          const {
+            data: { status, error, data = null },
+          } = await requestApi().request(ORDER_LIST, {
+            params: {
+              page,
+              pageSize: 50,
+              startDate,
+              endDate,
+              orderType: orderType.value,
+              sortBy: sortByKey.value,
+              type: typeKey.value,
+              searchKey: orderSearchKey,
+              shop,
+              seller,
+            },
+          });
+
+          console.log({ data })
+
+          if (status) {
+            dispatch({
+              type: actionType.ALL_ORDERS_REQUEST_SUCCESS,
+              payload: data,
+            });
+          } else {
+            dispatch({
+              type: actionType.ALL_ORDERS_REQUEST_FAIL,
+              payload: error,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.ALL_ORDERS_REQUEST_FAIL,
-            payload: error,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.ALL_ORDERS_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // ORDER UPDATE STATUS
 
@@ -83,7 +83,7 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
       data: values,
     });
 
- 
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -267,8 +267,8 @@ export const updateOrderByShopType = (type) => (dispatch) => {
 
 export const getAllActiveDeliveryMan =
   (orderId) =>
-  async (dispatch, getState) => {
-      
+    async (dispatch, getState) => {
+
       try {
         dispatch({
           type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND,
@@ -300,5 +300,5 @@ export const getAllActiveDeliveryMan =
           payload: error.message,
         });
       }
-    
-  };
+
+    };

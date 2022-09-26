@@ -9,11 +9,19 @@ import {
   addUserAmount,
   withdrawUserAmount,
 } from "../store/DropPay/dropPayAction";
+import { getAllAppSettings } from "../store/Settings/settingsAction";
 import { updateSearchKey } from "../store/Users/UsersAction";
 
 const UserCradit = ({ user = null }) => {
   const { users, searchKey } = useSelector((state) => state.usersReducer);
   const { loading, status } = useSelector((state) => state.dropPayReducer);
+  const { appSettingsOptions: { maxCustomerServiceValue } } = useSelector(
+    (state) => state.settingsReducer
+  );
+
+  const { account_type, adminType, _id: accountId } = JSON.parse(
+    localStorage.getItem("admin")
+  );
 
   const dispatch = useDispatch();
 
@@ -24,12 +32,20 @@ const UserCradit = ({ user = null }) => {
 
   useEffect(() => {
     if (user) {
-      console.log({ user });
       setSelectedUser(user);
     }
   }, []);
 
+  useEffect(() => {
+    if (account_type === 'admin' && adminType === 'customerService') {
+      dispatch(getAllAppSettings());
+    }
+  }, []);
+
+
+
   const submitBalance = (type) => {
+
     if (!selectedUser) {
       return successMsg("Please select user", "error");
     }
@@ -39,9 +55,11 @@ const UserCradit = ({ user = null }) => {
     if (!userNote) {
       return successMsg("Please enter user note", "error");
     }
-    if (amount > 20000) {
-      return successMsg("Amount can't be more than 20000", "error");
+    if (amount > maxCustomerServiceValue && account_type === 'admin' && adminType === 'customerService') {
+      return successMsg(`Amount can't be more than ${maxCustomerServiceValue}`, "error");
     }
+
+
 
     submitData(type);
   };
@@ -68,6 +86,10 @@ const UserCradit = ({ user = null }) => {
       setAmount(0);
     }
   }, [status]);
+
+  useEffect(() => {
+    dispatch(getAllAppSettings());
+  }, []);
 
   return (
     <div>

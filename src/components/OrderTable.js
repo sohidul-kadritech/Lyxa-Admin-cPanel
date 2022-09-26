@@ -301,23 +301,22 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                               </button>
                             </Tooltip>
                             {account_type === 'admin' && <div>
-                              {item?.orderStatus !== "cancelled" && (
-                                <Tooltip title="Flag">
-                                  <button
-                                    className={`btn  button me-1 ${item?.flag?.length > 0
-                                      ? "btn-warning"
-                                      : "btn-success"
-                                      }`}
-                                    onClick={() => {
-                                      setOpenFlagModal(!openFlagModal);
-                                      setSelectFlagOrder(item);
-                                      updateIsFlaged(item?.flag);
-                                    }}
-                                  >
-                                    <i className="fa fa-flag"></i>
-                                  </button>
-                                </Tooltip>
-                              )}
+                              <Tooltip title="Flag">
+                                <button
+                                  className={`btn  button me-1 ${item?.flag?.length > 0
+                                    ? "btn-warning"
+                                    : "btn-success"
+                                    }`}
+                                  onClick={() => {
+                                    setOpenFlagModal(!openFlagModal);
+                                    setSelectFlagOrder(item);
+                                    updateIsFlaged(item?.flag);
+                                  }}
+                                >
+                                  <i className="fa fa-flag"></i>
+                                </button>
+                              </Tooltip>
+
                               {item?.orderStatus !== "cancelled" && (
                                 <Tooltip title="Cancel Order">
                                   <button

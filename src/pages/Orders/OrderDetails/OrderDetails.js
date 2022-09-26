@@ -376,7 +376,7 @@ const OrderDetails = () => {
               <Col lg={6}>
                 <Card>
                   <CardBody>
-                    <CardTitle>Conversation(User & Delivery Body)</CardTitle>
+                    <CardTitle>Conversations (User & Delivery Body)</CardTitle>
                     <hr />
                     <div className="chat-conversation">
                       <SimpleBar style={{ height: "300px", overflow: 'hidden scroll' }}>
@@ -390,7 +390,7 @@ const OrderDetails = () => {
                         >
                           {order?.chats?.length > 0 ? order?.chats?.map((chat, index, arr) => (
                             <div key={index}>
-                              {chat?.type === "user" && (
+                              {chat?.sender === "user" && (
                                 <li className="clearfix">
                                   <div className="chat-avatar">
                                     <Tooltip title='See user details'>
@@ -398,7 +398,7 @@ const OrderDetails = () => {
                                         src={user1}
                                         className="avatar-xs rounded-circle cursor-pointer"
                                         alt="User"
-                                      // onClick={() => history.push(`/users/details/${request?.user?._id}`)}>
+                                        onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
                                       />
                                     </Tooltip>
                                   </div>
@@ -413,15 +413,17 @@ const OrderDetails = () => {
                                 </li>
                               )}
 
-                              {chat?.type === "deliveryBoy" && (
+                              {chat?.sender === "deliveryBoy" && (
                                 <li className="clearfix odd">
                                   <div className="chat-avatar">
-                                    <img
-                                      src={user1}
-                                      className="avatar-xs rounded-circle"
-                                      alt="Delivery Boy"
-
-                                    />
+                                    <Tooltip title='See delivery boy details'>
+                                      <img
+                                        src={user1}
+                                        className="avatar-xs rounded-circle cursor-pointer"
+                                        alt="Delivery Boy"
+                                        onClick={() => history.push(`/deliveryman/details/${chat?.deliveryBoy?._id}`)}
+                                      />
+                                    </Tooltip>
                                   </div>
                                   <div className="conversation-text">
                                     <div className="ctext-wrap">

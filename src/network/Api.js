@@ -15,6 +15,10 @@ export const LOGIN = ADMIN_ENDPOINT + "/auth/login";
 // GET IMAGE
 export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
 
+// dasboard
+
+export const GET_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard";
+
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
 export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";

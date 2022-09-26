@@ -111,7 +111,7 @@ const AppSettings = () => {
                       required
                     />
                   </Col>
-                  <Col lg={6} >
+                  <Col lg={6} className="mt-3 mt-lg-0">
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"

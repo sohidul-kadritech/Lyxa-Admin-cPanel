@@ -285,6 +285,16 @@ export const adminLogTypeOptions = [
   { label: "Max Customer Service Value", value: "maxCustomerServiceValue" },
 ];
 
+export const dashboardSummaryOptions = [
+
+  { label: "Total Order", value: "totalOrder" },
+  { label: "Total Cancel Order", value: "totalCancelOrder" },
+  { label: "Total Delivery Boy", value: "totalDeliveryBoy" },
+  { label: "Total User", value: "totalUser" },
+
+
+]
+
 export const logoSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

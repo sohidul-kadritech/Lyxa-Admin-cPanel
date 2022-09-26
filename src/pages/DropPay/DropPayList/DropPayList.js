@@ -47,6 +47,7 @@ const DropPayList = () => {
   } = useSelector((state) => state.dropPayReducer);
   const { searchKey } = useSelector((state) => state.usersReducer);
 
+
   const [balAddModal, setBalAddModal] = useState(false);
 
   useEffect(() => {
@@ -70,6 +71,8 @@ const DropPayList = () => {
       setBalAddModal(false);
     }
   }, [status]);
+
+
 
   return (
     <React.Fragment>

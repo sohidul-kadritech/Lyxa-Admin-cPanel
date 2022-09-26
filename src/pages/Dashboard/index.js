@@ -46,12 +46,62 @@ import "chartist/dist/scss/chartist.scss";
 
 //i18n
 import { withTranslation } from "react-i18next"
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getDashboardSummary } from '../../store/Dashboard/dashboardAction';
+
+
+const SummaryCard = ({ title, value, icon }) => {
+
+  return (
+    <Card className="mini-stat bg-primary text-white">
+      <CardBody>
+        <div className="mb-4">
+          <div className="float-start mini-stat-img me-4">
+            <img src={icon} alt="" />
+          </div>
+          <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
+            {title}
+          </h5>
+          <h4 className="fw-medium font-size-24">
+            {value}
+            {/* <i className="mdi mdi-arrow-up text-success ms-2"></i> */}
+          </h4>
+          {/* <div className="mini-stat-label bg-success">
+            <p className="mb-0">+ 12%</p>
+          </div> */}
+        </div>
+        {/* <div className="pt-2">
+          <div className="float-end">
+            <Link to="#" className="text-white-50">
+              <i className="mdi mdi-arrow-right h5"></i>
+            </Link>
+          </div>
+          <p className="text-white-50 mb-0 mt-1">Since last month</p>
+        </div> */}
+      </CardBody>
+    </Card>
+  )
+
+
+}
 
 const Dashboard = props => {
-  const [menu, setMenu] = useState(false)
+
+  const [menu, setMenu] = useState(false);
+  const dispatch = useDispatch();
+
+  const { summery } = useSelector((state) => state.dashboardReducer);
+
   const toggle = () => {
     setMenu(!menu)
   }
+
+  useEffect(() => {
+    dispatch(getDashboardSummary());
+  }, [])
+
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -69,143 +119,20 @@ const Dashboard = props => {
                     <li className="breadcrumb-item active">Welcome to Drop Dashboard</li>
                   </ol>
                 </Col>
-
-                <Col md="4">
-                  <div className="float-end d-none d-md-block">
-                    <Dropdown isOpen={menu} toggle={toggle}>
-                      <DropdownToggle color="primary" className="btn btn-primary dropdown-toggle waves-effect waves-light">
-                        <i className="mdi mdi-cog me-2"></i> Settings
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem tag="a" href="#">Action</DropdownItem>
-                        <DropdownItem tag="a" href="#">Another action</DropdownItem>
-                        <DropdownItem tag="a" href="#">Something else here</DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem tag="a" href="#">Separated link</DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  </div>
-                </Col>
               </Row>
             </div>
             <Row>
               <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon1} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Orders
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        1,685{" "}
-                        <i className="mdi mdi-arrow-up text-success ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-success">
-                        <p className="mb-0">+ 12%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
+                <SummaryCard title='Users' value={summery?.totalUser} icon={user2} />
               </Col>
               <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon2} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Revenue
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        52,368{" "}
-                        <i className="mdi mdi-arrow-down text-danger ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-danger">
-                        <p className="mb-0">- 28%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
-
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
+                <SummaryCard title='Orders' value={summery?.totalOrder} icon={servicesIcon2} />
               </Col>
               <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon3} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Average Price
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        15.8{" "}
-                        <i className="mdi mdi-arrow-up text-success ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-info">
-                        <p className="mb-0"> 00%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
-
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
+                <SummaryCard title='Cancel Orders' value={summery?.totalCancelOrder} icon={servicesIcon3} />
               </Col>
               <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon4} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Product Sold
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        2436{" "}
-                        <i className="mdi mdi-arrow-up text-success ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-warning">
-                        <p className="mb-0">+ 84%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
+                <SummaryCard title='Delivery Boy' value={summery?.totalDeliveryBoy} icon={user3} />
               </Col>
             </Row>
 

@@ -35,6 +35,7 @@ import socketReducer from "./socket/socketReducer";
 import unitTypeReducer from "./unitType/unitTypeReducer";
 import notificationReducer from "./Notification/notificationReducer";
 import termsAndConditonReducer from "./termsAndConditions/termsAndConditionReducer";
+import dashboardReducer from "./Dashboard/dashboardReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -68,6 +69,7 @@ const rootReducer = combineReducers({
   unitTypeReducer,
   notificationReducer,
   termsAndConditonReducer,
+  dashboardReducer
 });
 
 export default rootReducer;
