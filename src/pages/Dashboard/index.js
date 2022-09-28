@@ -54,19 +54,21 @@ import { getDashboardSummary } from '../../store/Dashboard/dashboardAction';
 const SummaryCard = ({ title, value, icon }) => {
 
   return (
-    <Card className="mini-stat bg-primary text-white">
+    <Card className="mini-stat bg-primary text-white" style={{ height: '140px' }}>
       <CardBody>
-        <div className="mb-4">
+        <div className="mb-4 d-flex h-100">
           <div className="float-start mini-stat-img me-4">
             <img src={icon} alt="" />
           </div>
-          <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-            {title}
-          </h5>
-          <h4 className="fw-medium font-size-24">
-            {value}
-            {/* <i className="mdi mdi-arrow-up text-success ms-2"></i> */}
-          </h4>
+          <div style={{ flex: '1' }}>
+            <h5 className="font-size-14 text-uppercase mt-0 text-white-50">
+              {title}
+            </h5>
+            <h4 className="fw-medium font-size-18">
+              {value}
+              {/* <i className="mdi mdi-arrow-up text-success ms-2"></i> */}
+            </h4>
+          </div>
           {/* <div className="mini-stat-label bg-success">
             <p className="mb-0">+ 12%</p>
           </div> */}
@@ -121,6 +123,7 @@ const Dashboard = props => {
                 </Col>
               </Row>
             </div>
+
             <Row>
               <Col xl={3} md={6}>
                 <SummaryCard title='Users' value={summery?.totalUser} icon={user2} />
@@ -134,6 +137,57 @@ const Dashboard = props => {
               <Col xl={3} md={6}>
                 <SummaryCard title='Delivery Boy' value={summery?.totalDeliveryBoy} icon={user3} />
               </Col>
+            </Row>
+
+            <Row>
+              <Col xl={3} md={6}>
+                <SummaryCard title='Orders Amount(Without Delivery Fee)' value={`${summery?.ordersItemTotal} NGN`} icon={servicesIcon4} />
+              </Col>
+              <Col xl={3} md={6}>
+                <SummaryCard title='Profit(Without Delivery fee)' value={`${summery?.dropEarningTotalOfItems} NGN`} icon={servicesIcon4} />
+              </Col>
+              <Col xl={3} md={6}>
+                <SummaryCard title='Delivery Fees' value={`${summery?.ordersDeliveryFeesTotal} NGN`} icon={servicesIcon4} />
+              </Col>
+              <Col xl={3} md={6}>
+                <SummaryCard title='Profit From Delivery Fee' value={`${summery?.dropEarningTotalOfDeliveryFee} NGN`} icon={servicesIcon4} />
+              </Col>
+            </Row>
+
+            <Row>
+
+              <Col xl={3} md={6}>
+                <SummaryCard title='Drop Earning' value={`${summery?.totalDropEarning} NGN`} icon={servicesIcon4} />
+              </Col>
+
+              <Col xl={3} md={6}>
+                <SummaryCard title='Shops Unsettled Amount' value={`${summery?.shopUnsettleAmount} NGN`} icon={servicesIcon4} />
+              </Col>
+              <Col xl={3} md={6}>
+                <SummaryCard title='Riders Unsettled Amount' value={`${summery?.deliveryBoyUnsettleAmount} NGN`} icon={servicesIcon4} />
+              </Col>
+
+              <Col xl={3} md={6}>
+                <SummaryCard title='Incoming Chat Requests' value={summery?.totalIncomingChat} icon={servicesIcon2} />
+              </Col>
+            </Row>
+
+            <Row>
+
+              <Col xl={3} md={6}>
+                <SummaryCard title='Active Riders' value={summery?.totalActiveDeliveryBoy} icon={user3} />
+              </Col>
+
+              <Col xl={3} md={6}>
+                <SummaryCard title='Available Riders' value={summery?.totalAvailableDeliveryBoy} icon={user3} />
+              </Col>
+              {/* <Col xl={3} md={6}>
+                <SummaryCard title='Riders Unsettled Amount' value={`${summery?.deliveryBoyUnsettleAmount} NGN`} icon={servicesIcon4} />
+              </Col>
+
+              <Col xl={3} md={6}>
+                <SummaryCard title='Incoming Chat Requests' value={summery?.totalIncomingChat} icon={servicesIcon2} />
+              </Col> */}
             </Row>
 
             <Row>

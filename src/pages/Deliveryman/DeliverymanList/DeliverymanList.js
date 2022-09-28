@@ -86,7 +86,7 @@ const DeliverymanList = () => {
                 <Row className="d-flex justify-content-between">
                   <Col lg={4}>
                     <div className="mb-4">
-                      <label className="control-label">Sort By</label>
+                      <label className="control-label">Sort By Order</label>
                       <Select
                         palceholder="Select Status"
                         options={sortByOptions}
@@ -142,6 +142,7 @@ const DeliverymanList = () => {
                       <Th>Phone</Th>
                       <Th>Status</Th>
                       <Th>Live Status</Th>
+                      <Th>Orders</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -170,6 +171,7 @@ const DeliverymanList = () => {
                               ? "Available"
                               : "Unavailable"}
                           </Td>
+                          <Td>{item?.totalOrder}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Edit">

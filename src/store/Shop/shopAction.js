@@ -56,50 +56,50 @@ export const addShop = (values) => async (dispatch) => {
 
 export const getAllShop =
   (refresh = false, seller = null, page = 1) =>
-  async (dispatch, getState) => {
-    const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } =
-      getState().shopReducer;
+    async (dispatch, getState) => {
+      const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } =
+        getState().shopReducer;
 
-    if (shops.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.GET_ALL_SHOP_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(ALL_SHOP, {
-          params: {
-            page: page,
-            pageSize: 40,
-            sortBy: sortByKey.value,
-            searchKey,
-            type: typeKey.value ? typeKey.value : typeKey,
-            shopStatus: statusKey.value,
-            liveStatus: liveStatus.value,
-            sellerId: seller,
-          },
-        });
-
-        console.log({ data });
-
-        if (data.status) {
+      if (shops.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.GET_ALL_SHOP_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionType.GET_ALL_SHOP_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(ALL_SHOP, {
+            params: {
+              page: page,
+              pageSize: 40,
+              sortBy: sortByKey.value,
+              searchKey,
+              type: typeKey.value ? typeKey.value : typeKey,
+              shopStatus: statusKey.value,
+              liveStatus: liveStatus.value,
+              sellerId: seller,
+            },
+          });
+
+
+
+          if (data.status) {
+            dispatch({
+              type: actionType.GET_ALL_SHOP_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_ALL_SHOP_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.GET_ALL_SHOP_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.GET_ALL_SHOP_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // EDIT
 
@@ -185,7 +185,7 @@ export const addShopDeal = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -343,7 +343,7 @@ export const setAsFeaturedShop = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-    console.log({ message, error });
+
 
     if (status) {
       successMsg(message, "success");

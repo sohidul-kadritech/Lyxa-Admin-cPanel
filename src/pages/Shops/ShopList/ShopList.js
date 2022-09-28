@@ -88,7 +88,7 @@ const ShopList = () => {
                 <Row>
                   <Col lg={4}>
                     <div className="mb-4">
-                      <label className="control-label">Sort By</label>
+                      <label className="control-label">Sort By Order</label>
                       <Select
                         palceholder="Select Status"
                         options={sortByOptions}

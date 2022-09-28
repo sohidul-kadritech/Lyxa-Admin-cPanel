@@ -71,6 +71,7 @@ const ShopTable = ({ shops = [] }) => {
             <Th>Status</Th>
             <Th>Assigned deals</Th>
             <Th>Featured</Th>
+            <Th>Orders</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
@@ -120,6 +121,7 @@ const ShopTable = ({ shops = [] }) => {
                     : "N/A"}
                 </Td>
                 <Td>{item?.isFeatured ? "Yes" : "NO"}</Td>
+                <Td>{item?.totalOrder}</Td>
                 <Td>
                   <div>
                     <Tooltip title="Edit">
@@ -148,7 +150,7 @@ const ShopTable = ({ shops = [] }) => {
                         <i className="fab fa-product-hunt"></i>
                       </button>
                     </Tooltip>}
-                    <Tooltip title="See orders">
+                    <Tooltip title="See orders ">
                       <button
                         className="btn btn-primary button"
                         onClick={() => goToShopOrderList(item._id)}

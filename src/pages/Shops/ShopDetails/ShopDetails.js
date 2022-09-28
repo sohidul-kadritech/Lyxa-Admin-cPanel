@@ -256,10 +256,10 @@ const ShopDetails = () => {
                         value={`${shop?.deliveryFee ?? 0} NGN`}
                       />
                     )}
-                    {/* <Info
-                      title="Drop charge"
-                      value={`${shop?.dropChargePerKm} NGN`}
-                    /> */}
+                    <Info
+                      title="Total Order"
+                      value={shop?.totalOrder}
+                    />
                     <Info
                       title="Free Delivery"
                       value={shop?.freeDelivery ? "Yes" : "No"}

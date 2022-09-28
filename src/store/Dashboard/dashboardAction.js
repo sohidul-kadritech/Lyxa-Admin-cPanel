@@ -15,6 +15,7 @@ export const getDashboardSummary =
 
                 const { data } = await requestApi().request(GET_DASHBOARD_SUMMARY);
 
+                console.log({ data });
 
                 if (data.status) {
                     const { summery } = data.data;

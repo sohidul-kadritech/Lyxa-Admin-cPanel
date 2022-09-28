@@ -130,7 +130,7 @@ const DeliverymanDetails = () => {
                         title="Balance"
                         value={`${deliveryMan?.balance} NGN`}
                       />{" "}
-                      <Info title="Total Orders" value={orders?.length} />
+                      <Info title="Total Orders" value={deliveryMan?.totalOrder} />
                       <Info title="Status" value={deliveryMan?.status} />
                       <Info
                         title="Live Status"

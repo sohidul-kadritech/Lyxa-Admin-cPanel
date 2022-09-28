@@ -289,7 +289,7 @@ const shopReducer = (state = initialState, action) => {
         statusKey: payload,
       };
 
-    case actionType.UPDATE_SORT_BY_KEY:
+    case actionType.UPDATE_SHOP_SORT_BY_KEY:
       return {
         ...state,
         sortByKey: payload,
