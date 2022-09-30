@@ -1,6 +1,6 @@
 import { SOCKET_CONNECTION } from "../../network/Api";
 import * as actionType from "../actionType";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 
 export const socketConnect = () => async (dispatch, getState) => {
   const { socket: oldSocket } = getState().socketReducer;

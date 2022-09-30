@@ -113,6 +113,8 @@ export const ADD_UNIT = ADMIN_ENDPOINT + "/unit/add";
 export const GET_ALL_UNIT = ADMIN_ENDPOINT + "/unit";
 export const EDIT_UNIT = ADMIN_ENDPOINT + "/unit/update";
 export const DELETE_UNIT = ADMIN_ENDPOINT + "/unit/delete";
+export const DOWNLOAD_PRODUCT_TEMPLATE = ADMIN_ENDPOINT + "/product/download-template"
+export const UPLOAD_PRODUCT_FILE = ADMIN_ENDPOINT + "/product/import"
 
 // DELIVERY MAN
 

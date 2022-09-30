@@ -65,7 +65,7 @@ const SummaryCard = ({ title, value, icon }) => {
               {title}
             </h5>
             <h4 className="fw-medium font-size-18">
-              {value}
+              {value ?? 0}
               {/* <i className="mdi mdi-arrow-up text-success ms-2"></i> */}
             </h4>
           </div>
@@ -141,30 +141,30 @@ const Dashboard = props => {
 
             <Row>
               <Col xl={3} md={6}>
-                <SummaryCard title='Orders Amount(Without Delivery Fee)' value={`${summery?.ordersItemTotal} NGN`} icon={servicesIcon4} />
+                <SummaryCard title='Orders Amount(Without Delivery Fee)' value={`${summery?.ordersItemTotal ?? 0} NGN`} icon={servicesIcon4} />
               </Col>
               <Col xl={3} md={6}>
-                <SummaryCard title='Profit(Without Delivery fee)' value={`${summery?.dropEarningTotalOfItems} NGN`} icon={servicesIcon4} />
+                <SummaryCard title='Profit(Without Delivery fee)' value={`${summery?.dropEarningTotalOfItems ?? 0} NGN`} icon={servicesIcon4} />
               </Col>
               <Col xl={3} md={6}>
-                <SummaryCard title='Delivery Fees' value={`${summery?.ordersDeliveryFeesTotal} NGN`} icon={servicesIcon4} />
+                <SummaryCard title='Delivery Fees' value={`${summery?.ordersDeliveryFeesTotal ?? 0} NGN`} icon={servicesIcon4} />
               </Col>
               <Col xl={3} md={6}>
-                <SummaryCard title='Profit From Delivery Fee' value={`${summery?.dropEarningTotalOfDeliveryFee} NGN`} icon={servicesIcon4} />
+                <SummaryCard title='Profit From Delivery Fee' value={`${summery?.dropEarningTotalOfDeliveryFee ?? 0} NGN`} icon={servicesIcon4} />
               </Col>
             </Row>
 
             <Row>
 
               <Col xl={3} md={6}>
-                <SummaryCard title='Drop Earning' value={`${summery?.totalDropEarning} NGN`} icon={servicesIcon4} />
+                <SummaryCard title='Drop Earning' value={`${summery?.totalDropEarning ?? 0} NGN`} icon={servicesIcon4} />
               </Col>
 
               <Col xl={3} md={6}>
-                <SummaryCard title='Shops Unsettled Amount' value={`${summery?.shopUnsettleAmount} NGN`} icon={servicesIcon4} />
+                <SummaryCard title='Shops Unsettled Amount' value={`${summery?.shopUnsettleAmount ?? 0} NGN`} icon={servicesIcon4} />
               </Col>
               <Col xl={3} md={6}>
-                <SummaryCard title='Riders Unsettled Amount' value={`${summery?.deliveryBoyUnsettleAmount} NGN`} icon={servicesIcon4} />
+                <SummaryCard title='Riders Unsettled Amount' value={`${summery?.deliveryBoyUnsettleAmount ?? 0} NGN`} icon={servicesIcon4} />
               </Col>
 
               <Col xl={3} md={6}>

@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import { SINGLE_SHOP } from "../../../network/Api";
+import { API_URL, DOWNLOAD_PRODUCT_TEMPLATE, SINGLE_SHOP, UPLOAD_PRODUCT_FILE } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import {
   Button,
@@ -18,7 +18,7 @@ import {
   Modal,
 } from "reactstrap";
 
-import { Paper, Switch } from "@mui/material";
+import { Switch, Tooltip } from "@mui/material";
 
 import {
   deleteDealOfShop,
@@ -46,6 +46,9 @@ const ShopDetails = () => {
   const [modalCenter, setModalCenter] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isImportProductOpen, setIsImportProductOpen] = useState(false);
+  const [productsFile, setProductsFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
     if (id) {
@@ -82,10 +85,17 @@ const ShopDetails = () => {
     );
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (status) {
       setModalCenter(false);
-      callApi(shop?._id);
+      const data = await callApi(shop?._id, SINGLE_SHOP, 'shop');
+
+      if (data) {
+        const activeStatus = data?.liveStatus == "online" ? true : false;
+        setLiveStatus(activeStatus);
+        setShop(data);
+      }
+
     }
   }, [status]);
 
@@ -139,6 +149,72 @@ const ShopDetails = () => {
           : "$$$$";
   };
 
+
+  // DOWNLOAD PRODUCT TEMPLATE
+
+  const downloadProductTemplate = async () => {
+    try {
+      const { data } = await requestApi().request(DOWNLOAD_PRODUCT_TEMPLATE, {
+        params: {
+          sellerId: shop?.seller?._id,
+        },
+      });
+      console.log(data);
+      // if (data.status) {
+      //   console.log(data);
+      // }
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
+
+  // IMPORT PRODUCT FILE 
+
+  const submitProductFile = async () => {
+
+    if (!productsFile) {
+      return successMsg('Upload products file');
+    } else {
+      const fileExt = productsFile.name.split(".");
+      const validExts = ['xlsx', 'xls'];
+      const checkExt = validExts.includes(fileExt[1])
+      if (!checkExt) {
+        return successMsg('Upload valid products file');
+
+      } else {
+        let formData = new FormData();
+        formData.append("file", productsFile);
+        formData.append("shopId", '62e33b75906f7960d8082a30');
+        setIsLoading(true);
+        console.log(productsFile);
+        try {
+          const { data } = await requestApi().request(UPLOAD_PRODUCT_FILE, {
+            method: 'POST',
+            data: formData
+          });
+
+          console.log({ data });
+
+          if (data.status) {
+            setIsLoading(false);
+          }
+        } catch (e) {
+          console.log(e.message);
+        }
+
+      }
+    }
+
+
+
+
+
+
+
+
+
+  }
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -166,12 +242,29 @@ const ShopDetails = () => {
                 <HeaderWrapper>
                   <h4>Shop</h4>
                   <div className="d-flex  align-items-center">
+
                     <Button
                       outline={true}
                       color="success"
-                      onClick={() => {
-                        setAsFeatured();
-                      }}
+                      onClick={downloadProductTemplate}
+                      className="me-3"
+                    >
+                      <TemplateButton href={`${API_URL}${DOWNLOAD_PRODUCT_TEMPLATE}?sellerId=${shop?.seller?._id}`} target="_blank" >Download Product Template</TemplateButton>
+                    </Button>
+
+                    <Button
+                      outline={true}
+                      color="success"
+                      onClick={() => setIsImportProductOpen(!isImportProductOpen)}
+                      className="me-3"
+                    >
+                      Import Products
+                    </Button>
+
+                    <Button
+                      outline={true}
+                      color="success"
+                      onClick={setAsFeatured}
                       className="me-3"
                     >
                       {!shop?.isFeatured
@@ -192,7 +285,7 @@ const ShopDetails = () => {
                     <Button
                       outline={true}
                       color="success"
-                      onClick={() => updateActiveStatus()}
+                      onClick={updateActiveStatus}
                       className="me-3"
                     >
                       {shop?.shopStatus === "active" ? "Inactive" : "Activate"}
@@ -461,6 +554,39 @@ const ShopDetails = () => {
             <DealForAdd type="shop" item={shop} shopType={shop?.shopType} />
           </div>
         </Modal>
+
+        {/* Import Product */}
+
+        <Modal
+          isOpen={isImportProductOpen}
+          toggle={() => {
+            setIsImportProductOpen(!isImportProductOpen);
+          }}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">Import Products File</h5>
+            <button
+              type="button"
+              onClick={() => {
+                setIsImportProductOpen(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <div className="d-flex flex-column">
+              <label>Upload excel sheet</label>
+              <input type='file' onChange={(e) => setProductsFile(e.target.files[0])} title="select file" required={true} accept=".xlsx,.xls" />
+            </div>
+            <Button onClick={submitProductFile} className="mt-3" color="success">Import</Button>
+          </div>
+        </Modal>
+
       </GlobalWrapper>
     </React.Fragment>
   );
@@ -486,6 +612,15 @@ const HeaderWrapper = styled.div`
     flex-direction: column;
   }
 `;
+
+const TemplateButton = styled.a`
+
+color: #02a499;
+&:hover{
+  color: white;
+}
+
+`
 
 const DealsWrapper = styled.div``;
 

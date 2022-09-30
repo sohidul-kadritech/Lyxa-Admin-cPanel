@@ -22,7 +22,7 @@ export const addProduct = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -49,56 +49,56 @@ export const addProduct = (values) => async (dispatch) => {
 
 export const getAllProduct =
   (refresh = false, shopId = null, sellerId = null, page = 1) =>
-  async (dispatch, getState) => {
-    // console.log({ sellerId }, { shopId });
-    const { products, searchKey, statusKey, typeKey, sortByKey } =
-      getState().productReducer;
+    async (dispatch, getState) => {
 
-    if (products.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.GET_ALL_PRODUCT_REQUEST_SEND,
-        });
+      const { products, searchKey, statusKey, typeKey, sortByKey } =
+        getState().productReducer;
 
-        const { data } = await requestApi().request(ALL_PRODUCT, {
-          params: {
-            page: page,
-            pageSize: 50,
-            sortBy: sortByKey.value,
-            searchKey,
-            type: typeKey.value,
-            status: statusKey.value,
-            shop: shopId,
-            seller: sellerId,
-          },
-        });
-
-        console.log(data);
-
-        if (data.status) {
+      if (products.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.GET_ALL_PRODUCT_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionType.GET_ALL_PRODUCT_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(ALL_PRODUCT, {
+            params: {
+              page: page,
+              pageSize: 50,
+              sortBy: sortByKey.value,
+              searchKey,
+              type: typeKey.value,
+              status: statusKey.value,
+              shop: shopId,
+              seller: sellerId,
+            },
+          });
+
+
+
+          if (data.status) {
+            dispatch({
+              type: actionType.GET_ALL_PRODUCT_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_ALL_PRODUCT_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.GET_ALL_PRODUCT_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.GET_ALL_PRODUCT_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // EDIT
 
 export const editProduct = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_PRODUCT_REQUEST_SEND,
@@ -108,7 +108,7 @@ export const editProduct = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -137,7 +137,7 @@ export const editProduct = (values) => async (dispatch) => {
 //  UPDATE STATUS
 
 export const updateProductStatus = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.UPDATE_PRODUCT_STATUS_REQUEST_SEND,
@@ -147,7 +147,7 @@ export const updateProductStatus = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -245,7 +245,7 @@ export const updateProductType = (selectedType) => (dispatch) => {
 // DELETE PRODUCT DEAL
 
 export const deleteDealOfProduct = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.DELETE_PRODUCT_DEAL_REQUEST_SEND,
@@ -258,7 +258,7 @@ export const deleteDealOfProduct = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data, status, error });
+
 
     if (status) {
       successMsg("Successfully deleted", "success");

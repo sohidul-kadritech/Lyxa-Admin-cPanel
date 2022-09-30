@@ -11,7 +11,6 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllShop,

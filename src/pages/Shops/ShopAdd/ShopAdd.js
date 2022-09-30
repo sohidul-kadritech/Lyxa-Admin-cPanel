@@ -329,6 +329,7 @@ const ShopAdd = () => {
       let formData = new FormData();
       formData.append("image", image);
 
+
       const { data } = await requestApi().request(IMAGE_UPLOAD, {
         method: "POST",
         data: formData,
