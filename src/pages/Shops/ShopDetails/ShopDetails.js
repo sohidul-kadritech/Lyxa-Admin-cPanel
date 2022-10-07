@@ -159,10 +159,7 @@ const ShopDetails = () => {
           sellerId: shop?.seller?._id,
         },
       });
-      console.log(data);
-      // if (data.status) {
-      //   console.log(data);
-      // }
+
     } catch (e) {
       console.log(e.message);
     }
@@ -185,20 +182,27 @@ const ShopDetails = () => {
         let formData = new FormData();
         formData.append("shopId", shop?._id);
         formData.append("file", productsFile);
-        setIsLoading(true);
-        console.log(productsFile);
+
         try {
+          setIsLoading(true);
           const { data } = await requestApi().request(UPLOAD_PRODUCT_FILE, {
             method: 'POST',
             data: formData
           });
 
-          console.log({ data });
+          console.log(data);
 
-          if (data.status) {
+          if (data?.data?.products.length > 0) {
+
             setIsLoading(false);
+            successMsg(data?.message, 'success');
+            setIsImportProductOpen(false);
+          } else {
+            setIsLoading(false);
+            successMsg('No products file found', 'error');
           }
         } catch (e) {
+          setIsLoading(false);
           console.log(e.message);
         }
 
@@ -234,7 +238,7 @@ const ShopDetails = () => {
               <CardBody>
                 <HeaderWrapper>
                   <h4>Shop</h4>
-                  <div className="d-flex  align-items-center">
+                  <div className="d-flex flex-wrap  align-items-center">
 
                     <Button
                       outline={true}
@@ -601,7 +605,7 @@ const HeaderWrapper = styled.div`
   width: 100%;
   padding-bottom: 5px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 790px) {
     flex-direction: column;
   }
 `;

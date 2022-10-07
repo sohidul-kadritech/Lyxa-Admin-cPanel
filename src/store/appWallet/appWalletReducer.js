@@ -38,6 +38,10 @@ const init = {
   trxSearchKey: "",
   trxAccountType: { label: "All", value: "all" },
   allTrxs: [],
+  riderTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  riderTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  riderCashTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  riderCashTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
 };
 
 const appWalletReducer = (state = init, action) => {
@@ -80,6 +84,30 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         deliveryTrxEndDate: payload
+      };
+
+    case actionTypes.RIDER_TRX_START_DATE:
+      return {
+        ...state,
+        riderTrxStartDate: payload,
+      };
+
+    case actionTypes.RIDER_TRX_END_DATE:
+      return {
+        ...state,
+        riderTrxEndDate: payload
+      };
+
+    case actionTypes.RIDER_CASH_TRX_START_DATE:
+      return {
+        ...state,
+        riderCashTrxStartDate: payload,
+      };
+
+    case actionTypes.RIDER_CASH_TRX_END_DATE:
+      return {
+        ...state,
+        riderCashTrxEndDate: payload
       };
 
     case actionTypes.SHOP_WALLET_TYPE:

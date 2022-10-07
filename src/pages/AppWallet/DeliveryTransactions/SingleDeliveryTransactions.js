@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import Info from "../../../components/Info";
+import Flatpickr from 'react-flatpickr';
 import TransactionsCard from "../../../components/TransactionsCard";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import requestApi from "../../../network/httpRequest";
@@ -28,7 +28,7 @@ import { Tabs } from "@material-ui/core";
 import styled from "styled-components";
 import { TrxType } from "../../../components/updateTrxsType";
 import { successMsg } from "../../../helpers/successMsg";
-import { riderReceivedPayment } from "../../../store/appWallet/appWalletAction";
+import { riderReceivedPayment, updateRiderCashTrxEndDate, updateRiderCashTrxStartDate, updateRiderTrxEndDate, updateRiderTrxStartDate } from "../../../store/appWallet/appWalletAction";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -78,16 +78,18 @@ const SingleDeliveryTransactions = () => {
   const [totalSelectedAmount, setTotalSelectdAmount] = useState(0);
   const [selected, setSelected] = useState(false);
 
-  const { status } = useSelector((state) => state.appWalletReducer);
+  const { status, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate } = useSelector((state) => state.appWalletReducer);
 
   useEffect(() => {
     if (id) {
-      callApi(id);
+      if (riderTrxEndDate || riderTrxStartDate || riderCashTrxStartDate || riderCashTrxEndDate) {
+        callApi(id)
+      }
       setRiderId(id);
     } else {
       history.push("/add-wallet/delivery-transactions", { replace: true });
     }
-  }, [id]);
+  }, [id, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate]);
 
   const callApi = async (deiveryId, page = 1) => {
     setLoading(true);
@@ -97,6 +99,10 @@ const SingleDeliveryTransactions = () => {
           deliveryBoyId: deiveryId,
           page,
           pageSize: 50,
+          tstartDate: riderTrxStartDate,
+          tendDate: riderTrxEndDate,
+          cstartDate: riderCashTrxStartDate,
+          cendDate: riderCashTrxEndDate,
         },
       });
 
@@ -210,22 +216,72 @@ const SingleDeliveryTransactions = () => {
                 </Tabs>
               </Box>
               <TabPanel value={tabItem} index={0}>
+
                 <Card>
                   <CardBody>
-                    <Row className="mb-3">
-                      <Col md={3} className="text-end" />
-                    </Row>
-                    <div className="d-flex justify-content-between pb-3">
+                    <Col md={6}>
+                      <div className="d-flex my-3 my-md-0 ">
+                        <div className=" w-100">
+                          <label>Start Date</label>
+                          <div className="form-group mb-0 w-100">
+                            <Flatpickr
+                              className="form-control d-block"
+                              id="startDate"
+                              placeholder="Start Date"
+                              value={riderTrxStartDate}
+                              onChange={(selectedDates, dateStr, instance) =>
+                                dispatch(updateRiderTrxStartDate(dateStr))
+                              }
+                              options={{
+                                altInput: true,
+                                altFormat: "F j, Y",
+                                dateFormat: "Y-m-d",
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="ms-2 w-100">
+                          <label>End Date</label>
+                          <div className="form-group mb-0">
+                            <Flatpickr
+                              className="form-control w-100"
+                              id="endDate"
+                              placeholder="Select End Date"
+                              value={riderTrxEndDate}
+                              onChange={(selectedDates, dateStr, instance) =>
+                                dispatch(updateRiderTrxEndDate(dateStr))
+                              }
+                              options={{
+                                altInput: true,
+                                altFormat: "F j, Y",
+                                dateFormat: "Y-m-d",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
+                  </CardBody>
+                </Card>
+
+                <Card>
+                  <CardBody>
+
+                    <div className="d-flex justify-content-between align-items-center pb-3">
+
                       <CardTitle className="h4"> Transactions List</CardTitle>
-                      <div>
+
+
+
+                      <div className="d-flex justify-content-end">
                         <Button
                           className="btn btn-info ms-4"
                           onClick={() => setIsMakePayment(!isMakePayment)}
                         >
-                          {" "}
                           Make Payment
                         </Button>
                       </div>
+
                     </div>
 
                     <TransactionsTable
@@ -238,9 +294,53 @@ const SingleDeliveryTransactions = () => {
               <TabPanel value={tabItem} index={1}>
                 <Card>
                   <CardBody>
-                    <Row className="mb-3">
-                      <Col md={3} className="text-end" />
-                    </Row>
+                    <Col md={6}>
+                      <div className="d-flex my-3 my-md-0 ">
+                        <div className=" w-100">
+                          <label>Start Date</label>
+                          <div className="form-group mb-0 w-100">
+                            <Flatpickr
+                              className="form-control d-block"
+                              id="startDate"
+                              placeholder="Start Date"
+                              value={riderCashTrxStartDate}
+                              onChange={(selectedDates, dateStr, instance) =>
+                                dispatch(updateRiderCashTrxStartDate(dateStr))
+                              }
+                              options={{
+                                altInput: true,
+                                altFormat: "F j, Y",
+                                dateFormat: "Y-m-d",
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="ms-2 w-100">
+                          <label>End Date</label>
+                          <div className="form-group mb-0">
+                            <Flatpickr
+                              className="form-control w-100"
+                              id="endDate"
+                              placeholder="Select End Date"
+                              value={riderCashTrxEndDate}
+                              onChange={(selectedDates, dateStr, instance) =>
+                                dispatch(updateRiderCashTrxEndDate(dateStr))
+                              }
+                              options={{
+                                altInput: true,
+                                altFormat: "F j, Y",
+                                dateFormat: "Y-m-d",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardBody>
+
                     <div className="d-flex justify-content-between pb-3 align-items-center">
                       <CardTitle className="h4"> Cash order list</CardTitle>
                       {totalSelectedAmount > 0 && (

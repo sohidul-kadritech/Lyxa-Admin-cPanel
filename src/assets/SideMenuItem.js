@@ -227,9 +227,9 @@ export const adminMenuItem = [
   },
   {
     id: 16,
-    name: "Tansactions",
+    name: "Transactions",
     icon: "fas fa-comment-dollar",
-    link: "/admin/tansactions",
+    link: "/admin/transactions",
     isSubmenu: false,
   },
   {

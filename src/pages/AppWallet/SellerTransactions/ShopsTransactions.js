@@ -19,10 +19,9 @@ import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate, } from ".
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Flatpickr from 'react-flatpickr';
-import moment from "moment";
 import { shopsTrxsFilterOptions } from "../../../assets/staticData";
 import Select from "react-select";
-import { successMsg } from "../../../helpers/successMsg";
+
 
 const ShopsTransactions = () => {
   const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = useSelector(

@@ -273,7 +273,7 @@ const userRoutes = [
     component: DropTransactionsDetails,
   },
 
-  { path: "/admin/tansactions", component: Transactions },
+  { path: "/admin/transactions", component: Transactions },
 
   // CHAT
 

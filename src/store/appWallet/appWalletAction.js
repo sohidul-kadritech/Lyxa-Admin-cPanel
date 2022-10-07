@@ -472,6 +472,40 @@ export const updateDropTrxEndDate = (date) => (dispatch) => {
   });
 };
 
+// SINGLE RIDER TRX DATE
+
+export const updateRiderTrxStartDate = (startDate) => (dispatch) => {
+
+  dispatch({
+    type: actionTypes.RIDER_TRX_START_DATE,
+    payload: startDate,
+  });
+};
+
+export const updateRiderTrxEndDate = (date) => (dispatch) => {
+
+  dispatch({
+    type: actionTypes.RIDER_TRX_END_DATE,
+    payload: date,
+  });
+};
+
+export const updateRiderCashTrxStartDate = (startDate) => (dispatch) => {
+
+  dispatch({
+    type: actionTypes.RIDER_CASH_TRX_START_DATE,
+    payload: startDate,
+  });
+};
+
+export const updateRiderCashTrxEndDate = (date) => (dispatch) => {
+
+  dispatch({
+    type: actionTypes.RIDER_CASH_TRX_END_DATE,
+    payload: date,
+  });
+};
+
 // GET DELIVERY TRX
 
 export const getDropTrx =
