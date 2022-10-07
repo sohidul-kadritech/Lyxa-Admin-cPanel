@@ -49,7 +49,7 @@ export const getAllChat =
 // ACCEPT USER CHAT REQUEST
 
 export const acceptChatReq = (id) => async (dispatch) => {
-  console.log({ id })
+
   try {
     dispatch({
       type: actionType.ACCEPT_CHAT_REQUEST_SEND,

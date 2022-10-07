@@ -165,7 +165,7 @@ const SellerTransactions = () => {
                 </Row>
                 <Row className=" mt-4">
                   <Col lg={8} >
-                    <Search dispatchFunc={updateSellerWalletSearchKey} placeholder="Search by Company id or Id" />
+                    <Search dispatchFunc={updateSellerWalletSearchKey} placeholder="Search by Company name or Id" />
                   </Col>
                 </Row>
               </CardBody>
@@ -195,6 +195,7 @@ const SellerTransactions = () => {
                 >
                   <Thead>
                     <Tr>
+                      <Th>ID</Th>
                       <Th>Company</Th>
                       <Th>Order</Th>
                       <Th>Order amount</Th>
@@ -218,6 +219,9 @@ const SellerTransactions = () => {
                             sellerShopsTrxs(trx._id, trx?.company_name)
                           }
                         >
+                          <Td>
+                            {trx?.autoGenId}
+                          </Td>
                           <Th title="Click to see details">
                             {trx?.company_name}
                           </Th>

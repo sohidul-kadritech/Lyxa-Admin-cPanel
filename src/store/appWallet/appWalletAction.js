@@ -87,7 +87,7 @@ export const getSellerTrx =
             },
           });
 
-          console.log("seller trx", data);
+
 
           if (data.status) {
             const { shops } = data.data;
@@ -146,7 +146,7 @@ export const getShopTrxs =
             },
           });
 
-          console.log("shop trx", data);
+
 
           if (data.status) {
             dispatch({
@@ -171,7 +171,7 @@ export const getShopTrxs =
 // SHOP MAKE PAYMENT
 
 export const shopMakePayment = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionTypes.SHOP_MAKE_PAYMENT_REQUEST_SEND,
@@ -182,7 +182,7 @@ export const shopMakePayment = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log("shop make payment", data);
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -209,7 +209,7 @@ export const shopMakePayment = (values) => async (dispatch) => {
 // SHOP ADD / REMOVE CREDIT
 
 export const shopAddRemoveCredit = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionTypes.SHOP_CREDIT_UPDATE_REQUEST_SEND,
@@ -220,7 +220,7 @@ export const shopAddRemoveCredit = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log("shop crdit update", data);
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -259,7 +259,7 @@ export const adjustShopCash = (shopId) => async (dispatch) => {
       },
     });
 
-    console.log("shop crdit update", data);
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -286,7 +286,7 @@ export const adjustShopCash = (shopId) => async (dispatch) => {
 // RIDER MAKE PAYMENT
 
 export const riderMakePayment = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionTypes.RIDER_MAKE_PAYMENT_REQUEST_SEND,
@@ -297,7 +297,7 @@ export const riderMakePayment = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log("rider make payment", data);
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -324,7 +324,7 @@ export const riderMakePayment = (values) => async (dispatch) => {
 // RIDER RECEIVED PAYMENT
 
 export const riderReceivedPayment = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_SEND,
@@ -335,7 +335,7 @@ export const riderReceivedPayment = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log("rider received payment", data);
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -362,7 +362,7 @@ export const riderReceivedPayment = (values) => async (dispatch) => {
 // SELLER TRX START DATE AND END DATE
 
 export const updateSellerTrxStartDate = (startDate) => (dispatch) => {
-  console.log({ startDate });
+
   dispatch({
     type: actionTypes.SELLER_TRX_START_DATE,
     payload: startDate,
@@ -388,7 +388,7 @@ export const updateSellerWalletSearchKey = (searchKey) => (dispatch) => {
 // DELIVERY TRX START AND END DATE
 
 export const updateDeliveryTrxStartDate = (startDate) => (dispatch) => {
-  console.log({ startDate });
+
   dispatch({
     type: actionTypes.DELIVERY_TRX_START_DATE,
     payload: startDate,
@@ -396,7 +396,7 @@ export const updateDeliveryTrxStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateDeliveryTrxEndDate = (date) => (dispatch) => {
-  // console.log({ date });
+
   dispatch({
     type: actionTypes.DELIVERY_TRX_END_DATE,
     payload: date,
@@ -412,7 +412,7 @@ export const updateDeliveryTrxEndDate = (date) => (dispatch) => {
 export const getDeliveryTrx =
   (refresh = false, page) =>
     async (dispatch, getState) => {
-      const { deliverySortByKey, deliverySearchKey, deliveryTrxs } =
+      const { deliverySortByKey, deliverySearchKey, deliveryTrxs, deliveryTrxStartDate, deliveryTrxEndDate } =
         getState().appWalletReducer;
 
       if (deliveryTrxs.length < 1 || refresh) {
@@ -427,10 +427,12 @@ export const getDeliveryTrx =
               pageSize: 50,
               sortBy: deliverySortByKey.value,
               searchKey: deliverySearchKey,
+              startDate: deliveryTrxStartDate,
+              endDate: deliveryTrxEndDate
             },
           });
 
-          console.log(data);
+
 
           if (data.status) {
             dispatch({
@@ -455,7 +457,7 @@ export const getDeliveryTrx =
 // DROP TRANSACTIONS
 
 export const updateDropTrxStartDate = (startDate) => (dispatch) => {
-  console.log({ startDate });
+
   dispatch({
     type: actionTypes.DROP_TRX_START_DATE,
     payload: startDate,
@@ -463,7 +465,7 @@ export const updateDropTrxStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateDropTrxEndDate = (date) => (dispatch) => {
-  // console.log({ date });
+
   dispatch({
     type: actionTypes.DROP_TRX_END_DATE,
     payload: date,
@@ -493,7 +495,7 @@ export const getDropTrx =
             },
           });
 
-          console.log(data);
+
 
           if (data.status) {
             dispatch({
@@ -531,6 +533,21 @@ export const updateDeliverySearchKey = (value) => (dispatch) => {
   });
 };
 
+export const updateRidersTrxStartDate = (startDate) => (dispatch) => {
+  dispatch({
+    type: actionTypes.RIDERS_TRX_START_DATE,
+    payload: startDate,
+  });
+};
+
+export const updateRidersTrxEndDate = (date) => (dispatch) => {
+
+  dispatch({
+    type: actionTypes.RIDERS_TRX_END_DATE,
+    payload: date,
+  });
+};
+
 export const updateShopsTrxStartDate = (startDate) => (dispatch) => {
   dispatch({
     type: actionTypes.SHOPS_TRX_START_DATE,
@@ -539,7 +556,7 @@ export const updateShopsTrxStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateShopsTrxEndDate = (date) => (dispatch) => {
-  // console.log({ date });
+
   dispatch({
     type: actionTypes.SHOPS_TRX_END_DATE,
     payload: date,
@@ -554,7 +571,7 @@ export const updateShopTrxStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateShopTrxEndDate = (date) => (dispatch) => {
-  // console.log({ date });
+
   dispatch({
     type: actionTypes.SHOP_TRX_END_DATE,
     payload: date,
@@ -628,7 +645,7 @@ export const getAllTransctions =
             },
           });
 
-          console.log(data);
+
 
           if (data.status) {
             dispatch({

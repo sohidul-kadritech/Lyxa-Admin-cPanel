@@ -89,7 +89,7 @@ const Login = (props) => {
                         Welcome Back !
                       </h5>
                       <p className="text-white-50">
-                        Sign in to continue to Drop.
+                        Sign in to continue to Lyxa.
                       </p>
                       <Link to="/" className="logo logo-admin">
                         <img src={logoSm} height="24" alt="logo" />

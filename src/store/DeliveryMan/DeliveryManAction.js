@@ -73,7 +73,7 @@ export const allDeliveryMan =
             },
           });
 
-          console.log(data);
+
 
           if (status) {
             dispatch({
@@ -160,7 +160,7 @@ export const trackDeliveryBoy =
           },
         });
 
-        console.log({ data });
+
 
 
         if (status) {

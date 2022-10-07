@@ -80,8 +80,8 @@ const UsersList = () => {
               hideSettingBtn={true}
               loading={loading}
               callList={callUsersList}
-              // isAddNew={true}
-              // addNewRoute="users/add"
+            // isAddNew={true}
+            // addNewRoute="users/add"
             />
 
             {/* FILTER OPTIONS */}
@@ -160,7 +160,7 @@ const UsersList = () => {
                           >
                             <Th>
                               <div style={{ maxWidth: "120px" }}>
-                                <span>{user?._id}</span>
+                                <span>{user?.autoGenId}</span>
                               </div>
                             </Th>
                             <Td>{user?.name}</Td>

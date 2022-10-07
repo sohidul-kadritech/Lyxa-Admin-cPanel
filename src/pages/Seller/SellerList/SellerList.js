@@ -185,7 +185,7 @@ const SellerList = () => {
                         >
                           <Th>
                             <div style={{ maxWidth: "120px" }}>
-                              <span>{item?._id}</span>
+                              <span>{item?.autoGenId}</span>
                             </div>
                           </Th>
                           <Td>{item?.company_name}</Td>

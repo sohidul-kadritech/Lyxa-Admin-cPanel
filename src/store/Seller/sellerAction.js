@@ -74,6 +74,7 @@ export const getAllSeller =
             },
           });
 
+
           if (data.status) {
             dispatch({
               type: actionType.GET_ALL_SELLER_REQUEST_SUCCESS,

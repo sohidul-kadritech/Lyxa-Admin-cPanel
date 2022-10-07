@@ -21,6 +21,8 @@ import {
   updateDeliverySortByKey,
   updateDeliveryTrxEndDate,
   updateDeliveryTrxStartDate,
+  updateRidersTrxEndDate,
+  updateRidersTrxStartDate,
 } from "../../../store/appWallet/appWalletAction";
 import AppPagination from "../../../components/AppPagination";
 import { useHistory } from "react-router-dom";
@@ -48,10 +50,10 @@ const DeliveryTransactions = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (deliverySortByKey || deliverySearchKey) {
+    if (deliverySortByKey || deliverySearchKey || deliveryTrxStartDate || deliveryTrxEndDate) {
       callTransList(true);
     }
-  }, [deliverySortByKey, deliverySearchKey]);
+  }, [deliverySortByKey, deliverySearchKey, deliveryTrxStartDate, deliveryTrxEndDate]);
 
   const callTransList = (refresh = false) => {
     dispatch(getDeliveryTrx(refresh));
@@ -134,12 +136,59 @@ const DeliveryTransactions = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
+                    <div className="d-flex my-3 my-md-0 ">
+                      <div className=" w-100">
+                        <label>Start Date</label>
+                        <div className="form-group mb-0 w-100">
+                          <Flatpickr
+                            className="form-control d-block"
+                            id="startDate"
+                            placeholder="Start Date"
+                            value={deliveryTrxStartDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateRidersTrxStartDate(dateStr))
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="ms-2 w-100">
+                        <label>End Date</label>
+                        <div className="form-group mb-0">
+                          <Flatpickr
+                            className="form-control w-100"
+                            id="endDate"
+                            placeholder="Select End Date"
+                            value={deliveryTrxEndDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateRidersTrxEndDate(dateStr))
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+
+                </Row>
+
+                <Row className="d-flex justify-content-center">
+                  <Col lg={8}>
                     <Search
                       placeholder="Search by rider name or email or phone number"
                       dispatchFunc={updateDeliverySearchKey}
                     />
                   </Col>
                 </Row>
+
               </CardBody>
             </Card>
 
@@ -167,6 +216,7 @@ const DeliveryTransactions = () => {
                 >
                   <Thead>
                     <Tr>
+                      <Th>ID</Th>
                       <Th>Name</Th>
                       <Th>Orders</Th>
                       <Th>Delivery fee</Th>
@@ -193,6 +243,7 @@ const DeliveryTransactions = () => {
                             )
                           }
                         >
+                          <Td>{item?.autoGenId}</Td>
                           <Th title="Click to see details">{item?.name}</Th>
 
                           <Td>{item?.summary?.totalOrder}</Td>

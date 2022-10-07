@@ -18,6 +18,8 @@ export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
 // dasboard
 
 export const GET_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard";
+export const GET_SELLER_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/seller";
+export const GET_SHOP_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/shop";
 
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";

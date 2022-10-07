@@ -26,8 +26,8 @@ const init = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  // deliveryTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
-  // deliveryTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
+  deliveryTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
+  deliveryTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   deliveryTrxs: [],
   dropTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
   dropTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
@@ -68,6 +68,18 @@ const appWalletReducer = (state = init, action) => {
       return {
         ...state,
         shopsTrxEndDate: payload
+      };
+
+    case actionTypes.RIDERS_TRX_START_DATE:
+      return {
+        ...state,
+        deliveryTrxStartDate: payload,
+      };
+
+    case actionTypes.RIDERS_TRX_END_DATE:
+      return {
+        ...state,
+        deliveryTrxEndDate: payload
       };
 
     case actionTypes.SHOP_WALLET_TYPE:

@@ -183,8 +183,8 @@ const ShopDetails = () => {
 
       } else {
         let formData = new FormData();
+        formData.append("shopId", shop?._id);
         formData.append("file", productsFile);
-        formData.append("shopId", '62e33b75906f7960d8082a30');
         setIsLoading(true);
         console.log(productsFile);
         try {
@@ -204,13 +204,6 @@ const ShopDetails = () => {
 
       }
     }
-
-
-
-
-
-
-
 
 
   }
@@ -583,7 +576,7 @@ const ShopDetails = () => {
               <label>Upload excel sheet</label>
               <input type='file' onChange={(e) => setProductsFile(e.target.files[0])} title="select file" required={true} accept=".xlsx,.xls" />
             </div>
-            <Button onClick={submitProductFile} className="mt-3" color="success">Import</Button>
+            <Button onClick={submitProductFile} className="mt-3 px-4" color="success" disabled={isLoading}>{isLoading ? "Importing..." : 'Import'}</Button>
           </div>
         </Modal>
 

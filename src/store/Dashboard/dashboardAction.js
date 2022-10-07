@@ -1,9 +1,9 @@
-import { GET_DASHBOARD_SUMMARY } from "../../network/Api";
+import { GET_DASHBOARD_SUMMARY, GET_SELLER_DASHBOARD_SUMMARY, GET_SHOP_DASHBOARD_SUMMARY } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 export const getDashboardSummary =
-    (refresh = false, page = 1) =>
+    (userType) =>
         async (dispatch, getState) => {
 
 
@@ -13,7 +13,7 @@ export const getDashboardSummary =
                     type: actionType.GET_DASHBOARD_SUMMARY_REQUEST_SEND,
                 });
 
-                const { data } = await requestApi().request(GET_DASHBOARD_SUMMARY);
+                const { data } = await requestApi().request(userType === 'admin' ? GET_DASHBOARD_SUMMARY : userType === 'seller' ? GET_SELLER_DASHBOARD_SUMMARY : GET_SHOP_DASHBOARD_SUMMARY);
 
                 console.log({ data });
 

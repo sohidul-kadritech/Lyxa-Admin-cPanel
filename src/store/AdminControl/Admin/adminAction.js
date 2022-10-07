@@ -64,7 +64,7 @@ export const getAllAdmin =
 
           const { data } = await requestApi().request(GET_ALL_ADMIN);
 
-          console.log(data);
+
 
           if (data.status) {
             dispatch({
@@ -178,7 +178,7 @@ export const addSellerCredential = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data: data });
+
 
     if (data.status) {
       // const { seller } = data?.data;
@@ -299,7 +299,7 @@ export const removeSellerCredential = (sellerId) => async (dispatch) => {
 
     });
 
-    console.log({ data })
+
 
     if (data.status) {
       const { childSellers } = data?.data?.remaining;

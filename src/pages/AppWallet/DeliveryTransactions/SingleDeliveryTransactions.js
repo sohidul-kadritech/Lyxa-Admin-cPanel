@@ -103,7 +103,7 @@ const SingleDeliveryTransactions = () => {
       if (data.status) {
         setLoading(false);
         setTrxs(data.data);
-        console.log(data.data);
+
       } else {
         history.push("/add-wallet/delivery-transactions", { replace: true });
       }

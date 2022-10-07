@@ -203,7 +203,7 @@ const Transactions = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>{item?._id}</Th>
+                          <Th>{item?.autoGenId}</Th>
 
                           <Td>{item?.amount}</Td>
 

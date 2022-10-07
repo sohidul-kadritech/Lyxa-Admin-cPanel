@@ -170,6 +170,7 @@ const DropPayList = () => {
                 >
                   <Thead>
                     <Tr>
+                      <Th>ID</Th>
                       <Th>Customer Name</Th>
                       <Th>Customer Email</Th>
                       {/* <Th>Deposit ID</Th> */}
@@ -189,6 +190,7 @@ const DropPayList = () => {
                             fontWeight: "500",
                           }}
                         >
+                          <Td>{item?.autoGenId}</Td>
                           <Td>{item?.user?.name}</Td>
                           <Td>{item?.user?.email}</Td>
                           <Td>{item?.amount}</Td>

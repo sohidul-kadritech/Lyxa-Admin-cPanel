@@ -274,6 +274,7 @@ const ShopsTransactions = () => {
                 >
                   <Thead>
                     <Tr>
+                      <Th>ID</Th>
                       <Th>Shop</Th>
                       <Th>Order</Th>
                       <Th>Order amount</Th>
@@ -295,6 +296,7 @@ const ShopsTransactions = () => {
                           }}
                           onClick={() => gotToShopTrxs(trx._id, trx?.shopName)}
                         >
+                          <Td>{trx?.autoGenId}</Td>
                           <Th title="Click to see Details">{trx?.shopName}</Th>
 
                           <Td>{trx?.summary?.totalOrder}</Td>

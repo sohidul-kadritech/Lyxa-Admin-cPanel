@@ -160,7 +160,7 @@ const ProductList = () => {
                 </Row>
                 <Row className="d-flex justify-content-center">
                   <Col lg={8}>
-                    <Search dispatchFunc={updateProductSearchKey} />
+                    <Search dispatchFunc={updateProductSearchKey} placeholder="Search by product id or name" />
                   </Col>
                 </Row>
               </CardBody>

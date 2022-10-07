@@ -88,7 +88,7 @@ const ShopTable = ({ shops = [] }) => {
               >
                 <Td>
                   <div style={{ maxWidth: "120px" }}>
-                    <span>{item?._id}</span>
+                    <span>{item?.autoGenId}</span>
                   </div>
                 </Td>
                 <Th className="d-flex justify-content-center align-items-center">
