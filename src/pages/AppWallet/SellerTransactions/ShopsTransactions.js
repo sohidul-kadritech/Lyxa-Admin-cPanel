@@ -242,7 +242,7 @@ const ShopsTransactions = () => {
 
                     </div>
                   </Col>
-                  <Col lg={2} className='d-flex align-items-center mt-3'>
+                  <Col lg={2} className='d-flex align-items-center mt-4'>
                     <Button disabled={!filterType || !fromNum || !toNum} className='btn btn-success' onClick={filterTrx}>Filter</Button>
                     <Button disabled={!filterType || !fromNum || !toNum} className='btn btn-warning ms-2' onClick={clearFilter}>Clear</Button>
                   </Col>

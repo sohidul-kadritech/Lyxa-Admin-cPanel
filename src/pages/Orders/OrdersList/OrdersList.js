@@ -57,8 +57,8 @@ const OrdersList = () => {
         searchParams.get("shopId")
           ? searchParams.get("shopId")
           : account_type === "shop"
-          ? Id
-          : null,
+            ? Id
+            : null,
         account_type === "seller" ? Id : null
       )
     );
@@ -167,7 +167,7 @@ const OrdersList = () => {
                   </Col>
                   <Col lg={3}>
                     <div className="mb-4">
-                      <label className="control-label">Type</label>
+                      <label className="control-label">Order Status</label>
                       <Select
                         palceholder="Select Status"
                         options={orderTypesOptions}
@@ -222,8 +222,8 @@ const OrdersList = () => {
                           searchParams.get("shopId")
                             ? searchParams.get("shopId")
                             : account_type === "shop"
-                            ? Id
-                            : null,
+                              ? Id
+                              : null,
                           account_type === "seller" ? Id : null,
                           page
                         )

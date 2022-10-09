@@ -5,13 +5,19 @@ export const sortByOptions = [
 
 export const liveStatusFilterOptions = [
   { label: "All", value: "all" },
-  { label: "Live", value: "live" },
-  { label: "Offline", value: "offline" },
+  { label: "Online", value: "online" },
+  { label: "Busy", value: "busy" },
 ];
 
 export const liveStatusOptions = [
   { label: "Online", value: "online" },
   { label: "Busy", value: "busy" },
+];
+
+export const liveStatusOptionsOfRider = [
+  { label: "All", value: "all" },
+  { label: "online", value: "Available" },
+  { label: "offline", value: "Unavailable" },
 ];
 
 export const accountTypeOptions = [
@@ -59,7 +65,7 @@ export const shopStatusOptions = [
   { label: "All", value: "all" },
   { label: "Active", value: "active" },
   { label: "Inactive", value: "inactive" },
-  { label: "Block", value: "blocked" },
+  { label: "Blocked", value: "blocked" },
 ];
 
 export const shopStatusOptions2 = [

@@ -67,7 +67,7 @@ const ProductTable = ({ products, loading }) => {
                 >
                   <Td>
                     <div style={{ maxWidth: "120px" }}>
-                      <span>{item?._id}</span>
+                      <span>{item?.autoGenId}</span>
                     </div>
                   </Td>
                   <Th className="d-flex justify-content-center align-items-center">
@@ -148,7 +148,7 @@ const ProductTable = ({ products, loading }) => {
           <Spinner animation="border" variant="info" />
         </div>
       )}
-      {!loading && products.length < 1 && (
+      {!loading && products?.length < 1 && (
         <div className="text-center">
           <h4>No Product!</h4>
         </div>

@@ -187,7 +187,7 @@ const productReducer = (state = initialState, action) => {
         searchKey: payload,
       };
 
-    case actionType.UPDATE_STATUS_KEY:
+    case actionType.UPDATE_PRODUCT_STATUS_KEY:
       return {
         ...state,
         statusKey: payload,

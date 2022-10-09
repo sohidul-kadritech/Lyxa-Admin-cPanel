@@ -52,7 +52,7 @@ export const addDeliveryMan = (values) => async (dispatch) => {
 export const allDeliveryMan =
   (refresh, page = 1) =>
     async (dispatch, getState) => {
-      const { deliveryMans, sortByKey, statusKey, searchKey } =
+      const { deliveryMans, sortByKey, statusKey, searchKey, liveStatus } =
         getState().deliveryManReducer;
 
       if (refresh || deliveryMans.length < 1) {
@@ -70,6 +70,7 @@ export const allDeliveryMan =
               searchKey,
               sortBy: sortByKey.value,
               status: statusKey.value,
+              liveStatus: liveStatus.value
             },
           });
 
@@ -189,6 +190,13 @@ export const updateActivityStartDate = (startDate) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_ACTIVITY_START_DATE,
     payload: startDate,
+  });
+};
+
+export const updateRiderLiveStatus = (status) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_RIDER_LIVE_STATUS,
+    payload: status,
   });
 };
 

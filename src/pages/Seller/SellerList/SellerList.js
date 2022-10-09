@@ -145,7 +145,7 @@ const SellerList = () => {
                 </Row>
                 <Row className="d-flex justify-content-center">
                   <Col lg={8}>
-                    <Search dispatchFunc={updateSellerSearchKey} />
+                    <Search dispatchFunc={updateSellerSearchKey} placeholder="Search by id or company name or email or phone number or NID" />
                   </Col>
                 </Row>
               </CardBody>

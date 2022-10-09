@@ -23,6 +23,7 @@ const initialState = {
   statusHasPreviousPage: false,
   startDate: moment().startOf("month").format("YYYY-MM-DD"),
   endDate: moment().endOf("month").format("YYYY-MM-DD"),
+  liveStatus: { label: "All", value: "all" },
 };
 
 const deliveryManReducer = (state = initialState, action) => {
@@ -132,6 +133,12 @@ const deliveryManReducer = (state = initialState, action) => {
       return {
         ...state,
         status: false,
+      };
+
+    case actionType.UPDATE_RIDER_LIVE_STATUS:
+      return {
+        ...state,
+        liveStatus: payload,
       };
 
     // ORDERS

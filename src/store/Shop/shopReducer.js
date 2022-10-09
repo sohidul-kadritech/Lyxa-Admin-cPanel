@@ -282,7 +282,7 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
-    case actionType.UPDATE_STATUS_KEY:
+    case actionType.UPDATE_SHOP_STATUS_KEY:
       return {
         ...state,
         loading: false,

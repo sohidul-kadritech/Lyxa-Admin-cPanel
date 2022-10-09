@@ -72,6 +72,7 @@ const ShopTable = ({ shops = [] }) => {
             <Th>Assigned deals</Th>
             <Th>Featured</Th>
             <Th>Orders</Th>
+            <Th>Live Status</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
@@ -122,6 +123,7 @@ const ShopTable = ({ shops = [] }) => {
                 </Td>
                 <Td>{item?.isFeatured ? "Yes" : "NO"}</Td>
                 <Td>{item?.totalOrder}</Td>
+                <Td>{item?.liveStatus}</Td>
                 <Td>
                   <div>
                     <Tooltip title="Edit">

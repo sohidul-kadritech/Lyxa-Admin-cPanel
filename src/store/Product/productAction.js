@@ -219,7 +219,7 @@ export const updateProductSearchKey = (value) => (dispatch) => {
 
 export const updateProductStatusKey = (value) => (dispatch) => {
   dispatch({
-    type: actionType.UPDATE_STATUS_KEY,
+    type: actionType.UPDATE_PRODUCT_STATUS_KEY,
     payload: value,
   });
 };

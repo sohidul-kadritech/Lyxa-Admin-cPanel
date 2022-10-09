@@ -17,6 +17,7 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import styled from "styled-components";
 import Select from "react-select";
 import {
+  liveStatusOptionsOfRider,
   productStatusOptions,
   sortByOptions,
 } from "../../../assets/staticData";
@@ -25,6 +26,7 @@ import {
   updateDeliveryManSearchKey,
   updateDeliveryManSortByKey,
   updateDeliveryManStatusKey,
+  updateRiderLiveStatus,
 } from "../../../store/DeliveryMan/DeliveryManAction";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -48,6 +50,7 @@ const DeliverymanList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    liveStatus
   } = useSelector((state) => state.deliveryManReducer);
 
   const [track, setTrack] = useState(false);
@@ -57,10 +60,10 @@ const DeliverymanList = () => {
   const [rider, setRider] = useState(null);
 
   useEffect(() => {
-    if (sortByKey || statusKey || searchKey) {
+    if (sortByKey || statusKey || searchKey || liveStatus) {
       callDeliveryManList(true);
     }
-  }, [sortByKey, statusKey, searchKey]);
+  }, [sortByKey, statusKey, searchKey, liveStatus]);
 
   const callDeliveryManList = (refresh = false) => {
     dispatch(allDeliveryMan(refresh));
@@ -100,6 +103,20 @@ const DeliverymanList = () => {
                   </Col>
                   <Col lg={4}>
                     <div className="mb-4">
+                      <label className="control-label">Live Status</label>
+                      <Select
+                        palceholder="Select Status"
+                        options={liveStatusOptionsOfRider}
+                        classNamePrefix="select2-selection"
+                        required
+                        value={liveStatus}
+                        onChange={(e) => dispatch(updateRiderLiveStatus(e))}
+                        defaultValue={""}
+                      />
+                    </div>
+                  </Col>
+                  <Col lg={4}>
+                    <div className="mb-4">
                       <label className="control-label">Status</label>
                       <Select
                         palceholder="Select Status"
@@ -117,7 +134,7 @@ const DeliverymanList = () => {
                 </Row>
                 <Row className="d-flex justify-content-center">
                   <Col lg={8}>
-                    <Search dispatchFunc={updateDeliveryManSearchKey} />
+                    <Search dispatchFunc={updateDeliveryManSearchKey} placeholder="Search by id or name" />
                   </Col>
                 </Row>
               </CardBody>
@@ -159,7 +176,7 @@ const DeliverymanList = () => {
                         >
                           <Td>
                             <div style={{ maxWidth: "120px" }}>
-                              <span>{item?._id}</span>
+                              <span>{item?.autoGenId}</span>
                             </div>
                           </Td>
                           <Th>{item?.name}</Th>

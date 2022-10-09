@@ -214,8 +214,8 @@ const ProductDetails = () => {
                   <Paper className="py-2 card-height">
                     <h5 className="text-center">Attributes List</h5>
                     <hr />
-                    {product.attributes.length > 0 ?
-                      product.attributes.map((attribute, index) => (
+                    {product?.attributes?.length > 0 ?
+                      product?.attributes?.map((attribute, index) => (
                         <ul key={index} style={{ listStyleType: "square" }}>
                           <li>
                             <div className="d-flex justify-content-between">
@@ -225,8 +225,8 @@ const ProductDetails = () => {
                                   fontWeight: "500",
                                 }}
                               >
-                                {attribute.name}
-                                {attribute.required ? "(Required)" : ""}
+                                {attribute?.name}
+                                {attribute?.required ? "(Required)" : ""}
                               </span>
                             </div>
                           </li>
@@ -287,8 +287,8 @@ const ProductDetails = () => {
                   <Paper className="py-2 card-height">
                     <h5 className="text-center">Deals List</h5>
                     <hr />
-                    {product.deals.length > 0 ?
-                      product.deals.map((deal, index) => (
+                    {product?.deals?.length > 0 ?
+                      product?.deals?.map((deal, index) => (
                         <ul key={index} style={{ listStyleType: "square" }}>
                           <li>
                             <div className="d-flex justify-content-between px-3">
@@ -298,8 +298,8 @@ const ProductDetails = () => {
                                   fontWeight: "500",
                                 }}
                               >
-                                {deal.name}
-                                {`-(${deal.status})`}
+                                {deal?.name}
+                                {`-(${deal?.status})`}
                               </span>
                               <i
                                 className="fa fa-trash cursor-pointer"
@@ -311,10 +311,10 @@ const ProductDetails = () => {
 
                           <ul>
                             <li>
-                              <span>{deal.type}-</span>
+                              <span>{deal?.type}-</span>
                               <span className="ms-1">
-                                {deal.option}
-                                {deal.percentage && `(${deal.percentage}%)`}
+                                {deal?.option}
+                                {deal?.percentage && `(${deal?.percentage}%)`}
                               </span>
                             </li>
                           </ul>

@@ -23,7 +23,7 @@ import * as actionTypes from "../actionType";
 export const getSellersTrx =
   (refresh = false, page) =>
     async (dispatch, getState) => {
-      const { sellerTrxEndDate, sellerTrxStartDate, sellersTrxs } =
+      const { sellerTrxEndDate, sellerTrxStartDate, sellersTrxs, sellerSearchKey } =
         getState().appWalletReducer;
 
       if (sellersTrxs.length < 1 || refresh) {
@@ -38,6 +38,7 @@ export const getSellersTrx =
               pageSize: 50,
               startDate: sellerTrxStartDate,
               endDate: sellerTrxEndDate,
+              searchKey: sellerSearchKey
             },
           });
 

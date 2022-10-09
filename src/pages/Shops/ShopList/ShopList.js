@@ -143,7 +143,7 @@ const ShopList = () => {
                     </div>
                   </Col>
                   <Col lg={8}>
-                    <Search dispatchFunc={updateShopSearchKey} />
+                    <Search dispatchFunc={updateShopSearchKey} placeholder="Search by name or id or phone number or email" />
                   </Col>
                 </Row>
               </CardBody>

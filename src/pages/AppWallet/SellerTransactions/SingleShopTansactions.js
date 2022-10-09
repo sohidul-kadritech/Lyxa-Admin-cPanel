@@ -206,9 +206,52 @@ const SingleShopTransactions = () => {
                       </div>
                     </div>
                   </Col>
-                  <Col lg={6} className='mt-2 mt-lg-0'>
-                    <Search dispatchFunc={updateShopSearchKey} placeholder="Search by id" />
+
+
+                  <Col lg={4}>
+                    <label>Transaction By</label>
+                    <AdminFilter>
+                      <Autocomplete
+                        className="cursor-pointer"
+
+                        value={shopTrxBy}
+                        onChange={(event, newValue) => {
+                          dispatch(updateShopTrxBy(newValue));
+                        }}
+                        getOptionLabel={(option, index) =>
+                          option.name ? option.name : ""
+                        }
+                        isOptionEqualToValue={(option, value) =>
+                          option?._id === value?._id
+                        }
+                        inputValue={adminSearchKey}
+                        onInputChange={(event, newInputValue) => {
+                          setAdminSearchKey(newInputValue);
+                        }}
+                        id="controllable-states-demo"
+                        options={admins.length > 0 ? admins : []}
+                        sx={{ width: "100%" }}
+                        renderInput={(params, index) => (
+                          <TextField
+                            {...params}
+                            label="Select a Admin"
+                            style={{ padding: '0 !important' }}
+                          />
+                        )}
+                        renderOption={(props, option) => (
+                          <Box
+                            component="li"
+                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                            {...props}
+                            key={option._id}
+                          >
+                            {option.name}
+                          </Box>
+                        )}
+                      />
+                    </AdminFilter>
                   </Col>
+
                 </Row>
 
                 <Row className="mt-2">
@@ -271,49 +314,9 @@ const SingleShopTransactions = () => {
 
                 </Row>
 
-                <Row className="mt-3">
-                  <Col lg={4}>
-                    <label>Transaction By</label>
-                    <AdminFilter>
-                      <Autocomplete
-                        className="cursor-pointer"
-
-                        value={shopTrxBy}
-                        onChange={(event, newValue) => {
-                          dispatch(updateShopTrxBy(newValue));
-                        }}
-                        getOptionLabel={(option, index) =>
-                          option.name ? option.name : ""
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option?._id === value?._id
-                        }
-                        inputValue={adminSearchKey}
-                        onInputChange={(event, newInputValue) => {
-                          setAdminSearchKey(newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={admins.length > 0 ? admins : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params, index) => (
-                          <TextField
-                            {...params}
-                            label="Select a Seller"
-                            style={{ padding: '0 !important' }}
-                          />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                            key={option._id}
-                          >
-                            {option.name}
-                          </Box>
-                        )}
-                      />
-                    </AdminFilter>
+                <Row className="mt-3 d-flex justify-content-center">
+                  <Col lg={6}>
+                    <Search dispatchFunc={updateShopSearchKey} placeholder="Search by id" />
                   </Col>
                 </Row>
 
