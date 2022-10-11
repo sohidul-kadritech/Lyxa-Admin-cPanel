@@ -1033,6 +1033,7 @@ const ShopAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "logo");
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
@@ -1124,6 +1125,7 @@ const ShopAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "banner");
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
@@ -1218,6 +1220,7 @@ const ShopAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "photos");
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">

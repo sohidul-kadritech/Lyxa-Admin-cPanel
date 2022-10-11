@@ -11,10 +11,10 @@ import LanguageDropdown from "../CommonForBoth/TopbarDropdown/LanguageDropdown"
 import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDropdown"
 import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 
-import logodarkImg from "../../assets/images/drop_logo.png";
-import logolightImg from "../../assets/images/drop_logo.png";
+import logodarkImg from "../../assets/images/lyxa.png";
+import logolightImg from "../../assets/images/lyxa.png";
 import smLogo from "../../assets/images/sm-logo.jpeg";
-import {logoSvg} from '../../assets/staticData';
+import { logoSvg } from '../../assets/staticData';
 
 
 //i18n
@@ -68,7 +68,7 @@ const Header = props => {
       body.classList.toggle("vertical-collpsed");
       body.classList.toggle("sidebar-enable");
     }
-}
+  }
 
   return (
     <React.Fragment>
@@ -111,7 +111,7 @@ const Header = props => {
 
 
 
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             <ProfileMenu />
           </div>
         </div>

@@ -126,14 +126,14 @@ const ShopTable = ({ shops = [] }) => {
                 <Td>{item?.liveStatus}</Td>
                 <Td>
                   <div>
-                    <Tooltip title="Edit">
+                    {account_type !== 'shop' && <Tooltip title="Edit">
                       <button
                         className="btn btn-success me-1 button"
                         onClick={() => history.push(`/shops/edit/${item._id}`)}
                       >
                         <i className="fa fa-edit" />
                       </button>
-                    </Tooltip>
+                    </Tooltip>}
                     <Tooltip title="Details">
                       <button
                         className="btn btn-info button me-1"

@@ -5,6 +5,7 @@ import { Spinner } from "reactstrap";
 import { TrxType } from "./updateTrxsType";
 
 const TransactionsTable = ({ trxs = [], loading }) => {
+
   return (
     <div>
       <Table
@@ -30,7 +31,7 @@ const TransactionsTable = ({ trxs = [], loading }) => {
                 fontWeight: "500",
               }}
             >
-              <Th>{item?.autoTrxId}</Th>
+              <Th>{item?.autoGenId}</Th>
 
               <Td>{item?.amount}</Td>
               <Td>{TrxType(item?.type)}</Td>

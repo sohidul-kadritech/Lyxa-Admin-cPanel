@@ -1179,6 +1179,7 @@ const ProductAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles);
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">

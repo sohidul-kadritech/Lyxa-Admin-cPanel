@@ -123,6 +123,7 @@ const SellerAdd = () => {
   // IMAGE
 
   const handleAcceptedFiles = (files, type) => {
+
     files.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -693,7 +694,9 @@ const SellerAdd = () => {
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "profile");
+
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
@@ -786,6 +789,7 @@ const SellerAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "certificate");
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
@@ -880,6 +884,7 @@ const SellerAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "nid");
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
@@ -964,6 +969,7 @@ const SellerAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "contact");
                           }}
+                          accept='.jpg, .jpeg, .png'
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">

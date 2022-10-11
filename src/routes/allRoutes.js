@@ -244,7 +244,7 @@ const userRoutes = [
   { path: "/deals/edit/:id", component: DealsAdd },
 
   // DROP PAY
-  { path: "/drop-pay", component: DropPayList },
+  { path: "/lyxa-pay", component: DropPayList },
 
   // APP WALLET
 
@@ -376,8 +376,13 @@ const sellerRoutes = [
 
 const shopRoutes = [
   { path: "/dashboard", component: Dashboard },
+
   { path: "/orders/list", component: OrdersList },
   { path: "/orders/details/:id", component: OrderDetails },
+
+  { path: "/shops/list", component: ShopList },
+  { path: "/shops/details/:id", component: ShopDetails },
+
   { path: "/products/list", component: ProductList },
   { path: "/products/add", component: ProductAdd },
   { path: "/products/edit/:id", component: ProductAdd },

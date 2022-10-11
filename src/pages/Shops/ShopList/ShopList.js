@@ -32,6 +32,8 @@ import {
 } from "../../../assets/staticData";
 import Search from "../../../components/Search";
 import ShopTable from "../../../components/ShopTable";
+import { callApi } from "../../../components/SingleApiCall";
+import { SINGLE_SHOP } from "../../../network/Api";
 
 const ShopList = () => {
   const dispatch = useDispatch();
@@ -51,6 +53,8 @@ const ShopList = () => {
   } = useSelector((state) => state.shopReducer);
   const { account_type, adminType, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
+  const [myShop, setMyShop] = useState([]);
+
   useEffect(() => {
     dispatch(setShopStatusFalse());
     dispatch(updateShopType({ label: "All", value: "all" }));
@@ -63,8 +67,17 @@ const ShopList = () => {
     }
   }, [statusKey, typeKey, sortByKey, searchKey, liveStatus]);
 
-  const callShopList = (refresh = false) => {
-    dispatch(getAllShop(refresh, account_type === 'seller' ? Id : null));
+
+  const callShopList = async (refresh = false) => {
+    if (account_type === 'shop') {
+      const data = await callApi(Id, SINGLE_SHOP, 'shop')
+      if (data) {
+        setMyShop([data]);
+      }
+    } else {
+      dispatch(getAllShop(refresh, account_type === 'seller' ? Id : null));
+    }
+
   };
 
   return (
@@ -73,16 +86,17 @@ const ShopList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"List"}
               title="Shop"
               loading={loading}
               callList={callShopList}
+              isRefresh={account_type !== 'shop'}
               isAddNew={account_type === 'admin' && adminType !== 'customerService'}
               addNewRoute="shops/add"
             />
 
-            <Card>
+            {account_type !== 'shop' && <Card>
               <CardBody>
                 <Row>
                   <Col lg={4}>
@@ -147,14 +161,14 @@ const ShopList = () => {
                   </Col>
                 </Row>
               </CardBody>
-            </Card>
+            </Card>}
 
             <Card>
               <CardBody>
 
-                <CardTitle className="h4"> Shop List</CardTitle>
+                <CardTitle className="h4"> {account_type !== 'shop' ? "Shop List" : 'My Shop'}</CardTitle>
 
-                <ShopTable shops={shops} />
+                <ShopTable shops={account_type === 'shop' ? myShop : shops} />
               </CardBody>
             </Card>
             <Row>

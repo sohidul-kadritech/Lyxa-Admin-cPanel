@@ -21,6 +21,62 @@ import "jspdf-autotable";
 import Flatpickr from 'react-flatpickr';
 import { shopsTrxsFilterOptions } from "../../../assets/staticData";
 import Select from "react-select";
+// import { DataGrid } from '@mui/x-data-grid';
+import { MDBDataTable } from "mdbreact"
+
+
+const columns = [
+  {
+    label: "ID",
+    field: "id",
+    sort: "asc",
+    width: 150,
+  },
+  {
+    label: "Shop",
+    field: "shop",
+    sort: "asc",
+    width: 270,
+  },
+  {
+    label: "Orders",
+    field: "orders",
+    sort: "asc",
+    width: 200,
+  },
+  {
+    label: "Order Amount",
+    field: "orderAmount",
+    sort: "asc",
+    width: 100,
+  },
+  {
+    label: "Delivery fee",
+    field: "deliveryFee",
+    sort: "asc",
+    width: 150,
+  },
+  {
+    label: "Drop earning",
+    field: "dropEarning",
+    sort: "asc",
+    width: 100,
+  },
+  {
+    label: "Unsettled Amount",
+    field: "unsettledAmount",
+    sort: "asc",
+    width: 100,
+  },
+  {
+    label: "Shop Earning",
+    field: "shopEarning",
+    sort: "asc",
+    width: 100,
+  },
+]
+
+
 
 
 const ShopsTransactions = () => {
@@ -134,7 +190,7 @@ const ShopsTransactions = () => {
     const { value } = filterType;
 
     const newList = sellerTrxs.filter((item) => (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] >= fromNum : item.summary[value] >= fromNum) && (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] <= toNum : item.summary[value] <= toNum));
-    console.log(newList)
+    console.log(newList);
     setFilteredTrxs(newList);
 
   }
@@ -144,6 +200,32 @@ const ShopsTransactions = () => {
     setFilterType('');
     setToNum(0);
     setFromNum(0);
+  }
+
+  // TABLE DATA 
+
+  const tableData = (data) => {
+
+
+    const modifiedData = data.map((trx, key) => {
+      return {
+        id: trx?.autoGenId,
+        shop: trx?.shopName,
+        orders: trx?.summary?.totalOrder,
+        orderAmount: trx?.summary?.orderValue?.deliveryFee ?? 0,
+        deliveryFee: trx?.summary?.orderValue?.deliveryFee ?? 0,
+        dropEarning: trx?.summary?.totalDropGet ?? 0,
+        unsettledAmount: trx?.summary?.totalDropGet ?? 0,
+        shopEarning: trx?.summary?.totalShopEarning ?? 0,
+        clickEvent: () => gotToShopTrxs(trx._id, trx?.shopName),
+
+      }
+    });
+    const newData = {
+      columns: columns,
+      rows: modifiedData
+    }
+    return newData;
   }
 
   return (
@@ -267,74 +349,17 @@ const ShopsTransactions = () => {
                   </Button>
                 </div>
                 <hr />
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>ID</Th>
-                      <Th>Shop</Th>
-                      <Th>Order</Th>
-                      <Th>Order amount</Th>
-                      <Th>Delivery fee</Th>
-                      <Th>Drop earning</Th>
-                      <Th>Unsettled amount</Th>
-                      <Th>Shop earning</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {filteredTrxs.length > 0 &&
-                      filteredTrxs.map((trx, index) => (
-                        <Tr
-                          key={index}
-                          className="align-middle cursor-pointer"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                          onClick={() => gotToShopTrxs(trx._id, trx?.shopName)}
-                        >
-                          <Td>{trx?.autoGenId}</Td>
-                          <Th title="Click to see Details">{trx?.shopName}</Th>
-
-                          <Td>{trx?.summary?.totalOrder}</Td>
-                          <Td>
-                            {trx?.summary?.orderValue?.productAmount.toFixed(2) ?? 0}
-                          </Td>
-                          <Td>{trx?.summary?.orderValue?.deliveryFee ?? 0}</Td>
-                          <Td>{trx?.summary?.totalDropGet ?? 0}</Td>
-                          <Td>{trx?.summary?.totalShopUnsettle ?? 0}</Td>
-                          <Td>{trx?.summary?.totalShopEarning ?? 0}</Td>
-                        </Tr>
-                      ))}
-                  </Tbody>
-                </Table>
                 {loading && (
                   <div className="text-center">
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {!loading && filteredTrxs.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Transations!</h4>
-                  </div>
-                )}
+                <MDBDataTable className="cursor-pointer" hover={true} responsive striped bordered data={tableData(filteredTrxs)} displayEntries={false} paging={false} searching={false} noBottomColumns={true} />
+
+
               </CardBody>
             </Card>
-            {/* <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(getDeliveryTrx(true, page))}
-                  />
-                </div>
-              </Col>
-            </Row> */}
+
           </Container>
         </div>
       </GlobalWrapper>

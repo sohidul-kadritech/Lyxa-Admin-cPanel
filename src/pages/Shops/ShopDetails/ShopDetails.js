@@ -49,6 +49,7 @@ const ShopDetails = () => {
   const [isImportProductOpen, setIsImportProductOpen] = useState(false);
   const [productsFile, setProductsFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(async () => {
     if (id) {
@@ -178,35 +179,36 @@ const ShopDetails = () => {
       if (!checkExt) {
         return successMsg('Upload valid products file');
 
-      } else {
-        let formData = new FormData();
-        formData.append("shopId", shop?._id);
-        formData.append("file", productsFile);
-
-        try {
-          setIsLoading(true);
-          const { data } = await requestApi().request(UPLOAD_PRODUCT_FILE, {
-            method: 'POST',
-            data: formData
-          });
-
-          console.log(data);
-
-          if (data?.data?.products.length > 0) {
-
-            setIsLoading(false);
-            successMsg(data?.message, 'success');
-            setIsImportProductOpen(false);
-          } else {
-            setIsLoading(false);
-            successMsg('No products file found', 'error');
-          }
-        } catch (e) {
-          setIsLoading(false);
-          console.log(e.message);
-        }
-
       }
+
+      let formData = new FormData();
+      formData.append("shopId", shop?._id);
+      formData.append("file", productsFile);
+
+      try {
+        setIsLoading(true);
+        const { data } = await requestApi().request(UPLOAD_PRODUCT_FILE, {
+          method: 'POST',
+          data: formData
+        });
+
+        console.log(data);
+
+        if (data?.data?.products.length > 0) {
+
+          setIsLoading(false);
+          successMsg(data?.message, 'success');
+          setIsImportProductOpen(false);
+        } else {
+          setIsLoading(false);
+          successMsg('No products file found', 'error');
+        }
+      } catch (e) {
+        setIsLoading(false);
+        console.log(e.message);
+      }
+
+
     }
 
 
@@ -218,7 +220,7 @@ const ShopDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"Details"}
               title="Shop"
               isRefresh={false}
@@ -261,16 +263,6 @@ const ShopDetails = () => {
                     <Button
                       outline={true}
                       color="success"
-                      onClick={setAsFeatured}
-                      className="me-3"
-                    >
-                      {!shop?.isFeatured
-                        ? "Set as featured"
-                        : "Remove featured"}
-                    </Button>
-                    <Button
-                      outline={true}
-                      color="success"
                       onClick={() => {
                         setModalCenter(!modalCenter);
                         document.body.classList.add("no_padding");
@@ -279,14 +271,28 @@ const ShopDetails = () => {
                     >
                       Add Deal
                     </Button>
-                    <Button
-                      outline={true}
-                      color="success"
-                      onClick={updateActiveStatus}
-                      className="me-3"
-                    >
-                      {shop?.shopStatus === "active" ? "Inactive" : "Activate"}
-                    </Button>
+                    {account_type === 'admin' && <>
+
+                      <Button
+                        outline={true}
+                        color="success"
+                        onClick={setAsFeatured}
+                        className="me-3"
+                      >
+                        {!shop?.isFeatured
+                          ? "Set as featured"
+                          : "Remove featured"}
+                      </Button>
+                      <Button
+                        outline={true}
+                        color="success"
+                        onClick={updateActiveStatus}
+                        className="me-3"
+                      >
+                        {shop?.shopStatus === "active" ? "Inactive" : "Activate"}
+                      </Button>
+
+                    </>}
                     <div>
                       <Switch
                         checked={liveStatus}

@@ -516,13 +516,14 @@ const AddBanner = () => {
                     onDrop={(acceptedFiles) => {
                       handleAcceptedFiles(acceptedFiles);
                     }}
+                    accept='.jpg, .jpeg, .png'
                   >
                     {({ getRootProps, getInputProps }) => (
                       <div className="dropzone">
                         <div
                           className="dz-message needsclick"
                           {...getRootProps()}
-                          // onClick={() => setmodal_fullscreen(true)}
+                        // onClick={() => setmodal_fullscreen(true)}
                         >
                           <input {...getInputProps()} />
                           <div className="mb-3">

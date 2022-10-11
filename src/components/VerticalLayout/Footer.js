@@ -8,8 +8,11 @@ const Footer = () => {
         <Container fluid={true}>
           <Row>
             <div className="col-12">
-              © Copyright {new Date().getFullYear()} Drop <span className="d-none d-sm-inline-block"> - All Rights Reserved 
-              {" "}<i className="mdi mdi-heart text-danger"></i> by drop.com .</span>
+              <p>
+                © {new Date().getFullYear()} LYXA | Developed by{" "}
+                <a href="https://www.kadritech.se">Kadritech AB</a> - Powered by
+                <a href="https://www.dataholic.info"> Dataholic</a>
+              </p>
             </div>
           </Row>
         </Container>

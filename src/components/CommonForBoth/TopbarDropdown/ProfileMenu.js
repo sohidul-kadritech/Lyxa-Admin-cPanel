@@ -78,17 +78,18 @@ const ProfileMenu = props => {
           id="page-header-user-dropdown"
           tag="button"
         >
-          <img
+          {/* <img
             className="rounded-circle header-profile-user"
             src={user1}
             alt="Header Avatar"
-          />
+          /> */}
+          <i class="fas fa-user-circle" style={{ fontSize: '24px' }} aria-hidden="true"></i>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
-          <DropdownItem tag="a" href="/profile">
+          {/* <DropdownItem tag="a" href="/profile">
             <i className="fa fa-user font-size-16 align-baseline me-2" />
             {props.t("Profile")}
-          </DropdownItem>
+          </DropdownItem> */}
           <DropdownItem tag="a" onClick={() => setIsChangePass(!isChangePass)}>
             <i className="fa fa-lock font-size-16 align-baseline me-2" />
             {props.t("Change Password")}

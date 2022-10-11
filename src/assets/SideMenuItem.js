@@ -197,9 +197,9 @@ export const adminMenuItem = [
   },
   {
     id: 10,
-    name: "Drop Pay",
+    name: "Lyxa Pay",
     icon: "fas fa-comment-dollar",
-    link: "/drop-pay",
+    link: "/lyxa-pay",
     isSubmenu: false,
   },
   {
@@ -610,6 +610,22 @@ export const shopMenuItem = [
     icon: "fas fa-cart-plus",
     link: "/orders/list",
     isSubmenu: false,
+  },
+  {
+    id: 7,
+    name: "My Shop",
+    icon: "fas fa-home",
+    link: "/#",
+    isSubmenu: true,
+    submenu: [
+      {
+        id: 70,
+        name: "List",
+        icon: "fas fa-clipboard-list",
+        link: "/shops/list",
+        isSubmenu: false,
+      },
+    ],
   },
   {
     id: 3,
