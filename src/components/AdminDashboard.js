@@ -57,7 +57,7 @@ const AdminDashboard = ({ summery }) => {
                 <Row>
 
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Drop Earning' value={`${summery?.totalDropEarning ?? 0} NGN`} icon={servicesIcon4} />
+                        <DashboardCard title='Lyxa  Earning' value={`${summery?.totalDropEarning ?? 0} NGN`} icon={servicesIcon4} />
                     </Col>
 
                     <Col xl={3} md={6}>

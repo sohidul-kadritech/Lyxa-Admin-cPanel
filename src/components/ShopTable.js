@@ -19,7 +19,7 @@ import {
 
 const ShopTable = ({ shops = [] }) => {
   const history = useHistory();
-  const dispatch = useDispatch();
+
 
   const { loading } = useSelector((state) => state.shopReducer);
 

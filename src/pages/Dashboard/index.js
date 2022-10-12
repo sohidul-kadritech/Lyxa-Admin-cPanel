@@ -5,32 +5,17 @@ import {
   Container,
   Row,
   Col,
-  Button,
   Card,
   CardBody,
-  Input,
-  Dropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu
+  Spinner,
+
 } from "reactstrap"
-import { Link } from "react-router-dom"
 
-// Custom Scrollbar
-import SimpleBar from "simplebar-react";
 
-// import images
-import servicesIcon1 from "../../assets/images/services-icon/01.png";
-import servicesIcon2 from "../../assets/images/services-icon/02.png";
-import servicesIcon3 from "../../assets/images/services-icon/03.png";
-import servicesIcon4 from "../../assets/images/services-icon/04.png";
-import user2 from "../../assets/images/users/user-2.jpg";
-import user3 from "../../assets/images/users/user-3.jpg";
-import user4 from "../../assets/images/users/user-4.jpg";
-import user5 from "../../assets/images/users/user-5.jpg";
-import user6 from "../../assets/images/users/user-6.jpg";
-import smimg1 from "../../assets/images/small/img-1.jpg";
-import smimg2 from "../../assets/images/small/img-2.jpg";
+
+
+
+
 
 // Charts
 import LineAreaChart from "../AllCharts/apex/lineareachart";
@@ -38,7 +23,7 @@ import RadialChart from "../AllCharts/apex/apexdonut";
 import Apexdonut from "../AllCharts/apex/apexdonut1";
 import SparkLine from "../AllCharts/sparkline/sparkline";
 import SparkLine1 from "../AllCharts/sparkline/sparkline1";
-import Salesdonut from "../AllCharts/apex/salesdonut";
+
 
 import GlobalWrapper from "../../components/GlobalWrapper";
 
@@ -48,20 +33,21 @@ import "chartist/dist/scss/chartist.scss";
 import { withTranslation } from "react-i18next"
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { getDashboardSummary } from '../../store/Dashboard/dashboardAction';
+import { getDashboardSummary, updateDashboardCardEndDate, updateDashboardCardStartDate } from '../../store/Dashboard/dashboardAction';
 import AdminDashboard from '../../components/AdminDashboard';
 import SellerDashboard from '../../components/SellerDashboard';
 import ShopDashboard from '../../components/ShopDashboard';
+import Flatpickr from "react-flatpickr";
+import OrdersGraph from '../../components/OrdersGraph';
 
 
 
-
-const Dashboard = props => {
+const Dashboard = () => {
 
   const [menu, setMenu] = useState(false);
   const dispatch = useDispatch();
 
-  const { summery } = useSelector((state) => state.dashboardReducer);
+  const { summery, startDate, endDate, loading } = useSelector((state) => state.dashboardReducer);
   const { account_type, adminType, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
   const toggle = () => {
@@ -69,10 +55,12 @@ const Dashboard = props => {
   }
 
   useEffect(() => {
+    if (startDate || endDate) {
+      dispatch(getDashboardSummary(account_type === 'admin' && adminType !== 'customerService' ? 'admin' : account_type === 'seller' ? 'seller' : 'shop'));
+    }
 
-    dispatch(getDashboardSummary(account_type === 'admin' && adminType !== 'customerService' ? 'admin' : account_type === 'seller' ? 'seller' : 'shop'));
 
-  }, [])
+  }, [startDate, endDate])
 
 
   return (
@@ -81,7 +69,7 @@ const Dashboard = props => {
         <GlobalWrapper>
 
           <MetaTags>
-            <title>Drop</title>
+            <title>Lyxa</title>
           </MetaTags>
           <Container fluid>
             <div className="page-title-box">
@@ -94,51 +82,67 @@ const Dashboard = props => {
                 </Col>
               </Row>
             </div>
+            <Card>
+              <CardBody>
 
+                <Row className='d-flex justify-content-center'>
+                  <Col lg={8}>
+                    <div className="d-flex my-3 my-md-0 ">
+                      <div className=" w-100">
+                        <label>Start Date</label>
+                        <div className="form-group mb-0 w-100">
+                          <Flatpickr
+                            className="form-control d-block"
+                            id="startDate"
+                            placeholder="Start Date"
+                            value={startDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateDashboardCardStartDate(dateStr))
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="ms-2 w-100">
+                        <label>End Date</label>
+                        <div className="form-group mb-0">
+                          <Flatpickr
+                            className="form-control w-100"
+                            id="endDate"
+                            placeholder="Select End Date"
+                            value={endDate}
+                            onChange={(selectedDates, dateStr, instance) =>
+                              dispatch(updateDashboardCardEndDate(dateStr))
+                            }
+                            options={{
+                              altInput: true,
+                              altFormat: "F j, Y",
+                              dateFormat: "Y-m-d",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+            {loading && (
+              <div className="text-center">
+                <Spinner animation="border" variant="info" />
+              </div>
+            )}
             <div>
               {account_type === 'admin' ? <AdminDashboard summery={summery} /> : account_type === 'seller' ? <SellerDashboard summery={summery} /> : <ShopDashboard summery={summery} />}
             </div>
 
             <Row>
               <Col xl={9}>
-                <Card>
-                  <CardBody>
-                    <h4 className="card-title mb-4">Monthly Earning</h4>
-                    <Row>
-                      <Col lg={7}>
-                        <div>
-                          <LineAreaChart />
-                        </div>
-                      </Col>
-                      <Col lg={5}>
-                        <Row>
-                          <Col md={6}>
-                            <div className="text-center">
-                              <p className="text-muted mb-4">This month</p>
-                              <h3>$34,252</h3>
-                              <p className="text-muted mb-5">
-                                It will be as simple as in fact it will be
-                                occidental.
-                              </p>
-                              <RadialChart />
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="text-center">
-                              <p className="text-muted mb-4">Last month</p>
-                              <h3>$36,253</h3>
-                              <p className="text-muted mb-5">
-                                It will be as simple as in fact it will be
-                                occidental.
-                              </p>
-                              <Apexdonut />
-                            </div>
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
+                <OrdersGraph type='order' />
               </Col>
 
               <Col xl={3}>
@@ -198,6 +202,17 @@ const Dashboard = props => {
             </Row>
 
             <Row>
+              <Col>
+                <OrdersGraph type='earning' />
+              </Col>
+            </Row>
+
+            {account_type === 'admin' && <Row>
+              <Col>
+                <OrdersGraph type='users' />
+              </Col>
+            </Row>}
+            {/* <Row>
               <Col xl={3}>
                 <Card>
                   <CardBody>
@@ -372,9 +387,9 @@ const Dashboard = props => {
                   </Col>
                 </Row>
               </Col>
-            </Row>
+            </Row> */}
 
-            <Row>
+            {/* <Row>
               <Col xl={8}>
                 <Card>
                   <CardBody>
@@ -687,7 +702,7 @@ const Dashboard = props => {
                   </CardBody>
                 </Card>
               </Col>
-            </Row>
+            </Row> */}
           </Container>
 
         </GlobalWrapper>

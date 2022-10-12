@@ -47,7 +47,7 @@ const SellerDashboard = ({ summery }) => {
                         <DashboardCard title='Shops' value={summery?.totalShops ?? 0} icon={servicesIcon4} />
                     </Col>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Delivery Fees' value={summery?.deliveryFeeAmount} icon={servicesIcon3} />
+                        <DashboardCard title='Delivery Fees' value={`${summery?.deliveryFeeAmount ?? 0} NGN`} icon={servicesIcon3} />
                     </Col>
                     <Col xl={3} md={6}>
                         <DashboardCard title='Unsettled amounts' value={`${summery?.totalSellerUnsettle ?? 0} NGN`} icon={servicesIcon4} />

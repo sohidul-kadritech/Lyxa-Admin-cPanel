@@ -14,6 +14,11 @@ export const liveStatusOptions = [
   { label: "Busy", value: "busy" },
 ];
 
+export const graphFilterOptions = [
+  { label: "Yearly", value: "year" },
+  { label: "Daily", value: "normal" },
+];
+
 export const liveStatusOptionsOfRider = [
   { label: "All", value: "all" },
   { label: "online", value: "Available" },

@@ -83,7 +83,7 @@ const ProfileMenu = props => {
             src={user1}
             alt="Header Avatar"
           /> */}
-          <i class="fas fa-user-circle" style={{ fontSize: '24px' }} aria-hidden="true"></i>
+          <i className="fas fa-user-circle" style={{ fontSize: '24px' }} aria-hidden="true"></i>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
           {/* <DropdownItem tag="a" href="/profile">

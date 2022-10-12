@@ -1,10 +1,13 @@
+import moment from "moment";
 import * as actionType from "../actionType";
 
 const initialState = {
     loading: false,
     status: false,
     error: null,
-    summery: null
+    summery: null,
+    startDate: moment().startOf("month").format("YYYY-MM-DD"),
+    endDate: moment().endOf("month").format("YYYY-MM-DD"),
 }
 
 const dashboardReducer = (state = initialState, action) => {
@@ -12,7 +15,7 @@ const dashboardReducer = (state = initialState, action) => {
     const { payload, type } = action;
 
     switch (type) {
-        case actionType.ADD_SELLER_REQUEST_SEND:
+        case actionType.GET_DASHBOARD_SUMMARY_REQUEST_SEND:
             return {
                 ...state,
                 loading: true,
@@ -32,6 +35,18 @@ const dashboardReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: payload
+            }
+
+        case actionType.UPDATE_DASHBOARD_CARD_START_DATE_FILTER:
+            return {
+                ...state,
+                startDate: payload
+            }
+
+        case actionType.UPDATE_DASHBOARD_CARD_END_DATE_FILTER:
+            return {
+                ...state,
+                endDate: payload
             }
 
         default:

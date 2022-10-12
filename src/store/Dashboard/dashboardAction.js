@@ -6,14 +6,19 @@ export const getDashboardSummary =
     (userType) =>
         async (dispatch, getState) => {
 
-
+            const { startDate, endDate } = getState().dashboardReducer;
 
             try {
                 dispatch({
                     type: actionType.GET_DASHBOARD_SUMMARY_REQUEST_SEND,
                 });
 
-                const { data } = await requestApi().request(userType === 'admin' ? GET_DASHBOARD_SUMMARY : userType === 'seller' ? GET_SELLER_DASHBOARD_SUMMARY : GET_SHOP_DASHBOARD_SUMMARY);
+                const { data } = await requestApi().request(userType === 'admin' ? GET_DASHBOARD_SUMMARY : userType === 'seller' ? GET_SELLER_DASHBOARD_SUMMARY : GET_SHOP_DASHBOARD_SUMMARY, {
+                    params: {
+                        startDate,
+                        endDate
+                    }
+                });
 
                 console.log({ data });
 
@@ -37,3 +42,25 @@ export const getDashboardSummary =
             }
 
         };
+
+
+export const updateOrderGraph = (startDate) => (dispatch) => {
+    dispatch({
+        type: actionType.UPDATE_DASHBOARD_CARD_START_DATE_FILTER,
+        payload: startDate,
+    });
+};
+
+export const updateDashboardCardStartDate = (startDate) => (dispatch) => {
+    dispatch({
+        type: actionType.UPDATE_DASHBOARD_CARD_START_DATE_FILTER,
+        payload: startDate,
+    });
+};
+
+export const updateDashboardCardEndDate = (date) => (dispatch) => {
+    dispatch({
+        type: actionType.UPDATE_DASHBOARD_CARD_END_DATE_FILTER,
+        payload: date,
+    });
+};

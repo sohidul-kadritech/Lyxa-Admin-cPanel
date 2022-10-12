@@ -21,6 +21,10 @@ export const GET_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard";
 export const GET_SELLER_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/seller";
 export const GET_SHOP_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/shop";
 
+export const ADMIN_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/orders";
+export const SELLER_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/seller/graph/orders";
+export const SHOP_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/graph/orders";
+
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
 export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";
