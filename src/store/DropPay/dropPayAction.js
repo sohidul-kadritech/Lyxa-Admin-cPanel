@@ -11,7 +11,7 @@ import * as actionType from "../actionType";
 export const getAllDropPay =
   (refresh = false, page = 1) =>
     async (dispatch, getState) => {
-      const { sortByKey, startDate, endDate, credits } =
+      const { sortByKey, startDate, endDate, credits, searchKey } =
         getState().dropPayReducer;
 
       if (credits.length < 1 || refresh) {
@@ -29,6 +29,7 @@ export const getAllDropPay =
               endDate,
               sortBy: sortByKey.value,
               pageSize: 50,
+              searchKey
             },
           });
 
@@ -167,6 +168,13 @@ export const withdrawUserAmount = (values) => async (dispatch) => {
       payload: error.message,
     });
   }
+};
+
+export const updateLyxaPaySearchKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_LYXA_PAY_SEARCH_KEY,
+    payload: value,
+  });
 };
 
 export const updateDropPaySortByKey = (type) => (dispatch) => {

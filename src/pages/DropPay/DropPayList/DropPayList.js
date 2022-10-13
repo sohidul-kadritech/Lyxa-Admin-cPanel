@@ -23,12 +23,14 @@ import {
   getAllDropPay,
   addUserAmount,
   withdrawUserAmount,
+  updateLyxaPaySearchKey,
 } from "../../../store/DropPay/dropPayAction";
 import { updateSearchKey, userList } from "../../../store/Users/UsersAction";
 
 import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import Search from "../../../components/Search";
 
 const DropPayList = () => {
   const dispatch = useDispatch();
@@ -44,6 +46,7 @@ const DropPayList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    searchKey: dropPaySearchKey
   } = useSelector((state) => state.dropPayReducer);
   const { searchKey } = useSelector((state) => state.usersReducer);
 
@@ -51,10 +54,10 @@ const DropPayList = () => {
   const [balAddModal, setBalAddModal] = useState(false);
 
   useEffect(() => {
-    if (sortByKey || startDate || endDate) {
+    if (sortByKey || startDate || endDate || dropPaySearchKey) {
       callDropPayList(true);
     }
-  }, [sortByKey, startDate, endDate]);
+  }, [sortByKey, startDate, endDate, dropPaySearchKey]);
 
   useEffect(() => {
     if (searchKey) {
@@ -145,6 +148,13 @@ const DropPayList = () => {
                     </div>
                   </Col>
                 </Row>
+
+                <Row className="d-flex justify-content-center">
+                  <Col lg={8}>
+                    <Search dispatchFunc={updateLyxaPaySearchKey} placeholder="Search by id or customer name or email" />
+                  </Col>
+                </Row>
+
               </CardBody>
             </Card>
 
@@ -153,7 +163,7 @@ const DropPayList = () => {
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between">
-                  <CardTitle>Drop Pay List</CardTitle>
+                  <CardTitle>Lyxa Pay List</CardTitle>
 
                   <Button
                     outline={true}

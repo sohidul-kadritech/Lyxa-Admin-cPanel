@@ -43,45 +43,49 @@ export const createNotification = (values) => async (dispatch) => {
 
 export const getAllNotifications =
   (refresh = false, page = 1) =>
-  async (dispatch, getState) => {
-    const { notifications, activeStatus, type, accountType } =
-      getState().notificationReducer;
+    async (dispatch, getState) => {
+      const { notifications, activeStatus, type, accountType } =
+        getState().notificationReducer;
 
-    if (notifications.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.ALL_NOTIFICATIONS_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(GET_NOTIFICATIONS, {
-          params: {
-            page,
-            pageSize: 50,
-            status: activeStatus.value,
-            type: type.value,
-            accountType: accountType.value,
-          },
-        });
-
-        if (data.status) {
+      if (notifications.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.ALL_NOTIFICATIONS_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionType.ALL_NOTIFICATIONS_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(GET_NOTIFICATIONS, {
+            params: {
+              page,
+              pageSize: 50,
+              sortBy: 'asc',
+              status: activeStatus.value,
+              type: type.value,
+              accountType: accountType.value,
+
+            },
+          });
+
+
+
+          if (data.status) {
+            dispatch({
+              type: actionType.ALL_NOTIFICATIONS_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionType.ALL_NOTIFICATIONS_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.ALL_NOTIFICATIONS_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.ALL_NOTIFICATIONS_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // UPDATE STATUS
 

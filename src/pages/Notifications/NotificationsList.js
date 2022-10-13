@@ -187,8 +187,8 @@ const NotificationsList = () => {
                               >
                                 <button
                                   className={`btn ${item.status === "active"
-                                      ? "btn-info"
-                                      : "btn-danger"
+                                    ? "btn-info"
+                                    : "btn-danger"
                                     } button me-0 me-xl-2`}
                                   onClick={() =>
                                     updateStatus(item?._id, item?.status)

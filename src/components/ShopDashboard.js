@@ -30,10 +30,10 @@ const ShopDashboard = ({ summery }) => {
                         <DashboardCard title='cancel orders' value={summery?.totalCancelOrder ?? 0} icon={servicesIcon2} />
                     </Col>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Orders Amount' value={summery?.orderAmount} icon={servicesIcon3} />
+                        <DashboardCard title='Orders Amount' value={`${summery?.orderAmount} NGN`} icon={servicesIcon3} />
                     </Col>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='profit from orders Items' value={summery?.profitFromOrderItems} icon={servicesIcon3} />
+                        <DashboardCard title='profit from orders Items' value={`${summery?.profitFromOrderItems} NGN`} icon={servicesIcon3} />
                     </Col>
 
 
@@ -41,10 +41,13 @@ const ShopDashboard = ({ summery }) => {
 
                 <Row>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Earnings' value={`${summery?.shopEarning ?? 0} NGN`} icon={servicesIcon4} />
+                        <DashboardCard title='Shop Earnings' value={`${summery?.shopEarning ?? 0} NGN`} icon={servicesIcon4} />
                     </Col>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Delivery Fees' value={summery?.deliveryFeeAmount} icon={servicesIcon3} />
+                        <DashboardCard title='Delivery Fees' value={`${!summery?.deliveryFeeAmount ? 0 : summery?.deliveryFeeAmount} NGN`} icon={servicesIcon3} />
+                    </Col>
+                    <Col xl={3} md={6}>
+                        <DashboardCard title='Profit from delivery fees' value={`${summery?.profitFromDeliveryFee} NGN`} icon={servicesIcon3} />
                     </Col>
                     <Col xl={3} md={6}>
                         <DashboardCard title='Unsettled amounts' value={`${summery?.shopUnsettleAmount ?? 0} NGN`} icon={servicesIcon4} />

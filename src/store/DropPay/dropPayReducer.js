@@ -14,6 +14,7 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  searchKey: ""
 };
 
 const dropPayReducer = (state = initialState, action) => {
@@ -111,6 +112,12 @@ const dropPayReducer = (state = initialState, action) => {
       return {
         ...state,
         endDate: payload,
+      };
+
+    case actionType.UPDATE_LYXA_PAY_SEARCH_KEY:
+      return {
+        ...state,
+        searchKey: payload,
       };
 
     default:

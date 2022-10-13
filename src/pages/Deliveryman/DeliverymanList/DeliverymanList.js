@@ -158,7 +158,8 @@ const DeliverymanList = () => {
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
-                      <Th>Live Status</Th>
+                      <Th>Live status</Th>
+                      <Th>Current availability</Th>
                       <Th>Orders</Th>
                       <Th>Action</Th>
                     </Tr>
@@ -187,6 +188,11 @@ const DeliverymanList = () => {
                             {item?.liveStatus === "online"
                               ? "Available"
                               : "Unavailable"}
+                          </Td>
+                          <Td>
+                            {item?.availability
+                              ? "Available"
+                              : "Busy"}
                           </Td>
                           <Td>{item?.totalOrder}</Td>
                           <Td>
