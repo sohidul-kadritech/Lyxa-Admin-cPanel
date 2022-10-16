@@ -16,6 +16,7 @@ import { adminAuth, apiError } from "../../store/actions";
 
 // import images
 import logoSm from "../../assets/images/drop_logo.png";
+import lyxaLogo from "../../assets/images/lyxa.png";
 import { toast } from "react-toastify";
 import GlobalWrapper from "./../../components/GlobalWrapper";
 import {
@@ -26,6 +27,7 @@ import {
   Switch,
 } from "@mui/material";
 import { FormControlLabel } from "@material-ui/core";
+import Footer from "../../components/VerticalLayout/Footer";
 
 const Login = (props) => {
   const history = useHistory();
@@ -92,7 +94,7 @@ const Login = (props) => {
                         Sign in to continue to Lyxa.
                       </p>
                       <Link to="/" className="logo logo-admin">
-                        <img src={logoSm} height="24" alt="logo" />
+                        <img src={lyxaLogo} height="24" alt="logo" />
                       </Link>
                     </div>
                   </div>
@@ -186,12 +188,7 @@ const Login = (props) => {
                     </div>
                   </CardBody>
                 </Card>
-                <div className="mt-5 text-center">
-                  <p>
-                    © {new Date().getFullYear()} Drop Crafted with{" "}
-                    <i className="mdi mdi-heart text-danger" /> by drop.com
-                  </p>
-                </div>
+                <Footer />
               </Col>
             </Row>
           </Container>
