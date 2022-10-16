@@ -190,7 +190,7 @@ const ShopsTransactions = () => {
     const { value } = filterType;
 
     const newList = sellerTrxs.filter((item) => (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] >= fromNum : item.summary[value] >= fromNum) && (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] <= toNum : item.summary[value] <= toNum));
-    console.log(newList);
+
     setFilteredTrxs(newList);
 
   }

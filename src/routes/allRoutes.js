@@ -361,6 +361,10 @@ const sellerRoutes = [
     path: "/app-wallet/seller/shops-transactions",
     component: ShopsTransactions,
   },
+  {
+    path: "/add-wallet/shop-transactions",
+    component: SingleShopTransactions,
+  },
   { path: "/seller/credentials/list", component: SellerCredentialsList },
   { path: "/admin/create", component: CreateAdmin },
 

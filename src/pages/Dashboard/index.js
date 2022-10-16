@@ -12,11 +12,6 @@ import {
 } from "reactstrap"
 
 
-
-
-
-
-
 // Charts
 import LineAreaChart from "../AllCharts/apex/lineareachart";
 import RadialChart from "../AllCharts/apex/apexdonut";
@@ -38,6 +33,7 @@ import AdminDashboard from '../../components/AdminDashboard';
 import SellerDashboard from '../../components/SellerDashboard';
 import ShopDashboard from '../../components/ShopDashboard';
 import Flatpickr from "react-flatpickr";
+import Graph from '../../components/Graph';
 import OrdersGraph from '../../components/OrdersGraph';
 
 
@@ -50,9 +46,6 @@ const Dashboard = () => {
   const { summery, startDate, endDate, loading } = useSelector((state) => state.dashboardReducer);
   const { account_type, adminType, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
-  const toggle = () => {
-    setMenu(!menu)
-  }
 
   useEffect(() => {
     if (startDate || endDate) {
@@ -141,11 +134,12 @@ const Dashboard = () => {
             </div>
 
             <Row>
-              <Col xl={9}>
-                <OrdersGraph type='order' />
+              <Col>
+                {/* <Graph type='order' /> */}
+                <OrdersGraph />
               </Col>
 
-              <Col xl={3}>
+              {/* <Col xl={3}>
                 <Card>
                   <CardBody>
                     <div>
@@ -198,18 +192,18 @@ const Dashboard = () => {
                     </div>
                   </CardBody>
                 </Card>
-              </Col>
+              </Col> */}
             </Row>
 
             <Row>
               <Col>
-                <OrdersGraph type='earning' />
+                {/* <Graph type='earning' /> */}
               </Col>
             </Row>
 
             {account_type === 'admin' && <Row>
               <Col>
-                <OrdersGraph type='users' />
+                {/* <Graph type='users' /> */}
               </Col>
             </Row>}
             {/* <Row>

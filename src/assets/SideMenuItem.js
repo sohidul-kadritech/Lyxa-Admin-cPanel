@@ -661,7 +661,7 @@ export const shopMenuItem = [
         id: 41,
         name: "Shop TRX",
         icon: "fas fa-exchange-alt",
-        link: `/add-wallet/shop-transactions`,
+        link: "/add-wallet/shop-transactions",
         isSubmenu: false,
       },
     ],
