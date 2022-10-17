@@ -196,11 +196,11 @@ const Dashboard = () => {
               </Col> */}
             </Row>
 
-            {/* <Row>
+            <Row>
               <Col>
                 <EarningsGraph />
               </Col>
-            </Row> */}
+            </Row>
 
             {account_type === 'admin' && <Row>
               <Col>

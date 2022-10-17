@@ -12,11 +12,11 @@ import {
     Spinner,
 
 } from "reactstrap"
-import { graphFilterOptions } from "../assets/staticData";
+import { graphFilterOptions, monthOptions } from "../assets/staticData";
 import { ADMIN_DASHBOARD_ORDER_GRAPH, SELLER_DASHBOARD_ORDER_GRAPH, SHOP_DASHBOARD_ORDER_GRAPH } from "../network/Api";
 import requestApi from "../network/httpRequest";
 
-const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, endDateValue, chartData = {}, isLoading, yearValue, graphType }) => {
+const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, endDateValue, chartData = {}, isLoading, yearValue, graphType, getMonth }) => {
 
     const { account_type, adminType, _id: Id } = JSON.parse(localStorage.getItem("admin"));
     // const [orderFilterType, setOrderFilterType] = useState({ label: "Daily", value: "normal" });
@@ -98,6 +98,9 @@ const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, end
     //     }
     // }, [data])
 
+    const checkDate = (e) => {
+
+    }
 
     return (
         <React.Fragment>
@@ -121,8 +124,22 @@ const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, end
                         <Col lg={8}>
                             {type.value === 'year' ? <div>
                                 <label>Year</label>
-                                <input type="number" className="form-control" placeholder="Enter year"  min={2021} max={new Date().getFullYear()} value={yearValue} onChange={(e) => year(e.target.value)} />
-                            </div> : <div className="d-flex my-3 my-md-0 ">
+                                <input type="number" className="form-control" placeholder="Enter year" min={2021} max={new Date().getFullYear()} value={yearValue} onChange={(e) => year(e.target.value)} />
+                            </div> : type.value === 'month' ? <Row>
+                                <Col md={6}>
+                                    <div className="mb-4">
+                                        <label className="control-label">Select Month</label>
+                                        <Select
+                                            palceholder="Select Status"
+                                            options={monthOptions}
+                                            classNamePrefix="select2-selection"
+                                            // value={type}
+                                            onChange={getMonth}
+                                        />
+                                    </div>
+                                </Col>
+
+                            </Row> : <div className="d-flex my-3 my-md-0 ">
                                 <div className=" w-100">
                                     <label>Start Date</label>
                                     <div className="form-group mb-0 w-100">

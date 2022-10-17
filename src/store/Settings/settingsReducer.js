@@ -6,18 +6,17 @@ const initialState = {
   error: null,
   googleMapKey: "",
   appSettingsOptions: {
-    nearByShopKm: 0,
+    nearByShopKm: "",
     deliveryFeePerKm: "",
-    maxDiscount: 0,
+    maxDiscount: "",
     searchDeliveryBoyKm: [],
-    maxCustomerServiceValue: 0
+    maxCustomerServiceValue: ""
   },
 
   dropCharge: null,
   cancelReasons: [],
   typeKey: "all",
   activeStatus: "all",
-  maxDiscount: 0,
   sellersDropCharge: [],
   paginate: null,
   paging: [],

@@ -38,11 +38,11 @@ const AppSettings = () => {
   }, []);
 
   const updateSettings = () => {
-    if (!appSettingsOptions.nearByShopKm) {
+    if (!appSettingsOptions?.nearByShopKm) {
       return successMsg("Enter Near By Shop Distance(KM)");
     }
 
-    if (!appSettingsOptions.maxDiscount) {
+    if (!appSettingsOptions?.maxDiscount) {
       return successMsg("Enter Max Discount Amount");
     }
 
@@ -102,8 +102,9 @@ const AppSettings = () => {
                       id="outlined-basic"
                       label="Max Discount(Amount)"
                       variant="outlined"
-                      placeholder="Enter near shop Distance"
-                      value={appSettingsOptions?.maxDiscount}
+                      placeholder="Enter max discount"
+                      value={appSettingsOptions?.maxDiscount ?? 0}
+
                       onChange={(e) =>
                         dispatch(updateMaxDiscount(e.target.value))
                       }
@@ -118,7 +119,8 @@ const AppSettings = () => {
                       label="Drop pay limit credit"
                       variant="outlined"
                       placeholder="Enter drop pay limit credit "
-                      value={appSettingsOptions?.maxCustomerServiceValue}
+                      value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
+
                       onChange={(e) =>
                         dispatch(updateDropCreditLimit(e.target.value))
                       }
@@ -135,7 +137,8 @@ const AppSettings = () => {
                       label="Near Shop Distance(KM)"
                       variant="outlined"
                       placeholder="Enter near shop Distance"
-                      value={appSettingsOptions?.nearByShopKm}
+                      value={appSettingsOptions?.nearByShopKm ?? 0}
+
                       onChange={(e) =>
                         dispatch(updateNearByShopKey(e.target.value))
                       }
@@ -156,9 +159,9 @@ const AppSettings = () => {
                       onChange={(e) => setAreaChangeKey(e.target.value)}
                       required
                     />
-                    {appSettingsOptions?.searchDeliveryBoyKm.length > 0 && (
+                    {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
                       <Paper className="mt-4 p-3">
-                        {appSettingsOptions?.searchDeliveryBoyKm.map(
+                        {appSettingsOptions?.searchDeliveryBoyKm?.map(
                           (item, index) => (
                             <div className="tag__wrapper" key={index}>
                               {item}
