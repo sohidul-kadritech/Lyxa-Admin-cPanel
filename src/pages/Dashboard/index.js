@@ -35,6 +35,7 @@ import ShopDashboard from '../../components/ShopDashboard';
 import Flatpickr from "react-flatpickr";
 import Graph from '../../components/Graph';
 import OrdersGraph from '../../components/OrdersGraph';
+import EarningsGraph from '../../components/EarningsGraph';
 
 
 
@@ -195,11 +196,11 @@ const Dashboard = () => {
               </Col> */}
             </Row>
 
-            <Row>
+            {/* <Row>
               <Col>
-                {/* <Graph type='earning' /> */}
+                <EarningsGraph />
               </Col>
-            </Row>
+            </Row> */}
 
             {account_type === 'admin' && <Row>
               <Col>

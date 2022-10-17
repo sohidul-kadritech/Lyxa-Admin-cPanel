@@ -1,11 +1,11 @@
 
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { ADMIN_DASHBOARD_ORDER_GRAPH, SELLER_DASHBOARD_ORDER_GRAPH, SHOP_DASHBOARD_ORDER_GRAPH } from "../network/Api";
+import { ADMIN_DASHBOARD_EARNING_GRAPH, ADMIN_DASHBOARD_ORDER_GRAPH, SELLER_DASHBOARD_EARNING_GRAPH, SELLER_DASHBOARD_ORDER_GRAPH, SHOP_DASHBOARD_EARNING_GRAPH, SHOP_DASHBOARD_ORDER_GRAPH } from "../network/Api";
 import requestApi from "../network/httpRequest";
 import Graph from "./Graph";
 
-const OrdersGraph = () => {
+const EarningsGraph = ({ type }) => {
 
     const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
     const [filterType, setFilterType] = useState({ label: "Daily", value: "normal" });
@@ -24,7 +24,7 @@ const OrdersGraph = () => {
             if (year || startDate || endDate) {
                 setIsLoading(true)
                 try {
-                    const { data } = await requestApi().request(account_type === 'admin' ? ADMIN_DASHBOARD_ORDER_GRAPH : account_type === 'seller' ? SELLER_DASHBOARD_ORDER_GRAPH : SHOP_DASHBOARD_ORDER_GRAPH, {
+                    const { data } = await requestApi().request(account_type === 'admin' ? ADMIN_DASHBOARD_EARNING_GRAPH : account_type === 'seller' ? SELLER_DASHBOARD_EARNING_GRAPH : SHOP_DASHBOARD_EARNING_GRAPH, {
                         params: {
                             startDate,
                             endDate,
@@ -87,4 +87,4 @@ const OrdersGraph = () => {
 
 };
 
-export default OrdersGraph;
+export default EarningsGraph;

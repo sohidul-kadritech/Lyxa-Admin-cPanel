@@ -25,6 +25,10 @@ export const ADMIN_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/or
 export const SELLER_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/seller/graph/orders";
 export const SHOP_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/graph/orders";
 
+export const ADMIN_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/earnings";
+export const SELLER_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/seller/graph/earnings";
+export const SHOP_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/graph/earnings";
+
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
 export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";
@@ -185,7 +189,6 @@ export const SINGLE_DELIVERY_TRX =
   ADMIN_ENDPOINT + "/drop-wallet/single-delivery-boy-info";
 export const DROP_TRX = ADMIN_ENDPOINT + "/wallet/admin";
 export const ALL_TRX = ADMIN_ENDPOINT + "/drop-wallet/transection";
-
 export const SHOP_MAKE_PAYMENT =
   ADMIN_ENDPOINT + "/drop-wallet/settle-amount-seller";
 

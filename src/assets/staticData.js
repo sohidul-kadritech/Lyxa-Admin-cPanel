@@ -17,7 +17,18 @@ export const liveStatusOptions = [
 export const graphFilterOptions = [
   { label: "Yearly", value: "year" },
   { label: "Daily", value: "normal" },
+  // { label: "Monthly", value: "month" },
 ];
+
+// export const monthOptions = [
+//   { label: "January", value: "january" },
+//   { label: "January", value: "january" },
+//   { label: "January", value: "january" },
+//   { label: "January", value: "january" },
+//   { label: "January", value: "january" },
+//   { label: "January", value: "january" },
+
+// ]
 
 export const liveStatusOptionsOfRider = [
   { label: "All", value: "all" },

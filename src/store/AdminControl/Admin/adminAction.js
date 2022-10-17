@@ -65,7 +65,6 @@ export const getAllAdmin =
           const { data } = await requestApi().request(GET_ALL_ADMIN);
 
 
-
           if (data.status) {
             dispatch({
               type: actionType.GET_ALL_ADMIN_REQUEST_SUCCESS,

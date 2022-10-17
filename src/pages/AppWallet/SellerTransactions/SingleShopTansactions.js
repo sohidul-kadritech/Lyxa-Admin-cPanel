@@ -78,14 +78,16 @@ const SingleShopTransactions = () => {
   const [shopId, setShopId] = useState("");
   const [adminSearchKey, setAdminSearchKey] = useState('');
 
-  const { shopName: name, _id: accountId } = JSON.parse(
+  const { shopName: name, _id: accountId, account_type } = JSON.parse(
     localStorage.getItem("admin")
   );
 
   const { admins } = useSelector((state) => state.adminReducer);
 
   useEffect(() => {
-    dispatch(getAllAdmin(true));
+    if (account_type !== 'shop') {
+      dispatch(getAllAdmin(true));
+    }
   }, [])
 
   useEffect(() => {
@@ -208,7 +210,7 @@ const SingleShopTransactions = () => {
                   </Col>
 
 
-                  <Col lg={4}>
+                  {account_type !== 'shop' && <Col lg={4}>
                     <label>Transaction By</label>
                     <AdminFilter>
                       <Autocomplete
@@ -250,11 +252,11 @@ const SingleShopTransactions = () => {
                         )}
                       />
                     </AdminFilter>
-                  </Col>
+                  </Col>}
 
                 </Row>
 
-                <Row className="mt-2">
+                <Row className="mt-3">
                   <Col lg={3}>
                     <div>
                       <label className="control-label"> Transaction Type</label>
@@ -314,7 +316,7 @@ const SingleShopTransactions = () => {
 
                 </Row>
 
-                <Row className="mt-3 d-flex justify-content-center">
+                <Row className="mt-3">
                   <Col lg={6}>
                     <Search dispatchFunc={updateShopSearchKey} placeholder="Search by id" />
                   </Col>
