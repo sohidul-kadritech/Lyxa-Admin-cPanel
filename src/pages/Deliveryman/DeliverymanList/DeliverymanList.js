@@ -226,6 +226,7 @@ const DeliverymanList = () => {
                                   className="btn btn-warning button me-0 me-lg-2"
                                   onClick={() => {
                                     setTrack(true);
+                                    console.log({ item })
                                     setRider(item)
                                   }}
                                 >
@@ -335,7 +336,6 @@ const DeliverymanList = () => {
           </div>
           <div
             className="modal-body py-1"
-          // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
           >
 
             <div className='my-3'>
@@ -343,7 +343,7 @@ const DeliverymanList = () => {
               <Info title='Checking time' value={moment(new Date()).format("MMMM Do YYYY, h:mm:ss a")} />
             </div>
 
-            {rider?.location ? <Map lat={rider?.location?.coordinates[0]} lng={rider?.location?.coordinates[1]} /> : <h5 className="text-center">No location found!</h5>}
+            {rider?.location ? <Map lat={rider?.location?.coordinates[1]} lng={rider?.location?.coordinates[0]} /> : <h5 className="text-center">No location found!</h5>}
           </div>
         </Modal>
 

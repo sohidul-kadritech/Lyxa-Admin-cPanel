@@ -242,7 +242,7 @@ export const addPercentage = (values) => async (dispatch) => {
       data: values,
     });
 
-
+    console.log({ data });
 
     if (data.status) {
       const { charge } = data?.data;

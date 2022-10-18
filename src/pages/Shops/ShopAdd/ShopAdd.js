@@ -88,7 +88,7 @@ const ShopAdd = () => {
   const [shopName, setShopName] = useState("");
   const [shopLogo, setShopLogo] = useState(null);
   const [shopBanner, setShopBanner] = useState(null);
-  const [shopPhotos, setShopPhotos] = useState(null);
+
   const [shopStatus, setShopStatus] = useState("");
   const [minOrderAmount, setMinOrderAmount] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -182,7 +182,6 @@ const ShopAdd = () => {
       shopEndTimeText,
       shopLogo,
       shopName,
-      shopPhotos,
       shopStartTimeText,
       shopStatus,
       tags,
@@ -199,7 +198,6 @@ const ShopAdd = () => {
     setPhone(phone_number);
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
-    setShopPhotos(shopPhotos[0]);
     setSeller(seller);
     setShopStartTime(shopStartTimeText);
     setShopEndTime(shopEndTimeText);
@@ -276,7 +274,7 @@ const ShopAdd = () => {
     if (!id && !address) {
       return successMsg("Select Shop Address");
     }
-    if (!shopLogo || !shopBanner || !shopPhotos) {
+    if (!shopLogo || !shopBanner) {
       return successMsg("Choose Image");
     }
 
@@ -292,7 +290,6 @@ const ShopAdd = () => {
   const uploadImages = async () => {
     let logoUrl = null;
     let bannerUrl = null;
-    let photosUrl = null;
     setIsLoading(true);
     if (shopLogo) {
       if (typeof shopLogo == "string") {
@@ -308,17 +305,11 @@ const ShopAdd = () => {
         bannerUrl = await imageUploadToServer(shopBanner);
       }
     }
-    if (shopPhotos) {
-      if (typeof shopPhotos == "string") {
-        photosUrl = shopPhotos;
-      } else {
-        photosUrl = await imageUploadToServer(shopPhotos);
-      }
-    }
 
-    if (logoUrl && bannerUrl && photosUrl) {
+
+    if (logoUrl && bannerUrl) {
       setIsLoading(false);
-      submitData(logoUrl, bannerUrl, photosUrl);
+      submitData(logoUrl, bannerUrl);
     }
   };
 
@@ -363,7 +354,6 @@ const ShopAdd = () => {
           shopType: seller.sellerType,
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
-          shopPhotos: photosUrl,
           shopStatus: shopStatus,
           shopDescription: "desrcriptions",
 
@@ -416,7 +406,6 @@ const ShopAdd = () => {
           tags: tags.items,
           shopLogo: logoUrl,
           shopBanner: bannerUrl,
-          shopPhotos: photosUrl,
           shopDescription: "desrcriptions",
           cuisineType: cuisinesList,
           liveStatus,
@@ -487,7 +476,6 @@ const ShopAdd = () => {
         setPinCode("");
         setShopLogo(null);
         setShopBanner(null);
-        setShopPhotos(null);
         setSelectedCuisines([]);
         setSearchCuisineKey("");
         setLiveStatus("");
@@ -511,10 +499,8 @@ const ShopAdd = () => {
 
     if (type === "logo") {
       setShopLogo(files[0]);
-    } else if (type === "banner") {
-      setShopBanner(files[0]);
     } else {
-      setShopPhotos(files[0]);
+      setShopBanner(files[0]);
     }
   };
 
@@ -1212,7 +1198,7 @@ const ShopAdd = () => {
                     </Col>
                   </Row>
 
-                  <Row>
+                  {/* <Row>
                     <Col xl={6}>
                       <Label>Shop Photos</Label>
                       <div className="mb-5">
@@ -1305,7 +1291,7 @@ const ShopAdd = () => {
                         </div>
                       </div>
                     </Col>
-                  </Row>
+                  </Row> */}
 
                   <div className="my-5 d-flex justify-content-center">
                     <Button

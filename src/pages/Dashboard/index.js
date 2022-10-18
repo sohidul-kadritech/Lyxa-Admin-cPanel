@@ -12,12 +12,7 @@ import {
 } from "reactstrap"
 
 
-// Charts
-import LineAreaChart from "../AllCharts/apex/lineareachart";
-import RadialChart from "../AllCharts/apex/apexdonut";
-import Apexdonut from "../AllCharts/apex/apexdonut1";
-import SparkLine from "../AllCharts/sparkline/sparkline";
-import SparkLine1 from "../AllCharts/sparkline/sparkline1";
+
 
 
 import GlobalWrapper from "../../components/GlobalWrapper";
@@ -33,9 +28,9 @@ import AdminDashboard from '../../components/AdminDashboard';
 import SellerDashboard from '../../components/SellerDashboard';
 import ShopDashboard from '../../components/ShopDashboard';
 import Flatpickr from "react-flatpickr";
-import Graph from '../../components/Graph';
 import OrdersGraph from '../../components/OrdersGraph';
 import EarningsGraph from '../../components/EarningsGraph';
+import UsersGraph from '../../components/UsersGraph';
 
 
 
@@ -78,7 +73,6 @@ const Dashboard = () => {
             </div>
             <Card>
               <CardBody>
-
                 <Row className='d-flex justify-content-center'>
                   <Col lg={8}>
                     <div className="d-flex my-3 my-md-0 ">
@@ -136,7 +130,7 @@ const Dashboard = () => {
 
             <Row>
               <Col>
-                {/* <Graph type='order' /> */}
+
                 <OrdersGraph />
               </Col>
 
@@ -204,7 +198,7 @@ const Dashboard = () => {
 
             {account_type === 'admin' && <Row>
               <Col>
-                {/* <Graph type='users' /> */}
+                <UsersGraph />
               </Col>
             </Row>}
             {/* <Row>

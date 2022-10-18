@@ -6,7 +6,7 @@ const initialState = {
   error: null,
   credits: [],
   status: false,
-  sortByKey: { label: "ASC", value: "asc" },
+  sortByKey: { label: "DESC", value: "desc" },
   startDate: moment().startOf("month").format("YYYY-MM-DD"),
   endDate: moment().endOf("month").format("YYYY-MM-DD"),
   paginate: null,

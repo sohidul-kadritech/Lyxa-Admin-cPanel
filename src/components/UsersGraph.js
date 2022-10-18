@@ -1,11 +1,11 @@
 
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { ADMIN_DASHBOARD_ORDER_GRAPH, SELLER_DASHBOARD_ORDER_GRAPH, SHOP_DASHBOARD_ORDER_GRAPH } from "../network/Api";
+import { ADMIN_DASHBOARD_USERS_GRAPH } from "../network/Api";
 import requestApi from "../network/httpRequest";
 import Graph from "./Graph";
 
-const OrdersGraph = () => {
+const UsersGraph = () => {
 
     const initStartDate = moment().startOf("month").format("YYYY-MM-DD");
     const initEndDate = moment().endOf("month").format("YYYY-MM-DD");
@@ -26,7 +26,7 @@ const OrdersGraph = () => {
         if (filterType && (year || startDate || endDate)) {
             setIsLoading(true)
             try {
-                const { data } = await requestApi().request(account_type === 'admin' ? ADMIN_DASHBOARD_ORDER_GRAPH : account_type === 'seller' ? SELLER_DASHBOARD_ORDER_GRAPH : SHOP_DASHBOARD_ORDER_GRAPH, {
+                const { data } = await requestApi().request(ADMIN_DASHBOARD_USERS_GRAPH, {
                     params: {
                         startDate,
                         endDate,
@@ -54,7 +54,7 @@ const OrdersGraph = () => {
     useEffect(() => {
         if (data.length > 0) {
             const labelsData = data?.map((item, index) => index + 1);
-            const seriesData = data?.map((item) => item.order);
+            const seriesData = data?.map((item) => item.user);
             if (labelsData && seriesData) {
                 const chartInfo = {
                     labels: labelsData,
@@ -97,7 +97,7 @@ const OrdersGraph = () => {
                 chartData={chartData}
                 isLoading={isLoading}
                 yearValue={year}
-                graphType="order"
+                graphType="users"
                 getMonth={month => getSelectMonthDate(month)}
             />
 
@@ -107,4 +107,4 @@ const OrdersGraph = () => {
 
 };
 
-export default OrdersGraph;
+export default UsersGraph;

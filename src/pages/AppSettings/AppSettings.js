@@ -152,7 +152,7 @@ const AppSettings = () => {
                       id="outlined-basic"
                       label="Delivery Boy Search Area"
                       variant="outlined"
-                      placeholder="Press Enter delivery boy find Around Area"
+                      placeholder="Type search area then press Enter"
                       value={areaChangeKey}
                       type="number"
                       onKeyDown={handleKmAdd}

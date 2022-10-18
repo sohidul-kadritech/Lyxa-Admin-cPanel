@@ -680,6 +680,7 @@ export const getAllTransctions =
             },
           });
 
+          console.log({ data })
 
 
           if (data.status) {

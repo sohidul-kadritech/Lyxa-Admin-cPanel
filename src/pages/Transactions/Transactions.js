@@ -96,7 +96,7 @@ const Transactions = () => {
     } else if (type === "adminRemoveBalanceShop") {
       newType = "Remove shop credit";
     } else if (type === "deliveryBoyAmountSettle") {
-      newType = "Settle Rider";
+      newType = "Settle rider";
     } else if (type === "deliveryBoyAdminAmountReceivedCash") {
       newType = "Received rider cash";
     } else if (
@@ -108,9 +108,22 @@ const Transactions = () => {
     ) {
       newType = "Order";
     } else if (type === "userTopUpBalance") {
-      newType = "Drop Pay";
-    } else {
-      newType = "Unknown";
+      newType = "Drop pay";
+    } else if (type === 'userBalanceAddAdmin') {
+      newType = "User balance add by admin";
+    } else if (type === 'userBalanceAddAdmin') {
+      newType = "User Balance Add By Admin";
+    } else if (type === "deliveryBoyOrderDelivered") {
+      newType = "Delivery boy delivered order";
+    } else if (type === "DropGetFromOrder") {
+      newType = "Drop get from order";
+    } else if (type === "userPayForOrder") {
+      newType = "User pay for order";
+    } else if (type === "userPayBeforeReceivedOrderByWallet") {
+      newType = "User pay before received order";
+    }
+    else {
+      newType = "";
     }
 
     return newType;

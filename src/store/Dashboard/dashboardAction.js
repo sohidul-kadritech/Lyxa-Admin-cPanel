@@ -19,7 +19,8 @@ export const getDashboardSummary =
                         endDate
                     }
                 });
-                
+
+                console.log({ data })
 
                 if (data.status) {
                     const { summery } = data.data;

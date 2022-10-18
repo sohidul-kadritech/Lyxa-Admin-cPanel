@@ -32,8 +32,11 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
     dropPercentageType: "",
     dropPercentage: "",
   });
+  const {
+    loading,
+  } = useSelector((state) => state.settingsReducer);
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (chargeType || chargeValue) {
@@ -59,7 +62,7 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
     if (!dropPercentage) {
       return successMsg("Enter Drop charge");
     }
-    setLoading(true);
+    // setLoading(true);
     submitData();
   };
   // SUBMTI DATA TO SERVER
@@ -101,9 +104,8 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
         <Col lg={6} className="mt-4 mt-lg-0">
           <TextField
             style={{ width: "100%" }}
-            label={`Drop Charge (${
-              feeInfo.dropPercentageType === "amount" ? "Amount" : "Percentage"
-            })`}
+            label={`Drop Charge (${feeInfo.dropPercentageType === "amount" ? "Amount" : "Percentage"
+              })`}
             variant="outlined"
             placeholder="Enter Drop Charge"
             name="dropPercentage"

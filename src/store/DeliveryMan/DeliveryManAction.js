@@ -74,7 +74,7 @@ export const allDeliveryMan =
             },
           });
 
-          console.log(data);
+
 
           if (status) {
             dispatch({

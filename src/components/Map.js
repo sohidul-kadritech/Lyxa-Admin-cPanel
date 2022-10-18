@@ -3,20 +3,20 @@ import GoogleMapReact from "google-map-react";
 import { logoSvg } from "../assets/staticData";
 // import GoogleMap from "google-map-react";
 
-const AnyReactComponent = ({text}) => (
+const AnyReactComponent = ({ text }) => (
   <div>
     <span>{text}</span>
   </div>
 );
 
-const Map = ({lat = 0, lng= 0 }) => {
+const Map = ({ lat = 0, lng = 0 }) => {
 
   const defaultProps = {
     center: {
-      lat: 23.8103,
-      lng: 90.4125,
+      lat: 6.465422,
+      lng: 3.406448,
     },
-    zoom: 10,
+    zoom: 5,
   };
 
   return (
@@ -31,7 +31,7 @@ const Map = ({lat = 0, lng= 0 }) => {
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
-        <AnyReactComponent lat={lat}  lng={lng} text={logoSvg} />
+        <AnyReactComponent lat={lat} lng={lng} text={logoSvg} />
       </GoogleMapReact>
     </div>
   );

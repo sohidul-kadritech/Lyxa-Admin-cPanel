@@ -10,9 +10,9 @@ import {
   withdrawUserAmount,
 } from "../store/DropPay/dropPayAction";
 import { getAllAppSettings } from "../store/Settings/settingsAction";
-import { updateSearchKey } from "../store/Users/UsersAction";
+import { updateSearchKey, userList } from "../store/Users/UsersAction";
 
-const UserCradit = ({ user = null }) => {
+const UserCradit = () => {
   const { users, searchKey } = useSelector((state) => state.usersReducer);
   const { loading, status } = useSelector((state) => state.dropPayReducer);
   const { appSettingsOptions: { maxCustomerServiceValue } } = useSelector(
@@ -30,11 +30,7 @@ const UserCradit = ({ user = null }) => {
   const [userNote, setUserNote] = useState("");
   const [amount, setAmount] = useState(0);
 
-  useEffect(() => {
-    if (user) {
-      setSelectedUser(user);
-    }
-  }, []);
+
 
   useEffect(() => {
     if (account_type === 'admin' && adminType === 'customerService') {
@@ -42,6 +38,13 @@ const UserCradit = ({ user = null }) => {
     }
   }, []);
 
+
+  useEffect(() => {
+    // if (searchKey) {
+    //   dispatch(userList(true));
+    // }
+    dispatch(userList(true));
+  }, [searchKey]);
 
 
   const submitBalance = (type) => {
@@ -105,9 +108,8 @@ const UserCradit = ({ user = null }) => {
           isOptionEqualToValue={(option, value) => option._id == value._id}
           inputValue={searchKey}
           onInputChange={(event, newInputValue) => {
-            // setUserSearchKey(newInputValue);
             dispatch(updateSearchKey(newInputValue));
-            // console.log("input value", newInputValue);
+
           }}
           id="controllable-states-demo"
           options={users.length > 0 ? users : []}

@@ -21,6 +21,8 @@ export const GET_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard";
 export const GET_SELLER_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/seller";
 export const GET_SHOP_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/shop";
 
+export const ADMIN_DASHBOARD_USERS_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/users";
+
 export const ADMIN_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/orders";
 export const SELLER_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/seller/graph/orders";
 export const SHOP_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/graph/orders";
@@ -28,6 +30,7 @@ export const SHOP_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/grap
 export const ADMIN_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/earnings";
 export const SELLER_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/seller/graph/earnings";
 export const SHOP_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/graph/earnings";
+
 
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
@@ -141,7 +144,7 @@ export const DELIVERY_BOY_ORDERS = ADMIN_ENDPOINT + "/order/delivery";
 export const ADMINS_SETTINGS = "/admin/setting/admin-setting";
 export const UPDATE_ADMINS_SETTINGS = "/admin/setting/admin-setting/edit";
 
-export const UPDATE_APP_SETTINGS = "/admin/setting/app-setting/edit";
+export const UPDATE_APP_SETTINGS = "/admin/setting/app-setting/edit-update";
 export const APP_SETTINGS = "/admin/setting/app-setting";
 export const ADD_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/add";
 export const UPDATE_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/edit";

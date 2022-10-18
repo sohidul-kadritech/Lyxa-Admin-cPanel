@@ -556,6 +556,7 @@ const DeliverymanAdd = () => {
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "nid");
                             }}
+                            accept='.jpg, .jpeg, .png'
                           >
                             {({ getRootProps, getInputProps }) => (
                               <div className="dropzone">
@@ -641,6 +642,7 @@ const DeliverymanAdd = () => {
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "doc");
                             }}
+                            accept='.jpg, .jpeg, .png'
                           >
                             {({ getRootProps, getInputProps }) => (
                               <div className="dropzone">

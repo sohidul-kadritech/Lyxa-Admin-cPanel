@@ -28,6 +28,7 @@ const ProfileMenu = props => {
   const [username, setusername] = useState("Admin");
   // const { accessToken } = useSelector(state => state.login);
   const { loading, status } = useSelector((state) => state.Profile);
+  const { admin: { name } } = useSelector((state) => state.Login);
 
 
   const [isChangePass, setIsChangePass] = useState(false);
@@ -68,39 +69,45 @@ const ProfileMenu = props => {
 
   return (
     <React.Fragment>
-      <Dropdown
-        isOpen={menu}
-        toggle={() => setMenu(!menu)}
-        className="d-inline-block"
-      >
-        <DropdownToggle
-          className="btn header-item waves-effect"
-          id="page-header-user-dropdown"
-          tag="button"
+
+      <div>
+
+        <span>{name}</span>
+
+        <Dropdown
+          isOpen={menu}
+          toggle={() => setMenu(!menu)}
+          className="d-inline-block"
         >
-          {/* <img
-            className="rounded-circle header-profile-user"
-            src={user1}
-            alt="Header Avatar"
-          /> */}
-          <i className="fas fa-user-circle" style={{ fontSize: '24px' }} aria-hidden="true"></i>
-        </DropdownToggle>
-        <DropdownMenu className="dropdown-menu-end">
-          {/* <DropdownItem tag="a" href="/profile">
-            <i className="fa fa-user font-size-16 align-baseline me-2" />
-            {props.t("Profile")}
-          </DropdownItem> */}
-          <DropdownItem tag="a" onClick={() => setIsChangePass(!isChangePass)}>
-            <i className="fa fa-lock font-size-16 align-baseline me-2" />
-            {props.t("Change Password")}
-          </DropdownItem>
-          <div className="dropdown-divider" />
-          <p className="dropdown-item cursor-pointer" onClick={logout}>
-            <i className="fa fa-power-off font-size-16 align-baseline me-2 text-danger" />
-            <span>Logout</span>
-          </p>
-        </DropdownMenu>
-      </Dropdown>
+          <DropdownToggle
+            className="btn header-item waves-effect"
+            id="page-header-user-dropdown"
+            tag="button"
+          >
+            {/* <img
+      className="rounded-circle header-profile-user"
+      src={user1}
+      alt="Header Avatar"
+    /> */}
+            <i className="fas fa-user-circle" style={{ fontSize: '24px' }} aria-hidden="true"></i>
+          </DropdownToggle>
+          <DropdownMenu className="dropdown-menu-end">
+            {/* <DropdownItem tag="a" href="/profile">
+      <i className="fa fa-user font-size-16 align-baseline me-2" />
+      {props.t("Profile")}
+    </DropdownItem> */}
+            <DropdownItem tag="a" onClick={() => setIsChangePass(!isChangePass)}>
+              <i className="fa fa-lock font-size-16 align-baseline me-2" />
+              {props.t("Change Password")}
+            </DropdownItem>
+            <div className="dropdown-divider" />
+            <p className="dropdown-item cursor-pointer" onClick={logout}>
+              <i className="fa fa-power-off font-size-16 align-baseline me-2 text-danger" />
+              <span>Logout</span>
+            </p>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
 
       {/* CHANGE PASSWORD */}
 

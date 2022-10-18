@@ -21,11 +21,8 @@ import {
   updateDropPayStartDate,
   updateDropPayEndDate,
   getAllDropPay,
-  addUserAmount,
-  withdrawUserAmount,
   updateLyxaPaySearchKey,
 } from "../../../store/DropPay/dropPayAction";
-import { updateSearchKey, userList } from "../../../store/Users/UsersAction";
 
 import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
@@ -48,8 +45,6 @@ const DropPayList = () => {
     currentPage,
     searchKey: dropPaySearchKey
   } = useSelector((state) => state.dropPayReducer);
-  const { searchKey } = useSelector((state) => state.usersReducer);
-
 
   const [balAddModal, setBalAddModal] = useState(false);
 
@@ -59,11 +54,7 @@ const DropPayList = () => {
     }
   }, [sortByKey, startDate, endDate, dropPaySearchKey]);
 
-  useEffect(() => {
-    if (searchKey) {
-      dispatch(userList(true));
-    }
-  }, [searchKey]);
+
 
   const callDropPayList = (refresh = false) => {
     dispatch(getAllDropPay(refresh));

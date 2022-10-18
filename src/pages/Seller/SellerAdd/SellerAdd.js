@@ -644,50 +644,6 @@ const SellerAdd = () => {
                   </Row>
 
                   <Row className="mt-4">
-                    {/* <Col xl={6}>
-                      {sellerType && sellerType == "food" && (
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Sub Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={subType}
-                            label="Sub Type"
-                            onChange={(e) => setSubType(e.target.value)}
-                            defaultValue={""}
-                          >
-                            {foodTypeOptions.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      )}
-                      {sellerType && sellerType == "grocery" && (
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Sub Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={subType}
-                            label="Sub Type"
-                            onChange={(e) => setSubType(e.target.value)}
-                            defaultValue={""}
-                          >
-                            <MenuItem value="supermarkets">
-                              Supermarkets
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      )}
-                    </Col> */}
-                  </Row>
-                  <Row className="mt-4">
                     <Col xl={6}>
                       <Label>Profile Photo</Label>
                       <div className="mb-5">
