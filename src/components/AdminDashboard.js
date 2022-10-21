@@ -1,7 +1,6 @@
 import React from "react";
 import GlobalWrapper from "./GlobalWrapper";
 import {
-    Container,
     Row,
     Col,
 
@@ -22,8 +21,6 @@ const AdminDashboard = ({ summery }) => {
     return (
         <React.Fragment>
             <GlobalWrapper>
-
-
 
                 <Row>
                     <Col xl={3} md={6}>

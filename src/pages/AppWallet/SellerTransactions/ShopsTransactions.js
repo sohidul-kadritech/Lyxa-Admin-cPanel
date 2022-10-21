@@ -15,15 +15,18 @@ import {
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate, } from "../../../store/appWallet/appWalletAction";
+import {
+  getSellerTrx,
+  updateShopsTrxEndDate,
+  updateShopsTrxStartDate,
+} from "../../../store/appWallet/appWalletAction";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import Flatpickr from 'react-flatpickr';
+import Flatpickr from "react-flatpickr";
 import { shopsTrxsFilterOptions } from "../../../assets/staticData";
 import Select from "react-select";
 // import { DataGrid } from '@mui/x-data-grid';
-import { MDBDataTable } from "mdbreact"
-
+import { MDBDataTable } from "mdbreact";
 
 const columns = [
   {
@@ -74,15 +77,11 @@ const columns = [
     sort: "asc",
     width: 100,
   },
-]
-
-
-
+];
 
 const ShopsTransactions = () => {
-  const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = useSelector(
-    (state) => state.appWalletReducer
-  );
+  const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } =
+    useSelector((state) => state.appWalletReducer);
 
   const { search } = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -92,7 +91,7 @@ const ShopsTransactions = () => {
 
   const [companyName, setCompanyName] = useState("");
   const [filteredTrxs, setFilteredTrxs] = useState([]);
-  const [filterType, setFilterType] = useState('');
+  const [filterType, setFilterType] = useState("");
   const [fromNum, setFromNum] = useState(0);
   const [toNum, setToNum] = useState(0);
   const {
@@ -120,15 +119,14 @@ const ShopsTransactions = () => {
     }
   }, [shopsTrxStartDate, shopsTrxEndDate]);
 
-
   useEffect(() => {
     if (sellerTrxs.length > 0) {
       setFilteredTrxs(sellerTrxs);
-      setFilterType('');
+      setFilterType("");
       setToNum(0);
       setFromNum(0);
     }
-  }, [sellerTrxs])
+  }, [sellerTrxs]);
 
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
@@ -183,50 +181,53 @@ const ShopsTransactions = () => {
     doc.save(`${companyName}_ShopsTransactions.pdf`);
   };
 
-  // filter 
+  // filter
 
   const filterTrx = () => {
-
     const { value } = filterType;
 
-    const newList = sellerTrxs.filter((item) => (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] >= fromNum : item.summary[value] >= fromNum) && (value === 'productAmount' || value === 'deliveryFee' ? item.summary.orderValue[value] <= toNum : item.summary[value] <= toNum));
+    const newList = sellerTrxs.filter(
+      (item) =>
+        (value === "productAmount" || value === "deliveryFee"
+          ? item.summary.orderValue[value] >= fromNum
+          : item.summary[value] >= fromNum) &&
+        (value === "productAmount" || value === "deliveryFee"
+          ? item.summary.orderValue[value] <= toNum
+          : item.summary[value] <= toNum)
+    );
 
     setFilteredTrxs(newList);
-
-  }
+  };
 
   const clearFilter = () => {
     setFilteredTrxs(sellerTrxs);
-    setFilterType('');
+    setFilterType("");
     setToNum(0);
     setFromNum(0);
-  }
+  };
 
-  // TABLE DATA 
+  // TABLE DATA
 
   const tableData = (data) => {
-
-
     const modifiedData = data.map((trx, key) => {
       return {
         id: trx?.autoGenId,
         shop: trx?.shopName,
         orders: trx?.summary?.totalOrder,
-        orderAmount: trx?.summary?.orderValue?.deliveryFee ?? 0,
+        orderAmount: trx?.summary?.orderValue?.totalAmount ?? 0,
         deliveryFee: trx?.summary?.orderValue?.deliveryFee ?? 0,
         dropEarning: trx?.summary?.totalDropGet ?? 0,
-        unsettledAmount: trx?.summary?.totalDropGet ?? 0,
+        unsettledAmount: trx?.summary?.totalShopUnsettle ?? 0,
         shopEarning: trx?.summary?.totalShopEarning ?? 0,
         clickEvent: () => gotToShopTrxs(trx._id, trx?.shopName),
-
-      }
+      };
     });
     const newData = {
       columns: columns,
-      rows: modifiedData
-    }
+      rows: modifiedData,
+    };
     return newData;
-  }
+  };
 
   return (
     <React.Fragment>
@@ -298,14 +299,12 @@ const ShopsTransactions = () => {
                         required
                         value={filterType}
                         onChange={(e) => setFilterType(e)}
-
                       />
                     </div>
                   </Col>
-                  <Col lg={6} >
+                  <Col lg={6}>
                     <label className="control-label">Enter Number</label>
                     <div className="d-flex justify-content-between align-items-center">
-
                       <input
                         className="form-control"
                         type="text"
@@ -321,15 +320,25 @@ const ShopsTransactions = () => {
                         value={toNum}
                         onChange={(e) => setToNum(e.target.value)}
                       />
-
                     </div>
                   </Col>
-                  <Col lg={2} className='d-flex align-items-center mt-4'>
-                    <Button disabled={!filterType || !fromNum || !toNum} className='btn btn-success' onClick={filterTrx}>Filter</Button>
-                    <Button disabled={!filterType || !fromNum || !toNum} className='btn btn-warning ms-2' onClick={clearFilter}>Clear</Button>
+                  <Col lg={2} className="d-flex align-items-center mt-4">
+                    <Button
+                      disabled={!filterType || !fromNum || !toNum}
+                      className="btn btn-success"
+                      onClick={filterTrx}
+                    >
+                      Filter
+                    </Button>
+                    <Button
+                      disabled={!filterType || !fromNum || !toNum}
+                      className="btn btn-warning ms-2"
+                      onClick={clearFilter}
+                    >
+                      Clear
+                    </Button>
                   </Col>
                 </Row>
-
               </CardBody>
             </Card>
 
@@ -354,12 +363,20 @@ const ShopsTransactions = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                <MDBDataTable className="cursor-pointer" hover={true} responsive striped bordered data={tableData(filteredTrxs)} displayEntries={false} paging={false} searching={false} noBottomColumns={true} />
-
-
+                <MDBDataTable
+                  className="cursor-pointer"
+                  hover={true}
+                  responsive
+                  striped
+                  bordered
+                  data={tableData(filteredTrxs)}
+                  displayEntries={false}
+                  paging={false}
+                  searching={false}
+                  noBottomColumns={true}
+                />
               </CardBody>
             </Card>
-
           </Container>
         </div>
       </GlobalWrapper>

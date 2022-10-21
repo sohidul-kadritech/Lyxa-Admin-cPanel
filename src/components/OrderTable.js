@@ -92,7 +92,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
 
   const submitOrderStatus = (e) => {
     e.preventDefault();
-    console.log({ orderId }, { deliveryBoy: deliveryBoy?._id });
     dispatch(
       orderUpdateStatus({
         orderId,

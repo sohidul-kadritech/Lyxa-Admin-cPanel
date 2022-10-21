@@ -288,6 +288,7 @@ export const shopsTrxsFilterOptions = [
 ];
 
 export const shopTrxsTypeOptions = [
+  { label: "All", value: "" },
   { label: "Add Balance", value: "adminAddBalanceShop" },
   { label: "Remove Balance", value: "adminRemoveBalanceShop" },
   { label: "Settle Balance", value: "adminSettlebalanceShop" },

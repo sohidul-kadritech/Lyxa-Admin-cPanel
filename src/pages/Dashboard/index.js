@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React, { useState } from "react"
-import MetaTags from 'react-meta-tags';
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import MetaTags from "react-meta-tags";
 import {
   Container,
   Row,
@@ -8,55 +8,99 @@ import {
   Card,
   CardBody,
   Spinner,
-
-} from "reactstrap"
-
-
-
-
+  CardTitle,
+} from "reactstrap";
 
 import GlobalWrapper from "../../components/GlobalWrapper";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 import "chartist/dist/scss/chartist.scss";
 
 //i18n
-import { withTranslation } from "react-i18next"
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getDashboardSummary, updateDashboardCardEndDate, updateDashboardCardStartDate } from '../../store/Dashboard/dashboardAction';
-import AdminDashboard from '../../components/AdminDashboard';
-import SellerDashboard from '../../components/SellerDashboard';
-import ShopDashboard from '../../components/ShopDashboard';
+import { withTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  getDashboardSummary,
+  updateDashboardCardEndDate,
+  updateDashboardCardStartDate,
+} from "../../store/Dashboard/dashboardAction";
+import AdminDashboard from "../../components/AdminDashboard";
+import SellerDashboard from "../../components/SellerDashboard";
+import ShopDashboard from "../../components/ShopDashboard";
 import Flatpickr from "react-flatpickr";
-import OrdersGraph from '../../components/OrdersGraph';
-import EarningsGraph from '../../components/EarningsGraph';
-import UsersGraph from '../../components/UsersGraph';
+import OrdersGraph from "../../components/OrdersGraph";
+import EarningsGraph from "../../components/EarningsGraph";
+import UsersGraph from "../../components/UsersGraph";
 
 
+const TopLists = ({ list, type }) => {
+  return (
+    <Table
+      id="tech-companies-1"
+      className="table table__wrapper table-striped table-bordered table-hover text-center"
+    >
+      <Thead>
+        <Tr>
+          <Th>SL.</Th>
+          <Th>Name</Th>
+          <Th>Orders</Th>
+        </Tr>
+      </Thead>
+      <Tbody style={{ position: "relative" }}>
+        {list.length > 0 &&
+          list?.map((item, index) => {
+            return (
+              <Tr
+                key={index}
+                className="align-middle"
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                <Th>{index + 1}</Th>
+
+                <Td>{type === 'shop' ? item?.shopName : item?.name}</Td>
+                <Td>{type === 'user' ? item?.orderCompleted : item?.totalOrder}</Td>
+              </Tr>
+            );
+          })}
+      </Tbody>
+    </Table>
+  )
+}
 
 const Dashboard = () => {
-
-  const [menu, setMenu] = useState(false);
   const dispatch = useDispatch();
 
-  const { summery, startDate, endDate, loading } = useSelector((state) => state.dashboardReducer);
-  const { account_type, adminType, _id: Id } = JSON.parse(localStorage.getItem("admin"));
-
+  const { dashboardData: { summery = {}, top_activity }, startDate, endDate, loading } = useSelector(
+    (state) => state.dashboardReducer
+  );
+  const {
+    account_type,
+    adminType,
+    _id: Id,
+  } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
     if (startDate || endDate) {
-      dispatch(getDashboardSummary(account_type === 'admin' && adminType !== 'customerService' ? 'admin' : account_type === 'seller' ? 'seller' : 'shop'));
+      dispatch(
+        getDashboardSummary(
+          account_type === "admin" && adminType !== "customerService"
+            ? "admin"
+            : account_type === "seller"
+              ? "seller"
+              : "shop"
+        )
+      );
     }
-
-
-  }, [startDate, endDate])
-
+  }, [startDate, endDate]);
 
   return (
     <React.Fragment>
       <div className="page-content">
         <GlobalWrapper>
-
           <MetaTags>
             <title>Lyxa</title>
           </MetaTags>
@@ -66,14 +110,16 @@ const Dashboard = () => {
                 <Col md={8}>
                   <h6 className="page-title">Dashboard</h6>
                   <ol className="breadcrumb m-0">
-                    <li className="breadcrumb-item active">Welcome to Lyxa Dashboard</li>
+                    <li className="breadcrumb-item active">
+                      Welcome to Lyxa Dashboard
+                    </li>
                   </ol>
                 </Col>
               </Row>
             </div>
             <Card>
               <CardBody>
-                <Row className='d-flex justify-content-center'>
+                <Row className="d-flex justify-content-center">
                   <Col lg={8}>
                     <div className="d-flex my-3 my-md-0 ">
                       <div className=" w-100">
@@ -125,12 +171,54 @@ const Dashboard = () => {
               </div>
             )}
             <div>
-              {account_type === 'admin' ? <AdminDashboard summery={summery} /> : account_type === 'seller' ? <SellerDashboard summery={summery} /> : <ShopDashboard summery={summery} />}
+              {account_type === "admin" ? (
+                <AdminDashboard summery={summery} />
+              ) : account_type === "seller" ? (
+                <SellerDashboard summery={summery} />
+              ) : (
+                <ShopDashboard summery={summery} />
+              )}
             </div>
+            {account_type === "admin" && (
+              <Row>
+                <Col md={4}>
+                  <Card>
+                    <CardBody>
+                      <CardTitle>Top Users</CardTitle>
+                      <hr />
+                      <CardBody>
+                        <TopLists list={top_activity?.topUser} type="user" />
+                      </CardBody>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card>
+                    <CardBody>
+                      <CardTitle>Top Shops</CardTitle>
+                      <hr />
+                      <CardBody>
+                        <TopLists list={top_activity?.topShop} type='shop' />
+                      </CardBody>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card>
+                    <CardBody>
+                      <CardTitle>Top Delivery Boys</CardTitle>
+                      <hr />
+                      <CardBody>
+                        <TopLists list={top_activity?.topDeliveryBoy} type='deliveryBoy' />
+                      </CardBody>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            )}
 
             <Row>
               <Col>
-
                 <OrdersGraph />
               </Col>
 
@@ -196,11 +284,13 @@ const Dashboard = () => {
               </Col>
             </Row>
 
-            {account_type === 'admin' && <Row>
-              <Col>
-                <UsersGraph />
-              </Col>
-            </Row>}
+            {account_type === "admin" && (
+              <Row>
+                <Col>
+                  <UsersGraph />
+                </Col>
+              </Row>
+            )}
             {/* <Row>
               <Col xl={3}>
                 <Card>
@@ -693,17 +783,14 @@ const Dashboard = () => {
               </Col>
             </Row> */}
           </Container>
-
         </GlobalWrapper>
-
       </div>
-
     </React.Fragment>
-  )
-}
+  );
+};
 
 Dashboard.propTypes = {
-  t: PropTypes.any
-}
+  t: PropTypes.any,
+};
 
-export default withTranslation()(Dashboard)
+export default withTranslation()(Dashboard);

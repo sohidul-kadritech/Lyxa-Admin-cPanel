@@ -5,7 +5,10 @@ const initialState = {
     loading: false,
     status: false,
     error: null,
-    summery: null,
+    dashboardData: {
+        summery: null,
+        top_activity: null
+    },
     startDate: moment().startOf("month").format("YYYY-MM-DD"),
     endDate: moment().endOf("month").format("YYYY-MM-DD"),
 }
@@ -28,7 +31,7 @@ const dashboardReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 status: true,
-                summery: payload
+                dashboardData: payload
             }
         case actionType.GET_DASHBOARD_SUMMARY_REQUEST_FAIL:
             return {

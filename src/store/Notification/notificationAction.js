@@ -65,7 +65,7 @@ export const getAllNotifications =
             },
           });
 
-          console.log({data})
+
 
           if (data.status) {
             dispatch({

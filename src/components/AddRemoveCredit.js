@@ -74,7 +74,7 @@ const AddRemoveCredit = ({ userType, id, dropAmount, userAmount }) => {
           label="Amount"
           type="number"
           variant="outlined"
-          placeholder="Enter settle amount"
+          placeholder="Enter amount"
           className="mt-2"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
@@ -97,7 +97,7 @@ const AddRemoveCredit = ({ userType, id, dropAmount, userAmount }) => {
 
         <div className="mt-3 d-flex justify-content-end">
           <Button type="submit" color="success" disabled={loading}>
-            {loading ? "Paying.." : "Pay"}
+            {loading ? "Submitting.." : "Submit"}
           </Button>
         </div>
       </Form>

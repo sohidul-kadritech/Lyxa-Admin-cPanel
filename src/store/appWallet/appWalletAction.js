@@ -134,10 +134,9 @@ export const getShopTrxs =
               shopId: shopId.toString(),
               sortBy: "desc",
               tnxFilter: {
-
                 startDate: shopTrxStartDate,
                 endDate: shopTrxEndDate,
-                type: [value],
+                type: !value ? ['adminAddBalanceShop', "adminRemoveBalanceShop", "adminSettlebalanceShop"] : [value],
                 searchKey: shopSearchKey,
                 amountBy: orderBy,
                 amountRange: shopTrxAmountRange,
@@ -147,7 +146,7 @@ export const getShopTrxs =
             },
           });
 
-
+          console.log('shop wallet', data);
 
           if (data.status) {
             dispatch({

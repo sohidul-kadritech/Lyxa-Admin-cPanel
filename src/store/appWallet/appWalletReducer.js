@@ -15,7 +15,7 @@ const init = {
   shopTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
   shopTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   sellerSearchKey: '',
-  shopTrxType: { label: "Add Balance", value: "adminAddBalanceShop" },
+  shopTrxType: { label: "All", value: '' },
   shopTrxOrderBy: { label: "Desc", value: "desc" },
   shopTrxAmountRange: 0,
   shopTrxAmountRangeType: '',

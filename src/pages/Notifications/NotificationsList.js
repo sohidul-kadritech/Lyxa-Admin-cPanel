@@ -152,7 +152,7 @@ const NotificationsList = () => {
                       <Th>Title</Th>
                       <Th>Account Type</Th>
                       <Th>Type</Th>
-                      <Th>Sent</Th>
+                      <Th>Sent to</Th>
                       <Th>Status</Th>
                       <Th>Created At</Th>
                       <Th>Action</Th>
@@ -172,7 +172,7 @@ const NotificationsList = () => {
                           <Th style={{ maxWidth: "200px" }}>{item?.title}</Th>
                           <Td>{item?.accountType}</Td>
                           <Td>{item?.type}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td>{item?.user ? item?.user?.name : item?.shop ? item?.shop?.shopName : item?.deliveryBoy ? item?.deliveryBoy?.name : "all"}</Td>
                           <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}

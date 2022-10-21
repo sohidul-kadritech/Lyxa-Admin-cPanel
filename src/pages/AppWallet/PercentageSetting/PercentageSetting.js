@@ -93,6 +93,7 @@ const PercentageSetting = () => {
 
   const changeRangeWiseCharge = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setRangeWiseDeliveryCharge({ ...rangeWiseDeliveryCharge, [name]: value });
   };
 
@@ -118,8 +119,10 @@ const PercentageSetting = () => {
       return successMsg("From Range should be less than To Range", "error");
     }
 
+    console.log(rangeWiseDeliveryCharge.deliveryPersonCut, rangeWiseDeliveryCharge.charge)
+    console.log(rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut);
     if (
-      rangeWiseDeliveryCharge.deliveryPersonCut > rangeWiseDeliveryCharge.charge
+      rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut
     ) {
       return successMsg(
         "Delivery person cut can't be getter than charge",
