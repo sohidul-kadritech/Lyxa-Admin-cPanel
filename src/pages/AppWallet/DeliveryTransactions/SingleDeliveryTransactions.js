@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import Flatpickr from 'react-flatpickr';
+import Flatpickr from "react-flatpickr";
 import TransactionsCard from "../../../components/TransactionsCard";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import requestApi from "../../../network/httpRequest";
@@ -28,7 +28,13 @@ import { Tabs } from "@material-ui/core";
 import styled from "styled-components";
 import { TrxType } from "../../../components/updateTrxsType";
 import { successMsg } from "../../../helpers/successMsg";
-import { riderReceivedPayment, updateRiderCashTrxEndDate, updateRiderCashTrxStartDate, updateRiderTrxEndDate, updateRiderTrxStartDate } from "../../../store/appWallet/appWalletAction";
+import {
+  riderReceivedPayment,
+  updateRiderCashTrxEndDate,
+  updateRiderCashTrxStartDate,
+  updateRiderTrxEndDate,
+  updateRiderTrxStartDate,
+} from "../../../store/appWallet/appWalletAction";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -78,18 +84,40 @@ const SingleDeliveryTransactions = () => {
   const [totalSelectedAmount, setTotalSelectdAmount] = useState(0);
   const [selected, setSelected] = useState(false);
 
-  const { status, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate } = useSelector((state) => state.appWalletReducer);
+  const {
+    status,
+    riderTrxEndDate,
+    riderTrxStartDate,
+    riderCashTrxStartDate,
+    riderCashTrxEndDate,
+  } = useSelector((state) => state.appWalletReducer);
+  const {
+    shopName: name,
+    _id: accountId,
+    account_type,
+  } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
     if (id) {
-      if (riderTrxEndDate || riderTrxStartDate || riderCashTrxStartDate || riderCashTrxEndDate) {
-        callApi(id)
+      if (
+        riderTrxEndDate ||
+        riderTrxStartDate ||
+        riderCashTrxStartDate ||
+        riderCashTrxEndDate
+      ) {
+        callApi(id);
       }
       setRiderId(id);
     } else {
       history.push("/add-wallet/delivery-transactions", { replace: true });
     }
-  }, [id, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate]);
+  }, [
+    id,
+    riderTrxEndDate,
+    riderTrxStartDate,
+    riderCashTrxStartDate,
+    riderCashTrxEndDate,
+  ]);
 
   const callApi = async (deiveryId, page = 1) => {
     setLoading(true);
@@ -109,7 +137,6 @@ const SingleDeliveryTransactions = () => {
       if (data.status) {
         setLoading(false);
         setTrxs(data.data);
-
       } else {
         history.push("/add-wallet/delivery-transactions", { replace: true });
       }
@@ -200,10 +227,6 @@ const SingleDeliveryTransactions = () => {
               isRefresh={false}
             />
 
-            <div>
-              <TransactionsCard summary={summary} />
-            </div>
-
             <Box sx={{ width: "100%" }}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
@@ -216,7 +239,6 @@ const SingleDeliveryTransactions = () => {
                 </Tabs>
               </Box>
               <TabPanel value={tabItem} index={0}>
-
                 <Card>
                   <CardBody>
                     <Col md={6}>
@@ -263,25 +285,22 @@ const SingleDeliveryTransactions = () => {
                     </Col>
                   </CardBody>
                 </Card>
-
+                <div>
+                  <TransactionsCard summary={summary} />
+                </div>
                 <Card>
                   <CardBody>
-
                     <div className="d-flex justify-content-between align-items-center pb-3">
-
                       <CardTitle className="h4"> Transactions List</CardTitle>
 
-
-
-                      <div className="d-flex justify-content-end">
+                      {account_type === 'admin' && <div className="d-flex justify-content-end">
                         <Button
                           className="btn btn-info ms-4"
                           onClick={() => setIsMakePayment(!isMakePayment)}
                         >
                           Make Payment
                         </Button>
-                      </div>
-
+                      </div>}
                     </div>
 
                     <TransactionsTable
@@ -292,6 +311,7 @@ const SingleDeliveryTransactions = () => {
                 </Card>
               </TabPanel>
               <TabPanel value={tabItem} index={1}>
+
                 <Card>
                   <CardBody>
                     <Col md={6}>
@@ -340,28 +360,29 @@ const SingleDeliveryTransactions = () => {
                 </Card>
                 <Card>
                   <CardBody>
-
                     <div className="d-flex justify-content-between pb-3 align-items-center">
                       <CardTitle className="h4"> Cash order list</CardTitle>
-                      {totalSelectedAmount > 0 && (
-                        <SummaryWrapper>
-                          <div>
-                            <span className="title">Total Amount: </span>
-                            <span className="title">
-                              {totalSelectedAmount} NGN
-                            </span>
-                          </div>
-                        </SummaryWrapper>
-                      )}
-                      <div>
-                        <Button
-                          className="btn btn-success"
-                          onClick={receivedCashFromRider}
-                          disabled={loading || trxs?.cashOrderList.length < 1}
-                        >
-                          {loading ? "Receiving..." : "Received Cash"}
-                        </Button>
-                      </div>
+                      {account_type === 'admin' && <>
+                        {totalSelectedAmount > 0 && (
+                          <SummaryWrapper>
+                            <div>
+                              <span className="title">Total Amount: </span>
+                              <span className="title">
+                                {totalSelectedAmount} NGN
+                              </span>
+                            </div>
+                          </SummaryWrapper>
+                        )}
+                        <div>
+                          <Button
+                            className="btn btn-success"
+                            onClick={receivedCashFromRider}
+                            disabled={loading || trxs?.cashOrderList.length < 1}
+                          >
+                            {loading ? "Receiving..." : "Received Cash"}
+                          </Button>
+                        </div>
+                      </>}
                     </div>
 
                     <Table

@@ -48,7 +48,7 @@ const TopLists = ({ list, type }) => {
         </Tr>
       </Thead>
       <Tbody style={{ position: "relative" }}>
-        {list.length > 0 &&
+        {list?.length > 0 &&
           list?.map((item, index) => {
             return (
               <Tr

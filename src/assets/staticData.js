@@ -15,9 +15,9 @@ export const liveStatusOptions = [
 ];
 
 export const graphFilterOptions = [
-  { label: "Yearly", value: "year" },
   { label: "Daily", value: "normal" },
   { label: "Monthly", value: "month" },
+  { label: "Yearly", value: "year" },
 ];
 
 export const monthOptions = [
