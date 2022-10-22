@@ -146,7 +146,7 @@ export const getShopTrxs =
             },
           });
 
-          console.log('shop wallet', data);
+
 
           if (data.status) {
             dispatch({

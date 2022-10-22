@@ -28,7 +28,7 @@ const ProfileMenu = props => {
   const [username, setusername] = useState("Admin");
   // const { accessToken } = useSelector(state => state.login);
   const { loading, status } = useSelector((state) => state.Profile);
-  const { admin: { name } } = useSelector((state) => state.Login);
+  const { admin: { name, account_type, shopName = "" } } = useSelector((state) => state.Login);
 
 
   const [isChangePass, setIsChangePass] = useState(false);
@@ -72,7 +72,7 @@ const ProfileMenu = props => {
 
       <div>
 
-        <span>{name}</span>
+        <span>{account_type === 'shop' ? shopName : name}</span>
 
         <Dropdown
           isOpen={menu}

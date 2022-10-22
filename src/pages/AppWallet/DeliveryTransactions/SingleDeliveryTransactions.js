@@ -137,6 +137,7 @@ const SingleDeliveryTransactions = () => {
       if (data.status) {
         setLoading(false);
         setTrxs(data.data);
+        console.log(data?.data);
       } else {
         history.push("/add-wallet/delivery-transactions", { replace: true });
       }
@@ -193,7 +194,7 @@ const SingleDeliveryTransactions = () => {
 
   const receivedCashFromRider = () => {
     if (selectedCash.length === 0) {
-      return successMsg("Select atleast one transactions");
+      return successMsg("Select at least one transactions");
     } else {
       const trxIds = selectedCash.map((item) => item._id);
       dispatch(
@@ -408,7 +409,7 @@ const SingleDeliveryTransactions = () => {
                               fontWeight: "500",
                             }}
                           >
-                            <Th>{item?.autoTrxId}</Th>
+                            <Th>{item?.autoGenId}</Th>
 
                             <Td>{item?.amount}</Td>
                             <Td>{TrxType(item?.type)}</Td>

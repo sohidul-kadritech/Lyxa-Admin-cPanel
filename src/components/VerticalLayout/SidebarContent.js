@@ -14,6 +14,7 @@ import { withTranslation } from "react-i18next";
 
 const SidebarContent = (props) => {
   const ref = useRef();
+  const { account_type, adminType, shopType } = JSON.parse(localStorage.getItem("admin"));
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
   useEffect(() => {
     const pathName = props.location.pathname;
@@ -110,7 +111,7 @@ const SidebarContent = (props) => {
                   className={`waves-effect ${item.isSubmenu && "has-arrow"}`}
                 >
                   <i className={item.icon} />
-                  <span>{props.t(item.name)}</span>
+                  <span>{props.t(item.name === 'Products' && (account_type === 'shop' || account_type === 'seller') && shopType === 'food' ? 'Menu' : item.name)}</span>
                 </Link>
                 {item.isSubmenu && (
                   <ul className="sub-menu" aria-expanded="false">

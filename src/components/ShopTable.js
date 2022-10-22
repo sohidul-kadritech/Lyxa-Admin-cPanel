@@ -66,7 +66,7 @@ const ShopTable = ({ shops = [] }) => {
           <Tr>
             <Th>ID</Th>
             <Th>Logo</Th>
-            <Th>Name</Th>
+            {account_type !== 'shop' && <Th>Name</Th>}
             <Th>Type</Th>
             <Th>Status</Th>
             <Th>Assigned deals</Th>
@@ -109,7 +109,7 @@ const ShopTable = ({ shops = [] }) => {
                   </div>
                 </Th>
 
-                <Td>{item?.shopName}</Td>
+                {account_type !== "shop" && <Td>{item?.shopName}</Td>}
                 <Td>{item?.shopType}</Td>
                 <Td style={{ color: item?.shopStatus === 'active' ? 'green' : 'red' }}>{item?.shopStatus}</Td>
                 <Td>

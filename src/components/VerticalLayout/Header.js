@@ -11,9 +11,9 @@ import LanguageDropdown from "../CommonForBoth/TopbarDropdown/LanguageDropdown"
 import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDropdown"
 import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 
-import logodarkImg from "../../assets/images/lyxa.png";
-import logolightImg from "../../assets/images/lyxa.png";
-import smLogo from "../../assets/images/sm-logo.jpeg";
+import logodarkImg from "../../assets/images/lyxa.svg";
+import logolightImg from "../../assets/images/lyxa.svg";
+
 import { logoSvg } from '../../assets/staticData';
 
 
