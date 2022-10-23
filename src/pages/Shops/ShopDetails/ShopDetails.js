@@ -340,6 +340,7 @@ const ShopDetails = () => {
                                 : ""
                       }
                     />
+                    <Info title="Account No" value={shop?.account_number} />
                   </Col>
 
                   <Col xl={6}>
@@ -383,6 +384,8 @@ const ShopDetails = () => {
                           .join(", ")}
                       />
                     )}
+                    <Info title="Bank" value={shop?.bank_name} />
+                    <Info title="Account Name" value={shop?.account_name} />
                   </Col>
                 </Row>
               </CardBody>

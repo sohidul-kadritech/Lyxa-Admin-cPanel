@@ -182,11 +182,11 @@ const SingleDeliveryTransactions = () => {
     if (checked) {
       setSelected(checked);
       setSelectedCash([...selectedCash, trx]);
-      setTotalSelectdAmount((prev) => prev + trx.amount);
+      setTotalSelectdAmount((prev) => prev + trx.receivedAmount);
     } else {
       let newList = selectedCash.filter((item) => item._id !== trx._id);
       setSelectedCash(newList);
-      setTotalSelectdAmount((prev) => prev - trx.amount);
+      setTotalSelectdAmount((prev) => prev - trx.receivedAmount);
     }
   };
 
@@ -411,7 +411,7 @@ const SingleDeliveryTransactions = () => {
                           >
                             <Th>{item?.autoGenId}</Th>
 
-                            <Td>{item?.amount}</Td>
+                            <Td>{item?.receivedAmount}</Td>
                             <Td>{TrxType(item?.type)}</Td>
                             <Td>
                               {new Date(item?.createdAt).toLocaleDateString()}

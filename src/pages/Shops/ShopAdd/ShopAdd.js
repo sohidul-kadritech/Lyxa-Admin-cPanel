@@ -109,6 +109,9 @@ const ShopAdd = () => {
   const [phone, setPhone] = useState("");
   const [deliveryType, setDeliveryType] = useState("");
   const [deliveryFee, setDeliveryFee] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [accountNum, setAccountNum] = useState("");
 
   const { account_type, _id: accountId } = JSON.parse(
     localStorage.getItem("admin")
@@ -193,6 +196,9 @@ const ShopAdd = () => {
       expensive,
       deliveryFee,
       haveOwnDeliveryBoy,
+      account_name,
+      account_number,
+      bank_name,
     } = values;
     setEmail(email);
     setPhone(phone_number);
@@ -215,6 +221,9 @@ const ShopAdd = () => {
     setExpensive(expensive);
     setDeliveryFee(haveOwnDeliveryBoy ? deliveryFee : 0);
     setDeliveryType(haveOwnDeliveryBoy ? "self" : "drop");
+    setBankName(bank_name);
+    setAccountName(account_name);
+    setAccountNum(account_number);
   };
 
   // GET ALL TAGS
@@ -375,6 +384,9 @@ const ShopAdd = () => {
             primary: true,
             note: "",
           },
+          bank_name: bankName,
+          account_name: accountName,
+          account_number: accountNum,
         })
       );
     } else {
@@ -412,6 +424,9 @@ const ShopAdd = () => {
           expensive,
           deliveryType,
           deliveryFee: deliveryType === "self" ? parseInt(deliveryFee) : 0,
+          bank_name: bankName,
+          account_name: accountName,
+          account_number: accountNum,
         })
       );
     }
@@ -482,6 +497,9 @@ const ShopAdd = () => {
         setEmail("");
         setPassword("");
         setPhone("");
+        setBankName("");
+        setAccountName("");
+        setAccountNum("");
         window.scroll(0, 0);
       }
     }
@@ -786,6 +804,18 @@ const ShopAdd = () => {
                           />
                         </div>
                       )}
+                      <div className="mb-4">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Account Number"
+                          variant="outlined"
+                          placeholder="Enter Account Number"
+                          value={accountNum}
+                          onChange={(e) => setAccountNum(e.target.value)}
+                          required
+                        />
+                      </div>
                     </Col>
                     <Col lg={6} className="mt-4 mt-lg-0">
                       <div className="mb-4">
@@ -844,14 +874,6 @@ const ShopAdd = () => {
 
                       <div className="mb-4">
                         <div>
-                          {/* <TextField
-                            value={tags.value}
-                            placeholder="Type Tag Name and press `Enter`..."
-                            onKeyDown={handleTagAdd}
-                            onChange={handleTagChange}
-                            className="form-control"
-                            label="Tag"
-                          /> */}
                           <Autocomplete
                             className="cursor-pointer"
                             value={tags.value}
@@ -1007,7 +1029,32 @@ const ShopAdd = () => {
                           )}
                         </div>
                       )}
+                      <div className="mb-4">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Bank Name"
+                          variant="outlined"
+                          placeholder="Enter Bank Name"
+                          value={bankName}
+                          onChange={(e) => setBankName(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Account Name"
+                          variant="outlined"
+                          placeholder="Enter Account Name"
+                          value={accountName}
+                          onChange={(e) => setAccountName(e.target.value)}
+                          required
+                        />
+                      </div>
                     </Col>
+
                   </Row>
 
                   {/* IMAGES */}
@@ -1197,101 +1244,6 @@ const ShopAdd = () => {
                       </div>
                     </Col>
                   </Row>
-
-                  {/* <Row>
-                    <Col xl={6}>
-                      <Label>Shop Photos</Label>
-                      <div className="mb-5">
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles, "photos");
-                          }}
-                          accept='.jpg, .jpeg, .png'
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
-                            </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {shopPhotos && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        shopPhotos.preview
-                                          ? shopPhotos.preview
-                                          : shopPhotos
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {shopPhotos.name
-                                        ? shopPhotos.name
-                                        : "Shop Photos"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {shopPhotos.formattedSize &&
-                                          shopPhotos.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      onClick={() => setShopPhotos(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          )}
-                        </div>
-                      </div>
-                    </Col>
-                  </Row> */}
 
                   <div className="my-5 d-flex justify-content-center">
                     <Button

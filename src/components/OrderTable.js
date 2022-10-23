@@ -98,6 +98,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         orderStatus,
         shop,
         deliveryBoy: deliveryBoy?._id,
+
       })
     );
   };
@@ -206,6 +207,29 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     );
   };
 
+  // MODIFIED ORDER STATUS NAME 
+
+  const modifiedOrderStatus = (statusName) => {
+    let newStatusName = '';
+
+    if (statusName === 'accepted_delivery_boy') {
+      newStatusName = 'Accept by rider';
+    } else if (statusName === 'preparing') {
+      newStatusName = 'Accept by shop';
+    } else if (statusName === 'ready_to_pickup') {
+      newStatusName = 'Ready to pickup';
+    } else if (statusName === 'order_on_the_way') {
+      newStatusName = 'On the way';
+    } else if (statusName === 'delivered') {
+      newStatusName = 'Delivered';
+    } else {
+      newStatusName = 'Placed';
+    }
+    return newStatusName;
+  }
+
+
+
   return (
     <>
       <div>
@@ -256,9 +280,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
                         </Td>
                         <Td>
-                          {item?.orderStatus === "accepted_delivery_boy"
-                            ? "Accepted Rider"
-                            : item?.orderStatus}
+                          {modifiedOrderStatus(item?.orderStatus)}
                         </Td>
                         <Td>
                           <ButtonWrapper>

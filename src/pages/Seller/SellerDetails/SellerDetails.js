@@ -15,21 +15,11 @@ import {
 } from "reactstrap";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
-import Tooltip from "@mui/material/Tooltip";
 import AppPagination from "../../../components/AppPagination";
 import { getAllShop } from "../../../store/Shop/shopAction";
-import SweetAlert from "react-bootstrap-sweetalert";
-import requestApi from "../../../network/httpRequest";
 import { SINGLE_SELLER } from "../../../network/Api";
 import Info from "./../../../components/Info";
 import ShopTable from "../../../components/ShopTable";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
 import DropCharge from "../../../components/DropCharge";
 import { callApi } from "../../../components/SingleApiCall";
 
@@ -52,7 +42,6 @@ const SellerDetails = () => {
     if (id) {
       const findSeller = sellers.find((item) => item._id == id);
       if (findSeller) {
-        console.log({ findSeller });
         setSeller(findSeller);
       } else {
 
