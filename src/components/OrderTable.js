@@ -61,6 +61,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const [selectFlagOrder, setSelectFlagOrder] = useState(null);
   const [comment, setComment] = useState("");
   const [isOtherReason, setIsOtherReason] = useState(false);
+  const [orderFor, setOrderFor] = useState(null);
   const [orderCancel, setOrderCancel] = useState({
     cancelReason: "",
     orderId: null,
@@ -301,6 +302,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                       item?._id,
                                       item?.shop?._id,
                                       item?.orderStatus,
+                                      setOrderFor(item?.orderFor),
                                       item?.deliveryBoy &&
                                       setDeliveryBoy(item.deliveryBoy)
                                     )
@@ -419,7 +421,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               >
                 {orderStatusOptions.map((item, index) => (
                   <MenuItem key={index} value={item.value}>
-                    {item.label}
+                    {orderFor === 'specific' && item.value === 'accepted_delivery_boy' ? "" : item.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -464,7 +466,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
 
             <div className="mt-3 d-flex justify-content-end">
               <Button type="submit" color="success" disabled={loading}>
-                {loading ? "Updating" : "Update"}
+                {loading ? "Updating..." : "Update"}
               </Button>
             </div>
           </Form>

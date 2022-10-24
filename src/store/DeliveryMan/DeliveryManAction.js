@@ -130,7 +130,7 @@ export const editDeliveryMan = (values) => async (dispatch) => {
     }
   } catch (error) {
     dispatch({
-      type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
+      type: actionType.EDIT_DELIVERY_MAN_REQUEST_FAIL,
       payload: error.message,
     });
   }

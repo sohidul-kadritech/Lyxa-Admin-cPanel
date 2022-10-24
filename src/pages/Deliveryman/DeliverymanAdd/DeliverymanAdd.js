@@ -66,6 +66,7 @@ const DeliverymanAdd = () => {
   const [vehicleNum, setVehicleNum] = useState("");
   const [nid, setNid] = useState("");
   const [vehicleDoc, setVehicleDoc] = useState("");
+  const [contractPaper, setContractPaper] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // ID FROM PARAMSnumber
@@ -101,6 +102,7 @@ const DeliverymanAdd = () => {
       vehicleRegistrationDocument,
       vehicleType,
       vehicleNumber,
+      contractPaper
     } = data;
     const findStatus = activeOptions.find((option) => option.value === status);
     const findVahicleType = DeliveryBoyVehicleOPtions.find(
@@ -114,6 +116,7 @@ const DeliverymanAdd = () => {
     setVehicleDoc(vehicleRegistrationDocument);
     setVehicleType(findVahicleType);
     setVehicleNum(vehicleNumber);
+    setContractPaper(contractPaper);
   };
 
   // ADDRESS CHANGE
@@ -194,6 +197,7 @@ const DeliverymanAdd = () => {
   const uploadImages = async () => {
     let nidUrl = null;
     let docUrl = null;
+    let contractUrl = null;
     setIsLoading(true);
     if (nid) {
       if (typeof nid === "string") {
@@ -209,10 +213,17 @@ const DeliverymanAdd = () => {
         docUrl = await imageUploadToServer(vehicleDoc);
       }
     }
+    if (contractPaper) {
+      if (typeof contractPaper === "string") {
+        contractUrl = contractPaper;
+      } else {
+        contractUrl = await imageUploadToServer(contractPaper);
+      }
+    }
 
-    if (nidUrl && docUrl) {
+    if (nidUrl && docUrl && contractUrl) {
       setIsLoading(false);
-      submitData(nidUrl, docUrl);
+      submitData(nidUrl, docUrl, contractUrl);
     }
   };
 
@@ -240,7 +251,7 @@ const DeliverymanAdd = () => {
 
   // SUBMIT DATA
 
-  const submitData = (nidUrl, docUrl) => {
+  const submitData = (nidUrl, docUrl, contractUrl) => {
     if (id) {
       dispatch(
         editDeliveryMan({
@@ -253,6 +264,7 @@ const DeliverymanAdd = () => {
           vehicleNumber: vehicleNum,
           nationalIdDocument: nidUrl,
           vehicleRegistrationDocument: docUrl,
+          contractPaper: contractUrl
         })
       );
     } else {
@@ -278,6 +290,7 @@ const DeliverymanAdd = () => {
           vehicleNumber: vehicleNum,
           nationalIdDocument: nidUrl,
           vehicleRegistrationDocument: docUrl,
+          contractPaper: contractUrl
         })
       );
     }
@@ -301,6 +314,7 @@ const DeliverymanAdd = () => {
         setVehicleNum("");
         setNid(null);
         setVehicleDoc(null);
+        setContractPaper(null);
         setSelectedAddress("");
         window.scrollTo(0, 0);
       }
@@ -319,7 +333,10 @@ const DeliverymanAdd = () => {
 
     if (type === "nid") {
       setNid(files[0]);
-    } else {
+    } else if (type === 'contract') {
+      setContractPaper(files[0]);
+    }
+    else {
       setVehicleDoc(files[0]);
     }
   };
@@ -713,6 +730,102 @@ const DeliverymanAdd = () => {
                                     >
                                       <i
                                         onClick={() => setVehicleDoc(null)}
+                                        className="mdi mdi-delete text-danger "
+                                        style={{
+                                          fontSize: "25px",
+                                          cursor: "pointer",
+                                        }}
+                                      ></i>
+                                    </div>
+                                  </Row>
+                                </div>
+                              </Card>
+                            )}
+                          </div>
+                        </div>
+                      </Col>
+                    </Row>
+
+
+                    <Row>
+                      <Col lg={6}>
+                        <Label>Contract Paper</Label>
+                        <div className="mb-5">
+                          <Dropzone
+                            onDrop={(acceptedFiles) => {
+                              handleAcceptedFiles(acceptedFiles, "contract");
+                            }}
+                            accept='.jpg, .jpeg, .png'
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div className="dropzone">
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="mb-3">
+                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                  </div>
+                                  <h4>Drop files here or click to upload.</h4>
+                                </div>
+                              </div>
+                            )}
+                          </Dropzone>
+                          <div
+                            className="dropzone-previews mt-3"
+                            id="file-previews"
+                          >
+                            {contractPaper && (
+                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                <div className="p-2">
+                                  <Row className="align-items-center position-relative">
+                                    <Col className="col-auto">
+                                      <img
+                                        data-dz-thumbnail=""
+                                        // height="80"
+                                        style={{
+                                          maxWidth: "80px",
+                                        }}
+                                        className=" bg-light"
+                                        src={
+                                          contractPaper?.preview
+                                            ? contractPaper.preview
+                                            : contractPaper
+                                        }
+                                        alt=""
+                                      />
+                                    </Col>
+                                    <Col>
+                                      <Link
+                                        to="#"
+                                        className="text-muted font-weight-bold"
+                                      >
+                                        {contractPaper?.name
+                                          ? contractPaper.name
+                                          : "Contract Paper"}
+                                      </Link>
+                                      <p className="mb-0">
+                                        <strong>
+                                          {contractPaper?.formattedSize &&
+                                            contractPaper.formattedSize}
+                                        </strong>
+                                      </p>
+                                    </Col>
+
+                                    <div
+                                      className="position-absolute"
+                                      style={{
+                                        left: "0px",
+                                        top: "0px",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <i
+                                        onClick={() => setContractPaper(null)}
                                         className="mdi mdi-delete text-danger "
                                         style={{
                                           fontSize: "25px",

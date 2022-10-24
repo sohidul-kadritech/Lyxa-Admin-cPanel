@@ -340,3 +340,5 @@ export const logoSvg = (
     />
   </svg>
 );
+
+export const GOOGLE_API_KEY = '"AIzaSyA_ciMsx74Ck21Firr3yS0xwvL7M7gonf8"'
