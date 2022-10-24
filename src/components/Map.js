@@ -13,8 +13,8 @@ const Map = ({ lat = 0, lng = 0 }) => {
 
   const defaultProps = {
     center: {
-      lat: 6.465422,
-      lng: 3.406448,
+      lat: lat,
+      lng: lng,
     },
     zoom: 5,
   };
@@ -44,9 +44,11 @@ const Map = ({ lat = 0, lng = 0 }) => {
           language: "en",
           region: "US",
           libraries: ["places"],
+
         }}
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
+      // onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
       >
         <AnyReactComponent lat={lat} lng={lng} text={logoSvg} />
       </GoogleMapReact>

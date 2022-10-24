@@ -211,6 +211,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   // MODIFIED ORDER STATUS NAME 
 
   const modifiedOrderStatus = (statusName) => {
+
     let newStatusName = '';
 
     if (statusName === 'accepted_delivery_boy') {
@@ -223,6 +224,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       newStatusName = 'On the way';
     } else if (statusName === 'delivered') {
       newStatusName = 'Delivered';
+    } else if (statusName === 'cancelled') {
+      newStatusName = 'Cancelled';
     } else {
       newStatusName = 'Placed';
     }

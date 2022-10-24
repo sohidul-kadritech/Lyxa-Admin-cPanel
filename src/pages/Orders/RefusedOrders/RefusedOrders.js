@@ -20,7 +20,7 @@ const RefusedOrders = () => {
   }, []);
 
   const allOrderList = (refresh = false) => {
-    dispatch(getAllOrder());
+    dispatch(getAllOrder(refresh));
   };
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const RefusedOrders = () => {
             <Breadcrumb
               maintitle="Drop"
               breadcrumbItem={"List"}
-              title="Refused Orders"
+              title="Cancelled Orders"
               loading={loading}
               callList={allOrderList}
             />
