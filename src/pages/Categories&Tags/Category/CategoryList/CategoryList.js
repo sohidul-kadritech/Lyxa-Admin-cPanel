@@ -67,7 +67,7 @@ const CategoryList = () => {
   }, [shopType]);
 
   const callCategoryList = (refresh = false) => {
-    dispatch(getAllCategory(refresh));
+    dispatch(getAllCategory(refresh, account_type));
   };
 
   return (
@@ -76,7 +76,7 @@ const CategoryList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"List"}
               title="Category"
               loading={loading}
@@ -183,7 +183,7 @@ const CategoryList = () => {
                                 <button
                                   className="btn btn-success me-3 button"
                                   onClick={() =>
-                                    history.push(`/categories/edit/${item._id}`)
+                                    history.push(`/categories/edit/${item?._id}`)
                                   }
                                 >
                                   <i className="fa fa-edit" />
@@ -234,7 +234,7 @@ const CategoryList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllCategory(true, page))}
+                    lisener={(page) => dispatch(getAllCategory(true, account_type, page))}
                   />
                 </div>
               </Col>

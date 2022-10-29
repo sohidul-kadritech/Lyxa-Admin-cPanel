@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllProduct,
+  updateProductCategory,
   updateProductSearchKey,
   updateProductSortByKey,
   updateProductStatusKey,
@@ -25,6 +26,8 @@ import {
   updateShopType,
 } from "../../../store/Shop/shopAction";
 import { useLocation } from "react-router-dom";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import { getAllCategory } from "../../../store/Category/categoryAction";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -44,12 +47,22 @@ const ProductList = () => {
     loading,
     products,
     status,
+    category
   } = useSelector((state) => state.productReducer);
   const { shops } = useSelector((state) => state.shopReducer);
+  const {
+    categories,
+  } = useSelector((state) => state.categoryReducer);
 
   const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
   const [shop, setShop] = useState(null);
+  const [categorySearchKey, setCategorySearchKey] = useState("");
+
+
+  useEffect(() => {
+    dispatch(getAllCategory(true, account_type));
+  }, [])
 
   useEffect(() => {
     if (account_type === "admin") {
@@ -82,11 +95,12 @@ const ProductList = () => {
       typeKey ||
       sortByKey ||
       searchParams ||
-      status
+      status ||
+      category
     ) {
       callProductList(true);
     }
-  }, [searchKey, statusKey, typeKey, sortByKey, searchParams, status]);
+  }, [searchKey, statusKey, typeKey, sortByKey, searchParams, status, category]);
 
   useEffect(() => {
     if (searchParams.get("shopId")) {
@@ -103,7 +117,7 @@ const ProductList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={shop ? "Products" : "List"}
               title={shop ? shop?.shopName : "Product"}
               loading={loading}
@@ -158,9 +172,46 @@ const ProductList = () => {
                     </div>
                   </Col>
                 </Row>
-                <Row className="d-flex justify-content-center">
+                <Row>
                   <Col lg={8}>
                     <Search dispatchFunc={updateProductSearchKey} placeholder="Search by id or name" />
+                  </Col>
+                  <Col lg={4}>
+                    <label className="control-label">Category</label>
+                    <Autocomplete
+                      className="cursor-pointer"
+                      value={category}
+                      onChange={(event, newValue) => dispatch(updateProductCategory(newValue))}
+                      getOptionLabel={(option, index) =>
+                        option.name ? option.name : ""
+                      }
+                      isOptionEqualToValue={(option, value) =>
+                        option?._id == value?._id
+                      }
+                      inputValue={categorySearchKey}
+                      onInputChange={(event, newInputValue) => {
+                        setCategorySearchKey(newInputValue);
+                      }}
+                      id="controllable-states-demo"
+                      options={categories?.length > 0 ? categories : []}
+                      sx={{ width: "100%" }}
+                      renderInput={(params, index) => (
+                        <TextField
+                          {...params}
+                          label="Select cateogory"
+                        />
+                      )}
+                      renderOption={(props, option) => (
+                        <Box
+                          component="li"
+                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                          {...props}
+                          key={option?._id}
+                        >
+                          {option?.name}
+                        </Box>
+                      )}
+                    />
                   </Col>
                 </Row>
               </CardBody>

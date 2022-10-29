@@ -26,6 +26,7 @@ import { IMAGE_UPLOAD } from "./../../../../network/Api";
 import { shopTypeOptions2 } from "../../../../assets/staticData";
 import formatBytes from "../../../../common/imageFormatBytes";
 import { successMsg } from "../../../../helpers/successMsg";
+import { callApi } from "../../../../components/SingleApiCall";
 
 const CategoryAdd = () => {
   const dispatch = useDispatch();
@@ -42,9 +43,9 @@ const CategoryAdd = () => {
 
   const [name, setName] = useState("");
   const [type, setType] = useState(null);
-
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [categoryId, setCategoryId] = useState(null);
 
   useEffect(() => {
     if (account_type === "shop" || account_type === "seller") {
@@ -57,43 +58,37 @@ const CategoryAdd = () => {
     return;
   }, [account_type]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
       const findCat = categories.find((item) => item._id == id);
 
       if (findCat) {
         setCategoryData(findCat);
+
       } else {
-        callApi(id);
+        const data = await callApi(id, SINGLE_CATEGORY, 'category')
+        if (data) {
+          setCategoryData(data);
+        } else {
+          history.push("/categories/list", { replace: true });
+        }
       }
     }
   }, [id]);
 
-  // CALL API FOR SINGLE ADMIN
 
-  const callApi = async (id) => {
-    const { data } = await requestApi().request(SINGLE_CATEGORY, {
-      params: {
-        id,
-      },
-    });
-
-    if (data.status) {
-      setCategoryData(data.data.category);
-    } else {
-      history.push("/categories/list", { replace: true });
-    }
-  };
 
   // SET DATA TO STATE
 
   const setCategoryData = (item) => {
-    const { name, type, image } = item;
+    const { name, type, image, category: { _id } } = item;
 
     const findTypeObj = shopTypeOptions2.find((x) => x.value == type);
     setName(name);
     setType(findTypeObj);
     setImage(image);
+    setCategoryId(_id);
+
   };
 
   // HANDLE SUBMIT
@@ -142,23 +137,23 @@ const CategoryAdd = () => {
   // SUBMIT DATA
 
   const submitData = (url) => {
+    const data = {
+      name,
+      image: url,
+      type: type.value,
+      userType: account_type
+    }
     if (id) {
       dispatch(
         editCategory({
-          id,
-          name,
-          image: url,
-          type: type.value,
+          ...data,
+          id: categoryId,
+
         })
       );
     } else {
       dispatch(
-        addCategory({
-          name,
-          image: url,
-          type: type.value,
-          slug: "12345",
-        })
+        addCategory(data)
       );
     }
   };
@@ -197,7 +192,7 @@ const CategoryAdd = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={id ? "Update" : "Add"}
               title="Category"
               isRefresh={false}

@@ -41,14 +41,6 @@ const ChatDetails = () => {
 
   useEffect(() => {
     if (id) {
-      // const findReq = chatRequests.find((item) => item._id == id);
-
-      // if (findReq) {
-      //   setRequest(findReq);
-      // } else {
-
-
-      // }
 
       callApi(id);
 
@@ -65,7 +57,6 @@ const ChatDetails = () => {
     if (data.status) {
       const { chatRequest } = data.data;
       if (chatRequest) {
-
         setRequest(chatRequest);
       } else {
         history.push("/customer-support", { replace: true });
@@ -144,15 +135,15 @@ const ChatDetails = () => {
 
             <Row>
               <Col lg={6}>
-                <Card>
+                <Card className="card-height">
                   <CardBody>
                     <div className='d-flex justify-content-between align-items-center'>
-                      <CardTitle>{`Conversion with ${request?.user?.name}`}</CardTitle>
+                      <CardTitle>{`Conversion with ${!request?.user?.name ? "" : request?.user?.name}`}</CardTitle>
                       <strong style={{ color: request?.status === 'pending' ? 'blue' : request?.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase' }}>{request?.status}</strong>
                     </div>
                     <hr />
                     <div className="chat-conversation">
-                      <SimpleBar style={{ height: "235px", overflow: 'hidden scroll' }}>
+                      {request?.chats?.length > 0 && <SimpleBar style={{ height: "235px", overflow: 'hidden scroll' }}>
                         <ul
                           className="conversation-list"
                           data-simplebar
@@ -209,7 +200,7 @@ const ChatDetails = () => {
                             </div>
                           ))}
                         </ul>
-                      </SimpleBar>
+                      </SimpleBar>}
                       {request?.status === 'pending' && (
                         <div className="text-center py-3">
                           <h5>Confirm Request or Reject!</h5>

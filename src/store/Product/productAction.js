@@ -13,6 +13,7 @@ import * as actionType from "../actionType";
 // ADD
 
 export const addProduct = (values) => async (dispatch) => {
+
   try {
     dispatch({
       type: actionType.ADD_PRODUCT_REQUEST_SEND,
@@ -22,6 +23,7 @@ export const addProduct = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
+
 
 
     if (data.status) {
@@ -51,7 +53,7 @@ export const getAllProduct =
   (refresh = false, shopId = null, sellerId = null, page = 1) =>
     async (dispatch, getState) => {
 
-      const { products, searchKey, statusKey, typeKey, sortByKey } =
+      const { products, searchKey, statusKey, typeKey, sortByKey, category } =
         getState().productReducer;
 
       if (products.length < 1 || refresh) {
@@ -70,6 +72,7 @@ export const getAllProduct =
               status: statusKey.value,
               shop: shopId,
               seller: sellerId,
+              category: category?.category?._id
             },
           });
 
@@ -211,6 +214,13 @@ export const addProductDeal = (values) => async (dispatch) => {
 export const updateProductSearchKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_PRODUCT_SEARCH_KEY,
+    payload: value,
+  });
+};
+
+export const updateProductCategory = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_PRODUCT_CATEGORY,
     payload: value,
   });
 };

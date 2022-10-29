@@ -16,25 +16,9 @@ const Map = ({ lat = 0, lng = 0 }) => {
       lat: lat,
       lng: lng,
     },
-    zoom: 5,
+    zoom: 10,
   };
 
-  //   setTimeout(() => {
-  //     map?.current?.fitToCoordinates([origin, destination], {
-  //       edgePadding: {
-  //         top: 80,
-  //         right: 50,
-  //         bottom: 80,
-  //         left: 50,
-  //       },
-  //       animated: true,
-  //     });
-  //   }, 1500);
-
-  // const origin = {
-  // latitude: orderData?.orderDeliveryCharge?.shopLocation[1],
-  // longitude: orderData?.orderDeliveryCharge?.shopLocation[0],
-  // };
 
   return (
     <div style={{ height: "640px", width: "100%" }}>

@@ -225,38 +225,7 @@ const ProductAdd = () => {
     }
   }, [category]);
 
-  // TAGS
 
-  // const handleTagAdd = (evt) => {
-  //   if (["Enter", "Tab", ","].includes(evt.key)) {
-  //     evt.preventDefault();
-
-  //     let value = tags.value.trim();
-
-  //     if (value) {
-  //       setTags({
-  //         items: [...tags.items, tags.value],
-  //         value: "",
-  //       });
-  //     }
-  //   }
-  // };
-
-  // TAG CHANGE
-
-  // const handleTagChange = (evt) => {
-  //   setTags({
-  //     ...tags,
-  //     value: evt.target.value,
-  //   });
-  // };
-
-  // const handleTagDelete = (item) => {
-  //   setTags({
-  //     ...tags,
-  //     items: tags.items.filter((i) => i != item),
-  //   });
-  // };
 
   // VALIDATION
 
@@ -307,7 +276,7 @@ const ProductAdd = () => {
       foodType,
       shop: shop._id,
       images: [url],
-      category: category._id,
+      category: category.category,
       subCategory: subCategory?._id,
       seoDescription: description,
       attributes,

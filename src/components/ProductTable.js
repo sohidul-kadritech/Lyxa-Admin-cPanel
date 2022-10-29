@@ -7,6 +7,7 @@ import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateProductStatus } from "../store/Product/productAction";
+import styled from "styled-components";
 
 const ProductTable = ({ products, loading }) => {
   const history = useHistory();
@@ -19,7 +20,7 @@ const ProductTable = ({ products, loading }) => {
     dispatch(
       updateProductStatus({
         id,
-        status: status === "active" ? "deactive" : "active",
+        status: status === "active" ? "inactive" : "active",
       })
     );
   };
@@ -47,15 +48,15 @@ const ProductTable = ({ products, loading }) => {
             <Th>Image</Th>
             <Th>Name</Th>
             <Th>Shop Name</Th>
+            <Th>Category</Th>
             <Th>Price</Th>
             <Th>Status</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
         <Tbody style={{ position: "relative" }}>
-          {products &&
-            products.length > 0 &&
-            products.map((item, index) => {
+          {products?.length > 0 &&
+            products?.map((item, index) => {
               return (
                 <Tr
                   key={index}
@@ -89,6 +90,7 @@ const ProductTable = ({ products, loading }) => {
 
                   <Td>{item?.name}</Td>
                   <Td>{item?.shop?.shopName}</Td>
+                  <Td>{item?.category?.name}</Td>
                   <Td>
                     <p>{item?.price}</p>
                     <p>{item?.shopEndTimeText}</p>
@@ -117,23 +119,18 @@ const ProductTable = ({ products, loading }) => {
                         </button>
                       </Tooltip>
                       <Tooltip
-                        title={`${item.status === "active" ? "Deactivate" : "Activate"
+                        title={`${item.status === "active" ? "Inactive" : "Activate"
                           }`}
                       >
                         <button
-                          className={`btn button ${item.status === "active"
-                            ? "btn-danger"
-                            : "btn-success"
+                          className={`btn button ${item?.status === "active"
+                            ? "btn-success"
+                            : "btn-danger"
                             } me-1`}
-                          onClick={() => updateStatus(item._id, item.status)}
+                          onClick={() => updateStatus(item?._id, item?.status)}
+                          disabled={loading}
                         >
-                          <i
-                            className={
-                              item.status === "active"
-                                ? "fa fa-trash"
-                                : "fa fa-trash-restore"
-                            }
-                          />
+                          <i className={item?.status === 'active' ? "fa fa-toggle-on" : "fa fa-toggle-off"} />
                         </button>
                       </Tooltip>
                     </div>
@@ -145,7 +142,7 @@ const ProductTable = ({ products, loading }) => {
       </Table>
       {loading && (
         <div className="text-center">
-          <Spinner animation="border" variant="info" />
+          <Spinner className="loader" animation="border" variant="info" />
         </div>
       )}
       {!loading && products?.length < 1 && (
@@ -156,5 +153,7 @@ const ProductTable = ({ products, loading }) => {
     </div>
   );
 };
+
+
 
 export default ProductTable;

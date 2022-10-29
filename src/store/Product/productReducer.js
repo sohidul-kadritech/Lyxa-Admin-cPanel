@@ -14,6 +14,7 @@ const initialState = {
   statusKey: { label: "All", value: "all" },
   typeKey: { label: "All", value: "all" },
   sortByKey: { label: "Desc", value: "desc" },
+  category: null
 };
 
 const productReducer = (state = initialState, action) => {
@@ -180,6 +181,13 @@ const productReducer = (state = initialState, action) => {
         status: false,
         error: payload,
       };
+
+    case actionType.UPDATE_PRODUCT_CATEGORY:
+      return {
+        ...state,
+        category: payload,
+      };
+
 
     case actionType.UPDATE_PRODUCT_SEARCH_KEY:
       return {

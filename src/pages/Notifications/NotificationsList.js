@@ -183,7 +183,7 @@ const NotificationsList = () => {
                               <Tooltip
                                 title={
                                   item.status === "active"
-                                    ? "Deactive"
+                                    ? "Inactive"
                                     : "Active"
                                 }
                               >
@@ -197,7 +197,7 @@ const NotificationsList = () => {
                                   }
                                 >
                                   {!loading ? (
-                                    <i className="fa fa-toggle-on" />
+                                    <i className={item?.status === 'active' ? "fa fa-toggle-on" : "fa fa-toggle-off"} />
                                   ) : (
                                     <Spinner
                                       animation="border"

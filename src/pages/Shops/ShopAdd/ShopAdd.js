@@ -137,6 +137,7 @@ const ShopAdd = () => {
       const findShop = shops.find((item) => item._id == id);
 
       if (findShop) {
+
         updateData(findShop);
       } else {
         // callApi(id, SINGLE_SHOP,);
@@ -653,9 +654,6 @@ const ShopAdd = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                        // inputProps={{
-                        //   step: 300, // 5 min
-                        // }}
                         />
                       </div>
 

@@ -14,7 +14,7 @@ import * as actionType from "../actionType";
 // ADD CATEGORY
 
 export const addCategory = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.ADD_CATEGORY_REQUEST_SEND,
@@ -25,7 +25,7 @@ export const addCategory = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
+
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -50,43 +50,44 @@ export const addCategory = (values) => async (dispatch) => {
 };
 
 export const getAllCategory =
-  (refresh = false, page = 1) =>
-  async (dispatch, getState) => {
-    const { categories, shopType } = getState().categoryReducer;
+  (refresh = false, userType, page = 1) =>
+    async (dispatch, getState) => {
+      const { categories, shopType } = getState().categoryReducer;
 
-    if (categories.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.GET_ALL_CATEGORY_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(GET_ALL_CATEGORY, {
-          params: {
-            page: page,
-            pageSize: 30,
-            type: shopType,
-          },
-        });
-
-        if (data.status) {
+      if (categories.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.GET_ALL_CATEGORY_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionType.GET_ALL_CATEGORY_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(GET_ALL_CATEGORY, {
+            params: {
+              page: page,
+              pageSize: 30,
+              type: shopType,
+              userType
+            },
+          });
+
+          if (data.status) {
+            dispatch({
+              type: actionType.GET_ALL_CATEGORY_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_ALL_CATEGORY_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.GET_ALL_CATEGORY_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.GET_ALL_CATEGORY_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 //   EDIT
 
@@ -172,50 +173,50 @@ export const addSubCategory = (values) => async (dispatch) => {
 
 export const getAllSubCategory =
   (refresh = false, CatId, page = 1) =>
-  async (dispatch, getState) => {
-    const { subCategories, subStatusKey, subSearchKey } =
-      getState().categoryReducer;
+    async (dispatch, getState) => {
+      const { subCategories, subStatusKey, subSearchKey } =
+        getState().categoryReducer;
 
-    if (subCategories.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.GET_ALL_SUB_CATEGORY_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(GET_ALL_SUB_CATEGORY, {
-          params: {
-            categoryId: CatId,
-            page: page,
-            pageSize: 10,
-            searchKey: subSearchKey,
-            status: subStatusKey.value,
-          },
-        });
-
-        if (data.status) {
+      if (subCategories.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.GET_ALL_SUB_CATEGORY_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionType.GET_ALL_SUB_CATEGORY_REQUEST_SEND,
           });
-        } else {
+
+          const { data } = await requestApi().request(GET_ALL_SUB_CATEGORY, {
+            params: {
+              categoryId: CatId,
+              page: page,
+              pageSize: 10,
+              searchKey: subSearchKey,
+              status: subStatusKey.value,
+            },
+          });
+
+          if (data.status) {
+            dispatch({
+              type: actionType.GET_ALL_SUB_CATEGORY_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            dispatch({
+              type: actionType.GET_ALL_SUB_CATEGORY_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
           dispatch({
             type: actionType.GET_ALL_SUB_CATEGORY_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.GET_ALL_SUB_CATEGORY_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 // EDIT SUB CATEGORY
 
 export const editSubCategory = (values) => async (dispatch) => {
-  console.log({ values });
+
   try {
     dispatch({
       type: actionType.EDIT_SUB_CATEGORY_REQUEST_SEND,
@@ -302,7 +303,7 @@ export const updateSubCatStatusKey = (value) => (dispatch) => {
 // UPDTAE CATEGORY  TYPE KEY
 
 export const updateCategoryShopType = (selectedType) => (dispatch) => {
-  console.log({ selectedType });
+
   dispatch({
     type: actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY,
     payload: selectedType,

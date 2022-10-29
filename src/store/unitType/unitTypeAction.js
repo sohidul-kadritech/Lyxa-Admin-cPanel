@@ -49,40 +49,40 @@ export const addUnitType = (name) => async (dispatch) => {
 
 export const getAllUnitType =
   (refresh = false) =>
-  async (dispatch, getState) => {
-    const { unitTypes } = getState().unitTypeReducer;
+    async (dispatch, getState) => {
+      const { unitTypes } = getState().unitTypeReducer;
 
-    if (unitTypes.length < 1 || refresh) {
-      try {
-        dispatch({
-          type: actionType.GET_ALL_UNIT_REQUEST_SEND,
-        });
-
-        const { data } = await requestApi().request(GET_ALL_UNIT);
-
-        console.log({ data });
-
-        if (data.status) {
+      if (unitTypes.length < 1 || refresh) {
+        try {
           dispatch({
-            type: actionType.GET_ALL_UNIT_REQUEST_SUCCESS,
-            payload: data.data,
+            type: actionType.GET_ALL_UNIT_REQUEST_SEND,
           });
-        } else {
-          successMsg(data.message, "error");
+
+          const { data } = await requestApi().request(GET_ALL_UNIT);
+
+
+
+          if (data.status) {
+            dispatch({
+              type: actionType.GET_ALL_UNIT_REQUEST_SUCCESS,
+              payload: data.data,
+            });
+          } else {
+            successMsg(data.message, "error");
+            dispatch({
+              type: actionType.GET_ALL_UNIT_REQUEST_FAIL,
+              payload: data.message,
+            });
+          }
+        } catch (error) {
+          successMsg(error.message, "error");
           dispatch({
             type: actionType.GET_ALL_UNIT_REQUEST_FAIL,
-            payload: data.message,
+            payload: error.message,
           });
         }
-      } catch (error) {
-        successMsg(error.message, "error");
-        dispatch({
-          type: actionType.GET_ALL_UNIT_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    }
-  };
+    };
 
 //   EDIT UNIT TYPE
 export const editUnitType = (values) => async (dispatch) => {
@@ -120,7 +120,7 @@ export const editUnitType = (values) => async (dispatch) => {
 
 //  DELETE UNIT TYPE
 export const deleteUnitType = (id) => async (dispatch) => {
-  console.log({ id });
+
   try {
     dispatch({
       type: actionType.DELETE_UNIT_REQUEST_SEND,
@@ -133,7 +133,6 @@ export const deleteUnitType = (id) => async (dispatch) => {
       },
     });
 
-    console.log({ data });
 
     if (data.status) {
       successMsg(data.message, "success");
