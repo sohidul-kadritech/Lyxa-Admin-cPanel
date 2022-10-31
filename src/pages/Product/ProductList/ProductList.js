@@ -27,7 +27,7 @@ import {
 } from "../../../store/Shop/shopAction";
 import { useLocation } from "react-router-dom";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { getAllCategory } from "../../../store/Category/categoryAction";
+import { getAllCategory, updateCategoryShopType } from "../../../store/Category/categoryAction";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -61,6 +61,7 @@ const ProductList = () => {
 
 
   useEffect(() => {
+    dispatch(updateCategoryShopType('all'));
     dispatch(getAllCategory(true, account_type));
   }, [])
 

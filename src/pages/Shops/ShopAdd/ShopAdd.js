@@ -292,10 +292,19 @@ const ShopAdd = () => {
       return successMsg("Enter Delivery fee");
     }
 
+    let getStartSec = getSeconds(shopStartTime);
+    let getEndSec = getSeconds(shopEndTime);
+
+    if (getStartSec > getEndSec) {
+      return successMsg("Shop Start and End time are wrong");
+    }
+
     uploadImages();
 
     // submitData();
   };
+
+  const getSeconds = s => s.split(":").reduce((acc, curr) => acc * 60 + +curr, 0);
 
   const uploadImages = async () => {
     let logoUrl = null;

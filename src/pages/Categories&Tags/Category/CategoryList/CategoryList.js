@@ -42,7 +42,6 @@ const CategoryList = () => {
 
   const [isZoom, setIsZoom] = useState(false);
   const [catImg, setCatImg] = useState("");
-  const [openModal, setOpenModal] = useState(false);
 
   const {
     account_type,

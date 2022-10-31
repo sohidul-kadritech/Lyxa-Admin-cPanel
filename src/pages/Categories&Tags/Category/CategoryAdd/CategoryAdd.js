@@ -45,7 +45,7 @@ const CategoryAdd = () => {
   const [type, setType] = useState(null);
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [categoryId, setCategoryId] = useState(null);
+
 
   useEffect(() => {
     if (account_type === "shop" || account_type === "seller") {
@@ -81,13 +81,13 @@ const CategoryAdd = () => {
   // SET DATA TO STATE
 
   const setCategoryData = (item) => {
-    const { name, type, image, category: { _id } } = item;
+    const { name, type, image } = item;
 
     const findTypeObj = shopTypeOptions2.find((x) => x.value == type);
     setName(name);
     setType(findTypeObj);
     setImage(image);
-    setCategoryId(_id);
+
 
   };
 
@@ -147,7 +147,7 @@ const CategoryAdd = () => {
       dispatch(
         editCategory({
           ...data,
-          id: categoryId,
+          id
 
         })
       );

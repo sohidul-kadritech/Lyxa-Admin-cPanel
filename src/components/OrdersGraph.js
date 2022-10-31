@@ -38,7 +38,6 @@ const OrdersGraph = () => {
                 if (data.status) {
 
                     const { info } = data.data;
-                    console.log(info);
                     setData(info)
                     setIsLoading(false);
 
