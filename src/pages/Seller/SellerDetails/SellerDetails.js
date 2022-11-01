@@ -126,12 +126,9 @@ const SellerDetails = () => {
                     <Info title="Company" value={seller?.company_name} />
                     <Info title="Contact person" value={seller?.name} />
                     <Info title="Email" value={seller?.email} />
-                    <Info title="Bank" value={seller?.bank_name} />
-                    <Info title="Account Name" value={seller?.account_name} />
+                    <Info title="Phone" value={seller?.phone_number} />
                   </Col>
                   <Col lg={6}>
-                    <Info title="Account No" value={seller?.account_number} />
-                    <Info title="Phone" value={seller?.phone_number} />
                     <Info title="Status" value={seller?.status} />
                     <Info title="Seller type" value={seller?.sellerType} />
                     {seller?.dropPercentage && (

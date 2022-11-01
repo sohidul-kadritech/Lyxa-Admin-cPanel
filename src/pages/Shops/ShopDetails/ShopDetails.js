@@ -314,17 +314,13 @@ const ShopDetails = () => {
                       link={`/seller/details/${shop?.seller?._id}`}
                     />
                     <Info title="Name" value={shop?.shopName} />
+                    <Info title="Phone" value={shop?.phone_number} />
+                    <Info title="Email" value={shop?.email} />
+                    <Info title="Address" value={shop?.address.address} />
                     <Info title="Start Time" value={shop?.shopStartTimeText} />
                     <Info title="End Time" value={shop?.shopEndTimeText} />
                     <Info title="Shop Type" value={shop?.shopType} />
-                    <Info
-                      title="Featured"
-                      value={shop?.isFeatured ? "Yes" : "No"}
-                    />
-                    <Info
-                      title="Minimum Order"
-                      value={`${shop?.minOrderAmount} NGN`}
-                    />
+
                     <Info title="Status" value={shop?.shopStatus} />
                     <Info
                       title="Rating"
@@ -340,13 +336,18 @@ const ShopDetails = () => {
                                 : ""
                       }
                     />
-                    <Info title="Account No" value={shop?.account_number} />
+
                   </Col>
 
                   <Col xl={6}>
-                    <Info title="Phone" value={shop?.phone_number} />
-                    <Info title="Email" value={shop?.email} />
-                    <Info title="Address" value={shop?.address.address} />
+                    <Info
+                      title="Featured"
+                      value={shop?.isFeatured ? "Yes" : "No"}
+                    />
+                    <Info
+                      title="Minimum Order"
+                      value={`${shop?.minOrderAmount} NGN`}
+                    />
                     {shop?.haveOwnDeliveryBoy && (
                       <Info
                         title="Delivery fee"
@@ -384,6 +385,7 @@ const ShopDetails = () => {
                           .join(", ")}
                       />
                     )}
+                    <Info title="Account No" value={shop?.account_number} />
                     <Info title="Bank" value={shop?.bank_name} />
                     <Info title="Account Name" value={shop?.account_name} />
                   </Col>

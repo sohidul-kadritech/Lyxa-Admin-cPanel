@@ -283,9 +283,9 @@ const userRoutes = [
   // CATEGORIES AND TAGS
 
   { path: "/categories/list", component: CategoryList },
-  { path: "/categories/add", component: CategoryAdd },
-  { path: "/categories/edit/:id", component: CategoryAdd },
-  { path: "/category/details/:id", component: CategoryDetails },
+  // { path: "/categories/add", component: CategoryAdd },
+  // { path: "/categories/edit/:id", component: CategoryAdd },
+  // { path: "/category/details/:id", component: CategoryDetails },
 
   { path: "/tags/list", component: TagsList },
   { path: "/tags/add", component: TagAdd },
@@ -369,9 +369,9 @@ const sellerRoutes = [
   { path: "/admin/create", component: CreateAdmin },
 
   { path: "/categories/list", component: CategoryList },
-  { path: "/categories/add", component: CategoryAdd },
-  { path: "/categories/edit/:id", component: CategoryAdd },
-  { path: "/category/details/:id", component: CategoryDetails },
+  // { path: "/categories/add", component: CategoryAdd },
+  // { path: "/categories/edit/:id", component: CategoryAdd },
+  // { path: "/category/details/:id", component: CategoryDetails },
 
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },

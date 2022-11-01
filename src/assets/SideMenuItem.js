@@ -299,13 +299,13 @@ export const adminMenuItem = [
         link: "/categories/list",
         isSubmenu: false,
       },
-      {
-        id: 141,
-        name: "Add",
-        icon: "fas fa-plus-circle",
-        link: "/categories/add",
-        isSubmenu: false,
-      },
+      // {
+      //   id: 141,
+      //   name: "Add",
+      //   icon: "fas fa-plus-circle",
+      //   link: "/categories/add",
+      //   isSubmenu: false,
+      // },
     ],
   },
   {
@@ -585,13 +585,13 @@ export const sellerMenuItem = [
         link: "/categories/list",
         isSubmenu: false,
       },
-      {
-        id: 61,
-        name: "Add",
-        icon: "fas fa-plus-circle",
-        link: "/categories/add",
-        isSubmenu: false,
-      },
+      // {
+      //   id: 61,
+      //   name: "Add",
+      //   icon: "fas fa-plus-circle",
+      //   link: "/categories/add",
+      //   isSubmenu: false,
+      // },
     ],
   },
 ];

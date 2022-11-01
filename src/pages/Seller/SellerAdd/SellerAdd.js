@@ -35,6 +35,7 @@ import moment from "moment";
 import { foodTypeOptions } from "../../../assets/staticData";
 import formatBytes from "../../../common/imageFormatBytes";
 import { callApi } from "../../../components/SingleApiCall";
+import { successMsg } from "../../../helpers/successMsg";
 
 const SellerAdd = () => {
   const dispatch = useDispatch();
@@ -51,9 +52,6 @@ const SellerAdd = () => {
   const [companyName, setCompanyName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [address, setAddress] = useState(null);
-  const [bankName, setBankName] = useState("");
-  const [accountName, setAccountName] = useState("");
-  const [accountNum, setAccountNum] = useState("");
   const [pin, setPin] = useState("");
   const [sellerStatus, setSellerStatus] = useState("");
   const [sellerType, setSellerType] = useState("");
@@ -91,9 +89,6 @@ const SellerAdd = () => {
   // SET SELLER DATA
   const updateSellerData = (sellerData) => {
     const {
-      account_name,
-      account_number,
-      bank_name,
       company_name,
       email,
       name,
@@ -114,9 +109,6 @@ const SellerAdd = () => {
     setCompanyName(company_name);
     setPhoneNum(phone_number);
     // setAddress("");
-    setBankName(bank_name);
-    setAccountName(account_name);
-    setAccountNum(account_number);
     setSellerStatus(status);
   };
 
@@ -187,29 +179,11 @@ const SellerAdd = () => {
     e.preventDefault();
 
     if (!id && !address) {
-      return toast.warn("Please Select a Address", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg('Please Select a Address', 'error');
     }
 
     if (!profilePhoto || !certificate || !nid || !contactPaper) {
-      return toast.warn("Please Select Images", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg('Please Upload Images', 'error');
     }
 
     //  submitDate();
@@ -297,9 +271,6 @@ const SellerAdd = () => {
           company_name: companyName,
           email,
           profile_photo: profileUrl,
-          bank_name: bankName,
-          account_name: accountName,
-          account_number: accountNum,
           certificate_of_incorporation: certificateUrl,
           national_id: nidUrl,
           sellerContractPaper: contactUrl,
@@ -316,9 +287,6 @@ const SellerAdd = () => {
           password,
           profile_photo: profileUrl,
           account_type: "seller",
-          bank_name: bankName,
-          account_name: accountName,
-          account_number: accountNum,
           certificate_of_incorporation: certificateUrl,
           national_id: nidUrl,
           sellerContractPaper: contactUrl,
@@ -353,9 +321,6 @@ const SellerAdd = () => {
         setCompanyName("");
         setPhoneNum("");
         setAddress("");
-        setBankName("");
-        setAccountName("");
-        setAccountNum("");
         setAddress(null);
         setSelectedAddress("");
         setPin("");
@@ -568,43 +533,22 @@ const SellerAdd = () => {
                       />
                     </Col>
                     <Col xl={6} className="mt-4 mt-xl-0">
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Bank Name"
-                        variant="outlined"
-                        placeholder="Enter Bank Name"
-                        value={bankName}
-                        onChange={(e) => setBankName(e.target.value)}
-                        required
-                      />
-                    </Col>
-                  </Row>
-
-                  <Row className="mt-4">
-                    <Col xl={6}>
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Account Name"
-                        variant="outlined"
-                        placeholder="Enter Account Name"
-                        value={accountName}
-                        onChange={(e) => setAccountName(e.target.value)}
-                        required
-                      />
-                    </Col>
-                    <Col xl={6} className="mt-4 mt-xl-0">
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Account Number"
-                        variant="outlined"
-                        placeholder="Enter Account Number"
-                        value={accountNum}
-                        onChange={(e) => setAccountNum(e.target.value)}
-                        required
-                      />
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">
+                          Status
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="status"
+                          name="status"
+                          value={sellerStatus}
+                          label="Status"
+                          onChange={(e) => setSellerStatus(e.target.value)}
+                        >
+                          <MenuItem value="active">Active</MenuItem>
+                          <MenuItem value="inactive">Inactive</MenuItem>
+                        </Select>
+                      </FormControl>
                     </Col>
                   </Row>
 
@@ -623,24 +567,7 @@ const SellerAdd = () => {
                       />
                     </Col>
 
-                    <Col xl={6} className="mt-4 mt-xl-0">
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Status
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="status"
-                          name="status"
-                          value={sellerStatus}
-                          label="Status"
-                          onChange={(e) => setSellerStatus(e.target.value)}
-                        >
-                          <MenuItem value="active">Active</MenuItem>
-                          <MenuItem value="inactive">Inactive</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Col>
+
                   </Row>
 
                   <Row className="mt-4">

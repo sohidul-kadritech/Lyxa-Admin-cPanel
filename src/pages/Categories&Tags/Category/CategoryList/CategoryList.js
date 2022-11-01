@@ -80,7 +80,7 @@ const CategoryList = () => {
               title="Category"
               loading={loading}
               callList={callCategoryList}
-              isAddNew={true}
+              isAddNew={account_type === 'shop'}
               addNewRoute={"categories/add"}
             />
 
@@ -136,8 +136,9 @@ const CategoryList = () => {
                       <Th>Image</Th>
                       <Th>Name</Th>
                       <Th>Type</Th>
+                      <Th>Shop</Th>
                       <Th>Status</Th>
-                      <Th>Action</Th>
+                      {account_type === 'shop' && <Th>Action</Th>}
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
@@ -153,15 +154,15 @@ const CategoryList = () => {
                         >
                           <Th className="d-flex justify-content-center">
                             <div className="image__wrapper">
-                              {item?.image ? (
+                              {item?.category?.image ? (
                                 <img
                                   onClick={() => {
                                     setIsZoom(true);
-                                    setCatImg(item.image);
+                                    setCatImg(item?.category?.image);
                                   }}
                                   className="img-fluid avater avater-lg cursor-pointer"
                                   alt=""
-                                  src={item.image}
+                                  src={item.category.image}
                                   style={{
                                     width: "100%",
                                     height: "100%",
@@ -175,6 +176,7 @@ const CategoryList = () => {
                           </Th>
                           <Td>{item?.name}</Td>
                           <Td>{item?.type}</Td>
+                          <Td>{item?.shop?.shopName}</Td>
                           <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
                           <Td>
                             <div>

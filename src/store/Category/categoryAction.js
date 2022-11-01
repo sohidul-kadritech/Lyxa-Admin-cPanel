@@ -20,7 +20,7 @@ export const addCategory = (values) => async (dispatch) => {
       type: actionType.ADD_CATEGORY_REQUEST_SEND,
     });
 
-    const { data } = await requestApi().request(ADD_CATEGORY, {
+    const { data } = await requestApi().request(ADD_CATEGORY + `?userType=${values.userType}`, {
       method: "POST",
       data: values,
     });

@@ -239,7 +239,6 @@ const OrderDetails = () => {
                     />
                     <Info title="Order Status" value={order?.orderStatus} />
                     <Info title="Order Type" value={order?.orderType} />
-                    <Info title="Order Type" value={order?.orderType} />
                     <Info
                       title="Rating"
                       value={

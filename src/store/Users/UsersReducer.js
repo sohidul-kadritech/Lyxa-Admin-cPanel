@@ -15,9 +15,9 @@ const initialState = {
   currentPage: 1,
   hasPreviousPage: false,
   status: false,
-  sortBy: { label: "ASC", value: "ASC" },
+  sortBy: { label: "DESC", value: "desc" },
   startDate: moment().format("YYYY-MM-DD"),
-  endDate: moment().add(1, "M").format("YYYY-MM-DD"),
+  endDate: moment().endOf("month").format("YYYY-MM-DD"),
   transactionList: [],
   orders: [],
 };

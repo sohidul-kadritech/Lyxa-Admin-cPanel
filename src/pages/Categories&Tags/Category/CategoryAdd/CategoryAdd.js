@@ -37,7 +37,7 @@ const CategoryAdd = () => {
     (state) => state.categoryReducer
   );
 
-  const { account_type, shopType, sellerType = '' } = JSON.parse(
+  const { account_type, shopType = '', sellerType = '' } = JSON.parse(
     localStorage.getItem("admin")
   );
 
@@ -50,7 +50,7 @@ const CategoryAdd = () => {
   useEffect(() => {
     if (account_type === "shop" || account_type === "seller") {
       const finType = shopTypeOptions2.find(
-        (item) => item.value === shopType ? shopType : sellerType
+        (item) => item.value === shopType
       )
       setType(finType);
     }
@@ -81,7 +81,7 @@ const CategoryAdd = () => {
   // SET DATA TO STATE
 
   const setCategoryData = (item) => {
-    const { name, type, image } = item;
+    const { name, type, category: { image } } = item;
 
     const findTypeObj = shopTypeOptions2.find((x) => x.value == type);
     setName(name);
@@ -100,6 +100,10 @@ const CategoryAdd = () => {
     if (!type) {
       return successMsg("Enter category type", "error");
     }
+    if (type.value !== 'food') {
+      return successMsg("Upload Image", "error");
+    }
+
 
     if (image) {
       uploadImage();
