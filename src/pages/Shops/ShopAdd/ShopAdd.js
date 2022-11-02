@@ -292,10 +292,14 @@ const ShopAdd = () => {
       return successMsg("Enter Delivery fee");
     }
 
-    let getStartSec = getSeconds(shopStartTime);
-    let getEndSec = getSeconds(shopEndTime);
+    let getStartSec = getMinutes(shopStartTime);
+    let getEndSec = getMinutes(shopEndTime);
+    let diff = (getEndSec - getStartSec) / 60;
+    if (diff < 0) {
+      diff = 24 + diff
+    }
 
-    if (getStartSec > getEndSec) {
+    if (diff > 24) {
       return successMsg("Shop Start and End time are wrong");
     }
 
@@ -304,7 +308,7 @@ const ShopAdd = () => {
     // submitData();
   };
 
-  const getSeconds = s => s.split(":").reduce((acc, curr) => acc * 60 + +curr, 0);
+  const getMinutes = s => s.split(":").reduce((acc, curr) => acc * 60 + +curr, 0);
 
   const uploadImages = async () => {
     let logoUrl = null;
@@ -646,9 +650,9 @@ const ShopAdd = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                        // inputProps={{
-                        //   step: 300, // 5 min
-                        // }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
                         />
                       </div>
                       <div className="mb-4">

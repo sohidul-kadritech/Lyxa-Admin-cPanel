@@ -68,7 +68,7 @@ const UserTransaction = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={user?.name}
               title="User Transaction"
               loading={loading}
@@ -167,8 +167,7 @@ const UserTransaction = () => {
                         <Th>Date</Th>
                         <Th>User Note</Th>
                         <Th>Admin Note</Th>
-                        <Th>Debits</Th>
-                        <Th>Credits</Th>
+                        <Th>Amount</Th>
                       </Tr>
                     </Thead>
                     <Tbody style={{ position: "relative" }}>
@@ -188,14 +187,10 @@ const UserTransaction = () => {
                               </Th>
                               <Td>{item?.userNote}</Td>
                               <Td>{item?.adminNote} </Td>
-                              <Td>
-                                {item?.type === "userBalanceWithdrawAdmin" &&
-                                  item?.amount}
+                              <Td style={{ color: item?.type === "userBalanceWithdrawAdmin" ? 'red' : 'green' }}>
+                                {`${item?.type === "userBalanceWithdrawAdmin" ? "-" : item?.type === "userBalanceAddAdmin" ? "+" : ""} ${item?.amount}`}
                               </Td>
-                              <Td>
-                                {item?.type === "userBalanceAddAdmin" &&
-                                  item?.amount}
-                              </Td>
+
                             </Tr>
                           );
                         })}

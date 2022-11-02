@@ -284,8 +284,8 @@ const userRoutes = [
 
   { path: "/categories/list", component: CategoryList },
   // { path: "/categories/add", component: CategoryAdd },
-  // { path: "/categories/edit/:id", component: CategoryAdd },
-  // { path: "/category/details/:id", component: CategoryDetails },
+  { path: "/categories/edit/:id", component: CategoryAdd },
+  { path: "/category/details/:id", component: CategoryDetails },
 
   { path: "/tags/list", component: TagsList },
   { path: "/tags/add", component: TagAdd },
@@ -370,8 +370,8 @@ const sellerRoutes = [
 
   { path: "/categories/list", component: CategoryList },
   // { path: "/categories/add", component: CategoryAdd },
-  // { path: "/categories/edit/:id", component: CategoryAdd },
-  // { path: "/category/details/:id", component: CategoryDetails },
+  { path: "/categories/edit/:id", component: CategoryAdd },
+  { path: "/category/details/:id", component: CategoryDetails },
 
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },

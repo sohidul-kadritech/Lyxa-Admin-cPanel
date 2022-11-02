@@ -69,7 +69,7 @@ const UserDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumbs
-              maintitle="Drop"
+              maintitle="lyxa"
               breadcrumbItem="Details"
               title="User"
               isRefresh={false}
@@ -83,6 +83,7 @@ const UserDetails = () => {
                       <Button
                         outline={true}
                         color="success"
+                        disabled={Object.keys(user).length === 0}
                         onClick={() => setBalAddModal(!balAddModal)}
                       >
                         Add/Remove Credit
@@ -91,6 +92,7 @@ const UserDetails = () => {
                         outline={true}
                         color="success"
                         className="ms-3"
+                        disabled={Object.keys(user).length === 0}
                         onClick={() =>
                           dispatch(
                             updateUserStatus(
@@ -107,12 +109,12 @@ const UserDetails = () => {
                     <Info title="Name" value={user?.name} />
                     <Info title="Email" value={user?.email} />
                     <Info title="Gender" value={user?.gender} />
-                    <Info title="Balance" value={`${user?.tempBalance} NGN`} />
-                    <Info title="Total Order" value={user?.cards?.length} />
                     <Info
                       title="Birth Date"
                       value={new Date(user?.dob).toDateString()}
                     />
+                    <Info title="Balance" value={`${user?.tempBalance} NGN`} />
+                    <Info title="Total Order's" value={user?.cards?.length} />
                     <Info title="Status" value={user?.status} />
                     <Info
                       title="Joined Date"

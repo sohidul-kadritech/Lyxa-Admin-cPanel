@@ -12,7 +12,7 @@ import {
 import { getAllAppSettings } from "../store/Settings/settingsAction";
 import { updateSearchKey, userList } from "../store/Users/UsersAction";
 
-const UserCradit = () => {
+const UserCradit = ({ user = null }) => {
   const { users, searchKey } = useSelector((state) => state.usersReducer);
   const { loading, status } = useSelector((state) => state.dropPayReducer);
   const { appSettingsOptions: { maxCustomerServiceValue } } = useSelector(
@@ -30,7 +30,11 @@ const UserCradit = () => {
   const [userNote, setUserNote] = useState("");
   const [amount, setAmount] = useState(0);
 
-
+  useEffect(() => {
+    if (user) {
+      setSelectedUser(user);
+    }
+  }, [user])
 
   useEffect(() => {
     if (account_type === 'admin' && adminType === 'customerService') {

@@ -48,13 +48,12 @@ const CategoryAdd = () => {
 
 
   useEffect(() => {
-    if (account_type === "shop" || account_type === "seller") {
-      const finType = shopTypeOptions2.find(
+    if (account_type === "shop" && !id) {
+      const findType = shopTypeOptions2.find(
         (item) => item.value === shopType
       )
-      setType(finType);
+      setType(findType);
     }
-
     return;
   }, [account_type]);
 
@@ -74,6 +73,7 @@ const CategoryAdd = () => {
         }
       }
     }
+    return;
   }, [id]);
 
 
@@ -100,7 +100,7 @@ const CategoryAdd = () => {
     if (!type) {
       return successMsg("Enter category type", "error");
     }
-    if (type.value !== 'food') {
+    if (type.value !== 'food' && !image) {
       return successMsg("Upload Image", "error");
     }
 
@@ -133,7 +133,7 @@ const CategoryAdd = () => {
           successMsg(data.error, 'error')
         }
       } catch (error) {
-        successMsg(error.message, 'error')
+        successMsg(error, 'error')
       }
     }
   };
@@ -186,6 +186,7 @@ const CategoryAdd = () => {
         window.scroll(0, 0);
       }
     }
+    return;
   }, [status]);
 
   // HANDLE CHANGE NAME
