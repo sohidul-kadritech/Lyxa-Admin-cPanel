@@ -4,6 +4,7 @@ import {
     Row,
     Col,
 
+
 } from "reactstrap"
 
 
@@ -14,13 +15,68 @@ import servicesIcon5 from "../assets/images/services-icon/05.png";
 import user2 from "../assets/images/users/user-2.jpg";
 import user3 from "../assets/images/users/user-3.jpg";
 import DashboardCard from "./DashboardCard";
-
-
+import moneyExchangeIcon from "../assets/images/dashboard/money-exchange.png";
+import orderAmountIcon from "../assets/images/dashboard/order-amount.png";
+import deliveryIcon from "../assets/images/dashboard/delivery.png";
+import profitFlowIcon from "../assets/images/dashboard/profit-flow.png";
+import profitUpArrowIcon from "../assets/images/dashboard/profit-up-arrow.png";
+import earningFlowIcon from "../assets/images/dashboard/earning-flow.png";
+import TopSummery from "./TopSummery";
 
 const AdminDashboard = ({ summery }) => {
+
+    const topSummaryData = [
+        {
+            id: 1,
+            title: "Lyxa Earning's",
+            value: `${summery?.totalDropEarning ?? 0} NGN`,
+            icon: earningFlowIcon,
+            iconBg: 'red'
+        },
+        {
+            id: 2,
+            title: "Profits(Products)",
+            value: `${summery?.dropEarningTotalOfItems ?? 0} NGN`,
+            icon: profitFlowIcon,
+            iconBg: '#56ca00'
+
+        },
+        {
+            id: 3,
+            title: "Profits(Delivery Fee)",
+            value: `${summery?.dropEarningTotalOfDeliveryFee ?? 0} NGN`,
+            icon: profitUpArrowIcon,
+            iconBg: '#f7c137'
+        },
+        {
+            id: 4,
+            title: "Delivery Fee's",
+            value: `${summery?.ordersDeliveryFeesTotal ?? 0} NGN`,
+            icon: deliveryIcon,
+            iconBg: '#00dcff'
+        },
+        {
+            id: 5,
+            title: "Order Amounts(Products)",
+            value: `${summery?.ordersItemTotal ?? 0} NGN`,
+            icon: orderAmountIcon,
+            iconBg: '#ff5ca7'
+        },
+        {
+            id: 6,
+            title: "Shops Unsettled Amount",
+            value: `${summery?.shopUnsettleAmount ?? 0} NGN`,
+            icon: moneyExchangeIcon,
+            iconBg: '#0c9da4'
+        }
+    ]
+
     return (
         <React.Fragment>
             <GlobalWrapper>
+
+
+                {topSummaryData.length > 0 && <TopSummery data={topSummaryData} />}
 
                 <Row>
                     <Col xl={3} md={6}>

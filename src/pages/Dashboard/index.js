@@ -32,6 +32,8 @@ import Flatpickr from "react-flatpickr";
 import OrdersGraph from "../../components/OrdersGraph";
 import EarningsGraph from "../../components/EarningsGraph";
 import UsersGraph from "../../components/UsersGraph";
+import { TextField } from "@mui/material";
+import styled from "styled-components";
 
 
 const TopLists = ({ list, type }) => {
@@ -95,6 +97,7 @@ const Dashboard = () => {
         )
       );
     }
+    return;
   }, [startDate, endDate]);
 
   return (
@@ -104,62 +107,56 @@ const Dashboard = () => {
           <MetaTags>
             <title>Lyxa</title>
           </MetaTags>
+
           <Container fluid>
-            <div className="page-title-box">
-              <Row className="align-items-center">
-                <Col md={8}>
-                  <h6 className="page-title">Dashboard</h6>
-                  <ol className="breadcrumb m-0">
-                    <li className="breadcrumb-item active">
-                      Welcome to Lyxa Dashboard
-                    </li>
-                  </ol>
-                </Col>
-              </Row>
-            </div>
-            <Card>
-              <CardBody>
-                <Row className="d-flex justify-content-center">
-                  <Col lg={8}>
-                    <div className="d-flex my-3 my-md-0 ">
-                      <div className=" w-100">
-                        <label>Start Date</label>
-                        <div className="form-group mb-0 w-100">
-                          <Flatpickr
-                            className="form-control d-block"
-                            id="startDate"
-                            placeholder="Start Date"
-                            value={startDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateDashboardCardStartDate(dateStr))
-                            }
-                            options={{
-                              altInput: true,
-                              altFormat: "F j, Y",
-                              dateFormat: "Y-m-d",
-                            }}
-                          />
+            <Card className="page-title-box p-0">
+              <CardBody style={{ boxShadow: "0 4px 2px -2px lightgray", padding: "10px 15px" }}>
+                <Row className="align-items-center">
+                  <Col md={5}>
+                    <h6 className="page-title text-danger">Dashboard</h6>
+                    <ol className="breadcrumb m-0">
+                      <li className="breadcrumb-item active">
+                        Welcome to Lyxa Dashboard
+                      </li>
+                    </ol>
+                  </Col>
+                  <Col md={7}>
+                    <div className="d-flex">
+                      <DateFilter className=" me-2 ">
+                        <div className="date-label">
+                          <small>Start</small>
+                          <h5>Date</h5>
                         </div>
-                      </div>
-                      <div className="ms-2 w-100">
-                        <label>End Date</label>
-                        <div className="form-group mb-0">
-                          <Flatpickr
-                            className="form-control w-100"
-                            id="endDate"
-                            placeholder="Select End Date"
-                            value={endDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateDashboardCardEndDate(dateStr))
-                            }
-                            options={{
-                              altInput: true,
-                              altFormat: "F j, Y",
-                              dateFormat: "Y-m-d",
-                            }}
-                          />
+                        <TextField
+                          type="date"
+                          className="form-control"
+                          id="example-time-input"
+                          variant="standard"
+                          format={"YYYY-MM-DD"}
+                          value={startDate}
+                          onChange={(e) =>
+                            dispatch(updateDashboardCardStartDate(e.target.value))
+                          }
+                        />
+                      </DateFilter>
+                      <DateFilter className="ps-3">
+                        <div className="date-label">
+                          <small>End</small>
+                          <h5>Date</h5>
                         </div>
-                      </div>
+                        <TextField
+                          type="date"
+                          className="form-control"
+                          id="example-time-input"
+                          variant="standard"
+                          format={"YYYY-MM-DD"}
+                          value={endDate}
+                          onChange={(e) =>
+                            dispatch(updateDashboardCardEndDate(e.target.value))
+                          }
+
+                        />
+                      </DateFilter>
                     </div>
                   </Col>
                 </Row>
@@ -170,6 +167,7 @@ const Dashboard = () => {
                 <Spinner animation="border" variant="info" />
               </div>
             )}
+
             <div>
               {account_type === "admin" ? (
                 <AdminDashboard summery={summery} />
@@ -792,5 +790,17 @@ const Dashboard = () => {
 Dashboard.propTypes = {
   t: PropTypes.any,
 };
+
+const DateFilter = styled.div`
+
+flex: 1;
+display: flex;
+align-items: center;
+
+.date-label{
+  width: 65px;
+}
+
+`;
 
 export default withTranslation()(Dashboard);
