@@ -8,12 +8,6 @@ import {
 } from "reactstrap"
 
 
-import servicesIcon2 from "../assets/images/services-icon/01.png";
-import servicesIcon3 from "../assets/images/services-icon/03.png";
-import servicesIcon4 from "../assets/images/services-icon/04.png";
-import servicesIcon5 from "../assets/images/services-icon/05.png";
-import user2 from "../assets/images/users/user-2.jpg";
-import user3 from "../assets/images/users/user-3.jpg";
 import DashboardCard from "./DashboardCard";
 import moneyExchangeIcon from "../assets/images/dashboard/money-exchange.png";
 import orderAmountIcon from "../assets/images/dashboard/order-amount.png";
@@ -21,6 +15,11 @@ import deliveryIcon from "../assets/images/dashboard/delivery.png";
 import profitFlowIcon from "../assets/images/dashboard/profit-flow.png";
 import profitUpArrowIcon from "../assets/images/dashboard/profit-up-arrow.png";
 import earningFlowIcon from "../assets/images/dashboard/earning-flow.png";
+
+import userIcon from "../assets/images/dashboard/user.png";
+import cancelBagIcon from "../assets/images/dashboard/cancel-bag.png";
+import shopIcon from "../assets/images/dashboard/shop.png";
+import bagIcon from "../assets/images/dashboard/bag.png";
 import TopSummery from "./TopSummery";
 
 const AdminDashboard = ({ summery }) => {
@@ -80,24 +79,25 @@ const AdminDashboard = ({ summery }) => {
 
                 <Row>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Users' value={summery?.totalUser} icon={user2} />
+                        <DashboardCard title='Users' value={summery?.totalUser} icon={userIcon} border={"#f05179"} />
                     </Col>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Shops' value={summery?.totalShopRegister} icon={servicesIcon5} />
+                        <DashboardCard title='Shops' value={summery?.totalShopRegister} icon={shopIcon} border={"#22a6ac"} />
                     </Col>
                     <Col xl={3} md={6}>
-                        <DashboardCard title="Delivery Boy's" value={summery?.totalDeliveryBoy} icon={user3} />
+                        <DashboardCard title='Orders' value={summery?.totalOrder} icon={bagIcon} border={"#459ed8"} />
                     </Col>
+
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Orders' value={summery?.totalOrder} icon={servicesIcon2} />
+                        <DashboardCard title='Cancel Orders' value={summery?.totalCancelOrder} icon={cancelBagIcon} border={"#8c54ff"} />
                     </Col>
 
 
                 </Row>
 
-                <Row>
+                {/* <Row>
                     <Col xl={3} md={6}>
-                        <DashboardCard title='Cancel Orders' value={summery?.totalCancelOrder} icon={servicesIcon3} />
+                        <DashboardCard title="Delivery Boy's" value={summery?.totalDeliveryBoy} icon={bagIcon} />
                     </Col>
                     <Col xl={3} md={6}>
                         <DashboardCard title='Orders Amount(Without Delivery Fee)' value={`${summery?.ordersItemTotal ?? 0} NGN`} icon={servicesIcon4} />
@@ -148,14 +148,13 @@ const AdminDashboard = ({ summery }) => {
                     <Col xl={3} md={6}>
                         <DashboardCard title='Avarage delivery time' value={`${summery?.totalAveratgeDeliveredTime} Min`} icon={servicesIcon4} />
                     </Col>
-
                 </Row>
 
                 <Row>
                     <Col xl={3} md={6}>
                         <DashboardCard title='Incoming Chat Requests' value={summery?.totalIncomingChat} icon={servicesIcon2} />
                     </Col>
-                </Row>
+                </Row> */}
 
             </GlobalWrapper>
         </React.Fragment>

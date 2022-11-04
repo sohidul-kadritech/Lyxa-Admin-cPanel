@@ -10,7 +10,7 @@ import {
 } from "reactstrap"
 
 const TopSummery = ({ data }) => {
-    console.log({ data });
+
     return (
         <React.Fragment>
             <Card>
@@ -20,14 +20,16 @@ const TopSummery = ({ data }) => {
                             const { icon, title, value, iconBg } = item;
                             return (
                                 <Col md={2} key={index} className="px-1">
+                                    <span className="font-size-13 text-dark">{title}</span>
                                     <Wrapper iconBg={iconBg}>
+
                                         <div className="image-wrapper">
                                             <img src={icon} alt={title} />
                                         </div>
-                                        <div className="content-wrapper">
-                                            <small className="title">{title}</small>
-                                            <h6 className="value">{value}</h6>
-                                        </div>
+
+
+                                        <h6 className="value">{value}</h6>
+
                                     </Wrapper>
                                 </Col>
                             )
@@ -45,14 +47,13 @@ const TopSummery = ({ data }) => {
 const Wrapper = styled.div`
 
 display: flex;
-// justify-content: space-evenly;
-// height: 65px;
+align-items: center;
 .image-wrapper{
     background-color: ${({ iconBg }) => iconBg};
     padding: 5px;
     border-radius: 5px;
-    width: 61px;
-    height: 61px;
+    width: 40px;
+    height: 40px;
 
     img{
         width: 100%;
@@ -60,20 +61,11 @@ display: flex;
     }
 }
 
-.content-wrapper{
-    flex: 1;
-    padding-left: 4px; 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; 
-    .title{
-        font-size: 12px;
-        color: ligthgray;
-    }
-    .value{
-        font-size: 17px;
-    }
+.value{
+    font-size: 18px;
 }
+
+
 
 
 `

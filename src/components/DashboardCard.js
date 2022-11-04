@@ -1,31 +1,37 @@
 import React from "react";
 import { Card, CardBody } from "reactstrap";
+import styled from "styled-components";
 
 
 
 
 
-const DashboardCard = ({ title, value, icon }) => {
+const DashboardCard = ({ title, value, icon, border }) => {
 
     return (
         <React.Fragment>
-            <Card className="mini-stat bg-primary text-white" style={{ height: '140px' }}>
+            <Card className="mini-stat" style={{ height: '140px' }}>
                 <CardBody>
-                    <div className="mb-4 d-flex h-100">
-                        <div className="float-start mini-stat-img me-4">
-                            <img src={icon} alt="" />
-                        </div>
-                        <div style={{ flex: '1' }}>
-                            <h5 className="font-size-14 text-uppercase mt-0">
-                                {title}
-                            </h5>
-                            <h4 className="fw-medium font-size-18">
+                    <Wrapper border={border}>
+                        <h5 className="font-size-14">
+                            {title}
+                        </h5>
+
+                        <div className="border"></div>
+
+                        <div className="d-flex mt-2">
+                            <div className="img_wrapper">
+                                <img src={icon} alt="" />
+                            </div>
+
+                            <h4 className="value">
                                 {value ?? 0}
-                                {/* <i className="mdi mdi-arrow-up text-success ms-2"></i> */}
+
                             </h4>
                         </div>
+                    </Wrapper>
 
-                    </div>
+
 
                 </CardBody>
             </Card>
@@ -35,7 +41,29 @@ const DashboardCard = ({ title, value, icon }) => {
 
 }
 
+const Wrapper = styled.div`
 
+
+    .border{
+       border-bottom: 2px solid ${({ border }) => border};
+       width: 20px
+    }
+
+    .img_wrapper{
+        width: 65px;
+        height: 65px;
+
+        img{
+            width: 100%;
+            heigth: 100%;
+        }
+    }
+
+    .value{
+        padding-left: 20px;
+        font-weight: 28px;
+    }
+`
 
 
 export default DashboardCard;

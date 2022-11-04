@@ -34,42 +34,60 @@ import EarningsGraph from "../../components/EarningsGraph";
 import UsersGraph from "../../components/UsersGraph";
 import { TextField } from "@mui/material";
 import styled from "styled-components";
-
+import riderIcon from "../../assets/images/dashboard/rider.png";
+import availableRiderIcon from "../../assets/images/dashboard/available-rider.png";
+import activeRiderIcon from "../../assets/images/dashboard/active-rider.png";
+import timerIcon from "../../assets/images/dashboard/timer.png";
+import amountIcon from "../../assets/images/dashboard/amount.png";
+import cashInHandIcon from "../../assets/images/dashboard/cash-in-hand.png";
+import DashboardCard from "../../components/DashboardCard";
 
 const TopLists = ({ list, type }) => {
   return (
-    <Table
-      id="tech-companies-1"
-      className="table table__wrapper table-striped table-bordered table-hover text-center"
-    >
-      <Thead>
-        <Tr>
-          <Th>SL.</Th>
-          <Th>Name</Th>
-          <Th>Orders</Th>
-        </Tr>
-      </Thead>
-      <Tbody style={{ position: "relative" }}>
-        {list?.length > 0 &&
-          list?.map((item, index) => {
-            return (
-              <Tr
-                key={index}
-                className="align-middle"
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
-              >
-                <Th>{index + 1}</Th>
+    <Card>
+      <CardBody>
+        <div className="d-flex mb-2">
+          <i className="fa fa-user" style={{ fontSize: '18px', padding: "5px" }}></i>
+          <h5 className="ms-2 text-dark">Top {`${type === 'user' ? "Users" : type === 'deliveryBoy' ? 'Delivery Boys' : 'Shops'}`}</h5>
+        </div>
 
-                <Td>{type === 'shop' ? item?.shopName : item?.name}</Td>
-                <Td>{type === 'user' ? item?.orderCompleted : item?.totalOrder}</Td>
-              </Tr>
-            );
-          })}
-      </Tbody>
-    </Table>
+        <Table
+          id="tech-companies-1"
+          className="table table__wrapper table-hover cursor-pointer"
+        >
+          <Thead>
+            <Tr style={{ border: "transparent" }}>
+              <Th></Th>
+              <Th></Th>
+              <Th className='p-0 text-muted'>Orders</Th>
+            </Tr>
+          </Thead>
+          <Tbody style={{ position: "relative", borderTop: 'none' }}>
+            {list?.length > 0 &&
+              list?.map((item, index) => {
+                return (
+                  <Tr
+                    key={index}
+                    className="align-middle"
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      border: "transparent"
+                    }}
+                  >
+                    <Th style={{ color: `#${Math.floor(Math.random() * 16777215).toString(16)}` }}>#{index + 1}</Th>
+
+                    <Td>{type === 'shop' ? item?.shopName : item?.name}</Td>
+                    <Td className="text-end">{type === 'user' ? item?.orderCompleted : item?.totalOrder}</Td>
+                  </Tr>
+                );
+              })}
+          </Tbody>
+        </Table>
+
+      </CardBody>
+    </Card>
+
   )
 }
 
@@ -162,6 +180,7 @@ const Dashboard = () => {
                 </Row>
               </CardBody>
             </Card>
+
             {loading && (
               <div className="text-center">
                 <Spinner animation="border" variant="info" />
@@ -177,18 +196,11 @@ const Dashboard = () => {
                 <ShopDashboard summery={summery} />
               )}
             </div>
-            {account_type === "admin" && (
+
+            {/* {account_type === "admin" && (
               <Row>
                 <Col md={4}>
-                  <Card>
-                    <CardBody>
-                      <CardTitle>Top Users</CardTitle>
-                      <hr />
-                      <CardBody>
-                        <TopLists list={top_activity?.topUser} type="user" />
-                      </CardBody>
-                    </CardBody>
-                  </Card>
+                  
                 </Col>
                 <Col md={4}>
                   <Card>
@@ -213,67 +225,60 @@ const Dashboard = () => {
                   </Card>
                 </Col>
               </Row>
+            )} */}
+            {account_type === "admin" && (
+              <Row>
+                <Col md={9}>
+                  <UsersGraph />
+                </Col>
+                <Col md={3}>
+
+                  <TopLists list={top_activity?.topUser} type="user" />
+                </Col>
+              </Row>
             )}
 
+            {account_type === 'admin' && <Row>
+              <Col md={3}>
+                <TopLists list={top_activity?.topDeliveryBoy} type='deliveryBoy' />
+              </Col>
+              <Col md={9}>
+                <Row>
+                  <Col xl={4} >
+                    <DashboardCard title="Delivery Boy's" value={summery?.totalDeliveryBoy} icon={riderIcon} />
+                  </Col>
+                  <Col xl={4} >
+                    <DashboardCard title='Active Riders' value={summery?.totalActiveDeliveryBoy} icon={availableRiderIcon} />
+                  </Col>
+
+                  <Col xl={4} >
+                    <DashboardCard title='Available Riders' value={summery?.totalAvailableDeliveryBoy} icon={activeRiderIcon} />
+                  </Col>
+
+                </Row>
+                <Row>
+                  <Col xl={4}>
+                    <DashboardCard title='Riders Unsettled Amount' value={`${summery?.deliveryBoyUnsettleAmount ?? 0} NGN`} icon={amountIcon} />
+                  </Col>
+                  <Col xl={4}>
+                    <DashboardCard title='Riders cash in hands' value={`${summery?.chashInHandDeliveryBoy ?? 0} NGN`} icon={cashInHandIcon} />
+                  </Col>
+                  <Col xl={4}>
+                    <DashboardCard title='Avarage delivery time' value={`${(summery?.totalAveratgeDeliveredTime).toFixed(2)} Min`} icon={timerIcon} />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>}
+
             <Row>
-              <Col>
+              <Col md={9}>
                 <OrdersGraph />
               </Col>
 
-              {/* <Col xl={3}>
-                <Card>
-                  <CardBody>
-                    <div>
-                      <h4 className="card-title mb-4">Sales Analytics</h4>
-                    </div>
-                    <div className="wid-peity mb-4">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div>
-                            <p className="text-muted">Online</p>
-                            <h5 className="mb-4">1,542</h5>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-4">
-                            <SparkLine />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="wid-peity mb-4">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div>
-                            <p className="text-muted">Offline</p>
-                            <h5 className="mb-4">6,451</h5>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-4">
-                            <SparkLine1 />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div>
-                            <p className="text-muted">Marketing</p>
-                            <h5>84,574</h5>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-4">
-                            <SparkLine />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col> */}
+              <Col md={3}>
+                <TopLists list={top_activity?.topShop} type='shop' />
+              </Col>
+
             </Row>
 
             <Row>
@@ -281,14 +286,6 @@ const Dashboard = () => {
                 <EarningsGraph />
               </Col>
             </Row>
-
-            {account_type === "admin" && (
-              <Row>
-                <Col>
-                  <UsersGraph />
-                </Col>
-              </Row>
-            )}
             {/* <Row>
               <Col xl={3}>
                 <Card>
@@ -802,5 +799,7 @@ align-items: center;
 }
 
 `;
+
+
 
 export default withTranslation()(Dashboard);

@@ -13,7 +13,7 @@ import {
 } from "reactstrap"
 import { graphFilterOptions, monthOptions } from "../assets/staticData";
 
-const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, endDateValue, chartData = {}, isLoading, yearValue, graphType, getMonth }) => {
+const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, endDateValue, chartData = {}, isLoading, yearValue, graphType, getMonth, month }) => {
 
     var lineChartOptions = {
         low: 0,
@@ -26,7 +26,7 @@ const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, end
                     <h4 className="card-title mb-4">{`${graphType === 'order' ? "Order" : graphType === 'earning' ? "Earning" : graphType === 'users' ? 'Users' : ""}`} Graph</h4>
                     <hr />
                     <Row>
-                        <Col lg={4}>
+                        <Col lg={3}>
                             <div className="mb-4">
                                 <label className="control-label">Filter By</label>
                                 <Select
@@ -38,7 +38,7 @@ const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, end
                                 />
                             </div>
                         </Col>
-                        <Col lg={8}>
+                        <Col lg={6}>
                             {type.value === 'year' ? <div>
                                 <label>Year</label>
                                 <input type="number" className="form-control" placeholder="Enter year" min={2021} max={new Date().getFullYear()} value={yearValue} onChange={(e) => year(e.target.value)} />
@@ -50,7 +50,7 @@ const Graph = ({ filterType, startDate, endDate, year, type, startDateValue, end
                                             palceholder="Select Status"
                                             options={monthOptions}
                                             classNamePrefix="select2-selection"
-                                            // value={type}
+                                            value={month}
                                             onChange={getMonth}
                                         />
                                     </div>

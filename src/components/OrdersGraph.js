@@ -19,11 +19,11 @@ const OrdersGraph = () => {
     const [data, setData] = useState([]);
     const [chartData, setChartData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-
+    const [month, setMonth] = useState({ label: "January", value: "1" })
 
 
     useEffect(async () => {
-        if (filterType && (year || startDate || endDate)) {
+        if (filterType && year || startDate || endDate || month) {
             setIsLoading(true)
             try {
                 const { data } = await requestApi().request(account_type === 'admin' ? ADMIN_DASHBOARD_ORDER_GRAPH : account_type === 'seller' ? SELLER_DASHBOARD_ORDER_GRAPH : SHOP_DASHBOARD_ORDER_GRAPH, {
@@ -65,11 +65,13 @@ const OrdersGraph = () => {
                 setChartData(chartInfo);
             }
         }
+        return;
     }, [data])
 
     // GET SELECTED MONTH START DATE AND END DATE 
 
     const getSelectMonthDate = ({ value }) => {
+
         let year = new Date().getFullYear();
 
         var startDate = moment([year, value - 1]);
@@ -80,14 +82,24 @@ const OrdersGraph = () => {
 
     }
 
+    const updateFilterType = (type) => {
+
+        setFilterType(type);
+        console.log(type);
+        if (type.value === 'normal') {
+            setStartDate(initStartDate);
+            setEndDate(initEndDate)
+        } else if (type.value === 'month') {
+            getSelectMonthDate(month)
+        }
+
+
+    }
+
     return (
         <React.Fragment>
             <Graph
-                filterType={type => {
-                    setFilterType(type);
-                    setStartDate(initStartDate);
-                    setEndDate(initEndDate)
-                }}
+                filterType={type => updateFilterType(type)}
                 startDate={date => setStartDate(date)}
                 endDate={date => setEndDate(date)}
                 year={year => setYear(year)}
@@ -98,7 +110,11 @@ const OrdersGraph = () => {
                 isLoading={isLoading}
                 yearValue={year}
                 graphType="order"
-                getMonth={month => getSelectMonthDate(month)}
+                getMonth={month => {
+                    getSelectMonthDate(month);
+                    setMonth(month);
+                }}
+                month={month}
             />
 
         </React.Fragment>
