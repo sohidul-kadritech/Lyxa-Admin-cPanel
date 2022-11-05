@@ -20,7 +20,9 @@ const TopSummery = ({ data }) => {
                             const { icon, title, value, iconBg } = item;
                             return (
                                 <Col md={2} key={index} className="px-1">
-                                    <span className="font-size-13 text-dark">{title}</span>
+                                    <div style={{ height: "50px" }}>
+                                        <strong className="font-size-12 text-muted">{title}</strong>
+                                    </div>
                                     <Wrapper iconBg={iconBg}>
 
                                         <div className="image-wrapper">
@@ -48,7 +50,8 @@ const Wrapper = styled.div`
 
 display: flex;
 align-items: center;
-margin-top: 2px;
+// margin-top: 10px;
+// height: 70px;
 .image-wrapper{
     background-color: ${({ iconBg }) => iconBg};
     padding: 5px;

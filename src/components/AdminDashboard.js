@@ -34,7 +34,7 @@ const AdminDashboard = ({ summery }) => {
         },
         {
             id: 2,
-            title: "Profits(Products)",
+            title: "Profits(Without Delivery Fee's)",
             value: `${summery?.dropEarningTotalOfItems ?? 0} NGN`,
             icon: profitFlowIcon,
             iconBg: '#56ca00'
@@ -42,7 +42,7 @@ const AdminDashboard = ({ summery }) => {
         },
         {
             id: 3,
-            title: "Profits(Delivery Fee)",
+            title: "Profits(From Delivery Fee's)",
             value: `${summery?.dropEarningTotalOfDeliveryFee ?? 0} NGN`,
             icon: profitUpArrowIcon,
             iconBg: '#f7c137'
@@ -56,7 +56,7 @@ const AdminDashboard = ({ summery }) => {
         },
         {
             id: 5,
-            title: "Order Amounts(Products)",
+            title: "Order Amounts(Without Delivery Fee's)",
             value: `${summery?.ordersItemTotal ?? 0} NGN`,
             icon: orderAmountIcon,
             iconBg: '#ff5ca7'
@@ -94,67 +94,6 @@ const AdminDashboard = ({ summery }) => {
 
 
                 </Row>
-
-                {/* <Row>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title="Delivery Boy's" value={summery?.totalDeliveryBoy} icon={bagIcon} />
-                    </Col>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Orders Amount(Without Delivery Fee)' value={`${summery?.ordersItemTotal ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Profit(Without Delivery fee)' value={`${summery?.dropEarningTotalOfItems ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Lyxa  Earning' value={`${summery?.totalDropEarning ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-
-
-                </Row>
-
-                <Row>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Delivery Fees' value={`${summery?.ordersDeliveryFeesTotal ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Profit From Delivery Fee' value={`${summery?.dropEarningTotalOfDeliveryFee ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Shops Unsettled Amount' value={`${summery?.shopUnsettleAmount ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-
-
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Riders Unsettled Amount' value={`${summery?.deliveryBoyUnsettleAmount ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-
-                </Row>
-
-                <Row>
-
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Riders cash in hands' value={`${summery?.chashInHandDeliveryBoy ?? 0} NGN`} icon={servicesIcon4} />
-                    </Col>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Active Riders' value={summery?.totalActiveDeliveryBoy} icon={user3} />
-                    </Col>
-
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Available Riders' value={summery?.totalAvailableDeliveryBoy} icon={user3} />
-                    </Col>
-
-
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Avarage delivery time' value={`${summery?.totalAveratgeDeliveredTime} Min`} icon={servicesIcon4} />
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col xl={3} md={6}>
-                        <DashboardCard title='Incoming Chat Requests' value={summery?.totalIncomingChat} icon={servicesIcon2} />
-                    </Col>
-                </Row> */}
 
             </GlobalWrapper>
         </React.Fragment>

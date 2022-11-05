@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 
 const DashboardCard = ({ title, value, icon, border }) => {
-
+    console.log({ border });
     return (
         <React.Fragment>
             <Card className="mini-stat" style={{ height: '140px' }}>
@@ -45,7 +45,7 @@ const Wrapper = styled.div`
 
 
     .border{
-       border-bottom: 2px solid ${({ border }) => border};
+       border-bottom:  ${({ border }) => `2px solid ${border} !important`};
        width: 20px
     }
 
