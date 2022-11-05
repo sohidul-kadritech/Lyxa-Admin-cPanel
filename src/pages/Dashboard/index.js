@@ -264,7 +264,7 @@ const Dashboard = () => {
                     <DashboardCard title='Riders cash in hands' value={`${summery?.chashInHandDeliveryBoy ?? 0} NGN`} icon={cashInHandIcon} />
                   </Col>
                   <Col xl={4}>
-                    <DashboardCard title='Avarage delivery time' value={`${(summery?.totalAveratgeDeliveredTime).toFixed(2)} Min`} icon={timerIcon} />
+                    <DashboardCard title='Avarage delivery time' value={`${summery?.totalAveratgeDeliveredTime?.toFixed(2)} Min`} icon={timerIcon} />
                   </Col>
                 </Row>
               </Col>

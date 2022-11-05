@@ -48,6 +48,7 @@ const Wrapper = styled.div`
 
 display: flex;
 align-items: center;
+margin-top: 2px;
 .image-wrapper{
     background-color: ${({ iconBg }) => iconBg};
     padding: 5px;
