@@ -60,10 +60,10 @@ const Cuisine = () => {
     }
 
     submitDataToServer()
-    
+
   };
 
-  const submitDataToServer = () =>{
+  const submitDataToServer = () => {
     setIsLoading(true)
     if (id) {
       dispatch(
@@ -76,7 +76,7 @@ const Cuisine = () => {
     } else {
       dispatch(addCuisine(name));
     }
-  } 
+  }
 
   const EditData = (cId, cName, cStatus) => {
     // console.log({cStatus})
@@ -94,7 +94,7 @@ const Cuisine = () => {
       setName("");
       setId("");
       setActiveStatus(null);
-    }else{
+    } else {
       setIsLoading(false)
     }
   }, [status]);
@@ -105,9 +105,9 @@ const Cuisine = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"Cuisines"}
-              title="Product"
+              title="Shop"
               loading={loading}
               callList={callCuisineList}
             />

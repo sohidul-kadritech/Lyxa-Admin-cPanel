@@ -6,13 +6,13 @@ import styled from "styled-components";
 
 
 
-const DashboardCard = ({ title, value, icon, border }) => {
-    console.log({ border });
+const DashboardCard = ({ title, value, icon, color }) => {
+
     return (
         <React.Fragment>
             <Card className="mini-stat" style={{ height: '140px' }}>
                 <CardBody>
-                    <Wrapper border={border}>
+                    <Wrapper color={color}>
                         <h5 className="font-size-14">
                             {title}
                         </h5>
@@ -45,17 +45,20 @@ const Wrapper = styled.div`
 
 
     .border{
-       border-bottom:  ${({ border }) => `2px solid ${border} !important`};
+       border-bottom:  ${({ color }) => `2px solid ${color} !important`};
        width: 20px
     }
 
     .img_wrapper{
         width: 65px;
         height: 65px;
-
+        text-align: center;
+        padding: 5px;
+        border-radius: 5px;
+        background-color: #e8e2f7;
+        
         img{
-            width: 100%;
-            heigth: 100%;
+           
         }
     }
 

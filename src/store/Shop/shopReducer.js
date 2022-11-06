@@ -16,6 +16,8 @@ const initialState = {
   sortByKey: { label: "Desc", value: "desc" },
   liveStatus: { label: "All", value: "all" },
   cuisines: [],
+  tags: [],
+
 };
 
 const shopReducer = (state = initialState, action) => {
@@ -357,6 +359,84 @@ const shopReducer = (state = initialState, action) => {
         status: true,
       };
     case actionType.UPDATE_SHOP_STATUS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // TAGS
+
+    case actionType.ADD_TAG_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null
+      };
+
+    case actionType.ADD_TAG_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        tags: [...state.tags, payload],
+      };
+
+    case actionType.ADD_TAG_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+
+    case actionType.GET_TAGS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+
+      };
+
+    case actionType.GET_TAGS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        tags: payload,
+        // paginate: payload.paginate,
+        // paging: payload.paginate.metadata.paging,
+        // hasNextPage: payload.paginate.metadata.hasNextPage,
+        // currentPage: payload.paginate.metadata.page.currentPage,
+        // hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+      };
+
+    case actionType.GET_TAGS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.EDIT_TAG_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null
+      };
+
+    case actionType.EDIT_TAG_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        tags: state.tags.map((item) => item?._id === payload?._id ? payload : item)
+      };
+
+    case actionType.EDIT_TAG_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

@@ -117,6 +117,13 @@ export const adminMenuItem = [
         link: "/shops/cuisines",
         isSubmenu: false,
       },
+      {
+        id: 63,
+        name: "Tags",
+        icon: "fas fa-clipboard-list",
+        link: "/shops/tags",
+        isSubmenu: false,
+      },
     ],
   },
   {

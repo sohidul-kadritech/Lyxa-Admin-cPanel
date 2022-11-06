@@ -59,6 +59,9 @@ const ShopList = () => {
     dispatch(setShopStatusFalse());
     dispatch(updateShopType({ label: "All", value: "all" }));
     dispatch(updateShopSearchKey(""));
+    dispatch(updateSortByKey({ label: "Desc", value: "desc" }));
+    dispatch(updateShopStatusKey({ label: "All", value: "all" }));
+    return;
   }, []);
 
   useEffect(() => {

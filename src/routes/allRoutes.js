@@ -180,6 +180,7 @@ import NotificationsList from "../pages/Notifications/NotificationsList";
 import SellerCredentialsList from "../pages/Seller/SellerCredentials/SellerCredentialsList";
 import DefaultChat from "../pages/DefaultChat/DefaultChat";
 import ShopCredentialsList from "../pages/Shops/ShopCredentials/ShopCredentialsList";
+import Tags from "../pages/Tags/Tags";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -221,6 +222,7 @@ const userRoutes = [
   { path: "/shops/edit/:id", component: ShopAdd },
   { path: "/shops/details/:id", component: ShopDetails },
   { path: "/shops/cuisines", component: Cuisine },
+  { path: "/shops/tags", component: Tags },
 
   // PRODUCT
 

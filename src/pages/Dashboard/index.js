@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 
 import GlobalWrapper from "../../components/GlobalWrapper";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+
 
 import "chartist/dist/scss/chartist.scss";
 
@@ -28,72 +28,9 @@ import {
 import AdminDashboard from "../../components/AdminDashboard";
 import SellerDashboard from "../../components/SellerDashboard";
 import ShopDashboard from "../../components/ShopDashboard";
-import Flatpickr from "react-flatpickr";
-// import OrdersGraph from "../../components/OrdersGraph";
-// import EarningsGraph from "../../components/EarningsGraph";
-// import UsersGraph from "../../components/UsersGraph";
 import { TextField } from "@mui/material";
 import styled from "styled-components";
-import riderIcon from "../../assets/images/dashboard/rider.png";
-import availableRiderIcon from "../../assets/images/dashboard/available-rider.png";
-import activeRiderIcon from "../../assets/images/dashboard/active-rider.png";
-import timerIcon from "../../assets/images/dashboard/timer.png";
-import amountIcon from "../../assets/images/dashboard/amount.png";
-import cashInHandIcon from "../../assets/images/dashboard/cash-in-hand.png";
-import DashboardCard from "../../components/DashboardCard";
 
-const OrdersGraph = lazy(() => import("../../components/OrdersGraph"));
-const EarningsGraph = lazy(() => import("../../components/EarningsGraph"));
-const UsersGraph = lazy(() => import("../../components/UsersGraph"));
-
-const TopLists = ({ list, type }) => {
-  return (
-    <Card>
-      <CardBody>
-        <div className="d-flex mb-2">
-          <i className="fa fa-user" style={{ fontSize: '18px', padding: "5px" }}></i>
-          <h5 className="ms-2 text-dark">Top {`${type === 'user' ? "Users" : type === 'deliveryBoy' ? 'Delivery Boys' : 'Shops'}`}</h5>
-        </div>
-
-        <Table
-          id="tech-companies-1"
-          className="table table__wrapper table-hover cursor-pointer"
-        >
-          <Thead>
-            <Tr style={{ border: "transparent" }}>
-              <Th></Th>
-              <Th></Th>
-              <Th className='p-0 text-muted'>Orders</Th>
-            </Tr>
-          </Thead>
-          <Tbody style={{ position: "relative", borderTop: 'none' }}>
-            {list?.length > 0 &&
-              list?.map((item, index) => {
-                return (
-                  <Tr
-                    key={index}
-                    className="align-middle"
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "500",
-                      border: "transparent"
-                    }}
-                  >
-                    <Th style={{ color: `#${Math.floor(Math.random() * 16777215).toString(16)}` }}>#{index + 1}</Th>
-
-                    <Td>{type === 'shop' ? item?.shopName : item?.name}</Td>
-                    <Td className="text-end">{type === 'user' ? item?.orderCompleted : item?.totalOrder}</Td>
-                  </Tr>
-                );
-              })}
-          </Tbody>
-        </Table>
-
-      </CardBody>
-    </Card>
-
-  )
-}
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -194,82 +131,13 @@ const Dashboard = () => {
 
             <div>
               {account_type === "admin" ? (
-                <AdminDashboard summery={summery} />
+                <AdminDashboard summery={summery} topActivity={top_activity} />
               ) : account_type === "seller" ? (
                 <SellerDashboard summery={summery} />
               ) : (
                 <ShopDashboard summery={summery} />
               )}
             </div>
-
-
-            {account_type === "admin" && (
-              <Row>
-                <Col md={9}>
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <UsersGraph />
-                  </Suspense>
-                </Col>
-                <Col md={3}>
-
-                  <TopLists list={top_activity?.topUser} type="user" />
-                </Col>
-              </Row>
-            )}
-
-            {account_type === 'admin' && <Row>
-              <Col md={3}>
-                <TopLists list={top_activity?.topDeliveryBoy} type='deliveryBoy' />
-              </Col>
-              <Col md={9}>
-                <Row>
-                  <Col xl={4} >
-                    <DashboardCard title="Delivery Boy's" value={summery?.totalDeliveryBoy} icon={riderIcon} border={"#f05179"} />
-                  </Col>
-                  <Col xl={4} >
-                    <DashboardCard title='Active Riders' value={summery?.totalActiveDeliveryBoy} icon={availableRiderIcon} border={"#f05179"} />
-                  </Col>
-
-                  <Col xl={4} >
-                    <DashboardCard title='Available Riders' value={summery?.totalAvailableDeliveryBoy} icon={activeRiderIcon} border={"#22a6ac"} />
-                  </Col>
-
-                </Row>
-                <Row>
-                  <Col xl={4}>
-                    <DashboardCard title='Riders Unsettled Amount' value={`${summery?.deliveryBoyUnsettleAmount ?? 0} NGN`} icon={amountIcon} border={"#8c54ff"} />
-                  </Col>
-                  <Col xl={4}>
-                    <DashboardCard title='Riders cash in hands' value={`${summery?.chashInHandDeliveryBoy ?? 0} NGN`} icon={cashInHandIcon} border={'yellow'} />
-                  </Col>
-                  <Col xl={4}>
-                    <DashboardCard title='Avarage delivery time' value={`${summery?.totalAveratgeDeliveredTime?.toFixed(2)} Min`} icon={timerIcon} border={'#f15179'} />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>}
-
-            <Row>
-              <Col md={9}>
-
-                <Suspense fallback={<div>Loading...</div>}>
-                  <OrdersGraph />
-                </Suspense>
-              </Col>
-
-              <Col md={3}>
-                <TopLists list={top_activity?.topShop} type='shop' />
-              </Col>
-
-            </Row>
-
-            <Row>
-              <Col>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <EarningsGraph />
-                </Suspense>
-              </Col>
-            </Row>
           </Container>
         </GlobalWrapper>
       </div>

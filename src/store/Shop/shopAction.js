@@ -1,5 +1,4 @@
 import * as actionType from "../actionType";
-import { toast } from "react-toastify";
 import requestApi from "../../network/httpRequest";
 import {
   ADD_CUISINE,
@@ -7,13 +6,15 @@ import {
   ADD_SHOP_DEAL,
   ALL_CUISINE,
   ALL_SHOP,
-  DELETE_SHOP,
+  ALL_TAGS,
+  CREATE_TAG,
   DELETE_SHOP_DEAL,
   EDIT_CUISINE,
   EDIT_SHOP,
   SET_AS_FEATURED,
   SHOP_LIVE_STATUS,
   UPDATE_SHOP_STATUS,
+  UPDATE_TAG,
 } from "../../network/Api";
 import { successMsg } from "../../helpers/successMsg";
 
@@ -138,39 +139,7 @@ export const editShop = (values) => async (dispatch) => {
   }
 };
 
-//   DELETE
 
-// export const deleteShop = (id) => async (dispatch) => {
-//   try {
-//     dispatch({
-//       type: actionType.DELETE_SHOP_REQUEST_SEND,
-//     });
-//     const { data } = await requestApi().request(DELETE_SHOP, {
-//       method: "POST",
-//       data: { id },
-//     });
-
-//     if (data.status) {
-//       successMsg(data.message, "success");
-
-//       dispatch({
-//         type: actionType.DELETE_SHOP_REQUEST_SUCCESS,
-//         payload: id,
-//       });
-//     } else {
-//       successMsg(data.message, "error");
-//       dispatch({
-//         type: actionType.DELETE_SHOP_REQUEST_FAIL,
-//         payload: data.message,
-//       });
-//     }
-//   } catch (error) {
-//     dispatch({
-//       type: actionType.DELETE_SHOP_REQUEST_FAIL,
-//       payload: error.message,
-//     });
-//   }
-// };
 
 // ADD PRODUCT DEAL
 
@@ -504,3 +473,124 @@ export const updateShopStatus = (values) => async (dispatch) => {
     });
   }
 };
+
+
+// TAG
+
+export const addTag = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_TAG_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, message, error, data = null },
+    } = await requestApi().request(CREATE_TAG, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data });
+
+    if (status) {
+      successMsg(message, "success");
+
+      dispatch({
+        type: actionType.ADD_TAG_REQUEST_SUCCESS,
+        payload: data.tag,
+      });
+    } else {
+      successMsg(error, "error");
+      dispatch({
+        type: actionType.ADD_TAG_REQUEST_FAIL,
+        paylaod: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_TAG_REQUEST_FAIL,
+      paylaod: error.message,
+    });
+  }
+};
+
+
+export const getAllTags = (refresh = false, page = 1) => async (dispatch, getState) => {
+  const { tags, searchKey, statusKey, typeKey, sortByKey } = getState().shopReducer;
+  if (tags.length < 1 || refresh) {
+    try {
+      dispatch({
+        type: actionType.GET_TAGS_REQUEST_SEND,
+      });
+
+      const {
+        data: { status, error, data = null },
+      } = await requestApi().request(ALL_TAGS, {
+        params: {
+          page,
+          pageSize: 50,
+          searchKey,
+          type: typeKey.value,
+          sortBy: sortByKey.value,
+          status: statusKey.value
+        }
+      });
+      console.log(data);
+      if (status) {
+        dispatch({
+          type: actionType.GET_TAGS_REQUEST_SUCCESS,
+          payload: data.tags,
+        });
+      } else {
+        dispatch({
+          type: actionType.GET_TAGS_REQUEST_FAIL,
+          paylaod: error,
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: actionType.GET_TAGS_REQUEST_FAIL,
+        paylaod: error.message,
+      });
+    }
+  }
+};
+
+export const editTag = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.EDIT_TAG_REQUEST_SEND,
+    });
+
+    const {
+      data: { status, message, error, data = null },
+    } = await requestApi().request(UPDATE_TAG, {
+      method: "POST",
+      data: values,
+    });
+
+    console.log({ data });
+
+    if (status) {
+      successMsg(message, "success");
+
+      dispatch({
+        type: actionType.EDIT_TAG_REQUEST_SUCCESS,
+        payload: data.tag,
+      });
+    } else {
+      successMsg(error, "error");
+      dispatch({
+        type: actionType.EDIT_TAG_REQUEST_FAIL,
+        paylaod: error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.EDIT_TAG_REQUEST_FAIL,
+      paylaod: error.message,
+    });
+  }
+};
+
+

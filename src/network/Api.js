@@ -247,6 +247,13 @@ export const UPDATE_CONDITION =
   ADMIN_ENDPOINT + "/setting/app-setting/terms/edit";
 export const GET_CONDITION = ADMIN_ENDPOINT + "/setting/app-setting/terms";
 
+
+// TAG
+
+export const CREATE_TAG = ADMIN_ENDPOINT + "/tags/add";
+export const ALL_TAGS = ADMIN_ENDPOINT + "/tags";
+export const UPDATE_TAG = ADMIN_ENDPOINT + "/tags/update"
+
 // IMAGE UPLOAD
 
 export const IMAGE_UPLOAD = "image/single-image-upload";

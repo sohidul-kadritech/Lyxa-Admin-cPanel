@@ -23,10 +23,11 @@ const Graph = ({
     var lineChartOptions = {
         low: 0,
         showArea: true,
+
     };
     return (
         <React.Fragment>
-            <Card>
+            <Card style={{ height: '340px' }}>
                 <CardBody>
 
                     <div className="d-flex justify-content-between align-items-center">
@@ -72,7 +73,7 @@ const Graph = ({
                                 ) : type.value === "month" ? (
                                     <Row>
                                         <Col md={6}>
-                                            <div className="mb-4">
+                                            <div className="">
                                                 <label className="control-label">Select Month</label>
                                                 <Select
                                                     palceholder="Select Status"
@@ -138,7 +139,7 @@ const Graph = ({
                                 ) : (
                                     <ChartistGraph
                                         data={chartData}
-                                        // style={{ height: "220px" }}
+                                        style={{ height: "220px" }}
                                         options={lineChartOptions}
                                         type={"Line"}
                                     />
