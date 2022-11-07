@@ -288,6 +288,7 @@ const Tags = () => {
                                             dispatch(
                                                 getAllTags(
                                                     true,
+                                                    null,
                                                     page
                                                 )
                                             )

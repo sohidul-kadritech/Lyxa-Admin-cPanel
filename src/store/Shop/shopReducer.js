@@ -404,7 +404,7 @@ const shopReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        status: true,
+        status: false,
         tags: payload,
         // paginate: payload.paginate,
         // paging: payload.paginate.metadata.paging,

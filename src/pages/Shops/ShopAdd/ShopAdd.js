@@ -19,7 +19,10 @@ import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSeller } from "../../../store/Seller/sellerAction";
+import {
+  getAllSeller,
+  updateSellerSearchKey,
+} from "../../../store/Seller/sellerAction";
 import {
   Autocomplete,
   Box,
@@ -35,6 +38,8 @@ import {
   addShop,
   editShop,
   getAllCuisine,
+  getAllTags,
+  updateShopSearchKey,
 } from "../../../store/Shop/shopAction";
 import { useHistory, useParams, Link, useLocation } from "react-router-dom";
 import PlacesAutocomplete from "react-places-autocomplete";
@@ -53,10 +58,7 @@ import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_SELLER, SINGLE_SHOP } from "../../../network/Api";
 import formatBytes from "../../../common/imageFormatBytes";
 import { successMsg } from "../../../helpers/successMsg";
-import {
-  getAllTags,
-  updateTagsSearchKey,
-} from "../../../store/Deal/dealAction";
+
 import { callApi } from "../../../components/SingleApiCall";
 
 const ShopAdd = () => {
@@ -68,13 +70,20 @@ const ShopAdd = () => {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { sellers } = useSelector((state) => state.sellerReducer);
-  const { loading, status, shops, cuisines } = useSelector(
-    (state) => state.shopReducer
+  const { sellers, searchKey: searchSellerKey } = useSelector(
+    (state) => state.sellerReducer
   );
-  const { tags: allTags, tagSearchKey } = useSelector(
-    (state) => state.dealReducer
-  );
+  const {
+    loading,
+    status,
+    shops,
+    cuisines,
+    tags: allTags,
+    searchKey,
+  } = useSelector((state) => state.shopReducer);
+  // const { tags: allTags, tagSearchKey } = useSelector(
+  //   (state) => state.dealReducer
+  // );
 
   const [tags, setTags] = useState({
     items: [],
@@ -82,13 +91,11 @@ const ShopAdd = () => {
   });
 
   const [seller, setSeller] = useState(null);
-  const [searchSellerKey, setSearchSellerKey] = useState("");
   const [shopStartTime, setShopStartTime] = useState("");
   const [shopEndTime, setShopEndTime] = useState("");
   const [shopName, setShopName] = useState("");
   const [shopLogo, setShopLogo] = useState(null);
   const [shopBanner, setShopBanner] = useState(null);
-
   const [shopStatus, setShopStatus] = useState("");
   const [minOrderAmount, setMinOrderAmount] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -120,8 +127,11 @@ const ShopAdd = () => {
   // GET SELLER
 
   useEffect(() => {
+    // if(searchSellerKey){
+    //   dispatch(getAllSeller(true));
+    // }
     dispatch(getAllSeller(true));
-  }, []);
+  }, [searchSellerKey]);
 
   // GET CUISINES
 
@@ -131,31 +141,29 @@ const ShopAdd = () => {
     }
   }, [seller?.sellerType === "food"]);
 
-
   useEffect(async () => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
 
       if (findShop) {
-
         updateData(findShop);
       } else {
         // callApi(id, SINGLE_SHOP,);
-        const data = await callApi(id, SINGLE_SHOP, 'shop')
+        const data = await callApi(id, SINGLE_SHOP, "shop");
         if (data) {
           updateData(data);
-        } else {
+        }
+        else {
           history.push("/shops/list", { replace: true });
         }
       }
     }
   }, [id]);
 
-
-
   // FIND SELLER
   useEffect(async () => {
     if (searchParams.get("sellerId") || account_type === "seller") {
+
       const paramsId = searchParams.get("sellerId");
       let sellerId = null;
       paramsId ? (sellerId = paramsId) : (sellerId = accountId);
@@ -164,10 +172,11 @@ const ShopAdd = () => {
         if (findSeller) {
           setSeller(findSeller);
         } else {
-          const data = await callApi(id, SINGLE_SELLER, 'seller')
+          const data = await callApi(id, SINGLE_SELLER, "seller");
           if (data) {
             setSeller(data);
-          } else {
+          }
+          else {
             history.push("/shops/list", { replace: true });
           }
         }
@@ -175,10 +184,8 @@ const ShopAdd = () => {
     }
   }, [searchParams, account_type]);
 
-
-
   // UPDATE DATA
-  const updateData = async (values) => {
+  const updateData = (values) => {
     const {
       seller,
       minOrderAmount,
@@ -230,26 +237,26 @@ const ShopAdd = () => {
   // GET ALL TAGS
 
   useEffect(() => {
-    if (seller || tagSearchKey) {
-      dispatch(getAllTags(seller?.sellerType));
+    if (seller || searchKey) {
+      dispatch(getAllTags(true, seller?.sellerType));
     }
-  }, [seller]);
+  }, [seller, searchKey]);
 
   // TAGS ADD
 
-  const handleTagAdd = (evt) => {
-    if (["Enter", "Tab", ","].includes(evt.key)) {
-      evt.preventDefault();
-      let value = evt.target.value.trim();
+  // const handleTagAdd = (evt) => {
+  //   if (["Enter", "Tab", ","].includes(evt.key)) {
+  //     evt.preventDefault();
+  //     let value = evt.target.value.trim();
 
-      if (value) {
-        setTags({
-          items: [...tags.items, value],
-          value: "",
-        });
-      }
-    }
-  };
+  //     if (value) {
+  //       setTags({
+  //         items: [...tags.items, value],
+  //         value: "",
+  //       });
+  //     }
+  //   }
+  // };
 
   const handleTagChange = (item) => {
     // console.log({ item });
@@ -267,8 +274,6 @@ const ShopAdd = () => {
       items: tags.items.filter((i) => i != item),
     });
   };
-
-
 
   // SUBMIT SELLER
 
@@ -296,7 +301,7 @@ const ShopAdd = () => {
     let getEndSec = getMinutes(shopEndTime);
     let diff = (getEndSec - getStartSec) / 60;
     if (diff < 0) {
-      diff = 24 + diff
+      diff = 24 + diff;
     }
 
     if (diff > 24) {
@@ -308,7 +313,8 @@ const ShopAdd = () => {
     // submitData();
   };
 
-  const getMinutes = s => s.split(":").reduce((acc, curr) => acc * 60 + +curr, 0);
+  const getMinutes = (s) =>
+    s.split(":").reduce((acc, curr) => acc * 60 + +curr, 0);
 
   const uploadImages = async () => {
     let logoUrl = null;
@@ -329,7 +335,6 @@ const ShopAdd = () => {
       }
     }
 
-
     if (logoUrl && bannerUrl) {
       setIsLoading(false);
       submitData(logoUrl, bannerUrl);
@@ -343,7 +348,6 @@ const ShopAdd = () => {
       let formData = new FormData();
       formData.append("image", image);
 
-
       const { data } = await requestApi().request(IMAGE_UPLOAD, {
         method: "POST",
         data: formData,
@@ -352,7 +356,7 @@ const ShopAdd = () => {
       if (data.status) {
         return data.data.url;
       } else {
-        console.log(data.error);
+        successMsg(data.error);
       }
     } catch (error) {
       console.log(error.message);
@@ -566,7 +570,7 @@ const ShopAdd = () => {
             <Breadcrumb
               maintitle="Lyxa"
               breadcrumbItem={id ? "Edit" : "Add"}
-              title="Shop"
+              title={id ? shopName : "Shop"}
               isRefresh={false}
             />
 
@@ -583,21 +587,25 @@ const ShopAdd = () => {
                         <Autocomplete
                           className="cursor-pointer"
                           disabled={
-                            id || searchParams.get("sellerId") || account_type === 'seller' ? true : false
+                            id ||
+                              searchParams.get("sellerId") ||
+                              account_type === "seller"
+                              ? true
+                              : false
                           }
                           value={seller}
                           onChange={(event, newValue) => {
                             setSeller(newValue);
                           }}
                           getOptionLabel={(option, index) =>
-                            option.name ? option.company_name : ""
+                            option.company_name
                           }
                           isOptionEqualToValue={(option, value) =>
-                            option?._id === value?._id
+                            option?.company_name === value?.company_name
                           }
                           inputValue={searchSellerKey}
                           onInputChange={(event, newInputValue) => {
-                            setSearchSellerKey(newInputValue);
+                            dispatch(updateSellerSearchKey(newInputValue));
                           }}
                           id="controllable-states-demo"
                           options={sellers.length > 0 ? sellers : []}
@@ -614,15 +622,15 @@ const ShopAdd = () => {
                               component="li"
                               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                               {...props}
-                              key={option._id}
+                              key={option?._id}
                             >
                               <img
                                 loading="lazy"
                                 width="60"
-                                src={option.profile_photo}
+                                src={option?.profile_photo}
                                 alt=""
                               />
-                              {option.company_name}
+                              {option?.company_name}
                             </Box>
                           )}
                         />
@@ -891,15 +899,16 @@ const ShopAdd = () => {
                             onChange={(event, newValue) => {
                               handleTagChange(newValue);
                             }}
+                            disabled={!seller}
                             getOptionLabel={(option) =>
                               option.name ? option.name : ""
                             }
                             isOptionEqualToValue={(option, value) =>
                               option?._id === value?._id
                             }
-                            inputValue={tagSearchKey}
+                            inputValue={searchKey}
                             onInputChange={(event, newInputValue) => {
-                              dispatch(updateTagsSearchKey(newInputValue));
+                              dispatch(updateShopSearchKey(newInputValue));
                             }}
                             id="controllable-states-demo"
                             options={allTags.length > 0 ? allTags : []}
@@ -909,7 +918,6 @@ const ShopAdd = () => {
                                 {...params}
                                 label="Select a Tag"
                                 name="tag"
-                                onKeyDown={handleTagAdd}
                               />
                             )}
                             renderOption={(props, option) => (
@@ -1065,7 +1073,6 @@ const ShopAdd = () => {
                         />
                       </div>
                     </Col>
-
                   </Row>
 
                   {/* IMAGES */}
@@ -1077,7 +1084,7 @@ const ShopAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "logo");
                           }}
-                          accept='.jpg, .jpeg, .png'
+                          accept=".jpg, .jpeg, .png"
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
@@ -1169,7 +1176,7 @@ const ShopAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "banner");
                           }}
-                          accept='.jpg, .jpeg, .png'
+                          accept=".jpg, .jpeg, .png"
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">

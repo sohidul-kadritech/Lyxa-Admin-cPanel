@@ -64,7 +64,7 @@ export const getAllSeller =
 
           const { data } = await requestApi().request(ALL_SELLER, {
             params: {
-              page: page,
+              page,
               pageSize: 50,
               sortBy: sortByKey.value,
               sellerStatus: statusKey.value,
@@ -73,6 +73,7 @@ export const getAllSeller =
               searchKey,
             },
           });
+
 
 
           if (data.status) {

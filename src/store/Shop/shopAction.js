@@ -515,7 +515,7 @@ export const addTag = (values) => async (dispatch) => {
 };
 
 
-export const getAllTags = (refresh = false, page = 1) => async (dispatch, getState) => {
+export const getAllTags = (refresh = false, shopType = null, page = 1) => async (dispatch, getState) => {
   const { tags, searchKey, statusKey, typeKey, sortByKey } = getState().shopReducer;
   if (tags.length < 1 || refresh) {
     try {
@@ -530,12 +530,12 @@ export const getAllTags = (refresh = false, page = 1) => async (dispatch, getSta
           page,
           pageSize: 50,
           searchKey,
-          type: typeKey.value,
+          type: shopType ?? typeKey.value,
           sortBy: sortByKey.value,
           status: statusKey.value
         }
       });
-      console.log(data);
+
       if (status) {
         dispatch({
           type: actionType.GET_TAGS_REQUEST_SUCCESS,
@@ -569,7 +569,6 @@ export const editTag = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
 
     if (status) {
       successMsg(message, "success");

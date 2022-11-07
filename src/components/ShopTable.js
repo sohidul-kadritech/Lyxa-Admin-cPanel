@@ -101,6 +101,7 @@ const ShopTable = ({ shops = [] }) => {
                       }}
                       className="img-fluid cursor-pointer"
                       alt=""
+                      loading="lazy"
                       src={item.shopLogo}
                       style={{
                         objectFit: "contain",

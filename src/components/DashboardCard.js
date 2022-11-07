@@ -14,7 +14,7 @@ const DashboardCard = ({ title, value, icon, color }) => {
 
             <div className="d-flex mt-2">
               <div className="img_wrapper">
-                <img src={icon} style={{ height: 40, marginTop: 7 }} alt="" />
+                <img src={icon} alt="" />
               </div>
 
               <h4 className="value">{value ?? 0}</h4>
@@ -41,6 +41,7 @@ const Wrapper = styled.div`
     background-color: #e8e2f7;
 
     img {
+      width: 100%;
     }
   }
 
