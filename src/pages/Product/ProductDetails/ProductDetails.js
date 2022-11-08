@@ -70,10 +70,7 @@ const ProductDetails = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (modalCenter) {
-  //   }
-  // }, [modalCenter]);
+
 
   // ADD DEAL
 
