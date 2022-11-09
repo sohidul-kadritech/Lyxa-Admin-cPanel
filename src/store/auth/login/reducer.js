@@ -23,7 +23,9 @@ const login = (state = initialState, action) => {
     case LOGIN_USER:
       return {
         ...state,
-        loading: true
+        loading: true,
+        error: null,
+        message: null
       };
 
     case LOGIN_SUCCESS:

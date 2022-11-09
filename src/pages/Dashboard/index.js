@@ -30,17 +30,49 @@ import ShopDashboard from "../../components/ShopDashboard";
 import { TextField } from "@mui/material";
 import styled from "styled-components";
 import userIcon from "../../assets/images/dashboard/user.png";
-import bottleIcon from "../../assets/images/dashboard/bottle.png";
+import gmailIcon from "../../assets/images/dashboard/@.png";
+
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import SentimentSatisfiedOutlinedIcon from "@mui/icons-material/SentimentSatisfiedOutlined";
+import WorkHistoryOutlinedIcon from "@mui/icons-material/WorkHistoryOutlined";
+import MopedOutlinedIcon from '@mui/icons-material/MopedOutlined';
+import SettingsInputSvideoIcon from '@mui/icons-material/SettingsInputSvideo';
+import PaymentIcon from '@mui/icons-material/Payment';
+
+const Info = ({ value, Icon }) => {
+  return (
+    <div className="info_wrapper">
+      <Icon className="text-danger" />
+      <span className="value">{value}</span>
+    </div>
+  );
+};
 
 const SellerInfo = () => {
   const {
-    admin: { profile_photo, name, company_name, status, sellerType, addressSeller: { state, city, country }, phone_number },
+    admin: {
+      profile_photo,
+      name,
+      company_name,
+      status,
+      sellerType,
+      addressSeller: { state, city, country },
+      phone_number,
+      gmail,
+    },
   } = useSelector((state) => state.Login);
 
   return (
-    <SellerInfoWrapper>
+    <InfoWrapper>
       <Row>
-        <Col md={2} className="px-0 d-flex align-items-center justify-content-center">
+        <Col
+          md={2}
+          className="px-0 d-flex align-items-center justify-content-center"
+        >
           <div className="img_wrapper">
             <img
               className="rounded-circle avatar-xl cursor-pointer"
@@ -53,12 +85,10 @@ const SellerInfo = () => {
         <Col md={10}>
           <div className="d-flex align-items-center pb-1">
             <h5>
-              Welcome, <span className="text-danger">{company_name}</span>{" "}
+              Welcome, <span className="text-danger">{company_name}</span>
             </h5>
             <h6 className="text-capitalize mx-3">{`Status - ${status}`}</h6>
-            <div className="text-capitalize">
-              <img src={bottleIcon} alt="" /> <span>{sellerType}</span>{" "}
-            </div>
+            <h6 className="text-capitalize mx-3">{sellerType}</h6>
           </div>
           <div className="info_wrapper">
             <i className="fas fa-map-marker-alt"></i>
@@ -72,10 +102,126 @@ const SellerInfo = () => {
             <i className="fas fa-phone-alt"></i>
             <span>{phone_number}</span>
           </div>
-
+          <Info value={gmail} icon={gmailIcon} />
         </Col>
       </Row>
-    </SellerInfoWrapper>
+    </InfoWrapper>
+  );
+};
+
+const ShopInfo = () => {
+  const {
+    admin: {
+      shopLogo,
+      shopStatus,
+      shopType,
+      isFeatured,
+      cuisineType,
+      shopName,
+      phone_number,
+      shopStartTimeText,
+      shopEndTimeText,
+      email,
+      rating,
+      minOrderAmount,
+      expensive,
+      haveOwnDeliveryBoy,
+      deliveryFee,
+      deals,
+    },
+  } = useSelector((state) => state.Login);
+
+  return (
+    <InfoWrapper>
+      <Row>
+        <Col md={1} className="px-0">
+          <div className="img_wrapper p-0 w-100">
+            <img
+              className="rounded-circle avatar-xl cursor-pointer"
+              alt="Seller"
+              src={shopLogo}
+            />
+          </div>
+        </Col>
+        <Col md={11}>
+          <div className="d-flex align-items-center pb-1">
+            <h5>
+              Welcome, <span className="text-danger me-2">{shopName}</span>
+            </h5>
+            <h6 className="text-capitalize me-1">{`Status - ${shopStatus}`}</h6>
+            <h6 className="text-capitalize me-1">{shopType}</h6>
+            <h6 className="text-capitalize me-1">{`Featured - ${isFeatured ? "Yes" : "No"
+              }`}</h6>
+            <h6 className="text-capitalize me-1">{`Cuisines - ${cuisineType.length > 0 ? cuisineType[0] : "N/A"
+              }`}</h6>
+          </div>
+
+          <Row className="pt-2">
+            <Col lg={6}>
+              <Info value={"location"} Icon={RoomOutlinedIcon} />
+              <Info
+                value={`Mon to Fri - ${shopStartTimeText} ${shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                  } - ${shopEndTimeText} ${shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                  }`}
+                Icon={AccessTimeOutlinedIcon}
+              />
+              <Info value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+              <Info value={email} Icon={AlternateEmailOutlinedIcon} />
+            </Col>
+
+
+            <Col lg={3}>
+
+              <Info
+                value={`${minOrderAmount} NGN`}
+                Icon={StorefrontOutlinedIcon}
+              />
+              <Info
+                value={`${rating === 4
+                  ? "Excellent"
+                  : rating === 3
+                    ? "Very good"
+                    : rating === 2
+                      ? "Good"
+                      : rating === 1
+                        ? "Bad"
+                        : ""
+                  } (Rating)`}
+                Icon={SentimentSatisfiedOutlinedIcon}
+              />
+              <Info
+                value={`${minOrderAmount} NGN`}
+                Icon={WorkHistoryOutlinedIcon}
+              />
+              <Info
+                value={`${expensive === 1
+                  ? "$"
+                  : expensive === 2
+                    ? "$$"
+                    : expensive === "3"
+                      ? "$$$"
+                      : "$$$$"
+                  } (Price Range)`}
+                Icon={WorkHistoryOutlinedIcon}
+              />
+            </Col>
+
+            <Col lg={3}>
+              {/* <Info value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
+              <Info value={`${haveOwnDeliveryBoy ? 'Self' : 'Drop'} (Delivery Type)`} Icon={PaymentIcon} />
+              <Info
+                value={`${deliveryFee} (Delivery Fee)`}
+                Icon={MopedOutlinedIcon}
+              />
+              <Info
+                value={`${deals.length > 0 ? deals[0] : 0} (Deals)`}
+                Icon={SettingsInputSvideoIcon}
+              />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </InfoWrapper>
   );
 };
 
@@ -126,7 +272,7 @@ const Dashboard = () => {
                 }}
               >
                 <Row className="align-items-center">
-                  <Col md={6}>
+                  <Col md={account_type === "shop" ? 9 : 6}>
                     {account_type === "admin" ? (
                       <>
                         <h6 className="page-title text-danger">Dashboard</h6>
@@ -139,11 +285,14 @@ const Dashboard = () => {
                     ) : account_type === "seller" ? (
                       <SellerInfo />
                     ) : (
-                      ""
+                      <ShopInfo />
                     )}
                   </Col>
-                  <Col md={6}>
-                    <div className="d-flex">
+                  <Col md={account_type === "shop" ? 3 : 6}>
+                    <div
+                      className={`d-flex ${account_type === "shop" && "flex-column"
+                        }`}
+                    >
                       <DateFilter className=" me-2 ">
                         <div className="date-label">
                           <small>Start</small>
@@ -163,7 +312,9 @@ const Dashboard = () => {
                           }
                         />
                       </DateFilter>
-                      <DateFilter className="ps-3">
+                      <DateFilter
+                        className={`${account_type !== "shop" && "ps-3"}`}
+                      >
                         <div className="date-label">
                           <small>End</small>
                           <h5>Date</h5>
@@ -222,11 +373,11 @@ const DateFilter = styled.div`
   }
 `;
 
-const SellerInfoWrapper = styled.div`
+const InfoWrapper = styled.div`
   .img_wrapper {
     width: 90%;
     padding: 5px;
-    position: relative;
+    height: 70px;
     img {
       width: 100%;
       height: 100%;
@@ -244,27 +395,28 @@ const SellerInfoWrapper = styled.div`
     }
   }
 
-  
-    .text-capitalize {
-      background-color: #f3f3f3;
-      padding: 5px 13px;
-      border-radius: 15px;
-    }
+  .text-capitalize {
+    background-color: #f3f3f3;
+    padding: 5px 13px;
+    border-radius: 15px;
+    margin-bottom: 0 !important;
+  }
 
-    .info_wrapper{
-      display: flex;
-      padding-bottom: 8px;
-      i{
-        font-size: 20px;
-        color: #e95b5b;
-        margin-right: 10px;
-      }
-      span{
-        font-size: 15px;
-        text-transform: capitalize;
-      }
+  .info_wrapper {
+    display: flex;
+    align-items: center;
+    padding-bottom: 8px;
+    .img {
+      font-size: 20px;
+      color: #e95b5b;
+      margin-right: 10px;
     }
-  
+    .value {
+      font-size: 14px;
+      text-transform: capitalize;
+      font-weight: 400;
+    }
+  }
 `;
 
 export default withTranslation()(Dashboard);
