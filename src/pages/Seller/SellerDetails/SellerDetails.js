@@ -22,6 +22,15 @@ import Info from "./../../../components/Info";
 import ShopTable from "../../../components/ShopTable";
 import DropCharge from "../../../components/DropCharge";
 import { callApi } from "../../../components/SingleApiCall";
+import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
+import InfoTwo from "../../../components/InfoTwo";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import StoreOutlinedIcon from '@mui/icons-material/StoreOutlined';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 
 const SellerDetails = () => {
   const { id } = useParams();
@@ -44,18 +53,15 @@ const SellerDetails = () => {
       if (findSeller) {
         setSeller(findSeller);
       } else {
-
-        const data = await callApi(id, SINGLE_SELLER, 'seller')
+        const data = await callApi(id, SINGLE_SELLER, "seller");
         if (data) {
           setSeller(data);
         } else {
           history.push("/seller/list", { replace: true });
         }
-
       }
     }
   }, [id]);
-
 
   //   ADD PRODUCT
 
@@ -121,37 +127,133 @@ const SellerDetails = () => {
                   </div>
                 </div>
                 <hr className="my-2" />
-                <Row>
+                <Row className="px-3">
                   <Col lg={6}>
-                    <Info title="Company" value={seller?.company_name} />
-                    <Info title="Contact person" value={seller?.name} />
-                    <Info title="Email" value={seller?.email} />
-                    <Info title="Phone" value={seller?.phone_number} />
-                  </Col>
-                  <Col lg={6}>
-                    <Info title="Status" value={seller?.status} />
-                    <Info title="Seller type" value={seller?.sellerType} />
+                    <InfoTwo
+                      value={`${seller?.company_name} (Company)`}
+                      Icon={ApartmentOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={`${seller?.name} (Manager)`}
+                      Icon={PersonOutlineOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={`${seller?.addressSeller?.state},${seller?.addressSeller?.city}, ${seller?.addressSeller?.country}`}
+                      Icon={RoomOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={seller?.phone_number}
+                      Icon={LocalPhoneOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={seller?.email}
+                      Icon={AlternateEmailOutlinedIcon}
+                    />
+                    <InfoTwo value={`${seller?.status} (Status)`} Icon={AutorenewOutlinedIcon} />
+                    <InfoTwo value={seller?.sellerType} Icon={StoreOutlinedIcon} />
                     {seller?.dropPercentage && (
-                      <Info
-                        title="Drop Charge"
+                      <InfoTwo
+                        Icon={PaidOutlinedIcon}
                         value={`${seller?.dropPercentage} ${seller?.dropPercentageType === "amount" ? "NGN" : "%"
                           }`}
                       />
+                    )}
+                    {/* 
+                    <Info title="Email" value={seller?.email} />
+                    <Info title="Phone" value={seller?.phone_number} /> */}
+                  </Col>
+                  <Col lg={6}>
+
+                    {seller?.certificate_of_incorporation ||
+                      seller?.national_id ? (
+                      <Row>
+                        <Col md={4}>
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
+                            }}
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(seller?.profile_photo);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt=""
+                              src={seller?.profile_photo}
+                              width="100%"
+                            />
+                            <small>Company image</small>
+                          </ImageWrapper>
+                        </Col>
+                        <Col md={4}>
+                          {seller?.certificate_of_incorporation ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(
+                                    seller?.certificate_of_incorporation
+                                  );
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt=""
+                                src={seller?.certificate_of_incorporation}
+                                width="100%"
+                              />
+                              <small>Certificate of incorporation</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                        <Col md={4}>
+                          {seller?.national_id ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(seller?.national_id);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt=""
+                                src={seller?.national_id}
+                                width="100%"
+                              />
+                              <small>National Id</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                      </Row>
+                    ) : (
+                      <h5 className="text-center">No Photos</h5>
                     )}
                   </Col>
                 </Row>
               </CardBody>
             </Card>
 
-
-
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between">
                   <CardTitle className="h4"> Shop List</CardTitle>
-                  {(account_type === 'admin' && adminType === 'admin') && <Button color="success" onClick={addNewProduct}>
-                    Add Shop
-                  </Button>}
+                  {account_type === "admin" && adminType === "admin" && (
+                    <Button color="success" onClick={addNewProduct}>
+                      Add Shop
+                    </Button>
+                  )}
                 </div>
                 <hr className="my-3" />
 
@@ -172,39 +274,18 @@ const SellerDetails = () => {
               </Col>
             </Row>
 
-            <Row >
+            {/* <Row>
               <Col lg={6}>
-
                 <Card className="card-height">
                   <CardBody>
                     <div>
                       <CardTitle>Seller Photos</CardTitle>
                       <hr />
                     </div>
-                    {seller?.certificate_of_incorporation || seller?.national_id ? (<Row>
-                      <Col md={4}>
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(seller?.profile_photo);
-                            }}
-                            className="img-fluid cursor-pointer"
-                            alt="Veltrix"
-                            src={seller?.profile_photo}
-                            width="100%"
-                          />
-                          <small>Company image</small>
-                        </ImageWrapper>
-                      </Col>
-                      <Col md={4}>
-                        {seller?.certificate_of_incorporation ? (
+                    {seller?.certificate_of_incorporation ||
+                      seller?.national_id ? (
+                      <Row>
+                        <Col md={4}>
                           <ImageWrapper
                             style={{
                               width: "100%",
@@ -215,48 +296,72 @@ const SellerDetails = () => {
                             <img
                               onClick={() => {
                                 setIsOpen(true);
-                                setSelectedImg(
-                                  seller?.certificate_of_incorporation
-                                );
+                                setSelectedImg(seller?.profile_photo);
                               }}
                               className="img-fluid cursor-pointer"
                               alt="Veltrix"
-                              src={seller?.certificate_of_incorporation}
+                              src={seller?.profile_photo}
                               width="100%"
                             />
-                            <small>Certificate of incorporation</small>
+                            <small>Company image</small>
                           </ImageWrapper>
-                        ) : null}
-                      </Col>
-                      <Col md={4}>
-                        {seller?.national_id ? (
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
-                            }}
-                          >
-                            <img
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(seller?.national_id);
+                        </Col>
+                        <Col md={4}>
+                          {seller?.certificate_of_incorporation ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
                               }}
-                              className="img-fluid cursor-pointer"
-                              alt="Veltrix"
-                              src={seller?.national_id}
-                              width="100%"
-                            />
-                            <small>National Id</small>
-                          </ImageWrapper>
-                        ) : null}
-                      </Col>
-                    </Row>) : <h5 className="text-center">No Photos</h5>}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(
+                                    seller?.certificate_of_incorporation
+                                  );
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="Veltrix"
+                                src={seller?.certificate_of_incorporation}
+                                width="100%"
+                              />
+                              <small>Certificate of incorporation</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                        <Col md={4}>
+                          {seller?.national_id ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(seller?.national_id);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="Veltrix"
+                                src={seller?.national_id}
+                                width="100%"
+                              />
+                              <small>National Id</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                      </Row>
+                    ) : (
+                      <h5 className="text-center">No Photos</h5>
+                    )}
                   </CardBody>
                 </Card>
-
               </Col>
-            </Row>
+            </Row> */}
           </Container>
         </div>
       </GlobalWrapper>

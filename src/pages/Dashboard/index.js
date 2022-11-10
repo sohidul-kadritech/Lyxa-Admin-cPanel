@@ -30,7 +30,6 @@ import ShopDashboard from "../../components/ShopDashboard";
 import { TextField } from "@mui/material";
 import styled from "styled-components";
 import userIcon from "../../assets/images/dashboard/user.png";
-import gmailIcon from "../../assets/images/dashboard/@.png";
 
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -42,15 +41,11 @@ import WorkHistoryOutlinedIcon from "@mui/icons-material/WorkHistoryOutlined";
 import MopedOutlinedIcon from '@mui/icons-material/MopedOutlined';
 import SettingsInputSvideoIcon from '@mui/icons-material/SettingsInputSvideo';
 import PaymentIcon from '@mui/icons-material/Payment';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import ProductionQuantityLimitsOutlinedIcon from '@mui/icons-material/ProductionQuantityLimitsOutlined';
+import InfoTwo from "../../components/InfoTwo";
 
-const Info = ({ value, Icon }) => {
-  return (
-    <div className="info_wrapper">
-      <Icon className="text-danger" />
-      <span className="value">{value}</span>
-    </div>
-  );
-};
+
 
 const SellerInfo = () => {
   const {
@@ -62,7 +57,7 @@ const SellerInfo = () => {
       sellerType,
       addressSeller: { state, city, country },
       phone_number,
-      gmail,
+      email,
     },
   } = useSelector((state) => state.Login);
 
@@ -79,30 +74,21 @@ const SellerInfo = () => {
               alt="Seller"
               src={userIcon}
             />
-            <i className="fas fa-pen cursor-pointer"></i>
           </div>
         </Col>
         <Col md={10}>
           <div className="d-flex align-items-center pb-1">
-            <h5>
+            <h5 className="me-2">
               Welcome, <span className="text-danger">{company_name}</span>
             </h5>
             <h6 className="text-capitalize mx-3">{`Status - ${status}`}</h6>
-            <h6 className="text-capitalize mx-3">{sellerType}</h6>
+            <h6 className="text-capitalize">{sellerType}</h6>
           </div>
-          <div className="info_wrapper">
-            <i className="fas fa-map-marker-alt"></i>
-            <span>{`${state},${city}, ${country}`}</span>
-          </div>
-          <div className="info_wrapper">
-            <i className="fas fa-user-alt"></i>
-            <span>{`${name} (Manager)`}</span>
-          </div>
-          <div className="info_wrapper">
-            <i className="fas fa-phone-alt"></i>
-            <span>{phone_number}</span>
-          </div>
-          <Info value={gmail} icon={gmailIcon} />
+
+          <InfoTwo value={`${name} (Manager)`} Icon={PersonOutlineOutlinedIcon} />
+          <InfoTwo value={`${state},${city}, ${country}`} Icon={RoomOutlinedIcon} />
+          <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+          <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
         </Col>
       </Row>
     </InfoWrapper>
@@ -134,8 +120,8 @@ const ShopInfo = () => {
   return (
     <InfoWrapper>
       <Row>
-        <Col md={1} className="px-0">
-          <div className="img_wrapper p-0 w-100">
+        <Col md={1} className="px-0 d-flex align-items-center">
+          <div className="img_wrapper">
             <img
               className="rounded-circle avatar-xl cursor-pointer"
               alt="Seller"
@@ -158,25 +144,25 @@ const ShopInfo = () => {
 
           <Row className="pt-2">
             <Col lg={6}>
-              <Info value={"location"} Icon={RoomOutlinedIcon} />
-              <Info
+              <InfoTwo value={"location"} Icon={RoomOutlinedIcon} />
+              <InfoTwo
                 value={`Mon to Fri - ${shopStartTimeText} ${shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
                   } - ${shopEndTimeText} ${shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
                   }`}
                 Icon={AccessTimeOutlinedIcon}
               />
-              <Info value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-              <Info value={email} Icon={AlternateEmailOutlinedIcon} />
+              <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+              <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
             </Col>
 
 
             <Col lg={3}>
 
-              <Info
+              <InfoTwo
                 value={`${minOrderAmount} NGN`}
                 Icon={StorefrontOutlinedIcon}
               />
-              <Info
+              <InfoTwo
                 value={`${rating === 4
                   ? "Excellent"
                   : rating === 3
@@ -189,11 +175,11 @@ const ShopInfo = () => {
                   } (Rating)`}
                 Icon={SentimentSatisfiedOutlinedIcon}
               />
-              <Info
+              <InfoTwo
                 value={`${minOrderAmount} NGN`}
                 Icon={WorkHistoryOutlinedIcon}
               />
-              <Info
+              <InfoTwo
                 value={`${expensive === 1
                   ? "$"
                   : expensive === 2
@@ -207,13 +193,13 @@ const ShopInfo = () => {
             </Col>
 
             <Col lg={3}>
-              {/* <Info value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
-              <Info value={`${haveOwnDeliveryBoy ? 'Self' : 'Drop'} (Delivery Type)`} Icon={PaymentIcon} />
-              <Info
+              {/* <InfoTwo value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
+              <InfoTwo value={`${haveOwnDeliveryBoy ? 'Self' : 'Drop'} (Delivery Type)`} Icon={PaymentIcon} />
+              <InfoTwo
                 value={`${deliveryFee} (Delivery Fee)`}
                 Icon={MopedOutlinedIcon}
               />
-              <Info
+              <InfoTwo
                 value={`${deals.length > 0 ? deals[0] : 0} (Deals)`}
                 Icon={SettingsInputSvideoIcon}
               />
@@ -339,7 +325,7 @@ const Dashboard = () => {
 
             {loading && (
               <div className="text-center">
-                <Spinner animation="border" variant="info" />
+                <Spinner animation="border" variant="InfoTwo" />
               </div>
             )}
 
@@ -376,7 +362,7 @@ const DateFilter = styled.div`
 const InfoWrapper = styled.div`
   .img_wrapper {
     width: 90%;
-    padding: 5px;
+    
     height: 70px;
     img {
       width: 100%;
@@ -402,21 +388,7 @@ const InfoWrapper = styled.div`
     margin-bottom: 0 !important;
   }
 
-  .info_wrapper {
-    display: flex;
-    align-items: center;
-    padding-bottom: 8px;
-    .img {
-      font-size: 20px;
-      color: #e95b5b;
-      margin-right: 10px;
-    }
-    .value {
-      font-size: 14px;
-      text-transform: capitalize;
-      font-weight: 400;
-    }
-  }
+  
 `;
 
 export default withTranslation()(Dashboard);

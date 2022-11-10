@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { DeleteOrderFlag } from "../store/order/orderAction";
 import Info from "./Info";
 
-const Flags = ({
+const FlagsAndReviews = ({
   flags = [],
   isFromOrder = false,
   isReview = false,
@@ -95,4 +95,4 @@ const FlagsWrapper = styled.div`
   }
 `;
 
-export default Flags;
+export default FlagsAndReviews;

@@ -24,7 +24,7 @@ import {
 import Info from "../../../components/Info";
 import OrderTable from "../../../components/OrderTable";
 import AppPagination from "../../../components/AppPagination";
-import Flags from "../../../components/Flags";
+import FlagsAndReviews from "../../../components/FlagsAndReviews";
 import { callApi } from "../../../components/SingleApiCall";
 
 const DeliverymanDetails = () => {
@@ -151,7 +151,7 @@ const DeliverymanDetails = () => {
               <Col lg={6}>
 
 
-                <Flags flags={deliveryMan?.flags} />
+                <FlagsAndReviews flags={deliveryMan?.flags} />
 
               </Col>
             </Row>

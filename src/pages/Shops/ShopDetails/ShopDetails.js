@@ -4,7 +4,12 @@ import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import { API_URL, DOWNLOAD_PRODUCT_TEMPLATE, SINGLE_SHOP, UPLOAD_PRODUCT_FILE } from "../../../network/Api";
+import {
+  API_URL,
+  DOWNLOAD_PRODUCT_TEMPLATE,
+  SINGLE_SHOP,
+  UPLOAD_PRODUCT_FILE,
+} from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import {
   Button,
@@ -31,8 +36,30 @@ import DealForAdd from "../../../components/DealForAdd";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
 import { successMsg } from "../../../helpers/successMsg";
-import Flags from "../../../components/Flags";
+import FlagsAndReviews from "../../../components/FlagsAndReviews";
 import { callApi } from "../../../components/SingleApiCall";
+import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
+import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import PaymentIcon from "@mui/icons-material/Payment";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import SentimentSatisfiedOutlinedIcon from "@mui/icons-material/SentimentSatisfiedOutlined";
+import FeaturedPlayListOutlinedIcon from "@mui/icons-material/FeaturedPlayListOutlined";
+import WorkHistoryOutlinedIcon from "@mui/icons-material/WorkHistoryOutlined";
+import DeliveryDiningOutlinedIcon from "@mui/icons-material/DeliveryDiningOutlined";
+import FoodBankOutlinedIcon from "@mui/icons-material/FoodBankOutlined";
+import TagOutlinedIcon from "@mui/icons-material/TagOutlined";
+import FastfoodOutlinedIcon from "@mui/icons-material/FastfoodOutlined";
+import SavingsOutlinedIcon from "@mui/icons-material/SavingsOutlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import ProductionQuantityLimitsOutlinedIcon from "@mui/icons-material/ProductionQuantityLimitsOutlined";
+import InfoTwo from "../../../components/InfoTwo";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -60,7 +87,7 @@ const ShopDetails = () => {
         setShop(findShop);
       } else {
         // callApi(id);
-        const data = await callApi(id, SINGLE_SHOP, 'shop')
+        const data = await callApi(id, SINGLE_SHOP, "shop");
         if (data) {
           const activeStatus = data?.liveStatus == "online" ? true : false;
           setLiveStatus(activeStatus);
@@ -71,7 +98,6 @@ const ShopDetails = () => {
       }
     }
   }, [id]);
-
 
   // CHANGE LIVE STATUS
 
@@ -89,14 +115,13 @@ const ShopDetails = () => {
   useEffect(async () => {
     if (status) {
       setModalCenter(false);
-      const data = await callApi(shop?._id, SINGLE_SHOP, 'shop');
+      const data = await callApi(shop?._id, SINGLE_SHOP, "shop");
 
       if (data) {
         const activeStatus = data?.liveStatus == "online" ? true : false;
         setLiveStatus(activeStatus);
         setShop(data);
       }
-
     }
   }, [status]);
 
@@ -150,7 +175,6 @@ const ShopDetails = () => {
           : "$$$$";
   };
 
-
   // DOWNLOAD PRODUCT TEMPLATE
 
   const downloadProductTemplate = async () => {
@@ -160,25 +184,22 @@ const ShopDetails = () => {
           sellerId: shop?.seller?._id,
         },
       });
-
     } catch (e) {
       console.log(e.message);
     }
-  }
+  };
 
-  // IMPORT PRODUCT FILE 
+  // IMPORT PRODUCT FILE
 
   const submitProductFile = async () => {
-
     if (!productsFile) {
-      return successMsg('Upload products file');
+      return successMsg("Upload products file");
     } else {
       const fileExt = productsFile.name.split(".");
-      const validExts = ['xlsx', 'xls'];
-      const checkExt = validExts.includes(fileExt[1])
+      const validExts = ["xlsx", "xls"];
+      const checkExt = validExts.includes(fileExt[1]);
       if (!checkExt) {
-        return successMsg('Upload valid products file');
-
+        return successMsg("Upload valid products file");
       }
 
       let formData = new FormData();
@@ -188,31 +209,26 @@ const ShopDetails = () => {
       try {
         setIsLoading(true);
         const { data } = await requestApi().request(UPLOAD_PRODUCT_FILE, {
-          method: 'POST',
-          data: formData
+          method: "POST",
+          data: formData,
         });
 
         console.log(data);
 
         if (data?.data?.products.length > 0) {
-
           setIsLoading(false);
-          successMsg(data?.message, 'success');
+          successMsg(data?.message, "success");
           setIsImportProductOpen(false);
         } else {
           setIsLoading(false);
-          successMsg('No products file found', 'error');
+          successMsg("No products file found", "error");
         }
       } catch (e) {
         setIsLoading(false);
         console.log(e.message);
       }
-
-
     }
-
-
-  }
+  };
 
   return (
     <React.Fragment>
@@ -241,20 +257,26 @@ const ShopDetails = () => {
                 <HeaderWrapper>
                   <h4>Shop</h4>
                   <div className="d-flex flex-wrap  align-items-center">
-
                     <Button
                       outline={true}
                       color="success"
                       onClick={downloadProductTemplate}
                       className="me-3"
                     >
-                      <TemplateButton href={`${API_URL}${DOWNLOAD_PRODUCT_TEMPLATE}?sellerId=${shop?.seller?._id}`} target="_blank" >Download Product Template</TemplateButton>
+                      <TemplateButton
+                        href={`${API_URL}${DOWNLOAD_PRODUCT_TEMPLATE}?sellerId=${shop?.seller?._id}`}
+                        target="_blank"
+                      >
+                        Download Product Template
+                      </TemplateButton>
                     </Button>
 
                     <Button
                       outline={true}
                       color="success"
-                      onClick={() => setIsImportProductOpen(!isImportProductOpen)}
+                      onClick={() =>
+                        setIsImportProductOpen(!isImportProductOpen)
+                      }
                       className="me-3"
                     >
                       Import Products
@@ -271,28 +293,30 @@ const ShopDetails = () => {
                     >
                       Add Deal
                     </Button>
-                    {account_type === 'admin' && <>
-
-                      <Button
-                        outline={true}
-                        color="success"
-                        onClick={setAsFeatured}
-                        className="me-3"
-                      >
-                        {!shop?.isFeatured
-                          ? "Set as featured"
-                          : "Remove featured"}
-                      </Button>
-                      <Button
-                        outline={true}
-                        color="success"
-                        onClick={updateActiveStatus}
-                        className="me-3"
-                      >
-                        {shop?.shopStatus === "active" ? "Inactive" : "Activate"}
-                      </Button>
-
-                    </>}
+                    {account_type === "admin" && (
+                      <>
+                        <Button
+                          outline={true}
+                          color="success"
+                          onClick={setAsFeatured}
+                          className="me-3"
+                        >
+                          {!shop?.isFeatured
+                            ? "Set as featured"
+                            : "Remove featured"}
+                        </Button>
+                        <Button
+                          outline={true}
+                          color="success"
+                          onClick={updateActiveStatus}
+                          className="me-3"
+                        >
+                          {shop?.shopStatus === "active"
+                            ? "Inactive"
+                            : "Activate"}
+                        </Button>
+                      </>
+                    )}
                     <div>
                       <Switch
                         checked={liveStatus}
@@ -306,88 +330,121 @@ const ShopDetails = () => {
                   </div>
                 </HeaderWrapper>
                 <hr />
-                <Row className='card-height'>
+                <Row className="card-height">
                   <Col xl={6}>
-                    <Info
-                      title="Seller"
-                      value={shop?.seller?.name}
+                    <InfoTwo
+                      Icon={ApartmentOutlinedIcon}
+                      value={`${shop?.seller?.name} (Seller)`}
                       link={`/seller/details/${shop?.seller?._id}`}
                     />
-                    <Info title="Name" value={shop?.shopName} />
-                    <Info title="Phone" value={shop?.phone_number} />
-                    <Info title="Email" value={shop?.email} />
-                    <Info title="Address" value={shop?.address.address} />
-                    <Info title="Start Time" value={shop?.shopStartTimeText} />
-                    <Info title="End Time" value={shop?.shopEndTimeText} />
-                    <Info title="Shop Type" value={shop?.shopType} />
-
-                    <Info title="Status" value={shop?.shopStatus} />
-                    <Info
-                      title="Rating"
-                      value={
-                        shop?.rating === 4
-                          ? "Excellent"
-                          : shop?.rating === 3
-                            ? "Very good"
-                            : shop?.rating === 2
-                              ? "Good"
-                              : shop?.rating === 1
-                                ? "Bad"
-                                : ""
-                      }
+                    <InfoTwo
+                      Icon={StoreOutlinedIcon}
+                      value={`${shop?.shopName} (Shop Name)`}
+                    />
+                    <InfoTwo
+                      Icon={LocalPhoneOutlinedIcon}
+                      value={shop?.phone_number}
+                    />
+                    <InfoTwo
+                      Icon={AlternateEmailOutlinedIcon}
+                      value={shop?.email}
+                    />
+                    <InfoTwo
+                      Icon={RoomOutlinedIcon}
+                      value={shop?.address.address}
                     />
 
+                    <InfoTwo
+                      value={`Mon to Fri - ${shop?.shopStartTimeText} ${shop?.shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                        } - ${shop?.shopEndTimeText} ${shop?.shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                        }`}
+                      Icon={AccessTimeOutlinedIcon}
+                    />
+                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType} (Shop Type)`} />
+                    <InfoTwo
+                      value={`${shop?.shopStatus} (Status)`}
+                      Icon={AutorenewOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={`${shop?.rating === 4
+                        ? "Excellent"
+                        : shop?.rating === 3
+                          ? "Very good"
+                          : shop?.rating === 2
+                            ? "Good"
+                            : shop?.rating === 1
+                              ? "Bad"
+                              : ""
+                        } (Rating)`}
+                      Icon={SentimentSatisfiedOutlinedIcon}
+                    />
                   </Col>
 
                   <Col xl={6}>
-                    <Info
-                      title="Featured"
-                      value={shop?.isFeatured ? "Yes" : "No"}
-                    />
-                    <Info
-                      title="Minimum Order"
-                      value={`${shop?.minOrderAmount} NGN`}
-                    />
-                    {shop?.haveOwnDeliveryBoy && (
-                      <Info
-                        title="Delivery fee"
-                        value={`${shop?.deliveryFee ?? 0} NGN`}
+                    {shop?.foodType && (
+                      <InfoTwo
+                        Icon={FoodBankOutlinedIcon}
+                        value={`${shop?.foodType} (Food Type)`}
                       />
                     )}
-                    <Info
-                      title="Total Order"
-                      value={shop?.totalOrder}
+                    <InfoTwo
+                      Icon={ProductionQuantityLimitsOutlinedIcon}
+                      value={`${shop?.totalOrder} (Total Orders)`}
                     />
-                    <Info
-                      title="Free Delivery"
-                      value={shop?.freeDelivery ? "Yes" : "No"}
+                    <InfoTwo
+                      Icon={FeaturedPlayListOutlinedIcon}
+                      value={`${shop?.isFeatured ? "Yes" : "No"} (Featured)`}
                     />
-
-                    <Info
-                      title="Price Range"
-                      value={updatePriceRange(shop?.expensive)}
+                    <InfoTwo
+                      Icon={WorkHistoryOutlinedIcon}
+                      value={`${shop?.minOrderAmount} NGN (Minimum Order)`}
                     />
-
-                    {shop?.foodType && (
-                      <Info title="Type" value={shop?.foodType} />
+                    {shop?.haveOwnDeliveryBoy && (
+                      <InfoTwo
+                        Icon={PaymentIcon}
+                        value={`${shop?.deliveryFee ?? 0} NGN (Delivery Fee)`}
+                      />
                     )}
+
+                    <InfoTwo
+                      Icon={DeliveryDiningOutlinedIcon}
+                      value={`${shop?.freeDelivery ? "Yes" : "No"
+                        } (Free Delivery)`}
+                    />
+
+                    <InfoTwo
+                      Icon={PaidOutlinedIcon}
+                      value={`${updatePriceRange(
+                        shop?.expensive
+                      )} (Price Range)`}
+                    />
+
                     {shop?.tags?.length > 0 && (
-                      <Info
-                        title="Tags"
-                        value={shop?.tags?.map((item) => item).join(", ")}
+                      <InfoTwo
+                        Icon={TagOutlinedIcon}
+                        value={`${shop?.tags?.map((item) => item).join(", ")}. (Tags)`}
                       />
                     )}
                     {shop?.cuisineType?.length > 0 && (
-                      <Info
-                        title="Cusines"
-                        value={shop?.cuisineType
+                      <InfoTwo
+                        Icon={FastfoodOutlinedIcon}
+                        value={`${shop?.cuisineType
                           ?.map((item) => item.name)
-                          .join(", ")}
+                          .join(", ")}. (Cuisines)`}
                       />
                     )}
-                    <Info title="Account No" value={shop?.account_number} />
-                    <Info title="Bank" value={shop?.bank_name} />
-                    <Info title="Account Name" value={shop?.account_name} />
+                    <InfoTwo
+                      Icon={AccountBalanceOutlinedIcon}
+                      value={`${shop?.bank_name} (Bank Name)`}
+                    />
+                    <InfoTwo
+                      Icon={AccountBalanceWalletOutlinedIcon}
+                      value={`${shop?.account_name} (Bank Account Name)`}
+                    />
+                    <InfoTwo
+                      Icon={SavingsOutlinedIcon}
+                      value={`${shop?.account_number} (Bank Account No)`}
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -395,48 +452,24 @@ const ShopDetails = () => {
 
             <Row>
               <Col xl={6}>
-
-                <Flags reviews={shop?.reviews} isReview={true} />
-
+                <FlagsAndReviews reviews={shop?.reviews} isReview={true} />
               </Col>
               <Col xl={6}>
-                <Flags flags={shop?.flags} />
+                <FlagsAndReviews flags={shop?.flags} />
               </Col>
             </Row>
 
-            <Row >
-              <Col xl={6} >
-
+            <Row>
+              <Col xl={6}>
                 <Card className="card-height">
                   <CardBody>
                     <div>
                       <CardTitle>Shop Photos</CardTitle>
                       <hr />
                     </div>
-                    {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (<Row>
-                      <Col md={4}>
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            className="img-fluid cursor-pointer cursor-pointer"
-                            alt="partner"
-                            src={shop?.shopLogo}
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(shop?.shopLogo);
-                            }}
-                            width="100%"
-                          />
-                          <small>Shop Logo</small>
-                        </ImageWrapper>
-                      </Col>
-                      <Col md={4}>
-                        {shop.shopBanner ? (
+                    {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
+                      <Row>
+                        <Col md={6}>
                           <ImageWrapper
                             style={{
                               width: "100%",
@@ -445,48 +478,73 @@ const ShopDetails = () => {
                             }}
                           >
                             <img
+                              className="img-fluid cursor-pointer cursor-pointer"
+                              alt="partner"
+                              src={shop?.shopLogo}
                               onClick={() => {
                                 setIsOpen(true);
-                                setSelectedImg(shop?.shopBanner);
+                                setSelectedImg(shop?.shopLogo);
                               }}
-                              className="img-fluid cursor-pointer"
-                              alt="shop banner"
-                              src={shop?.shopBanner}
                               width="100%"
+                              lazy='loading'
                             />
-                            <small>Shop Banner</small>
+                            <small>Shop Logo</small>
                           </ImageWrapper>
-                        ) : null}
-                      </Col>
-                      <Col md={4}>
-                        {shop.shopPhotos ? (
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
-                            }}
-                          >
-                            <img
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(shop?.shopPhotos[0]);
+                        </Col>
+                        <Col md={6}>
+                          {shop.shopBanner ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
                               }}
-                              className="img-fluid cursor-pointer"
-                              alt="shopPhoto"
-                              src={shop?.shopPhotos[0]}
-                              width="100%"
-                            />
-                            <small>Shop Photos</small>
-                          </ImageWrapper>
-                        ) : null}
-                      </Col>
-                    </Row>) : <h5 className="text-center">No Photos</h5>}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(shop?.shopBanner);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="shop banner"
+                                src={shop?.shopBanner}
+                                width="100%"
+                                lazy='loading'
+                              />
+                              <small>Shop Banner</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                        <Col md={4}>
+                          {shop.shopPhotos ? (
+                            <ImageWrapper
+                              style={{
+                                width: "100%",
+                                height: "200px",
+                                padding: "10px 0px",
+                              }}
+                            >
+                              <img
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setSelectedImg(shop?.shopPhotos[0]);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt="shopPhoto"
+                                src={shop?.shopPhotos[0]}
+                                width="100%"
+                              />
+                              <small>Shop Photos</small>
+                            </ImageWrapper>
+                          ) : null}
+                        </Col>
+                      </Row>
+                    ) : (
+                      <h5 className="text-center">No Photos</h5>
+                    )}
                   </CardBody>
                 </Card>
-
               </Col>
-
 
               <Col xl={6}>
                 <div className="mb-4">
@@ -494,7 +552,7 @@ const ShopDetails = () => {
                     <CardBody>
                       <h5 className="text-center">Deals List</h5>
                       <hr />
-                      {shop?.deals?.length > 0 ?
+                      {shop?.deals?.length > 0 ? (
                         shop?.deals?.map((deal, index) => (
                           <ul key={index} style={{ listStyleType: "square" }}>
                             <li>
@@ -526,12 +584,14 @@ const ShopDetails = () => {
                               </li>
                             </ul>
                           </ul>
-                        )) : <h5 className="text-center"> No Deals </h5>}
+                        ))
+                      ) : (
+                        <h5 className="text-center"> No Deals </h5>
+                      )}
                     </CardBody>
                   </Card>
                 </div>
               </Col>
-
             </Row>
           </Container>
         </div>
@@ -589,12 +649,24 @@ const ShopDetails = () => {
           <div className="modal-body">
             <div className="d-flex flex-column">
               <label>Upload excel sheet</label>
-              <input type='file' onChange={(e) => setProductsFile(e.target.files[0])} title="select file" required={true} accept=".xlsx,.xls" />
+              <input
+                type="file"
+                onChange={(e) => setProductsFile(e.target.files[0])}
+                title="select file"
+                required={true}
+                accept=".xlsx,.xls"
+              />
             </div>
-            <Button onClick={submitProductFile} className="mt-3 px-4" color="success" disabled={isLoading}>{isLoading ? "Importing..." : 'Import'}</Button>
+            <Button
+              onClick={submitProductFile}
+              className="mt-3 px-4"
+              color="success"
+              disabled={isLoading}
+            >
+              {isLoading ? "Importing..." : "Import"}
+            </Button>
           </div>
         </Modal>
-
       </GlobalWrapper>
     </React.Fragment>
   );
@@ -602,6 +674,8 @@ const ShopDetails = () => {
 
 const ImageWrapper = styled.div`
   text-align: center;
+  border: 1px solid lightgray;
+  border-radius: 5px;
   img {
     object-fit: contain;
     width: 100%;
@@ -622,13 +696,11 @@ const HeaderWrapper = styled.div`
 `;
 
 const TemplateButton = styled.a`
-
-color: #02a499;
-&:hover{
-  color: white;
-}
-
-`
+  color: #02a499;
+  &:hover {
+    color: white;
+  }
+`;
 
 const DealsWrapper = styled.div``;
 

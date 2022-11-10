@@ -16,7 +16,7 @@ import {
 } from "../../../store/Users/UsersAction";
 import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
-import Flags from "../../../components/Flags";
+import FlagsAndReviews from "../../../components/FlagsAndReviews";
 import { callApi } from "../../../components/SingleApiCall";
 
 const UserDetails = () => {
@@ -124,7 +124,7 @@ const UserDetails = () => {
                 </Card>
               </Col>
               <Col lg={6}>
-                <Flags flags={user?.flags} />
+                <FlagsAndReviews flags={user?.flags} />
               </Col>
             </Row>
 
