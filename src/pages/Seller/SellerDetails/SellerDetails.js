@@ -150,7 +150,7 @@ const SellerDetails = () => {
                       Icon={AlternateEmailOutlinedIcon}
                     />
                     <InfoTwo value={`${seller?.status} (Status)`} Icon={AutorenewOutlinedIcon} />
-                    <InfoTwo value={seller?.sellerType} Icon={StoreOutlinedIcon} />
+                    <InfoTwo value={`${seller?.sellerType} (Type)`} Icon={StoreOutlinedIcon} />
                     {seller?.dropPercentage && (
                       <InfoTwo
                         Icon={PaidOutlinedIcon}
@@ -158,9 +158,7 @@ const SellerDetails = () => {
                           }`}
                       />
                     )}
-                    {/* 
-                    <Info title="Email" value={seller?.email} />
-                    <Info title="Phone" value={seller?.phone_number} /> */}
+
                   </Col>
                   <Col lg={6}>
 
