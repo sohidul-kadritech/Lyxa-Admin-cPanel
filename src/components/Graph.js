@@ -20,13 +20,9 @@ const Graph = ({
     getMonth,
     month,
 }) => {
-    // var lineChartOptions = {
-    //     low: 1,
-    //     showArea: true,
-    //     step: 1
-    // };
 
-    var lineChartOptions = {
+
+    let lineChartOptions = {
         responsive: true,
         low: 1,
         showArea: true,
