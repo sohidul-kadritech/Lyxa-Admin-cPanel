@@ -215,11 +215,12 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   const {
-    dashboardData: { summery = {}, top_activity },
+    dashboardData: { summary = {}, top_activity },
     startDate,
     endDate,
     loading,
   } = useSelector((state) => state.dashboardReducer);
+
   const {
     account_type,
     adminType,
@@ -331,11 +332,11 @@ const Dashboard = () => {
 
             <div>
               {account_type === "admin" ? (
-                <AdminDashboard summery={summery} topActivity={top_activity} />
+                <AdminDashboard summary={summary} topActivity={top_activity} />
               ) : account_type === "seller" ? (
-                <SellerDashboard summery={summery} />
+                <SellerDashboard summary={summary} />
               ) : (
-                <ShopDashboard summery={summery} />
+                <ShopDashboard summary={summary} />
               )}
             </div>
           </Container>

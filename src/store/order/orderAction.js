@@ -193,9 +193,9 @@ export const cancelOrderByAdmin = (values) => async (dispatch) => {
       data: values,
     });
 
+    console.log({ data });
 
-
-    if (data.status) {
+    if (data.success) {
       successMsg(data.message, "success");
       dispatch({
         type: actionType.CANCEL_ORDER_REQUEST_SUCCESS,

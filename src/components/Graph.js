@@ -20,10 +20,20 @@ const Graph = ({
     getMonth,
     month,
 }) => {
-    var lineChartOptions = {
-        low: 0,
-        showArea: true,
+    // var lineChartOptions = {
+    //     low: 1,
+    //     showArea: true,
+    //     step: 1
+    // };
 
+    var lineChartOptions = {
+        responsive: true,
+        low: 1,
+        showArea: true,
+        axisY: {
+            onlyInteger: true,
+
+        }
     };
     return (
         <React.Fragment>

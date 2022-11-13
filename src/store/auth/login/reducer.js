@@ -36,7 +36,8 @@ const login = (state = initialState, action) => {
         loading: false,
         admin,
         accessToken,
-        message
+        message,
+        error: null
       };
 
     case LOGOUT_USER:

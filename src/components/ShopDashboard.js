@@ -17,13 +17,13 @@ import bagIcon from "../assets/images/dashboard/bag.png";
 const OrdersGraph = lazy(() => import("./OrdersGraph"));
 const EarningsGraph = lazy(() => import("./EarningsGraph"));
 
-const ShopDashboard = ({ summery }) => {
+const ShopDashboard = ({ summary }) => {
     const topSummaryData = [
         {
             id: 1,
             title: "Earnings",
             subTitle: "(Total earnings)",
-            value: `${summery?.shopEarning ?? 0} NGN`,
+            value: `${summary?.totalShopEarning ?? 0} NGN`,
             icon: earningFlowIcon,
             iconBg: "red",
         },
@@ -31,7 +31,7 @@ const ShopDashboard = ({ summery }) => {
             id: 2,
             title: "Profit",
             subTitle: "(from Order Products)",
-            value: `${summery?.profitFromOrderItems ?? 0} NGN`,
+            value: `${summary?.profitFromOrderItems ?? 0} NGN`,
             icon: profitFlowIcon,
             iconBg: "#56ca00",
         },
@@ -39,7 +39,7 @@ const ShopDashboard = ({ summery }) => {
             id: 3,
             title: "Delivery Profit",
             subTitle: "(Only from delivery fees)",
-            value: `${summery?.profitFromDeliveryFee ?? 0} NGN`,
+            value: `${summary?.profitFromDeliveryFee ?? 0} NGN`,
             icon: profitUpArrowIcon,
             iconBg: "#f7c137",
         },
@@ -47,7 +47,7 @@ const ShopDashboard = ({ summery }) => {
             id: 4,
             title: "Delivery Fee's",
             subTitle: "(Total delivery fees)",
-            value: `${!summery?.deliveryFeeAmount ? 0 : summery?.deliveryFeeAmount} NGN`,
+            value: `${!summary?.orderValue?.deliveryFee} NGN`,
             icon: deliveryIcon,
             iconBg: "#00dcff",
         },
@@ -55,7 +55,7 @@ const ShopDashboard = ({ summery }) => {
             id: 5,
             title: "Order Amount",
             subTitle: "(Ex delivery fees)",
-            value: `${summery?.orderAmount ?? 0} NGN`,
+            value: `${summary?.orderValue?.totalAmount ?? 0} NGN`,
             icon: orderAmountIcon,
             iconBg: "#ff5ca7",
         },
@@ -63,7 +63,7 @@ const ShopDashboard = ({ summery }) => {
             id: 6,
             title: "Unsettled Amount",
             subTitle: "(Total unsettled)",
-            value: `${summery?.shopUnsettleAmount ?? 0} NGN`,
+            value: `${summary?.totalShopUnsettle ?? 0} NGN`,
             icon: moneyExchangeIcon,
             iconBg: "#0c9da4",
         },
@@ -83,15 +83,15 @@ const ShopDashboard = ({ summery }) => {
                     {/* <Col xl={4} md={6}>
                         <DashboardCard
                             title="Shops"
-                            value={summery?.totalShops}
+                            value={summary?.totalShops}
                             icon={shopIcon}
                             color={"#22a6ac"}
                         />
                     </Col> */}
                     <Col xl={4} md={6}>
                         <DashboardCard
-                            title="Orders"
-                            value={summery?.totalOrder}
+                            title="Deliverd Orders"
+                            value={summary?.totalDeliverOrder}
                             icon={bagIcon}
                             color={"#459ed8"}
                         />
@@ -100,7 +100,7 @@ const ShopDashboard = ({ summery }) => {
                     <Col xl={4} md={6}>
                         <DashboardCard
                             title="Cancel Orders"
-                            value={summery?.totalCancelOrder}
+                            value={summary?.totalCancelOrder}
                             icon={cancelBagIcon}
                             border={"#f05179"}
                             color="#8c54ff"

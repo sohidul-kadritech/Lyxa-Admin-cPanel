@@ -34,24 +34,22 @@ const TopLists = ({ list, type }) => {
       <CardBody>
         <div className="d-flex mb-2">
           <i
-            className={`${
-              type === "user"
+            className={`${type === "user"
                 ? "fa fa-user"
                 : type === "deliveryBoy"
-                ? "fa fa-people-carry"
-                : "fa fa-store"
-            }`}
+                  ? "fa fa-people-carry"
+                  : "fa fa-store"
+              }`}
             style={{ fontSize: "18px", padding: "5px" }}
           ></i>
           <h5 className="ms-2 text-dark" style={{ marginTop: 2 }}>
             Top{" "}
-            {`${
-              type === "user"
+            {`${type === "user"
                 ? "Users"
                 : type === "deliveryBoy"
-                ? "Delivery Boys"
-                : "Shops"
-            }`}
+                  ? "Delivery Boys"
+                  : "Shops"
+              }`}
           </h5>
         </div>
         <i class="fa-sharp fa-solid fa-moped"></i>
@@ -105,13 +103,13 @@ const TopLists = ({ list, type }) => {
   );
 };
 
-const AdminDashboard = ({ summery, topActivity }) => {
+const AdminDashboard = ({ summary, topActivity }) => {
   const topSummaryData = [
     {
       id: 1,
       title: "Lyxa Earnings",
       subTitle: "(Total earnings)",
-      value: `${summery?.totalDropEarning ?? 0} NGN`,
+      value: `${summary?.totalDropEarning ?? 0} NGN`,
       icon: earningFlowIcon,
       iconBg: "red",
     },
@@ -119,7 +117,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
       id: 2,
       title: "Order Profit",
       subTitle: "(Ex delivery fees)",
-      value: `${summery?.dropEarningTotalOfItems ?? 0} NGN`,
+      value: `${summary?.dropEarningTotalOfItems ?? 0} NGN`,
       icon: profitFlowIcon,
       iconBg: "#56ca00",
     },
@@ -127,7 +125,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
       id: 3,
       title: "Delivery Profit",
       subTitle: "(Only from delivery fees)",
-      value: `${summery?.dropEarningTotalOfDeliveryFee ?? 0} NGN`,
+      value: `${summary?.dropEarningTotalOfDeliveryFee ?? 0} NGN`,
       icon: profitUpArrowIcon,
       iconBg: "#f7c137",
     },
@@ -135,7 +133,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
       id: 4,
       title: "Delivery Fee's",
       subTitle: "(Total delivery fees)",
-      value: `${summery?.ordersDeliveryFeesTotal ?? 0} NGN`,
+      value: `${summary?.ordersDeliveryFeesTotal ?? 0} NGN`,
       icon: deliveryIcon,
       iconBg: "#00dcff",
     },
@@ -143,7 +141,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
       id: 5,
       title: "Order Amount",
       subTitle: "(Ex delivery fees)",
-      value: `${summery?.ordersItemTotal ?? 0} NGN`,
+      value: `${summary?.ordersItemTotal ?? 0} NGN`,
       icon: orderAmountIcon,
       iconBg: "#ff5ca7",
     },
@@ -151,7 +149,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
       id: 6,
       title: "Shops Unsettled Amount",
       subTitle: "(Total unsettled)",
-      value: `${summery?.shopUnsettleAmount ?? 0} NGN`,
+      value: `${summary?.shopUnsettleAmount ?? 0} NGN`,
       icon: moneyExchangeIcon,
       iconBg: "#0c9da4",
     },
@@ -166,7 +164,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
           <Col xl={3} md={6}>
             <DashboardCard
               title="Users"
-              value={summery?.totalUser}
+              value={summary?.totalUser}
               icon={userIcon}
               border={"#f05179"}
               color="#8c54ff"
@@ -175,7 +173,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
           <Col xl={3} md={6}>
             <DashboardCard
               title="Shops"
-              value={summery?.totalShopRegister}
+              value={summary?.totalShopRegister}
               icon={shopIcon}
               color={"#22a6ac"}
             />
@@ -183,7 +181,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
           <Col xl={3} md={6}>
             <DashboardCard
               title="Orders"
-              value={summery?.totalOrder}
+              value={summary?.totalOrder}
               icon={bagIcon}
               color={"#459ed8"}
             />
@@ -192,7 +190,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
           <Col xl={3} md={6}>
             <DashboardCard
               title="Cancel Orders"
-              value={summery?.totalCancelOrder}
+              value={summary?.totalCancelOrder}
               icon={cancelBagIcon}
               border={"#f05179"}
               color="#8c54ff"
@@ -220,7 +218,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Delivery Boy's"
-                  value={summery?.totalDeliveryBoy}
+                  value={summary?.totalDeliveryBoy}
                   icon={riderIcon}
                   color={"#f05179"}
                 />
@@ -228,7 +226,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Active Riders"
-                  value={summery?.totalActiveDeliveryBoy}
+                  value={summary?.totalActiveDeliveryBoy}
                   icon={availableRiderIcon}
                   color={"#0c9da4"}
                 />
@@ -237,7 +235,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Available Riders"
-                  value={summery?.totalAvailableDeliveryBoy}
+                  value={summary?.totalAvailableDeliveryBoy}
                   icon={activeRiderIcon}
                   color={"#459ed8"}
                 />
@@ -247,7 +245,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Riders Unsettled Amount"
-                  value={`${summery?.deliveryBoyUnsettleAmount ?? 0} NGN`}
+                  value={`${summary?.deliveryBoyUnsettleAmount ?? 0} NGN`}
                   icon={amountIcon}
                   color={"#8c54ff"}
                 />
@@ -255,7 +253,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Riders cash in hands"
-                  value={`${summery?.chashInHandDeliveryBoy ?? 0} NGN`}
+                  value={`${summary?.chashInHandDeliveryBoy ?? 0} NGN`}
                   icon={cashInHandIcon}
                   color={"yellow"}
                 />
@@ -263,7 +261,7 @@ const AdminDashboard = ({ summery, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Avarage delivery time"
-                  value={`${summery?.totalAveratgeDeliveredTime?.toFixed(
+                  value={`${summary?.totalAveratgeDeliveredTime?.toFixed(
                     2
                   )} Min`}
                   icon={timerIcon}

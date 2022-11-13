@@ -9,6 +9,8 @@ import {
   FormLabel,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   Tooltip,
@@ -46,7 +48,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-
   const { cancelReasons } = useSelector((state) => state.settingsReducer);
   const { activeDelieryBoys } = useSelector((state) => state.orderReducer);
 
@@ -54,7 +55,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const [orderStatus, setOrderStatus] = useState("");
   const [orderId, setOrderId] = useState("");
   const [shop, setShop] = useState(null);
-  const [deliveryBoy, setDeliveryBoy] = useState('');
+  const [deliveryBoy, setDeliveryBoy] = useState("");
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
   const [openFlagModal, setOpenFlagModal] = useState(false);
   const [openCancelModal, setOpenCancelModal] = useState(false);
@@ -66,7 +67,20 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     cancelReason: "",
     orderId: null,
     otherReason: "",
+    refundType: "none",
+    partialPayment: {
+      shop: "",
+      deliveryBoy: "",
+      admin: "",
+    },
   });
+
+  const [orderPayment, setOrderPayment] = useState({
+    shop: 0,
+    deliveryBoy: 0,
+    admin: 0,
+  });
+
   const [accountType, setAccountType] = useState({
     user: false,
     shop: false,
@@ -78,7 +92,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     shop: false,
     rider: false,
   });
-
 
   const { account_type } = JSON.parse(localStorage.getItem("admin"));
 
@@ -99,7 +112,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         orderStatus,
         shop,
         deliveryBoy: deliveryBoy?._id,
-
       })
     );
   };
@@ -117,6 +129,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         rider: false,
       });
     }
+    return;
   }, [status]);
 
   // GET ALL DELIVERY BOY
@@ -194,12 +207,93 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     if (openCancelModal) {
       dispatch(getAllCancelReasons(true, "admin"));
     }
+    return;
   }, [openCancelModal]);
+
+
+
+  // MODIFIED ORDER STATUS NAME
+
+  const modifiedOrderStatus = (statusName) => {
+    let newStatusName = "";
+
+    if (statusName === "accepted_delivery_boy") {
+      newStatusName = "Accept by rider";
+    } else if (statusName === "preparing") {
+      newStatusName = "Accept by shop";
+    } else if (statusName === "ready_to_pickup") {
+      newStatusName = "Ready to pickup";
+    } else if (statusName === "order_on_the_way") {
+      newStatusName = "On the way";
+    } else if (statusName === "delivered") {
+      newStatusName = "Delivered";
+    } else if (statusName === "cancelled") {
+      newStatusName = "Cancelled";
+    } else {
+      newStatusName = "Placed";
+    }
+    return newStatusName;
+  };
+
+  //  UPDATE CANCEL ORDER REFUND TYPE
+
+  const updateRefundType = (type) => {
+    setOrderCancel({
+      ...orderCancel,
+      refundType: type,
+      partialPayment:
+        type === "full"
+          ? orderPayment
+          : {
+            shop: "",
+            deliveryBoy: "",
+            admin: "",
+          },
+    });
+  };
+
+  const updateRefundAmount = (e) => {
+    const { name, value } = e.target;
+    const { shop, admin, deliveryBoy } = orderPayment;
+    const {
+      partialPayment: { shop: shopAmount, deliveryBoy: riderAmount, admin: adminAmount },
+    } = orderCancel;
+
+    if (name === "shop" && Number(value) > shop) {
+      return successMsg("Invalid Shop Amount");
+    }
+    else if (name === "admin" && Number(value) > admin) {
+      return successMsg("Invalid Lyxa Amount");
+    }
+    else if (name === "deliveryBoy" && Number(value) > deliveryBoy) {
+      return successMsg("Invalid Delivery Boy Amount");
+    } else {
+      setOrderCancel({
+        ...orderCancel,
+        partialPayment: {
+          ...orderCancel?.partialPayment,
+          [name]: Number(value)
+        }
+      })
+    }
+
+
+  };
+
 
   // CANCEL ORDER
 
   const submitOrderCancel = (e) => {
     e.preventDefault();
+
+    const {
+      partialPayment: { shop, deliveryBoy, admin }
+    } = orderCancel;
+
+    if (orderCancel.refundType === 'partial' && (!shop && !deliveryBoy && !admin)) {
+      return successMsg('Enter Minimum One Partial Amount')
+    }
+
     dispatch(
       cancelOrderByAdmin({
         ...orderCancel,
@@ -207,32 +301,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       })
     );
   };
-
-  // MODIFIED ORDER STATUS NAME 
-
-  const modifiedOrderStatus = (statusName) => {
-
-    let newStatusName = '';
-
-    if (statusName === 'accepted_delivery_boy') {
-      newStatusName = 'Accept by rider';
-    } else if (statusName === 'preparing') {
-      newStatusName = 'Accept by shop';
-    } else if (statusName === 'ready_to_pickup') {
-      newStatusName = 'Ready to pickup';
-    } else if (statusName === 'order_on_the_way') {
-      newStatusName = 'On the way';
-    } else if (statusName === 'delivered') {
-      newStatusName = 'Delivered';
-    } else if (statusName === 'cancelled') {
-      newStatusName = 'Cancelled';
-    } else {
-      newStatusName = 'Placed';
-    }
-    return newStatusName;
-  }
-
-
 
   return (
     <>
@@ -283,12 +351,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           {item?.paymentMethod}{" "}
                           {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
                         </Td>
-                        <Td>
-                          {modifiedOrderStatus(item?.orderStatus)}
-                        </Td>
+                        <Td>{modifiedOrderStatus(item?.orderStatus)}</Td>
                         <Td>
                           <ButtonWrapper>
-
                             {!refused && (
                               <Tooltip
                                 title={
@@ -326,43 +391,58 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                 <i className="fa fa-eye" />
                               </button>
                             </Tooltip>
-                            {account_type === 'admin' && <div>
-                              <Tooltip title="Flag">
-                                <button
-                                  className={`btn  button me-1 ${item?.flag?.length > 0
-                                    ? "btn-warning"
-                                    : "btn-success"
-                                    }`}
-                                  onClick={() => {
-                                    setOpenFlagModal(!openFlagModal);
-                                    setSelectFlagOrder(item);
-                                    updateIsFlaged(item?.flag);
-                                  }}
-                                >
-                                  <i className="fa fa-flag"></i>
-                                </button>
-                              </Tooltip>
-
-                              {item?.orderStatus !== "cancelled" && (
-                                <Tooltip title="Cancel Order">
+                            {account_type === "admin" && (
+                              <div>
+                                <Tooltip title="Flag">
                                   <button
-                                    className="btn btn-danger button"
+                                    className={`btn  button me-1 ${item?.flag?.length > 0
+                                      ? "btn-warning"
+                                      : "btn-success"
+                                      }`}
                                     onClick={() => {
-                                      setOpenCancelModal(!openCancelModal);
-                                      setOrderCancel({
-                                        ...orderCancel,
-                                        cancelReason: "",
-                                        otherReason: "",
-                                        orderId: item?._id,
-                                      });
-                                      setIsOtherReason(false);
+                                      setOpenFlagModal(!openFlagModal);
+                                      setSelectFlagOrder(item);
+                                      updateIsFlaged(item?.flag);
                                     }}
                                   >
-                                    <i className="fa fa-times-circle"></i>
+                                    <i className="fa fa-flag"></i>
                                   </button>
                                 </Tooltip>
-                              )}
-                            </div>}
+
+                                {item?.orderStatus !== "cancelled" && (
+                                  <Tooltip title="Cancel Order">
+                                    <button
+                                      className="btn btn-danger button"
+                                      onClick={() => {
+                                        setOpenCancelModal(!openCancelModal);
+                                        setOrderCancel({
+                                          ...orderCancel,
+                                          cancelReason: "",
+                                          otherReason: "",
+                                          orderId: item?._id,
+                                          refundType: "none",
+                                          partialPayment: {
+                                            shop: "",
+                                            deliveryBoy: "",
+                                            admin: "",
+                                          },
+                                        });
+                                        setOrderPayment({
+                                          shop: item?.sellerEarnings,
+                                          deliveryBoy: item?.deliveryBoyFee,
+                                          admin:
+                                            item?.dropCharge?.totalDropAmount,
+                                        });
+                                        console.log(item);
+                                        setIsOtherReason(false);
+                                      }}
+                                    >
+                                      <i className="fa fa-times-circle"></i>
+                                    </button>
+                                  </Tooltip>
+                                )}
+                              </div>
+                            )}
                           </ButtonWrapper>
                         </Td>
                       </Tr>
@@ -424,7 +504,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               >
                 {orderStatusOptions.map((item, index) => (
                   <MenuItem key={index} value={item.value}>
-                    {orderFor === 'specific' && item.value === 'accepted_delivery_boy' ? "" : item.label}
+                    {orderFor === "specific" &&
+                      item.value === "accepted_delivery_boy"
+                      ? ""
+                      : item.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -434,7 +517,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               <Autocomplete
                 className="cursor-pointer mt-3"
                 value={deliveryBoy}
-
                 onChange={(event, newValue) => {
                   setDeliveryBoy(newValue);
                 }}
@@ -594,6 +676,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           setOpenCancelModal(!openCancelModal);
         }}
         centered={true}
+        style={{ height: '470px' }}
       >
         <div className="modal-header">
           <h5 className="modal-title mt-0">Cancel Order</h5>
@@ -689,7 +772,85 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               </div>
             )}
 
-            <div className="d-flex justify-content-center my-3">
+            <FormControl className='py-3'>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                value={orderCancel?.refundType}
+                onChange={(e) => updateRefundType(e.target.value)}
+                required
+              >
+                <FormControlLabel
+                  value="full"
+                  control={<Radio />}
+                  label="Full Refund"
+                />
+                <FormControlLabel
+                  value="partial"
+                  control={<Radio />}
+                  label="Partial Refund"
+                />
+                <FormControlLabel
+                  value="none"
+                  control={<Radio />}
+                  label="No Refund"
+                />
+              </RadioGroup>
+            </FormControl>
+
+            {orderCancel?.refundType === "partial" && (
+              <CancelOrderRefunds>
+                <div className="refund_item_wrapper">
+                  <input
+                    className="form-control refund_input"
+                    placeholder="Enter Shop Amount"
+                    type="number"
+                    min={0}
+                    max={orderPayment?.shop}
+                    name="shop"
+                    onChange={updateRefundAmount}
+                    value={orderCancel?.partialPayment?.shop}
+                  />
+                  <span>Shop Earning: {orderPayment?.shop}</span>
+                </div>
+                <div className="refund_item_wrapper">
+                  <input
+                    type="number"
+                    className="form-control refund_input"
+                    placeholder="Enter Admin Amount"
+                    min={0}
+                    max={orderPayment?.admin}
+                    onChange={updateRefundAmount}
+                    name="admin"
+                    value={orderCancel?.partialPayment?.admin}
+                  />
+                  <span>Lyxa Earning: {orderPayment?.admin}</span>
+                </div>
+                <div className="refund_item_wrapper">
+                  <input
+                    type="number"
+                    className="form-control refund_input"
+                    placeholder="Enter Delivery Amount"
+                    min={0}
+                    max={orderPayment?.deliveryBoy}
+                    onChange={updateRefundAmount}
+                    name="deliveryBoy"
+                    value={orderCancel?.partialPayment?.deliveryBoy}
+                  />
+                  <span>Delivery Earning: {orderPayment?.deliveryBoy}</span>
+                </div>
+              </CancelOrderRefunds>
+            )}
+
+            <h5>
+              Total Refund Amount:{" "}
+              {Number(orderCancel?.partialPayment?.shop) +
+                Number(orderCancel?.partialPayment?.admin) +
+                Number(orderCancel?.partialPayment?.deliveryBoy)}
+            </h5>
+
+            <div className="d-flex justify-content-center my-3 pt-3">
               <Button
                 color="success"
                 size="lg"
@@ -719,6 +880,20 @@ const ButtonWrapper = styled.div`
     }
     @media (min-width: 1400px) {
       margin-top: 0px;
+    }
+  }
+`;
+
+const CancelOrderRefunds = styled.div`
+  padding-bottom: 10px;
+  .refund_item_wrapper {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+
+    .refund_input {
+      width: 180px;
+      margin-right: 20px;
     }
   }
 `;
