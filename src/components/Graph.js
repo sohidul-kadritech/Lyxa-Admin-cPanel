@@ -1,9 +1,9 @@
 import React from "react";
-import ChartistGraph from "react-chartist";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
 import { Row, Col, Card, CardBody, Spinner } from "reactstrap";
 import { graphFilterOptions, monthOptions } from "../assets/staticData";
+import { Bar } from 'react-chartjs-2';
 
 const Graph = ({
     filterType,
@@ -22,18 +22,55 @@ const Graph = ({
 }) => {
 
 
-    let lineChartOptions = {
-        responsive: true,
-        low: 1,
-        showArea: true,
-        axisY: {
-            onlyInteger: true,
 
-        }
+    const data = {
+        labels: chartData.labels,
+        datasets: [
+            {
+                label: 'Analytics',
+                backgroundColor: "#02a499",
+                borderColor: "#02a499",
+                borderWidth: 1,
+                hoverBackgroundColor: "#02a499",
+                hoverBorderColor: "#02a499",
+                data: chartData?.series ?? []
+            }
+        ]
     };
+
+    const option = {
+        tootlbar: {
+            show: false
+        },
+        low: 0,
+        tooltips: {
+            callbacks: {
+                label: function (tooltipItem, data) {
+                    let dataset = data.datasets[tooltipItem.datasetIndex];
+                    // let meta = dataset._meta[Object.keys(dataset._meta)[0]];
+                    // let total = meta.total;
+                    let currentValue = dataset.data[tooltipItem.index];
+                    // var percentage = parseFloat((currentValue / total * 100).toFixed(1));
+                    return `Vaule - ${currentValue}`;
+                },
+                title: function (tooltipItem, data) {
+                    return `Label - ${data.labels[tooltipItem[0].index]}`;
+                }
+            }
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 5,
+                    callback: function (value) { if (value % 1 === 0) { return value; } }
+                }
+            }]
+        }
+    }
     return (
         <React.Fragment>
-            <Card style={{ height: '340px' }}>
+            <Card>
                 <CardBody>
 
                     <div className="d-flex justify-content-between align-items-center">
@@ -143,12 +180,7 @@ const Graph = ({
                                 {isLoading ? (
                                     <Spinner animation="border" variant="success" />
                                 ) : (
-                                    <ChartistGraph
-                                        data={chartData}
-                                        style={{ height: "220px" }}
-                                        options={lineChartOptions}
-                                        type={"Line"}
-                                    />
+                                    <Bar width={600} height={245} data={data} options={option} />
                                 )}
                             </div>
                         </Col>

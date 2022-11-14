@@ -35,20 +35,20 @@ const TopLists = ({ list, type }) => {
         <div className="d-flex mb-2">
           <i
             className={`${type === "user"
-                ? "fa fa-user"
-                : type === "deliveryBoy"
-                  ? "fa fa-people-carry"
-                  : "fa fa-store"
+              ? "fa fa-user"
+              : type === "deliveryBoy"
+                ? "fa fa-people-carry"
+                : "fa fa-store"
               }`}
             style={{ fontSize: "18px", padding: "5px" }}
           ></i>
           <h5 className="ms-2 text-dark" style={{ marginTop: 2 }}>
             Top{" "}
             {`${type === "user"
-                ? "Users"
-                : type === "deliveryBoy"
-                  ? "Delivery Boys"
-                  : "Shops"
+              ? "Users"
+              : type === "deliveryBoy"
+                ? "Delivery Boys"
+                : "Shops"
               }`}
           </h5>
         </div>

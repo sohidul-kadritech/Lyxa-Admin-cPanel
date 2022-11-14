@@ -184,7 +184,6 @@ import Tags from "../pages/Tags/Tags";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
-
   { path: "/orders/list", component: OrdersList },
   { path: "/orders/details/:id", component: OrderDetails },
   { path: "/orders/cancel-reason", component: CancelReason },

@@ -326,7 +326,7 @@ const Dashboard = () => {
 
             {loading && (
               <div className="text-center">
-                <Spinner animation="border" variant="InfoTwo" />
+                <Spinner animation="border" color="success" />
               </div>
             )}
 

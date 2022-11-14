@@ -7,7 +7,9 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
+  IconButton,
   InputLabel,
+  Menu,
   MenuItem,
   Radio,
   RadioGroup,
@@ -33,16 +35,17 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   cancelOrderByAdmin,
   getAllActiveDeliveryMan,
-  getAllOrder,
   orderUpdateStatus,
   sentOrderFlag,
 } from "../store/order/orderAction";
 import { useEffect } from "react";
-import { allDeliveryMan } from "../store/DeliveryMan/DeliveryManAction";
 import styled from "styled-components";
-import { userList } from "../store/Users/UsersAction";
 import { successMsg } from "../helpers/successMsg";
 import { getAllCancelReasons } from "../store/Settings/settingsAction";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import TableMenuAction from "./TableMenuAction";
+
+const ITEM_HEIGHT = 48;
 
 const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
@@ -63,6 +66,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const [comment, setComment] = useState("");
   const [isOtherReason, setIsOtherReason] = useState(false);
   const [orderFor, setOrderFor] = useState(null);
+  const [actionMenu, setActionMenu] = React.useState(null);
+  const open = Boolean(actionMenu);
   const [orderCancel, setOrderCancel] = useState({
     cancelReason: "",
     orderId: null,
@@ -302,6 +307,13 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     );
   };
 
+
+  const handleActionMenu = (event) => {
+    setActionMenu(event.currentTarget);
+  };
+
+
+
   return (
     <>
       <div>
@@ -409,7 +421,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                   </button>
                                 </Tooltip>
 
-                                {item?.orderStatus !== "cancelled" && (
+                                {item?.orderStatus !== "cancelled" && item?.orderStatus !== "delivered" && (
                                   <Tooltip title="Cancel Order">
                                     <button
                                       className="btn btn-danger button"
@@ -444,6 +456,16 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                               </div>
                             )}
                           </ButtonWrapper>
+                          {/* <IconButton
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleActionMenu}
+                          >
+                            <MoreVertIcon />
+                          </IconButton> */}
+
                         </Td>
                       </Tr>
                     );
@@ -452,7 +474,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
             </Table>
             {loading && (
               <div className="text-center">
-                <Spinner animation="border" variant="success" />
+                <Spinner animation="border" color="danger" />
               </div>
             )}
             {!loading && orders?.length < 1 && (
@@ -869,6 +891,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           </Form>
         </div>
       </Modal>
+
+      <TableMenuAction actionMenu={actionMenu} open={open} handleClose={() => setActionMenu(null)} />
     </>
   );
 };

@@ -58,9 +58,7 @@ const OrdersGraph = () => {
             if (labelsData && seriesData) {
                 const chartInfo = {
                     labels: labelsData,
-                    series: [
-                        seriesData
-                    ]
+                    series: seriesData
                 }
                 setChartData(chartInfo);
             }
@@ -85,7 +83,6 @@ const OrdersGraph = () => {
     const updateFilterType = (type) => {
 
         setFilterType(type);
-        console.log(type);
         if (type.value === 'normal') {
             setStartDate(initStartDate);
             setEndDate(initEndDate)
