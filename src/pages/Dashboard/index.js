@@ -42,7 +42,7 @@ import MopedOutlinedIcon from '@mui/icons-material/MopedOutlined';
 import SettingsInputSvideoIcon from '@mui/icons-material/SettingsInputSvideo';
 import PaymentIcon from '@mui/icons-material/Payment';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import ProductionQuantityLimitsOutlinedIcon from '@mui/icons-material/ProductionQuantityLimitsOutlined';
+
 import InfoTwo from "../../components/InfoTwo";
 
 

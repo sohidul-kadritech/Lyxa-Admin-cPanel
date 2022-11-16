@@ -380,7 +380,7 @@ const shopReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        tags: [...state.tags, payload],
+        tags: [payload, ...state.tags],
       };
 
     case actionType.ADD_TAG_REQUEST_FAIL:
@@ -405,12 +405,12 @@ const shopReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: false,
-        tags: payload,
-        // paginate: payload.paginate,
-        // paging: payload.paginate.metadata.paging,
-        // hasNextPage: payload.paginate.metadata.hasNextPage,
-        // currentPage: payload.paginate.metadata.page.currentPage,
-        // hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        tags: payload.tags,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
       };
 
     case actionType.GET_TAGS_REQUEST_FAIL:

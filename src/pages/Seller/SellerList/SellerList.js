@@ -34,6 +34,8 @@ import {
 } from "../../../assets/staticData";
 import Select from "react-select";
 import Search from "../../../components/Search";
+import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 
 const SellerList = () => {
   const dispatch = useDispatch();
@@ -72,6 +74,15 @@ const SellerList = () => {
   const callSellerList = (refresh = false) => {
     dispatch(getAllSeller(refresh));
   };
+
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/seller/edit/${item._id}`)
+    } else {
+      history.push(`/seller/details/${item._id}`)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -163,8 +174,7 @@ const SellerList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>ID</Th>
-                      <Th>Company Name</Th>
+                      <Th>Company</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
@@ -183,52 +193,65 @@ const SellerList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
-                            <div style={{ maxWidth: "120px" }}>
-                              <span>{item?.autoGenId}</span>
+                          <Th className="d-flex">
+                            <div style={{ width: "50px" }}>
+                              <img
+                                className="w-100 h-100"
+                                lazy="loading"
+                                style={{ borderRadius: "6px" }}
+                                src={item?.profile_photo ?? RoomOutlinedIcon}
+                                alt=""
+                              />
+                            </div>
+                            <div
+                              style={{ flex: "1", textAlign: "left" }}
+                              className="ps-2"
+                            >
+                              <p className="mb-0 text-black">
+                                {item?.company_name}
+                              </p>
+                              <p className="text-muted-50 mb-0">{`ID: ${item?.autoGenId}`}</p>
                             </div>
                           </Th>
-                          <Td>{item?.company_name}</Td>
+
                           <Td>{item?.email}</Td>
                           <Td>{item?.phone_number}</Td>
-                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
+                          <Td><div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.status}</div></Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
                           <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-0 me-xl-2 button"
-                                  onClick={() =>
-                                    history.push(`/seller/edit/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button me-0 me-xl-2"
-                                  onClick={() =>
-                                    history.push(`/seller/details/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
-                            </div>
+                            <ThreeDotsMenu
+                              handleMenuClick={(menu) =>
+                                handleMenu(menu, item)
+                              }
+                              menuItems={[
+                                "Edit",
+                                "Details"
+                              ]}
+                            />
                           </Td>
                         </Tr>
                       );
                     })}
+                    {loading && (
+                      <Tr>
+                        <Td>
+                          <Spinner
+                            style={{
+                              position: "fixed",
+                              left: "50%",
+                              top: "50%",
+                            }}
+                            animation="border"
+                            color="success"
+                          />
+                        </Td>
+                      </Tr>
+                    )}
                   </Tbody>
                 </Table>
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>
-                )}
+
                 {!loading && sellers.length < 1 && (
                   <div className="text-center">
                     <h4>No Data!</h4>

@@ -36,6 +36,7 @@ import {
   userStatusOptions,
 } from "./../../../assets/staticData";
 import Select from "react-select";
+import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,16 @@ const UsersList = () => {
   const callUsersList = (refresh = false) => {
     dispatch(userList(refresh));
   };
+
+  const handleMenu = (menu, user) => {
+    if (menu === 'Transactions') {
+      history.push(
+        `/users/transactions/${user._id}`
+      )
+    } else {
+      history.push(`/users/details/${user._id}`)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -166,7 +177,7 @@ const UsersList = () => {
                             </Th>
                             <Td>{user?.name}</Td>
                             <Td>{user?.email}</Td>
-                            <Td>{user?.phone_number}</Td>
+                            <Td>{user?.phone_number ? user?.phone_number : 'N/A'}</Td>
                             <Td>{user?.gender}</Td>
                             <Td>{new Date(user?.dob).toLocaleDateString()}</Td>
                             <Td>
@@ -174,30 +185,15 @@ const UsersList = () => {
                             </Td>
                             <Td>{user?.totalOrder ?? 0}</Td>
                             <Td>
-                              <ButtonWrapper>
-                                <Tooltip title="See transactions">
-                                  <button
-                                    className="btn btn-success"
-                                    onClick={() =>
-                                      history.push(
-                                        `/users/transactions/${user._id}`
-                                      )
-                                    }
-                                  >
-                                    <i className="fas fa-exchange-alt" />
-                                  </button>
-                                </Tooltip>
-                                <Tooltip title="See details">
-                                  <button
-                                    className="btn btn-info"
-                                    onClick={() =>
-                                      history.push(`/users/details/${user._id}`)
-                                    }
-                                  >
-                                    <i className="fa fa-eye" />
-                                  </button>
-                                </Tooltip>
-                              </ButtonWrapper>
+                              <ThreeDotsMenu
+                                handleMenuClick={(menu) =>
+                                  handleMenu(menu, user)
+                                }
+                                menuItems={[
+                                  "Transactions",
+                                  "Details"
+                                ]}
+                              />
                             </Td>
                           </Tr>
                         );
@@ -212,7 +208,7 @@ const UsersList = () => {
                               top: "50%",
                             }}
                             animation="border"
-                            variant="success"
+                            color="success"
                           />
                         </Td>
                       </Tr>
@@ -222,7 +218,7 @@ const UsersList = () => {
 
                 {users.length < 1 && !loading && (
                   <div className="text-center">
-                    <h3>No Data Found</h3>
+                    <h3>No Data Found!</h3>
                   </div>
                 )}
               </CardBody>

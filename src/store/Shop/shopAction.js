@@ -459,7 +459,8 @@ export const updateShopStatus = (values) => async (dispatch) => {
       dispatch({
         type: actionType.UPDATE_SHOP_STATUS_REQUEST_SUCCESS,
       });
-    } else {
+    }
+    else {
       successMsg(data.message, "error");
       dispatch({
         type: actionType.UPDATE_SHOP_STATUS_REQUEST_FAIL,
@@ -539,7 +540,7 @@ export const getAllTags = (refresh = false, shopType = null, page = 1) => async 
       if (status) {
         dispatch({
           type: actionType.GET_TAGS_REQUEST_SUCCESS,
-          payload: data.tags,
+          payload: data
         });
       } else {
         dispatch({

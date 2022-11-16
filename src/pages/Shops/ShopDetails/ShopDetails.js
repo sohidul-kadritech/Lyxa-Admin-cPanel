@@ -42,7 +42,6 @@ import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";

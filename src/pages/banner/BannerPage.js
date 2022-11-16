@@ -34,6 +34,7 @@ import {
   updateShopSearchKey,
   updateShopType,
 } from "../../store/Shop/shopAction";
+import ThreeDotsMenu from "../../components/ThreeDotsMenu";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
@@ -97,7 +98,19 @@ const BannerPage = () => {
   useEffect(() => {
     dispatch(updateShopType({ label: "All", value: "all" }));
     dispatch(updateShopSearchKey(""));
+    return;
   }, []);
+
+  // HANDLE ACTION MENU
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      handleEdit(item?._id)
+    } else {
+      setconfirm_alert(true);
+      setBannerId(item?._id);
+    }
+  }
 
   const listViewBanner = () => {
     return (
@@ -138,11 +151,11 @@ const BannerPage = () => {
                   <Tbody>
                     {list.map((item, index) => {
                       return (
-                        <Tr key={index}>
+                        <Tr key={index} className='text-capitalize'>
                           <Th style={{ height: "50px", maxWidth: "150px" }}>
                             <img
                               src={item.image}
-                              style={{ width: "100px", maxHeight: "75px" }}
+                              style={{ width: "70%", maxHeight: "75px", borderRadius: '10px' }}
                               alt="Banner"
                               className="cursor-pointer"
                               onClick={() => {
@@ -153,26 +166,22 @@ const BannerPage = () => {
                           </Th>
                           <Td>{item?.title}</Td>
                           <Td>{item?.type}</Td>
-                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
+                          <Td >
+                            <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.status}</div>
+                          </Td>
                           <Td>
                             {moment(item?.createdAt).utc().format("YYYY-MM-DD")}
                           </Td>
                           <Td>
-                            <button
-                              className="btn btn-info button me-2"
-                              onClick={() => handleEdit(item._id)}
-                            >
-                              <i className="fa fa-edit" />
-                            </button>
-                            <button
-                              className="btn btn-danger button"
-                              onClick={() => {
-                                setconfirm_alert(true);
-                                setBannerId(item?._id);
-                              }}
-                            >
-                              <i className="fa fa-trash" />
-                            </button>
+                            <ThreeDotsMenu
+                              handleMenuClick={(menu) =>
+                                handleMenu(menu, item)
+                              }
+                              menuItems={[
+                                "Edit",
+                                "Delete"
+                              ]}
+                            />
                             {confirm_alert ? (
                               <SweetAlert
                                 title="Are you sure?"
@@ -199,14 +208,25 @@ const BannerPage = () => {
                         </Tr>
                       );
                     })}
+                    {loading && (
+                      <Tr>
+                        <Td>
+                          <Spinner
+                            style={{
+                              position: "fixed",
+                              left: "50%",
+                              top: "50%",
+                            }}
+                            animation="border"
+                            color="success"
+                          />
+                        </Td>
+                      </Tr>
+                    )}
                   </Tbody>
                 </Table>
 
-                {loading && (
-                  <div className="d-flex justify-content-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>
-                )}
+
 
                 {!loading && list.length < 1 && (
                   <div className="text-center">

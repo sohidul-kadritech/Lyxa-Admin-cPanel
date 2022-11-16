@@ -42,10 +42,11 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import { successMsg } from "../helpers/successMsg";
 import { getAllCancelReasons } from "../store/Settings/settingsAction";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import TableMenuAction from "./TableMenuAction";
 
-const ITEM_HEIGHT = 48;
+import userIcon from "../assets/images/dashboard/user.png";
+import ThreeDotsMenu from "./ThreeDotsMenu";
+
+const actionItems = [{}];
 
 const OrderTable = ({ orders = [], status, loading, refused }) => {
   const history = useHistory();
@@ -66,8 +67,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const [comment, setComment] = useState("");
   const [isOtherReason, setIsOtherReason] = useState(false);
   const [orderFor, setOrderFor] = useState(null);
-  const [actionMenu, setActionMenu] = React.useState(null);
-  const open = Boolean(actionMenu);
   const [orderCancel, setOrderCancel] = useState({
     cancelReason: "",
     orderId: null,
@@ -215,8 +214,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     return;
   }, [openCancelModal]);
 
-
-
   // MODIFIED ORDER STATUS NAME
 
   const modifiedOrderStatus = (statusName) => {
@@ -261,30 +258,29 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     const { name, value } = e.target;
     const { shop, admin, deliveryBoy } = orderPayment;
     const {
-      partialPayment: { shop: shopAmount, deliveryBoy: riderAmount, admin: adminAmount },
+      partialPayment: {
+        shop: shopAmount,
+        deliveryBoy: riderAmount,
+        admin: adminAmount,
+      },
     } = orderCancel;
 
     if (name === "shop" && Number(value) > shop) {
       return successMsg("Invalid Shop Amount");
-    }
-    else if (name === "admin" && Number(value) > admin) {
+    } else if (name === "admin" && Number(value) > admin) {
       return successMsg("Invalid Lyxa Amount");
-    }
-    else if (name === "deliveryBoy" && Number(value) > deliveryBoy) {
+    } else if (name === "deliveryBoy" && Number(value) > deliveryBoy) {
       return successMsg("Invalid Delivery Boy Amount");
     } else {
       setOrderCancel({
         ...orderCancel,
         partialPayment: {
           ...orderCancel?.partialPayment,
-          [name]: Number(value)
-        }
-      })
+          [name]: Number(value),
+        },
+      });
     }
-
-
   };
-
 
   // CANCEL ORDER
 
@@ -292,11 +288,16 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     e.preventDefault();
 
     const {
-      partialPayment: { shop, deliveryBoy, admin }
+      partialPayment: { shop, deliveryBoy, admin },
     } = orderCancel;
 
-    if (orderCancel.refundType === 'partial' && (!shop && !deliveryBoy && !admin)) {
-      return successMsg('Enter Minimum One Partial Amount')
+    if (
+      orderCancel.refundType === "partial" &&
+      !shop &&
+      !deliveryBoy &&
+      !admin
+    ) {
+      return successMsg("Enter Minimum One Partial Amount");
     }
 
     dispatch(
@@ -307,12 +308,45 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     );
   };
 
+  // HANDLE THREE DOT MENU
 
-  const handleActionMenu = (event) => {
-    setActionMenu(event.currentTarget);
+  const handleMenu = (menu, item) => {
+    if (menu === "Update Status") {
+      updateOrderStatus(
+        item?._id,
+        item?.shop?._id,
+        item?.orderStatus,
+        setOrderFor(item?.orderFor),
+        item?.deliveryBoy && setDeliveryBoy(item?.deliveryBoy)
+      );
+    } else if (menu === "Cancel Order") {
+      setOpenCancelModal(!openCancelModal);
+      setOrderCancel({
+        ...orderCancel,
+        cancelReason: "",
+        otherReason: "",
+        orderId: item?._id,
+        refundType: "none",
+        partialPayment: {
+          shop: "",
+          deliveryBoy: "",
+          admin: "",
+        },
+      });
+      setOrderPayment({
+        shop: item?.sellerEarnings,
+        deliveryBoy: item?.deliveryBoyFee,
+        admin: item?.dropCharge?.totalDropAmount,
+      });
+      setIsOtherReason(false);
+    } else if (menu === "Flag") {
+      setOpenFlagModal(!openFlagModal);
+      setSelectFlagOrder(item);
+      updateIsFlaged(item?.flag);
+    } else {
+      history.push(`/orders/details/${item?._id}`);
+    }
   };
-
-
 
   return (
     <>
@@ -329,7 +363,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
             >
               <Thead>
                 <Tr>
-                  <Th>Order Id</Th>
                   <Th>Customer name</Th>
                   <Th>Shop name</Th>
                   <Th>Order Date</Th>
@@ -343,140 +376,87 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 {orders?.length > 0 &&
                   orders?.map((item, index) => {
                     return (
-                      <Tr
-                        key={index}
-                        className="align-middle"
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        <Th>{item?.orderId}</Th>
+                      <>
+                        <Tr
+                          key={item}
+                          className="align-middle"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Th className="d-flex">
+                            <div style={{ width: "50px" }}>
+                              <img
+                                className="w-100 h-100"
+                                lazy="loading"
+                                style={{ borderRadius: "6px" }}
+                                src={item?.user?.profile_photo ?? userIcon}
+                                alt=""
+                              />
+                            </div>
+                            <div
+                              style={{ flex: "1", textAlign: "left" }}
+                              className="ps-1"
+                            >
+                              <p className="mb-0 text-black">
+                                {item?.user?.name}
+                              </p>
+                              <p className="text-muted-50 mb-0">{`Order ID: ${item?.orderId}`}</p>
+                            </div>
+                          </Th>
 
-                        <Td>{item?.user?.name}</Td>
-                        <Td>{item?.shop?.shopName}</Td>
-                        <Td>
-                          {new Date(item?.createdAt).toLocaleDateString()}
-                        </Td>
-                        <Td>{item?.summary?.totalAmount}</Td>
-                        <Td>
-                          {item?.paymentMethod}{" "}
-                          {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
-                        </Td>
-                        <Td>{modifiedOrderStatus(item?.orderStatus)}</Td>
-                        <Td>
-                          <ButtonWrapper>
-                            {!refused && (
-                              <Tooltip
-                                title={
-                                  item?.orderStatus !== "delivered"
-                                    ? "Update Status"
-                                    : ""
-                                }
-                              >
-                                <button
-                                  className="btn btn-info button me-1"
-                                  disabled={item?.orderStatus === "delivered"}
-                                  onClick={() =>
-                                    updateOrderStatus(
-                                      item?._id,
-                                      item?.shop?._id,
-                                      item?.orderStatus,
-                                      setOrderFor(item?.orderFor),
-                                      item?.deliveryBoy &&
-                                      setDeliveryBoy(item.deliveryBoy)
-                                    )
-                                  }
-                                >
-                                  <i className="fa fa-arrow-up" />
-                                </button>
-                              </Tooltip>
-                            )}
-
-                            <Tooltip title="Details">
-                              <button
-                                className="btn btn-info button"
-                                onClick={() => {
-                                  history.push(`/orders/details/${item?._id}`);
-                                }}
-                              >
-                                <i className="fa fa-eye" />
-                              </button>
-                            </Tooltip>
-                            {account_type === "admin" && (
-                              <div>
-                                <Tooltip title="Flag">
-                                  <button
-                                    className={`btn  button me-1 ${item?.flag?.length > 0
-                                      ? "btn-warning"
-                                      : "btn-success"
-                                      }`}
-                                    onClick={() => {
-                                      setOpenFlagModal(!openFlagModal);
-                                      setSelectFlagOrder(item);
-                                      updateIsFlaged(item?.flag);
-                                    }}
-                                  >
-                                    <i className="fa fa-flag"></i>
-                                  </button>
-                                </Tooltip>
-
-                                {item?.orderStatus !== "cancelled" && item?.orderStatus !== "delivered" && (
-                                  <Tooltip title="Cancel Order">
-                                    <button
-                                      className="btn btn-danger button"
-                                      onClick={() => {
-                                        setOpenCancelModal(!openCancelModal);
-                                        setOrderCancel({
-                                          ...orderCancel,
-                                          cancelReason: "",
-                                          otherReason: "",
-                                          orderId: item?._id,
-                                          refundType: "none",
-                                          partialPayment: {
-                                            shop: "",
-                                            deliveryBoy: "",
-                                            admin: "",
-                                          },
-                                        });
-                                        setOrderPayment({
-                                          shop: item?.sellerEarnings,
-                                          deliveryBoy: item?.deliveryBoyFee,
-                                          admin:
-                                            item?.dropCharge?.totalDropAmount,
-                                        });
-                                        console.log(item);
-                                        setIsOtherReason(false);
-                                      }}
-                                    >
-                                      <i className="fa fa-times-circle"></i>
-                                    </button>
-                                  </Tooltip>
-                                )}
-                              </div>
-                            )}
-                          </ButtonWrapper>
-                          {/* <IconButton
-                            id="basic-button"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleActionMenu}
-                          >
-                            <MoreVertIcon />
-                          </IconButton> */}
-
-                        </Td>
-                      </Tr>
+                          <Td>{item?.shop?.shopName}</Td>
+                          <Td>
+                            <p className="mb-0">
+                              {new Date(item?.createdAt).toLocaleDateString()}
+                            </p>
+                            <span>
+                              {new Date(item?.createdAt).toLocaleTimeString()}
+                            </span>
+                          </Td>
+                          <Td>{`${item?.summary?.totalAmount} NGN`}</Td>
+                          <Td>
+                            {item?.paymentMethod}{" "}
+                            {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
+                          </Td>
+                          <Td>{modifiedOrderStatus(item?.orderStatus)}</Td>
+                          <Td>
+                            <ThreeDotsMenu
+                              handleMenuClick={(menu) => handleMenu(menu, item)}
+                              menuItems={[
+                                "Details",
+                                "Update Status",
+                                account_type === "admin" && "Flag",
+                                account_type === "admin" &&
+                                item?.orderStatus !== "cancelled" &&
+                                item?.orderStatus !== "delivered" &&
+                                "Cancel Order",
+                              ]}
+                            />
+                          </Td>
+                        </Tr>
+                      </>
                     );
                   })}
+                {loading && (
+                  <Tr>
+                    <Td>
+                      <Spinner
+                        style={{
+                          position: "fixed",
+                          left: "50%",
+                          top: "50%",
+                        }}
+                        animation="border"
+                        color="success"
+                      />
+                    </Td>
+                  </Tr>
+                )}
               </Tbody>
             </Table>
-            {loading && (
-              <div className="text-center">
-                <Spinner animation="border" color="danger" />
-              </div>
-            )}
+
             {!loading && orders?.length < 1 && (
               <div className="text-center">
                 <h4>No Order!</h4>
@@ -698,7 +678,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           setOpenCancelModal(!openCancelModal);
         }}
         centered={true}
-        style={{ height: '470px' }}
+        style={{ height: "470px" }}
       >
         <div className="modal-header">
           <h5 className="modal-title mt-0">Cancel Order</h5>
@@ -794,7 +774,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               </div>
             )}
 
-            <FormControl className='py-3'>
+            <FormControl className="py-3">
               <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
@@ -891,8 +871,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           </Form>
         </div>
       </Modal>
-
-      <TableMenuAction actionMenu={actionMenu} open={open} handleClose={() => setActionMenu(null)} />
     </>
   );
 };

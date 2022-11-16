@@ -16,6 +16,8 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
+import ThreeDotsMenu from "./ThreeDotsMenu";
 
 const ShopTable = ({ shops = [] }) => {
   const history = useHistory();
@@ -45,6 +47,22 @@ const ShopTable = ({ shops = [] }) => {
     });
   };
 
+
+  // HANDLE ACTION MENU 
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/shops/edit/${item._id}`)
+    } else if (menu === 'Products') {
+      goToShopProductList(item._id)
+    } else if (menu === 'Orders') {
+      goToShopOrderList(item._id)
+    }
+    else {
+      history.push(`/shops/details/${item._id}`);
+    }
+  }
+
   return (
     <div>
       {isOpen && (
@@ -64,9 +82,7 @@ const ShopTable = ({ shops = [] }) => {
       >
         <Thead>
           <Tr>
-            <Th>ID</Th>
-            <Th>Logo</Th>
-            {account_type !== 'shop' && <Th>Name</Th>}
+            <Th>Shop</Th>
             <Th>Type</Th>
             <Th>Status</Th>
             <Th>Assigned deals</Th>
@@ -81,38 +97,36 @@ const ShopTable = ({ shops = [] }) => {
             return (
               <Tr
                 key={index}
-                className="align-middle"
+                className="align-middle text-capitalize"
                 style={{
                   fontSize: "15px",
                   fontWeight: "500",
                 }}
               >
-                <Td>
-                  <div style={{ maxWidth: "120px" }}>
-                    <span>{item?.autoGenId}</span>
-                  </div>
-                </Td>
-                <Th className="d-flex justify-content-center align-items-center">
-                  <div className="image__wrapper">
+
+                <Th className="d-flex">
+                  <div style={{ width: "50px" }}>
                     <img
-                      onClick={() => {
-                        setIsOpen(true);
-                        setSelectedImg(item?.shopLogo);
-                      }}
-                      className="img-fluid cursor-pointer"
+                      className="w-100 h-100"
+                      lazy="loading"
+                      style={{ borderRadius: "6px" }}
+                      src={item?.shopLogo ?? RoomOutlinedIcon}
                       alt=""
-                      loading="lazy"
-                      src={item.shopLogo}
-                      style={{
-                        objectFit: "contain",
-                      }}
                     />
+                  </div>
+                  <div
+                    style={{ flex: "1", textAlign: "left" }}
+                    className="ps-2"
+                  >
+                    {account_type !== 'shop' && <p className="mb-0 text-black">
+                      {item?.shopName}
+                    </p>}
+                    <p className="text-muted-50 mb-0">{`ID: ${item?.autoGenId}`}</p>
                   </div>
                 </Th>
 
-                {account_type !== "shop" && <Td>{item?.shopName}</Td>}
                 <Td>{item?.shopType}</Td>
-                <Td style={{ color: item?.shopStatus === 'active' ? 'green' : 'red' }}>{item?.shopStatus}</Td>
+                <Td><div className={`${item?.shopStatus === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.shopStatus}</div></Td>
                 <Td>
                   {item?.deals.length > 0
                     ? item?.deals.map((item, index) => (
@@ -126,53 +140,39 @@ const ShopTable = ({ shops = [] }) => {
                 <Td>{item?.totalOrder}</Td>
                 <Td>{item?.liveStatus}</Td>
                 <Td>
-                  <div>
-                    {account_type !== 'shop' && <Tooltip title="Edit">
-                      <button
-                        className="btn btn-success me-1 button"
-                        onClick={() => history.push(`/shops/edit/${item._id}`)}
-                      >
-                        <i className="fa fa-edit" />
-                      </button>
-                    </Tooltip>}
-                    <Tooltip title="Details">
-                      <button
-                        className="btn btn-info button me-1"
-                        onClick={() => {
-                          history.push(`/shops/details/${item._id}`);
-                        }}
-                      >
-                        <i className="fa fa-eye" />
-                      </button>
-                    </Tooltip>
-                    {(account_type === 'admin' && adminType !== 'customerService') && <Tooltip title="See products">
-                      <button
-                        className="btn btn-success button me-1"
-                        onClick={() => goToShopProductList(item._id)}
-                      >
-                        <i className="fab fa-product-hunt"></i>
-                      </button>
-                    </Tooltip>}
-                    <Tooltip title="See orders ">
-                      <button
-                        className="btn btn-primary button"
-                        onClick={() => goToShopOrderList(item._id)}
-                      >
-                        <i className="fas fa-shopping-cart"></i>
-                      </button>
-                    </Tooltip>
-                  </div>
+                  <ThreeDotsMenu
+                    handleMenuClick={(menu) =>
+                      handleMenu(menu, item)
+                    }
+                    menuItems={[
+                      account_type !== 'shop' && "Edit",
+                      "Details",
+                      (account_type === 'admin' && adminType !== 'customerService') && 'Products',
+                      'Orders'
+                    ]}
+                  />
                 </Td>
               </Tr>
             );
           })}
+          {loading && (
+            <Tr>
+              <Td>
+                <Spinner
+                  style={{
+                    position: "fixed",
+                    left: "50%",
+                    top: "50%",
+                  }}
+                  animation="border"
+                  color="danger"
+                />
+              </Td>
+            </Tr>
+          )}
         </Tbody>
       </Table>
-      {loading && (
-        <div className="text-center">
-          <Spinner animation="border" variant="info" />
-        </div>
-      )}
+
       {!loading && shops.length < 1 && (
         <div className="text-center">
           <h4>No Shop!</h4>

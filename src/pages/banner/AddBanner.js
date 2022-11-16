@@ -91,9 +91,7 @@ const AddBanner = () => {
 
   // GET ALL SHOP
   useEffect(() => {
-    if (shopType || typeKey || searchKey) {
-      dispatch(getAllShop(true));
-    }
+    dispatch(getAllShop(true));
   }, [shopType, typeKey, searchKey]);
 
   // GET ALL Product
@@ -111,7 +109,6 @@ const AddBanner = () => {
       const findBanner = list.find((item) => item?._id === id);
 
       if (findBanner) {
-        console.log(findBanner);
         updateBannerData(findBanner);
       } else {
         callApi(id);
@@ -136,11 +133,8 @@ const AddBanner = () => {
     } = data;
 
     const findShop = shops.find((item) => item._id == shopId);
-    console.log(findShop);
     const findProduct = products.find((item) => item._id == productId);
-    console.log(findProduct);
     setClickOption(clickType ? "route" : clickableUrl ? "link" : "");
-
     setClickableProduct(findProduct);
     setClickableShop(findShop ? findShop : null);
     setImage(image);
@@ -284,7 +278,7 @@ const AddBanner = () => {
         <Container fluid={true}>
           <Breadcrumb
             maintitle="Drop"
-            breadcrumbItem={"Uplaod"}
+            breadcrumbItem={id ? 'Update' : 'Add New'}
             title="Banner"
             // loading={loading}
             // callList={callCarList}

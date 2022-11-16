@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateProductStatus } from "../store/Product/productAction";
 import styled from "styled-components";
+import ThreeDotsMenu from "./ThreeDotsMenu";
 
 const ProductTable = ({ products, loading }) => {
   const history = useHistory();
@@ -24,6 +25,18 @@ const ProductTable = ({ products, loading }) => {
       })
     );
   };
+
+  // HANDLE MENU 
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/products/edit/${item?._id}`)
+    } else if (menu === 'Update Status') {
+      updateStatus(item?._id, item?.status)
+    } else {
+      history.push(`/products/details/${item?._id}`);
+    }
+  }
 
   return (
     <div>
@@ -44,9 +57,7 @@ const ProductTable = ({ products, loading }) => {
       >
         <Thead>
           <Tr>
-            <Th>ID</Th>
-            <Th>Image</Th>
-            <Th>Name</Th>
+            <Th>Product</Th>
             <Th>Shop Name</Th>
             <Th>Category</Th>
             <Th>Price</Th>
@@ -66,85 +77,68 @@ const ProductTable = ({ products, loading }) => {
                     fontWeight: "500",
                   }}
                 >
-                  <Td>
-                    <div style={{ maxWidth: "120px" }}>
-                      <span>{item?.autoGenId}</span>
-                    </div>
-                  </Td>
-                  <Th className="d-flex justify-content-center align-items-center">
-                    <div className="image__wrapper">
+                  <Th className="d-flex">
+                    <div style={{ width: "50px" }}>
                       <img
+                        className="w-100 h-100"
+                        lazy="loading"
+                        style={{ borderRadius: "6px" }}
+                        src={item?.images[0]}
+                        alt=""
                         onClick={() => {
                           setIsOpen(true);
                           setSelectedImg(item?.images[0]);
                         }}
-                        className="img-fluid cursor-pointer"
-                        alt=""
-                        src={item?.images[0]}
-                        style={{
-                          objectFit: 'contain'
-                        }}
                       />
                     </div>
+                    <div
+                      style={{ flex: "1", textAlign: "left" }}
+                      className="ps-2"
+                    >
+                      <p className="mb-0 text-black">{item?.name}</p>
+                      <p className="text-muted-50 mb-0">{`ID: ${item?.autoGenId}`}</p>
+                    </div>
                   </Th>
-
-                  <Td>{item?.name}</Td>
                   <Td>{item?.shop?.shopName}</Td>
                   <Td>{item?.category?.name}</Td>
                   <Td>
                     <p>{item?.price}</p>
                     <p>{item?.shopEndTimeText}</p>
                   </Td>
-                  <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
+                  <Td><div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.status}</div></Td>
                   <Td>
-                    <div>
-                      <Tooltip title="Edit">
-                        <button
-                          className="btn btn-success me-1  button"
-                          onClick={() =>
-                            history.push(`/products/edit/${item?._id}`)
-                          }
-                        >
-                          <i className="fa fa-edit" />
-                        </button>
-                      </Tooltip>
-                      <Tooltip title="Details">
-                        <button
-                          className="btn btn-info me-1 button"
-                          onClick={() => {
-                            history.push(`/products/details/${item?._id}`);
-                          }}
-                        >
-                          <i className="fa fa-eye" />
-                        </button>
-                      </Tooltip>
-                      <Tooltip
-                        title={`${item.status === "active" ? "Inactive" : "Activate"
-                          }`}
-                      >
-                        <button
-                          className={`btn button ${item?.status === "active"
-                            ? "btn-success"
-                            : "btn-danger"
-                            } me-1`}
-                          onClick={() => updateStatus(item?._id, item?.status)}
-                          disabled={loading}
-                        >
-                          <i className={item?.status === 'active' ? "fa fa-toggle-on" : "fa fa-toggle-off"} />
-                        </button>
-                      </Tooltip>
-                    </div>
+                    <ThreeDotsMenu
+                      handleMenuClick={(menu) =>
+                        handleMenu(menu, item)
+                      }
+                      menuItems={[
+                        "Edit",
+                        "Details",
+                        'Update Status'
+                      ]}
+                    />
                   </Td>
                 </Tr>
               );
             })}
+          {loading && (
+            <Tr>
+              <Td>
+                <Spinner
+                  style={{
+                    position: "fixed",
+                    left: "50%",
+                    top: "50%",
+                  }}
+                  animation="border"
+                  color="danger"
+                />
+              </Td>
+            </Tr>
+          )}
         </Tbody>
       </Table>
-      {loading && (
-        <div className="text-center">
-          <Spinner className="loader" animation="border" variant="info" />
-        </div>
-      )}
+
       {!loading && products?.length < 1 && (
         <div className="text-center">
           <h4>No Product!</h4>
@@ -153,7 +147,5 @@ const ProductTable = ({ products, loading }) => {
     </div>
   );
 };
-
-
 
 export default ProductTable;

@@ -96,6 +96,17 @@ input[type="date"]:focus::-webkit-datetime-edit {
   height: 400px;
   overflow: hidden scroll;
 }
+.active-status{
+  background-color: #c4efc4;
+    color: #219121;
+    border-radius: 6px;
+}
+
+.inactive-status{
+  background-color: #edb8dd;
+  color: #bf2c54;
+  border-radius: 6px;
+}
 
 // .table {
 //   Tbody {
