@@ -25,6 +25,8 @@ import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import { shopTypeOptions } from "../../../../assets/staticData";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import TableImgItem from "../../../../components/TableImgItem";
+import ThreeDotsMenu from "../../../../components/ThreeDotsMenu";
 
 const CategoryList = () => {
   const dispatch = useDispatch();
@@ -68,6 +70,16 @@ const CategoryList = () => {
   const callCategoryList = (refresh = false) => {
     dispatch(getAllCategory(refresh, account_type));
   };
+
+  // HANDLE MENU
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/categories/edit/${item?._id}`)
+    } else {
+      history.push(`/category/details/${item._id}`)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -129,12 +141,11 @@ const CategoryList = () => {
                 <CardTitle className="h4"> Category List</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table table-hover text-center"
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image</Th>
-                      <Th>Name</Th>
+                      <Th>Image/Name</Th>
                       <Th>Type</Th>
                       <Th>Shop</Th>
                       <Th>Status</Th>
@@ -152,63 +163,28 @@ const CategoryList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th className="d-flex justify-content-center">
-                            <div className="image__wrapper">
-                              {item?.category?.image ? (
-                                <img
-                                  onClick={() => {
-                                    setIsZoom(true);
-                                    setCatImg(item?.category?.image);
-                                  }}
-                                  className="img-fluid avater avater-lg cursor-pointer"
-                                  alt=""
-                                  src={item.category.image}
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "contain",
-                                  }}
-                                />
-                              ) : (
-                                "N/A"
-                              )}
-                            </div>
+                          <Th>
+                            <TableImgItem img={item?.category?.image} name={item?.category?.name} />
                           </Th>
-                          <Td>{item?.name}</Td>
-                          <Td>{item?.type}</Td>
-                          <Td>{item?.shop?.shopName}</Td>
-                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
+
+                          <Td>{item?.category?.type}</Td>
+                          <Td>{item?.category?.shop?.shopName}</Td>
                           <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-3 button"
-                                  onClick={() =>
-                                    history.push(`/categories/edit/${item?._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip
-                                title={`${"Details"} ${item?.type !== "food"
-                                  ? "& add subcagegory"
-                                  : ""
-                                  }`}
-                              >
-                                <button
-                                  className="btn btn-info button"
-                                  onClick={() =>
-                                    history.push(
-                                      `/category/details/${item._id}`
-                                    )
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
+                            <div className={`${item?.category?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                              {item?.category?.status}
                             </div>
                           </Td>
+                          {account_type === 'shop' && <Td>
+                            <ThreeDotsMenu
+                              handleMenuClick={(menu) =>
+                                handleMenu(menu, item)
+                              }
+                              menuItems={[
+                                "Edit",
+                                "Details"
+                              ]}
+                            />
+                          </Td>}
                         </Tr>
                       );
                     })}

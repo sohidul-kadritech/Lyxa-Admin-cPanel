@@ -37,6 +37,8 @@ import {
 } from "./../../../assets/staticData";
 import Select from "react-select";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
+import TableImgItem from "../../../components/TableImgItem";
+
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -137,18 +139,13 @@ const UsersList = () => {
 
             <Card>
               <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4"> Users List</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table table__wrapper  table-hover text-center"
                 >
-                  <Thead>
+                  <Thead className='bg-gray'>
                     <Tr>
-                      <Th>ID</Th>
-                      <Th>Name</Th>
+                      <Th>Name/ID</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Gender</Th>
@@ -171,11 +168,8 @@ const UsersList = () => {
                             }}
                           >
                             <Th>
-                              <div style={{ maxWidth: "120px" }}>
-                                <span>{user?.autoGenId}</span>
-                              </div>
+                              <TableImgItem name={user?.name} id={user?.autoGenId} />
                             </Th>
-                            <Td>{user?.name}</Td>
                             <Td>{user?.email}</Td>
                             <Td>{user?.phone_number ? user?.phone_number : 'N/A'}</Td>
                             <Td>{user?.gender}</Td>

@@ -39,6 +39,7 @@ import { successMsg } from "../../../../helpers/successMsg";
 import Info from "../../../../components/Info";
 import Search from "../../../../components/Search";
 import { statusOptions, statusOptions2 } from "../../../../assets/staticData";
+import ThreeDotsMenu from "../../../../components/ThreeDotsMenu";
 
 const CategoryDetails = () => {
   const { id } = useParams();
@@ -203,6 +204,16 @@ const CategoryDetails = () => {
     const generateSlug = e.target.value + Math.round(Math.random() * 100);
     setSlug(generateSlug);
   };
+
+  // HANDLE MENU 
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Delete') {
+      setconfirm_alert(true);
+    } else {
+      handleEditSubCategory(item._id)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -378,7 +389,7 @@ const CategoryDetails = () => {
 
                       <Table
                         id="tech-companies-1"
-                        className="table table__wrapper table-striped table-bordered table-hover text-center"
+                        className="table table-hover text-center"
                       >
                         <Thead>
                           <Tr>
@@ -408,49 +419,38 @@ const CategoryDetails = () => {
                                 <Th>{item?.name}</Th>
                                 <Td>{item?.status}</Td>
                                 <Td>
-                                  <div>
-                                    <Tooltip title="Edit">
-                                      <button
-                                        className="btn btn-success me-3 button"
-                                        onClick={() =>
-                                          handleEditSubCategory(item._id)
-                                        }
-                                      >
-                                        <i className="fa fa-edit" />
-                                      </button>
-                                    </Tooltip>
-                                    <Tooltip title="Delete">
-                                      <button
-                                        className="btn btn-danger button"
-                                        onClick={() => setconfirm_alert(true)}
-                                      >
-                                        <i className="fa fa-trash" />
-                                      </button>
-                                    </Tooltip>
-                                    {confirm_alert ? (
-                                      <SweetAlert
-                                        title="Are you sure?"
-                                        warning
-                                        showCancel
-                                        confirmButtonText="Yes, delete it!"
-                                        confirmBtnBsStyle="success"
-                                        cancelBtnBsStyle="danger"
-                                        onConfirm={() => {
-                                          handleDelete(item._id);
-                                          setconfirm_alert(false);
-                                          setsuccess_dlg(true);
-                                          setdynamic_title("Deleted");
-                                          setdynamic_description(
-                                            "Your file has been deleted."
-                                          );
-                                        }}
-                                        onCancel={() => setconfirm_alert(false)}
-                                      >
-                                        Are You Sure! You want to delete this
-                                        Sub Category.
-                                      </SweetAlert>
-                                    ) : null}
-                                  </div>
+                                  <ThreeDotsMenu
+                                    handleMenuClick={(menu) =>
+                                      handleMenu(menu, item)
+                                    }
+                                    menuItems={[
+                                      "Edit",
+                                      "Delete"
+                                    ]}
+                                  />
+                                  {confirm_alert ? (
+                                    <SweetAlert
+                                      title="Are you sure?"
+                                      warning
+                                      showCancel
+                                      confirmButtonText="Yes, delete it!"
+                                      confirmBtnBsStyle="success"
+                                      cancelBtnBsStyle="danger"
+                                      onConfirm={() => {
+                                        handleDelete(item._id);
+                                        setconfirm_alert(false);
+                                        setsuccess_dlg(true);
+                                        setdynamic_title("Deleted");
+                                        setdynamic_description(
+                                          "Your file has been deleted."
+                                        );
+                                      }}
+                                      onCancel={() => setconfirm_alert(false)}
+                                    >
+                                      Are You Sure! You want to delete this
+                                      Sub Category.
+                                    </SweetAlert>
+                                  ) : null}
                                 </Td>
                               </Tr>
                             );
@@ -464,7 +464,7 @@ const CategoryDetails = () => {
                       )}
                       {loading && (
                         <div className="text-center">
-                          <Spinner animation="border" variant="info" />
+                          <Spinner animation="border" color="info" />
                         </div>
                       )}
                     </CardBody>
@@ -485,6 +485,8 @@ const CategoryDetails = () => {
             )}
           </Container>
         </div>
+
+
       </GlobalWrapper>
     </React.Fragment>
   );

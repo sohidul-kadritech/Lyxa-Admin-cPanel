@@ -22,6 +22,7 @@ import {
 } from "../../../store/unitType/unitTypeAction";
 import { useDispatch, useSelector } from "react-redux";
 import { Tooltip } from "@mui/material";
+import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 
 const UnitTypes = () => {
   const dispatch = useDispatch();
@@ -67,6 +68,16 @@ const UnitTypes = () => {
   const callUnitList = (refreah = false) => {
     dispatch(getAllUnitType(refreah));
   };
+
+  // HANDLE MENU ITEM
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      handleEditUnit(item._id)
+    } else {
+      dispatch(deleteUnitType(item._id))
+    }
+  }
 
   return (
     <React.Fragment>
@@ -126,10 +137,10 @@ const UnitTypes = () => {
                 <Card>
                   <CardBody>
                     <CardTitle className="h4 mb-2">Unit Types List</CardTitle>
-
+                    <hr />
                     <Table
                       id="tech-companies-1"
-                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                      className="table   table-hover text-center"
                     >
                       <Thead>
                         <Tr>
@@ -154,26 +165,15 @@ const UnitTypes = () => {
                                 {new Date(item?.createdAt).toLocaleDateString()}
                               </Td>
                               <Td>
-                                <div>
-                                  <Tooltip title="Edit">
-                                    <button
-                                      className="btn btn-success me-3 button"
-                                      onClick={() => handleEditUnit(item._id)}
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
-                                  </Tooltip>
-                                  <Tooltip title="Delete">
-                                    <button
-                                      className="btn btn-danger button"
-                                      onClick={() =>
-                                        dispatch(deleteUnitType(item._id))
-                                      }
-                                    >
-                                      <i className="fa fa-trash" />
-                                    </button>
-                                  </Tooltip>
-                                </div>
+                                <ThreeDotsMenu
+                                  handleMenuClick={(menu) =>
+                                    handleMenu(menu, item)
+                                  }
+                                  menuItems={[
+                                    "Edit",
+                                    "Delete",
+                                  ]}
+                                />
                               </Td>
                             </Tr>
                           );

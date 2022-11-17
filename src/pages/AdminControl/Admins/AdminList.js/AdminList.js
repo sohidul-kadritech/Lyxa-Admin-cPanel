@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GlobalWrapper from "../../../../components/GlobalWrapper";
-import { Card, CardBody, CardTitle, Col, Row } from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Row, Spinner } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import {
 } from "../../../../store/AdminControl/Admin/adminAction";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
+import ThreeDotsMenu from "../../../../components/ThreeDotsMenu";
 
 const AdminList = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,14 @@ const AdminList = () => {
   const handleDelete = (id) => {
     dispatch(deleteAdmin({ id }));
   };
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Delete') {
+      setconfirm_alert(true)
+    } else {
+      history.push(`/admin/edit/${item._id}`)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -69,7 +78,7 @@ const AdminList = () => {
               <CardTitle className="h4"> Admins List</CardTitle>
               <Table
                 id="tech-companies-1"
-                className="table table__wrapper table-striped table-bordered table-hover text-center"
+                className="table  table-hover text-center"
               >
                 <Thead>
                   <Tr>
@@ -105,7 +114,7 @@ const AdminList = () => {
                               : "Admin"}
                           </Td>
                           <Td>
-                            <div>
+                            {/* <div>
                               <button
                                 className="btn btn-info me-3 button"
                                 onClick={() =>
@@ -125,42 +134,52 @@ const AdminList = () => {
                               >
                                 <i className="fa fa-trash" />
                               </button>
-                              {confirm_alert ? (
-                                <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item._id);
-                                    setconfirm_alert(false);
-                                    setsuccess_dlg(true);
-                                    setdynamic_title("Deleted");
-                                    setdynamic_description(
-                                      "Your file has been deleted."
-                                    );
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  Are You Sure! You want to delete this Shop.
-                                </SweetAlert>
-                              ) : null}
-                            </div>
+                              
+                            </div> */}
+                            <ThreeDotsMenu
+                              handleMenuClick={(menu) =>
+                                handleMenu(menu, item)
+                              }
+                              menuItems={[
+                                "Edit",
+                                "Delete"
+                              ]}
+                            />
+                            {confirm_alert ? (
+                              <SweetAlert
+                                title="Are you sure?"
+                                warning
+                                showCancel
+                                confirmButtonText="Yes, delete it!"
+                                confirmBtnBsStyle="success"
+                                cancelBtnBsStyle="danger"
+                                onConfirm={() => {
+                                  handleDelete(item._id);
+                                  setconfirm_alert(false);
+                                  setsuccess_dlg(true);
+                                  setdynamic_title("Deleted");
+                                  setdynamic_description(
+                                    "Your file has been deleted."
+                                  );
+                                }}
+                                onCancel={() => setconfirm_alert(false)}
+                              >
+                                Are You Sure! You want to delete this Shop.
+                              </SweetAlert>
+                            ) : null}
                           </Td>
                         </Tr>
                       );
                     })}
                 </Tbody>
               </Table>
-              {/* {loading && (
-                    <Spinner
-                      style={{ position: "fixed", left: "50%", top: "50%" }}
-                      animation="border"
-                      variant="info"
-                    />
-                  )} */}
+              {loading && (
+                <Spinner
+                  style={{ position: "fixed", left: "50%", top: "50%" }}
+                  animation="border"
+                  color="info"
+                />
+              )}
               {!loading && admins?.length < 1 && (
                 <div className="text-center">
                   <h4>No Data</h4>

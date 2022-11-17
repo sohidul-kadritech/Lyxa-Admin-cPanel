@@ -102,7 +102,7 @@ const TrackingDeliveryBoy = ({ riderId }) => {
 
             <Table
               id="tech-companies-1"
-              className="table table__wrapper table-striped table-bordered table-hover text-center"
+              className="table  table-hover text-center"
             >
               <Thead>
                 <Tr>

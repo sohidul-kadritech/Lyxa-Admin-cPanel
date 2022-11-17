@@ -35,6 +35,7 @@ import {
   updateShopType,
 } from "../../store/Shop/shopAction";
 import ThreeDotsMenu from "../../components/ThreeDotsMenu";
+import TableImgItem from "../../components/TableImgItem";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
@@ -132,15 +133,13 @@ const BannerPage = () => {
           >
             <Card>
               <CardBody>
-                <CardTitle className="h4"> Banner List</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table-striped table-bordered table-hover text-center"
+                  className="table  table-hover text-center"
                 >
                   <Thead>
                     <Tr>
-                      <Th data-priority="1">Image</Th>
-                      <Th data-priority="1">Title</Th>
+                      <Th data-priority="1">Image/Name</Th>
                       <Th data-priority="1">Type</Th>
                       <Th data-priority="1">Status</Th>
                       <Th data-priority="3">Created At</Th>
@@ -148,12 +147,12 @@ const BannerPage = () => {
                     </Tr>
                   </Thead>
 
-                  <Tbody>
+                  <Tbody style={{ verticalAlign: 'middle' }}>
                     {list.map((item, index) => {
                       return (
                         <Tr key={index} className='text-capitalize'>
-                          <Th style={{ height: "50px", maxWidth: "150px" }}>
-                            <img
+                          <Th>
+                            {/* <img
                               src={item.image}
                               style={{ width: "70%", maxHeight: "75px", borderRadius: '10px' }}
                               alt="Banner"
@@ -162,9 +161,10 @@ const BannerPage = () => {
                                 setIsZoom(true);
                                 setBannerImg(item.image);
                               }}
-                            />
+                            /> */}
+                            <TableImgItem img={item.image} name={item?.title} />
                           </Th>
-                          <Td>{item?.title}</Td>
+
                           <Td>{item?.type}</Td>
                           <Td >
                             <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.status}</div>

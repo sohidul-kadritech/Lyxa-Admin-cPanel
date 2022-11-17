@@ -85,7 +85,6 @@ input[type="date"]:focus::-webkit-datetime-edit {
 }
 
 .table-data-hover {
-
   .table-hover tbody tr:hover td,
   .table-hover tbody tr:hover th {
     color: green !important;
@@ -96,22 +95,40 @@ input[type="date"]:focus::-webkit-datetime-edit {
   height: 400px;
   overflow: hidden scroll;
 }
-.active-status{
-  background-color: #c4efc4;
-    color: #219121;
-    border-radius: 6px;
-}
-
-.inactive-status{
-  background-color: #edb8dd;
-  color: #bf2c54;
+.active-status {
+  background-color: #e1f4d0;
+  color: #56ca00;
   border-radius: 6px;
+  padding: 1px 2px;
 }
 
-// .table {
-//   Tbody {
-//     Td {
-//       text-transform: capitalize;
-//     }
-//   }
-// }
+.inactive-status {
+  background-color: #ffcfce;
+  color: #ff0000;
+  border-radius: 6px;
+  padding: 1px 2px;
+}
+
+table th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+table th:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+table > thead {
+  background-color: #f5f4f4;
+
+  tr {
+    border-bottom: transparent !important;
+  }
+}
+
+.table :not(:first-child) {
+  border-top: none !important;
+}
+
+.table > tbody:last-child {
+  border-bottom: transparent !important;
+}

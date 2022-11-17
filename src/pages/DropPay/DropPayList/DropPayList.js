@@ -28,6 +28,9 @@ import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Search from "../../../components/Search";
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import TableImgItem from "../../../components/TableImgItem";
+
 
 const DropPayList = () => {
   const dispatch = useDispatch();
@@ -153,9 +156,7 @@ const DropPayList = () => {
 
             <Card>
               <CardBody>
-                <div className="d-flex justify-content-between">
-                  <CardTitle>Lyxa Pay List</CardTitle>
-
+                <div className="d-flex justify-content-end">
                   <Button
                     outline={true}
                     color="success"
@@ -171,9 +172,8 @@ const DropPayList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>ID</Th>
-                      <Th>Customer Name</Th>
-                      <Th>Customer Email</Th>
+                      <Th>Customer</Th>
+                      <Th>Email</Th>
                       {/* <Th>Deposit ID</Th> */}
                       <Th>Amount</Th>
                       <Th>Deposit by</Th>
@@ -191,8 +191,9 @@ const DropPayList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Td>{item?.autoGenId}</Td>
-                          <Td>{item?.user?.name}</Td>
+                          <Th>
+                            <TableImgItem altImg={AccountBalanceIcon} name={item?.user?.name} id={item?.autoGenId} />
+                          </Th>
                           <Td>{item?.user?.email}</Td>
                           <Td>{item?.amount}</Td>
                           <Td>

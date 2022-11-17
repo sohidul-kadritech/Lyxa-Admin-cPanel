@@ -36,6 +36,7 @@ import Select from "react-select";
 import Search from "../../../components/Search";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
+import TableImgItem from "../../../components/TableImgItem";
 
 const SellerList = () => {
   const dispatch = useDispatch();
@@ -164,13 +165,9 @@ const SellerList = () => {
 
             <Card>
               <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4"> Sellers List</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table table__wrapper  table-hover text-center"
                 >
                   <Thead>
                     <Tr>
@@ -194,24 +191,7 @@ const SellerList = () => {
                           }}
                         >
                           <Th className="d-flex">
-                            <div style={{ width: "50px" }}>
-                              <img
-                                className="w-100 h-100"
-                                lazy="loading"
-                                style={{ borderRadius: "6px" }}
-                                src={item?.profile_photo ?? RoomOutlinedIcon}
-                                alt=""
-                              />
-                            </div>
-                            <div
-                              style={{ flex: "1", textAlign: "left" }}
-                              className="ps-2"
-                            >
-                              <p className="mb-0 text-black">
-                                {item?.company_name}
-                              </p>
-                              <p className="text-muted-50 mb-0">{`ID: ${item?.autoGenId}`}</p>
-                            </div>
+                            <TableImgItem img={item?.profile_photo} altImg={RoomOutlinedIcon} name={item?.company_name} id={item?.autoGenId} />
                           </Th>
 
                           <Td>{item?.email}</Td>

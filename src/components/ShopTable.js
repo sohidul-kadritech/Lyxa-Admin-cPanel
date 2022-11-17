@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import ThreeDotsMenu from "./ThreeDotsMenu";
+import TableImgItem from "./TableImgItem";
 
 const ShopTable = ({ shops = [] }) => {
   const history = useHistory();
@@ -78,7 +79,7 @@ const ShopTable = ({ shops = [] }) => {
 
       <Table
         id="tech-companies-1"
-        className="table table__wrapper table-striped table-bordered table-hover text-center"
+        className="table table__wrapper table-hover text-center"
       >
         <Thead>
           <Tr>
@@ -104,25 +105,8 @@ const ShopTable = ({ shops = [] }) => {
                 }}
               >
 
-                <Th className="d-flex">
-                  <div style={{ width: "50px" }}>
-                    <img
-                      className="w-100 h-100"
-                      lazy="loading"
-                      style={{ borderRadius: "6px" }}
-                      src={item?.shopLogo ?? RoomOutlinedIcon}
-                      alt=""
-                    />
-                  </div>
-                  <div
-                    style={{ flex: "1", textAlign: "left" }}
-                    className="ps-2"
-                  >
-                    {account_type !== 'shop' && <p className="mb-0 text-black">
-                      {item?.shopName}
-                    </p>}
-                    <p className="text-muted-50 mb-0">{`ID: ${item?.autoGenId}`}</p>
-                  </div>
+                <Th>
+                  <TableImgItem img={item?.shopLogo} altImg={RoomOutlinedIcon} name={item?.shopName} id={item?.autoGenId} />
                 </Th>
 
                 <Td>{item?.shopType}</Td>

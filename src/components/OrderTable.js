@@ -45,6 +45,7 @@ import { getAllCancelReasons } from "../store/Settings/settingsAction";
 
 import userIcon from "../assets/images/dashboard/user.png";
 import ThreeDotsMenu from "./ThreeDotsMenu";
+import TableImgItem from "./TableImgItem";
 
 const actionItems = [{}];
 
@@ -359,7 +360,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
             <CardTitle className="h4">Orders List</CardTitle>
             <Table
               id="tech-companies-1"
-              className="table table__wrapper table-striped table-bordered table-hover text-center"
+              className="table table__wrapper  table-hover text-center"
             >
               <Thead>
                 <Tr>
@@ -385,25 +386,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th className="d-flex">
-                            <div style={{ width: "50px" }}>
-                              <img
-                                className="w-100 h-100"
-                                lazy="loading"
-                                style={{ borderRadius: "6px" }}
-                                src={item?.user?.profile_photo ?? userIcon}
-                                alt=""
-                              />
-                            </div>
-                            <div
-                              style={{ flex: "1", textAlign: "left" }}
-                              className="ps-1"
-                            >
-                              <p className="mb-0 text-black">
-                                {item?.user?.name}
-                              </p>
-                              <p className="text-muted-50 mb-0">{`Order ID: ${item?.orderId}`}</p>
-                            </div>
+                          <Th>
+                            <TableImgItem img={item?.user?.profile_photo} altImg={userIcon} name={item?.user?.name} id={item?.orderId} />
                           </Th>
 
                           <Td>{item?.shop?.shopName}</Td>

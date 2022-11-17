@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { updateProductStatus } from "../store/Product/productAction";
 import styled from "styled-components";
 import ThreeDotsMenu from "./ThreeDotsMenu";
+import TableImgItem from "./TableImgItem";
 
 const ProductTable = ({ products, loading }) => {
   const history = useHistory();
@@ -53,7 +54,7 @@ const ProductTable = ({ products, loading }) => {
 
       <Table
         id="tech-companies-1"
-        className="table table__wrapper table-striped table-bordered table-hover text-center"
+        className="table  table-hover text-center"
       >
         <Thead>
           <Tr>
@@ -77,27 +78,8 @@ const ProductTable = ({ products, loading }) => {
                     fontWeight: "500",
                   }}
                 >
-                  <Th className="d-flex">
-                    <div style={{ width: "50px" }}>
-                      <img
-                        className="w-100 h-100"
-                        lazy="loading"
-                        style={{ borderRadius: "6px" }}
-                        src={item?.images[0]}
-                        alt=""
-                        onClick={() => {
-                          setIsOpen(true);
-                          setSelectedImg(item?.images[0]);
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{ flex: "1", textAlign: "left" }}
-                      className="ps-2"
-                    >
-                      <p className="mb-0 text-black">{item?.name}</p>
-                      <p className="text-muted-50 mb-0">{`ID: ${item?.autoGenId}`}</p>
-                    </div>
+                  <Th>
+                    <TableImgItem img={item?.images[0]} name={item?.name} id={item?.autoGenId} />
                   </Th>
                   <Td>{item?.shop?.shopName}</Td>
                   <Td>{item?.category?.name}</Td>

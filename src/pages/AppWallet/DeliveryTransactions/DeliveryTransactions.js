@@ -31,6 +31,7 @@ import { sortByOptions } from "../../../assets/staticData";
 import Search from "./../../../components/Search";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import TableImgItem from "../../../components/TableImgItem";
 
 const DeliveryTransactions = () => {
   const {
@@ -212,12 +213,11 @@ const DeliveryTransactions = () => {
                 <hr />
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table table-hover text-center"
                 >
                   <Thead>
                     <Tr>
-                      <Th>ID</Th>
-                      <Th>Name</Th>
+                      <Th>ID/Name</Th>
                       <Th>Orders</Th>
                       <Th>Delivery fee</Th>
                       <Th>Drop earning</Th>
@@ -243,8 +243,9 @@ const DeliveryTransactions = () => {
                             )
                           }
                         >
-                          <Td>{item?.autoGenId}</Td>
-                          <Th title="Click to see details">{item?.name}</Th>
+                          <Th title="Click to see details">
+                            <TableImgItem name={item?.name} id={item?.autoGenId} />
+                          </Th>
 
                           <Td>{item?.summary?.totalOrder}</Td>
                           <Td>{item?.summary?.totalDeliveyFee}</Td>

@@ -367,8 +367,6 @@ const ShopsTransactions = () => {
                   className="cursor-pointer"
                   hover={true}
                   responsive
-                  striped
-                  bordered
                   data={tableData(filteredTrxs)}
                   displayEntries={false}
                   paging={false}

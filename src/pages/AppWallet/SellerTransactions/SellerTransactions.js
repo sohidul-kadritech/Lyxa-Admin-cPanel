@@ -25,6 +25,7 @@ import { useHistory } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Search from "../../../components/Search";
+import TableImgItem from "../../../components/TableImgItem";
 
 const SellerTransactions = () => {
   const dispatch = useDispatch();
@@ -191,12 +192,12 @@ const SellerTransactions = () => {
                 <hr />
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-data-hover table-striped table-bordered table-hover text-center"
+                  className="table   table-hover text-center"
                 >
                   <Thead>
                     <Tr>
-                      <Th>ID</Th>
-                      <Th>Company</Th>
+                      <Th>ID/Company</Th>
+
                       <Th>Order</Th>
                       <Th>Order amount</Th>
                       <Th>Delivery fee</Th>
@@ -219,11 +220,8 @@ const SellerTransactions = () => {
                             sellerShopsTrxs(trx._id, trx?.company_name)
                           }
                         >
-                          <Td>
-                            {trx?.autoGenId}
-                          </Td>
                           <Th title="Click to see details">
-                            {trx?.company_name}
+                            <TableImgItem name={trx?.company_name} id={trx?.autoGenId} />
                           </Th>
 
                           <Td>{trx?.summary?.totalOrder}</Td>

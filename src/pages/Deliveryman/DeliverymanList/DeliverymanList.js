@@ -35,6 +35,9 @@ import TrackingDeliveryBoy from "../../../components/TrackingDeliveryBoy";
 import Map from "../../../components/Map";
 import moment from "moment";
 import Info from "../../../components/Info";
+import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
+import TableImgItem from "../../../components/TableImgItem";
+import userIcon from "../../../assets/images/dashboard/user.png";
 
 const DeliverymanList = () => {
   const dispatch = useDispatch();
@@ -68,6 +71,23 @@ const DeliverymanList = () => {
   const callDeliveryManList = (refresh = false) => {
     dispatch(allDeliveryMan(refresh));
   };
+
+  // HANDLE MENU ITEM 
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/deliveryman/edit/${item._id}`)
+    } else if (menu === 'Current Location') {
+      setTrack(true);
+      setRider(item)
+    } else if (menu === 'Active Status') {
+      setOpenActiveStatus(true);
+      setId(item._id);
+      setDeliveryBoyName(item?.name);
+    } else {
+      history.push(`/deliveryman/details/${item._id}`)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -142,19 +162,13 @@ const DeliverymanList = () => {
 
             <Card>
               <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4"> Deliveryman List</CardTitle>
-                <hr />
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table  table-hover text-center"
                 >
                   <Thead>
                     <Tr>
-                      <Th>ID</Th>
-                      <Th>Name</Th>
+                      <Th>Image/Name</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
@@ -175,19 +189,21 @@ const DeliverymanList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Td>
-                            <div style={{ maxWidth: "120px" }}>
-                              <span>{item?.autoGenId}</span>
-                            </div>
-                          </Td>
-                          <Th>{item?.name}</Th>
+
+                          <Th>
+                            <TableImgItem name={item?.name} id={item?.autoGenId} />
+                          </Th>
                           <Td>{item?.email}</Td>
                           <Td>{item?.number}</Td>
-                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
+                          <Td>
+                            <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                              {item?.status}
+                            </div>
+                          </Td>
                           <Td>
                             {item?.liveStatus === "online"
-                              ? "Available"
-                              : "Unavailable"}
+                              ? "Online"
+                              : "Offline"}
                           </Td>
                           <Td>
                             {item?.availability
@@ -196,56 +212,17 @@ const DeliverymanList = () => {
                           </Td>
                           <Td>{item?.totalOrder}</Td>
                           <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-0 me-lg-2 button"
-                                  onClick={() =>
-                                    history.push(
-                                      `/deliveryman/edit/${item._id}`
-                                    )
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button me-0 me-lg-2"
-                                  onClick={() =>
-                                    history.push(
-                                      `/deliveryman/details/${item._id}`
-                                    )
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="See rider current location">
-                                <button
-                                  className="btn btn-warning button me-0 me-lg-2"
-                                  onClick={() => {
-                                    setTrack(true);
-                                    console.log({ item })
-                                    setRider(item)
-                                  }}
-                                >
-                                  <i className="fa fa-map-marker" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="See rider active status">
-                                <button
-                                  className="btn btn-primary button me-0 me-lg-2"
-                                  onClick={() => {
-                                    setOpenActiveStatus(true);
-                                    setId(item._id);
-                                    setDeliveryBoyName(item?.name);
-                                  }}
-                                >
-                                  <i className="fa fa-toggle-on" />
-                                </button>
-                              </Tooltip>
-                            </div>
+                            <ThreeDotsMenu
+                              handleMenuClick={(menu) =>
+                                handleMenu(menu, item)
+                              }
+                              menuItems={[
+                                "Edit",
+                                "Details",
+                                'Current Location',
+                                'Active Status'
+                              ]}
+                            />
                           </Td>
                         </Tr>
                       );
