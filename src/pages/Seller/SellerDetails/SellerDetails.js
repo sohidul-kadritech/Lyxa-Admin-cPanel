@@ -28,9 +28,9 @@ import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
-import StoreOutlinedIcon from '@mui/icons-material/StoreOutlined';
-import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
+import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 
 const SellerDetails = () => {
   const { id } = useParams();
@@ -149,21 +149,26 @@ const SellerDetails = () => {
                       value={seller?.email}
                       Icon={AlternateEmailOutlinedIcon}
                     />
-                    <InfoTwo value={`${seller?.status} (Status)`} Icon={AutorenewOutlinedIcon} />
-                    <InfoTwo value={`${seller?.sellerType} (Type)`} Icon={StoreOutlinedIcon} />
+                    <InfoTwo
+                      value={`${seller?.status} (Status)`}
+                      Icon={AutorenewOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={`${seller?.sellerType} (Type)`}
+                      Icon={StoreOutlinedIcon}
+                    />
                     {seller?.dropPercentage && (
                       <InfoTwo
                         Icon={PaidOutlinedIcon}
-                        value={`${seller?.dropPercentage} ${seller?.dropPercentageType === "amount" ? "NGN" : "%"
-                          }`}
+                        value={`${seller?.dropPercentage} ${
+                          seller?.dropPercentageType === "amount" ? "NGN" : "%"
+                        }`}
                       />
                     )}
-
                   </Col>
                   <Col lg={6}>
-
                     {seller?.certificate_of_incorporation ||
-                      seller?.national_id ? (
+                    seller?.national_id ? (
                       <Row>
                         <Col md={4}>
                           <ImageWrapper

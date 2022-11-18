@@ -23,7 +23,6 @@ import TableImgItem from "./TableImgItem";
 const ShopTable = ({ shops = [] }) => {
   const history = useHistory();
 
-
   const { loading } = useSelector((state) => state.shopReducer);
 
   const [selectedImg, setSelectedImg] = useState(null);
@@ -48,21 +47,19 @@ const ShopTable = ({ shops = [] }) => {
     });
   };
 
-
-  // HANDLE ACTION MENU 
+  // HANDLE ACTION MENU
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      history.push(`/shops/edit/${item._id}`)
-    } else if (menu === 'Products') {
-      goToShopProductList(item._id)
-    } else if (menu === 'Orders') {
-      goToShopOrderList(item._id)
-    }
-    else {
+    if (menu === "Edit") {
+      history.push(`/shops/edit/${item._id}`);
+    } else if (menu === "Products") {
+      goToShopProductList(item._id);
+    } else if (menu === "Orders") {
+      goToShopOrderList(item._id);
+    } else {
       history.push(`/shops/details/${item._id}`);
     }
-  }
+  };
 
   return (
     <div>
@@ -95,6 +92,7 @@ const ShopTable = ({ shops = [] }) => {
         </Thead>
         <Tbody style={{ position: "relative" }}>
           {shops.map((item, index) => {
+            console.log(item);
             return (
               <Tr
                 key={index}
@@ -104,35 +102,50 @@ const ShopTable = ({ shops = [] }) => {
                   fontWeight: "500",
                 }}
               >
-
                 <Th>
-                  <TableImgItem img={item?.shopLogo} altImg={RoomOutlinedIcon} name={item?.shopName} id={item?.autoGenId} />
+                  <TableImgItem
+                    img={item?.shopLogo}
+                    altImg={RoomOutlinedIcon}
+                    name={item?.shopName}
+                    subTitle={item?.seller.name}
+                    id={item?.autoGenId}
+                  />
                 </Th>
 
                 <Td>{item?.shopType}</Td>
-                <Td><div className={`${item?.shopStatus === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.shopStatus}</div></Td>
+                <Td>
+                  <div
+                    className={`${
+                      item?.shopStatus === "active"
+                        ? "active-status"
+                        : "inactive-status"
+                    }`}
+                  >
+                    {item?.shopStatus}
+                  </div>
+                </Td>
                 <Td>
                   {item?.deals.length > 0
                     ? item?.deals.map((item, index) => (
-                      <div key={index}>
-                        <p>{item?.name}</p>
-                      </div>
-                    ))
-                    : "N/A"}
+                        <div key={index}>
+                          <p>{item?.name}</p>
+                        </div>
+                      ))
+                    : "-"}
                 </Td>
                 <Td>{item?.isFeatured ? "Yes" : "NO"}</Td>
                 <Td>{item?.totalOrder}</Td>
                 <Td>{item?.liveStatus}</Td>
                 <Td>
                   <ThreeDotsMenu
-                    handleMenuClick={(menu) =>
-                      handleMenu(menu, item)
-                    }
+                    handleMenuClick={(menu) => handleMenu(menu, item)}
                     menuItems={[
-                      account_type !== 'shop' && "Edit",
+                      account_type !== "shop" && "Edit",
                       "Details",
-                      (account_type === 'admin' && adminType !== 'customerService') && 'Products',
-                      'Orders'
+                      account_type === "admin" &&
+                        adminType !== "customerService" &&
+                        "Products",
+                      "Orders",
                     ]}
                   />
                 </Td>

@@ -56,7 +56,7 @@ const ProductTable = ({ products, loading }) => {
         <Thead>
           <Tr>
             <Th>Product</Th>
-            <Th>Shop Name</Th>
+            <Th>Shop</Th>
             <Th>Category</Th>
             <Th>Price</Th>
             <Th>Status</Th>
