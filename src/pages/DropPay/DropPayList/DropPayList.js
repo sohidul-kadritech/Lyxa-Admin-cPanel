@@ -168,7 +168,7 @@ const DropPayList = () => {
                 <hr />
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table  table-hover text-center"
                 >
                   <Thead>
                     <Tr>
@@ -211,7 +211,7 @@ const DropPayList = () => {
                 </Table>
                 {loading && (
                   <div className="text-center">
-                    <Spinner animation="border" variant="info" />
+                    <Spinner animation="border" color="info" />
                   </div>
                 )}
                 {!loading && credits?.length < 1 && (

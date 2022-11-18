@@ -360,8 +360,8 @@ const SingleDeliveryTransactions = () => {
                 </Card>
                 <Card>
                   <CardBody>
-                    <div className="d-flex justify-content-between pb-3 align-items-center">
-                      <CardTitle className="h4"> Cash order list</CardTitle>
+                    <div className="d-flex justify-content-end pb-3 align-items-center">
+
                       {account_type === 'admin' && <>
                         {totalSelectedAmount > 0 && (
                           <SummaryWrapper>
@@ -387,7 +387,7 @@ const SingleDeliveryTransactions = () => {
 
                     <Table
                       id="tech-companies-1"
-                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                      className="table  table-hover text-center"
                     >
                       <Thead>
                         <Tr>

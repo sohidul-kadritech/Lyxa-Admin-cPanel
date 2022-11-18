@@ -40,6 +40,7 @@ import requestApi from "../../../network/httpRequest";
 import { SINGLE_ORDER } from "../../../network/Api";
 import user1 from "../../../assets/images/user1.jpg";
 import { callApi } from "../../../components/SingleApiCall";
+import TableImgItem from "../../../components/TableImgItem";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -276,6 +277,9 @@ const OrderDetails = () => {
                     {order?.reviewDes && (
                       <Info title="User Review" value={order?.reviewDes} />
                     )}
+                    {/* {order?.orderCancel && (
+                      <Info title="Cancel Reas" value={order?.reviewDes} />
+                    )} */}
                   </Col>
                 </Row>
               </CardBody>
@@ -499,7 +503,7 @@ const OrderDetails = () => {
                 <CardTitle className="h4"> Product List</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table  table-hover text-center"
                 >
                   <Thead>
                     <Tr>
@@ -523,8 +527,8 @@ const OrderDetails = () => {
                           }}
                           id="table-content"
                         >
-                          <Td className="image__wrapper">
-                            <img
+                          <Td>
+                            {/* <img
                               onClick={() => {
                                 setIsZoom(true);
                                 setSelectedImg(item?.product?.images[0]);
@@ -538,7 +542,12 @@ const OrderDetails = () => {
                                 objectFit: "contain",
                               }}
                             />
-                            <span>{item?.productName}</span>
+                            <span>{item?.productName}</span> */}
+                            <TableImgItem
+                              img={item?.product?.images[0]}
+                              name={item?.productName}
+                              id={item?.autoGenId}
+                            />
                           </Td>
                           <Td>
                             {item?.selectedAttributes.length > 0

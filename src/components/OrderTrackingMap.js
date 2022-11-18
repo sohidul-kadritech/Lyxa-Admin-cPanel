@@ -11,33 +11,35 @@ const OrderTrackingMap = ({ pickup, dropoff }) => {
   const floatingPanel = useRef();
 
   useEffect(() => {
-    const directionsRenderer_ = new google.maps.DirectionsRenderer();
-    const directionsService_ = new google.maps.DirectionsService();
-    setdirectionsRenderer(directionsRenderer_);
-    setdirectionsService(directionsService_);
+    if (pickup?.latitude && pickup?.longitude && dropoff?.latitude && dropoff?.longitude) {
+      const directionsRenderer_ = new google.maps.DirectionsRenderer();
+      const directionsService_ = new google.maps.DirectionsService();
+      setdirectionsRenderer(directionsRenderer_);
+      setdirectionsService(directionsService_);
 
-    const map = new google.maps.Map(mapRef.current, {
-      center: { lat: 22.328127, lng: 91.805502 },
-      zoom: 12,
-      disableDefaultUI: true,
-      // mapTypeId: 'satellite',
-      // heading: 90,
-      // tilt: 45,
-    });
+      const map = new google.maps.Map(mapRef.current, {
+        center: { lat: 22.328127, lng: 91.805502 },
+        zoom: 12,
+        disableDefaultUI: true,
+        // mapTypeId: 'satellite',
+        // heading: 90,
+        // tilt: 45,
+      });
 
-    directionsRenderer_.setMap(map);
-    directionsRenderer_.setPanel(sidebar.current);
+      directionsRenderer_.setMap(map);
+      directionsRenderer_.setPanel(sidebar.current);
 
-    const control = floatingPanel.current;
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
-    calculateAndDisplayRoute(directionsService_, directionsRenderer_);
-  }, []);
+      const control = floatingPanel.current;
+      map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+      calculateAndDisplayRoute(directionsService_, directionsRenderer_);
+    }
+  }, [pickup, dropoff]);
 
   function calculateAndDisplayRoute(directionsService, directionsRenderer) {
     directionsService
       .route({
         origin: { lat: pickup?.latitude, lng: pickup?.longitude },
-        destination: { lat: dropoff?.latitude, lng: dropoff?.longitude },
+        destination: { lat: dropoff?.longitude, lng: dropoff?.latitude },
         travelMode: google.maps.TravelMode.DRIVING,
       })
       .then((response) => {
@@ -48,9 +50,11 @@ const OrderTrackingMap = ({ pickup, dropoff }) => {
         setDistance(route.legs[0].distance.value.toString());
         setDuration(route.legs[0].duration.value.toString());
       })
-      .catch((e) =>
+      .catch((e) => {
+
+        console.log(e);
         window.alert("Directions request failed due to " + e.message)
-      );
+      });
   }
   return (
     <div

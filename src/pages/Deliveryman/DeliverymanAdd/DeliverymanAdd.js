@@ -39,6 +39,7 @@ import { useHistory } from "react-router-dom";
 import Dropzone from "react-dropzone";
 import formatBytes from "../../../common/imageFormatBytes";
 import { callApi } from "../../../components/SingleApiCall";
+import { successMsg } from "../../../helpers/successMsg";
 
 const DeliverymanAdd = () => {
   const dispatch = useDispatch();
@@ -49,18 +50,18 @@ const DeliverymanAdd = () => {
     (state) => state.deliveryManReducer
   );
 
-  const [selectedAddress, setSelectedAddress] = useState("");
+  const [deliveryBoyAddress, setDeliveryBoyAddress] = useState("");
   const [address, setAddress] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [pin, setPin] = useState("");
-  const [latLng, setLatLng] = useState(null);
-  const [fullAddress, setFullAddress] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
+  // const [latLng, setLatLng] = useState(null);
+  // const [fullAddress, setFullAddress] = useState("");
+  // const [country, setCountry] = useState("");
+  // const [state, setState] = useState("");
+  // const [city, setCity] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleNum, setVehicleNum] = useState("");
@@ -119,76 +120,51 @@ const DeliverymanAdd = () => {
     setContractPaper(contractPaper);
   };
 
-  // ADDRESS CHANGE
 
-  const handleAddressChange = (address) => {
-    setSelectedAddress(address);
-  };
-
-  const handleAddressSelect = (address, placeId) => {
-    setSelectedAddress(address);
-    geocodeByAddress(address);
-    geocodeByPlaceId(placeId)
-      .then((results) => setAddress(results[0]))
-      .catch((error) => console.error("Error", error));
-  };
 
   // ADDRESS
 
-  useEffect(() => {
-    if (address) {
-      const {
-        geometry: { location },
-        address_components,
-        formatted_address,
-      } = address;
-      getLatLng(address).then((latlng) => setLatLng(latlng));
-      setFullAddress(formatted_address);
+  // useEffect(() => {
+  //   if (address) {
+  //     const {
+  //       geometry: { location },
+  //       address_components,
+  //       formatted_address,
+  //     } = address;
+  //     getLatLng(address).then((latlng) => setLatLng(latlng));
+  //     setFullAddress(formatted_address);
 
-      address_components.forEach((address_component) => {
-        if (address_component.types.includes("country")) {
-          setCountry(address_component.long_name);
-        } else if (address_component.types.includes("locality")) {
-          setCity(address_component.long_name);
-        } else if (address_component.types.includes("sublocality")) {
-          setState(address_component.long_name);
-        }
-      });
-    }
-  }, [address]);
+  //     address_components.forEach((address_component) => {
+  //       if (address_component.types.includes("country")) {
+  //         setCountry(address_component.long_name);
+  //       } else if (address_component.types.includes("locality")) {
+  //         setCity(address_component.long_name);
+  //       } else if (address_component.types.includes("sublocality")) {
+  //         setState(address_component.long_name);
+  //       }
+  //     });
+  //   }
+  // }, [address]);
 
-  //  Warning Message
 
-  const warningMessage = (msg) => {
-    toast.warn(msg, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
 
   // VALIDATIONS
 
   const submitDeliveryman = (e) => {
     e.preventDefault();
     if (!vehicleType) {
-      return warningMessage("select Vahicle Type");
+      return successMsg("select Vahicle Type");
     }
 
     if (!nid || !vehicleDoc) {
-      return warningMessage("select Images");
+      return successMsg("select Images");
     }
 
     let re = /\S+@\S+\.\S+/;
     const isValid = re.test(email);
 
     if (!isValid) {
-      return warningMessage("Invalid Email");
+      return successMsg("Invalid Email");
     }
 
     uploadImages();
@@ -274,18 +250,7 @@ const DeliverymanAdd = () => {
           email,
           password,
           number: phone,
-          deliveryBoyAddress: {
-            address: fullAddress,
-            latitude: latLng.lat,
-            longitude: latLng.lng,
-            city,
-            state,
-            country,
-            placeId: address?.place_id,
-            pin,
-            primary: true,
-            note: "",
-          },
+          deliveryBoyAddress,
           vehicleType: vehicleType.value,
           vehicleNumber: vehicleNum,
           nationalIdDocument: nidUrl,
@@ -315,7 +280,7 @@ const DeliverymanAdd = () => {
         setNid(null);
         setVehicleDoc(null);
         setContractPaper(null);
-        setSelectedAddress("");
+        setDeliveryBoyAddress("");
         window.scrollTo(0, 0);
       }
     }
@@ -384,17 +349,33 @@ const DeliverymanAdd = () => {
                             className="form-control"
                             name="phone"
                             type="phone"
-                            placeholder="Enter Phone phone"
+                            placeholder="Enter Phone number"
                             required
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                           />
                         </div>
 
+
+
+                        <div className="mb-4">
+                          <label className="control-label">Vehicle Type</label>
+                          <Select
+                            palceholder="Select Vahicle Type"
+                            options={DeliveryBoyVehicleOPtions}
+                            classNamePrefix="select2-selection"
+                            name="vahicaleType"
+                            required
+                            value={vehicleType}
+                            onChange={(e) => setVehicleType(e)}
+                            defaultValue={""}
+                          />
+                        </div>
+
                         {!id && (
                           <div className="mb-4">
                             <Label>Address</Label>
-                            <PlacesAutocomplete
+                            {/* <PlacesAutocomplete
                               value={selectedAddress}
                               onChange={handleAddressChange}
                               onSelect={handleAddressSelect}
@@ -474,23 +455,20 @@ const DeliverymanAdd = () => {
                                   </div>
                                 </div>
                               )}
-                            </PlacesAutocomplete>
+                            </PlacesAutocomplete> */}
+                            <textarea
+                              className="form-control"
+                              name="phone"
+                              type="text"
+                              placeholder="Enter Address"
+                              required
+                              multiple
+                              maxRows='4'
+                              value={deliveryBoyAddress}
+                              onChange={(e) => setDeliveryBoyAddress(e.target.value)}
+                            />
                           </div>
                         )}
-
-                        <div className="mb-4">
-                          <label className="control-label">Vehicle Type</label>
-                          <Select
-                            palceholder="Select Vahicle Type"
-                            options={DeliveryBoyVehicleOPtions}
-                            classNamePrefix="select2-selection"
-                            name="vahicaleType"
-                            required
-                            value={vehicleType}
-                            onChange={(e) => setVehicleType(e)}
-                            defaultValue={""}
-                          />
-                        </div>
                       </Col>
 
                       <Col lg={6}>

@@ -203,8 +203,8 @@ const Tags = () => {
 
                         <Card>
                             <CardBody>
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <CardTitle className="h4">Tags</CardTitle>
+                                <div className="d-flex justify-content-end align-items-center">
+
                                     <Button
                                         className="btn btn-success"
                                         onClick={() => {
@@ -220,7 +220,7 @@ const Tags = () => {
                                 <hr />
                                 <Table
                                     id="tech-companies-1"
-                                    className="table table__wrapper table-striped table-bordered table-hover text-center"
+                                    className="table  table-hover text-center"
                                 >
                                     <Thead>
                                         <Tr>
@@ -244,7 +244,11 @@ const Tags = () => {
                                                 >
                                                     <Th>{item?.name}</Th>
                                                     <Th>{item?.type}</Th>
-                                                    <Td>{item?.status}</Td>
+                                                    <Td>
+                                                        <div className={`text-capitalize ${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                                                            {item?.status}
+                                                        </div>
+                                                    </Td>
                                                     <Td>
                                                         {new Date(item?.createdAt).toLocaleDateString()}
                                                     </Td>

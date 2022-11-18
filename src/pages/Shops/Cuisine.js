@@ -169,7 +169,7 @@ const Cuisine = () => {
                     <CardTitle className="h4"> Cuisines List</CardTitle>
                     <Table
                       id="tech-companies-1"
-                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                      className="table table-hover text-center"
                     >
                       <Thead>
                         <Tr>
@@ -192,7 +192,11 @@ const Cuisine = () => {
                             >
                               <Th>{item.name}</Th>
 
-                              <Td>{item.status}</Td>
+                              <Td>
+                                <div className={`text-capitalize ${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                                  {item?.status}
+                                </div>
+                              </Td>
                               <Td>
                                 {new Date(item.createdAt).toLocaleDateString()}
                               </Td>

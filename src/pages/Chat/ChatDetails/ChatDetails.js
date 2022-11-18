@@ -25,6 +25,7 @@ import { TextField, Tooltip } from "@mui/material";
 import { SINGLE_CHAT } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import ChatMessageTable from "../../../components/ChatMessageTable";
+import { callApi } from "../../../components/SingleApiCall";
 
 const ChatDetails = () => {
   const { id } = useParams();
@@ -32,37 +33,26 @@ const ChatDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { chatRequests, status, msgSendSuccess, loading, selectedMsg } = useSelector((state) => state.chatReducer);
+  const { status, loading, selectedMsg } = useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
 
   const [request, setRequest] = useState(null);
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
+  useEffect(async () => {
     if (id) {
-
-      callApi(id);
+      const data = await callApi(id, SINGLE_CHAT, 'chatRequest');
+      if (data) {
+        setRequest(data);
+      } else {
+        history.push("/customer-support", { replace: true });
+      }
 
     }
   }, [id]);
 
-  const callApi = async (chatId) => {
-    const { data } = await requestApi().request(SINGLE_CHAT, {
-      params: {
-        id: chatId,
-      },
-    });
 
-    if (data.status) {
-      const { chatRequest } = data.data;
-      if (chatRequest) {
-        setRequest(chatRequest);
-      } else {
-        history.push("/customer-support", { replace: true });
-      }
-    }
-  };
 
   useEffect(() => {
 
@@ -235,6 +225,11 @@ const ChatDetails = () => {
                           </div>
                         </Col>
                       </Row>}
+                      {loading && (
+                        <div className="text-center">
+                          <Spinner animation="border" color="info" />
+                        </div>
+                      )}
                     </div>
                   </CardBody>
                 </Card>
@@ -268,10 +263,10 @@ const ChatDetails = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4">Last 5 Order</CardTitle>
+                <CardTitle className="h4">Last 5 Orders</CardTitle>
                 <Table
                   id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
+                  className="table  table-hover text-center"
                 >
                   <Thead>
                     <Tr>

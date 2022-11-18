@@ -160,7 +160,7 @@ const UserTransaction = () => {
                   <hr className="my-2" />
                   <Table
                     id="tech-companies-1"
-                    className="table table__wrapper table-striped table-bordered table-hover text-center"
+                    className="table  table-hover text-center"
                   >
                     <Thead>
                       <Tr>
@@ -204,7 +204,7 @@ const UserTransaction = () => {
                                 top: "50%",
                               }}
                               animation="border"
-                              variant="success"
+                              color="success"
                             />
                           </Td>
                         </Tr>

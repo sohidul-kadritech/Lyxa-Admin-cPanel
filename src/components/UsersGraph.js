@@ -34,7 +34,7 @@ const UsersGraph = () => {
                         year
                     },
                 });
-                console.log({ data });
+
                 if (data.status) {
 
                     const { info } = data.data;
@@ -43,7 +43,6 @@ const UsersGraph = () => {
 
                 }
             } catch (e) {
-                console.log(e.message);
                 setIsLoading(false);
             }
         }
