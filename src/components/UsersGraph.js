@@ -34,7 +34,7 @@ const UsersGraph = () => {
                         year
                     },
                 });
-
+                console.log({ data });
                 if (data.status) {
 
                     const { info } = data.data;
@@ -58,9 +58,8 @@ const UsersGraph = () => {
             if (labelsData && seriesData) {
                 const chartInfo = {
                     labels: labelsData,
-                    series: [
-                        seriesData
-                    ]
+                    series: seriesData
+
                 }
                 setChartData(chartInfo);
             }
