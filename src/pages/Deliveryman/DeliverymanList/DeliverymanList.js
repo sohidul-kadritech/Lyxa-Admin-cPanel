@@ -53,13 +53,13 @@ const DeliverymanList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
-    liveStatus
+    liveStatus,
   } = useSelector((state) => state.deliveryManReducer);
 
   const [track, setTrack] = useState(false);
   const [openActiveStatus, setOpenActiveStatus] = useState(false);
   const [id, setId] = useState(null);
-  const [deliveryBoyName, setDeliveryBoyName] = useState('');
+  const [deliveryBoyName, setDeliveryBoyName] = useState("");
   const [rider, setRider] = useState(null);
 
   useEffect(() => {
@@ -72,22 +72,22 @@ const DeliverymanList = () => {
     dispatch(allDeliveryMan(refresh));
   };
 
-  // HANDLE MENU ITEM 
+  // HANDLE MENU ITEM
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      history.push(`/deliveryman/edit/${item._id}`)
-    } else if (menu === 'Current Location') {
+    if (menu === "Edit") {
+      history.push(`/deliveryman/edit/${item._id}`);
+    } else if (menu === "Current Location") {
       setTrack(true);
-      setRider(item)
-    } else if (menu === 'Active Status') {
+      setRider(item);
+    } else if (menu === "Active Status") {
       setOpenActiveStatus(true);
       setId(item._id);
       setDeliveryBoyName(item?.name);
     } else {
-      history.push(`/deliveryman/details/${item._id}`)
+      history.push(`/deliveryman/details/${item._id}`);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -154,7 +154,10 @@ const DeliverymanList = () => {
                 </Row>
                 <Row className="d-flex justify-content-center">
                   <Col lg={8}>
-                    <Search dispatchFunc={updateDeliveryManSearchKey} placeholder="Search by id or name" />
+                    <Search
+                      dispatchFunc={updateDeliveryManSearchKey}
+                      placeholder="Search by id or name"
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -168,7 +171,7 @@ const DeliverymanList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image/Name</Th>
+                      <Th>Rider</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Status</Th>
@@ -189,15 +192,27 @@ const DeliverymanList = () => {
                             fontWeight: "500",
                           }}
                         >
-
                           <Th>
-                            <TableImgItem name={item?.name} id={item?.autoGenId} />
+                            <TableImgItem
+                              name={item?.name}
+                              id={item?.autoGenId}
+                            />
                           </Th>
                           <Td>{item?.email}</Td>
                           <Td>{item?.number}</Td>
                           <Td>
-                            <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
-                              {item?.status}
+                            <div
+                              className={`${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
+                              {`${
+                                item?.status === "active"
+                                  ? "Active"
+                                  : "Inactive"
+                              }`}
                             </div>
                           </Td>
                           <Td>
@@ -205,22 +220,16 @@ const DeliverymanList = () => {
                               ? "Online"
                               : "Offline"}
                           </Td>
-                          <Td>
-                            {item?.availability
-                              ? "Available"
-                              : "Busy"}
-                          </Td>
+                          <Td>{item?.availability ? "Available" : "Busy"}</Td>
                           <Td>{item?.totalOrder}</Td>
                           <Td>
                             <ThreeDotsMenu
-                              handleMenuClick={(menu) =>
-                                handleMenu(menu, item)
-                              }
+                              handleMenuClick={(menu) => handleMenu(menu, item)}
                               menuItems={[
                                 "Edit",
                                 "Details",
-                                'Current Location',
-                                'Active Status'
+                                "Current Location",
+                                "Active Status",
                               ]}
                             />
                           </Td>
@@ -281,12 +290,11 @@ const DeliverymanList = () => {
           </div>
           <div
             className="modal-body py-1"
-          // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
+            // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
           >
             <TrackingDeliveryBoy riderId={id} />
           </div>
         </Modal>
-
 
         {/* DELIVERY BOY CURRENT LOCATION */}
 
@@ -311,19 +319,25 @@ const DeliverymanList = () => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div
-            className="modal-body py-1"
-          >
-
-            <div className='my-3'>
-              <Info title='Name' value={rider?.name} />
-              <Info title='Checking time' value={moment(new Date()).format("MMMM Do YYYY, h:mm:ss a")} />
+          <div className="modal-body py-1">
+            <div className="my-3">
+              <Info title="Name" value={rider?.name} />
+              <Info
+                title="Checking time"
+                value={moment(new Date()).format("MMMM Do YYYY, h:mm:ss a")}
+              />
             </div>
 
-            {rider?.location ? <Map lat={rider?.location?.coordinates[1]} lng={rider?.location?.coordinates[0]} /> : <h5 className="text-center">No location found!</h5>}
+            {rider?.location ? (
+              <Map
+                lat={rider?.location?.coordinates[1]}
+                lng={rider?.location?.coordinates[0]}
+              />
+            ) : (
+              <h5 className="text-center">No location found!</h5>
+            )}
           </div>
         </Modal>
-
       </GlobalWrapper>
     </React.Fragment>
   );

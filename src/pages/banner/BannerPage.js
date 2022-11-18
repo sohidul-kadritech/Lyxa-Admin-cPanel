@@ -105,13 +105,13 @@ const BannerPage = () => {
   // HANDLE ACTION MENU
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      handleEdit(item?._id)
+    if (menu === "Edit") {
+      handleEdit(item?._id);
     } else {
       setconfirm_alert(true);
       setBannerId(item?._id);
     }
-  }
+  };
 
   const listViewBanner = () => {
     return (
@@ -139,7 +139,7 @@ const BannerPage = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th data-priority="1">Image/Name</Th>
+                      <Th data-priority="1">Banner</Th>
                       <Th data-priority="1">Type</Th>
                       <Th data-priority="1">Status</Th>
                       <Th data-priority="3">Created At</Th>
@@ -147,14 +147,18 @@ const BannerPage = () => {
                     </Tr>
                   </Thead>
 
-                  <Tbody style={{ verticalAlign: 'middle' }}>
+                  <Tbody style={{ verticalAlign: "middle" }}>
                     {list.map((item, index) => {
                       return (
-                        <Tr key={index} className='text-capitalize'>
+                        <Tr key={index} className="text-capitalize">
                           <Th>
                             {/* <img
                               src={item.image}
-                              style={{ width: "70%", maxHeight: "75px", borderRadius: '10px' }}
+                              style={{
+                                width: "70%",
+                                maxHeight: "75px",
+                                borderRadius: "10px",
+                              }}
                               alt="Banner"
                               className="cursor-pointer"
                               onClick={() => {
@@ -166,21 +170,24 @@ const BannerPage = () => {
                           </Th>
 
                           <Td>{item?.type}</Td>
-                          <Td >
-                            <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.status}</div>
+                          <Td>
+                            <div
+                              className={`${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
+                              {item?.status}
+                            </div>
                           </Td>
                           <Td>
                             {moment(item?.createdAt).utc().format("YYYY-MM-DD")}
                           </Td>
                           <Td>
                             <ThreeDotsMenu
-                              handleMenuClick={(menu) =>
-                                handleMenu(menu, item)
-                              }
-                              menuItems={[
-                                "Edit",
-                                "Delete"
-                              ]}
+                              handleMenuClick={(menu) => handleMenu(menu, item)}
+                              menuItems={["Edit", "Delete"]}
                             />
                             {confirm_alert ? (
                               <SweetAlert
@@ -225,8 +232,6 @@ const BannerPage = () => {
                     )}
                   </Tbody>
                 </Table>
-
-
 
                 {!loading && list.length < 1 && (
                   <div className="text-center">

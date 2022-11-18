@@ -46,6 +46,8 @@ import { getAllCancelReasons } from "../store/Settings/settingsAction";
 import userIcon from "../assets/images/dashboard/user.png";
 import ThreeDotsMenu from "./ThreeDotsMenu";
 import TableImgItem from "./TableImgItem";
+import { imageOverlay } from "leaflet";
+import noPhoto from "../assets/images/noPhoto.jpg";
 
 const actionItems = [{}];
 
@@ -200,8 +202,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           flagedRider && rider
             ? ""
             : rider
-              ? selectFlagOrder?.deliveryBoy?._id
-              : "",
+            ? selectFlagOrder?.deliveryBoy?._id
+            : "",
       })
     );
   };
@@ -248,10 +250,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         type === "full"
           ? orderPayment
           : {
-            shop: "",
-            deliveryBoy: "",
-            admin: "",
-          },
+              shop: "",
+              deliveryBoy: "",
+              admin: "",
+            },
     });
   };
 
@@ -364,8 +366,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
             >
               <Thead>
                 <Tr>
-                  <Th>Customer name</Th>
-                  <Th>Shop name</Th>
+                  <Th>Customer</Th>
+                  <Th>Shop</Th>
                   <Th>Order Date</Th>
                   <Th>Amount</Th>
                   <Th>Payment method</Th>
@@ -387,7 +389,16 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           }}
                         >
                           <Th>
-                            <TableImgItem img={item?.user?.profile_photo} altImg={userIcon} name={item?.user?.name} id={item?.orderId} />
+                            <TableImgItem
+                              img={`${
+                                item?.user?.profile_photo
+                                  ? item?.user?.profile_photo
+                                  : noPhoto
+                              }`}
+                              altImg={userIcon}
+                              name={item?.user?.name}
+                              id={item?.orderId}
+                            />
                           </Th>
 
                           <Td>{item?.shop?.shopName}</Td>
@@ -404,7 +415,19 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                             {item?.paymentMethod}{" "}
                             {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
                           </Td>
-                          <Td>{modifiedOrderStatus(item?.orderStatus)}</Td>
+                          <Td>
+                            <div
+                              className={`${
+                                item?.orderStatus === "cancelled"
+                                  ? "inactive-status"
+                                  : item?.orderStatus === "delivered"
+                                  ? "active-status"
+                                  : "orderStatus"
+                              }`}
+                            >
+                              {modifiedOrderStatus(item?.orderStatus)}
+                            </div>
+                          </Td>
                           <Td>
                             <ThreeDotsMenu
                               handleMenuClick={(menu) => handleMenu(menu, item)}
@@ -413,9 +436,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                 "Update Status",
                                 account_type === "admin" && "Flag",
                                 account_type === "admin" &&
-                                item?.orderStatus !== "cancelled" &&
-                                item?.orderStatus !== "delivered" &&
-                                "Cancel Order",
+                                  item?.orderStatus !== "cancelled" &&
+                                  item?.orderStatus !== "delivered" &&
+                                  "Cancel Order",
                               ]}
                             />
                           </Td>
@@ -491,7 +514,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 {orderStatusOptions.map((item, index) => (
                   <MenuItem key={index} value={item.value}>
                     {orderFor === "specific" &&
-                      item.value === "accepted_delivery_boy"
+                    item.value === "accepted_delivery_boy"
                       ? ""
                       : item.label}
                   </MenuItem>

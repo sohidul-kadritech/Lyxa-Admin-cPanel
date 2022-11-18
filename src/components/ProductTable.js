@@ -27,17 +27,17 @@ const ProductTable = ({ products, loading }) => {
     );
   };
 
-  // HANDLE MENU 
+  // HANDLE MENU
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      history.push(`/products/edit/${item?._id}`)
-    } else if (menu === 'Update Status') {
-      updateStatus(item?._id, item?.status)
+    if (menu === "Edit") {
+      history.push(`/products/edit/${item?._id}`);
+    } else if (menu === "Update Status") {
+      updateStatus(item?._id, item?.status);
     } else {
       history.push(`/products/details/${item?._id}`);
     }
-  }
+  };
 
   return (
     <div>
@@ -52,10 +52,7 @@ const ProductTable = ({ products, loading }) => {
         />
       )}
 
-      <Table
-        id="tech-companies-1"
-        className="table  table-hover text-center"
-      >
+      <Table id="tech-companies-1" className="table  table-hover text-center">
         <Thead>
           <Tr>
             <Th>Product</Th>
@@ -79,7 +76,11 @@ const ProductTable = ({ products, loading }) => {
                   }}
                 >
                   <Th>
-                    <TableImgItem img={item?.images[0]} name={item?.name} id={item?.autoGenId} />
+                    <TableImgItem
+                      img={item?.images[0]}
+                      name={item?.name}
+                      id={item?.autoGenId}
+                    />
                   </Th>
                   <Td>{item?.shop?.shopName}</Td>
                   <Td>{item?.category?.name}</Td>
@@ -87,17 +88,21 @@ const ProductTable = ({ products, loading }) => {
                     <p>{item?.price}</p>
                     <p>{item?.shopEndTimeText}</p>
                   </Td>
-                  <Td><div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.status}</div></Td>
+                  <Td>
+                    <div
+                      className={`${
+                        item?.status === "active"
+                          ? "active-status"
+                          : "inactive-status"
+                      }`}
+                    >{`${
+                      item?.status === "active" ? "Active" : "Inactive"
+                    }`}</div>
+                  </Td>
                   <Td>
                     <ThreeDotsMenu
-                      handleMenuClick={(menu) =>
-                        handleMenu(menu, item)
-                      }
-                      menuItems={[
-                        "Edit",
-                        "Details",
-                        'Update Status'
-                      ]}
+                      handleMenuClick={(menu) => handleMenu(menu, item)}
+                      menuItems={["Edit", "Details", "Update Status"]}
                     />
                   </Td>
                 </Tr>

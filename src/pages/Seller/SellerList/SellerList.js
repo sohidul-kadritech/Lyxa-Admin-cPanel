@@ -37,6 +37,7 @@ import Search from "../../../components/Search";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import TableImgItem from "../../../components/TableImgItem";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
 
 const SellerList = () => {
   const dispatch = useDispatch();
@@ -76,14 +77,13 @@ const SellerList = () => {
     dispatch(getAllSeller(refresh));
   };
 
-
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      history.push(`/seller/edit/${item._id}`)
+    if (menu === "Edit") {
+      history.push(`/seller/edit/${item._id}`);
     } else {
-      history.push(`/seller/details/${item._id}`)
+      history.push(`/seller/details/${item._id}`);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -96,7 +96,7 @@ const SellerList = () => {
               title="Seller"
               loading={loading}
               callList={callSellerList}
-              isAddNew={adminType === 'admin' && account_type === 'admin'}
+              isAddNew={adminType === "admin" && account_type === "admin"}
               addNewRoute="seller/add"
             />
 
@@ -157,7 +157,10 @@ const SellerList = () => {
                 </Row>
                 <Row className="d-flex justify-content-center">
                   <Col lg={8}>
-                    <Search dispatchFunc={updateSellerSearchKey} placeholder="Search by id or company name or email or phone number or NID" />
+                    <Search
+                      dispatchFunc={updateSellerSearchKey}
+                      placeholder="Search by id or company name or email or phone number or NID"
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -191,24 +194,42 @@ const SellerList = () => {
                           }}
                         >
                           <Th className="d-flex">
-                            <TableImgItem img={item?.profile_photo} altImg={RoomOutlinedIcon} name={item?.company_name} id={item?.autoGenId} />
+                            <TableImgItem
+                              img={`${
+                                item?.profile_photo
+                                  ? item?.profile_photo
+                                  : noPhoto
+                              }`}
+                              altImg={RoomOutlinedIcon}
+                              name={item?.company_name}
+                              id={item?.autoGenId}
+                            />
                           </Th>
 
                           <Td>{item?.email}</Td>
                           <Td>{item?.phone_number}</Td>
-                          <Td><div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{item?.status}</div></Td>
+                          <Td>
+                            <div
+                              className={`${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
+                              {`${
+                                item?.status === "active"
+                                  ? "Active"
+                                  : "Inactive"
+                              }`}
+                            </div>
+                          </Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
                           <Td>
                             <ThreeDotsMenu
-                              handleMenuClick={(menu) =>
-                                handleMenu(menu, item)
-                              }
-                              menuItems={[
-                                "Edit",
-                                "Details"
-                              ]}
+                              handleMenuClick={(menu) => handleMenu(menu, item)}
+                              menuItems={["Edit", "Details"]}
                             />
                           </Td>
                         </Tr>

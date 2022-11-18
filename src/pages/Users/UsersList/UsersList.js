@@ -39,7 +39,6 @@ import Select from "react-select";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 import TableImgItem from "../../../components/TableImgItem";
 
-
 const UsersList = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -73,14 +72,12 @@ const UsersList = () => {
   };
 
   const handleMenu = (menu, user) => {
-    if (menu === 'Transactions') {
-      history.push(
-        `/users/transactions/${user._id}`
-      )
+    if (menu === "Transactions") {
+      history.push(`/users/transactions/${user._id}`);
     } else {
-      history.push(`/users/details/${user._id}`)
+      history.push(`/users/details/${user._id}`);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -94,8 +91,8 @@ const UsersList = () => {
               hideSettingBtn={true}
               loading={loading}
               callList={callUsersList}
-            // isAddNew={true}
-            // addNewRoute="users/add"
+              // isAddNew={true}
+              // addNewRoute="users/add"
             />
 
             {/* FILTER OPTIONS */}
@@ -143,9 +140,9 @@ const UsersList = () => {
                   id="tech-companies-1"
                   className="table table__wrapper  table-hover text-center"
                 >
-                  <Thead className='bg-gray'>
+                  <Thead className="bg-gray">
                     <Tr>
-                      <Th>Name/ID</Th>
+                      <Th>Customer</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
                       <Th>Gender</Th>
@@ -168,10 +165,15 @@ const UsersList = () => {
                             }}
                           >
                             <Th>
-                              <TableImgItem name={user?.name} id={user?.autoGenId} />
+                              <TableImgItem
+                                name={user?.name}
+                                id={user?.autoGenId}
+                              />
                             </Th>
                             <Td>{user?.email}</Td>
-                            <Td>{user?.phone_number ? user?.phone_number : 'N/A'}</Td>
+                            <Td>
+                              {user?.phone_number ? user?.phone_number : "N/A"}
+                            </Td>
                             <Td>{user?.gender}</Td>
                             <Td>{new Date(user?.dob).toLocaleDateString()}</Td>
                             <Td>
@@ -183,10 +185,7 @@ const UsersList = () => {
                                 handleMenuClick={(menu) =>
                                   handleMenu(menu, user)
                                 }
-                                menuItems={[
-                                  "Transactions",
-                                  "Details"
-                                ]}
+                                menuItems={["Transactions", "Details"]}
                               />
                             </Td>
                           </Tr>

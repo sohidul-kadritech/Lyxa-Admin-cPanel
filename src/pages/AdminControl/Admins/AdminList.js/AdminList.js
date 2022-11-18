@@ -38,12 +38,12 @@ const AdminList = () => {
   };
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Delete') {
-      setconfirm_alert(true)
+    if (menu === "Delete") {
+      setconfirm_alert(true);
     } else {
-      history.push(`/admin/edit/${item._id}`)
+      history.push(`/admin/edit/${item._id}`);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -103,11 +103,25 @@ const AdminList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>{item?.name}</Th>
+                          <Th style={{ textAlign: "left" }}>{item?.name}</Th>
 
                           <Td>{item?.email}</Td>
                           <Td>{item?.phone_number}</Td>
-                          <Td>{item?.status}</Td>
+                          <Td>
+                            <div
+                              className={`${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
+                              {`${
+                                item?.status === "active"
+                                  ? "Active"
+                                  : "Inactive"
+                              }`}
+                            </div>
+                          </Td>
                           <Td>
                             {item?.adminType === "customerService"
                               ? "Customer Service"
@@ -137,13 +151,8 @@ const AdminList = () => {
                               
                             </div> */}
                             <ThreeDotsMenu
-                              handleMenuClick={(menu) =>
-                                handleMenu(menu, item)
-                              }
-                              menuItems={[
-                                "Edit",
-                                "Delete"
-                              ]}
+                              handleMenuClick={(menu) => handleMenu(menu, item)}
+                              menuItems={["Edit", "Delete"]}
                             />
                             {confirm_alert ? (
                               <SweetAlert

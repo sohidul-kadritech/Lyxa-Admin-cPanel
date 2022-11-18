@@ -28,9 +28,10 @@ import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { DealsFilterOptions } from "../../../assets/staticData";
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import TableImgItem from "../../../components/TableImgItem";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
 
 const DealsList = () => {
   const dispatch = useDispatch();
@@ -65,13 +66,13 @@ const DealsList = () => {
   // MENU ITEMS
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      history.push(`/deals/edit/${item._id}`)
+    if (menu === "Edit") {
+      history.push(`/deals/edit/${item._id}`);
     } else {
       setconfirm_alert(true);
       setDealId(item?._id);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -148,7 +149,7 @@ const DealsList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image/Name</Th>
+                      <Th>Deal</Th>
                       <Th>Shop Type</Th>
                       <Th>Deal Type</Th>
                       <Th>Status</Th>
@@ -167,21 +168,33 @@ const DealsList = () => {
                           }}
                         >
                           <Th>
-                            <TableImgItem img={item?.image} name={item?.name} id={item?.autoGenId} />
+                            <TableImgItem
+                              img={`${item?.image ? item?.image : noPhoto}`}
+                              name={item?.name}
+                              id={item?.autoGenId}
+                            />
                           </Th>
-
                           <Td>{item?.type}</Td>
                           <Td>{`${item?.percentage ?? ""} ${item?.option}`}</Td>
-                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
+                          <Td>
+                            <div
+                              className={`${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
+                              {`${
+                                item?.status === "active"
+                                  ? "Active"
+                                  : "Inactive"
+                              }`}
+                            </div>
+                          </Td>
                           <Td>
                             <ThreeDotsMenu
-                              handleMenuClick={(menu) =>
-                                handleMenu(menu, item)
-                              }
-                              menuItems={[
-                                "Edit",
-                                "Delete",
-                              ]}
+                              handleMenuClick={(menu) => handleMenu(menu, item)}
+                              menuItems={["Edit", "Delete"]}
                             />
                             {confirm_alert ? (
                               <SweetAlert

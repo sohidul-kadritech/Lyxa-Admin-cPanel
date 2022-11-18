@@ -20,11 +20,10 @@ import {
   getAllChat,
   updateChatSortByKey,
   updateChatType,
-  acceptChatReq
+  acceptChatReq,
 } from "../../store/chat/chatAction";
 import { Tooltip } from "@mui/material";
 import { useHistory } from "react-router-dom";
-
 
 const Chat = () => {
   const dispatch = useDispatch();
@@ -33,7 +32,6 @@ const Chat = () => {
   const { loading, chatRequests, sortByKey, typeKey } = useSelector(
     (state) => state.chatReducer
   );
-
 
   useEffect(() => {
     if (sortByKey || typeKey) {
@@ -44,8 +42,6 @@ const Chat = () => {
   const callChatList = (refresh = false) => {
     dispatch(getAllChat(refresh));
   };
-
-
 
   return (
     <React.Fragment>
@@ -58,7 +54,6 @@ const Chat = () => {
               loading={loading}
               callList={callChatList}
             />
-
 
             <Card>
               <CardBody>
@@ -104,10 +99,10 @@ const Chat = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>User</Th>
-                      <Th>Reason</Th>
+                      <Th>Customer</Th>
+                      {/* <Th>Reason</Th> */}
                       <Th>Status</Th>
-                      <Th>Send Date</Th>
+                      <Th>Inquiry date</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -122,9 +117,26 @@ const Chat = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>{item?.user?.name}</Th>
-                          <Td>{item?.reasonMessage ?? 'N/A'}</Td>
-                          <Td style={{ color: item?.status === 'pending' ? 'blue' : item?.status === 'accepted' ? 'green' : item?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase' }}>{item?.status}</Td>
+                          <Th style={{ textAlign: "left" }}>
+                            {item?.user?.name}
+                          </Th>
+                          {/* <Td>{item?.reasonMessage ?? "N/A"}</Td> */}
+                          <Td
+                            style={{
+                              color:
+                                item?.status === "pending"
+                                  ? "#eac300"
+                                  : item?.status === "accepted"
+                                  ? "#56ca00"
+                                  : item?.status === "resolved"
+                                  ? "#42f5aa"
+                                  : "red",
+                              fontSize: "15px",
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {item?.status}
+                          </Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
@@ -142,9 +154,7 @@ const Chat = () => {
                                 >
                                   <i className="fa fa-eye" />
                                 </button>
-
                               </Tooltip>
-
                             </div>
                           </Td>
                         </Tr>

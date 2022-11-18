@@ -109,9 +109,9 @@ const Transactions = () => {
       newType = "Order";
     } else if (type === "userTopUpBalance") {
       newType = "Drop pay";
-    } else if (type === 'userBalanceAddAdmin') {
+    } else if (type === "userBalanceAddAdmin") {
       newType = "User balance add by admin";
-    } else if (type === 'userBalanceAddAdmin') {
+    } else if (type === "userBalanceAddAdmin") {
       newType = "User Balance Add By Admin";
     } else if (type === "deliveryBoyOrderDelivered") {
       newType = "Delivery boy delivered order";
@@ -121,8 +121,7 @@ const Transactions = () => {
       newType = "User pay for order";
     } else if (type === "userPayBeforeReceivedOrderByWallet") {
       newType = "User pay before received order";
-    }
-    else {
+    } else {
       newType = "";
     }
 
@@ -216,7 +215,9 @@ const Transactions = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>{item?.autoGenId}</Th>
+                          <Th style={{ textAlign: "left" }}>
+                            {item?.autoGenId}
+                          </Th>
 
                           <Td>{item?.amount}</Td>
 

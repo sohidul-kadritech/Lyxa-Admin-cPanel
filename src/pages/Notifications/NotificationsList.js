@@ -151,7 +151,7 @@ const NotificationsList = () => {
                     <Tr>
                       <Th>Title</Th>
                       <Th>Account Type</Th>
-                      <Th>Type</Th>
+                      {/* <Th>Type</Th> */}
                       <Th>Sent to</Th>
                       <Th>Status</Th>
                       <Th>Created At</Th>
@@ -169,11 +169,43 @@ const NotificationsList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th style={{ maxWidth: "200px" }}>{item?.title}</Th>
-                          <Td>{item?.accountType}</Td>
-                          <Td>{item?.type}</Td>
-                          <Td>{item?.user ? item?.user?.name : item?.shop ? item?.shop?.shopName : item?.deliveryBoy ? item?.deliveryBoy?.name : "all"}</Td>
-                          <Td style={{ color: item?.status === 'active' ? 'green' : 'red' }}>{item?.status}</Td>
+                          <Th style={{ maxWidth: "200px", textAlign: "left" }}>
+                            {item?.title}
+                          </Th>
+                          <Td>
+                            {item?.accountType === "user"
+                              ? "User"
+                              : item?.accountType === "deliveryBoy"
+                              ? "Rider"
+                              : item?.accountType === "shop"
+                              ? "Shop"
+                              : item?.accountType}
+                          </Td>
+                          {/* <Td>{item?.type}</Td> */}
+                          <Td>
+                            {item?.user
+                              ? item?.user?.name
+                              : item?.shop
+                              ? item?.shop?.shopName
+                              : item?.deliveryBoy
+                              ? item?.deliveryBoy?.name
+                              : "All users"}
+                          </Td>
+                          <Td>
+                            <div
+                              className={`${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
+                              {`${
+                                item?.status === "active"
+                                  ? "Active"
+                                  : "Inactive"
+                              }`}
+                            </div>
+                          </Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
@@ -188,16 +220,23 @@ const NotificationsList = () => {
                                 }
                               >
                                 <button
-                                  className={`btn ${item.status === "active"
-                                    ? "btn-info"
-                                    : "btn-danger"
-                                    } button me-0 me-xl-2`}
+                                  className={`btn ${
+                                    item.status === "active"
+                                      ? "btn-info"
+                                      : "btn-danger"
+                                  } button me-0 me-xl-2`}
                                   onClick={() =>
                                     updateStatus(item?._id, item?.status)
                                   }
                                 >
                                   {!loading ? (
-                                    <i className={item?.status === 'active' ? "fa fa-toggle-on" : "fa fa-toggle-off"} />
+                                    <i
+                                      className={
+                                        item?.status === "active"
+                                          ? "fa fa-toggle-on"
+                                          : "fa fa-toggle-off"
+                                      }
+                                    />
                                   ) : (
                                     <Spinner
                                       animation="border"

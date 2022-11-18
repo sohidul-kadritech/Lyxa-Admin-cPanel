@@ -27,7 +27,10 @@ import {
 } from "../../../store/Shop/shopAction";
 import { useLocation } from "react-router-dom";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { getAllCategory, updateCategoryShopType } from "../../../store/Category/categoryAction";
+import {
+  getAllCategory,
+  updateCategoryShopType,
+} from "../../../store/Category/categoryAction";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -47,23 +50,20 @@ const ProductList = () => {
     loading,
     products,
     status,
-    category
+    category,
   } = useSelector((state) => state.productReducer);
   const { shops } = useSelector((state) => state.shopReducer);
-  const {
-    categories,
-  } = useSelector((state) => state.categoryReducer);
+  const { categories } = useSelector((state) => state.categoryReducer);
 
   const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
 
   const [shop, setShop] = useState(null);
   const [categorySearchKey, setCategorySearchKey] = useState("");
 
-
   useEffect(() => {
-    dispatch(updateCategoryShopType('all'));
+    dispatch(updateCategoryShopType("all"));
     dispatch(getAllCategory(true, account_type));
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (account_type === "admin") {
@@ -82,8 +82,8 @@ const ProductList = () => {
         searchParams.get("shopId")
           ? searchParams.get("shopId")
           : account_type === "shop"
-            ? Id
-            : null,
+          ? Id
+          : null,
         account_type === "seller" ? Id : null
       )
     );
@@ -101,7 +101,15 @@ const ProductList = () => {
     ) {
       callProductList(true);
     }
-  }, [searchKey, statusKey, typeKey, sortByKey, searchParams, status, category]);
+  }, [
+    searchKey,
+    statusKey,
+    typeKey,
+    sortByKey,
+    searchParams,
+    status,
+    category,
+  ]);
 
   useEffect(() => {
     if (searchParams.get("shopId")) {
@@ -144,20 +152,22 @@ const ProductList = () => {
                     </div>
                   </Col>
 
-                  {(account_type !== 'seller' && account_type !== 'shop') && <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Type</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={shopTypeOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={typeKey}
-                        onChange={(e) => dispatch(updateProductType(e))}
-                        defaultValue={""}
-                      />
-                    </div>
-                  </Col>}
+                  {account_type !== "seller" && account_type !== "shop" && (
+                    <Col lg={4}>
+                      <div className="mb-4">
+                        <label className="control-label">Type</label>
+                        <Select
+                          palceholder="Select Status"
+                          options={shopTypeOptions}
+                          classNamePrefix="select2-selection"
+                          required
+                          value={typeKey}
+                          onChange={(e) => dispatch(updateProductType(e))}
+                          defaultValue={""}
+                        />
+                      </div>
+                    </Col>
+                  )}
                   <Col lg={4}>
                     <div className="mb-4">
                       <label className="control-label">Status</label>
@@ -175,14 +185,19 @@ const ProductList = () => {
                 </Row>
                 <Row>
                   <Col lg={8}>
-                    <Search dispatchFunc={updateProductSearchKey} placeholder="Search by id or name" />
+                    <Search
+                      dispatchFunc={updateProductSearchKey}
+                      placeholder="Search by id or name"
+                    />
                   </Col>
                   <Col lg={4}>
                     <label className="control-label">Category</label>
                     <Autocomplete
                       className="cursor-pointer"
                       value={category}
-                      onChange={(event, newValue) => dispatch(updateProductCategory(newValue))}
+                      onChange={(event, newValue) =>
+                        dispatch(updateProductCategory(newValue))
+                      }
                       getOptionLabel={(option, index) =>
                         option.name ? option.name : ""
                       }
@@ -197,10 +212,7 @@ const ProductList = () => {
                       options={categories?.length > 0 ? categories : []}
                       sx={{ width: "100%" }}
                       renderInput={(params, index) => (
-                        <TextField
-                          {...params}
-                          label="Select cateogory"
-                        />
+                        <TextField {...params} label="Select cateogory" />
                       )}
                       renderOption={(props, option) => (
                         <Box
@@ -239,8 +251,8 @@ const ProductList = () => {
                           searchParams.get("shopId")
                             ? searchParams.get("shopId")
                             : account_type === "shop"
-                              ? Id
-                              : null,
+                            ? Id
+                            : null,
                           account_type === "seller" ? Id : null,
                           page
                         )
