@@ -27,6 +27,7 @@ import { shopTypeOptions } from "../../../../assets/staticData";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import TableImgItem from "../../../../components/TableImgItem";
 import ThreeDotsMenu from "../../../../components/ThreeDotsMenu";
+import noPhoto from "../../../../assets/images/noPhoto.jpg";
 
 const CategoryList = () => {
   const dispatch = useDispatch();
@@ -49,12 +50,14 @@ const CategoryList = () => {
     account_type,
     _id: Id,
     shopType: adminShopType,
-    sellerType
+    sellerType,
   } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
-    if (account_type === "shop" || account_type === 'seller') {
-      dispatch(updateCategoryShopType(adminShopType ? adminShopType : sellerType));
+    if (account_type === "shop" || account_type === "seller") {
+      dispatch(
+        updateCategoryShopType(adminShopType ? adminShopType : sellerType)
+      );
     }
 
     return;
@@ -74,12 +77,12 @@ const CategoryList = () => {
   // HANDLE MENU
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      history.push(`/categories/edit/${item?._id}`)
+    if (menu === "Edit") {
+      history.push(`/categories/edit/${item?._id}`);
     } else {
-      history.push(`/category/details/${item._id}`)
+      history.push(`/category/details/${item._id}`);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -92,7 +95,7 @@ const CategoryList = () => {
               title="Category"
               loading={loading}
               callList={callCategoryList}
-              isAddNew={account_type === 'shop'}
+              isAddNew={account_type === "shop"}
               addNewRoute={"categories/add"}
             />
 
@@ -119,7 +122,9 @@ const CategoryList = () => {
                         id="demo-simple-select"
                         value={shopType}
                         label="Shop Type"
-                        disabled={account_type === "shop" || account_type === "seller"}
+                        disabled={
+                          account_type === "shop" || account_type === "seller"
+                        }
                         onChange={(event) => {
                           dispatch(updateCategoryShopType(event.target.value));
                         }}
@@ -149,7 +154,7 @@ const CategoryList = () => {
                       <Th>Type</Th>
                       <Th>Shop</Th>
                       <Th>Status</Th>
-                      {account_type === 'shop' && <Th>Action</Th>}
+                      {account_type === "shop" && <Th>Action</Th>}
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
@@ -164,27 +169,39 @@ const CategoryList = () => {
                           }}
                         >
                           <Th>
-                            <TableImgItem img={item?.category?.image} name={item?.category?.name} />
+                            <TableImgItem
+                              img={`${
+                                item?.category?.image
+                                  ? item?.category?.image
+                                  : noPhoto
+                              }`}
+                              name={item?.category?.name}
+                            />
                           </Th>
 
                           <Td>{item?.category?.type}</Td>
                           <Td>{item?.category?.shop?.shopName}</Td>
                           <Td>
-                            <div className={`${item?.category?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                            <div
+                              className={`${
+                                item?.category?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
                               {item?.category?.status}
                             </div>
                           </Td>
-                          {account_type === 'shop' && <Td>
-                            <ThreeDotsMenu
-                              handleMenuClick={(menu) =>
-                                handleMenu(menu, item)
-                              }
-                              menuItems={[
-                                "Edit",
-                                "Details"
-                              ]}
-                            />
-                          </Td>}
+                          {account_type === "shop" && (
+                            <Td>
+                              <ThreeDotsMenu
+                                handleMenuClick={(menu) =>
+                                  handleMenu(menu, item)
+                                }
+                                menuItems={["Edit", "Details"]}
+                              />
+                            </Td>
+                          )}
                         </Tr>
                       );
                     })}
@@ -211,7 +228,9 @@ const CategoryList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllCategory(true, account_type, page))}
+                    lisener={(page) =>
+                      dispatch(getAllCategory(true, account_type, page))
+                    }
                   />
                 </div>
               </Col>
