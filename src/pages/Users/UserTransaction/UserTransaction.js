@@ -165,8 +165,8 @@ const UserTransaction = () => {
                     <Thead>
                       <Tr>
                         <Th>Date</Th>
-                        <Th>User Note</Th>
-                        <Th>Admin Note</Th>
+                        <Th>Notes</Th>
+                        {/* <Th>Admin Note</Th> */}
                         <Th>Amount</Th>
                       </Tr>
                     </Thead>
@@ -185,12 +185,47 @@ const UserTransaction = () => {
                               <Th>
                                 {moment(item?.createdAt).format("YYYY-MM-DD")}
                               </Th>
-                              <Td>{item?.userNote}</Td>
-                              <Td>{item?.adminNote} </Td>
-                              <Td style={{ color: item?.type === "userBalanceWithdrawAdmin" ? 'red' : 'green' }}>
-                                {`${item?.type === "userBalanceWithdrawAdmin" ? "-" : item?.type === "userBalanceAddAdmin" ? "+" : ""} ${item?.amount}`}
+                              <Td style={{ textAlign: "left" }}>
+                                {item?.adminNote === item?.userNote ? (
+                                  `${
+                                    item?.adminNote || item?.userNote
+                                      ? "Note: " + item?.adminNote
+                                      : "No note added"
+                                  }`
+                                ) : (
+                                  <>
+                                    {item?.adminNote ? (
+                                      <>
+                                        <span>{`${
+                                          "Admin Note: " + item?.adminNote
+                                        }`}</span>
+                                        <br />
+                                        <span>{`${
+                                          "User Note: " + item?.userNote
+                                        }`}</span>
+                                      </>
+                                    ) : (
+                                      <span>{`${item?.userNote}`}</span>
+                                    )}
+                                  </>
+                                )}
                               </Td>
-
+                              <Td
+                                style={{
+                                  color:
+                                    item?.type === "userBalanceWithdrawAdmin"
+                                      ? "red"
+                                      : "green",
+                                }}
+                              >
+                                {`${
+                                  item?.type === "userBalanceWithdrawAdmin"
+                                    ? "-"
+                                    : item?.type === "userBalanceAddAdmin"
+                                    ? "+"
+                                    : ""
+                                } ${item?.amount}`}
+                              </Td>
                             </Tr>
                           );
                         })}
