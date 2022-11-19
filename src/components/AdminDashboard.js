@@ -24,9 +24,8 @@ import cashInHandIcon from "../assets/images/dashboard/cash-in-hand.png";
 import TopSummery from "./TopSummery";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
-const OrdersGraph = lazy(() => import("./OrdersGraph"));
-const EarningsGraph = lazy(() => import("./EarningsGraph"));
-const UsersGraph = lazy(() => import("./UsersGraph"));
+const GraphInfo = lazy(() => import("./GraphInfo"));
+
 
 const TopLists = ({ list, type }) => {
   return (
@@ -201,7 +200,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
         <Row>
           <Col md={9}>
             <Suspense fallback={<div>Loading...</div>}>
-              <UsersGraph />
+              <GraphInfo graphType='user' />
             </Suspense>
           </Col>
           <Col md={3}>
@@ -275,7 +274,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
         <Row>
           <Col md={9}>
             <Suspense fallback={<div>Loading...</div>}>
-              <OrdersGraph />
+              <GraphInfo graphType='order' />
             </Suspense>
           </Col>
 
@@ -287,7 +286,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
         <Row>
           <Col>
             <Suspense fallback={<div>Loading...</div>}>
-              <EarningsGraph />
+              <GraphInfo graphType='earning' />
             </Suspense>
           </Col>
         </Row>

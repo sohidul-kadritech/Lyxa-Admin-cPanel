@@ -27,6 +27,8 @@ export const updateTermAndCondition =
         },
       });
 
+      console.log({ data });
+
       if (status) {
         successMsg(message, "success");
         dispatch({
@@ -40,7 +42,7 @@ export const updateTermAndCondition =
           payload: error,
         });
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
 //   GET TERMS AND CONDITIONS
@@ -72,5 +74,7 @@ export const getTermAndCondition = (type) => async (dispatch) => {
         payload: error,
       });
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };

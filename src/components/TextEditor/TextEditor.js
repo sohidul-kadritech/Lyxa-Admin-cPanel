@@ -63,7 +63,7 @@ const TextEditor = ({ title, type = "" }) => {
         });
         if (data.message) {
           const value = data.data;
-
+          setIsLoading(false);
           if (value != null) {
             const contentBlock = htmlToDraft(value);
             if (contentBlock) {
@@ -73,12 +73,13 @@ const TextEditor = ({ title, type = "" }) => {
               const outputEditorState =
                 EditorState.createWithContent(contentState);
               setEditorState(outputEditorState);
-              setIsLoading(false);
+
             }
           } else {
             setEditorState(EditorState.createEmpty());
           }
         } else {
+          setIsLoading(false);
           console.log(data.error);
         }
       } catch (error) {
@@ -87,7 +88,7 @@ const TextEditor = ({ title, type = "" }) => {
     };
     callApi();
     return () => {
-      setEditorState(EditorState.createEmpty()); // This worked for me
+      setEditorState(EditorState.createEmpty());
     };
   }, []);
 
@@ -104,7 +105,7 @@ const TextEditor = ({ title, type = "" }) => {
     <React.Fragment>
       <GlobalWrapper>
         <Breadcrumb
-          maintitle="Drop"
+          maintitle="Lyxa"
           // title={title}
           breadcrumbItem={title}
           // loading={loading}
@@ -119,7 +120,7 @@ const TextEditor = ({ title, type = "" }) => {
                 <div className="d-flex justify-content-between">
                   <CardTitle className="h4">{title}</CardTitle>
                   {isLoading && (
-                    <Spinner animation="border" variant="info" size="lg" />
+                    <Spinner animation="border" color="success" size="lg" />
                   )}
                 </div>
                 <hr />
@@ -131,6 +132,7 @@ const TextEditor = ({ title, type = "" }) => {
                     editorClassName="editorClassName"
                     editorState={editorState}
                     defaultEditorState={editorState}
+                    placeholder=" Enter Terms And Conditions"
                   />
                 </Form>
 
@@ -141,7 +143,7 @@ const TextEditor = ({ title, type = "" }) => {
                     className="btn btn-md px-5"
                   >
                     {loading ? (
-                      <Spinner animation="border" variant="info" size="sm" />
+                      <Spinner animation="border" color="info" size="sm" />
                     ) : (
                       "Update"
                     )}

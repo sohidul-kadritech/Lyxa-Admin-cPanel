@@ -3,7 +3,7 @@ import Flatpickr from "react-flatpickr";
 import Select from "react-select";
 import { Row, Col, Card, CardBody, Spinner } from "reactstrap";
 import { graphFilterOptions, monthOptions } from "../assets/staticData";
-import { Bar } from 'react-chartjs-2';
+import { Bar } from "react-chartjs-2";
 
 const Graph = ({
     filterType,
@@ -27,20 +27,20 @@ const Graph = ({
         labels: chartData.labels,
         datasets: [
             {
-                label: 'Analytics',
+                label: "Analytics",
                 backgroundColor: "#02a499",
                 borderColor: "#02a499",
                 borderWidth: 1,
                 hoverBackgroundColor: "#02a499",
                 hoverBorderColor: "#02a499",
-                data: chartData?.series ?? []
-            }
-        ]
+                data: chartData?.series ?? [],
+            },
+        ],
     };
 
     const option = {
         tootlbar: {
-            show: false
+            show: false,
         },
         low: 0,
         tooltips: {
@@ -51,42 +51,38 @@ const Graph = ({
                     // let total = meta.total;
                     let currentValue = dataset.data[tooltipItem.index];
                     // var percentage = parseFloat((currentValue / total * 100).toFixed(1));
-                    return `Vaule - ${currentValue}`;
+                    return ` ${graphType}s - ${currentValue}`;
                 },
                 title: function (tooltipItem, data) {
-                    return `Label - ${data.labels[tooltipItem[0].index]}`;
-                }
-            }
+                    return ` ${(type.value === 'normal' || type.value === 'month') ? 'Day' : 'Month'} - ${data.labels[tooltipItem[0].index]}`;
+                },
+            },
         },
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true,
-                    stepSize: 5,
-                    callback: function (value) { if (value % 1 === 0) { return value; } }
-                }
-            }]
-        }
-    }
+            yAxes: [
+                {
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 5,
+                        callback: function (value) {
+                            if (value % 1 === 0) {
+                                return value;
+                            }
+                        },
+                    },
+                },
+            ],
+        },
+    };
     return (
         <React.Fragment>
             <Card>
                 <CardBody>
-
                     <div className="d-flex justify-content-between align-items-center">
-                        <h4 className="card-title mb-4" style={{ width: "140px" }}>
-                            {`${graphType === "order"
-                                ? "Order"
-                                : graphType === "earning"
-                                    ? "Earning"
-                                    : graphType === "users"
-                                        ? "Users"
-                                        : ""
-                                }`}{" "}
-                            Graph
+                        <h4 className="card-title mb-4 text-capitalize" style={{ width: "140px" }}>
+                            {`${graphType}s Graph`}
                         </h4>
-                        <Row style={{ flex: '1' }}>
-
+                        <Row style={{ flex: "1" }}>
                             <Col lg={4}>
                                 <div className="mb-4">
                                     <label className="control-label">Filter By</label>

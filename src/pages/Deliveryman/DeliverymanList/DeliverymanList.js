@@ -37,7 +37,7 @@ import moment from "moment";
 import Info from "../../../components/Info";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 import TableImgItem from "../../../components/TableImgItem";
-import userIcon from "../../../assets/images/dashboard/user.png";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
 
 const DeliverymanList = () => {
   const dispatch = useDispatch();
@@ -194,6 +194,7 @@ const DeliverymanList = () => {
                         >
                           <Th>
                             <TableImgItem
+                              img={item?.image ? item?.image : noPhoto}
                               name={item?.name}
                               id={item?.autoGenId}
                             />
@@ -202,17 +203,15 @@ const DeliverymanList = () => {
                           <Td>{item?.number}</Td>
                           <Td>
                             <div
-                              className={`${
-                                item?.status === "active"
+                              className={`${item?.status === "active"
                                   ? "active-status"
                                   : "inactive-status"
-                              }`}
+                                }`}
                             >
-                              {`${
-                                item?.status === "active"
+                              {`${item?.status === "active"
                                   ? "Active"
                                   : "Inactive"
-                              }`}
+                                }`}
                             </div>
                           </Td>
                           <Td>
@@ -290,7 +289,7 @@ const DeliverymanList = () => {
           </div>
           <div
             className="modal-body py-1"
-            // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
+          // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
           >
             <TrackingDeliveryBoy riderId={id} />
           </div>

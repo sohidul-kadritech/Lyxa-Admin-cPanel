@@ -114,6 +114,7 @@ const ShopInfo = () => {
       haveOwnDeliveryBoy,
       deliveryFee,
       deals,
+      address: { address }
     },
   } = useSelector((state) => state.Login);
 
@@ -144,7 +145,7 @@ const ShopInfo = () => {
 
           <Row className="pt-2">
             <Col lg={6}>
-              <InfoTwo value={"location"} Icon={RoomOutlinedIcon} />
+              <InfoTwo value={address} Icon={RoomOutlinedIcon} />
               <InfoTwo
                 value={`Mon to Fri - ${shopStartTimeText} ${shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
                   } - ${shopEndTimeText} ${shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"

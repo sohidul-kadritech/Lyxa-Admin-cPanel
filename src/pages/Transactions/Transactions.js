@@ -25,6 +25,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import AppPagination from '../../components/AppPagination';
 
 const Transactions = () => {
   const dispatch = useDispatch();
@@ -111,8 +112,8 @@ const Transactions = () => {
       newType = "Drop pay";
     } else if (type === "userBalanceAddAdmin") {
       newType = "User balance add by admin";
-    } else if (type === "userBalanceAddAdmin") {
-      newType = "User Balance Add By Admin";
+    } else if (type === "userBalanceWithdrawAdmin") {
+      newType = "User Balance Withraw By Admin";
     } else if (type === "deliveryBoyOrderDelivered") {
       newType = "Delivery boy delivered order";
     } else if (type === "DropGetFromOrder") {
@@ -121,6 +122,8 @@ const Transactions = () => {
       newType = "User pay for order";
     } else if (type === "userPayBeforeReceivedOrderByWallet") {
       newType = "User pay before received order";
+    } else if (type === "unSettleAmountRemove") {
+      newType = "Unsettle Amount Remove";
     } else {
       newType = "";
     }
@@ -222,7 +225,7 @@ const Transactions = () => {
                           <Td>{item?.amount}</Td>
 
                           <Td>{updateTrxType(item?.type)}</Td>
-                          <Td>{item?.paymentMethod}</Td>
+                          <Td className='text-capitalize'>{item?.paymentMethod ?? 'Admin'}</Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
@@ -233,7 +236,7 @@ const Transactions = () => {
                 </Table>
                 {loading && (
                   <div className="text-center">
-                    <Spinner animation="border" variant="success" />
+                    <Spinner animation="border" color="success" />
                   </div>
                 )}
                 {!loading && allTrxs.length < 1 && (
@@ -243,7 +246,7 @@ const Transactions = () => {
                 )}
               </CardBody>
             </Card>
-            {/* <Row>
+            <Row>
               <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
@@ -251,11 +254,11 @@ const Transactions = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(getDeliveryTrx(true, page))}
+                    lisener={(page) => dispatch(getAllTransctions(true, page))}
                   />
                 </div>
               </Col>
-            </Row> */}
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

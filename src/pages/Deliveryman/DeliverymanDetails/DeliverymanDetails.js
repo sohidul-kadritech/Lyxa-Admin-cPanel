@@ -72,9 +72,9 @@ const DeliverymanDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"Details"}
-              title="Deliveryman"
+              title="Delivery Boy"
               isRefresh={false}
             />
 
@@ -120,7 +120,7 @@ const DeliverymanDetails = () => {
                       <Info title="Phone" value={deliveryMan?.number} />
                       <Info
                         title="Address"
-                        value={deliveryMan?.address?.address}
+                        value={deliveryMan?.address}
                       />
                       <Info
                         title="Total Income"

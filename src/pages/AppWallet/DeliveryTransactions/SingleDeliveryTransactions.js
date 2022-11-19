@@ -35,6 +35,12 @@ import {
   updateRiderTrxEndDate,
   updateRiderTrxStartDate,
 } from "../../../store/appWallet/appWalletAction";
+import earningFlowIcon from "../../../assets/images/dashboard/earning-flow.png";
+import moneyExchangeIcon from "../../../assets/images/dashboard/money-exchange.png";
+import deliveryIcon from "../../../assets/images/dashboard/delivery.png";
+import orderAmountIcon from "../../../assets/images/dashboard/order-amount.png";
+import profitFlowIcon from "../../../assets/images/dashboard/profit-flow.png";
+import TopSummery from "../../../components/TopSummery";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -150,23 +156,37 @@ const SingleDeliveryTransactions = () => {
       const summaryList = [
         {
           title: "Drop Earning",
-          value: trxs?.summary?.dropEarning,
+          value: `${trxs?.summary?.dropEarning} NGN`,
+          icon: earningFlowIcon,
+          iconBg: "red",
         },
 
         {
           title: "Unsetlled Amount",
-          value: trxs?.summary?.totalUnSettleAmount,
+          value: `${trxs?.summary?.totalUnSettleAmount} NGN`,
+          icon: moneyExchangeIcon,
+          iconBg: "#0c9da4",
         },
         {
           title: "Rider Earning",
-          value: trxs?.summary?.riderEarning,
+          value: `${trxs?.summary?.riderEarning} NGN`,
+          icon: deliveryIcon,
+          iconBg: "#00dcff",
         },
         {
           title: "Total Profit",
-          value: trxs?.summary?.totalProfitRider,
+          value: `${trxs?.summary?.totalProfitRider} NGN`,
+          icon: profitFlowIcon,
+          iconBg: "#ff5ca7",
         },
-        { title: "Cash In Hand", value: trxs?.summary?.totalCashInHand },
+        {
+          title: "Cash In Hand",
+          value: `${trxs?.summary?.totalCashInHand} NGN`,
+          icon: orderAmountIcon,
+          iconBg: "#56ca00",
+        },
       ];
+
       setSummary(summaryList);
     }
   }, [trxs]);
@@ -286,7 +306,8 @@ const SingleDeliveryTransactions = () => {
                   </CardBody>
                 </Card>
                 <div>
-                  <TransactionsCard summary={summary} />
+                  {/* <TransactionsCard summary={summary} /> */}
+                  <TopSummery fromWallet={true} data={summary} />
                 </div>
                 <Card>
                   <CardBody>
@@ -297,6 +318,7 @@ const SingleDeliveryTransactions = () => {
                         <Button
                           className="btn btn-info ms-4"
                           onClick={() => setIsMakePayment(!isMakePayment)}
+                        // disabled={trxs?.summary?.totalUnSettleAmount === 0}
                         >
                           Make Payment
                         </Button>

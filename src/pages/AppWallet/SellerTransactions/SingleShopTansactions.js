@@ -50,6 +50,11 @@ import {
   sortByOptions,
 } from "../../../assets/staticData";
 import { getAllAdmin } from "../../../store/AdminControl/Admin/adminAction";
+import earningFlowIcon from "../../../assets/images/dashboard/earning-flow.png";
+import moneyExchangeIcon from "../../../assets/images/dashboard/money-exchange.png";
+import deliveryIcon from "../../../assets/images/dashboard/delivery.png";
+import orderAmountIcon from "../../../assets/images/dashboard/order-amount.png";
+import TopSummery from "../../../components/TopSummery";
 
 const SingleShopTransactions = () => {
   const history = useHistory();
@@ -145,23 +150,85 @@ const SingleShopTransactions = () => {
 
   useEffect(() => {
     const summaryList = [
-      { title: "Drop Earning", value: shopTrxs?.summary?.totalDropGet },
+      {
+        title: "Drop Earning",
+        value: `${shopTrxs?.summary?.totalDropGet} NGN`,
+        icon: earningFlowIcon,
+        iconBg: "red",
+      },
 
       {
         title: "Unsetlled Amount",
-        value: shopTrxs?.summary?.totalShopUnsettle,
+        value: `${shopTrxs?.summary?.totalShopUnsettle} NGN`,
+        icon: moneyExchangeIcon,
+        iconBg: "#0c9da4",
       },
       {
         title: "Shop Earning",
-        value: shopTrxs?.summary?.totalShopEarning,
+        value: `${shopTrxs?.summary?.totalShopEarning} NGN`,
+        icon: deliveryIcon,
+        iconBg: "#00dcff",
       },
       {
         title: "Total Profit",
-        value: shopTrxs?.summary?.toalShopProfile,
+        value: `${shopTrxs?.summary?.toalShopProfile} NGN`,
+        icon: orderAmountIcon,
+        iconBg: "#ff5ca7",
       },
     ];
     setSummary(summaryList);
   }, [shopTrxs]);
+
+  // const topSummaryData = [
+  //   {
+  //     id: 1,
+  //     title: "Lyxa Earnings",
+  //     subTitle: "(Total earnings)",
+  //     value: `${summary?.totalDropEarning ?? 0} NGN`,
+  //     icon: earningFlowIcon,
+  //     iconBg: "red",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Order Profit",
+  //     subTitle: "(Ex delivery fees)",
+  //     value: `${summary?.dropEarningTotalOfItems ?? 0} NGN`,
+  //     icon: profitFlowIcon,
+  //     iconBg: "#56ca00",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Delivery Profit",
+  //     subTitle: "(Only from delivery fees)",
+  //     value: `${summary?.dropEarningTotalOfDeliveryFee ?? 0} NGN`,
+  //     icon: profitUpArrowIcon,
+  //     iconBg: "#f7c137",
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "Delivery Fee's",
+  //     subTitle: "(Total delivery fees)",
+  //     value: `${summary?.ordersDeliveryFeesTotal ?? 0} NGN`,
+  //     icon: deliveryIcon,
+  //     iconBg: "#00dcff",
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Order Amount",
+  //     subTitle: "(Ex delivery fees)",
+  //     value: `${summary?.ordersItemTotal ?? 0} NGN`,
+  //     icon: orderAmountIcon,
+  //     iconBg: "#ff5ca7",
+  //   },
+  //   {
+  //     id: 6,
+  //     title: "Shops Unsettled Amount",
+  //     subTitle: "(Total unsettled)",
+  //     value: `${summary?.shopUnsettleAmount ?? 0} NGN`,
+  //     icon: moneyExchangeIcon,
+  //     iconBg: "#0c9da4",
+  //   },
+  // ];
 
   useEffect(() => {
     if (status) {
@@ -350,7 +417,7 @@ const SingleShopTransactions = () => {
             </Card>
 
             <div>
-              <TransactionsCard summary={summary} />
+              <TopSummery fromWallet={true} data={summary} />
             </div>
 
             <Card>

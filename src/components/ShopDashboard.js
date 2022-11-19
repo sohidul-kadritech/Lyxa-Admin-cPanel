@@ -11,11 +11,10 @@ import earningFlowIcon from "../assets/images/dashboard/earning-flow.png";
 import TopSummery from "./TopSummery";
 
 import cancelBagIcon from "../assets/images/dashboard/cancel-bag.png";
-import shopIcon from "../assets/images/dashboard/shop.png";
 import bagIcon from "../assets/images/dashboard/bag.png";
 
-const OrdersGraph = lazy(() => import("./OrdersGraph"));
-const EarningsGraph = lazy(() => import("./EarningsGraph"));
+const GraphInfo = lazy(() => import("./GraphInfo"));
+
 
 const ShopDashboard = ({ summary }) => {
     const topSummaryData = [
@@ -75,7 +74,7 @@ const ShopDashboard = ({ summary }) => {
 
                 <Row>
                     <Suspense fallback={<div>Loading...</div>}>
-                        <EarningsGraph />
+                        <GraphInfo graphType='earning' />
                     </Suspense>
                 </Row>
 
@@ -110,7 +109,7 @@ const ShopDashboard = ({ summary }) => {
 
                 <Row>
                     <Suspense fallback={<div>Loading...</div>}>
-                        <OrdersGraph />
+                        <GraphInfo graphType='order' />
                     </Suspense>
                 </Row>
             </GlobalWrapper>

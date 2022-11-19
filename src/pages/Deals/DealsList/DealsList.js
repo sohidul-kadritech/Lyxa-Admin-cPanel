@@ -175,20 +175,18 @@ const DealsList = () => {
                             />
                           </Th>
                           <Td>{item?.type}</Td>
-                          <Td>{`${item?.percentage ?? ""} ${item?.option}`}</Td>
+                          <Td className='text-capitalize'>{`${item?.percentage ?? ""} ${(item?.option).split('_').join(" ")}`}</Td>
                           <Td>
                             <div
-                              className={`${
-                                item?.status === "active"
-                                  ? "active-status"
-                                  : "inactive-status"
-                              }`}
+                              className={`${item?.status === "active"
+                                ? "active-status"
+                                : "inactive-status"
+                                }`}
                             >
-                              {`${
-                                item?.status === "active"
-                                  ? "Active"
-                                  : "Inactive"
-                              }`}
+                              {`${item?.status === "active"
+                                ? "Active"
+                                : "Inactive"
+                                }`}
                             </div>
                           </Td>
                           <Td>

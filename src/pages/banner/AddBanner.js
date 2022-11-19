@@ -60,6 +60,7 @@ import formatBytes from "../../common/imageFormatBytes";
 import ShopAutocompleted from "../../components/ShopAutocompleted";
 import SelectOption from "../../components/SelectOption";
 import ProductAutocompleted from "../../components/ProductAutocompleted";
+import { successMsg } from "../../helpers/successMsg";
 
 const AddBanner = () => {
   const { list, status, loading } = useSelector((state) => state.bannerReducer);
@@ -91,7 +92,9 @@ const AddBanner = () => {
 
   // GET ALL SHOP
   useEffect(() => {
-    dispatch(getAllShop(true));
+    if (shopType || typeKey || searchKey) {
+      dispatch(getAllShop(true));
+    }
   }, [shopType, typeKey, searchKey]);
 
   // GET ALL Product
@@ -165,26 +168,13 @@ const AddBanner = () => {
     e.preventDefault();
 
     if (!image) {
-      return WarningMessage("Please Select a Image");
+      return successMsg("Please Select a Image");
     }
 
     uploadImage();
   };
 
-  // WARINIG MESSAGE
 
-  const WarningMessage = (message) => {
-    toast.warn(message, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
 
   // UPLOAD IMAGE TO SERVER
 

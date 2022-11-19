@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Row, Col, Card, CardBody, Spinner } from "reactstrap";
 
-const TopSummery = ({ data }) => {
+const TopSummery = ({ data, fromWallet = false }) => {
   return (
     <React.Fragment>
       <Card>
@@ -12,7 +12,7 @@ const TopSummery = ({ data }) => {
               data?.map((item, index) => {
                 const { icon, title, subTitle, value, iconBg } = item;
                 return (
-                  <Col md={2} key={index} className="px-1">
+                  <Col md={12 % data?.length !== 0 ? 2 : (12 / data?.length)} key={index} className={`${fromWallet ? 'px-3' : 'px-1'}`}>
                     <div>
                       <strong className="font-size-14 text-muted">
                         {title}
@@ -26,7 +26,7 @@ const TopSummery = ({ data }) => {
                         {subTitle}
                       </strong>
                     </div>
-                    <Wrapper iconBg={iconBg}>
+                    <Wrapper iconBg={iconBg} fromWallet={fromWallet}>
                       <div
                         className="image-wrapper"
                         style={{ textAlign: "center" }}
@@ -45,7 +45,7 @@ const TopSummery = ({ data }) => {
               })
             ) : (
               <div className="text-center">
-                <Spinner animation="border" variant="info" />
+                <Spinner animation="border" color="info" />
               </div>
             )}
           </Row>
@@ -75,6 +75,7 @@ const Wrapper = styled.div`
 
   .value {
     font-size: 18px;
+    padding-left: ${({ fromWallet }) => fromWallet && '5px'}
   }
 `;
 

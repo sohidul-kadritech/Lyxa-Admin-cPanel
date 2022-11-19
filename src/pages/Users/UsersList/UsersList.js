@@ -26,18 +26,15 @@ import {
 } from "../../../store/Users/UsersAction";
 import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
-import { Tooltip } from "@mui/material";
 import Search from "./../../../components/Search";
 import {
-  productStatusOptions,
-  shopStatusOptions2,
   sortByOptions,
   statusOptions,
-  userStatusOptions,
 } from "./../../../assets/staticData";
 import Select from "react-select";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 import TableImgItem from "../../../components/TableImgItem";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -91,8 +88,8 @@ const UsersList = () => {
               hideSettingBtn={true}
               loading={loading}
               callList={callUsersList}
-              // isAddNew={true}
-              // addNewRoute="users/add"
+            // isAddNew={true}
+            // addNewRoute="users/add"
             />
 
             {/* FILTER OPTIONS */}
@@ -166,6 +163,7 @@ const UsersList = () => {
                           >
                             <Th>
                               <TableImgItem
+                                img={user?.profile_photo ? user?.profile_photo : noPhoto}
                                 name={user?.name}
                                 id={user?.autoGenId}
                               />

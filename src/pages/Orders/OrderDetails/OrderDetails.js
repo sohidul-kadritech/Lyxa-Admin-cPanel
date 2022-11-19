@@ -234,12 +234,47 @@ const OrderDetails = () => {
                         link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
                       />
                     )}
+                    <Info title="Order Status" value={order?.orderStatus} />
+
+                    <Info title="Order Type" value={order?.orderType} />
+
+                    <Info
+                      title="Payment Method"
+                      value={`${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""
+                        }`}
+                    />
+                    <Info title="Payment Status" value={order?.paymentStatus} />
+
+
+
+                  </Col>
+
+                  <Col lg={6}>
+                    <Info
+                      title="Order Time"
+                      value={new Date(order?.createdAt).toLocaleString()}
+                    />
                     <Info
                       title="Delivery Distance"
                       value={`${order?.deliveryDistance} KM`}
                     />
-                    <Info title="Order Status" value={order?.orderStatus} />
-                    <Info title="Order Type" value={order?.orderType} />
+                    {order?.orderCancel && (
+                      <>
+                        <Info title="Cancelled By" value={order?.orderCancel.canceledBy} />
+                        <Info title="Cancel Reason" value={order?.orderCancel.cancelReason ? order?.orderCancel?.cancelReason?.name : order?.orderCancel?.otherReason} />
+
+                      </>
+                    )}
+                    {order?.deliveryBoy && (
+                      <Info
+                        title="Rider"
+                        value={order?.deliveryBoy?.name}
+                        link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
+                      />
+                    )}
+                    {order?.reviewDes && (
+                      <Info title="User Review" value={order?.reviewDes} />
+                    )}
                     <Info
                       title="Rating"
                       value={
@@ -254,32 +289,7 @@ const OrderDetails = () => {
                                 : 'No Rating'
                       }
                     />
-                  </Col>
 
-                  <Col lg={6}>
-                    <Info
-                      title="Payment Method"
-                      value={`${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""
-                        }`}
-                    />
-                    <Info title="Payment Status" value={order?.paymentStatus} />
-                    <Info
-                      title="Order Time"
-                      value={new Date(order?.createdAt).toLocaleString()}
-                    />
-                    {order?.deliveryBoy && (
-                      <Info
-                        title="Rider"
-                        value={order?.deliveryBoy?.name}
-                        link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
-                      />
-                    )}
-                    {order?.reviewDes && (
-                      <Info title="User Review" value={order?.reviewDes} />
-                    )}
-                    {/* {order?.orderCancel && (
-                      <Info title="Cancel Reas" value={order?.reviewDes} />
-                    )} */}
                   </Col>
                 </Row>
               </CardBody>
