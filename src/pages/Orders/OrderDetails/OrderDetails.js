@@ -21,13 +21,15 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import styled from "styled-components";
 import SimpleBar from "simplebar-react";
-import user2 from "../../../assets/images/users/user-2.jpg";
-import user3 from "../../../assets/images/users/user-3.jpg";
-import smimg1 from "../../../assets/images/small/img-1.jpg";
-import smimg2 from "../../../assets/images/small/img-2.jpg";
 import { useHistory, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Tooltip, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
@@ -36,11 +38,12 @@ import OrderTrackingMap from "../../../components/OrderTrackingMap";
 import FlagsAndReviews from "../../../components/FlagsAndReviews";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import requestApi from "../../../network/httpRequest";
+
 import { SINGLE_ORDER } from "../../../network/Api";
 import user1 from "../../../assets/images/user1.jpg";
 import { callApi } from "../../../components/SingleApiCall";
 import TableImgItem from "../../../components/TableImgItem";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -57,7 +60,7 @@ const OrderDetails = () => {
       if (findOrder) {
         setOrder(findOrder);
       } else {
-        const data = await callApi(id, SINGLE_ORDER, 'order')
+        const data = await callApi(id, SINGLE_ORDER, "order");
         if (data) {
           setOrder(data);
         } else {
@@ -66,25 +69,6 @@ const OrderDetails = () => {
       }
     }
   }, [id]);
-
-  // CALL API FOR ORDER
-
-  // const callApi = async (shopId) => {
-  //   const { data } = await requestApi().request(SINGLE_ORDER, {
-  //     params: {
-  //       id: shopId,
-  //     },
-  //   });
-  //   // console.log(banner)
-  //   if (data.status) {
-  //     const { order } = data.data;
-  //     if (order) {
-  //       setOrder(order);
-  //     } else {
-  //       history.push("/orders/list", { replace: true });
-  //     }
-  //   }
-  // };
 
   const calProductAmount = (product) => {
     if (product.selectedAttributes.length > 0) {
@@ -126,8 +110,9 @@ const OrderDetails = () => {
     const shopName = `Shop Name : ${order?.shop?.shopName}. `;
     const price = `Price : ${order?.summary?.totalAmount} NGN.`;
     const address = `Address : ${order?.dropOffLocation?.address}.`;
-    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""
-      }`;
+    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${
+      order?.selectPos !== "no" ? "(Pos)" : ""
+    }`;
 
     const orderTime = `Order Time : ${new Date(
       order?.createdAt
@@ -240,13 +225,11 @@ const OrderDetails = () => {
 
                     <Info
                       title="Payment Method"
-                      value={`${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""
-                        }`}
+                      value={`${order?.paymentMethod} ${
+                        order?.selectPos !== "no" ? "(Pos)" : ""
+                      }`}
                     />
                     <Info title="Payment Status" value={order?.paymentStatus} />
-
-
-
                   </Col>
 
                   <Col lg={6}>
@@ -260,9 +243,18 @@ const OrderDetails = () => {
                     />
                     {order?.orderCancel && (
                       <>
-                        <Info title="Cancelled By" value={order?.orderCancel.canceledBy} />
-                        <Info title="Cancel Reason" value={order?.orderCancel.cancelReason ? order?.orderCancel?.cancelReason?.name : order?.orderCancel?.otherReason} />
-
+                        <Info
+                          title="Cancelled By"
+                          value={order?.orderCancel.canceledBy}
+                        />
+                        <Info
+                          title="Cancel Reason"
+                          value={
+                            order?.orderCancel.cancelReason
+                              ? order?.orderCancel?.cancelReason?.name
+                              : order?.orderCancel?.otherReason
+                          }
+                        />
                       </>
                     )}
                     {order?.deliveryBoy && (
@@ -281,15 +273,14 @@ const OrderDetails = () => {
                         order?.review === 4
                           ? "Excellent"
                           : order?.review === 3
-                            ? "Very good"
-                            : order?.review === 2
-                              ? "Good"
-                              : order?.review === 1
-                                ? "Bad"
-                                : 'No Rating'
+                          ? "Very good"
+                          : order?.review === 2
+                          ? "Good"
+                          : order?.review === 1
+                          ? "Bad"
+                          : "No Rating"
                       }
                     />
-
                   </Col>
                 </Row>
               </CardBody>
@@ -298,7 +289,7 @@ const OrderDetails = () => {
             {/* TIMELINE AND SUMMARY */}
             <Row>
               <Col xl={6}>
-                <Card className='card-height'>
+                <Card className="card-height">
                   <CardBody>
                     <CardTitle>Order Timeline</CardTitle>
                     <hr />
@@ -333,8 +324,9 @@ const OrderDetails = () => {
                           </TimelineSeparator>
                           <TimelineContent
                             color={item?.active ? "green" : "black"}
+                            className="text-capitalize"
                           >
-                            {item?.status}
+                            {item?.status.split("_").join(" ")}
                           </TimelineContent>
                         </TimelineItem>
                       ))}
@@ -343,8 +335,8 @@ const OrderDetails = () => {
                 </Card>
               </Col>
 
-              <Col xl={6} >
-                <Card className='card-height'>
+              <Col xl={6}>
+                <Card className="card-height">
                   <CardBody>
                     <CardTitle className="h4">Summary</CardTitle>
                     <hr />
@@ -372,89 +364,101 @@ const OrderDetails = () => {
                     </Summery>
                   </CardBody>
                 </Card>
-
-
-
-
               </Col>
             </Row>
 
-
             {/* Flags and Chat */}
 
-            <Row>
+            <Row className='mb-4'>
               <Col lg={6}>
                 <FlagsAndReviews flags={order?.flag} isFromOrder={true} />
               </Col>
               <Col lg={6}>
-                <Card>
-                  <CardBody>
-                    <CardTitle>Conversations (User & Delivery Body)</CardTitle>
-                    <hr />
-                    <div className="chat-conversation">
-                      <SimpleBar style={{ height: "300px", overflow: 'hidden scroll' }}>
-                        <ul
-                          className="conversation-list"
-                          data-simplebar
-                          style={{
-                            maxHeight: "300px",
-                            width: "100%",
-                          }}
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography>
+                      Conversations (User & Delivery Body)
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      <div className="chat-conversation">
+                        <SimpleBar
+                          style={{ height: "300px", overflow: "hidden scroll" }}
                         >
-                          {order?.chats?.length > 0 ? order?.chats?.map((chat, index, arr) => (
-                            <div key={index}>
-                              {chat?.sender === "user" && (
-                                <li className="clearfix">
-                                  <div className="chat-avatar">
-                                    <Tooltip title='See user details'>
-                                      <img
-                                        src={user1}
-                                        className="avatar-xs rounded-circle cursor-pointer"
-                                        alt="User"
-                                        onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
-                                      />
-                                    </Tooltip>
-                                  </div>
-                                  <div className="conversation-text color-primary" >
-                                    <div className="ctext-wrap">
+                          <ul
+                            className="conversation-list"
+                            data-simplebar
+                            style={{
+                              maxHeight: "300px",
+                              width: "100%",
+                            }}
+                          >
+                            {order?.chats?.length > 0 ? (
+                              order?.chats?.map((chat, index, arr) => (
+                                <div key={index}>
+                                  {chat?.sender === "user" && (
+                                    <li className="clearfix">
+                                      <div className="chat-avatar">
+                                        <Tooltip title="See user details">
+                                          <img
+                                            src={user1}
+                                            className="avatar-xs rounded-circle cursor-pointer"
+                                            alt="User"
+                                            onClick={() =>
+                                              history.push(
+                                                `/users/details/${chat?.user?._id}`
+                                              )
+                                            }
+                                          />
+                                        </Tooltip>
+                                      </div>
+                                      <div className="conversation-text color-primary">
+                                        <div className="ctext-wrap">
+                                          <strong>{chat?.message}.</strong>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  )}
 
-                                      <strong>
-                                        {chat?.message}.
-                                      </strong>
-                                    </div>
-                                  </div>
-                                </li>
-                              )}
-
-                              {chat?.sender === "deliveryBoy" && (
-                                <li className="clearfix odd">
-                                  <div className="chat-avatar">
-                                    <Tooltip title='See delivery boy details'>
-                                      <img
-                                        src={user1}
-                                        className="avatar-xs rounded-circle cursor-pointer"
-                                        alt="Delivery Boy"
-                                        onClick={() => history.push(`/deliveryman/details/${chat?.deliveryBoy?._id}`)}
-                                      />
-                                    </Tooltip>
-                                  </div>
-                                  <div className="conversation-text">
-                                    <div className="ctext-wrap">
-
-                                      <strong>
-                                        {chat?.message}.
-                                      </strong>
-                                    </div>
-                                  </div>
-                                </li>
-                              )}
-                            </div>
-                          )) : <h5 className="text-center">No Conversions!</h5>}
-                        </ul>
-                      </SimpleBar>
-                    </div>
-                  </CardBody>
-                </Card>
+                                  {chat?.sender === "deliveryBoy" && (
+                                    <li className="clearfix odd">
+                                      <div className="chat-avatar">
+                                        <Tooltip title="See delivery boy details">
+                                          <img
+                                            src={user1}
+                                            className="avatar-xs rounded-circle cursor-pointer"
+                                            alt="Delivery Boy"
+                                            onClick={() =>
+                                              history.push(
+                                                `/deliveryman/details/${chat?.deliveryBoy?._id}`
+                                              )
+                                            }
+                                          />
+                                        </Tooltip>
+                                      </div>
+                                      <div className="conversation-text">
+                                        <div className="ctext-wrap">
+                                          <strong>{chat?.message}.</strong>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  )}
+                                </div>
+                              ))
+                            ) : (
+                              <h5 className="text-center">No Conversions!</h5>
+                            )}
+                          </ul>
+                        </SimpleBar>
+                      </div>
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
               </Col>
             </Row>
 
@@ -493,7 +497,7 @@ const OrderDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col lg={6} className='card-height'>
+              <Col lg={6} className="card-height">
                 {order?.pickUpLocation && order?.dropOffLocation && (
                   <OrderTrackingMap
                     pickup={order?.pickUpLocation}
@@ -502,7 +506,6 @@ const OrderDetails = () => {
                 )}
               </Col>
             </Row>
-
 
             {/* PRODUCT TABLE */}
             <Card>
@@ -562,20 +565,20 @@ const OrderDetails = () => {
                           <Td>
                             {item?.selectedAttributes.length > 0
                               ? item?.selectedAttributes.map((att, index) => (
-                                <div key={index}>
-                                  <span style={{ fontSize: "12px" }}>
-                                    {att?.name}
-                                  </span>
-                                  {att?.selectedItems?.map((item, index) => (
-                                    <p
-                                      key={index}
-                                      style={{ fontSize: "12px" }}
-                                    >
-                                      {item?.name}
-                                    </p>
-                                  ))}
-                                </div>
-                              ))
+                                  <div key={index}>
+                                    <span style={{ fontSize: "12px" }}>
+                                      {att?.name}
+                                    </span>
+                                    {att?.selectedItems?.map((item, index) => (
+                                      <p
+                                        key={index}
+                                        style={{ fontSize: "12px" }}
+                                      >
+                                        {item?.name}
+                                      </p>
+                                    ))}
+                                  </div>
+                                ))
                               : "N/A"}
                           </Td>
                           <Td>{item?.product?.type}</Td>
@@ -589,7 +592,6 @@ const OrderDetails = () => {
                 </Table>
               </CardBody>
             </Card>
-
           </Container>
         </div>
       </GlobalWrapper>

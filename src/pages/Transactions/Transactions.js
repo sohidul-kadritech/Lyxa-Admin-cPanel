@@ -25,10 +25,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import AppPagination from '../../components/AppPagination';
+import AppPagination from "../../components/AppPagination";
+import { useHistory } from "react-router-dom";
+import { successMsg } from "../../helpers/successMsg";
 
 const Transactions = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const {
     loading,
     allTrxs,
@@ -45,6 +48,7 @@ const Transactions = () => {
     if (trxSortByKey || trxSearchKey || trxAccountType) {
       callTransList(true);
     }
+    return;
   }, [trxSortByKey, trxSearchKey, trxAccountType]);
 
   const callTransList = (refresh = false) => {
@@ -87,48 +91,60 @@ const Transactions = () => {
   };
 
   const updateTrxType = (type) => {
-    let newType = "";
-    if (type === "adminSettlebalanceShop") {
-      newType = "Settle shop";
-    } else if (type === "adminAddBalanceShop") {
-      newType = "Add shop credit";
-    } else if (type === "sellerCashInHandAdjust") {
-      newType = "Adjust hand cash";
-    } else if (type === "adminRemoveBalanceShop") {
-      newType = "Remove shop credit";
-    } else if (type === "deliveryBoyAmountSettle") {
-      newType = "Settle rider";
-    } else if (type === "deliveryBoyAdminAmountReceivedCash") {
-      newType = "Received rider cash";
-    } else if (
-      type === "adminGetPercentageFromOrder" ||
-      type === "deliveryBoyOrderDeliveredCash" ||
-      type === "sellerGetPaymentFromOrder" ||
-      type === "sellerGetPaymentFromOrderCash" ||
-      type === "adminWillGetPaymentFromShop"
-    ) {
-      newType = "Order";
-    } else if (type === "userTopUpBalance") {
-      newType = "Drop pay";
-    } else if (type === "userBalanceAddAdmin") {
-      newType = "User balance add by admin";
-    } else if (type === "userBalanceWithdrawAdmin") {
-      newType = "User Balance Withraw By Admin";
-    } else if (type === "deliveryBoyOrderDelivered") {
-      newType = "Delivery boy delivered order";
-    } else if (type === "DropGetFromOrder") {
-      newType = "Drop get from order";
-    } else if (type === "userPayForOrder") {
-      newType = "User pay for order";
-    } else if (type === "userPayBeforeReceivedOrderByWallet") {
-      newType = "User pay before received order";
-    } else if (type === "unSettleAmountRemove") {
-      newType = "Unsettle Amount Remove";
-    } else {
-      newType = "";
-    }
+    return type.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+    // let newType = "";
 
-    return newType;
+    // if (type === "adminSettlebalanceShop") {
+    //   newType = "Settle shop";
+    // } else if (type === "adminAddBalanceShop") {
+    //   newType = "Add shop credit";
+    // } else if (type === "sellerCashInHandAdjust") {
+    //   newType = "Adjust hand cash";
+    // } else if (type === "adminRemoveBalanceShop") {
+    //   newType = "Remove shop credit";
+    // } else if (type === "deliveryBoyAmountSettle") {
+    //   newType = "Settle rider";
+    // } else if (type === "deliveryBoyAdminAmountReceivedCash") {
+    //   newType = "Received rider cash";
+    // } else if (
+    //   type === "adminGetPercentageFromOrder" ||
+    //   type === "deliveryBoyOrderDeliveredCash" ||
+    //   type === "sellerGetPaymentFromOrder" ||
+    //   type === "sellerGetPaymentFromOrderCash" ||
+    //   type === "adminWillGetPaymentFromShop"
+    // ) {
+    //   newType = "Order";
+    // } else if (type === "userTopUpBalance") {
+    //   newType = "Drop pay";
+    // } else if (type === "userBalanceAddAdmin") {
+    //   newType = "User balance add by admin";
+    // } else if (type === "userBalanceWithdrawAdmin") {
+    //   newType = "User Balance Withraw By Admin";
+    // } else if (type === "deliveryBoyOrderDelivered") {
+    //   newType = "Delivery boy delivered order";
+    // } else if (type === "DropGetFromOrder") {
+    //   newType = "Drop get from order";
+    // } else if (type === "userPayForOrder") {
+    //   newType = "User pay for order";
+    // } else if (type === "userPayBeforeReceivedOrderByWallet") {
+    //   newType = "User pay before received order";
+    // } else if (type === "unSettleAmountRemove") {
+    //   newType = "Unsettle Amount Remove";
+    // } else {
+    //   newType = "";
+    // }
+
+    // return newType;
+  };
+
+  const goToDetails = (item) => {
+    if (item?.order) {
+      history.push(`/orders/details/${item?.order}`);
+    } else if (item.user) {
+      history.push(`/users/details/${item?.user?._id}`);
+    } else {
+      successMsg("No Details Found");
+    }
   };
 
   return (
@@ -203,7 +219,7 @@ const Transactions = () => {
                       <Th>ID</Th>
                       <Th>Amount</Th>
                       <Th>Type</Th>
-                      <Th>Payment Method</Th>
+                      <Th>Payment Method/By</Th>
                       <Th>Date</Th>
                     </Tr>
                   </Thead>
@@ -212,20 +228,26 @@ const Transactions = () => {
                       return (
                         <Tr
                           key={index}
-                          className="align-middle"
+                          className="align-middle cursor-pointer"
                           style={{
                             fontSize: "15px",
                             fontWeight: "500",
                           }}
+                          onClick={() => goToDetails(item)}
                         >
-                          <Th style={{ textAlign: "left" }}>
+                          <Th
+                            style={{ textAlign: "left" }}
+                            title="Click to see details"
+                          >
                             {item?.autoGenId}
                           </Th>
 
                           <Td>{item?.amount}</Td>
-
+                          {/*  */}
                           <Td>{updateTrxType(item?.type)}</Td>
-                          <Td className='text-capitalize'>{item?.paymentMethod ?? 'Admin'}</Td>
+                          <Td className="text-capitalize">
+                            {item?.paymentMethod ?? "Admin"}
+                          </Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>

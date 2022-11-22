@@ -165,8 +165,11 @@ const SellerTransactions = () => {
                   </Col>
                 </Row>
                 <Row className=" mt-4">
-                  <Col lg={8} >
-                    <Search dispatchFunc={updateSellerWalletSearchKey} placeholder="Search by Company name or Id" />
+                  <Col lg={8}>
+                    <Search
+                      dispatchFunc={updateSellerWalletSearchKey}
+                      placeholder="Search by Company name or Id"
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -178,9 +181,7 @@ const SellerTransactions = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <div className="d-flex align-items-center justify-content-between">
-                  <CardTitle className="h4">
-                    Sellers Wallets List
-                  </CardTitle>
+                  <CardTitle className="h4">Sellers Wallets List</CardTitle>
                   <Button
                     outline={true}
                     color="success"
@@ -197,7 +198,6 @@ const SellerTransactions = () => {
                   <Thead>
                     <Tr>
                       <Th>ID/Company</Th>
-
                       <Th>Order</Th>
                       <Th>Order amount</Th>
                       <Th>Delivery fee</Th>
@@ -221,12 +221,16 @@ const SellerTransactions = () => {
                           }
                         >
                           <Th title="Click to see details">
-                            <TableImgItem name={trx?.company_name} id={trx?.autoGenId} />
+                            <TableImgItem
+                              name={trx?.company_name}
+                              id={trx?.autoGenId}
+                            />
                           </Th>
 
                           <Td>{trx?.summary?.totalOrder}</Td>
                           <Td>
-                            {trx?.summary?.orderValue?.totalAmount.toFixed(2) ?? 0}
+                            {trx?.summary?.orderValue?.totalAmount.toFixed(2) ??
+                              0}
                           </Td>
                           <Td>{trx?.summary?.orderValue?.deliveryFee ?? 0}</Td>
                           <Td>{trx?.summary?.totalDropGet}</Td>

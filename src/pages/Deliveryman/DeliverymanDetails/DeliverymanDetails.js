@@ -26,6 +26,13 @@ import OrderTable from "../../../components/OrderTable";
 import AppPagination from "../../../components/AppPagination";
 import FlagsAndReviews from "../../../components/FlagsAndReviews";
 import { callApi } from "../../../components/SingleApiCall";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
@@ -54,7 +61,7 @@ const DeliverymanDetails = () => {
       if (findMan) {
         setDeliveryMan(findMan);
       } else {
-        const data = await callApi(id, SINGLE_DELIVERY_MAN, 'delivery')
+        const data = await callApi(id, SINGLE_DELIVERY_MAN, "delivery");
         if (data) {
           setDeliveryMan(data);
         } else {
@@ -63,8 +70,6 @@ const DeliverymanDetails = () => {
       }
     }
   }, [id]);
-
-
 
   return (
     <React.Fragment>
@@ -99,18 +104,26 @@ const DeliverymanDetails = () => {
                         <Button
                           outline={true}
                           color="primary"
-                          onClick={() => history.push(`/deliveryman/edit/${id}`)}
+                          onClick={() =>
+                            history.push(`/deliveryman/edit/${id}`)
+                          }
                         >
                           Edit
                         </Button>
-                        {(account_type === 'admin' && adminType === 'admin') && <Button
-                          outline={true}
-                          color="primary"
-                          onClick={() => history.push(`/add-wallet/single-delivery-transactions/${id}`)}
-                          className='ms-2'
-                        >
-                          Payment history
-                        </Button>}
+                        {account_type === "admin" && adminType === "admin" && (
+                          <Button
+                            outline={true}
+                            color="primary"
+                            onClick={() =>
+                              history.push(
+                                `/add-wallet/single-delivery-transactions/${id}`
+                              )
+                            }
+                            className="ms-2"
+                          >
+                            Payment history
+                          </Button>
+                        )}
                       </div>
                     </div>
                     <hr className="my-2" />
@@ -118,10 +131,7 @@ const DeliverymanDetails = () => {
                       <Info title="Name" value={deliveryMan?.name} />
                       <Info title="Email" value={deliveryMan?.email} />
                       <Info title="Phone" value={deliveryMan?.number} />
-                      <Info
-                        title="Address"
-                        value={deliveryMan?.address}
-                      />
+                      <Info title="Address" value={deliveryMan?.address} />
                       <Info
                         title="Total Income"
                         value={`${deliveryMan?.totalIncome} NGN`}
@@ -130,7 +140,10 @@ const DeliverymanDetails = () => {
                         title="Balance"
                         value={`${deliveryMan?.balance} NGN`}
                       />{" "}
-                      <Info title="Total Orders" value={deliveryMan?.totalOrder} />
+                      <Info
+                        title="Total Orders"
+                        value={deliveryMan?.totalOrder}
+                      />
                       <Info title="Status" value={deliveryMan?.status} />
                       <Info
                         title="Live Status"
@@ -149,67 +162,70 @@ const DeliverymanDetails = () => {
                 </Card>
               </Col>
               <Col lg={6}>
-
-
                 <FlagsAndReviews flags={deliveryMan?.flags} />
-
               </Col>
             </Row>
 
-            <Row>
+            <Row className="mb-4">
               <Col lg={6}>
-                <Card className="card-height">
-                  <CardBody>
-                    <div>
-                      <CardTitle>Images</CardTitle>
-                      <hr />
-                    </div>
-                    <Row>
-                      <Col md={6}>
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(deliveryMan?.nationalIdDocument);
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography>Images</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      <Row>
+                        <Col md={6}>
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
                             }}
-                            className="img-fluid cursor-pointer"
-                            alt="NID"
-                            src={deliveryMan?.nationalIdDocument}
-                            width="100%"
-                          />
-                          <small>NID</small>
-                        </ImageWrapper>
-                      </Col>
-                      <Col md={6}>
-                        <ImageWrapper
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(deliveryMan?.nationalIdDocument);
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(deliveryMan?.nationalIdDocument);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt="NID"
+                              src={deliveryMan?.nationalIdDocument}
+                              width="100%"
+                            />
+                            <small>NID</small>
+                          </ImageWrapper>
+                        </Col>
+                        <Col md={6}>
+                          <ImageWrapper
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              padding: "10px 0px",
                             }}
-                            className="img-fluid cursor-pointer"
-                            alt="Vahicle Document"
-                            src={deliveryMan?.vehicleRegistrationDocument}
-                            width="100%"
-                          />
-                          <small>Vahicle Document</small>
-                        </ImageWrapper>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card></Col>
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(deliveryMan?.nationalIdDocument);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt="Vahicle Document"
+                              src={deliveryMan?.vehicleRegistrationDocument}
+                              width="100%"
+                            />
+                            <small>Vahicle Document</small>
+                          </ImageWrapper>
+                        </Col>
+                      </Row>
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              </Col>
             </Row>
 
             <div>

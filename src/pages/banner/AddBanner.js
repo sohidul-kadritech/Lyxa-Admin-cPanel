@@ -25,7 +25,7 @@ import { ContentState, convertToRaw, EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
 // import { convertToHTML } from 'draft-convert';
 import requestApi from "../../network/httpRequest";
-import { ADD_BANNER, IMAGE_UPLOAD } from "../../network/Api";
+import { ADD_BANNER, IMAGE_UPLOAD, SINGLE_SHOP } from "../../network/Api";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { GET_SINGLE_BANNER } from "./../../network/Api";
 import { addBanner, editBanner } from "../../store/banner/bannerAction";
@@ -95,6 +95,7 @@ const AddBanner = () => {
     if (shopType || typeKey || searchKey) {
       dispatch(getAllShop(true));
     }
+    return;
   }, [shopType, typeKey, searchKey]);
 
   // GET ALL Product
@@ -103,25 +104,30 @@ const AddBanner = () => {
     if (clickType === "product" || productSearchKey) {
       dispatch(getAllProduct(true));
     }
+    return;
   }, [clickType, productSearchKey]);
 
   // EDIT BANNER
 
   useEffect(() => {
-    if (id) {
-      const findBanner = list.find((item) => item?._id === id);
-
-      if (findBanner) {
-        updateBannerData(findBanner);
-      } else {
-        callApi(id);
+    if (shops.length > 0) {
+      if (id) {
+        const findBanner = list.find((item) => item?._id === id);
+        if (findBanner) {
+          updateBannerData(findBanner);
+        } else {
+          callApi(id);
+        }
       }
+    } else {
+      route.push("/banner", { replace: true });
     }
+    return;
   }, [id]);
 
   // UPDATE BANNER DATA FOR EDIT
 
-  const updateBannerData = (data) => {
+  const updateBannerData = async (data) => {
     const {
       image,
       type,
@@ -134,7 +140,6 @@ const AddBanner = () => {
       productId,
       shopId,
     } = data;
-
     const findShop = shops.find((item) => item._id == shopId);
     const findProduct = products.find((item) => item._id == productId);
     setClickOption(clickType ? "route" : clickableUrl ? "link" : "");
@@ -148,7 +153,7 @@ const AddBanner = () => {
     setClickType(clickType ? clickType : "");
     setClickableUrl(clickableUrl ? clickableUrl : "");
     setIsClickable(isClickable);
-    setShopType(shop ? shop.shopType : shopId ? findShop.shopType : "");
+    setShopType(shop ? shop?.shopType : shopId ? findShop?.shopType : "");
   };
 
   // GET BANNER FROM SERVER
@@ -173,8 +178,6 @@ const AddBanner = () => {
 
     uploadImage();
   };
-
-
 
   // UPLOAD IMAGE TO SERVER
 
@@ -268,7 +271,7 @@ const AddBanner = () => {
         <Container fluid={true}>
           <Breadcrumb
             maintitle="Drop"
-            breadcrumbItem={id ? 'Update' : 'Add New'}
+            breadcrumbItem={id ? "Update" : "Add New"}
             title="Banner"
             // loading={loading}
             // callList={callCarList}
@@ -500,14 +503,14 @@ const AddBanner = () => {
                     onDrop={(acceptedFiles) => {
                       handleAcceptedFiles(acceptedFiles);
                     }}
-                    accept='.jpg, .jpeg, .png'
+                    accept=".jpg, .jpeg, .png"
                   >
                     {({ getRootProps, getInputProps }) => (
                       <div className="dropzone">
                         <div
                           className="dz-message needsclick"
                           {...getRootProps()}
-                        // onClick={() => setmodal_fullscreen(true)}
+                          // onClick={() => setmodal_fullscreen(true)}
                         >
                           <input {...getInputProps()} />
                           <div className="mb-3">

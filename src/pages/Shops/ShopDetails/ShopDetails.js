@@ -23,7 +23,14 @@ import {
   Modal,
 } from "reactstrap";
 
-import { Switch, Tooltip } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 import {
   deleteDealOfShop,
@@ -34,7 +41,6 @@ import {
 import DealForAdd from "../../../components/DealForAdd";
 
 import Lightbox from "react-image-lightbox";
-import Info from "./../../../components/Info";
 import { successMsg } from "../../../helpers/successMsg";
 import FlagsAndReviews from "../../../components/FlagsAndReviews";
 import { callApi } from "../../../components/SingleApiCall";
@@ -59,6 +65,7 @@ import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlin
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ProductionQuantityLimitsOutlinedIcon from "@mui/icons-material/ProductionQuantityLimitsOutlined";
 import InfoTwo from "../../../components/InfoTwo";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -168,10 +175,10 @@ const ShopDetails = () => {
     return value === 1
       ? "$"
       : value === 2
-        ? "$$"
-        : value === "3"
-          ? "$$$"
-          : "$$$$";
+      ? "$$"
+      : value === "3"
+      ? "$$$"
+      : "$$$$";
   };
 
   // DOWNLOAD PRODUCT TEMPLATE
@@ -354,27 +361,33 @@ const ShopDetails = () => {
                     />
 
                     <InfoTwo
-                      value={`Mon to Fri - ${shop?.shopStartTimeText} ${shop?.shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                        } - ${shop?.shopEndTimeText} ${shop?.shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                        }`}
+                      value={`Mon to Fri - ${shop?.shopStartTimeText} ${
+                        shop?.shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                      } - ${shop?.shopEndTimeText} ${
+                        shop?.shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                      }`}
                       Icon={AccessTimeOutlinedIcon}
                     />
-                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType} (Shop Type)`} />
+                    <InfoTwo
+                      Icon={StoreOutlinedIcon}
+                      value={`${shop?.shopType} (Shop Type)`}
+                    />
                     <InfoTwo
                       value={`${shop?.shopStatus} (Status)`}
                       Icon={AutorenewOutlinedIcon}
                     />
                     <InfoTwo
-                      value={`${shop?.rating === 4
-                        ? "Excellent"
-                        : shop?.rating === 3
+                      value={`${
+                        shop?.rating === 4
+                          ? "Excellent"
+                          : shop?.rating === 3
                           ? "Very good"
                           : shop?.rating === 2
-                            ? "Good"
-                            : shop?.rating === 1
-                              ? "Bad"
-                              : ""
-                        } (Rating)`}
+                          ? "Good"
+                          : shop?.rating === 1
+                          ? "Bad"
+                          : ""
+                      } (Rating)`}
                       Icon={SentimentSatisfiedOutlinedIcon}
                     />
                   </Col>
@@ -407,8 +420,9 @@ const ShopDetails = () => {
 
                     <InfoTwo
                       Icon={DeliveryDiningOutlinedIcon}
-                      value={`${shop?.freeDelivery ? "Yes" : "No"
-                        } (Free Delivery)`}
+                      value={`${
+                        shop?.freeDelivery ? "Yes" : "No"
+                      } (Free Delivery)`}
                     />
 
                     <InfoTwo
@@ -421,7 +435,9 @@ const ShopDetails = () => {
                     {shop?.tags?.length > 0 && (
                       <InfoTwo
                         Icon={TagOutlinedIcon}
-                        value={`${shop?.tags?.map((item) => item).join(", ")}. (Tags)`}
+                        value={`${shop?.tags
+                          ?.map((item) => item)
+                          .join(", ")}. (Tags)`}
                       />
                     )}
                     {shop?.cuisineType?.length > 0 && (
@@ -449,7 +465,7 @@ const ShopDetails = () => {
               </CardBody>
             </Card>
 
-            <Row>
+            <Row className="mb-3">
               <Col xl={6}>
                 <FlagsAndReviews reviews={shop?.reviews} isReview={true} />
               </Col>
@@ -458,40 +474,23 @@ const ShopDetails = () => {
               </Col>
             </Row>
 
-            <Row>
+            <Row className="mb-5">
               <Col xl={6}>
-                <Card className="card-height">
-                  <CardBody>
-                    <div>
-                      <CardTitle>Shop Photos</CardTitle>
-                      <hr />
-                    </div>
-                    {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
-                      <Row>
-                        <Col md={6}>
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
-                            }}
-                          >
-                            <img
-                              className="img-fluid cursor-pointer cursor-pointer"
-                              alt="partner"
-                              src={shop?.shopLogo}
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(shop?.shopLogo);
-                              }}
-                              width="100%"
-                              lazy='loading'
-                            />
-                            <small>Shop Logo</small>
-                          </ImageWrapper>
-                        </Col>
-                        <Col md={6}>
-                          {shop.shopBanner ? (
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography>Shop Photos</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      {shop?.shopBanner ||
+                      shop?.shopPhotos ||
+                      shop?.shopLogo ? (
+                        <Row>
+                          <Col md={6}>
                             <ImageWrapper
                               style={{
                                 width: "100%",
@@ -500,95 +499,127 @@ const ShopDetails = () => {
                               }}
                             >
                               <img
+                                className="img-fluid cursor-pointer cursor-pointer"
+                                alt="partner"
+                                src={shop?.shopLogo}
                                 onClick={() => {
                                   setIsOpen(true);
-                                  setSelectedImg(shop?.shopBanner);
+                                  setSelectedImg(shop?.shopLogo);
                                 }}
-                                className="img-fluid cursor-pointer"
-                                alt="shop banner"
-                                src={shop?.shopBanner}
                                 width="100%"
-                                lazy='loading'
+                                lazy="loading"
                               />
-                              <small>Shop Banner</small>
+                              <small>Shop Logo</small>
                             </ImageWrapper>
-                          ) : null}
-                        </Col>
-                        <Col md={4}>
-                          {shop.shopPhotos ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(shop?.shopPhotos[0]);
+                          </Col>
+                          <Col md={6}>
+                            {shop.shopBanner ? (
+                              <ImageWrapper
+                                style={{
+                                  width: "100%",
+                                  height: "200px",
+                                  padding: "10px 0px",
                                 }}
-                                className="img-fluid cursor-pointer"
-                                alt="shopPhoto"
-                                src={shop?.shopPhotos[0]}
-                                width="100%"
-                              />
-                              <small>Shop Photos</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    ) : (
-                      <h5 className="text-center">No Photos</h5>
-                    )}
-                  </CardBody>
-                </Card>
+                              >
+                                <img
+                                  onClick={() => {
+                                    setIsOpen(true);
+                                    setSelectedImg(shop?.shopBanner);
+                                  }}
+                                  className="img-fluid cursor-pointer"
+                                  alt="shop banner"
+                                  src={shop?.shopBanner}
+                                  width="100%"
+                                  lazy="loading"
+                                />
+                                <small>Shop Banner</small>
+                              </ImageWrapper>
+                            ) : null}
+                          </Col>
+                          <Col md={4}>
+                            {shop.shopPhotos ? (
+                              <ImageWrapper
+                                style={{
+                                  width: "100%",
+                                  height: "200px",
+                                  padding: "10px 0px",
+                                }}
+                              >
+                                <img
+                                  onClick={() => {
+                                    setIsOpen(true);
+                                    setSelectedImg(shop?.shopPhotos[0]);
+                                  }}
+                                  className="img-fluid cursor-pointer"
+                                  alt="shopPhoto"
+                                  src={shop?.shopPhotos[0]}
+                                  width="100%"
+                                />
+                                <small>Shop Photos</small>
+                              </ImageWrapper>
+                            ) : null}
+                          </Col>
+                        </Row>
+                      ) : (
+                        <h5 className="text-center">No Photos</h5>
+                      )}
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
               </Col>
 
               <Col xl={6}>
                 <div className="mb-4">
-                  <Card className="py-2 card-height">
-                    <CardBody>
-                      <h5 className="text-center">Deals List</h5>
-                      <hr />
-                      {shop?.deals?.length > 0 ? (
-                        shop?.deals?.map((deal, index) => (
-                          <ul key={index} style={{ listStyleType: "square" }}>
-                            <li>
-                              <div className="d-flex justify-content-between px-3">
-                                <span
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "500",
-                                  }}
-                                >
-                                  {deal?.name}
-                                  {`-(${deal?.status})`}
-                                </span>
-                                <i
-                                  className="fa fa-trash cursor-pointer"
-                                  style={{ color: "red" }}
-                                  onClick={() => deleteDeal(deal?._id)}
-                                ></i>
-                              </div>
-                            </li>
-
-                            <ul>
+                  <Accordion>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography>Deals</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography>
+                        {shop?.deals?.length > 0 ? (
+                          shop?.deals?.map((deal, index) => (
+                            <ul key={index} style={{ listStyleType: "square" }}>
                               <li>
-                                <span>{deal?.type}-</span>
-                                <span className="ms-1">
-                                  {deal?.option}
-                                  {deal?.percentage && `(${deal?.percentage}%)`}
-                                </span>
+                                <div className="d-flex justify-content-between px-3">
+                                  <span
+                                    style={{
+                                      fontSize: "15px",
+                                      fontWeight: "500",
+                                    }}
+                                  >
+                                    {deal?.name}
+                                    {`-(${deal?.status})`}
+                                  </span>
+                                  <i
+                                    className="fa fa-trash cursor-pointer"
+                                    style={{ color: "red" }}
+                                    onClick={() => deleteDeal(deal?._id)}
+                                  ></i>
+                                </div>
                               </li>
+
+                              <ul>
+                                <li>
+                                  <span>{deal?.type}-</span>
+                                  <span className="ms-1">
+                                    {deal?.option}
+                                    {deal?.percentage &&
+                                      `(${deal?.percentage}%)`}
+                                  </span>
+                                </li>
+                              </ul>
                             </ul>
-                          </ul>
-                        ))
-                      ) : (
-                        <h5 className="text-center"> No Deals </h5>
-                      )}
-                    </CardBody>
-                  </Card>
+                          ))
+                        ) : (
+                          <h5 className="text-center"> No Deals </h5>
+                        )}
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
                 </div>
               </Col>
             </Row>

@@ -152,8 +152,7 @@ const ShopAdd = () => {
         const data = await callApi(id, SINGLE_SHOP, "shop");
         if (data) {
           updateData(data);
-        }
-        else {
+        } else {
           history.push("/shops/list", { replace: true });
         }
       }
@@ -163,7 +162,6 @@ const ShopAdd = () => {
   // FIND SELLER
   useEffect(async () => {
     if (searchParams.get("sellerId") || account_type === "seller") {
-
       const paramsId = searchParams.get("sellerId");
       let sellerId = null;
       paramsId ? (sellerId = paramsId) : (sellerId = accountId);
@@ -175,8 +173,7 @@ const ShopAdd = () => {
           const data = await callApi(id, SINGLE_SELLER, "seller");
           if (data) {
             setSeller(data);
-          }
-          else {
+          } else {
             history.push("/shops/list", { replace: true });
           }
         }
@@ -243,20 +240,6 @@ const ShopAdd = () => {
   }, [seller, searchKey]);
 
   // TAGS ADD
-
-  // const handleTagAdd = (evt) => {
-  //   if (["Enter", "Tab", ","].includes(evt.key)) {
-  //     evt.preventDefault();
-  //     let value = evt.target.value.trim();
-
-  //     if (value) {
-  //       setTags({
-  //         items: [...tags.items, value],
-  //         value: "",
-  //       });
-  //     }
-  //   }
-  // };
 
   const handleTagChange = (item) => {
     // console.log({ item });
@@ -588,8 +571,8 @@ const ShopAdd = () => {
                           className="cursor-pointer"
                           disabled={
                             id ||
-                              searchParams.get("sellerId") ||
-                              account_type === "seller"
+                            searchParams.get("sellerId") ||
+                            account_type === "seller"
                               ? true
                               : false
                           }
@@ -746,13 +729,13 @@ const ShopAdd = () => {
                                   // inline style for demonstration purpose
                                   const style = suggestion.active
                                     ? {
-                                      backgroundColor: "#fafafa",
-                                      cursor: "pointer",
-                                    }
+                                        backgroundColor: "#fafafa",
+                                        cursor: "pointer",
+                                      }
                                     : {
-                                      backgroundColor: "#ffffff",
-                                      cursor: "pointer",
-                                    };
+                                        backgroundColor: "#ffffff",
+                                        cursor: "pointer",
+                                      };
                                   return (
                                     <div
                                       // style={{padding: "20px 0px !important"}}
@@ -1091,7 +1074,7 @@ const ShopAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
@@ -1183,7 +1166,7 @@ const ShopAdd = () => {
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">

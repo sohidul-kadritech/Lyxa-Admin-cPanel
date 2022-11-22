@@ -48,6 +48,7 @@ const orderReducer = (state = initialState, action) => {
       return {
         ...state,
         error: payload,
+        loading: false
       };
 
     // UPDATE STATUS

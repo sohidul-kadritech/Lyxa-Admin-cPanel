@@ -54,7 +54,7 @@ const Graph = ({
                     return ` ${graphType}s - ${currentValue}`;
                 },
                 title: function (tooltipItem, data) {
-                    return ` ${(type.value === 'normal' || type.value === 'month') ? 'Day' : 'Month'} - ${data.labels[tooltipItem[0].index]}`;
+                    return ` ${(type.value === 'normal' || type.value === 'month') ? 'Date' : 'Month'} - ${data.labels[tooltipItem[0].index]}`;
                 },
             },
         },
@@ -174,7 +174,7 @@ const Graph = ({
                         <Col>
                             <div>
                                 {isLoading ? (
-                                    <Spinner animation="border" variant="success" />
+                                    <Spinner animation="border" color="success" />
                                 ) : (
                                     <Bar width={600} height={245} data={data} options={option} />
                                 )}

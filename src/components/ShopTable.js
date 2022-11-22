@@ -92,7 +92,6 @@ const ShopTable = ({ shops = [] }) => {
         </Thead>
         <Tbody style={{ position: "relative" }}>
           {shops.map((item, index) => {
-            console.log(item);
             return (
               <Tr
                 key={index}

@@ -1,9 +1,16 @@
 import React from "react";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
 import { Card, CardBody, CardTitle } from "reactstrap";
 import styled from "styled-components";
 import { DeleteOrderFlag } from "../store/order/orderAction";
 import Info from "./Info";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const FlagsAndReviews = ({
   flags = [],
@@ -14,72 +21,96 @@ const FlagsAndReviews = ({
   const dispatch = useDispatch();
 
   return (
-    <Card className='card-height'>
-      <CardBody>
-        <CardTitle>{!isReview ? "Flags" : "Order Reviews"}</CardTitle>
-        <hr />
-        {flags.length > 0 || reviews.length > 0 ? <><div className="d-flex">
-          <h5>{isFromOrder ? "Account" : "Order ID"}</h5>
-          <h5 style={{ marginLeft: "120px" }}>
-            {!isReview ? "Comments" : "Order Reviews"}
-          </h5>
-          {isReview && <h5 style={{ marginLeft: "140px" }}>Rating</h5>}
-        </div>
-          <FlagsWrapper>
-            {!isReview
-              ? flags.length > 0 &&
-              flags.map((item, index) => (
-                <div key={index} className="d-flex">
-                  <div className="info_wrapper">
-                    <Info
-                      title={
-                        isFromOrder
-                          ? item?.user
-                            ? "User"
-                            : item?.shop
-                              ? "Shop"
-                              : "Delivery Boy"
-                          : item?.orderId?.orderId
-                      }
-                      value={item?.comment}
-                      flagOrderRoute={
-                        !isFromOrder && `/orders/details/${item?.orderId?._id}`
-                      }
-                    />
-                  </div>
-                  {isFromOrder && (
-                    <div
-                      className="delete_btn_wrapper"
-                      onClick={() => dispatch(DeleteOrderFlag(item?._id))}
-                    >
-                      <i className="fa fa-trash cursor-pointer"></i>
-                    </div>
-                  )}
+    // <Card >
+    //   <CardBody>
+    //     <CardTitle></CardTitle>
+    //     <hr />
+
+    //   </CardBody>
+    // </Card>
+    <Accordion className="mb-4">
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <Typography>{!isReview ? "Flags" : "Order Reviews"}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Typography>
+          <div>
+            {flags.length > 0 || reviews.length > 0 ? (
+              <>
+                <div className="d-flex">
+                  <h5>{isFromOrder ? "Account" : "Order ID"}</h5>
+                  <h5 style={{ marginLeft: "120px" }}>
+                    {!isReview ? "Comments" : "Order Reviews"}
+                  </h5>
+                  {isReview && <h5 style={{ marginLeft: "140px" }}>Rating</h5>}
                 </div>
-              ))
-              : reviews.map((item, index) => (
-                <div key={index} className="d-flex">
-                  <div className="info_wrapper">
-                    <Info
-                      title={item?.order?.orderId}
-                      value={item?.review}
-                      valueTwo={item?.rating}
-                      flagOrderRoute={
-                        !isFromOrder && `/orders/details/${item?.order?._id}`
-                      }
-                    />
-                  </div>
-                </div>
-              ))}
-          </FlagsWrapper></> : <h5 className='text-center'>No Data!</h5>}
-      </CardBody>
-    </Card>
+                <FlagsWrapper>
+                  {!isReview
+                    ? flags.length > 0 &&
+                      flags.map((item, index) => (
+                        <div key={index} className="d-flex">
+                          <div className="info_wrapper">
+                            <Info
+                              title={
+                                isFromOrder
+                                  ? item?.user
+                                    ? "User"
+                                    : item?.shop
+                                    ? "Shop"
+                                    : "Delivery Boy"
+                                  : item?.orderId?.orderId
+                              }
+                              value={item?.comment}
+                              flagOrderRoute={
+                                !isFromOrder &&
+                                `/orders/details/${item?.orderId?._id}`
+                              }
+                            />
+                          </div>
+                          {isFromOrder && (
+                            <div
+                              className="delete_btn_wrapper"
+                              onClick={() =>
+                                dispatch(DeleteOrderFlag(item?._id))
+                              }
+                            >
+                              <i className="fa fa-trash cursor-pointer"></i>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    : reviews.map((item, index) => (
+                        <div key={index} className="d-flex">
+                          <div className="info_wrapper">
+                            <Info
+                              title={item?.order?.orderId}
+                              value={item?.review}
+                              valueTwo={item?.rating}
+                              flagOrderRoute={
+                                !isFromOrder &&
+                                `/orders/details/${item?.order?._id}`
+                              }
+                            />
+                          </div>
+                        </div>
+                      ))}
+                </FlagsWrapper>
+              </>
+            ) : (
+              <h5 className="text-center">No Data!</h5>
+            )}
+          </div>
+        </Typography>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 
 const FlagsWrapper = styled.div`
-
-
   .info_wrapper {
     flex: 1;
   }
