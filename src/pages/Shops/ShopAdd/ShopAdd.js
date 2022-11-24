@@ -183,6 +183,7 @@ const ShopAdd = () => {
 
   // UPDATE DATA
   const updateData = (values) => {
+    console.log(values);
     const {
       seller,
       minOrderAmount,
@@ -348,86 +349,58 @@ const ShopAdd = () => {
 
   // DISPACTH DATA
 
-  const submitData = (logoUrl, bannerUrl, photosUrl) => {
+  const submitData = (logoUrl, bannerUrl) => {
     const cuisinesList = selectedCuisines?.map((item) => item?._id);
+
+    const data = {
+      shopStartTime,
+      shopEndTime,
+      shopName,
+      isCuisine: seller.sellerType === "food" ? true : false,
+      minOrderAmount,
+      email,
+      phone_number: phone,
+      shopType: seller.sellerType,
+      shopLogo: logoUrl,
+      shopBanner: bannerUrl,
+      shopStatus,
+      shopDescription: "desrcriptions",
+      tags: tags.items,
+      liveStatus: liveStatus,
+      cuisineType: cuisinesList,
+      expensive,
+      deliveryType,
+      deliveryFee: deliveryType === "self" ? parseInt(deliveryFee) : 0,
+      shopAddress: {
+        address: fullAddress,
+        latitude: latLng.lat,
+        longitude: latLng.lng,
+        city,
+        state,
+        country,
+        placeId: address?.place_id,
+        pin: pinCode,
+        primary: true,
+        note: "",
+      },
+      bank_name: bankName,
+      account_name: accountName,
+      account_number: accountNum,
+    };
+
     if (id) {
       dispatch(
         editShop({
           id,
-          shopStartTime,
-          shopEndTime,
-          shopName,
-          isCuisine: seller.sellerType === "food" ? true : false,
-          minOrderAmount,
-          email,
-          phone_number: phone,
-          shopType: seller.sellerType,
-          shopLogo: logoUrl,
-          shopBanner: bannerUrl,
-          shopStatus: shopStatus,
-          shopDescription: "desrcriptions",
-
-          tags: tags.items,
-          liveStatus: liveStatus,
-          cuisineType: cuisinesList,
-          expensive,
-          deliveryType,
-          deliveryFee: deliveryType === "self" ? parseInt(deliveryFee) : 0,
-          shopAddress: {
-            address: fullAddress,
-            latitude: latLng.lat,
-            longitude: latLng.lng,
-            city,
-            state,
-            country,
-            placeId: address?.place_id,
-            pin: pinCode,
-            primary: true,
-            note: "",
-          },
-          bank_name: bankName,
-          account_name: accountName,
-          account_number: accountNum,
+          ...data,
         })
       );
     } else {
       dispatch(
         addShop({
-          email,
           password,
-          shopStartTime,
-          shopName,
-          shopEndTime,
-          minOrderAmount,
-          isCuisine: seller.sellerType === "food" ? true : false,
-          phone_number: phone,
-          shopAddress: {
-            address: fullAddress,
-            latitude: latLng.lat,
-            longitude: latLng.lng,
-            city,
-            state,
-            country,
-            placeId: address?.place_id,
-            pin: pinCode,
-            primary: true,
-            note: "",
-          },
           seller: seller._id,
-          shopType: seller.sellerType,
-          shopStatus: shopStatus,
-          tags: tags.items,
-          shopLogo: logoUrl,
-          shopBanner: bannerUrl,
-          shopDescription: "desrcriptions",
-          cuisineType: cuisinesList,
-          liveStatus,
-          expensive,
-          deliveryType,
-          deliveryFee: deliveryType === "self" ? parseInt(deliveryFee) : 0,
-          bank_name: bankName,
-          account_name: accountName,
-          account_number: accountNum,
+          ...data,
         })
       );
     }
@@ -451,17 +424,13 @@ const ShopAdd = () => {
 
   useEffect(() => {
     if (address) {
-      const {
-        geometry: { location },
-        address_components,
-        formatted_address,
-      } = address;
+      const { geometry, address_components, formatted_address } = address;
       getLatLng(address).then((latlng) => setLatLng(latlng));
       setFullAddress(formatted_address);
 
-      address_components.forEach((address_component) => {
-        if (address_component.types.includes("country")) {
-          setCountry(address_component.long_name);
+      address_components?.forEach((address_component) => {
+        if (address_component?.types?.includes("country")) {
+          setCountry(address_component?.long_name);
         } else if (address_component.types.includes("locality")) {
           setCity(address_component.long_name);
         } else if (address_component.types.includes("sublocality")) {
@@ -692,6 +661,7 @@ const ShopAdd = () => {
                           }}
                           clearItemsOnError={true}
                           shouldFetchSuggestions={selectedAddress.length > 3}
+                          googleCallbackName="myCallbackFunc"
                         >
                           {({
                             getInputProps,

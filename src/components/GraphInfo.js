@@ -28,6 +28,7 @@ const GraphInfo = ({ graphType }) => {
   const [chartData, setChartData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [month, setMonth] = useState({ label: "January", value: "1" });
+  const options = { day: "numeric", month: "short" };
 
   useEffect(async () => {
     if ((filterType && year) || startDate || endDate || month) {
@@ -79,7 +80,7 @@ const GraphInfo = ({ graphType }) => {
     if (data.length > 0) {
       const labelsData = data?.map((item, index) =>
         item.date
-          ? new Date(item?.date).toDateString()
+          ? new Date(item?.date).toLocaleDateString("en-GB", options)
           : moment(item?.month, "M").format("MMMM")
       );
       const seriesData = data?.map((item) => item[graphType]);

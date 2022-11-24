@@ -57,54 +57,53 @@ export const addShop = (values) => async (dispatch) => {
 
 export const getAllShop =
   (refresh = false, seller = null, page = 1) =>
-    async (dispatch, getState) => {
-      const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } =
-        getState().shopReducer;
+  async (dispatch, getState) => {
+    const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } =
+      getState().shopReducer;
 
-      if (shops.length < 1 || refresh) {
-        try {
+    if (shops.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.GET_ALL_SHOP_REQUEST_SEND,
+        });
+
+        const { data } = await requestApi().request(ALL_SHOP, {
+          params: {
+            page: page,
+            pageSize: 40,
+            sortBy: sortByKey.value,
+            searchKey,
+            type: typeKey.value ? typeKey.value : typeKey,
+            shopStatus: statusKey.value,
+            liveStatus: liveStatus.value,
+            sellerId: seller,
+          },
+        });
+
+        if (data.status) {
           dispatch({
-            type: actionType.GET_ALL_SHOP_REQUEST_SEND,
+            type: actionType.GET_ALL_SHOP_REQUEST_SUCCESS,
+            payload: data.data,
           });
-
-          const { data } = await requestApi().request(ALL_SHOP, {
-            params: {
-              page: page,
-              pageSize: 40,
-              sortBy: sortByKey.value,
-              searchKey,
-              type: typeKey.value ? typeKey.value : typeKey,
-              shopStatus: statusKey.value,
-              liveStatus: liveStatus.value,
-              sellerId: seller,
-            },
-          });
-
-
-
-          if (data.status) {
-            dispatch({
-              type: actionType.GET_ALL_SHOP_REQUEST_SUCCESS,
-              payload: data.data,
-            });
-          } else {
-            dispatch({
-              type: actionType.GET_ALL_SHOP_REQUEST_FAIL,
-              payload: data.message,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.GET_ALL_SHOP_REQUEST_FAIL,
-            payload: error.message,
+            payload: data.message,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.GET_ALL_SHOP_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 // EDIT
 
 export const editShop = (values) => async (dispatch) => {
+  console.log("edit values", values);
 
   try {
     dispatch({
@@ -114,6 +113,8 @@ export const editShop = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
+
+    console.log("shop edit data", data);
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -139,8 +140,6 @@ export const editShop = (values) => async (dispatch) => {
   }
 };
 
-
-
 // ADD PRODUCT DEAL
 
 export const addShopDeal = (values) => async (dispatch) => {
@@ -153,8 +152,6 @@ export const addShopDeal = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
-
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -313,7 +310,6 @@ export const setAsFeaturedShop = (values) => async (dispatch) => {
       data: values,
     });
 
-
     if (status) {
       successMsg(message, "success");
       dispatch({
@@ -459,8 +455,7 @@ export const updateShopStatus = (values) => async (dispatch) => {
       dispatch({
         type: actionType.UPDATE_SHOP_STATUS_REQUEST_SUCCESS,
       });
-    }
-    else {
+    } else {
       successMsg(data.message, "error");
       dispatch({
         type: actionType.UPDATE_SHOP_STATUS_REQUEST_FAIL,
@@ -474,7 +469,6 @@ export const updateShopStatus = (values) => async (dispatch) => {
     });
   }
 };
-
 
 // TAG
 
@@ -515,47 +509,49 @@ export const addTag = (values) => async (dispatch) => {
   }
 };
 
-
-export const getAllTags = (refresh = false, shopType = null, page = 1) => async (dispatch, getState) => {
-  const { tags, searchKey, statusKey, typeKey, sortByKey } = getState().shopReducer;
-  if (tags.length < 1 || refresh) {
-    try {
-      dispatch({
-        type: actionType.GET_TAGS_REQUEST_SEND,
-      });
-
-      const {
-        data: { status, error, data = null },
-      } = await requestApi().request(ALL_TAGS, {
-        params: {
-          page,
-          pageSize: 50,
-          searchKey,
-          type: shopType ?? typeKey.value,
-          sortBy: sortByKey.value,
-          status: statusKey.value
-        }
-      });
-
-      if (status) {
+export const getAllTags =
+  (refresh = false, shopType = null, page = 1) =>
+  async (dispatch, getState) => {
+    const { tags, searchKey, statusKey, typeKey, sortByKey } =
+      getState().shopReducer;
+    if (tags.length < 1 || refresh) {
+      try {
         dispatch({
-          type: actionType.GET_TAGS_REQUEST_SUCCESS,
-          payload: data
+          type: actionType.GET_TAGS_REQUEST_SEND,
         });
-      } else {
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(ALL_TAGS, {
+          params: {
+            page,
+            pageSize: 50,
+            searchKey,
+            type: shopType ?? typeKey.value,
+            sortBy: sortByKey.value,
+            status: statusKey.value,
+          },
+        });
+
+        if (status) {
+          dispatch({
+            type: actionType.GET_TAGS_REQUEST_SUCCESS,
+            payload: data,
+          });
+        } else {
+          dispatch({
+            type: actionType.GET_TAGS_REQUEST_FAIL,
+            paylaod: error,
+          });
+        }
+      } catch (error) {
         dispatch({
           type: actionType.GET_TAGS_REQUEST_FAIL,
-          paylaod: error,
+          paylaod: error.message,
         });
       }
-    } catch (error) {
-      dispatch({
-        type: actionType.GET_TAGS_REQUEST_FAIL,
-        paylaod: error.message,
-      });
     }
-  }
-};
+  };
 
 export const editTag = (values) => async (dispatch) => {
   try {
@@ -569,7 +565,6 @@ export const editTag = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
 
     if (status) {
       successMsg(message, "success");
@@ -592,5 +587,3 @@ export const editTag = (values) => async (dispatch) => {
     });
   }
 };
-
-

@@ -369,7 +369,7 @@ const OrderDetails = () => {
 
             {/* Flags and Chat */}
 
-            <Row className='mb-4'>
+            <Row className="mb-4">
               <Col lg={6}>
                 <FlagsAndReviews flags={order?.flag} isFromOrder={true} />
               </Col>
@@ -388,7 +388,7 @@ const OrderDetails = () => {
                     <Typography>
                       <div className="chat-conversation">
                         <SimpleBar
-                          style={{ height: "300px", overflow: "hidden scroll" }}
+                        // style={{ height: "300px", overflow: "hidden scroll" }}
                         >
                           <ul
                             className="conversation-list"

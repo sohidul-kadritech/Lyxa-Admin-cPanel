@@ -77,9 +77,8 @@ const DeliverymanAdd = () => {
       const findDeliveryMan = deliveryMans.find((man) => man._id == id);
       if (findDeliveryMan) {
         updateData(findDeliveryMan);
-
       } else {
-        const data = await callApi(id, SINGLE_DELIVERY_MAN, 'delivery')
+        const data = await callApi(id, SINGLE_DELIVERY_MAN, "delivery");
         if (data) {
           updateData(data);
         } else {
@@ -88,8 +87,6 @@ const DeliverymanAdd = () => {
       }
     }
   }, [id]);
-
-
 
   // UPDATE DATA
 
@@ -103,7 +100,7 @@ const DeliverymanAdd = () => {
       vehicleRegistrationDocument,
       vehicleType,
       vehicleNumber,
-      contractPaper
+      contractImage,
     } = data;
     const findStatus = activeOptions.find((option) => option.value === status);
     const findVahicleType = DeliveryBoyVehicleOPtions.find(
@@ -119,8 +116,6 @@ const DeliverymanAdd = () => {
     setVehicleNum(vehicleNumber);
     setContractPaper(contractPaper);
   };
-
-
 
   // ADDRESS
 
@@ -145,8 +140,6 @@ const DeliverymanAdd = () => {
   //     });
   //   }
   // }, [address]);
-
-
 
   // VALIDATIONS
 
@@ -240,7 +233,7 @@ const DeliverymanAdd = () => {
           vehicleNumber: vehicleNum,
           nationalIdDocument: nidUrl,
           vehicleRegistrationDocument: docUrl,
-          contractPaper: contractUrl
+          contractPaper: contractUrl,
         })
       );
     } else {
@@ -255,7 +248,7 @@ const DeliverymanAdd = () => {
           vehicleNumber: vehicleNum,
           nationalIdDocument: nidUrl,
           vehicleRegistrationDocument: docUrl,
-          contractPaper: contractUrl
+          contractPaper: contractUrl,
         })
       );
     }
@@ -298,10 +291,9 @@ const DeliverymanAdd = () => {
 
     if (type === "nid") {
       setNid(files[0]);
-    } else if (type === 'contract') {
+    } else if (type === "contract") {
       setContractPaper(files[0]);
-    }
-    else {
+    } else {
       setVehicleDoc(files[0]);
     }
   };
@@ -355,8 +347,6 @@ const DeliverymanAdd = () => {
                             onChange={(e) => setPhone(e.target.value)}
                           />
                         </div>
-
-
 
                         <div className="mb-4">
                           <label className="control-label">Vehicle Type</label>
@@ -463,9 +453,11 @@ const DeliverymanAdd = () => {
                               placeholder="Enter Address"
                               required
                               multiple
-                              maxRows='4'
+                              maxRows="4"
                               value={deliveryBoyAddress}
-                              onChange={(e) => setDeliveryBoyAddress(e.target.value)}
+                              onChange={(e) =>
+                                setDeliveryBoyAddress(e.target.value)
+                              }
                             />
                           </div>
                         )}
@@ -551,14 +543,14 @@ const DeliverymanAdd = () => {
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "nid");
                             }}
-                            accept='.jpg, .jpeg, .png'
+                            accept=".jpg, .jpeg, .png"
                           >
                             {({ getRootProps, getInputProps }) => (
                               <div className="dropzone">
                                 <div
                                   className="dz-message needsclick"
                                   {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                                  // onClick={() => setmodal_fullscreen(true)}
                                 >
                                   <input {...getInputProps()} />
                                   <div className="mb-3">
@@ -637,14 +629,14 @@ const DeliverymanAdd = () => {
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "doc");
                             }}
-                            accept='.jpg, .jpeg, .png'
+                            accept=".jpg, .jpeg, .png"
                           >
                             {({ getRootProps, getInputProps }) => (
                               <div className="dropzone">
                                 <div
                                   className="dz-message needsclick"
                                   {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                                  // onClick={() => setmodal_fullscreen(true)}
                                 >
                                   <input {...getInputProps()} />
                                   <div className="mb-3">
@@ -724,7 +716,6 @@ const DeliverymanAdd = () => {
                       </Col>
                     </Row>
 
-
                     <Row>
                       <Col lg={6}>
                         <Label>Contract Paper</Label>
@@ -733,14 +724,13 @@ const DeliverymanAdd = () => {
                             onDrop={(acceptedFiles) => {
                               handleAcceptedFiles(acceptedFiles, "contract");
                             }}
-                            accept='.jpg, .jpeg, .png'
+                            accept=".jpg, .jpeg, .png"
                           >
                             {({ getRootProps, getInputProps }) => (
                               <div className="dropzone">
                                 <div
                                   className="dz-message needsclick"
                                   {...getRootProps()}
-
                                 >
                                   <input {...getInputProps()} />
                                   <div className="mb-3">

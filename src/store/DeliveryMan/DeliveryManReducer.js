@@ -123,7 +123,7 @@ const deliveryManReducer = (state = initialState, action) => {
         statusKey: payload,
       };
 
-    case actionType.UPDATE_SEARCH_KEY:
+    case actionType.UPDATE_RIDER_SEARCH_KEY:
       return {
         ...state,
         searchKey: payload,
@@ -147,7 +147,7 @@ const deliveryManReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
-        status: false
+        status: false,
       };
 
     case actionType.DELIVERYBOY_ORDERS_REQUEST_SUCCESS:

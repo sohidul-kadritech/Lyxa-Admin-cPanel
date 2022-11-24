@@ -7,18 +7,25 @@ import { changePassword } from "../../store/auth/profile/actions";
 import GlobalWrapper from "../GlobalWrapper";
 
 const ChangePassword = () => {
-
   const [newPass, setNewPass] = useState("");
-  const {loading, status} = useSelector((state) => state.Profile);
-  const dispatch = useDispatch()
-
+  const { loading, status } = useSelector((state) => state.Profile);
+  const dispatch = useDispatch();
+  const {
+    admin: { name, account_type, adminType },
+  } = useSelector((state) => state.Login);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(changePassword(newPass))
-
-  }
+    dispatch(
+      changePassword(
+        newPass,
+        account_type === "admin" && adminType === "customerService"
+          ? "customerService"
+          : account_type
+      )
+    );
+  };
 
   return (
     <React.Fragment>
@@ -35,8 +42,14 @@ const ChangePassword = () => {
                 value={newPass}
                 onChange={(e) => setNewPass(e.target.value)}
               />
-              <Button outline={true} color="success" disabled={loading} className="w-100 mt-3" type='submit'>
-                {loading ? 'Loading...' : 'Change Password'}
+              <Button
+                outline={true}
+                color="success"
+                disabled={loading}
+                className="w-100 mt-3"
+                type="submit"
+              >
+                {loading ? "Loading..." : "Change Password"}
               </Button>
             </Form>
           </Container>
