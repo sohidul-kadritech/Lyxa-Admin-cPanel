@@ -11,7 +11,7 @@ const Info = ({ title, value = "", link, flagOrderRoute, valueTwo = "" }) => {
       <div className="title">
         <Tooltip title={`${flagOrderRoute ? "Go to Order" : ""}`}>
           <span
-            className={`${flagOrderRoute && "cursor-pointer"}  }`}
+            className={`${flagOrderRoute ? "cursor-pointer" : ""}  }`}
             onClick={() => history.push(flagOrderRoute)}
           >
             {title}
@@ -21,7 +21,7 @@ const Info = ({ title, value = "", link, flagOrderRoute, valueTwo = "" }) => {
       <div className="value valueOne">
         <Tooltip title={`${link ? "See details" : ""}`}>
           <span
-            className={`${link && "cursor-pointer"}  }`}
+            className={`${link ? "cursor-pointer" : ""}`}
             onClick={() => history.push(link)}
           >
             {value}
@@ -47,8 +47,7 @@ const Details = styled.div`
     border-bottom: 1px solid lightgray;
   }
   .title {
-    width: 170px;
-
+    width: 120px;
     color: black;
     font-weight: 500;
     padding-left: 5px;
@@ -62,7 +61,6 @@ const Details = styled.div`
   }
 
   .value {
-    color: #02a499;
     font-weight: 500;
     font-size: 15px;
     padding-left: 5px;
@@ -73,16 +71,19 @@ const Details = styled.div`
     height: 100%; */
     display: flex;
     align-items: center;
-    &:hover {
-      color: ${({ link }) => link && "blue"};
-      font-weight: ${({ link }) => link && "bold"};
-    }
-    text-decoration: ${({ link }) => link && "underline"};
+
     &.valueOne {
       flex: 1;
+      color: #02a499;
+      &:hover {
+        color: ${({ link }) => link && "blue"};
+        font-weight: ${({ link }) => link && "bold"};
+        text-decoration: ${({ link }) => link && "underline"};
+      }
     }
+
     &.valueTwo {
-      width: 40px !important;
+      border: none;
     }
   }
 `;

@@ -11,6 +11,7 @@ const ADMIN_ENDPOINT = "admin";
 // LOGIN API
 
 export const LOGIN = ADMIN_ENDPOINT + "/auth/login";
+export const FORGET_PASS = "forget";
 
 // GET IMAGE
 export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
@@ -18,19 +19,26 @@ export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
 // dasboard
 
 export const GET_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard";
-export const GET_SELLER_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/seller";
+export const GET_SELLER_DASHBOARD_SUMMARY =
+  ADMIN_ENDPOINT + "/dashboard/seller";
 export const GET_SHOP_DASHBOARD_SUMMARY = ADMIN_ENDPOINT + "/dashboard/shop";
 
-export const ADMIN_DASHBOARD_USERS_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/users";
+export const ADMIN_DASHBOARD_USERS_GRAPH =
+  ADMIN_ENDPOINT + "/dashboard/graph/users";
 
-export const ADMIN_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/orders";
-export const SELLER_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/seller/graph/orders";
-export const SHOP_DASHBOARD_ORDER_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/graph/orders";
+export const ADMIN_DASHBOARD_ORDER_GRAPH =
+  ADMIN_ENDPOINT + "/dashboard/graph/orders";
+export const SELLER_DASHBOARD_ORDER_GRAPH =
+  ADMIN_ENDPOINT + "/dashboard/seller/graph/orders";
+export const SHOP_DASHBOARD_ORDER_GRAPH =
+  ADMIN_ENDPOINT + "/dashboard/shop/graph/orders";
 
-export const ADMIN_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/graph/earnings";
-export const SELLER_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/seller/graph/earnings";
-export const SHOP_DASHBOARD_EARNING_GRAPH = ADMIN_ENDPOINT + "/dashboard/shop/graph/earnings";
-
+export const ADMIN_DASHBOARD_EARNING_GRAPH =
+  ADMIN_ENDPOINT + "/dashboard/graph/earnings";
+export const SELLER_DASHBOARD_EARNING_GRAPH =
+  ADMIN_ENDPOINT + "/dashboard/seller/graph/earnings";
+export const SHOP_DASHBOARD_EARNING_GRAPH =
+  ADMIN_ENDPOINT + "/dashboard/shop/graph/earnings";
 
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
@@ -89,7 +97,8 @@ export const SINGLE_SELLER = ADMIN_ENDPOINT + "/seller/get-seller-details";
 export const SELLER_DROP_CHARGE = ADMIN_ENDPOINT + "/seller/add-drop-charge";
 export const ADD_SELLER_CREDENTIAL = ADMIN_ENDPOINT + "/seller/add-credential";
 export const GET_SELLER_CREDENTIALS = ADMIN_ENDPOINT + "/seller/credential";
-export const REMOVE_SELLER_CREDENTIAL = ADMIN_ENDPOINT + "/seller/delete-credential";
+export const REMOVE_SELLER_CREDENTIAL =
+  ADMIN_ENDPOINT + "/seller/delete-credential";
 
 // SHOP
 
@@ -108,7 +117,8 @@ export const DELETE_SHOP_DEAL = ADMIN_ENDPOINT + "/shop/delete-deal";
 export const UPDATE_SHOP_STATUS = ADMIN_ENDPOINT + "/shop/status";
 export const ADD_SHOP_CREDENTIAL = ADMIN_ENDPOINT + "/shop/add-credential";
 export const GET_SHOP_CREDENTIALS = ADMIN_ENDPOINT + "/shop/credential";
-export const REMOVE_SHOP_CREDENTIAL = ADMIN_ENDPOINT + "/shop/delete-credential";
+export const REMOVE_SHOP_CREDENTIAL =
+  ADMIN_ENDPOINT + "/shop/delete-credential";
 
 // PRODUCT
 
@@ -126,8 +136,9 @@ export const ADD_UNIT = ADMIN_ENDPOINT + "/unit/add";
 export const GET_ALL_UNIT = ADMIN_ENDPOINT + "/unit";
 export const EDIT_UNIT = ADMIN_ENDPOINT + "/unit/update";
 export const DELETE_UNIT = ADMIN_ENDPOINT + "/unit/delete";
-export const DOWNLOAD_PRODUCT_TEMPLATE = ADMIN_ENDPOINT + "/product/download-template"
-export const UPLOAD_PRODUCT_FILE = ADMIN_ENDPOINT + "/product/import"
+export const DOWNLOAD_PRODUCT_TEMPLATE =
+  ADMIN_ENDPOINT + "/product/download-template";
+export const UPLOAD_PRODUCT_FILE = ADMIN_ENDPOINT + "/product/import";
 
 // DELIVERY MAN
 
@@ -217,14 +228,16 @@ export const ORDRE_UPDATE_STATUS =
 export const SEND_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag";
 export const DELETE_ORDER_FLAG = ADMIN_ENDPOINT + "/order/flag/delete";
 export const CANCEL_ORDER = ADMIN_ENDPOINT + "/order/cancel-order";
-export const ACTIVE_DEIVERY_BOYS = ADMIN_ENDPOINT + "/order/get-nearby-delivery-boy-order";
+export const ACTIVE_DEIVERY_BOYS =
+  ADMIN_ENDPOINT + "/order/get-nearby-delivery-boy-order";
 
 // CHAT
 
 export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request";
 export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
 export const SEND_MESSAGE = ADMIN_ENDPOINT + "/user-chat-request/send-message";
-export const SINGLE_CHAT = ADMIN_ENDPOINT + "//user-chat-request/single-details";
+export const SINGLE_CHAT =
+  ADMIN_ENDPOINT + "//user-chat-request/single-details";
 export const REJECT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/reject";
 export const GET_DEFAULT_CHAT = ADMIN_ENDPOINT + "/message";
 export const ADD_DEFAULT_CHAT = ADMIN_ENDPOINT + "/message";
@@ -247,12 +260,11 @@ export const UPDATE_CONDITION =
   ADMIN_ENDPOINT + "/setting/app-setting/terms/edit";
 export const GET_CONDITION = ADMIN_ENDPOINT + "/setting/app-setting/terms";
 
-
 // TAG
 
 export const CREATE_TAG = ADMIN_ENDPOINT + "/tags/add";
 export const ALL_TAGS = ADMIN_ENDPOINT + "/tags";
-export const UPDATE_TAG = ADMIN_ENDPOINT + "/tags/update"
+export const UPDATE_TAG = ADMIN_ENDPOINT + "/tags/update";
 
 // IMAGE UPLOAD
 

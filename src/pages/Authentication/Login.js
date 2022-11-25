@@ -2,7 +2,18 @@ import PropTypes from "prop-types";
 import MetaTags from "react-meta-tags";
 import React, { useEffect, useState } from "react";
 
-import { Row, Col, CardBody, Card, Alert, Container } from "reactstrap";
+import {
+  Row,
+  Col,
+  CardBody,
+  Card,
+  Alert,
+  Container,
+  Modal,
+  Spinner,
+  Form,
+  Button,
+} from "reactstrap";
 
 // Redux
 import { connect, useSelector } from "react-redux";
@@ -25,9 +36,15 @@ import {
   Radio,
   RadioGroup,
   Switch,
+  TextField,
 } from "@mui/material";
 import { FormControlLabel } from "@material-ui/core";
 import Footer from "../../components/VerticalLayout/Footer";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import styled from "styled-components";
+import { successMsg } from "../../helpers/successMsg";
+import requestApi from "../../network/httpRequest";
+import { FORGET_PASS } from "../../network/Api";
 
 const Login = (props) => {
   const history = useHistory();
@@ -37,6 +54,17 @@ const Login = (props) => {
   );
 
   const [type, setType] = useState("admin");
+
+  const [isForgetPassword, setIsForgetPassword] = useState(false);
+  const [forgetPassData, setForgetPassData] = useState({
+    type: "",
+    to_email: "",
+  });
+  const [isLoading, setIsloading] = useState(false);
+  const [forgetStatus, setForgetStatus] = useState({
+    status: "",
+    msg: "",
+  });
 
   useEffect(() => {
     // console.log(admin);
@@ -52,7 +80,10 @@ const Login = (props) => {
         progress: undefined,
       });
 
-      if (admin?.account_type == 'admin' && admin?.adminType === 'customerService') {
+      if (
+        admin?.account_type == "admin" &&
+        admin?.adminType === "customerService"
+      ) {
         history.push("/orders/list");
       } else {
         history.push("/dashboard");
@@ -69,8 +100,60 @@ const Login = (props) => {
   // ROLL CHANGE
 
   const handleLoginRoleChange = (e) => {
-
     setType(e.target.value);
+  };
+
+  // FORGET PASSWORD INPUT CHANGE
+
+  const handleChangeForgetPass = (e) => {
+    const { name, value } = e.target;
+
+    setForgetPassData({ ...forgetPassData, [name]: value });
+  };
+
+  // SUBMIT FORGET PASS
+
+  const submitForgetPass = async (e) => {
+    e.preventDefault();
+
+    if (!forgetPassData.type) {
+      setForgetStatus({ status: "error", msg: "Select Role" });
+      return;
+    }
+    if (!forgetPassData.to_email) {
+      return setForgetStatus({ status: "error", msg: "Enter Valid Email" });
+    }
+
+    let emailRex = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/;
+
+    if (!forgetPassData.to_email.match(emailRex)) {
+      return setForgetStatus({ status: "error", msg: " Invalid Email" });
+    }
+    console.log({ forgetPassData });
+    try {
+      setIsloading(true);
+      const { data } = await requestApi().request(FORGET_PASS, {
+        method: "POST",
+        data: forgetPassData,
+      });
+
+      if (data) {
+        console.log(data);
+        setIsloading(false);
+        setForgetPassData({
+          type: "",
+          to_email: "",
+        });
+        if (data.status) {
+          setForgetStatus({ msg: data.message, status: "success" });
+        } else {
+          setForgetStatus({ msg: data.message, status: "error" });
+        }
+      }
+    } catch (e) {
+      console.log(e.message);
+      setIsloading(false);
+    }
   };
 
   return (
@@ -108,9 +191,7 @@ const Login = (props) => {
                         }}
                       >
                         {props.error ? (
-                          <Alert color="danger">
-                            {props.error}
-                          </Alert>
+                          <Alert color="danger">{props.error}</Alert>
                         ) : null}
 
                         <div className="mb-2">
@@ -173,6 +254,18 @@ const Login = (props) => {
                           />
                         </div>
 
+                        <ForgatPassword className="mb-3">
+                          <LockResetIcon />
+                          <span
+                            className=" ms-1 cursor-pointer password-text"
+                            onClick={() =>
+                              setIsForgetPassword(!isForgetPassword)
+                            }
+                          >
+                            Forget Password
+                          </span>
+                        </ForgatPassword>
+
                         <Row className="mb-3">
                           <Col sm={12} className="text-center">
                             <button
@@ -193,10 +286,122 @@ const Login = (props) => {
             </Row>
           </Container>
         </div>
+
+        <Modal
+          isOpen={isForgetPassword}
+          toggle={() => {
+            setIsForgetPassword(!isForgetPassword);
+          }}
+          centered={true}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0">Forget Password</h5>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsForgetPassword(false);
+              }}
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            {forgetStatus.msg ? (
+              <Alert
+                color={forgetStatus.status === "error" ? "danger" : "success"}
+              >
+                {forgetStatus.msg}
+              </Alert>
+            ) : null}
+            <Form onSubmit={submitForgetPass}>
+              <div className="mb-2">
+                <FormControl>
+                  <FormLabel id="demo-controlled-radio-buttons-group">
+                    Role
+                  </FormLabel>
+                  <RadioGroup
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="type"
+                    value={forgetPassData.type}
+                    onChange={handleChangeForgetPass}
+                    required
+                  >
+                    <div className="d-flex justify-content-center flex-wrap">
+                      <FormControlLabel
+                        value="admin"
+                        control={<Radio />}
+                        label="Admin"
+                      />
+                      <FormControlLabel
+                        value="customerService"
+                        control={<Radio />}
+                        label="Customer Service"
+                      />
+                      <FormControlLabel
+                        value="seller"
+                        control={<Radio />}
+                        label="Seller"
+                      />
+                      <FormControlLabel
+                        value="shop"
+                        control={<Radio />}
+                        label="Shop"
+                      />
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <div className="mb-4">
+                <TextField
+                  type="email"
+                  className="form-control"
+                  placeholder="Enter your email"
+                  required
+                  label="Your Email"
+                  name="to_email"
+                  value={forgetPassData.to_email}
+                  onChange={handleChangeForgetPass}
+                />
+              </div>
+
+              <div className="d-flex justify-content-center">
+                <Button
+                  color="success"
+                  size="lg"
+                  className="px-4"
+                  type="submit"
+                  style={{ width: "150px" }}
+                  disabled={
+                    isLoading ||
+                    !forgetPassData.to_email ||
+                    !forgetPassData.type
+                  }
+                >
+                  {isLoading ? (
+                    <Spinner color="danger" size="sm"></Spinner>
+                  ) : (
+                    "Send"
+                  )}
+                </Button>
+              </div>
+            </Form>
+          </div>
+        </Modal>
       </GlobalWrapper>
     </React.Fragment>
   );
 };
+
+const ForgatPassword = styled.div`
+  &:hover {
+    color: #f73f3f;
+    font-weight: 500;
+  }
+`;
 
 const mapStateToProps = (state) => {
   const { error } = state.Login;

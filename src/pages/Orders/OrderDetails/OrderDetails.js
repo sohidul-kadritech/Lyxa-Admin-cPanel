@@ -44,6 +44,7 @@ import user1 from "../../../assets/images/user1.jpg";
 import { callApi } from "../../../components/SingleApiCall";
 import TableImgItem from "../../../components/TableImgItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -187,7 +188,7 @@ const OrderDetails = () => {
 
             {/* ORDER INFORMATIONS */}
 
-            <Card className="card-height">
+            <Card className="pb-5">
               <CardBody>
                 <div className="d-flex align-items-center justify-content-between">
                   <CardTitle className="h4">Order Details</CardTitle>
@@ -201,16 +202,42 @@ const OrderDetails = () => {
                 </div>
                 <hr />
                 <Row className="text-center">
-                  <Col lg={6}>
-                    <Info
-                      title="User"
-                      value={order?.user?.name}
-                      link={`/users/details/${order?.user?._id}`}
-                    />
+                  <Col lg={2}>
+                    <div className="text-center">
+                      <img
+                        className="rounded-circle avatar-lg cursor-pointer"
+                        alt="Seller"
+                        src={
+                          order?.user?.profile_photo
+                            ? order?.user?.profile_photo
+                            : noPhoto
+                        }
+                        style={{ border: "1px solid lightgray" }}
+                        onClick={() =>
+                          history.push(`/users/details/${order?.user?._id}`)
+                        }
+                      />
+                      <h5
+                        className="text-capitalize cursor-pointer"
+                        onClick={() =>
+                          history.push(`/users/details/${order?.user?._id}`)
+                        }
+                      >
+                        {order?.user?.name}
+                      </h5>
+                    </div>
+                  </Col>
+                  <Col lg={5}>
                     <Info
                       title="Shop"
                       value={order?.shop?.shopName}
                       link={`/shops/details/${order?.shop?._id}`}
+                      valueTwo={order?.shop?.shopStatus}
+                      statusClass={
+                        order?.shop?.shopStatus
+                          ? "active-status"
+                          : "inactive-status"
+                      }
                     />
                     {order?.deliveryBoy && (
                       <Info
@@ -219,27 +246,42 @@ const OrderDetails = () => {
                         link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
                       />
                     )}
-                    <Info title="Order Status" value={order?.orderStatus} />
+
+                    <Info
+                      title="Order Time"
+                      value={new Date(order?.createdAt).toLocaleString()}
+                    />
 
                     <Info title="Order Type" value={order?.orderType} />
+                    <Info title="Order Status" value={order?.orderStatus} />
+                  </Col>
 
+                  <Col lg={5}>
+                    {/* <Info title="Payment Status" value={order?.paymentStatus} /> */}
                     <Info
                       title="Payment Method"
                       value={`${order?.paymentMethod} ${
                         order?.selectPos !== "no" ? "(Pos)" : ""
                       }`}
-                    />
-                    <Info title="Payment Status" value={order?.paymentStatus} />
-                  </Col>
-
-                  <Col lg={6}>
-                    <Info
-                      title="Order Time"
-                      value={new Date(order?.createdAt).toLocaleString()}
+                      valueTwo={order?.paymentStatus}
                     />
                     <Info
                       title="Delivery Distance"
                       value={`${order?.deliveryDistance} KM`}
+                    />
+                    <Info
+                      title="Rating"
+                      value={
+                        order?.review === 4
+                          ? "Excellent"
+                          : order?.review === 3
+                          ? "Very good"
+                          : order?.review === 2
+                          ? "Good"
+                          : order?.review === 1
+                          ? "Bad"
+                          : "No Rating"
+                      }
                     />
                     {order?.orderCancel && (
                       <>
@@ -257,31 +299,11 @@ const OrderDetails = () => {
                         />
                       </>
                     )}
-                    {order?.deliveryBoy && (
-                      <Info
-                        title="Rider"
-                        value={order?.deliveryBoy?.name}
-                        link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
-                      />
-                    )}
                     {order?.reviewDes && (
                       <Info title="User Review" value={order?.reviewDes} />
                     )}
-                    <Info
-                      title="Rating"
-                      value={
-                        order?.review === 4
-                          ? "Excellent"
-                          : order?.review === 3
-                          ? "Very good"
-                          : order?.review === 2
-                          ? "Good"
-                          : order?.review === 1
-                          ? "Bad"
-                          : "No Rating"
-                      }
-                    />
                   </Col>
+                  {/* <Col lg={3}></Col> */}
                 </Row>
               </CardBody>
             </Card>

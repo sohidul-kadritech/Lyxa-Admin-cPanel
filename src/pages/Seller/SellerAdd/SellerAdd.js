@@ -75,7 +75,7 @@ const SellerAdd = () => {
       if (findSeller) {
         updateSellerData(findSeller);
       } else {
-        const data = await callApi(id, SINGLE_SELLER, 'seller')
+        const data = await callApi(id, SINGLE_SELLER, "seller");
         if (data) {
           updateSellerData(data);
         } else {
@@ -84,7 +84,6 @@ const SellerAdd = () => {
       }
     }
   }, [id]);
-
 
   // SET SELLER DATA
   const updateSellerData = (sellerData) => {
@@ -115,7 +114,6 @@ const SellerAdd = () => {
   // IMAGE
 
   const handleAcceptedFiles = (files, type) => {
-
     files.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -179,11 +177,11 @@ const SellerAdd = () => {
     e.preventDefault();
 
     if (!id && !address) {
-      return successMsg('Please Select a Address', 'error');
+      return successMsg("Please Select a Address", "error");
     }
 
     if (!profilePhoto || !certificate || !nid || !contactPaper) {
-      return successMsg('Please Upload Images', 'error');
+      return successMsg("Please Upload Images", "error");
     }
 
     //  submitDate();
@@ -262,34 +260,31 @@ const SellerAdd = () => {
   const submitData = (profileUrl, certificateUrl, nidUrl, contactUrl) => {
     // console.log({ data });
 
+    let data = {
+      name,
+      phone_number: phoneNum,
+      company_name: companyName,
+      email,
+      password,
+      profile_photo: profileUrl,
+      certificate_of_incorporation: certificateUrl,
+      national_id: nidUrl,
+      sellerContractPaper: contactUrl,
+      sellerStatus,
+    };
+    console.log(password);
     if (id) {
       dispatch(
         editSeller({
           id,
-          name,
-          phone_number: phoneNum,
-          company_name: companyName,
-          email,
-          profile_photo: profileUrl,
-          certificate_of_incorporation: certificateUrl,
-          national_id: nidUrl,
-          sellerContractPaper: contactUrl,
-          sellerStatus,
+          ...data,
         })
       );
     } else {
       dispatch(
         addSeller({
-          name,
-          phone_number: phoneNum,
-          company_name: companyName,
-          email,
-          password,
-          profile_photo: profileUrl,
+          ...data,
           account_type: "seller",
-          certificate_of_incorporation: certificateUrl,
-          national_id: nidUrl,
-          sellerContractPaper: contactUrl,
           sellerAddress: {
             address: fullAddress,
             latitude: latLng.lat,
@@ -304,7 +299,6 @@ const SellerAdd = () => {
           },
           sellerType,
           subType,
-          sellerStatus,
         })
       );
     }
@@ -386,99 +380,33 @@ const SellerAdd = () => {
                     </Col>
                   </Row>
 
-                  {!id && (
-                    <Row className="mt-4">
-                      <Col xl={6}>
-                        <PlacesAutocomplete
-                          value={selectedAddress}
-                          onChange={handleAddressChange}
-                          onSelect={handleAddressSelect}
-                          onError={(error) => {
-                            console.log(error);
-                          }}
-                          clearItemsOnError={true}
-                          shouldFetchSuggestions={selectedAddress.length > 3}
-                        >
-                          {({
-                            getInputProps,
-                            suggestions,
-                            getSuggestionItemProps,
-                            loading,
-                          }) => (
-                            <div>
-                              <TextField
-                                {...getInputProps({
-                                  placeholder: "Search Places ...",
-                                  className: "location-search-input",
-                                  //
-                                })}
-                                type="text"
-                                required
-                                id="outlined-required"
-                                label="Address"
-                                className="form-control"
-                                value={selectedAddress}
-                              />
-                              <div
-                                className="autocomplete-dropdown-container"
-                                style={{
-                                  fontSize: "14px",
-                                  fontFamily: "emoji",
-                                  color: "black",
-                                }}
-                              >
-                                {loading && <div>Loading...</div>}
-                                {suggestions.map((suggestion, index) => {
-                                  const className = suggestion.active
-                                    ? "suggestion-item--active"
-                                    : "suggestion-item";
-
-                                  // inline style for demonstration purpose
-                                  const style = suggestion.active
-                                    ? {
-                                      backgroundColor: "#fafafa",
-                                      cursor: "pointer",
-                                    }
-                                    : {
-                                      backgroundColor: "#ffffff",
-                                      cursor: "pointer",
-                                    };
-                                  return (
-                                    <div
-                                      // style={{padding: "20px 0px !important"}}
-                                      {...getSuggestionItemProps(suggestion, {
-                                        className,
-                                        style,
-                                      })}
-                                      key={index}
-                                    >
-                                      <i
-                                        className="ti-location-pin me-1"
-                                        style={{ color: "black" }}
-                                      />
-                                      <span>{suggestion.description}</span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </PlacesAutocomplete>
-                      </Col>
-                      <Col xl={6} className="mt-4 mt-xl-0">
-                        <TextField
-                          style={{ width: "100%" }}
-                          id="outlined-basic"
-                          label="Password"
-                          variant="outlined"
-                          placeholder="Enter a Password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                        />
-                      </Col>
-                    </Row>
-                  )}
+                  <Row className="mt-4">
+                    <Col xl={6}>
+                      <TextField
+                        id="outlined-textarea"
+                        name="phone"
+                        label="Phone Number"
+                        placeholder="Enter Phone Number"
+                        style={{ width: "100%" }}
+                        type="tel"
+                        value={phoneNum}
+                        onChange={(e) => setPhoneNum(e.target.value.toString())}
+                        required
+                      />
+                    </Col>
+                    <Col xl={6} className="mt-4 mt-xl-0">
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label={id ? "New Password" : "Password"}
+                        variant="outlined"
+                        placeholder="Enter a Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required={!id}
+                      />
+                    </Col>
+                  </Row>
 
                   {!id && (
                     <Row className="mt-4 mt-xl-0">
@@ -552,23 +480,87 @@ const SellerAdd = () => {
                     </Col>
                   </Row>
 
-                  <Row className="mt-4">
-                    <Col xl={6}>
-                      <TextField
-                        id="outlined-textarea"
-                        name="phone"
-                        label="Phone Number"
-                        placeholder="Enter Phone Number"
-                        style={{ width: "100%" }}
-                        type="tel"
-                        value={phoneNum}
-                        onChange={(e) => setPhoneNum(e.target.value.toString())}
-                        required
-                      />
-                    </Col>
+                  {!id && (
+                    <Row className="mt-4">
+                      <Col xl={6}>
+                        <PlacesAutocomplete
+                          value={selectedAddress}
+                          onChange={handleAddressChange}
+                          onSelect={handleAddressSelect}
+                          onError={(error) => {
+                            console.log(error);
+                          }}
+                          clearItemsOnError={true}
+                          shouldFetchSuggestions={selectedAddress.length > 3}
+                        >
+                          {({
+                            getInputProps,
+                            suggestions,
+                            getSuggestionItemProps,
+                            loading,
+                          }) => (
+                            <div>
+                              <TextField
+                                {...getInputProps({
+                                  placeholder: "Search Places ...",
+                                  className: "location-search-input",
+                                  //
+                                })}
+                                type="text"
+                                required
+                                id="outlined-required"
+                                label="Address"
+                                className="form-control"
+                                value={selectedAddress}
+                              />
+                              <div
+                                className="autocomplete-dropdown-container"
+                                style={{
+                                  fontSize: "14px",
+                                  fontFamily: "emoji",
+                                  color: "black",
+                                }}
+                              >
+                                {loading && <div>Loading...</div>}
+                                {suggestions.map((suggestion, index) => {
+                                  const className = suggestion.active
+                                    ? "suggestion-item--active"
+                                    : "suggestion-item";
 
-
-                  </Row>
+                                  // inline style for demonstration purpose
+                                  const style = suggestion.active
+                                    ? {
+                                        backgroundColor: "#fafafa",
+                                        cursor: "pointer",
+                                      }
+                                    : {
+                                        backgroundColor: "#ffffff",
+                                        cursor: "pointer",
+                                      };
+                                  return (
+                                    <div
+                                      // style={{padding: "20px 0px !important"}}
+                                      {...getSuggestionItemProps(suggestion, {
+                                        className,
+                                        style,
+                                      })}
+                                      key={index}
+                                    >
+                                      <i
+                                        className="ti-location-pin me-1"
+                                        style={{ color: "black" }}
+                                      />
+                                      <span>{suggestion.description}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </PlacesAutocomplete>
+                      </Col>
+                    </Row>
+                  )}
 
                   <Row className="mt-4">
                     <Col xl={6}>
@@ -577,16 +569,15 @@ const SellerAdd = () => {
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "profile");
-
                           }}
-                          accept='.jpg, .jpeg, .png'
+                          accept=".jpg, .jpeg, .png"
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} name="profile" />
                                 <div className="mb-3">
@@ -672,14 +663,14 @@ const SellerAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "certificate");
                           }}
-                          accept='.jpg, .jpeg, .png'
+                          accept=".jpg, .jpeg, .png"
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
@@ -767,14 +758,14 @@ const SellerAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "nid");
                           }}
-                          accept='.jpg, .jpeg, .png'
+                          accept=".jpg, .jpeg, .png"
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
@@ -852,14 +843,14 @@ const SellerAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, "contact");
                           }}
-                          accept='.jpg, .jpeg, .png'
+                          accept=".jpg, .jpeg, .png"
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">

@@ -33,6 +33,7 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
@@ -94,77 +95,83 @@ const DeliverymanDetails = () => {
               />
             )}
 
-            <Row>
-              <Col lg={6}>
-                <Card className="card-height">
-                  <CardBody>
-                    <div className="d-flex justify-content-between">
-                      <CardTitle>Delivery Man Informations</CardTitle>
-                      <div>
-                        <Button
-                          outline={true}
-                          color="primary"
-                          onClick={() =>
-                            history.push(`/deliveryman/edit/${id}`)
-                          }
-                        >
-                          Edit
-                        </Button>
-                        {account_type === "admin" && adminType === "admin" && (
-                          <Button
-                            outline={true}
-                            color="primary"
-                            onClick={() =>
-                              history.push(
-                                `/add-wallet/single-delivery-transactions/${id}`
-                              )
-                            }
-                            className="ms-2"
-                          >
-                            Payment history
-                          </Button>
-                        )}
-                      </div>
+            <Card className="pb-5">
+              <CardBody>
+                <div className="d-flex justify-content-between">
+                  <CardTitle>Delivery Man Informations</CardTitle>
+                  <div>
+                    <Button
+                      outline={true}
+                      color="primary"
+                      onClick={() => history.push(`/deliveryman/edit/${id}`)}
+                    >
+                      Edit
+                    </Button>
+                    {account_type === "admin" && adminType === "admin" && (
+                      <Button
+                        outline={true}
+                        color="primary"
+                        onClick={() =>
+                          history.push(
+                            `/add-wallet/single-delivery-transactions/${id}`
+                          )
+                        }
+                        className="ms-2"
+                      >
+                        Payment history
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <hr className="my-3" />
+                <Row>
+                  <Col lg={2}>
+                    <div className="text-center">
+                      <img
+                        className="rounded-circle avatar-lg cursor-pointer"
+                        alt="Seller"
+                        src={deliveryMan?.image ? deliveryMan.image : noPhoto}
+                        style={{ border: "1px solid lightgray" }}
+                      />
+                      <h5 className="text-capitalize">{deliveryMan?.name}</h5>
+                      <h6 className="text-capitalize">
+                        {deliveryMan?.liveStatus}
+                      </h6>
                     </div>
-                    <hr className="my-2" />
-                    <div>
-                      <Info title="Name" value={deliveryMan?.name} />
-                      <Info title="Email" value={deliveryMan?.email} />
-                      <Info title="Phone" value={deliveryMan?.number} />
-                      <Info title="Address" value={deliveryMan?.address} />
-                      <Info
-                        title="Total Income"
-                        value={`${deliveryMan?.totalIncome} NGN`}
-                      />
-                      <Info
-                        title="Balance"
-                        value={`${deliveryMan?.balance} NGN`}
-                      />{" "}
-                      <Info
-                        title="Total Orders"
-                        value={deliveryMan?.totalOrder}
-                      />
-                      <Info title="Status" value={deliveryMan?.status} />
-                      <Info
-                        title="Live Status"
-                        value={deliveryMan?.liveStatus}
-                      />
-                      <Info
-                        title="Vahicle Type"
-                        value={deliveryMan?.vehicleType}
-                      />
-                      <Info
-                        title="Vahicle No"
-                        value={deliveryMan?.vehicleNumber}
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg={6}>
-                <FlagsAndReviews flags={deliveryMan?.flags} />
-              </Col>
-            </Row>
+                  </Col>
+                  <Col lg={4}>
+                    <Info title="Email" value={deliveryMan?.email} />
+                    <Info title="Phone" value={deliveryMan?.number} />
+                    <Info title="Address" value={deliveryMan?.address} />
+                  </Col>
+                  <Col lg={3}>
+                    <Info
+                      title="Total Income"
+                      value={`${deliveryMan?.totalIncome} NGN`}
+                    />
+                    <Info
+                      title="Balance"
+                      value={`${deliveryMan?.balance} NGN`}
+                    />{" "}
+                    <Info
+                      title="Total Orders"
+                      value={deliveryMan?.totalOrder}
+                    />
+                  </Col>
+                  <Col lg={3}>
+                    <Info title="Status" value={deliveryMan?.status} />
+                    <Info
+                      title="Vahicle Type"
+                      value={deliveryMan?.vehicleType}
+                    />
+                    <Info
+                      title="Vahicle No"
+                      value={deliveryMan?.vehicleNumber}
+                    />
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
             <Row className="mb-4">
               <Col lg={6}>
@@ -225,6 +232,9 @@ const DeliverymanDetails = () => {
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
+              </Col>
+              <Col lg={6}>
+                <FlagsAndReviews flags={deliveryMan?.flags} />
               </Col>
             </Row>
 

@@ -19,6 +19,7 @@ import Select from "react-select";
 import {
   liveStatusOptionsOfRider,
   productStatusOptions,
+  riderSortByOptions,
   sortByOptions,
 } from "../../../assets/staticData";
 import {
@@ -109,10 +110,10 @@ const DeliverymanList = () => {
                 <Row className="d-flex justify-content-between">
                   <Col lg={4}>
                     <div className="mb-4">
-                      <label className="control-label">Sort By Order</label>
+                      <label className="control-label">Sort By</label>
                       <Select
                         palceholder="Select Status"
-                        options={sortByOptions}
+                        options={riderSortByOptions}
                         classNamePrefix="select2-selection"
                         value={sortByKey}
                         onChange={(e) =>
@@ -203,15 +204,17 @@ const DeliverymanList = () => {
                           <Td>{item?.number}</Td>
                           <Td>
                             <div
-                              className={`${item?.status === "active"
+                              className={`${
+                                item?.status === "active"
                                   ? "active-status"
                                   : "inactive-status"
-                                }`}
+                              }`}
                             >
-                              {`${item?.status === "active"
+                              {`${
+                                item?.status === "active"
                                   ? "Active"
                                   : "Inactive"
-                                }`}
+                              }`}
                             </div>
                           </Td>
                           <Td>
@@ -235,13 +238,24 @@ const DeliverymanList = () => {
                         </Tr>
                       );
                     })}
+
+                    {loading && (
+                      <Tr>
+                        <Td>
+                          <Spinner
+                            style={{
+                              position: "fixed",
+                              left: "50%",
+                              top: "50%",
+                            }}
+                            color="success"
+                          />
+                        </Td>
+                      </Tr>
+                    )}
                   </Tbody>
                 </Table>
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>
-                )}
+
                 {!loading && deliveryMans.length < 1 && (
                   <div className="text-center">
                     <h4>No Data!</h4>
@@ -289,7 +303,7 @@ const DeliverymanList = () => {
           </div>
           <div
             className="modal-body py-1"
-          // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
+            // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
           >
             <TrackingDeliveryBoy riderId={id} />
           </div>

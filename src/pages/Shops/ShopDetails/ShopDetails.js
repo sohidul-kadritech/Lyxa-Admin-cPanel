@@ -336,8 +336,8 @@ const ShopDetails = () => {
                   </div>
                 </HeaderWrapper>
                 <hr />
-                <Row className="card-height">
-                  <Col xl={6}>
+                <Row>
+                  <Col xl={4}>
                     <InfoTwo
                       Icon={ApartmentOutlinedIcon}
                       value={`${shop?.seller?.name} (Seller)`}
@@ -368,6 +368,8 @@ const ShopDetails = () => {
                       }`}
                       Icon={AccessTimeOutlinedIcon}
                     />
+                  </Col>
+                  <Col xl={4}>
                     <InfoTwo
                       Icon={StoreOutlinedIcon}
                       value={`${shop?.shopType} (Shop Type)`}
@@ -390,15 +392,6 @@ const ShopDetails = () => {
                       } (Rating)`}
                       Icon={SentimentSatisfiedOutlinedIcon}
                     />
-                  </Col>
-
-                  <Col xl={6}>
-                    {shop?.foodType && (
-                      <InfoTwo
-                        Icon={FoodBankOutlinedIcon}
-                        value={`${shop?.foodType} (Food Type)`}
-                      />
-                    )}
                     <InfoTwo
                       Icon={ProductionQuantityLimitsOutlinedIcon}
                       value={`${shop?.totalOrder} (Total Orders)`}
@@ -411,6 +404,15 @@ const ShopDetails = () => {
                       Icon={WorkHistoryOutlinedIcon}
                       value={`${shop?.minOrderAmount} NGN (Minimum Order)`}
                     />
+                  </Col>
+                  <Col xl={4}>
+                    {shop?.foodType && (
+                      <InfoTwo
+                        Icon={FoodBankOutlinedIcon}
+                        value={`${shop?.foodType} (Food Type)`}
+                      />
+                    )}
+
                     {shop?.haveOwnDeliveryBoy && (
                       <InfoTwo
                         Icon={PaymentIcon}

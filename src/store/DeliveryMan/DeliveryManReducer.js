@@ -6,7 +6,7 @@ const initialState = {
   error: null,
   deliveryMans: [],
   status: false,
-  sortByKey: { label: "Desc", value: "desc" },
+  sortByKey: { label: "Order(Z-A)", value: "desc" },
   statusKey: { label: "All", value: "all" },
   searchKey: "",
   paginate: null,

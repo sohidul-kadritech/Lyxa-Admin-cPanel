@@ -3,6 +3,12 @@ export const sortByOptions = [
   { label: "Desc", value: "desc" },
 ];
 
+export const riderSortByOptions = [
+  { label: "Order(A-Z)", value: "asc" },
+  { label: "Order(Z-A)", value: "desc" },
+  { label: "Created At", value: "createdAt" },
+];
+
 export const liveStatusFilterOptions = [
   { label: "All", value: "all" },
   { label: "Online", value: "online" },
@@ -33,8 +39,7 @@ export const monthOptions = [
   { label: "October", value: "10" },
   { label: "November", value: "11" },
   { label: "December", value: "12" },
-]
-
+];
 
 export const liveStatusOptionsOfRider = [
   { label: "All", value: "all" },
@@ -302,7 +307,6 @@ export const shopTrxsAmountFilterOptions = [
 ];
 
 export const adminLogTypeOptions = [
-
   { label: "Max Discount", value: "maxDiscount" },
   { label: "Near By ShopKm", value: "nearByShopKm" },
   { label: "Search Delivery Boy Km", value: "searchDeliveryBoyKm" },
@@ -315,14 +319,11 @@ export const adminLogTypeOptions = [
 ];
 
 export const dashboardSummaryOptions = [
-
   { label: "Total Order", value: "totalOrder" },
   { label: "Total Cancel Order", value: "totalCancelOrder" },
   { label: "Total Delivery Boy", value: "totalDeliveryBoy" },
   { label: "Total User", value: "totalUser" },
-
-
-]
+];
 
 export const logoSvg = (
   <svg
@@ -341,4 +342,4 @@ export const logoSvg = (
   </svg>
 );
 
-export const GOOGLE_API_KEY = '"AIzaSyA_ciMsx74Ck21Firr3yS0xwvL7M7gonf8"'
+export const GOOGLE_API_KEY = '"AIzaSyA_ciMsx74Ck21Firr3yS0xwvL7M7gonf8"';

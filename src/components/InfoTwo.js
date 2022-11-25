@@ -4,20 +4,20 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 const InfoTwo = ({ value, Icon, link }) => {
-    const history = useHistory();
+  const history = useHistory();
 
-    return (
-        <InfoWrapper
-            className={`${link && "cursor-pointer"}  }`}
-            onClick={() => history.push(link)}
-            link={link}
-        >
-            <Icon className="text-danger" />
-            <Tooltip title={`${link ? "See details" : ""}`}>
-                <span className="value">{value}</span>
-            </Tooltip>
-        </InfoWrapper>
-    );
+  return (
+    <InfoWrapper
+      className={`${link && "cursor-pointer"}  }`}
+      onClick={() => history.push(link)}
+      link={link}
+    >
+      <Icon className="text-danger" />
+      <Tooltip title={`${link ? "See details" : ""}`}>
+        <span className="value">{value}</span>
+      </Tooltip>
+    </InfoWrapper>
+  );
 };
 
 export default InfoTwo;
@@ -43,7 +43,7 @@ const InfoWrapper = styled.div`
   .value {
     font-size: 14px;
     text-transform: capitalize;
-    font-weight: 400;
-    color: #02a499;
+    font-weight: 500;
+    color: #6b6b6b;
   }
 `;

@@ -7,15 +7,12 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
-  IconButton,
   InputLabel,
-  Menu,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -201,8 +198,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
           flagedRider && rider
             ? ""
             : rider
-              ? selectFlagOrder?.deliveryBoy?._id
-              : "",
+            ? selectFlagOrder?.deliveryBoy?._id
+            : "",
       })
     );
   };
@@ -249,23 +246,16 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         type === "full"
           ? orderPayment
           : {
-            shop: "",
-            deliveryBoy: "",
-            admin: "",
-          },
+              shop: "",
+              deliveryBoy: "",
+              admin: "",
+            },
     });
   };
 
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
     const { shop, admin, deliveryBoy } = orderPayment;
-    const {
-      partialPayment: {
-        shop: shopAmount,
-        deliveryBoy: riderAmount,
-        admin: adminAmount,
-      },
-    } = orderCancel;
 
     if (name === "shop" && Number(value) > shop) {
       return successMsg("Invalid Shop Amount");
@@ -389,10 +379,11 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                         >
                           <Th>
                             <TableImgItem
-                              img={`${item?.user?.profile_photo
+                              img={`${
+                                item?.user?.profile_photo
                                   ? item?.user?.profile_photo
                                   : noPhoto
-                                }`}
+                              }`}
                               altImg={userIcon}
                               name={item?.user?.name}
                               id={item?.orderId}
@@ -410,17 +401,18 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           </Td>
                           <Td>{`${item?.summary?.totalAmount} NGN`}</Td>
                           <Td>
-                            {item?.paymentMethod}{" "}
+                            {item?.paymentMethod}
                             {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
                           </Td>
                           <Td>
                             <div
-                              className={`${item?.orderStatus === "cancelled"
+                              className={`${
+                                item?.orderStatus === "cancelled"
                                   ? "inactive-status"
                                   : item?.orderStatus === "delivered"
-                                    ? "active-status"
-                                    : "orderStatus"
-                                }`}
+                                  ? "active-status"
+                                  : "orderStatus"
+                              }`}
                             >
                               {modifiedOrderStatus(item?.orderStatus)}
                             </div>
@@ -433,9 +425,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                                 "Update Status",
                                 account_type === "admin" && "Flag",
                                 account_type === "admin" &&
-                                item?.orderStatus !== "cancelled" &&
-                                item?.orderStatus !== "delivered" &&
-                                "Cancel Order",
+                                  item?.orderStatus !== "cancelled" &&
+                                  item?.orderStatus !== "delivered" &&
+                                  "Cancel Order",
                               ]}
                             />
                           </Td>
@@ -511,7 +503,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 {orderStatusOptions.map((item, index) => (
                   <MenuItem key={index} value={item.value}>
                     {orderFor === "specific" &&
-                      item.value === "accepted_delivery_boy"
+                    item.value === "accepted_delivery_boy"
                       ? ""
                       : item.label}
                   </MenuItem>
