@@ -11,7 +11,7 @@ const ADMIN_ENDPOINT = "admin";
 // LOGIN API
 
 export const LOGIN = ADMIN_ENDPOINT + "/auth/login";
-export const FORGET_PASS = "forget";
+export const FORGET_PASS = API_URL + "forget";
 
 // GET IMAGE
 export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";

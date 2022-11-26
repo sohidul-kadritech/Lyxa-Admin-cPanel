@@ -46,6 +46,21 @@ import TableImgItem from "../../../components/TableImgItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
 
+const OrderInfo = ({ items = [] }) => {
+  return (
+    <InfoWrapper>
+      <Row className="mt-2">
+        {items?.map((item, index) => (
+          <Col xl={4} key={index} className="info">
+            <span className="title">{item?.title}</span>
+            <h6>{item?.value}</h6>
+          </Col>
+        ))}
+      </Row>
+    </InfoWrapper>
+  );
+};
+
 const OrderDetails = () => {
   const { id } = useParams();
   const { orders, status } = useSelector((state) => state.orderReducer);
@@ -200,8 +215,7 @@ const OrderDetails = () => {
                     Download PDF
                   </Button>
                 </div>
-                <hr />
-                <Row className="text-center">
+                <Row className="card-height">
                   <Col lg={2}>
                     <div className="text-center">
                       <img
@@ -257,7 +271,6 @@ const OrderDetails = () => {
                   </Col>
 
                   <Col lg={5}>
-                    {/* <Info title="Payment Status" value={order?.paymentStatus} /> */}
                     <Info
                       title="Payment Method"
                       value={`${order?.paymentMethod} ${
@@ -303,7 +316,65 @@ const OrderDetails = () => {
                       <Info title="User Review" value={order?.reviewDes} />
                     )}
                   </Col>
-                  {/* <Col lg={3}></Col> */}
+
+                  {/* <Col xl={6}>
+                    <h5>Order Details</h5>
+                    <p>#{order?.orderId}</p>
+                    <hr />
+
+                    <div className="d-flex align-items-center justify-content-between">
+                      <div className="d-flex align-items-center">
+                        <img
+                          className="rounded-circle avatar-lg cursor-pointer me-1"
+                          alt="Seller"
+                          src={
+                            order?.user?.profile_photo
+                              ? order?.user?.profile_photo
+                              : noPhoto
+                          }
+                          style={{ border: "1px solid lightgray" }}
+                          onClick={() =>
+                            history.push(`/users/details/${order?.user?._id}`)
+                          }
+                        />
+                        <h6>{order?.user?.name}</h6>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <img
+                          className="rounded-circle avatar-lg cursor-pointer me-1"
+                          alt="Seller"
+                          src={
+                            order?.user?.profile_photo
+                              ? order?.user?.profile_photo
+                              : noPhoto
+                          }
+                          style={{ border: "1px solid lightgray" }}
+                          onClick={() =>
+                            history.push(`/users/details/${order?.user?._id}`)
+                          }
+                        />
+                        <h6>{order?.user?.name}</h6>
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <OrderInfo
+                        items={[
+                          { title: "Order Type", value: order?.orderType },
+                          {
+                            title: "Payment Method",
+                            value: order?.paymentMethod,
+                          },
+                          {
+                            title: "Order Time",
+                            value: new Date(order?.createdAt).toLocaleString(),
+                          },
+                        ]}
+                      />
+                    </div>
+                  </Col>
+
+                  <Col xl={6}></Col> */}
                 </Row>
               </CardBody>
             </Card>
@@ -626,6 +697,14 @@ const DeliveryAddress = styled.div`
     font-size: 18px;
     font-weight: 500;
     font-family: "Courier New", Courier, monospace;
+  }
+`;
+
+const InfoWrapper = styled.div`
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  .info:last-child {
+    text-align: right;
   }
 `;
 

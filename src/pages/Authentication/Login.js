@@ -45,6 +45,7 @@ import styled from "styled-components";
 import { successMsg } from "../../helpers/successMsg";
 import requestApi from "../../network/httpRequest";
 import { FORGET_PASS } from "../../network/Api";
+import axios from "axios";
 
 const Login = (props) => {
   const history = useHistory();
@@ -132,20 +133,24 @@ const Login = (props) => {
     console.log({ forgetPassData });
     try {
       setIsloading(true);
-      const { data } = await requestApi().request(FORGET_PASS, {
+      const { data } = await axios({
         method: "POST",
+        url: FORGET_PASS,
         data: forgetPassData,
       });
 
       if (data) {
-        console.log(data);
         setIsloading(false);
-        setForgetPassData({
-          type: "",
-          to_email: "",
-        });
+
         if (data.status) {
-          setForgetStatus({ msg: data.message, status: "success" });
+          setForgetStatus({
+            msg: `${data.message} Successfully`,
+            status: "success",
+          });
+          setForgetPassData({
+            type: "",
+            to_email: "",
+          });
         } else {
           setForgetStatus({ msg: data.message, status: "error" });
         }
@@ -197,7 +202,7 @@ const Login = (props) => {
                         <div className="mb-2">
                           <FormControl>
                             <FormLabel id="demo-controlled-radio-buttons-group">
-                              Login as
+                              Login As
                             </FormLabel>
                             <RadioGroup
                               aria-labelledby="demo-controlled-radio-buttons-group"
@@ -257,10 +262,11 @@ const Login = (props) => {
                         <ForgatPassword className="mb-3">
                           <LockResetIcon />
                           <span
-                            className=" ms-1 cursor-pointer password-text"
-                            onClick={() =>
-                              setIsForgetPassword(!isForgetPassword)
-                            }
+                            className=" ms-1 cursor-pointer"
+                            onClick={() => {
+                              setIsForgetPassword(!isForgetPassword);
+                              setForgetStatus({ status: "", msg: "" });
+                            }}
                           >
                             Forget Password
                           </span>
@@ -317,78 +323,80 @@ const Login = (props) => {
                 {forgetStatus.msg}
               </Alert>
             ) : null}
-            <Form onSubmit={submitForgetPass}>
-              <div className="mb-2">
-                <FormControl>
-                  <FormLabel id="demo-controlled-radio-buttons-group">
-                    Role
-                  </FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-controlled-radio-buttons-group"
-                    name="type"
-                    value={forgetPassData.type}
-                    onChange={handleChangeForgetPass}
+            {forgetStatus.status !== "success" ? (
+              <Form onSubmit={submitForgetPass}>
+                <div className="mb-2">
+                  <FormControl>
+                    <FormLabel id="demo-controlled-radio-buttons-group">
+                      Role
+                    </FormLabel>
+                    <RadioGroup
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name="type"
+                      value={forgetPassData.type}
+                      onChange={handleChangeForgetPass}
+                      required
+                    >
+                      <div className="d-flex justify-content-center flex-wrap">
+                        <FormControlLabel
+                          value="admin"
+                          control={<Radio />}
+                          label="Admin"
+                        />
+                        <FormControlLabel
+                          value="customerService"
+                          control={<Radio />}
+                          label="Customer Service"
+                        />
+                        <FormControlLabel
+                          value="seller"
+                          control={<Radio />}
+                          label="Seller"
+                        />
+                        <FormControlLabel
+                          value="shop"
+                          control={<Radio />}
+                          label="Shop"
+                        />
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+                <div className="mb-4">
+                  <TextField
+                    type="email"
+                    className="form-control"
+                    placeholder="Enter your email"
                     required
-                  >
-                    <div className="d-flex justify-content-center flex-wrap">
-                      <FormControlLabel
-                        value="admin"
-                        control={<Radio />}
-                        label="Admin"
-                      />
-                      <FormControlLabel
-                        value="customerService"
-                        control={<Radio />}
-                        label="Customer Service"
-                      />
-                      <FormControlLabel
-                        value="seller"
-                        control={<Radio />}
-                        label="Seller"
-                      />
-                      <FormControlLabel
-                        value="shop"
-                        control={<Radio />}
-                        label="Shop"
-                      />
-                    </div>
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              <div className="mb-4">
-                <TextField
-                  type="email"
-                  className="form-control"
-                  placeholder="Enter your email"
-                  required
-                  label="Your Email"
-                  name="to_email"
-                  value={forgetPassData.to_email}
-                  onChange={handleChangeForgetPass}
-                />
-              </div>
+                    label="Your Email"
+                    name="to_email"
+                    value={forgetPassData.to_email}
+                    onChange={handleChangeForgetPass}
+                  />
+                </div>
 
-              <div className="d-flex justify-content-center">
-                <Button
-                  color="success"
-                  size="lg"
-                  className="px-4"
-                  type="submit"
-                  style={{ width: "150px" }}
-                  disabled={
-                    isLoading ||
-                    !forgetPassData.to_email ||
-                    !forgetPassData.type
-                  }
-                >
-                  {isLoading ? (
-                    <Spinner color="danger" size="sm"></Spinner>
-                  ) : (
-                    "Send"
-                  )}
-                </Button>
-              </div>
-            </Form>
+                <div className="d-flex justify-content-center">
+                  <Button
+                    color="success"
+                    size="lg"
+                    className="px-4"
+                    type="submit"
+                    style={{ width: "150px" }}
+                    disabled={
+                      isLoading ||
+                      !forgetPassData.to_email ||
+                      !forgetPassData.type
+                    }
+                  >
+                    {isLoading ? (
+                      <Spinner color="danger" size="sm"></Spinner>
+                    ) : (
+                      "Send"
+                    )}
+                  </Button>
+                </div>
+              </Form>
+            ) : null}
           </div>
         </Modal>
       </GlobalWrapper>
