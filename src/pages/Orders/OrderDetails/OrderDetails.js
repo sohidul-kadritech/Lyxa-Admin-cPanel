@@ -45,19 +45,47 @@ import { callApi } from "../../../components/SingleApiCall";
 import TableImgItem from "../../../components/TableImgItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 
 const OrderInfo = ({ items = [] }) => {
+  const history = useHistory();
+
   return (
     <InfoWrapper>
-      <Row className="mt-2">
+      <Row className="">
         {items?.map((item, index) => (
-          <Col xl={4} key={index} className="info">
+          <Col xl={4} key={index} className={`info cursor-pointer `}>
             <span className="title">{item?.title}</span>
-            <h6>{item?.value}</h6>
+            <div
+              className={`${
+                item?.valueTwo ? "d-flex  align-items-center" : ""
+              }`}
+            >
+              <h6
+                className={`info-value ${item?.link ? "link" : ""}`}
+                onClick={item?.link ? () => history.push(item?.link) : null}
+              >
+                {item?.value}
+              </h6>
+              {item?.valueTwo ? (
+                <h6 className={`info-value-two font-size-13  ${item?.class}`}>
+                  {item?.valueTwo}
+                </h6>
+              ) : null}
+            </div>
           </Col>
         ))}
       </Row>
     </InfoWrapper>
+  );
+};
+
+const SummaryInfo = ({ title, value }) => {
+  return (
+    <div className="item">
+      <span>{title}</span>
+      <span className="summary-value">{value} NGN</span>
+    </div>
   );
 };
 
@@ -84,6 +112,7 @@ const OrderDetails = () => {
         }
       }
     }
+    return;
   }, [id]);
 
   const calProductAmount = (product) => {
@@ -205,144 +234,49 @@ const OrderDetails = () => {
 
             <Card className="pb-5">
               <CardBody>
-                <div className="d-flex align-items-center justify-content-between">
+                {/* <div className="d-flex align-items-center justify-content-between">
                   <CardTitle className="h4">Order Details</CardTitle>
-                  <Button
-                    outline={true}
-                    color="success"
-                    onClick={() => downloadPdf()}
-                  >
-                    Download PDF
-                  </Button>
-                </div>
-                <Row className="card-height">
-                  <Col lg={2}>
-                    <div className="text-center">
-                      <img
-                        className="rounded-circle avatar-lg cursor-pointer"
-                        alt="Seller"
-                        src={
-                          order?.user?.profile_photo
-                            ? order?.user?.profile_photo
-                            : noPhoto
-                        }
-                        style={{ border: "1px solid lightgray" }}
-                        onClick={() =>
-                          history.push(`/users/details/${order?.user?._id}`)
-                        }
-                      />
-                      <h5
-                        className="text-capitalize cursor-pointer"
-                        onClick={() =>
-                          history.push(`/users/details/${order?.user?._id}`)
-                        }
-                      >
-                        {order?.user?.name}
-                      </h5>
+                  
+                </div> */}
+                <Row>
+                  <Col xl={6}>
+                    <div style={{ height: "37px" }}>
+                      <h5 className="text-dark">Order Details</h5>
                     </div>
-                  </Col>
-                  <Col lg={5}>
-                    <Info
-                      title="Shop"
-                      value={order?.shop?.shopName}
-                      link={`/shops/details/${order?.shop?._id}`}
-                      valueTwo={order?.shop?.shopStatus}
-                      statusClass={
-                        order?.shop?.shopStatus
-                          ? "active-status"
-                          : "inactive-status"
-                      }
-                    />
-                    {order?.deliveryBoy && (
-                      <Info
-                        title="Delivery Boy"
-                        value={order?.deliveryBoy?.name}
-                        link={`/deliveryman/details/${order?.deliveryBoy?._id}`}
-                      />
-                    )}
-
-                    <Info
-                      title="Order Time"
-                      value={new Date(order?.createdAt).toLocaleString()}
-                    />
-
-                    <Info title="Order Type" value={order?.orderType} />
-                    <Info title="Order Status" value={order?.orderStatus} />
-                  </Col>
-
-                  <Col lg={5}>
-                    <Info
-                      title="Payment Method"
-                      value={`${order?.paymentMethod} ${
-                        order?.selectPos !== "no" ? "(Pos)" : ""
-                      }`}
-                      valueTwo={order?.paymentStatus}
-                    />
-                    <Info
-                      title="Delivery Distance"
-                      value={`${order?.deliveryDistance} KM`}
-                    />
-                    <Info
-                      title="Rating"
-                      value={
-                        order?.review === 4
-                          ? "Excellent"
-                          : order?.review === 3
-                          ? "Very good"
-                          : order?.review === 2
-                          ? "Good"
-                          : order?.review === 1
-                          ? "Bad"
-                          : "No Rating"
-                      }
-                    />
-                    {order?.orderCancel && (
-                      <>
-                        <Info
-                          title="Cancelled By"
-                          value={order?.orderCancel.canceledBy}
-                        />
-                        <Info
-                          title="Cancel Reason"
-                          value={
-                            order?.orderCancel.cancelReason
-                              ? order?.orderCancel?.cancelReason?.name
-                              : order?.orderCancel?.otherReason
-                          }
-                        />
-                      </>
-                    )}
-                    {order?.reviewDes && (
-                      <Info title="User Review" value={order?.reviewDes} />
-                    )}
-                  </Col>
-
-                  {/* <Col xl={6}>
-                    <h5>Order Details</h5>
-                    <p>#{order?.orderId}</p>
                     <hr />
-
+                    {/* SELLER AND USER IMAGE */}
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="d-flex align-items-center">
                         <img
                           className="rounded-circle avatar-lg cursor-pointer me-1"
                           alt="Seller"
                           src={
-                            order?.user?.profile_photo
-                              ? order?.user?.profile_photo
+                            order?.seller?.profile_photo
+                              ? order?.seller?.profile_photo
                               : noPhoto
                           }
                           style={{ border: "1px solid lightgray" }}
                           onClick={() =>
-                            history.push(`/users/details/${order?.user?._id}`)
+                            history.push(
+                              `/seller/details/${order?.seller?._id}`
+                            )
                           }
                         />
-                        <h6>{order?.user?.name}</h6>
+                        <h6
+                          onClick={() =>
+                            history.push(
+                              `/seller/details/${order?.seller?._id}`
+                            )
+                          }
+                          className="cursor-pointer link"
+                        >
+                          {order?.user?.name}
+                        </h6>
                       </div>
                       <div className="d-flex align-items-center">
                         <img
                           className="rounded-circle avatar-lg cursor-pointer me-1"
-                          alt="Seller"
+                          alt="User"
                           src={
                             order?.user?.profile_photo
                               ? order?.user?.profile_photo
@@ -353,28 +287,169 @@ const OrderDetails = () => {
                             history.push(`/users/details/${order?.user?._id}`)
                           }
                         />
-                        <h6>{order?.user?.name}</h6>
+                        <h6
+                          onClick={() =>
+                            history.push(`/users/details/${order?.user?._id}`)
+                          }
+                          className="cursor-pointer link"
+                        >
+                          {order?.user?.name}
+                        </h6>
                       </div>
                     </div>
-
+                    {/* ORDER INFO */}
                     <div className="mt-4">
                       <OrderInfo
                         items={[
-                          { title: "Order Type", value: order?.orderType },
+                          { title: "Order Id", value: order?.orderId },
                           {
                             title: "Payment Method",
                             value: order?.paymentMethod,
+                            valueTwo: order?.paymentStatus,
+                            class: "orderStatus",
+                          },
+                          { title: "Order Type", value: order?.orderType },
+                        ]}
+                      />
+                      <OrderInfo
+                        items={[
+                          {
+                            title: "Shop",
+                            value: order?.shop?.shopName,
+                            link: `/shops/details/${order?.shop?._id}`,
+                          },
+                          {
+                            title: "Order Status",
+                            value: order?.orderStatus.split("_").join(" "),
+                          },
+                          {
+                            title: "Rating",
+                            value:
+                              order?.review === 4
+                                ? "Excellent"
+                                : order?.review === 3
+                                ? "Very good"
+                                : order?.review === 2
+                                ? "Good"
+                                : order?.review === 1
+                                ? "Bad"
+                                : "No Rating",
+                          },
+                        ]}
+                      />
+                      <OrderInfo
+                        items={[
+                          {
+                            title: "Delivery Boy",
+                            value: order?.deliveryBoy
+                              ? order?.deliveryBoy?.name
+                              : "Not Assigned",
+                            link: order?.deliveryBoy
+                              ? `/deliveryman/details/${order?.deliveryBoy?._id}`
+                              : null,
+                          },
+                          {
+                            title: "Delivery Distance",
+                            value: `${order?.deliveryDistance} KM`,
                           },
                           {
                             title: "Order Time",
-                            value: new Date(order?.createdAt).toLocaleString(),
+                            value: new Date(order?.createdAt).toLocaleString(
+                              "en-US",
+                              { hour12: false }
+                            ),
                           },
                         ]}
                       />
                     </div>
                   </Col>
 
-                  <Col xl={6}></Col> */}
+                  <Col xl={6}>
+                    <div
+                      className="d-flex justify-content-between align-items-center"
+                      style={{ height: "37px" }}
+                    >
+                      <h5 className="text-dark">Delivery Address</h5>
+                      <Button
+                        outline={true}
+                        color="success"
+                        onClick={() => downloadPdf()}
+                      >
+                        Download PDF
+                      </Button>
+                    </div>
+                    <hr />
+                    <div className="d-flex align-items-center">
+                      <RoomOutlinedIcon className="text-danger" />
+                      <h6 className="text-dark font-size-14">
+                        {order?.dropOffLocation?.address}
+                      </h6>
+                    </div>
+                    <hr />
+
+                    <h5 className="text-dark mb-3">Summary</h5>
+                    <Summery>
+                      <SummaryInfo
+                        title="Products Amount"
+                        value={order?.summary?.productAmount}
+                      />
+                      <SummaryInfo
+                        title="Delivery Charge"
+                        value={order?.summary?.deliveryFee}
+                      />
+                      <SummaryInfo
+                        title="Payable Total"
+                        value={order?.summary?.totalAmount}
+                      />
+                    </Summery>
+
+                    <Summery
+                      className="mt-3"
+                      style={{
+                        border:
+                          order?.orderStatus === "cancelled"
+                            ? "1px solid #ff0000"
+                            : order?.orderStatus === "delivered"
+                            ? "1px solid #68e5de"
+                            : "1px solid #f3f3f3",
+                      }}
+                    >
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h6 className="text-dark font-size-14">Status</h6>
+                        {order?.orderCancel ? (
+                          <span>
+                            {order?.orderCancel?.canceledBy} |{" "}
+                            {order?.orderCancel?.cancelReason
+                              ? order?.orderCancel?.cancelReason
+                              : order?.orderCancel.otherReason}{" "}
+                          </span>
+                        ) : null}
+                        <span
+                          className={`px-2 ${
+                            order?.orderStatus === "cancelled"
+                              ? "inactive-status"
+                              : order?.orderStatus === "delivered"
+                              ? "active-status"
+                              : "orderStatus"
+                          }`}
+                        >
+                          {order?.orderStatus}
+                        </span>
+                      </div>
+                      <hr />
+
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h6 className="text-dark font-size-14">
+                          Delivery Time
+                        </h6>
+                        <span className="">
+                          {order?.deliveredMinutes === 0
+                            ? "Not Delivered."
+                            : `${order?.deliveredMinutes} Min`}
+                        </span>
+                      </div>
+                    </Summery>
+                  </Col>
                 </Row>
               </CardBody>
             </Card>
@@ -428,35 +503,13 @@ const OrderDetails = () => {
                 </Card>
               </Col>
 
-              <Col xl={6}>
-                <Card className="card-height">
-                  <CardBody>
-                    <CardTitle className="h4">Summary</CardTitle>
-                    <hr />
-
-                    <Summery>
-                      <div className="item">
-                        <span>Products Amount</span>
-                        <span className="value">
-                          {order?.summary?.productAmount} NGN
-                        </span>
-                      </div>
-
-                      <div className="item">
-                        <span>Delivery Charge</span>
-                        <span className="value">
-                          {order?.summary?.deliveryFee} NGN
-                        </span>
-                      </div>
-                      <div className="item">
-                        <span>Payable Total</span>
-                        <span className="value">
-                          {order?.summary?.totalAmount} NGN
-                        </span>
-                      </div>
-                    </Summery>
-                  </CardBody>
-                </Card>
+              <Col lg={6} className="card-height">
+                {order?.pickUpLocation && order?.dropOffLocation && (
+                  <OrderTrackingMap
+                    pickup={order?.pickUpLocation}
+                    dropoff={order?.dropOffLocation}
+                  />
+                )}
               </Col>
             </Row>
 
@@ -552,51 +605,6 @@ const OrderDetails = () => {
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
-              </Col>
-            </Row>
-
-            {/* ADDRESS AND MAP */}
-
-            <Row>
-              <Col lg={6}>
-                <Card className="card-height">
-                  <CardBody>
-                    <CardTitle className="h4">Delivery Address</CardTitle>
-                    <hr />
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address ">
-                        {`Full Address: ${order?.dropOffLocation?.address}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`State: ${order?.dropOffLocation?.state}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`City: ${order?.dropOffLocation?.city}`}
-                      </span>
-                    </DeliveryAddress>
-                    <DeliveryAddress>
-                      <i className="fa fa-map-marker-alt"></i>
-                      <span className="ms-2 address">
-                        {`Country: ${order?.dropOffLocation?.country}`}
-                      </span>
-                    </DeliveryAddress>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg={6} className="card-height">
-                {order?.pickUpLocation && order?.dropOffLocation && (
-                  <OrderTrackingMap
-                    pickup={order?.pickUpLocation}
-                    dropoff={order?.dropOffLocation}
-                  />
-                )}
               </Col>
             </Row>
 
@@ -701,32 +709,57 @@ const DeliveryAddress = styled.div`
 `;
 
 const InfoWrapper = styled.div`
-  border: 1px solid lightgray;
-  border-radius: 5px;
+  border: 1px solid #f3f3f3;
+  border-radius: 10px;
+  padding: 10px 5px;
+  margin-bottom: 8px;
   .info:last-child {
     text-align: right;
+  }
+
+  .info-value {
+    font-size: 15px;
+    margin-bottom: 0px;
+    color: black;
+    text-transform: capitalize;
+  }
+
+  .link {
+    &:hover {
+      color: blue;
+      font-weight: blod;
+      text-decoration: underline;
+    }
+  }
+
+  .info-value-two {
+    font-size: 13px;
+    text-transform: capitalize;
+    // padding: 2px 6px;
+    margin-left: 20px;
+    margin-bottom: 0px;
   }
 `;
 
 const Summery = styled.div`
+  border: 1px solid #f3f3f3;
+  border-radius: 10px;
+  padding: 10px;
   .item {
-    font-weight: 400;
     font-family: Arial, Helvetica, sans-serif;
     border-bottom: 1px solid #d8d8d8;
     padding: 10px 0;
     color: #333333;
-    font-size: 16px;
+    font-size: 15px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 
     &:last-child {
       border-bottom: none;
-    }
-
-    .value {
       font-weight: bold;
-      color: #02a499;
+      .summary-value {
+      }
     }
   }
 `;

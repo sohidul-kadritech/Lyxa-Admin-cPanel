@@ -4,8 +4,8 @@ export const sortByOptions = [
 ];
 
 export const riderSortByOptions = [
-  { label: "Order(A-Z)", value: "asc" },
-  { label: "Order(Z-A)", value: "desc" },
+  { label: "Order Number(+)", value: "asc" },
+  { label: "Order Number(-)", value: "desc" },
   { label: "Created At", value: "createdAt" },
 ];
 
