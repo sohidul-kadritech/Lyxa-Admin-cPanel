@@ -94,29 +94,25 @@ const CreateAdmin = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (accountType === "admin") {
+      const data = {
+        name,
+        email,
+        password,
+        role,
+        number: phoneNumber,
+        adminType: role,
+      };
+
       if (id) {
         dispatch(
           editAdmin({
+            ...data,
             id,
-            name,
-            email,
-            role,
-            number: phoneNumber,
             status: activeStatus,
-            adminType: role,
           })
         );
       } else {
-        dispatch(
-          addAdmin({
-            name,
-            email,
-            password,
-            role,
-            number: phoneNumber,
-            adminType: role,
-          })
-        );
+        dispatch(addAdmin(data));
       }
     } else if (accountType === "seller") {
       dispatch(
@@ -249,22 +245,22 @@ const CreateAdmin = () => {
                             <MenuItem value="inactive">Inactive</MenuItem>
                           </Select>
                         </FormControl>
-                      ) : (
-                        <TextField
-                          id="password"
-                          label="Password"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          value={password}
-                          onChange={(event) => setPassword(event.target.value)}
-                          required
-                        />
-                      )}
+                      ) : null}
                     </Col>
                   </Row>
-
-                  {accountType === "admin" && (
-                    <Row className="mb-3">
+                  <Row className="mb-3">
+                    <Col xl={6}>
+                      <TextField
+                        id="password"
+                        label={`${id ? "New Password" : "Password"}`}
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        required={!id}
+                      />
+                    </Col>
+                    {accountType === "admin" && (
                       <Col xl={6} className="mb-3 mb-xl-0">
                         <FormControl fullWidth required>
                           <InputLabel id="demo-simple-select-label">
@@ -284,9 +280,8 @@ const CreateAdmin = () => {
                           </Select>
                         </FormControl>
                       </Col>
-                    </Row>
-                  )}
-
+                    )}
+                  </Row>
                   <div className="pt-3 my-3 d-flex justify-content-center">
                     <Button
                       color="primary"

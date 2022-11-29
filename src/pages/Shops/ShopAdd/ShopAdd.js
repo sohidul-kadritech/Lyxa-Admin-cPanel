@@ -356,6 +356,7 @@ const ShopAdd = () => {
       shopStartTime,
       shopEndTime,
       shopName,
+      password,
       isCuisine: seller.sellerType === "food" ? true : false,
       minOrderAmount,
       email,
@@ -398,7 +399,6 @@ const ShopAdd = () => {
     } else {
       dispatch(
         addShop({
-          password,
           seller: seller._id,
           ...data,
         })
@@ -788,6 +788,19 @@ const ShopAdd = () => {
                           required
                         />
                       </div>
+
+                      <div className="mb-4">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Account Name"
+                          variant="outlined"
+                          placeholder="Enter Account Name"
+                          value={accountName}
+                          onChange={(e) => setAccountName(e.target.value)}
+                          required
+                        />
+                      </div>
                     </Col>
                     <Col lg={6} className="mt-4 mt-lg-0">
                       <div className="mb-4">
@@ -802,22 +815,19 @@ const ShopAdd = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
-                      {!id && (
-                        <div className="mb-4">
-                          <TextField
-                            id="password"
-                            label="Password"
-                            variant="outlined"
-                            style={{ width: "100%" }}
-                            autoComplete="off"
-                            value={password}
-                            onChange={(event) =>
-                              setPassword(event.target.value)
-                            }
-                            required
-                          />
-                        </div>
-                      )}
+
+                      <div className="mb-4">
+                        <TextField
+                          id="password"
+                          label={`${id ? "New Password" : "Password"}`}
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          autoComplete="off"
+                          value={password}
+                          onChange={(event) => setPassword(event.target.value)}
+                          required={!id}
+                        />
+                      </div>
 
                       <div className="mb-4">
                         <TextField
@@ -947,7 +957,18 @@ const ShopAdd = () => {
                           </Select>
                         </FormControl>
                       </div>
-
+                      <div className="mb-4">
+                        <TextField
+                          style={{ width: "100%" }}
+                          id="outlined-basic"
+                          label="Bank Name"
+                          variant="outlined"
+                          placeholder="Enter Bank Name"
+                          value={bankName}
+                          onChange={(e) => setBankName(e.target.value)}
+                          required
+                        />
+                      </div>
                       {seller?.sellerType == "food" && (
                         <div className="mb-3">
                           <Autocomplete
@@ -1001,30 +1022,6 @@ const ShopAdd = () => {
                           )}
                         </div>
                       )}
-                      <div className="mb-4">
-                        <TextField
-                          style={{ width: "100%" }}
-                          id="outlined-basic"
-                          label="Bank Name"
-                          variant="outlined"
-                          placeholder="Enter Bank Name"
-                          value={bankName}
-                          onChange={(e) => setBankName(e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <TextField
-                          style={{ width: "100%" }}
-                          id="outlined-basic"
-                          label="Account Name"
-                          variant="outlined"
-                          placeholder="Enter Account Name"
-                          value={accountName}
-                          onChange={(e) => setAccountName(e.target.value)}
-                          required
-                        />
-                      </div>
                     </Col>
                   </Row>
 

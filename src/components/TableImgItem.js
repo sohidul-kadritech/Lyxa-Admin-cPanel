@@ -6,17 +6,17 @@ const TableImgItem = ({ img = "", name, subTitle, id = "" }) => {
   return (
     <React.Fragment>
       <div className="d-flex align-items-center">
-        {img && (
+        {img ? (
           <div style={{ width: "60px", height: "60px" }}>
             <img
               className="w-100 h-100"
-              lazy="loading"
+              loading="lazy"
               style={{ borderRadius: "6px" }}
               src={img}
               alt=""
             />
           </div>
-        )}
+        ) : null}
         <div style={{ flex: "1", textAlign: "left" }} className="ps-2">
           <p className="mb-0 text-black">{name}</p>
           <p className="text-muted mb-0" style={{ fontSize: 12 }}>

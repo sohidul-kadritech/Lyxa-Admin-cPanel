@@ -371,7 +371,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                       <>
                         <Tr
                           key={index}
-                          className="align-middle"
+                          className="align-middle text-capitalize"
                           style={{
                             fontSize: "14px",
                             fontWeight: "500",

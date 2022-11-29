@@ -136,7 +136,13 @@ const Login = (props) => {
       const { data } = await axios({
         method: "POST",
         url: FORGET_PASS,
-        data: forgetPassData,
+        data: {
+          ...forgetPassData,
+          type:
+            forgetPassData.type === "customerService"
+              ? "admin"
+              : forgetPassData.type,
+        },
       });
 
       if (data) {
@@ -266,6 +272,10 @@ const Login = (props) => {
                             onClick={() => {
                               setIsForgetPassword(!isForgetPassword);
                               setForgetStatus({ status: "", msg: "" });
+                              setForgetPassData({
+                                ...forgetPassData,
+                                type: type,
+                              });
                             }}
                           >
                             Forget Password

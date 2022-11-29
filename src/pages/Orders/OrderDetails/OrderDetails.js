@@ -58,17 +58,23 @@ const OrderInfo = ({ items = [] }) => {
             <span className="title">{item?.title}</span>
             <div
               className={`${
-                item?.valueTwo ? "d-flex  align-items-center" : ""
+                item?.valueTwo
+                  ? "d-flex justify-content-center  align-items-center"
+                  : ""
               }`}
             >
               <h6
-                className={`info-value ${item?.link ? "link" : ""}`}
+                className={`info-value text-capitalize ${
+                  item?.link ? "link" : ""
+                }`}
                 onClick={item?.link ? () => history.push(item?.link) : null}
               >
                 {item?.value}
               </h6>
               {item?.valueTwo ? (
-                <h6 className={`info-value-two font-size-13  ${item?.class}`}>
+                <h6
+                  className={`info-value-two text-capitalize font-size-13  ${item?.class}`}
+                >
                   {item?.valueTwo}
                 </h6>
               ) : null}
@@ -242,6 +248,7 @@ const OrderDetails = () => {
                   <Col xl={6}>
                     <div style={{ height: "37px" }}>
                       <h5 className="text-dark">Order Details</h5>
+                      <span>#{order?.orderId}</span>
                     </div>
                     <hr />
                     {/* SELLER AND USER IMAGE */}
@@ -301,7 +308,13 @@ const OrderDetails = () => {
                     <div className="mt-4">
                       <OrderInfo
                         items={[
-                          { title: "Order Id", value: order?.orderId },
+                          {
+                            title: "Order Time",
+                            value: new Date(order?.createdAt).toLocaleString(
+                              "en-US",
+                              { hour12: false }
+                            ),
+                          },
                           {
                             title: "Payment Method",
                             value: order?.paymentMethod,
@@ -349,15 +362,18 @@ const OrderDetails = () => {
                               : null,
                           },
                           {
-                            title: "Delivery Distance",
-                            value: `${order?.deliveryDistance} KM`,
+                            title: "Delivered Time",
+                            value: `${
+                              order?.orderStatus === "delivered"
+                                ? new Date(
+                                    order?.timeline.at(-1)?.createdAt
+                                  ).toLocaleString("en-US", { hour12: false })
+                                : "No Time"
+                            }`,
                           },
                           {
-                            title: "Order Time",
-                            value: new Date(order?.createdAt).toLocaleString(
-                              "en-US",
-                              { hour12: false }
-                            ),
+                            title: "Delivery Distance",
+                            value: `${order?.deliveryDistance} KM`,
                           },
                         ]}
                       />
@@ -379,7 +395,10 @@ const OrderDetails = () => {
                       </Button>
                     </div>
                     <hr />
-                    <div className="d-flex align-items-center">
+                    <div
+                      className="d-flex align-items-center"
+                      style={{ padding: "2px 0px" }}
+                    >
                       <RoomOutlinedIcon className="text-danger" />
                       <h6 className="text-dark font-size-14">
                         {order?.dropOffLocation?.address}
@@ -387,7 +406,9 @@ const OrderDetails = () => {
                     </div>
                     <hr />
 
-                    <h5 className="text-dark mb-3">Summary</h5>
+                    <h5 className="text-dark" style={{ marginBottom: "30px" }}>
+                      Summary
+                    </h5>
                     <Summery>
                       <SummaryInfo
                         title="Products Amount"
@@ -397,20 +418,21 @@ const OrderDetails = () => {
                         title="Delivery Charge"
                         value={order?.summary?.deliveryFee}
                       />
+                      <SummaryInfo title="Discount" value={0} />
                       <SummaryInfo
-                        title="Payable Total"
+                        title="Total Amount"
                         value={order?.summary?.totalAmount}
                       />
                     </Summery>
 
                     <Summery
-                      className="mt-3"
+                      className="mt-3 text-capitalize"
                       style={{
                         border:
                           order?.orderStatus === "cancelled"
-                            ? "1px solid #ff0000"
+                            ? "1px solid #ffcfce"
                             : order?.orderStatus === "delivered"
-                            ? "1px solid #68e5de"
+                            ? "1px solid #e1f4d0"
                             : "1px solid #f3f3f3",
                       }}
                     >
@@ -436,7 +458,7 @@ const OrderDetails = () => {
                           {order?.orderStatus}
                         </span>
                       </div>
-                      <hr />
+                      <hr style={{ margin: "6px 0px" }} />
 
                       <div className="d-flex justify-content-between align-items-center">
                         <h6 className="text-dark font-size-14">
@@ -711,8 +733,11 @@ const DeliveryAddress = styled.div`
 const InfoWrapper = styled.div`
   border: 1px solid #f3f3f3;
   border-radius: 10px;
-  padding: 10px 5px;
+  padding: 15px 5px;
   margin-bottom: 8px;
+  .info:nth-child(2) {
+    text-align: center;
+  }
   .info:last-child {
     text-align: right;
   }
@@ -735,7 +760,7 @@ const InfoWrapper = styled.div`
   .info-value-two {
     font-size: 13px;
     text-transform: capitalize;
-    // padding: 2px 6px;
+    padding: 2px 6px;
     margin-left: 20px;
     margin-bottom: 0px;
   }
@@ -744,13 +769,13 @@ const InfoWrapper = styled.div`
 const Summery = styled.div`
   border: 1px solid #f3f3f3;
   border-radius: 10px;
-  padding: 10px;
+  padding: 6px;
   .item {
     font-family: Arial, Helvetica, sans-serif;
-    border-bottom: 1px solid #d8d8d8;
-    padding: 10px 0;
+    border-bottom: 1px solid #f3f3f3;
+    padding: 4px 0;
     color: #333333;
-    font-size: 15px;
+    font-size: 14px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -758,8 +783,6 @@ const Summery = styled.div`
     &:last-child {
       border-bottom: none;
       font-weight: bold;
-      .summary-value {
-      }
     }
   }
 `;

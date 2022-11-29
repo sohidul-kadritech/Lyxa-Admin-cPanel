@@ -91,6 +91,7 @@ const DeliverymanAdd = () => {
   // UPDATE DATA
 
   const updateData = (data) => {
+    console.log(data);
     const {
       name,
       email,
@@ -114,7 +115,7 @@ const DeliverymanAdd = () => {
     setVehicleDoc(vehicleRegistrationDocument);
     setVehicleType(findVahicleType);
     setVehicleNum(vehicleNumber);
-    setContractPaper(contractPaper);
+    setContractPaper(contractImage);
   };
 
   // ADDRESS
@@ -221,34 +222,31 @@ const DeliverymanAdd = () => {
   // SUBMIT DATA
 
   const submitData = (nidUrl, docUrl, contractUrl) => {
+    const data = {
+      name,
+      email,
+      password,
+      number: phone,
+      vehicleType: vehicleType.value,
+      vehicleNumber: vehicleNum,
+      nationalIdDocument: nidUrl,
+      vehicleRegistrationDocument: docUrl,
+      contractImage: contractUrl,
+    };
+
     if (id) {
       dispatch(
         editDeliveryMan({
+          ...data,
           id,
-          name,
-          email,
-          number: phone,
-          status: activeStatus.value,
-          vehicleType: vehicleType.value,
-          vehicleNumber: vehicleNum,
-          nationalIdDocument: nidUrl,
-          vehicleRegistrationDocument: docUrl,
-          contractPaper: contractUrl,
+          status: activeStatus?.value,
         })
       );
     } else {
       dispatch(
         addDeliveryMan({
-          name,
-          email,
-          password,
-          number: phone,
+          ...data,
           deliveryBoyAddress,
-          vehicleType: vehicleType.value,
-          vehicleNumber: vehicleNum,
-          nationalIdDocument: nidUrl,
-          vehicleRegistrationDocument: docUrl,
-          contractPaper: contractUrl,
         })
       );
     }
@@ -362,6 +360,76 @@ const DeliverymanAdd = () => {
                           />
                         </div>
 
+                        <div className="mb-4">
+                          <Label>Vehicle Number</Label>
+                          <input
+                            className="form-control"
+                            type="text"
+                            name="vahicleNumber"
+                            placeholder="Enter Vahicle Number"
+                            value={vehicleNum}
+                            onChange={(e) => setVehicleNum(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </Col>
+
+                      <Col lg={6}>
+                        <div className="mb-4">
+                          <Label>Email</Label>
+                          <input
+                            className="form-control"
+                            type="email"
+                            name="email"
+                            placeholder="Enter Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        <div className="mb-4">
+                          <Label>{id ? "New Password" : "Password"}</Label>
+                          <input
+                            className="form-control"
+                            type="text"
+                            name="password"
+                            placeholder="Enter Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required={!id}
+                          />
+                        </div>
+
+                        {!id ? (
+                          <div className="mb-4">
+                            <Label>Zip Code</Label>
+                            <input
+                              className="form-control"
+                              type="number"
+                              name="pin"
+                              placeholder="Enter Zip Code"
+                              required
+                              value={pin}
+                              onChange={(e) => setPin(e.target.value)}
+                            />
+                          </div>
+                        ) : (
+                          <div className="mb-4">
+                            <label className="control-label">Status</label>
+                            <Select
+                              palceholder="Select Status"
+                              name="status"
+                              options={activeOptions}
+                              classNamePrefix="select2-selection"
+                              required
+                              value={activeStatus}
+                              onChange={(e) => setActiveStatus(e)}
+                              defaultValue={""}
+                            />
+                          </div>
+                        )}
+
                         {!id && (
                           <div className="mb-4">
                             <Label>Address</Label>
@@ -453,7 +521,7 @@ const DeliverymanAdd = () => {
                               placeholder="Enter Address"
                               required
                               multiple
-                              maxRows="4"
+                              rows="4"
                               value={deliveryBoyAddress}
                               onChange={(e) =>
                                 setDeliveryBoyAddress(e.target.value)
@@ -461,77 +529,6 @@ const DeliverymanAdd = () => {
                             />
                           </div>
                         )}
-                      </Col>
-
-                      <Col lg={6}>
-                        <div className="mb-4">
-                          <Label>Email</Label>
-                          <input
-                            className="form-control"
-                            type="email"
-                            name="email"
-                            placeholder="Enter Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                          />
-                        </div>
-
-                        {id ? (
-                          <div className="mb-4">
-                            <label className="control-label">Status</label>
-                            <Select
-                              palceholder="Select Status"
-                              name="status"
-                              options={activeOptions}
-                              classNamePrefix="select2-selection"
-                              required
-                              value={activeStatus}
-                              onChange={(e) => setActiveStatus(e)}
-                              defaultValue={""}
-                            />
-                          </div>
-                        ) : (
-                          <div className="mb-4">
-                            <Label>Password</Label>
-                            <input
-                              className="form-control"
-                              type="text"
-                              name="password"
-                              placeholder="Enter Password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              required
-                            />
-                          </div>
-                        )}
-                        {!id && (
-                          <div className="mb-4">
-                            <Label>Zip Code</Label>
-                            <input
-                              className="form-control"
-                              type="number"
-                              name="pin"
-                              placeholder="Enter Zip Code"
-                              required
-                              value={pin}
-                              onChange={(e) => setPin(e.target.value)}
-                            />
-                          </div>
-                        )}
-
-                        <div className="mb-4">
-                          <Label>Vehicle Number</Label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            name="vahicleNumber"
-                            placeholder="Enter Vahicle Number"
-                            value={vehicleNum}
-                            onChange={(e) => setVehicleNum(e.target.value)}
-                            required
-                          />
-                        </div>
                       </Col>
                     </Row>
 
