@@ -34,6 +34,20 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
+import InfoTwo from "../../../components/InfoTwo";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import TransgenderIcon from "@mui/icons-material/Transgender";
+import CakeIcon from "@mui/icons-material/Cake";
+import MoneyIcon from "@mui/icons-material/Money";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import ToggleOnIcon from "@mui/icons-material/ToggleOn";
+import ToggleOffIcon from "@mui/icons-material/ToggleOff";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import MopedIcon from "@mui/icons-material/Moped";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
@@ -126,47 +140,67 @@ const DeliverymanDetails = () => {
                 <hr className="my-3" />
                 <Row>
                   <Col lg={2}>
-                    <div className="text-center">
+                    <ImageWrapper className="text-center">
                       <img
-                        className="rounded-circle avatar-lg cursor-pointer"
-                        alt="Seller"
-                        src={deliveryMan?.image ? deliveryMan.image : noPhoto}
-                        style={{ border: "1px solid lightgray" }}
+                        className=" cursor-pointer"
+                        alt="User"
+                        src={deliveryMan?.image ?? noPhoto}
+                        loading="lazy"
+                        height="100%"
+                        width="100%"
                       />
-                      <h5 className="text-capitalize">{deliveryMan?.name}</h5>
-                      <h6 className="text-capitalize">
-                        {deliveryMan?.liveStatus}
-                      </h6>
-                    </div>
+                    </ImageWrapper>
                   </Col>
-                  <Col lg={4}>
-                    <Info title="Email" value={deliveryMan?.email} />
-                    <Info title="Phone" value={deliveryMan?.number} />
-                    <Info title="Address" value={deliveryMan?.address} />
+                  <Col lg={5}>
+                    <InfoTwo
+                      value={`${deliveryMan?.name} (Name)`}
+                      Icon={PersonOutlineOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={deliveryMan?.email}
+                      Icon={AlternateEmailOutlinedIcon}
+                    />
+                    <InfoTwo
+                      value={`${deliveryMan?.address}`}
+                      Icon={LocationOnIcon}
+                    />
+                    <InfoTwo
+                      value={`${deliveryMan?.vehicleType} (Vahicle Type)`}
+                      Icon={MopedIcon}
+                    />
+                    <InfoTwo
+                      value={`${deliveryMan?.vehicleNumber} (Vahicle No)`}
+                      Icon={MopedIcon}
+                    />
                   </Col>
-                  <Col lg={3}>
-                    <Info
-                      title="Total Income"
-                      value={`${deliveryMan?.totalIncome} NGN`}
+                  <Col lg={5}>
+                    <InfoTwo
+                      value={`${deliveryMan?.status} (Status)`}
+                      Icon={
+                        deliveryMan?.status === "active"
+                          ? ToggleOnIcon
+                          : ToggleOffIcon
+                      }
                     />
-                    <Info
-                      title="Balance"
-                      value={`${deliveryMan?.balance} NGN`}
-                    />{" "}
-                    <Info
-                      title="Total Orders"
-                      value={deliveryMan?.totalOrder}
+                    <InfoTwo
+                      value={`${deliveryMan?.liveStatus} (Live Status)`}
+                      Icon={
+                        deliveryMan?.liveStatus === "online"
+                          ? ToggleOnIcon
+                          : ToggleOffIcon
+                      }
                     />
-                  </Col>
-                  <Col lg={3}>
-                    <Info title="Status" value={deliveryMan?.status} />
-                    <Info
-                      title="Vahicle Type"
-                      value={deliveryMan?.vehicleType}
+                    <InfoTwo
+                      value={`${deliveryMan?.totalIncome} NGN (Total Income's)`}
+                      Icon={MoneyIcon}
                     />
-                    <Info
-                      title="Vahicle No"
-                      value={deliveryMan?.vehicleNumber}
+                    <InfoTwo
+                      value={`${deliveryMan?.balance} NGN (Balance's)`}
+                      Icon={AccountBalanceIcon}
+                    />
+                    <InfoTwo
+                      value={`${deliveryMan?.totalOrder} (Order's)`}
+                      Icon={LocalShippingIcon}
                     />
                   </Col>
                 </Row>
@@ -187,13 +221,7 @@ const DeliverymanDetails = () => {
                     <Typography>
                       <Row>
                         <Col md={6}>
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
-                            }}
-                          >
+                          <ImageWrapper>
                             <img
                               onClick={() => {
                                 setIsOpen(true);
@@ -201,20 +229,15 @@ const DeliverymanDetails = () => {
                               }}
                               className="img-fluid cursor-pointer"
                               alt="NID"
-                              src={deliveryMan?.nationalIdDocument}
+                              src={deliveryMan?.nationalIdDocument ?? noPhoto}
                               width="100%"
+                              height="90%"
                             />
                             <small>NID</small>
                           </ImageWrapper>
                         </Col>
                         <Col md={6}>
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
-                            }}
-                          >
+                          <ImageWrapper>
                             <img
                               onClick={() => {
                                 setIsOpen(true);
@@ -222,8 +245,12 @@ const DeliverymanDetails = () => {
                               }}
                               className="img-fluid cursor-pointer"
                               alt="Vahicle Document"
-                              src={deliveryMan?.vehicleRegistrationDocument}
+                              src={
+                                deliveryMan?.vehicleRegistrationDocument ??
+                                noPhoto
+                              }
                               width="100%"
+                              height="90%"
                             />
                             <small>Vahicle Document</small>
                           </ImageWrapper>
@@ -267,10 +294,10 @@ const DeliverymanDetails = () => {
 
 const ImageWrapper = styled.div`
   text-align: center;
+  height: 85%;
   img {
-    object-fit: contain;
-    width: 100%;
-    height: 90%;
+    border: 1px solid lightgray;
+    border-radius: 5px;
   }
 `;
 
