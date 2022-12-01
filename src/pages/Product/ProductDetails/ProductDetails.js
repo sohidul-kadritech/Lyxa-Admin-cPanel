@@ -29,6 +29,22 @@ import DealForAdd from "../../../components/DealForAdd";
 import Info from "./../../../components/Info";
 import { deleteDealOfProduct } from "../../../store/Product/productAction";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
+import InfoTwo from "../../../components/InfoTwo";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import CategoryIcon from "@mui/icons-material/Category";
+import FoodBankIcon from "@mui/icons-material/FoodBank";
+import SellIcon from "@mui/icons-material/Sell";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import BlockIcon from "@mui/icons-material/Block";
+import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
+import Person3Icon from "@mui/icons-material/Person3";
+import ShopIcon from "@mui/icons-material/Shop";
+import AcUnitIcon from "@mui/icons-material/AcUnit";
+import DiscountIcon from "@mui/icons-material/Discount";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -123,10 +139,10 @@ const ProductDetails = () => {
               />
             )}
 
-            <Card className="card-height">
+            <Card className="">
               <CardBody>
                 <div className="d-flex justify-content-between">
-                  <CardTitle>Product Informations</CardTitle>
+                  <CardTitle>Product Details</CardTitle>
                   <div>
                     <Button
                       outline={true}
@@ -149,61 +165,102 @@ const ProductDetails = () => {
                   </div>
                 </div>
                 <hr />
-                <div className="d-flex justify-content-center pb-3">
-                  <img
-                    className="rounded-circle avatar-xl cursor-pointer"
-                    alt="Product"
-                    src={product?.images[0]}
-                    onClick={() => {
-                      setIsOpen(true);
-                      setSelectedImg(product?.images[0]);
-                    }}
-                  />
-                </div>
-                <Row>
-                  <Col xl={4}>
+                <Row className="py-4">
+                  <Col xl={2} className="text-center text-capitalize">
+                    <img
+                      className="rounded-circle avatar-xl cursor-pointer"
+                      alt="Product"
+                      src={!product?.images[0] ? noPhoto : product?.images[0]}
+                      onClick={() => {
+                        setIsOpen(true);
+                        setSelectedImg(product?.images[0]);
+                      }}
+                    />
+                    <h5 className="text-center mt-3 text-success">
+                      {product?.name}
+                    </h5>
+                  </Col>
+                  <Col xl={3}>
                     <div className="ps-0 ps-xl-3">
-                      <Info title="Name" value={product?.name} />
-                      <Info title="Price" value={`${product?.price} NGN`} />
-                      <Info title="Type" value={product?.type} />
-                      {product?.type === "food" && (
-                        <Info title="Food Type" value={product?.foodType} />
-                      )}
-                      <Info
-                        title="Minimum Order"
-                        value={product?.orderQuantityMinimum}
+                      <InfoTwo
+                        Icon={Person3Icon}
+                        value={`${product?.seller?.name} (Seller)`}
+                        link={`/seller/details/${product?.seller?._id}`}
                       />
+                      <InfoTwo
+                        Icon={ShopIcon}
+                        value={`${product?.shop?.shopName} (Shop)`}
+                        link={`/shops/details/${product?.shop?._id}`}
+                      />
+                      <InfoTwo
+                        Icon={PriceCheckIcon}
+                        value={`${product?.price} NGN (Price)`}
+                      />
+
+                      <InfoTwo
+                        Icon={AllInclusiveIcon}
+                        value={`${product?.type} (Type)`}
+                      />
+                      {product?.type === "food" && (
+                        <InfoTwo
+                          Icon={FoodBankIcon}
+                          value={`${product?.foodType} (Food Type)`}
+                        />
+                      )}
                     </div>
                   </Col>
-                  <Col xl={4}>
-                    {product?.unit && (
-                      <Info title="Unit Type" value={product?.unit} />
-                    )}
-                    <Info title="Status" value={product?.status} />
-                    <Info title="SEO Title" value={product?.seoTitle} />
+                  <Col xl={3}>
+                    <InfoTwo
+                      Icon={ShoppingCartIcon}
+                      value={`${product?.quantity ?? 1}(Quantity)`}
+                    />
+                    <InfoTwo
+                      Icon={DiscountIcon}
+                      value={`${product?.discountPrice} NGN (Discount)`}
+                    />
+                    <InfoTwo
+                      Icon={AcUnitIcon}
+                      value={`${product?.unit ?? "Unknown"} (Unit)`}
+                    />
+
+                    <InfoTwo
+                      Icon={
+                        product?.status === "active" ? CheckBoxIcon : BlockIcon
+                      }
+                      value={`${
+                        product?.status === "active"
+                          ? "available"
+                          : "unavailable"
+                      } (Status)`}
+                    />
                   </Col>
-                  <Col xl={4}>
-                    <Info
-                      title="Category"
-                      value={product?.category?.name}
+                  <Col xl={3}>
+                    <InfoTwo
+                      Icon={CategoryIcon}
+                      value={`${product?.category?.name} (Category)`}
                       link={`/category/details/${product?.category?._id}`}
                     />
-                    {product?.subCategory && (
-                      <Info
-                        title="Subcategory"
-                        value={product?.subCategory?.name}
-                        link={`/category/details/${product?.subCategory?._id}`}
-                      />
-                    )}
-                    <Info
-                      title="Seller"
-                      value={product?.seller?.name}
-                      link={`/seller/details/${product?.seller?._id}`}
+
+                    <InfoTwo
+                      Icon={CategoryIcon}
+                      value={`${
+                        product?.subCategory?.name ?? "Has't Any"
+                      } (Sub-Category)`}
+                      link={`/category/details/${product?.subCategory?._id}`}
                     />
-                    <Info
-                      title="Shop"
-                      value={product?.shop?.shopName}
-                      link={`/shops/details/${product?.shop?._id}`}
+
+                    <InfoTwo
+                      Icon={DeliveryDiningIcon}
+                      value={`${
+                        product?.freeDelivery ? "Yes" : "No"
+                      } (Free Delivery)`}
+                    />
+
+                    <InfoTwo
+                      Icon={AddCircleIcon}
+                      value={`${new Date(
+                        product?.createdAt
+                      ).toDateString()} (Added Date)`}
                     />
                   </Col>
                 </Row>

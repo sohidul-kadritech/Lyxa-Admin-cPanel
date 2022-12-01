@@ -21,7 +21,7 @@ import {
   getDeliveryAllOrder,
   setDeliveryStatusFalse,
 } from "../../../store/DeliveryMan/DeliveryManAction";
-import Info from "../../../components/Info";
+
 import OrderTable from "../../../components/OrderTable";
 import AppPagination from "../../../components/AppPagination";
 import FlagsAndReviews from "../../../components/FlagsAndReviews";
@@ -37,13 +37,9 @@ import noPhoto from "../../../assets/images/noPhoto.jpg";
 import InfoTwo from "../../../components/InfoTwo";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
-import TransgenderIcon from "@mui/icons-material/Transgender";
-import CakeIcon from "@mui/icons-material/Cake";
 import MoneyIcon from "@mui/icons-material/Money";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
 import MopedIcon from "@mui/icons-material/Moped";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";

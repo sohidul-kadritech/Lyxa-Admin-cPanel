@@ -51,6 +51,7 @@ const UserDetails = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    loading,
   } = useSelector((state) => state.usersReducer);
   const { status } = useSelector((state) => state.dropPayReducer);
   const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
@@ -75,10 +76,11 @@ const UserDetails = () => {
     }
   }, [id]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (status || userStatus) {
       setBalAddModal(false);
-      callApi(user?._id);
+      const data = await callApi(id, SINGLE_USER, "user");
+      setUser(data);
     }
   }, [status, userStatus]);
 
@@ -112,7 +114,7 @@ const UserDetails = () => {
                           outline={true}
                           color="success"
                           className="ms-3"
-                          disabled={Object.keys(user).length === 0}
+                          disabled={Object.keys(user).length === 0 || loading}
                           onClick={() =>
                             dispatch(
                               updateUserStatus(
@@ -124,7 +126,9 @@ const UserDetails = () => {
                             )
                           }
                         >
-                          {user?.status === "active"
+                          {loading
+                            ? "Loading..."
+                            : user?.status === "active"
                             ? "Inactivate"
                             : "Activate"}
                         </Button>

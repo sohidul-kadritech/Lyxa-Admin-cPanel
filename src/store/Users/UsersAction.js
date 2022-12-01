@@ -15,93 +15,89 @@ import * as actionType from "../actionType";
 
 export const userList =
   (refresh = false, page = 1) =>
-    async (dispatch, getState) => {
-      const { users, searchKey, sortByKey, statusKey } = getState().usersReducer;
+  async (dispatch, getState) => {
+    const { users, searchKey, sortByKey, statusKey } = getState().usersReducer;
 
-      try {
-        if (users.length < 1 || refresh) {
+    try {
+      if (users.length < 1 || refresh) {
+        dispatch({
+          type: actionType.GET_ALL_USERS_REQUEST_SEND,
+        });
+
+        const { data } = await requestApi().request(ALL_USERS, {
+          params: {
+            searchKey,
+            page,
+            pageSize: 30,
+            sortBy: sortByKey.value,
+            status: statusKey.value,
+          },
+        });
+
+        if (data.status) {
           dispatch({
-            type: actionType.GET_ALL_USERS_REQUEST_SEND,
-          });
-
-          const { data } = await requestApi().request(ALL_USERS, {
-            params: {
-              searchKey,
-              page,
-              pageSize: 30,
-              sortBy: sortByKey.value,
-              status: statusKey.value,
+            type: actionType.GET_ALL_USERS_REQUEST_SUCCESS,
+            payload: {
+              users: data.data.users,
+              paginate: data.data.paginate,
             },
           });
-
-
-
-          if (data.status) {
-            dispatch({
-              type: actionType.GET_ALL_USERS_REQUEST_SUCCESS,
-              payload: {
-                users: data.data.users,
-                paginate: data.data.paginate,
-              },
-            });
-          } else {
-            dispatch({
-              type: actionType.GET_ALL_USERS_REQUEST_FAIL,
-              payload: data.error,
-            });
-          }
+        } else {
+          dispatch({
+            type: actionType.GET_ALL_USERS_REQUEST_FAIL,
+            payload: data.error,
+          });
         }
-      } catch (error) {
-        dispatch({
-          type: actionType.GET_ALL_USERS_REQUEST_FAIL,
-          payload: error.message,
-        });
       }
-    };
+    } catch (error) {
+      dispatch({
+        type: actionType.GET_ALL_USERS_REQUEST_FAIL,
+        payload: error.message,
+      });
+    }
+  };
 
 // TRANSACTIONS
 
 export const userTransactions =
   (refresh = false, id, page = 1) =>
-    async (dispatch, getState) => {
+  async (dispatch, getState) => {
+    try {
+      const { startDate, endDate, sortBy } = getState().usersReducer;
 
-      try {
-        const { startDate, endDate, sortBy } = getState().usersReducer;
+      dispatch({
+        type: actionType.USER_TRANSACTIONS_REQUEST_SEND,
+      });
 
+      const { data } = await requestApi().request(USER_TRANSACTIONS, {
+        params: {
+          page,
+          pageSize: 50,
+          userId: id,
+          startDate,
+          endDate,
+          sortBy: sortBy.value,
+        },
+      });
+
+      if (data.status) {
         dispatch({
-          type: actionType.USER_TRANSACTIONS_REQUEST_SEND,
+          type: actionType.USER_TRANSACTIONS_REQUEST_SUCCESS,
+          payload: data.data,
         });
-
-        const { data } = await requestApi().request(USER_TRANSACTIONS, {
-          params: {
-            page,
-            pageSize: 50,
-            userId: id,
-            startDate,
-            endDate,
-            sortBy: sortBy.value,
-          },
-        });
-
-
-        if (data.status) {
-          dispatch({
-            type: actionType.USER_TRANSACTIONS_REQUEST_SUCCESS,
-            payload: data.data,
-          });
-        } else {
-          dispatch({
-            type: actionType.USER_TRANSACTIONS_REQUEST_FAIL,
-            payload: data.message,
-          });
-        }
-      } catch (error) {
+      } else {
         dispatch({
           type: actionType.USER_TRANSACTIONS_REQUEST_FAIL,
-          payload: error.message,
+          payload: data.message,
         });
       }
-    };
+    } catch (error) {
+      dispatch({
+        type: actionType.USER_TRANSACTIONS_REQUEST_FAIL,
+        payload: error.message,
+      });
+    }
+  };
 
 // UPDATE SORT BY KEY
 
@@ -120,7 +116,6 @@ export const updateTransStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateTransEndDate = (date) => (dispatch) => {
-
   dispatch({
     type: actionType.UPDATE_END_DATE,
     payload: date,
@@ -158,51 +153,48 @@ export const updateSearchKey = (value) => (dispatch) => {
 
 export const getUserAllOrder =
   (refresh = false, userId, page = 1) =>
-    async (dispatch, getState) => {
-      const { orders } = getState().usersReducer;
+  async (dispatch, getState) => {
+    const { orders } = getState().usersReducer;
 
-      if (orders.length < 1 || refresh) {
-        try {
+    if (orders.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.USER_ORDERS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(USER_ORDERS, {
+          params: {
+            userId,
+            page,
+            pageSize: 50,
+          },
+        });
+
+        if (status) {
           dispatch({
-            type: actionType.USER_ORDERS_REQUEST_SEND,
+            type: actionType.USER_ORDERS_REQUEST_SUCCESS,
+            payload: data,
           });
-
-          const {
-            data: { status, error, data = null },
-          } = await requestApi().request(USER_ORDERS, {
-            params: {
-              userId,
-              page,
-              pageSize: 50,
-            },
-          });
-
-
-
-          if (status) {
-            dispatch({
-              type: actionType.USER_ORDERS_REQUEST_SUCCESS,
-              payload: data,
-            });
-          } else {
-            dispatch({
-              type: actionType.USER_ORDERS_REQUEST_FAIL,
-              payload: error,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.USER_ORDERS_REQUEST_FAIL,
-            payload: error.message,
+            payload: error,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.USER_ORDERS_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 // UPDATE USER STATUS
 
 export const updateUserStatus = (userId, status) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.UPDATE_USER_STATUS_REQUEST_SEND,
@@ -216,10 +208,8 @@ export const updateUserStatus = (userId, status) => async (dispatch) => {
       },
     });
 
-
-
     if (data.status) {
-      successMsg(data.message);
+      successMsg(data.message, "success");
       dispatch({
         type: actionType.UPDATE_USER_STATUS_REQUEST_SUCCESS,
         payload: data.data,
