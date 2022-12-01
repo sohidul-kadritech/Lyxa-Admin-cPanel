@@ -220,7 +220,7 @@ const DeliverymanDetails = () => {
                   <AccordionDetails>
                     <Typography>
                       <Row>
-                        <Col md={6}>
+                        <Col md={4}>
                           <ImageWrapper>
                             <img
                               onClick={() => {
@@ -294,10 +294,11 @@ const DeliverymanDetails = () => {
 
 const ImageWrapper = styled.div`
   text-align: center;
-  height: 85%;
+  height: 150px;
+  width: 150px;
   img {
     border: 1px solid lightgray;
-    border-radius: 5px;
+    border-radius: 100px;
   }
 `;
 

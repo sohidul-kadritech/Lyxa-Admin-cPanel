@@ -255,10 +255,12 @@ const UserDetails = () => {
 };
 
 const ImgWrapper = styled.div`
-  height: 50%;
+  height: 150px;
+  width: 150px;
+
   img {
     border: 1px solid #90f1c3;
-    border-radius: 5px;
+    border-radius: 100px;
   }
 `;
 
