@@ -118,8 +118,7 @@ const Login = (props) => {
     e.preventDefault();
 
     if (!forgetPassData.type) {
-      setForgetStatus({ status: "error", msg: "Select Role" });
-      return;
+      return setForgetStatus({ status: "error", msg: "Select Role" });
     }
     if (!forgetPassData.to_email) {
       return setForgetStatus({ status: "error", msg: "Enter Valid Email" });
@@ -130,7 +129,7 @@ const Login = (props) => {
     if (!forgetPassData.to_email.match(emailRex)) {
       return setForgetStatus({ status: "error", msg: " Invalid Email" });
     }
-    console.log({ forgetPassData });
+
     try {
       setIsloading(true);
       const { data } = await axios({
@@ -138,10 +137,7 @@ const Login = (props) => {
         url: FORGET_PASS,
         data: {
           ...forgetPassData,
-          type:
-            forgetPassData.type === "customerService"
-              ? "admin"
-              : forgetPassData.type,
+          type: forgetPassData.type,
         },
       });
 
@@ -274,7 +270,8 @@ const Login = (props) => {
                               setForgetStatus({ status: "", msg: "" });
                               setForgetPassData({
                                 ...forgetPassData,
-                                type: type,
+                                type:
+                                  type === "customerService" ? "admin" : type,
                               });
                             }}
                           >
@@ -351,12 +348,7 @@ const Login = (props) => {
                         <FormControlLabel
                           value="admin"
                           control={<Radio />}
-                          label="Admin"
-                        />
-                        <FormControlLabel
-                          value="customerService"
-                          control={<Radio />}
-                          label="Customer Service"
+                          label="Admin / Customer Service"
                         />
                         <FormControlLabel
                           value="seller"

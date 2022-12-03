@@ -21,13 +21,6 @@ const FlagsAndReviews = ({
   const dispatch = useDispatch();
 
   return (
-    // <Card >
-    //   <CardBody>
-    //     <CardTitle></CardTitle>
-    //     <hr />
-
-    //   </CardBody>
-    // </Card>
     <Accordion className="mb-4">
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}

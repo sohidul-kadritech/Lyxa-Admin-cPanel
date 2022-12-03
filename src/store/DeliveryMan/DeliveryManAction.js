@@ -146,9 +146,7 @@ export const trackDeliveryBoy =
         type: actionType.TRACK_DELIVERY_MAN_REQUEST_SEND,
       });
 
-      const {
-        data: { status, error, message, data = null },
-      } = await requestApi().request(TRACK_DELIVERY_MAN, {
+      const { data } = await requestApi().request(TRACK_DELIVERY_MAN, {
         params: {
           id,
           page,
@@ -157,18 +155,18 @@ export const trackDeliveryBoy =
           endDate,
         },
       });
-
-      if (status) {
+      console.log({ data });
+      if (data.status) {
         dispatch({
           type: actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS,
           payload: data,
         });
       } else {
-        successMsg(error, "error");
+        successMsg(data.error, "error");
 
         dispatch({
           type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
-          payload: error,
+          payload: data.error,
         });
       }
     } catch (error) {

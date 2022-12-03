@@ -368,71 +368,69 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 {orders?.length > 0 &&
                   orders?.map((item, index) => {
                     return (
-                      <>
-                        <Tr
-                          key={index}
-                          className="align-middle text-capitalize"
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th>
-                            <TableImgItem
-                              img={`${
-                                item?.user?.profile_photo
-                                  ? item?.user?.profile_photo
-                                  : noPhoto
-                              }`}
-                              altImg={userIcon}
-                              name={item?.user?.name}
-                              id={item?.orderId}
-                            />
-                          </Th>
+                      <Tr
+                        key={index}
+                        className="align-middle text-capitalize"
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        <Th>
+                          <TableImgItem
+                            img={`${
+                              item?.user?.profile_photo
+                                ? item?.user?.profile_photo
+                                : noPhoto
+                            }`}
+                            altImg={userIcon}
+                            name={item?.user?.name}
+                            id={item?.orderId}
+                          />
+                        </Th>
 
-                          <Td>{item?.shop?.shopName}</Td>
-                          <Td>
-                            <p className="mb-0">
-                              {new Date(item?.createdAt).toLocaleDateString()}
-                            </p>
-                            <span>
-                              {new Date(item?.createdAt).toLocaleTimeString()}
-                            </span>
-                          </Td>
-                          <Td>{`${item?.summary?.totalAmount} NGN`}</Td>
-                          <Td>
-                            {item?.paymentMethod}
-                            {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
-                          </Td>
-                          <Td>
-                            <div
-                              className={`${
-                                item?.orderStatus === "cancelled"
-                                  ? "inactive-status"
-                                  : item?.orderStatus === "delivered"
-                                  ? "active-status"
-                                  : "orderStatus"
-                              }`}
-                            >
-                              {modifiedOrderStatus(item?.orderStatus)}
-                            </div>
-                          </Td>
-                          <Td>
-                            <ThreeDotsMenu
-                              handleMenuClick={(menu) => handleMenu(menu, item)}
-                              menuItems={[
-                                "Details",
-                                "Update Status",
-                                account_type === "admin" && "Flag",
-                                account_type === "admin" &&
-                                  item?.orderStatus !== "cancelled" &&
-                                  item?.orderStatus !== "delivered" &&
-                                  "Cancel Order",
-                              ]}
-                            />
-                          </Td>
-                        </Tr>
-                      </>
+                        <Td>{item?.shop?.shopName}</Td>
+                        <Td>
+                          <p className="mb-0">
+                            {new Date(item?.createdAt).toLocaleDateString()}
+                          </p>
+                          <span>
+                            {new Date(item?.createdAt).toLocaleTimeString()}
+                          </span>
+                        </Td>
+                        <Td>{`${item?.summary?.totalAmount} NGN`}</Td>
+                        <Td>
+                          {item?.paymentMethod}
+                          {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
+                        </Td>
+                        <Td>
+                          <div
+                            className={`${
+                              item?.orderStatus === "cancelled"
+                                ? "inactive-status"
+                                : item?.orderStatus === "delivered"
+                                ? "active-status"
+                                : "orderStatus"
+                            }`}
+                          >
+                            {modifiedOrderStatus(item?.orderStatus)}
+                          </div>
+                        </Td>
+                        <Td>
+                          <ThreeDotsMenu
+                            handleMenuClick={(menu) => handleMenu(menu, item)}
+                            menuItems={[
+                              "Details",
+                              "Update Status",
+                              account_type === "admin" && "Flag",
+                              account_type === "admin" &&
+                                item?.orderStatus !== "cancelled" &&
+                                item?.orderStatus !== "delivered" &&
+                                "Cancel Order",
+                            ]}
+                          />
+                        </Td>
+                      </Tr>
                     );
                   })}
                 {loading && (

@@ -212,38 +212,15 @@ const NotificationsList = () => {
 
                           <Td>
                             <div>
-                              <Tooltip
-                                title={
-                                  item.status === "active"
-                                    ? "Inactive"
-                                    : "Active"
-                                }
-                              >
+                              <Tooltip title="Delete">
                                 <button
-                                  className={`btn ${
-                                    item.status === "active"
-                                      ? "btn-info"
-                                      : "btn-danger"
-                                  } button me-0 me-xl-2`}
+                                  className={`btn btn-danger button me-0 me-xl-2`}
                                   onClick={() =>
                                     updateStatus(item?._id, item?.status)
                                   }
+                                  disabled={loading}
                                 >
-                                  {!loading ? (
-                                    <i
-                                      className={
-                                        item?.status === "active"
-                                          ? "fa fa-toggle-on"
-                                          : "fa fa-toggle-off"
-                                      }
-                                    />
-                                  ) : (
-                                    <Spinner
-                                      animation="border"
-                                      variant="info"
-                                      size="sm"
-                                    />
-                                  )}
+                                  <i className="fa fa-trash" />
                                 </button>
                               </Tooltip>
                             </div>
@@ -255,7 +232,7 @@ const NotificationsList = () => {
                 </Table>
                 {loading && (
                   <div className="text-center">
-                    <Spinner animation="border" variant="info" />
+                    <Spinner animation="border" color="info" />
                   </div>
                 )}
                 {!loading && notifications.length < 1 && (

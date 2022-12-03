@@ -95,6 +95,78 @@ const SummaryInfo = ({ title, value }) => {
   );
 };
 
+const Riders = ({ list, heading }) => {
+  const history = useHistory();
+  return (
+    <Accordion>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <Typography>{heading}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Typography>
+          <Table
+            id="tech-companies-1"
+            className="table table__wrapper table-hover cursor-pointer"
+          >
+            <Thead>
+              <Tr style={{ color: "black" }}>
+                <Th>SL.</Th>
+                <Th>Name</Th>
+                <Th>Phone</Th>
+              </Tr>
+            </Thead>
+            <Tbody style={{ position: "relative", borderTop: "none" }}>
+              {list?.length > 0
+                ? list?.map((rider, index) => {
+                    return (
+                      <Tr
+                        className="align-middle"
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          history.push(`/deliveryman/details/${rider._id}`)
+                        }
+                        key={index}
+                        title="Click to see details"
+                      >
+                        <Th
+                          style={{
+                            color: `#${Math.floor(
+                              Math.random() * 16777215
+                            ).toString(16)}`,
+                          }}
+                        >
+                          #{index + 1}
+                        </Th>
+
+                        <Td>{rider?.name}</Td>
+
+                        <Td>{rider?.number}</Td>
+                      </Tr>
+                    );
+                  })
+                : null}
+            </Tbody>
+          </Table>
+
+          {list.length === 0 ? (
+            <div className="text-center w-100">
+              <h5>No Delivery Boy</h5>
+            </div>
+          ) : null}
+        </Typography>
+      </AccordionDetails>
+    </Accordion>
+  );
+};
+
 const OrderDetails = () => {
   const { id } = useParams();
   const { orders, status } = useSelector((state) => state.orderReducer);
@@ -206,10 +278,14 @@ const OrderDetails = () => {
     doc.save(`${order.orderId}.pdf`);
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (status) {
-      callApi(id);
+      const data = await callApi(id, SINGLE_ORDER, "order");
+      if (data) {
+        setOrder(data);
+      }
     }
+    return;
   }, [status]);
 
   return (
@@ -240,10 +316,6 @@ const OrderDetails = () => {
 
             <Card className="pb-5">
               <CardBody>
-                {/* <div className="d-flex align-items-center justify-content-between">
-                  <CardTitle className="h4">Order Details</CardTitle>
-                  
-                </div> */}
                 <Row>
                   <Col xl={6}>
                     <div style={{ height: "37px" }}>
@@ -455,7 +527,7 @@ const OrderDetails = () => {
                               : "orderStatus"
                           }`}
                         >
-                          {order?.orderStatus}
+                          {order?.orderStatus.split("_").join(" ")}
                         </span>
                       </div>
                       <hr style={{ margin: "6px 0px" }} />
@@ -535,12 +607,9 @@ const OrderDetails = () => {
               </Col>
             </Row>
 
-            {/* Flags and Chat */}
-
             <Row className="mb-4">
-              <Col lg={6}>
-                <FlagsAndReviews flags={order?.flag} isFromOrder={true} />
-              </Col>
+              {/* Flags and Chat */}
+
               <Col lg={6}>
                 <Accordion>
                   <AccordionSummary
@@ -627,6 +696,19 @@ const OrderDetails = () => {
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
+
+                <FlagsAndReviews flags={order?.flag} isFromOrder={true} />
+              </Col>
+              {/* Riders */}
+              <Col lg={6}>
+                <Riders
+                  list={order?.deliveryBoyList}
+                  heading="Available Riders"
+                />
+                <Riders
+                  list={order?.rejectedDeliveryBoy}
+                  heading="Rejected Riders"
+                />
               </Col>
             </Row>
 
