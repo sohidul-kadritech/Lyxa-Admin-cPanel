@@ -95,75 +95,77 @@ const SummaryInfo = ({ title, value }) => {
   );
 };
 
-const Riders = ({ list, heading }) => {
+const Riders = ({ list = [], heading }) => {
   const history = useHistory();
   return (
-    <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography>{heading}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Typography>
-          <Table
-            id="tech-companies-1"
-            className="table table__wrapper table-hover cursor-pointer"
-          >
-            <Thead>
-              <Tr style={{ color: "black" }}>
-                <Th>SL.</Th>
-                <Th>Name</Th>
-                <Th>Phone</Th>
-              </Tr>
-            </Thead>
-            <Tbody style={{ position: "relative", borderTop: "none" }}>
-              {list?.length > 0
-                ? list?.map((rider, index) => {
-                    return (
-                      <Tr
-                        className="align-middle"
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          history.push(`/deliveryman/details/${rider._id}`)
-                        }
-                        key={index}
-                        title="Click to see details"
-                      >
-                        <Th
+    <>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>{heading}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <Table
+              id="tech-companies-1"
+              className="table table__wrapper table-hover cursor-pointer"
+            >
+              <Thead>
+                <Tr style={{ color: "black" }}>
+                  <Th>SL.</Th>
+                  <Th>Name</Th>
+                  <Th>Phone</Th>
+                </Tr>
+              </Thead>
+              <Tbody style={{ position: "relative", borderTop: "none" }}>
+                {list?.length > 0
+                  ? list?.map((rider, index) => {
+                      return (
+                        <Tr
+                          className="align-middle"
                           style={{
-                            color: `#${Math.floor(
-                              Math.random() * 16777215
-                            ).toString(16)}`,
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            color: "black",
                           }}
+                          onClick={() =>
+                            history.push(`/deliveryman/details/${rider._id}`)
+                          }
+                          key={index}
+                          title="Click to see details"
                         >
-                          #{index + 1}
-                        </Th>
+                          <Th
+                            style={{
+                              color: `#${Math.floor(
+                                Math.random() * 16777215
+                              ).toString(16)}`,
+                            }}
+                          >
+                            #{index + 1}
+                          </Th>
 
-                        <Td>{rider?.name}</Td>
+                          <Td>{rider?.name}</Td>
 
-                        <Td>{rider?.number}</Td>
-                      </Tr>
-                    );
-                  })
-                : null}
-            </Tbody>
-          </Table>
+                          <Td>{rider?.number}</Td>
+                        </Tr>
+                      );
+                    })
+                  : null}
+              </Tbody>
+            </Table>
 
-          {list?.length === 0 ? (
-            <div className="text-center w-100">
-              <h5>No Delivery Boy</h5>
-            </div>
-          ) : null}
-        </Typography>
-      </AccordionDetails>
-    </Accordion>
+            {list?.length === 0 ? (
+              <div className="text-center w-100">
+                <h5>No Delivery Boy</h5>
+              </div>
+            ) : null}
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+    </>
   );
 };
 
@@ -512,12 +514,15 @@ const OrderDetails = () => {
                         <h6 className="text-dark font-size-14">Status</h6>
                         {order?.orderCancel ? (
                           <span>
-                            {order?.orderCancel?.canceledBy} |{" "}
+                            {order?.orderCancel?.canceledBy} |
                             {order?.orderCancel?.cancelReason
-                              ? order?.orderCancel?.cancelReason
-                              : order?.orderCancel.otherReason}{" "}
+                              ? order?.orderCancel?.cancelReason?.name
+                              : order?.orderCancel.otherReason}
                           </span>
-                        ) : null}
+                        ) : (
+                          ""
+                        )}
+
                         <span
                           className={`px-2 ${
                             order?.orderStatus === "cancelled"
@@ -527,7 +532,7 @@ const OrderDetails = () => {
                               : "orderStatus"
                           }`}
                         >
-                          {order?.orderStatus.split("_").join(" ")}
+                          {order?.orderStatus?.split("_")?.join(" ")}
                         </span>
                       </div>
                       <hr style={{ margin: "6px 0px" }} />

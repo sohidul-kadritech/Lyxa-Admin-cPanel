@@ -170,7 +170,7 @@ const UserDetails = () => {
                               Icon={CakeIcon}
                             />
                             <InfoTwo
-                              value={`${user?.tempBalance} NGN (Balance)`}
+                              value={`${user?.tempBalance} NGN (Lyxa Balance)`}
                               Icon={SavingsIcon}
                             />
                             <InfoTwo

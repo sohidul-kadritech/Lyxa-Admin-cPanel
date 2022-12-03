@@ -118,7 +118,7 @@ const ProductAdd = () => {
       if (findProduct) {
         setProductValue(findProduct);
       } else {
-        const data = await callApi(id, SINGLE_PRODUCT, 'product')
+        const data = await callApi(id, SINGLE_PRODUCT, "product");
         if (data) {
           setProductValue(data);
         } else {
@@ -146,7 +146,7 @@ const ProductAdd = () => {
           setShop(findShop);
           dispatch(updateCategoryShopType(findShop?.shopType));
         } else {
-          const data = await callApi(id, SINGLE_SHOP, 'shop')
+          const data = await callApi(id, SINGLE_SHOP, "shop");
           if (data) {
             setType(data?.shopType);
             setShop(data);
@@ -158,8 +158,6 @@ const ProductAdd = () => {
       }
     }
   }, [searchParams, account_type]);
-
-
 
   // SET PRODUCT VALUE
   const setProductValue = (product) => {
@@ -224,8 +222,6 @@ const ProductAdd = () => {
       dispatch(getAllSubCategory(true, category._id));
     }
   }, [category]);
-
-
 
   // VALIDATION
 
@@ -492,8 +488,8 @@ const ProductAdd = () => {
                           options={shopTypeOptions2}
                           disabled={
                             searchParams.get("shopId") != undefined ||
-                              id ||
-                              account_type === "shop"
+                            id ||
+                            account_type === "shop"
                               ? true
                               : false
                           }
@@ -512,9 +508,9 @@ const ProductAdd = () => {
                             list={shops}
                             disabled={
                               !type ||
-                                id ||
-                                searchParams.get("shopId") ||
-                                account_type === "shop"
+                              id ||
+                              searchParams.get("shopId") ||
+                              account_type === "shop"
                                 ? true
                                 : false
                             }
@@ -565,52 +561,54 @@ const ProductAdd = () => {
                         </div>
                       )}
 
-                      {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
-                        <div className="mb-4">
-                          <Autocomplete
-                            className="cursor-pointer"
-                            value={cuisines}
-                            onChange={(event, newValue) => {
-                              setCuisines(newValue);
-                            }}
-                            getOptionLabel={(option) =>
-                              option.name ? option.name : ""
-                            }
-                            isOptionEqualToValue={(option, value) =>
-                              option._id == value._id
-                            }
-                            inputValue={cuisineSearchKey}
-                            onInputChange={(event, newInputValue) => {
-                              setCuisineSearchKey(newInputValue);
-                            }}
-                            id="controllable-states-demo"
-                            options={
-                              shop?.cuisineType?.length > 0
-                                ? shop?.cuisineType
-                                : []
-                            }
-                            sx={{ width: "100%" }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Select a Cuisine"
-                                required
-                                name="cuisine"
-                              />
-                            )}
-                            renderOption={(props, option) => (
-                              <Box
-                                component="li"
-                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                                {...props}
-                                key={option._id}
-                              >
-                                {option?.name}
-                              </Box>
-                            )}
-                          />
-                        </div>
-                      )}
+                      {shop &&
+                        shop.isCuisine &&
+                        shop.cuisineType.length > 1 && (
+                          <div className="mb-4">
+                            <Autocomplete
+                              className="cursor-pointer"
+                              value={cuisines}
+                              onChange={(event, newValue) => {
+                                setCuisines(newValue);
+                              }}
+                              getOptionLabel={(option) =>
+                                option.name ? option.name : ""
+                              }
+                              isOptionEqualToValue={(option, value) =>
+                                option._id == value._id
+                              }
+                              inputValue={cuisineSearchKey}
+                              onInputChange={(event, newInputValue) => {
+                                setCuisineSearchKey(newInputValue);
+                              }}
+                              id="controllable-states-demo"
+                              options={
+                                shop?.cuisineType?.length > 0
+                                  ? shop?.cuisineType
+                                  : []
+                              }
+                              sx={{ width: "100%" }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Select a Cuisine"
+                                  required
+                                  name="cuisine"
+                                />
+                              )}
+                              renderOption={(props, option) => (
+                                <Box
+                                  component="li"
+                                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                                  {...props}
+                                  key={option._id}
+                                >
+                                  {option?.name}
+                                </Box>
+                              )}
+                            />
+                          </div>
+                        )}
 
                       {type === "food" && shop?.shopType === "food" && (
                         <div className="mb-4">
@@ -681,13 +679,7 @@ const ProductAdd = () => {
                                 {...props}
                                 key={option._id}
                               >
-                                <img
-                                  loading="lazy"
-                                  width="60"
-                                  src={option?.image}
-                                  alt=""
-                                />
-                                {option.name}
+                                {option?.name}
                               </Box>
                             )}
                           />
@@ -729,12 +721,6 @@ const ProductAdd = () => {
                                 sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                                 {...props}
                               >
-                                <img
-                                  loading="lazy"
-                                  width="60"
-                                  src={option.image}
-                                  alt=""
-                                />
                                 {option.name}
                               </Box>
                             )}
@@ -1001,13 +987,15 @@ const ProductAdd = () => {
                                               fontWeight: "500",
                                             }}
                                           >
-                                            {`${attribute.name} ${attribute.required
-                                              ? "(Required)"
-                                              : ""
-                                              } ${attribute.select === "multiple"
+                                            {`${attribute.name} ${
+                                              attribute.required
+                                                ? "(Required)"
+                                                : ""
+                                            } ${
+                                              attribute.select === "multiple"
                                                 ? "(Multiple)"
                                                 : "(Single)"
-                                              }`}
+                                            }`}
                                             {/* {attribute.name}
                                             {attribute.required
                                               ? "(Required)"
@@ -1148,14 +1136,14 @@ const ProductAdd = () => {
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles);
                           }}
-                          accept='.jpg, .jpeg, .png'
+                          accept=".jpg, .jpeg, .png"
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
                               <div
                                 className="dz-message needsclick"
                                 {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
+                                // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
