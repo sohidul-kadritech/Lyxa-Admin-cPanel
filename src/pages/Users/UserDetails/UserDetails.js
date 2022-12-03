@@ -206,7 +206,7 @@ const UserDetails = () => {
             </Row>
 
             <div>
-              <OrderTable ordres={orders} />
+              <OrderTable orders={orders} />
             </div>
             <Row>
               <Col xl={12}>

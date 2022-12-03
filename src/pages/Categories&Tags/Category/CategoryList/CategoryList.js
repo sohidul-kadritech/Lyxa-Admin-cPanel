@@ -180,7 +180,11 @@ const CategoryList = () => {
                           </Th>
 
                           <Td>{item?.category?.type}</Td>
-                          <Td>{item?.category?.shop?.shopName}</Td>
+                          <Td>
+                            {!item?.shop?.shopName
+                              ? "N/A"
+                              : item?.shop?.shopName}
+                          </Td>
                           <Td>
                             <div
                               className={`${

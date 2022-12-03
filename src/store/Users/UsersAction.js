@@ -171,7 +171,7 @@ export const getUserAllOrder =
             pageSize: 50,
           },
         });
-
+        console.log(data);
         if (status) {
           dispatch({
             type: actionType.USER_ORDERS_REQUEST_SUCCESS,
