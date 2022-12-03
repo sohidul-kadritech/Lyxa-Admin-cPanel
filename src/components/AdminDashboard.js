@@ -26,32 +26,33 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 const GraphInfo = lazy(() => import("./GraphInfo"));
 
-
 const TopLists = ({ list, type }) => {
   return (
     <Card style={{ height: "340px" }}>
       <CardBody>
         <div className="d-flex mb-2">
           <i
-            className={`${type === "user"
-              ? "fa fa-user"
-              : type === "deliveryBoy"
+            className={`${
+              type === "user"
+                ? "fa fa-user"
+                : type === "deliveryBoy"
                 ? "fa fa-people-carry"
                 : "fa fa-store"
-              }`}
+            }`}
             style={{ fontSize: "18px", padding: "5px" }}
           ></i>
           <h5 className="ms-2 text-dark" style={{ marginTop: 2 }}>
             Top{" "}
-            {`${type === "user"
-              ? "Users"
-              : type === "deliveryBoy"
+            {`${
+              type === "user"
+                ? "Users"
+                : type === "deliveryBoy"
                 ? "Delivery Boys"
                 : "Shops"
-              }`}
+            }`}
           </h5>
         </div>
-        <i class="fa-sharp fa-solid fa-moped"></i>
+        <i className="fa-sharp fa-solid fa-moped"></i>
         <Table
           id="tech-companies-1"
           className="table table__wrapper table-hover cursor-pointer"
@@ -200,7 +201,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
         <Row>
           <Col md={9}>
             <Suspense fallback={<div>Loading...</div>}>
-              <GraphInfo graphType='user' />
+              <GraphInfo graphType="user" />
             </Suspense>
           </Col>
           <Col md={3}>
@@ -274,7 +275,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
         <Row>
           <Col md={9}>
             <Suspense fallback={<div>Loading...</div>}>
-              <GraphInfo graphType='order' />
+              <GraphInfo graphType="order" />
             </Suspense>
           </Col>
 
@@ -286,7 +287,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
         <Row>
           <Col>
             <Suspense fallback={<div>Loading...</div>}>
-              <GraphInfo graphType='earning' />
+              <GraphInfo graphType="earning" />
             </Suspense>
           </Col>
         </Row>
