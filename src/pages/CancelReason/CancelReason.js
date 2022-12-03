@@ -85,7 +85,25 @@ const CancelReason = () => {
       setId(null);
       setOpenModal(false);
     }
+    return;
   }, [status]);
+
+  // MODIFIED TYPE
+
+  const updateType = (type) => {
+    let modifiedType = "";
+    if (type === "shopCancel") {
+      modifiedType = "Shop";
+    } else if (type === "userCancel") {
+      modifiedType = "User";
+    } else if (type === "userRefund") {
+      modifiedType = "User Refund";
+    } else {
+      modifiedType = "Admin";
+    }
+
+    return modifiedType;
+  };
 
   return (
     <React.Fragment>
@@ -181,9 +199,15 @@ const CancelReason = () => {
                         >
                           <Td>{index + 1}</Td>
                           <Td>{item?.name}</Td>
-                          <Td>{item?.type}</Td>
+                          <Td>{updateType(item?.type)}</Td>
                           <Td>
-                            <div className={`text-capitalize ${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                            <div
+                              className={`text-capitalize ${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
                               {item?.status}
                             </div>
                           </Td>

@@ -143,8 +143,7 @@ export const updateMaxDiscount = (amount) => (dispatch) => {
   });
 };
 
-
-// UPDATE DROP  CREDIT 
+// UPDATE DROP  CREDIT
 
 export const updateDropCreditLimit = (amount) => (dispatch) => {
   dispatch({
@@ -156,7 +155,6 @@ export const updateDropCreditLimit = (amount) => (dispatch) => {
 // UPDATE APP SETTINGS
 
 export const updateAppSettings = () => async (dispatch, getState) => {
-
   const { appSettingsOptions } = getState().settingsReducer;
   try {
     dispatch({
@@ -171,7 +169,7 @@ export const updateAppSettings = () => async (dispatch, getState) => {
         nearByShopKm: appSettingsOptions.nearByShopKm,
         maxDiscount: appSettingsOptions.maxDiscount,
         searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
-        maxCustomerServiceValue: appSettingsOptions.maxCustomerServiceValue
+        maxCustomerServiceValue: appSettingsOptions.maxCustomerServiceValue,
       },
     });
 
@@ -207,8 +205,6 @@ export const getAllAppSettings = () => async (dispatch) => {
     const {
       data: { status, error, data },
     } = await requestApi().request(APP_SETTINGS);
-
-
 
     if (status) {
       dispatch({
@@ -279,8 +275,6 @@ export const getPercentageSetting = () => async (dispatch, getState) => {
       data: { status, error, data },
     } = await requestApi().request(GET_DELIVERY_FEE);
 
-
-
     if (status) {
       dispatch({
         type: actionType.GET_PERCENTAGE_REQUEST_SUCCESS,
@@ -350,8 +344,6 @@ export const addCancelReason = (values) => async (dispatch) => {
       data: values,
     });
 
-
-
     if (data.status) {
       const { cancelReason } = data.data;
       successMsg(data.message, "success");
@@ -389,8 +381,6 @@ export const updateCancelReason = (values) => async (dispatch) => {
       data: values,
     });
 
-
-
     if (data.status) {
       const { cancelReason } = data.data;
       successMsg(data.message, "success");
@@ -417,44 +407,46 @@ export const updateCancelReason = (values) => async (dispatch) => {
 // GET ALL CANCEL REASONS
 
 export const getAllCancelReasons =
-  (refresh = false, adminType) =>
-    async (dispatch, getState) => {
-      const { cancelReasons, typeKey, activeStatus } = getState().settingsReducer;
+  (refresh = false, adminType = null) =>
+  async (dispatch, getState) => {
+    const { cancelReasons, typeKey, activeStatus } = getState().settingsReducer;
 
-      if (refresh || cancelReasons.length > 1) {
-        try {
+    if (refresh || cancelReasons.length > 1) {
+      try {
+        dispatch({
+          type: actionType.ALL_REASONS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data },
+        } = await requestApi().request(ALL_ORDER_CANCEL_REASON, {
+          params: {
+            type: adminType ?? typeKey,
+            status: activeStatus,
+          },
+        });
+
+        console.log({ data });
+
+        if (status) {
           dispatch({
-            type: actionType.ALL_REASONS_REQUEST_SEND,
+            type: actionType.ALL_REASONS_REQUEST_SUCCESS,
+            payload: data.cancelReason,
           });
-
-          const {
-            data: { status, error, data },
-          } = await requestApi().request(ALL_ORDER_CANCEL_REASON, {
-            params: {
-              type: adminType ?? typeKey,
-              status: activeStatus,
-            },
-          });
-
-          if (status) {
-            dispatch({
-              type: actionType.ALL_REASONS_REQUEST_SUCCESS,
-              payload: data.cancelReason,
-            });
-          } else {
-            dispatch({
-              type: actionType.ALL_REASONS_REQUEST_FAIL,
-              payload: error,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.ALL_REASONS_REQUEST_FAIL,
-            payload: error.message,
+            payload: error,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.ALL_REASONS_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 // CANCEL REASON TYPE UPDATE
 
@@ -490,8 +482,6 @@ export const getSellerSpecialDropCharge = (page) => async (dispatch) => {
         pageSize: 50,
       },
     });
-
-
 
     if (status) {
       dispatch({
@@ -530,8 +520,6 @@ export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
       }
     );
 
-
-
     if (data.status) {
       successMsg(data.message, "success");
       dispatch({
@@ -558,47 +546,45 @@ export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
 
 export const getAdminLogHistory =
   (refresh = false, page = 1) =>
-    async (dispatch, getState) => {
-      const { adminLogType, logSortBy, adminLogs } = getState().settingsReducer;
+  async (dispatch, getState) => {
+    const { adminLogType, logSortBy, adminLogs } = getState().settingsReducer;
 
-      if (adminLogs.length < 1 || refresh) {
-        try {
+    if (adminLogs.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.ALL_AMDIN_LOGS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data },
+        } = await requestApi().request(ADMIN_LOGS_HISTORY, {
+          params: {
+            type: adminLogType.value,
+            sortBy: logSortBy.value,
+            page,
+            pageSize: 50,
+          },
+        });
+
+        if (status) {
           dispatch({
-            type: actionType.ALL_AMDIN_LOGS_REQUEST_SEND,
+            type: actionType.ALL_AMDIN_LOGS_REQUEST_SUCCESS,
+            payload: data,
           });
-
-          const {
-            data: { status, error, data },
-          } = await requestApi().request(ADMIN_LOGS_HISTORY, {
-            params: {
-              type: adminLogType.value,
-              sortBy: logSortBy.value,
-              page,
-              pageSize: 50,
-            },
-          });
-
-
-
-          if (status) {
-            dispatch({
-              type: actionType.ALL_AMDIN_LOGS_REQUEST_SUCCESS,
-              payload: data,
-            });
-          } else {
-            dispatch({
-              type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
-              payload: error,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
-            payload: error.message,
+            payload: error,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.ALL_AMDIN_LOGS_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 // ADMIN LOG HISTORY FILTER
 
@@ -616,11 +602,9 @@ export const updateAdminLogSortKey = (key) => (dispatch) => {
   });
 };
 
-
 // DEFAULT CHAT MESSAGE
 
 export const getDefaultMessage = (refresh) => async (dispatch, getState) => {
-
   const { defualtMessages, searchKey } = getState().settingsReducer;
 
   if (defualtMessages > 1 || refresh) {
@@ -633,11 +617,9 @@ export const getDefaultMessage = (refresh) => async (dispatch, getState) => {
         data: { status, error, data },
       } = await requestApi().request(GET_DEFAULT_CHAT, {
         params: {
-          search: searchKey
-        }
+          search: searchKey,
+        },
       });
-
-
 
       if (status) {
         dispatch({
@@ -659,7 +641,6 @@ export const getDefaultMessage = (refresh) => async (dispatch, getState) => {
   }
 };
 
-
 export const addDefaultMsg = (msg) => async (dispatch) => {
   try {
     dispatch({
@@ -669,11 +650,9 @@ export const addDefaultMsg = (msg) => async (dispatch) => {
     const { data } = await requestApi().request(ADD_DEFAULT_CHAT, {
       method: "POST",
       data: {
-        message: msg
+        message: msg,
       },
     });
-
-
 
     if (data.status) {
       const { message } = data?.data;
@@ -709,8 +688,6 @@ export const editDefaultMsg = (values) => async (dispatch) => {
       data: values,
     });
 
-
-
     if (data.status) {
       const { message } = data?.data;
       successMsg(data.message, "success");
@@ -741,4 +718,3 @@ export const updateDefaultSearchKey = (value) => (dispatch) => {
     payload: value,
   });
 };
-
