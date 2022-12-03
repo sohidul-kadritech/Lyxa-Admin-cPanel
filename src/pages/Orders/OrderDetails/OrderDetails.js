@@ -331,6 +331,7 @@ const OrderDetails = () => {
                         <img
                           className="rounded-circle avatar-lg cursor-pointer me-1"
                           alt="Seller"
+                          loading="lazy"
                           src={
                             order?.seller?.profile_photo
                               ? order?.seller?.profile_photo
@@ -351,13 +352,14 @@ const OrderDetails = () => {
                           }
                           className="cursor-pointer link"
                         >
-                          {order?.user?.name}
+                          {order?.seller?.company_name}
                         </h6>
                       </div>
                       <div className="d-flex align-items-center">
                         <img
                           className="rounded-circle avatar-lg cursor-pointer me-1"
                           alt="User"
+                          loading="lazy"
                           src={
                             order?.user?.profile_photo
                               ? order?.user?.profile_photo
