@@ -156,7 +156,7 @@ const Riders = ({ list, heading }) => {
             </Tbody>
           </Table>
 
-          {list.length === 0 ? (
+          {list?.length === 0 ? (
             <div className="text-center w-100">
               <h5>No Delivery Boy</h5>
             </div>
