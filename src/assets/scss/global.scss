@@ -138,3 +138,10 @@ table > thead {
 .table > tbody:last-child {
   border-bottom: transparent !important;
 }
+
+.link{
+  &:hover{
+    text-decoration: underline;
+    font-weight: 500;
+  }
+}
