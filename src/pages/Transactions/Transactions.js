@@ -126,7 +126,9 @@ const Transactions = () => {
       type === "adminAddBalanceShop" ||
       type === "adminRemoveBalanceShop" ||
       type === "shopCashInHand" ||
-      type === "shopCashInHandRemove"
+      type === "shopCashInHandRemove" ||
+      type === "unSettleAmountRemove" ||
+      type === "shopProfileRemoveCash"
     ) {
       newType = (
         <p>
@@ -140,10 +142,16 @@ const Transactions = () => {
               ? "Remove"
               : type === "shopCashInHandRemove"
               ? "Remove Cash In Hand"
+              : type === "unSettleAmountRemove"
+              ? "Remove Unsettle Amount"
+              : type === "shopProfileRemoveCash"
+              ? "Remove Cash"
               : ""
           }`}{" "}
-          {trx?.amount} - Order{" "}
-          <User name={`#${trx?.order}`} route={orderRoute} />
+          {trx?.amount}{" "}
+          {trx?.order
+            ? `- Order ${(<User name={`#${trx?.order}`} route={orderRoute} />)}`
+            : ""}
         </p>
       );
     } else if (type === "sellerCashInHandAdjust") {
@@ -287,8 +295,6 @@ const Transactions = () => {
     //   [
 
     //     'cashInHandRemoveCancel',
-    //     'unSettleAmountRemove',
-    //     'shopProfileRemoveCash',
 
     // ],
   };
