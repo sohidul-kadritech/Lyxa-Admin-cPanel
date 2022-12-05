@@ -29,7 +29,7 @@ import SellerDashboard from "../../components/SellerDashboard";
 import ShopDashboard from "../../components/ShopDashboard";
 import { TextField } from "@mui/material";
 import styled from "styled-components";
-import userIcon from "../../assets/images/dashboard/user.png";
+import noPhoto from "../../assets/images/noPhoto.jpg";
 
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -38,14 +38,12 @@ import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlin
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import SentimentSatisfiedOutlinedIcon from "@mui/icons-material/SentimentSatisfiedOutlined";
 import WorkHistoryOutlinedIcon from "@mui/icons-material/WorkHistoryOutlined";
-import MopedOutlinedIcon from '@mui/icons-material/MopedOutlined';
-import SettingsInputSvideoIcon from '@mui/icons-material/SettingsInputSvideo';
-import PaymentIcon from '@mui/icons-material/Payment';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import MopedOutlinedIcon from "@mui/icons-material/MopedOutlined";
+import SettingsInputSvideoIcon from "@mui/icons-material/SettingsInputSvideo";
+import PaymentIcon from "@mui/icons-material/Payment";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 
 import InfoTwo from "../../components/InfoTwo";
-
-
 
 const SellerInfo = () => {
   const {
@@ -72,7 +70,7 @@ const SellerInfo = () => {
             <img
               className="rounded-circle avatar-xl cursor-pointer"
               alt="Seller"
-              src={userIcon}
+              src={!profile_photo ? noPhoto : profile_photo}
             />
           </div>
         </Col>
@@ -85,8 +83,14 @@ const SellerInfo = () => {
             <h6 className="text-capitalize">{sellerType}</h6>
           </div>
 
-          <InfoTwo value={`${name} (Manager)`} Icon={PersonOutlineOutlinedIcon} />
-          <InfoTwo value={`${state},${city}, ${country}`} Icon={RoomOutlinedIcon} />
+          <InfoTwo
+            value={`${name} (Manager)`}
+            Icon={PersonOutlineOutlinedIcon}
+          />
+          <InfoTwo
+            value={`${state},${city}, ${country}`}
+            Icon={RoomOutlinedIcon}
+          />
           <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
           <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
         </Col>
@@ -114,7 +118,7 @@ const ShopInfo = () => {
       haveOwnDeliveryBoy,
       deliveryFee,
       deals,
-      address: { address }
+      address: { address },
     },
   } = useSelector((state) => state.Login);
 
@@ -126,7 +130,7 @@ const ShopInfo = () => {
             <img
               className="rounded-circle avatar-xl cursor-pointer"
               alt="Seller"
-              src={shopLogo}
+              src={!shopLogo ? noPhoto : shopLogo}
             />
           </div>
         </Col>
@@ -137,43 +141,46 @@ const ShopInfo = () => {
             </h5>
             <h6 className="text-capitalize me-1">{`Status - ${shopStatus}`}</h6>
             <h6 className="text-capitalize me-1">{shopType}</h6>
-            <h6 className="text-capitalize me-1">{`Featured - ${isFeatured ? "Yes" : "No"
-              }`}</h6>
-            <h6 className="text-capitalize me-1">{`Cuisines - ${cuisineType.length > 0 ? cuisineType[0] : "N/A"
-              }`}</h6>
+            <h6 className="text-capitalize me-1">{`Featured - ${
+              isFeatured ? "Yes" : "No"
+            }`}</h6>
+            <h6 className="text-capitalize me-1">{`Cuisines - ${
+              cuisineType.length > 0 ? cuisineType[0] : "N/A"
+            }`}</h6>
           </div>
 
           <Row className="pt-2">
             <Col lg={6}>
               <InfoTwo value={address} Icon={RoomOutlinedIcon} />
               <InfoTwo
-                value={`Mon to Fri - ${shopStartTimeText} ${shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                  } - ${shopEndTimeText} ${shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                  }`}
+                value={`Mon to Fri - ${shopStartTimeText} ${
+                  shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                } - ${shopEndTimeText} ${
+                  shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                }`}
                 Icon={AccessTimeOutlinedIcon}
               />
               <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
               <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
             </Col>
 
-
             <Col lg={3}>
-
               <InfoTwo
                 value={`${minOrderAmount} NGN`}
                 Icon={StorefrontOutlinedIcon}
               />
               <InfoTwo
-                value={`${rating === 4
-                  ? "Excellent"
-                  : rating === 3
+                value={`${
+                  rating === 4
+                    ? "Excellent"
+                    : rating === 3
                     ? "Very good"
                     : rating === 2
-                      ? "Good"
-                      : rating === 1
-                        ? "Bad"
-                        : ""
-                  } (Rating)`}
+                    ? "Good"
+                    : rating === 1
+                    ? "Bad"
+                    : ""
+                } (Rating)`}
                 Icon={SentimentSatisfiedOutlinedIcon}
               />
               <InfoTwo
@@ -181,21 +188,27 @@ const ShopInfo = () => {
                 Icon={WorkHistoryOutlinedIcon}
               />
               <InfoTwo
-                value={`${expensive === 1
-                  ? "$"
-                  : expensive === 2
+                value={`${
+                  expensive === 1
+                    ? "$"
+                    : expensive === 2
                     ? "$$"
                     : expensive === "3"
-                      ? "$$$"
-                      : "$$$$"
-                  } (Price Range)`}
+                    ? "$$$"
+                    : "$$$$"
+                } (Price Range)`}
                 Icon={WorkHistoryOutlinedIcon}
               />
             </Col>
 
             <Col lg={3}>
               {/* <InfoTwo value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
-              <InfoTwo value={`${haveOwnDeliveryBoy ? 'Self' : 'Drop'} (Delivery Type)`} Icon={PaymentIcon} />
+              <InfoTwo
+                value={`${
+                  haveOwnDeliveryBoy ? "Self" : "Drop"
+                } (Delivery Type)`}
+                Icon={PaymentIcon}
+              />
               <InfoTwo
                 value={`${deliveryFee} (Delivery Fee)`}
                 Icon={MopedOutlinedIcon}
@@ -235,8 +248,8 @@ const Dashboard = () => {
           account_type === "admin" && adminType !== "customerService"
             ? "admin"
             : account_type === "seller"
-              ? "seller"
-              : "shop"
+            ? "seller"
+            : "shop"
         )
       );
     }
@@ -278,8 +291,9 @@ const Dashboard = () => {
                   </Col>
                   <Col md={account_type === "shop" ? 3 : 6}>
                     <div
-                      className={`d-flex ${account_type === "shop" && "flex-column"
-                        }`}
+                      className={`d-flex ${
+                        account_type === "shop" && "flex-column"
+                      }`}
                     >
                       <DateFilter className=" me-2 ">
                         <div className="date-label">
@@ -363,23 +377,12 @@ const DateFilter = styled.div`
 
 const InfoWrapper = styled.div`
   .img_wrapper {
-    width: 90%;
-    
-    height: 70px;
+    width: 80px;
+    height: 80px;
     img {
       width: 100%;
       height: 100%;
-      background-color: lightgray;
-      padding: 5px;
-    }
-    .fa-pen {
-      position: absolute;
-      bottom: -5px;
-      left: 39%;
-      background-color: white;
-      padding: 2px;
-      border-radius: 11px;
-      box-shadow: 0px 0px 0px 3px #f1f1f1;
+      border: 1px solid #dd5f5f;
     }
   }
 
@@ -389,8 +392,6 @@ const InfoWrapper = styled.div`
     border-radius: 15px;
     margin-bottom: 0 !important;
   }
-
-  
 `;
 
 export default withTranslation()(Dashboard);
