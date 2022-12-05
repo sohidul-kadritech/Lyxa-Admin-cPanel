@@ -15,13 +15,13 @@ import { updateSearchKey, userList } from "../store/Users/UsersAction";
 const UserCradit = ({ user = null }) => {
   const { users, searchKey } = useSelector((state) => state.usersReducer);
   const { loading, status } = useSelector((state) => state.dropPayReducer);
-  const { appSettingsOptions: { maxCustomerServiceValue } } = useSelector(
-    (state) => state.settingsReducer
-  );
+  const { appSettingsOptions } = useSelector((state) => state.settingsReducer);
 
-  const { account_type, adminType, _id: accountId } = JSON.parse(
-    localStorage.getItem("admin")
-  );
+  const {
+    account_type,
+    adminType,
+    _id: accountId,
+  } = JSON.parse(localStorage.getItem("admin"));
 
   const dispatch = useDispatch();
 
@@ -34,14 +34,13 @@ const UserCradit = ({ user = null }) => {
     if (user) {
       setSelectedUser(user);
     }
-  }, [user])
+  }, [user]);
 
   useEffect(() => {
-    if (account_type === 'admin' && adminType === 'customerService') {
+    if (account_type === "admin" && adminType === "customerService") {
       dispatch(getAllAppSettings());
     }
   }, []);
-
 
   useEffect(() => {
     // if (searchKey) {
@@ -50,9 +49,7 @@ const UserCradit = ({ user = null }) => {
     dispatch(userList(true));
   }, [searchKey]);
 
-
   const submitBalance = (type) => {
-
     if (!selectedUser) {
       return successMsg("Please select user", "error");
     }
@@ -62,11 +59,22 @@ const UserCradit = ({ user = null }) => {
     if (!userNote) {
       return successMsg("Please enter user note", "error");
     }
-    if (amount > maxCustomerServiceValue && account_type === 'admin' && adminType === 'customerService') {
-      return successMsg(`Amount can't be more than ${maxCustomerServiceValue}`, "error");
+    if (
+      amount > !appSettingsOptions?.maxCustomerServiceValue
+        ? 0
+        : appSettingsOptions?.maxCustomerServiceValue &&
+          account_type === "admin" &&
+          adminType === "customerService"
+    ) {
+      return successMsg(
+        `Amount can't be more than ${
+          !appSettingsOptions?.maxCustomerServiceValue
+            ? 0
+            : appSettingsOptions?.maxCustomerServiceValue
+        }`,
+        "error"
+      );
     }
-
-
 
     submitData(type);
   };
@@ -94,10 +102,6 @@ const UserCradit = ({ user = null }) => {
     }
   }, [status]);
 
-  useEffect(() => {
-    dispatch(getAllAppSettings());
-  }, []);
-
   return (
     <div>
       <div className="mb-4">
@@ -113,7 +117,6 @@ const UserCradit = ({ user = null }) => {
           inputValue={searchKey}
           onInputChange={(event, newInputValue) => {
             dispatch(updateSearchKey(newInputValue));
-
           }}
           id="controllable-states-demo"
           options={users.length > 0 ? users : []}

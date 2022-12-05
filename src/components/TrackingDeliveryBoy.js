@@ -10,12 +10,17 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { trackDeliveryBoy, updateActivityEndDate, updateActivityStartDate } from "../store/DeliveryMan/DeliveryManAction";
+import {
+  trackDeliveryBoy,
+  updateActivityEndDate,
+  updateActivityStartDate,
+} from "../store/DeliveryMan/DeliveryManAction";
 import GlobalWrapper from "./GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import AppPagination from "./AppPagination";
 import moment from "moment";
-import Flatpickr from 'react-flatpickr';
+import Flatpickr from "react-flatpickr";
+import Info from "./Info";
 
 const TrackingDeliveryBoy = ({ riderId }) => {
   const {
@@ -26,7 +31,8 @@ const TrackingDeliveryBoy = ({ riderId }) => {
     statusCurrentPage,
     riderAllActivity,
     startDate,
-    endDate
+    endDate,
+    totalActiveTime: { hour, minutes },
   } = useSelector((state) => state.deliveryManReducer);
 
   const dispatch = useDispatch();
@@ -42,23 +48,23 @@ const TrackingDeliveryBoy = ({ riderId }) => {
     return;
   }, [riderId, startDate, endDate]);
 
-  const calcActiveTime = (inTime, outTime) => {
-    const startTime = moment(inTime, "HH:mm a");
-    const endTime = moment(outTime, "HH:mm a");
-    const duration = moment.duration(endTime.diff(startTime));
-    const hours = parseInt(duration.asHours());
-    const minutes = parseInt(duration.asMinutes()) % 60;
+  const calcActiveTime = (min) => {
+    const hour = Math.floor(min / 60);
+    const minutes = min % 60;
 
-    return `${hours > 0 ? `${hours}h` : ''} ${minutes} min's`
-
-  }
+    return `${hour > 0 ? `${hour}h` : ""} ${minutes} min's`;
+  };
 
   return (
     <React.Fragment>
       <GlobalWrapper>
         <Card>
           <CardBody>
-
+            <Info
+              title="Total Active Time"
+              value={`${hour > 0 ? `${hour}h` : ""} ${minutes} min's`}
+              style={{ borderBottom: "1px solid lightgray" }}
+            ></Info>
             <div className="d-flex my-3  ">
               <div className=" w-100">
                 <label>Start Date</label>
@@ -124,17 +130,9 @@ const TrackingDeliveryBoy = ({ riderId }) => {
                       }}
                     >
                       <Th>{moment(item?.Date).format("D-MM-YYYY")}</Th>
-                      <Td>
-                        {moment(item?.timeIn).format("h:mm a")}
-                      </Td>
-                      <Td>
-
-                        {moment(item?.timeOut).format("h:mm a")}
-                      </Td>
-                      <Td>
-
-                        {calcActiveTime(item?.timeIn, item?.timeOut)}
-                      </Td>
+                      <Td>{moment(item?.timeIn).format("h:mm a")}</Td>
+                      <Td>{moment(item?.timeOut).format("h:mm a")}</Td>
+                      <Td>{calcActiveTime(item?.activeTotal)}</Td>
                     </Tr>
                   );
                 })}

@@ -10,7 +10,7 @@ const initialState = {
     deliveryFeePerKm: "",
     maxDiscount: "",
     searchDeliveryBoyKm: [],
-    maxCustomerServiceValue: ""
+    maxCustomerServiceValue: "",
   },
 
   dropCharge: null,
@@ -23,11 +23,11 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  adminLogType: { label: "Max Discount", value: "maxDiscount" },
+  adminLogType: { label: "All", value: "" },
   logSortBy: { label: "Desc", value: "desc" },
   adminLogs: [],
   defualtMessages: [],
-  searchKey: ''
+  searchKey: "",
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -243,9 +243,6 @@ const settingsReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
       };
-
-
-
 
     // ADD CANCEL REASON
 
@@ -486,7 +483,9 @@ const settingsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        defualtMessages: state.defualtMessages.map((item) => item._id === payload._id ? payload : item),
+        defualtMessages: state.defualtMessages.map((item) =>
+          item._id === payload._id ? payload : item
+        ),
         status: true,
       };
 

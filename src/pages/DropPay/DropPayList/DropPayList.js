@@ -28,9 +28,8 @@ import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Search from "../../../components/Search";
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import TableImgItem from "../../../components/TableImgItem";
-
 
 const DropPayList = () => {
   const dispatch = useDispatch();
@@ -46,7 +45,7 @@ const DropPayList = () => {
     hasNextPage,
     hasPreviousPage,
     currentPage,
-    searchKey: dropPaySearchKey
+    searchKey: dropPaySearchKey,
   } = useSelector((state) => state.dropPayReducer);
 
   const [balAddModal, setBalAddModal] = useState(false);
@@ -57,8 +56,6 @@ const DropPayList = () => {
     }
   }, [sortByKey, startDate, endDate, dropPaySearchKey]);
 
-
-
   const callDropPayList = (refresh = false) => {
     dispatch(getAllDropPay(refresh));
   };
@@ -66,10 +63,9 @@ const DropPayList = () => {
   useEffect(() => {
     if (status) {
       setBalAddModal(false);
+      callDropPayList(true);
     }
   }, [status]);
-
-
 
   return (
     <React.Fragment>
@@ -145,10 +141,12 @@ const DropPayList = () => {
 
                 <Row className="d-flex justify-content-center">
                   <Col lg={8}>
-                    <Search dispatchFunc={updateLyxaPaySearchKey} placeholder="Search by id or customer name or email" />
+                    <Search
+                      dispatchFunc={updateLyxaPaySearchKey}
+                      placeholder="Search by id or customer name or email"
+                    />
                   </Col>
                 </Row>
-
               </CardBody>
             </Card>
 
@@ -192,14 +190,32 @@ const DropPayList = () => {
                           }}
                         >
                           <Th>
-                            <TableImgItem altImg={AccountBalanceIcon} name={item?.user?.name} id={item?.autoGenId} />
+                            <TableImgItem
+                              altImg={AccountBalanceIcon}
+                              name={item?.user?.name}
+                              id={item?.autoGenId}
+                            />
                           </Th>
                           <Td>{item?.user?.email}</Td>
-                          <Td>{item?.amount}</Td>
+                          <Td
+                            className={
+                              item?.type === "userBalanceAddAdmin"
+                                ? "active-status"
+                                : item?.type === "userBalanceWithdrawAdmin"
+                                ? "inactive-status"
+                                : ""
+                            }
+                          >{`${
+                            item?.type === "userBalanceAddAdmin"
+                              ? "+"
+                              : item?.type === "userBalanceWithdrawAdmin"
+                              ? "-"
+                              : ""
+                          }${item?.amount}`}</Td>
                           <Td>
                             {item?.type === "userPayAfterReceivedOrderByCard"
                               ? "Card"
-                              : "Admin"}
+                              : "Lyxa"}
                           </Td>
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}

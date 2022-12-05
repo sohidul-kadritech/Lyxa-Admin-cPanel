@@ -288,7 +288,7 @@ const DeliverymanList = () => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">{`${deliveryBoyName} activity`}</h5>
+            <h5 className="modal-title mt-0">{`${deliveryBoyName} Activity`}</h5>
             <button
               type="button"
               onClick={() => {
@@ -301,10 +301,7 @@ const DeliverymanList = () => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div
-            className="modal-body py-1"
-            // style={{ maxHeight: "550px", overflow: "hidden scroll" }}
-          >
+          <div className="modal-body py-1">
             <TrackingDeliveryBoy riderId={id} />
           </div>
         </Modal>

@@ -94,7 +94,10 @@ const PercentageSetting = () => {
   const changeRangeWiseCharge = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
-    setRangeWiseDeliveryCharge({ ...rangeWiseDeliveryCharge, [name]: Number(value) });
+    setRangeWiseDeliveryCharge({
+      ...rangeWiseDeliveryCharge,
+      [name]: Number(value),
+    });
   };
 
   // SUBMIT CHARGE RANGE WISE
@@ -111,9 +114,9 @@ const PercentageSetting = () => {
     if (!rangeWiseDeliveryCharge.charge) {
       return successMsg("Enter Charge", "error");
     }
-    if (!rangeWiseDeliveryCharge.deliveryPersonCut) {
-      return successMsg("Enter Delivery Person Charge", "error");
-    }
+    // if (!rangeWiseDeliveryCharge.deliveryPersonCut) {
+    //   return successMsg("Enter Delivery Person Charge", "error");
+    // }
 
     if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
       return successMsg("From Range should be less than To Range", "error");
@@ -188,7 +191,7 @@ const PercentageSetting = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               title="App Wallet"
               breadcrumbItem={"Percentage Setting"}
               loading={loading}
@@ -199,7 +202,7 @@ const PercentageSetting = () => {
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center">
-                  <CardTitle>Global Drop Charge</CardTitle>
+                  <CardTitle>Global Lyxa Charge</CardTitle>
                   <Button
                     outline={true}
                     color="success"
@@ -452,7 +455,7 @@ const PercentageSetting = () => {
                             }}
                             onCancel={() => setconfirm_alert(false)}
                           >
-                            {`You want to delete ${seller?.company_name} drop charge.`}
+                            {`You want to delete ${seller?.company_name} Lyxa charge.`}
                           </SweetAlert>
                         ) : null}
                       </Td>

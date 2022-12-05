@@ -138,7 +138,7 @@ const DeliverymanDetails = () => {
                   <Col lg={2}>
                     <ImageWrapper className="text-center">
                       <img
-                        className=" cursor-pointer"
+                        className=" cursor-pointer rounded"
                         alt="User"
                         src={deliveryMan?.image ?? noPhoto}
                         loading="lazy"
@@ -216,37 +216,38 @@ const DeliverymanDetails = () => {
                   <AccordionDetails>
                     <Typography>
                       <Row>
-                        <Col md={4}>
+                        <Col md={6} className="d-flex justify-content-center">
                           <ImageWrapper>
                             <img
                               onClick={() => {
                                 setIsOpen(true);
                                 setSelectedImg(deliveryMan?.nationalIdDocument);
                               }}
-                              className="img-fluid cursor-pointer"
+                              className="img-fluid cursor-pointer  rounded"
                               alt="NID"
                               src={deliveryMan?.nationalIdDocument ?? noPhoto}
                               width="100%"
-                              height="90%"
+                              height="100%"
+                              loading="lazy"
                             />
                             <small>NID</small>
                           </ImageWrapper>
                         </Col>
-                        <Col md={6}>
+                        <Col md={6} className="d-flex justify-content-center">
                           <ImageWrapper>
                             <img
                               onClick={() => {
                                 setIsOpen(true);
                                 setSelectedImg(deliveryMan?.nationalIdDocument);
                               }}
-                              className="img-fluid cursor-pointer"
+                              className="img-fluid cursor-pointer rounded"
                               alt="Vahicle Document"
                               src={
                                 deliveryMan?.vehicleRegistrationDocument ??
                                 noPhoto
                               }
                               width="100%"
-                              height="90%"
+                              height="100%"
                             />
                             <small>Vahicle Document</small>
                           </ImageWrapper>
@@ -292,10 +293,6 @@ const ImageWrapper = styled.div`
   text-align: center;
   height: 150px;
   width: 150px;
-  img {
-    border: 1px solid lightgray;
-    border-radius: 100px;
-  }
 `;
 
 export default DeliverymanDetails;

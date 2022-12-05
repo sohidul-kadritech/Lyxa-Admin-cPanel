@@ -155,11 +155,11 @@ export const trackDeliveryBoy =
           endDate,
         },
       });
-      console.log({ data });
+
       if (data.status) {
         dispatch({
           type: actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS,
-          payload: data,
+          payload: data.data,
         });
       } else {
         successMsg(data.error, "error");

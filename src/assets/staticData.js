@@ -307,6 +307,7 @@ export const shopTrxsAmountFilterOptions = [
 ];
 
 export const adminLogTypeOptions = [
+  { label: "All", value: "" },
   { label: "Max Discount", value: "maxDiscount" },
   { label: "Near By ShopKm", value: "nearByShopKm" },
   { label: "Search Delivery Boy Km", value: "searchDeliveryBoyKm" },

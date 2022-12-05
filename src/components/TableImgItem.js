@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from "reactstrap";
+
 import styled from "styled-components";
 
 const TableImgItem = ({ img = "", name, subTitle, id = "" }) => {

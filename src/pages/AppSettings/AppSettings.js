@@ -95,8 +95,8 @@ const AppSettings = () => {
                 <CardTitle>Informations</CardTitle>
                 <hr />
 
-                <Row >
-                  <Col lg={6} >
+                <Row>
+                  <Col lg={6}>
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
@@ -104,7 +104,6 @@ const AppSettings = () => {
                       variant="outlined"
                       placeholder="Enter max discount"
                       value={appSettingsOptions?.maxDiscount ?? 0}
-
                       onChange={(e) =>
                         dispatch(updateMaxDiscount(e.target.value))
                       }
@@ -116,11 +115,10 @@ const AppSettings = () => {
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
-                      label="Drop pay limit credit"
+                      label="Lyxa pay limit credit"
                       variant="outlined"
                       placeholder="Enter drop pay limit credit "
                       value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
-
                       onChange={(e) =>
                         dispatch(updateDropCreditLimit(e.target.value))
                       }
@@ -138,7 +136,6 @@ const AppSettings = () => {
                       variant="outlined"
                       placeholder="Enter near shop Distance"
                       value={appSettingsOptions?.nearByShopKm ?? 0}
-
                       onChange={(e) =>
                         dispatch(updateNearByShopKey(e.target.value))
                       }
@@ -181,7 +178,6 @@ const AppSettings = () => {
                     )}
                   </Col>
                 </Row>
-
 
                 <div className="d-flex justify-content-center mt-5 mb-2">
                   <Button
