@@ -7,6 +7,7 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import {
   API_URL,
   DOWNLOAD_PRODUCT_TEMPLATE,
+  MAP_URL,
   SINGLE_SHOP,
   UPLOAD_PRODUCT_FILE,
 } from "../../../network/Api";
@@ -341,7 +342,11 @@ const ShopDetails = () => {
                     <InfoTwo
                       Icon={ApartmentOutlinedIcon}
                       value={`${shop?.seller?.name} (Seller)`}
-                      link={`/seller/details/${shop?.seller?._id}`}
+                      link={
+                        account_type === "admin"
+                          ? `/seller/details/${shop?.seller?._id}`
+                          : ""
+                      }
                     />
                     <InfoTwo
                       Icon={StoreOutlinedIcon}
@@ -358,6 +363,7 @@ const ShopDetails = () => {
                     <InfoTwo
                       Icon={RoomOutlinedIcon}
                       value={shop?.address.address}
+                      mapLink={`${MAP_URL}?z=10&t=m&q=loc:${shop?.address?.latitude}+${shop?.address?.longitude}`}
                     />
 
                     <InfoTwo

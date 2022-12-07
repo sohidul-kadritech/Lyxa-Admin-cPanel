@@ -3,6 +3,7 @@
 
 export const API_URL = "https://api.drop-deliveryapp.com/";
 export const SOCKET_CONNECTION = "https://api.drop-deliveryapp.com";
+export const MAP_URL = "http://maps.google.com/maps";
 
 const ADMIN_ENDPOINT = "admin";
 

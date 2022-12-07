@@ -3,7 +3,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
-const InfoTwo = ({ value, Icon, link }) => {
+const InfoTwo = ({ value, Icon, link, mapLink }) => {
   const history = useHistory();
 
   return (
@@ -11,10 +11,19 @@ const InfoTwo = ({ value, Icon, link }) => {
       className={`${link && "cursor-pointer"}  }`}
       onClick={() => history.push(link)}
       link={link}
+      mapLink={mapLink}
     >
       <Icon className="text-danger" />
-      <Tooltip title={`${link ? "See details" : ""}`}>
-        <span className="value">{value}</span>
+      <Tooltip
+        title={`${link ? "See details" : mapLink ? "See Location" : ""}`}
+      >
+        {mapLink ? (
+          <a className="value" href={mapLink} target="blank">
+            {value}
+          </a>
+        ) : (
+          <span className="value">{value}</span>
+        )}
       </Tooltip>
     </InfoWrapper>
   );
@@ -30,8 +39,10 @@ const InfoWrapper = styled.div`
     text-decoration: ${({ link }) => link && "underline"};
 
     .value {
-      //   color: ${({ link }) => link && ""};
-      font-weight: ${({ link }) => link && "bold"};
+      color: ${({ link, mapLink }) => (link || mapLink ? "green" : "black")};
+      font-weight: ${({ link, mapLink }) =>
+        (link || mapLink) && "500 !important"};
+      text-decoration: ${({ mapLink }) => mapLink && "underline !important"};
     }
   }
 

@@ -57,7 +57,7 @@ const FlagsAndReviews = ({
                                     : "Delivery Boy"
                                   : item?.orderId?.orderId
                               }
-                              value={item?.comment}
+                              value={!item?.comment ? "No Flag" : item?.comment}
                               flagOrderRoute={
                                 !isFromOrder &&
                                 `/orders/details/${item?.orderId?._id}`
@@ -81,7 +81,7 @@ const FlagsAndReviews = ({
                           <div className="info_wrapper">
                             <Info
                               title={item?.order?.orderId}
-                              value={item?.review}
+                              value={!item?.review ? "No Review" : item?.review}
                               valueTwo={item?.rating}
                               flagOrderRoute={
                                 !isFromOrder &&

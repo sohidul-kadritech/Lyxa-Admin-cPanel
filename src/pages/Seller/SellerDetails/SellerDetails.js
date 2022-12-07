@@ -17,7 +17,7 @@ import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
 import AppPagination from "../../../components/AppPagination";
 import { getAllShop } from "../../../store/Shop/shopAction";
-import { SINGLE_SELLER } from "../../../network/Api";
+import { MAP_URL, SINGLE_SELLER } from "../../../network/Api";
 import Info from "./../../../components/Info";
 import ShopTable from "../../../components/ShopTable";
 import DropCharge from "../../../components/DropCharge";
@@ -31,6 +31,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import noPhoto from "../../../assets/images/noPhoto.jpg";
 
 const SellerDetails = () => {
   const { id } = useParams();
@@ -138,8 +139,9 @@ const SellerDetails = () => {
                       Icon={PersonOutlineOutlinedIcon}
                     />
                     <InfoTwo
-                      value={`${seller?.addressSeller?.state},${seller?.addressSeller?.city}, ${seller?.addressSeller?.country}`}
+                      value={`${seller?.addressSeller?.address}`}
                       Icon={RoomOutlinedIcon}
+                      mapLink={`${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
                     />
                     <InfoTwo
                       value={seller?.phone_number}
@@ -162,87 +164,92 @@ const SellerDetails = () => {
                         Icon={PaidOutlinedIcon}
                         value={`${seller?.dropPercentage} ${
                           seller?.dropPercentageType === "amount" ? "NGN" : "%"
-                        }`}
+                        } (Lyxa Charge)`}
                       />
                     )}
                   </Col>
                   <Col lg={6}>
-                    {seller?.certificate_of_incorporation ||
-                    seller?.national_id ? (
-                      <Row>
-                        <Col md={4}>
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
+                    <Row>
+                      <Col md={4}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
+                          }}
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(seller?.profile_photo);
                             }}
-                          >
-                            <img
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(seller?.profile_photo);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt=""
-                              src={seller?.profile_photo}
-                              width="100%"
-                            />
-                            <small>Company image</small>
-                          </ImageWrapper>
-                        </Col>
-                        <Col md={4}>
-                          {seller?.certificate_of_incorporation ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(
-                                    seller?.certificate_of_incorporation
-                                  );
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={seller?.certificate_of_incorporation}
-                                width="100%"
-                              />
-                              <small>Certificate of incorporation</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                        <Col md={4}>
-                          {seller?.national_id ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(seller?.national_id);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={seller?.national_id}
-                                width="100%"
-                              />
-                              <small>National Id</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    ) : (
-                      <h5 className="text-center">No Photos</h5>
-                    )}
+                            className="img-fluid cursor-pointer"
+                            alt=""
+                            src={
+                              !seller?.profile_photo
+                                ? noPhoto
+                                : seller?.profile_photo
+                            }
+                            width="100%"
+                            loading="lazy"
+                          />
+                          <small>Company image</small>
+                        </ImageWrapper>
+                      </Col>
+                      <Col md={4}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
+                          }}
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(
+                                seller?.certificate_of_incorporation
+                              );
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt=""
+                            src={
+                              !seller?.certificate_of_incorporation
+                                ? noPhoto
+                                : seller?.certificate_of_incorporation
+                            }
+                            width="100%"
+                            loading="lazy"
+                          />
+                          <small>Certificate of incorporation</small>
+                        </ImageWrapper>
+                      </Col>
+                      <Col md={4}>
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
+                          }}
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(seller?.national_id);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt=""
+                            src={
+                              !seller?.national_id
+                                ? noPhoto
+                                : seller?.national_id
+                            }
+                            loading="lazy"
+                          />
+                          <small>National Id</small>
+                        </ImageWrapper>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </CardBody>
@@ -276,95 +283,6 @@ const SellerDetails = () => {
                 </div>
               </Col>
             </Row>
-
-            {/* <Row>
-              <Col lg={6}>
-                <Card className="card-height">
-                  <CardBody>
-                    <div>
-                      <CardTitle>Seller Photos</CardTitle>
-                      <hr />
-                    </div>
-                    {seller?.certificate_of_incorporation ||
-                      seller?.national_id ? (
-                      <Row>
-                        <Col md={4}>
-                          <ImageWrapper
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              padding: "10px 0px",
-                            }}
-                          >
-                            <img
-                              onClick={() => {
-                                setIsOpen(true);
-                                setSelectedImg(seller?.profile_photo);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt="Veltrix"
-                              src={seller?.profile_photo}
-                              width="100%"
-                            />
-                            <small>Company image</small>
-                          </ImageWrapper>
-                        </Col>
-                        <Col md={4}>
-                          {seller?.certificate_of_incorporation ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(
-                                    seller?.certificate_of_incorporation
-                                  );
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="Veltrix"
-                                src={seller?.certificate_of_incorporation}
-                                width="100%"
-                              />
-                              <small>Certificate of incorporation</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                        <Col md={4}>
-                          {seller?.national_id ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(seller?.national_id);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="Veltrix"
-                                src={seller?.national_id}
-                                width="100%"
-                              />
-                              <small>National Id</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    ) : (
-                      <h5 className="text-center">No Photos</h5>
-                    )}
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row> */}
           </Container>
         </div>
       </GlobalWrapper>
@@ -411,7 +329,10 @@ const ImageWrapper = styled.div`
   img {
     object-fit: contain;
     width: 100%;
-    height: 90%;
+    height: 100%;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 0px 3px;
   }
 `;
 

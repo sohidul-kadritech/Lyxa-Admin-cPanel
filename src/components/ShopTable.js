@@ -130,7 +130,7 @@ const ShopTable = ({ shops = [] }) => {
                           <p>{item?.name}</p>
                         </div>
                       ))
-                    : "-"}
+                    : "No Deals"}
                 </Td>
                 <Td>{item?.isFeatured ? "Yes" : "NO"}</Td>
                 <Td>{item?.totalOrder}</Td>

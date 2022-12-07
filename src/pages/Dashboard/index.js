@@ -44,186 +44,7 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 
 import InfoTwo from "../../components/InfoTwo";
-
-const SellerInfo = () => {
-  const {
-    admin: {
-      profile_photo,
-      name,
-      company_name,
-      status,
-      sellerType,
-      addressSeller: { state, city, country },
-      phone_number,
-      email,
-    },
-  } = useSelector((state) => state.Login);
-
-  return (
-    <InfoWrapper>
-      <Row>
-        <Col
-          md={2}
-          className="px-0 d-flex align-items-center justify-content-center"
-        >
-          <div className="img_wrapper">
-            <img
-              className="rounded-circle avatar-xl cursor-pointer"
-              alt="Seller"
-              src={!profile_photo ? noPhoto : profile_photo}
-            />
-          </div>
-        </Col>
-        <Col md={10}>
-          <div className="d-flex align-items-center pb-1">
-            <h5 className="me-2">
-              Welcome, <span className="text-danger">{company_name}</span>
-            </h5>
-            <h6 className="text-capitalize mx-3">{`Status - ${status}`}</h6>
-            <h6 className="text-capitalize">{sellerType}</h6>
-          </div>
-
-          <InfoTwo
-            value={`${name} (Manager)`}
-            Icon={PersonOutlineOutlinedIcon}
-          />
-          <InfoTwo
-            value={`${state},${city}, ${country}`}
-            Icon={RoomOutlinedIcon}
-          />
-          <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-          <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
-        </Col>
-      </Row>
-    </InfoWrapper>
-  );
-};
-
-const ShopInfo = () => {
-  const {
-    admin: {
-      shopLogo,
-      shopStatus,
-      shopType,
-      isFeatured,
-      cuisineType,
-      shopName,
-      phone_number,
-      shopStartTimeText,
-      shopEndTimeText,
-      email,
-      rating,
-      minOrderAmount,
-      expensive,
-      haveOwnDeliveryBoy,
-      deliveryFee,
-      deals,
-      address: { address },
-    },
-  } = useSelector((state) => state.Login);
-
-  return (
-    <InfoWrapper>
-      <Row>
-        <Col md={1} className="px-0 d-flex align-items-center">
-          <div className="img_wrapper">
-            <img
-              className="rounded-circle avatar-xl cursor-pointer"
-              alt="Seller"
-              src={!shopLogo ? noPhoto : shopLogo}
-            />
-          </div>
-        </Col>
-        <Col md={11}>
-          <div className="d-flex align-items-center pb-1">
-            <h5>
-              Welcome, <span className="text-danger me-2">{shopName}</span>
-            </h5>
-            <h6 className="text-capitalize me-1">{`Status - ${shopStatus}`}</h6>
-            <h6 className="text-capitalize me-1">{shopType}</h6>
-            <h6 className="text-capitalize me-1">{`Featured - ${
-              isFeatured ? "Yes" : "No"
-            }`}</h6>
-            <h6 className="text-capitalize me-1">{`Cuisines - ${
-              cuisineType.length > 0 ? cuisineType[0] : "N/A"
-            }`}</h6>
-          </div>
-
-          <Row className="pt-2">
-            <Col lg={6}>
-              <InfoTwo value={address} Icon={RoomOutlinedIcon} />
-              <InfoTwo
-                value={`Mon to Fri - ${shopStartTimeText} ${
-                  shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                } - ${shopEndTimeText} ${
-                  shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                }`}
-                Icon={AccessTimeOutlinedIcon}
-              />
-              <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-              <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
-            </Col>
-
-            <Col lg={3}>
-              <InfoTwo
-                value={`${minOrderAmount} NGN`}
-                Icon={StorefrontOutlinedIcon}
-              />
-              <InfoTwo
-                value={`${
-                  rating === 4
-                    ? "Excellent"
-                    : rating === 3
-                    ? "Very good"
-                    : rating === 2
-                    ? "Good"
-                    : rating === 1
-                    ? "Bad"
-                    : ""
-                } (Rating)`}
-                Icon={SentimentSatisfiedOutlinedIcon}
-              />
-              <InfoTwo
-                value={`${minOrderAmount} NGN`}
-                Icon={WorkHistoryOutlinedIcon}
-              />
-              <InfoTwo
-                value={`${
-                  expensive === 1
-                    ? "$"
-                    : expensive === 2
-                    ? "$$"
-                    : expensive === "3"
-                    ? "$$$"
-                    : "$$$$"
-                } (Price Range)`}
-                Icon={WorkHistoryOutlinedIcon}
-              />
-            </Col>
-
-            <Col lg={3}>
-              {/* <InfoTwo value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
-              <InfoTwo
-                value={`${
-                  haveOwnDeliveryBoy ? "Self" : "Drop"
-                } (Delivery Type)`}
-                Icon={PaymentIcon}
-              />
-              <InfoTwo
-                value={`${deliveryFee} (Delivery Fee)`}
-                Icon={MopedOutlinedIcon}
-              />
-              <InfoTwo
-                value={`${deals.length > 0 ? deals[0] : 0} (Deals)`}
-                Icon={SettingsInputSvideoIcon}
-              />
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </InfoWrapper>
-  );
-};
+import { MAP_URL } from "../../network/Api";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -393,5 +214,190 @@ const InfoWrapper = styled.div`
     margin-bottom: 0 !important;
   }
 `;
+
+const SellerInfo = () => {
+  const {
+    admin: {
+      profile_photo,
+      name,
+      company_name,
+      status,
+      sellerType,
+      addressSeller: { address, latitude, longitude },
+      phone_number,
+      email,
+    },
+  } = useSelector((state) => state.Login);
+
+  return (
+    <InfoWrapper>
+      <Row>
+        <Col
+          md={2}
+          className="px-0 d-flex align-items-center justify-content-center"
+        >
+          <div className="img_wrapper">
+            <img
+              className="rounded-circle avatar-xl cursor-pointer"
+              alt="Seller"
+              src={!profile_photo ? noPhoto : profile_photo}
+            />
+          </div>
+        </Col>
+        <Col md={10}>
+          <div className="d-flex align-items-center pb-1">
+            <h5 className="me-2">
+              Welcome, <span className="text-danger">{company_name}</span>
+            </h5>
+            <h6 className="text-capitalize mx-3">{`Status - ${status}`}</h6>
+            <h6 className="text-capitalize">{sellerType}</h6>
+          </div>
+
+          <InfoTwo
+            value={`${name} (Manager)`}
+            Icon={PersonOutlineOutlinedIcon}
+          />
+          <InfoTwo
+            value={`${address}`}
+            mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
+            Icon={RoomOutlinedIcon}
+          />
+          <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+          <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
+        </Col>
+      </Row>
+    </InfoWrapper>
+  );
+};
+
+const ShopInfo = () => {
+  const {
+    admin: {
+      shopLogo,
+      shopStatus,
+      shopType,
+      isFeatured,
+      cuisineType,
+      shopName,
+      phone_number,
+      shopStartTimeText,
+      shopEndTimeText,
+      email,
+      rating,
+      minOrderAmount,
+      expensive,
+      haveOwnDeliveryBoy,
+      deliveryFee,
+      deals,
+      address: { address, latitude, longitude },
+    },
+  } = useSelector((state) => state.Login);
+
+  return (
+    <InfoWrapper>
+      <Row>
+        <Col md={1} className="px-0 d-flex align-items-center">
+          <div className="img_wrapper">
+            <img
+              className="rounded-circle avatar-xl cursor-pointer"
+              alt="Seller"
+              src={!shopLogo ? noPhoto : shopLogo}
+            />
+          </div>
+        </Col>
+        <Col md={11}>
+          <div className="d-flex align-items-center pb-1">
+            <h5>
+              Welcome, <span className="text-danger me-2">{shopName}</span>
+            </h5>
+            <h6 className="text-capitalize me-1">{`Status - ${shopStatus}`}</h6>
+            <h6 className="text-capitalize me-1">{shopType}</h6>
+            <h6 className="text-capitalize me-1">{`Featured - ${
+              isFeatured ? "Yes" : "No"
+            }`}</h6>
+            <h6 className="text-capitalize me-1">{`Cuisines - ${
+              cuisineType.length > 0 ? cuisineType[0]?.name : "N/A"
+            }`}</h6>
+          </div>
+
+          <Row className="pt-2">
+            <Col lg={4}>
+              <InfoTwo
+                mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
+                value={address}
+                Icon={RoomOutlinedIcon}
+              />
+              <InfoTwo
+                value={`Mon to Fri - ${shopStartTimeText} ${
+                  shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                } - ${shopEndTimeText} ${
+                  shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                }`}
+                Icon={AccessTimeOutlinedIcon}
+              />
+              <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+              <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
+            </Col>
+
+            <Col lg={4}>
+              <InfoTwo
+                value={`${minOrderAmount} NGN`}
+                Icon={StorefrontOutlinedIcon}
+              />
+              <InfoTwo
+                value={`${
+                  rating === 4
+                    ? "Excellent"
+                    : rating === 3
+                    ? "Very good"
+                    : rating === 2
+                    ? "Good"
+                    : rating === 1
+                    ? "Bad"
+                    : ""
+                } (Rating)`}
+                Icon={SentimentSatisfiedOutlinedIcon}
+              />
+              <InfoTwo
+                value={`${minOrderAmount} NGN`}
+                Icon={WorkHistoryOutlinedIcon}
+              />
+              <InfoTwo
+                value={`${
+                  expensive === 1
+                    ? "$"
+                    : expensive === 2
+                    ? "$$"
+                    : expensive === "3"
+                    ? "$$$"
+                    : "$$$$"
+                } (Price Range)`}
+                Icon={WorkHistoryOutlinedIcon}
+              />
+            </Col>
+
+            <Col lg={4}>
+              {/* <InfoTwo value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
+              <InfoTwo
+                value={`${
+                  haveOwnDeliveryBoy ? "Self" : "Drop"
+                } (Delivery Type)`}
+                Icon={PaymentIcon}
+              />
+              <InfoTwo
+                value={`${deliveryFee} (Delivery Fee)`}
+                Icon={MopedOutlinedIcon}
+              />
+              <InfoTwo
+                value={`${deals.length > 0 ? deals[0] : 0} (Deals)`}
+                Icon={SettingsInputSvideoIcon}
+              />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </InfoWrapper>
+  );
+};
 
 export default withTranslation()(Dashboard);

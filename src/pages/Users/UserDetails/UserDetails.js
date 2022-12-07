@@ -14,7 +14,7 @@ import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import requestApi from "../../../network/httpRequest";
-import { SINGLE_USER } from "../../../network/Api";
+import { MAP_URL, SINGLE_USER } from "../../../network/Api";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
@@ -38,6 +38,7 @@ import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -190,6 +191,11 @@ const UserDetails = () => {
                                 user?.createdAt
                               ).toDateString()} (Join Date)`}
                               Icon={HowToRegIcon}
+                            />
+                            <InfoTwo
+                              Icon={RoomOutlinedIcon}
+                              value={user?.address[0].address}
+                              mapLink={`${MAP_URL}?z=10&t=m&q=loc:${user?.address[0]?.latitude}+${user?.address[0]?.longitude}`}
                             />
                           </>
                         ) : (

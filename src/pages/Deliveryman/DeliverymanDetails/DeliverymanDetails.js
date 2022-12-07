@@ -3,7 +3,7 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import requestApi from "../../../network/httpRequest";
-import { SINGLE_DELIVERY_MAN } from "../../../network/Api";
+import { MAP_URL, SINGLE_DELIVERY_MAN } from "../../../network/Api";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import styled from "styled-components";
 import {
@@ -44,6 +44,7 @@ import MopedIcon from "@mui/icons-material/Moped";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 
 const DeliverymanDetails = () => {
   const { id } = useParams();
@@ -167,6 +168,10 @@ const DeliverymanDetails = () => {
                     <InfoTwo
                       value={`${deliveryMan?.vehicleNumber} (Vahicle No)`}
                       Icon={MopedIcon}
+                    />
+                    <InfoTwo
+                      value={`${deliveryMan?.address}`}
+                      Icon={RoomOutlinedIcon}
                     />
                   </Col>
                   <Col lg={5}>
