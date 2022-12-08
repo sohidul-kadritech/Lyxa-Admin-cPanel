@@ -1,17 +1,14 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
+
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Spinner } from "reactstrap";
+import AppPagination from "./AppPagination";
 import { TrxType } from "./updateTrxsType";
 
 const TransactionsTable = ({ trxs = [], loading }) => {
-
   return (
     <div>
-      <Table
-        id="tech-companies-1"
-        className="table  table-hover text-center"
-      >
+      <Table id="tech-companies-1" className="table  table-hover text-center">
         <Thead>
           <Tr>
             <Th>ID</Th>

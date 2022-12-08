@@ -14,60 +14,59 @@ import { successMsg } from "./../../helpers/successMsg";
 
 export const getAllOrder =
   (refresh = false, shop, seller, page = 1) =>
-    async (dispatch, getState) => {
-      const {
-        orders,
-        typeKey,
-        startDate,
-        endDate,
-        sortByKey,
-        orderSearchKey,
-        orderType,
-      } = getState().orderReducer;
+  async (dispatch, getState) => {
+    const {
+      orders,
+      typeKey,
+      startDate,
+      endDate,
+      sortByKey,
+      orderSearchKey,
+      orderType,
+    } = getState().orderReducer;
 
-      if (orders.length < 1 || refresh) {
-        try {
+    if (orders.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.ALL_ORDERS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(ORDER_LIST, {
+          params: {
+            page,
+            pageSize: 50,
+            startDate,
+            endDate,
+            orderType: orderType.value,
+            sortBy: sortByKey.value,
+            type: typeKey.value,
+            searchKey: orderSearchKey,
+            shop,
+            seller,
+          },
+        });
+
+        if (status) {
           dispatch({
-            type: actionType.ALL_ORDERS_REQUEST_SEND,
+            type: actionType.ALL_ORDERS_REQUEST_SUCCESS,
+            payload: data,
           });
-
-          const {
-            data: { status, error, data = null },
-          } = await requestApi().request(ORDER_LIST, {
-            params: {
-              page,
-              pageSize: 50,
-              startDate,
-              endDate,
-              orderType: orderType.value,
-              sortBy: sortByKey.value,
-              type: typeKey.value,
-              searchKey: orderSearchKey,
-              shop,
-              seller,
-            },
-          });
-
-
-          if (status) {
-            dispatch({
-              type: actionType.ALL_ORDERS_REQUEST_SUCCESS,
-              payload: data,
-            });
-          } else {
-            dispatch({
-              type: actionType.ALL_ORDERS_REQUEST_FAIL,
-              payload: error,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.ALL_ORDERS_REQUEST_FAIL,
-            payload: error.message,
+            payload: error,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.ALL_ORDERS_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 // ORDER UPDATE STATUS
 
@@ -81,8 +80,6 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
-
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -108,7 +105,6 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
 // ORDER FLAG
 
 export const sentOrderFlag = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.SEND_ORDER_FLAG_REQUEST_SEND,
@@ -118,8 +114,6 @@ export const sentOrderFlag = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
-
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -156,8 +150,6 @@ export const DeleteOrderFlag = (id) => async (dispatch) => {
         id,
       },
     });
-
-
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -260,44 +252,40 @@ export const updateOrderByShopType = (type) => (dispatch) => {
   });
 };
 
-
 // GET ACTIVE DELIVERY BOY
 
-
 export const getAllActiveDeliveryMan =
-  (orderId) =>
-    async (dispatch, getState) => {
+  (orderId) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND,
+      });
 
-      try {
+      const {
+        data: { status, error, data = null },
+      } = await requestApi().request(ACTIVE_DEIVERY_BOYS, {
+        params: {
+          orderId,
+        },
+      });
+
+      console.log("delivery boys", data);
+
+      if (status) {
         dispatch({
-          type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND,
+          type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SUCCESS,
+          payload: data?.nearByDeliveryBoys,
         });
-
-        const {
-          data: { status, error, data = null },
-        } = await requestApi().request(ACTIVE_DEIVERY_BOYS, {
-          params: {
-            orderId
-          },
-        });
-
-
-        if (status) {
-          dispatch({
-            type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SUCCESS,
-            payload: data?.nearByDeliveryBoys,
-          });
-        } else {
-          dispatch({
-            type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
-            payload: error,
-          });
-        }
-      } catch (error) {
+      } else {
         dispatch({
           type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
-          payload: error.message,
+          payload: error,
         });
       }
-
-    };
+    } catch (error) {
+      dispatch({
+        type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
+        payload: error.message,
+      });
+    }
+  };

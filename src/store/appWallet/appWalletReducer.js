@@ -14,13 +14,13 @@ const init = {
   shopsTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
   shopTrxStartDate: moment().startOf("month").format("YYYY-MM-DD"),
   shopTrxEndDate: moment().endOf("month").format("YYYY-MM-DD"),
-  sellerSearchKey: '',
-  shopTrxType: { label: "All", value: '' },
+  sellerSearchKey: "",
+  shopTrxType: { label: "All", value: "" },
   shopTrxOrderBy: { label: "Desc", value: "desc" },
   shopTrxAmountRange: 0,
-  shopTrxAmountRangeType: '',
-  shopSearchKey: '',
-  shopTrxBy: '',
+  shopTrxAmountRangeType: "",
+  shopSearchKey: "",
+  shopTrxBy: "",
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -71,7 +71,7 @@ const appWalletReducer = (state = init, action) => {
     case actionTypes.SHOPS_TRX_END_DATE:
       return {
         ...state,
-        shopsTrxEndDate: payload
+        shopsTrxEndDate: payload,
       };
 
     case actionTypes.RIDERS_TRX_START_DATE:
@@ -83,7 +83,7 @@ const appWalletReducer = (state = init, action) => {
     case actionTypes.RIDERS_TRX_END_DATE:
       return {
         ...state,
-        deliveryTrxEndDate: payload
+        deliveryTrxEndDate: payload,
       };
 
     case actionTypes.RIDER_TRX_START_DATE:
@@ -95,7 +95,7 @@ const appWalletReducer = (state = init, action) => {
     case actionTypes.RIDER_TRX_END_DATE:
       return {
         ...state,
-        riderTrxEndDate: payload
+        riderTrxEndDate: payload,
       };
 
     case actionTypes.RIDER_CASH_TRX_START_DATE:
@@ -107,19 +107,19 @@ const appWalletReducer = (state = init, action) => {
     case actionTypes.RIDER_CASH_TRX_END_DATE:
       return {
         ...state,
-        riderCashTrxEndDate: payload
+        riderCashTrxEndDate: payload,
       };
 
     case actionTypes.SHOP_WALLET_TYPE:
       return {
         ...state,
-        shopTrxType: payload
+        shopTrxType: payload,
       };
 
     case actionTypes.SHOP_WALLET_CREATED_BY:
       return {
         ...state,
-        shopTrxBy: payload
+        shopTrxBy: payload,
       };
 
     case actionTypes.SELLER_WALLET_SEARCH_KEY:
@@ -151,7 +151,6 @@ const appWalletReducer = (state = init, action) => {
         ...state,
         shopTrxAmountRangeType: payload,
       };
-
 
     case actionTypes.GET_SELLERS_TRX_REQUEST_SEND:
       return {
@@ -483,6 +482,7 @@ const appWalletReducer = (state = init, action) => {
     case actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_FAIL:
       return {
         ...state,
+        loading: false,
         error: payload,
       };
 

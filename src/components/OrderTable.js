@@ -109,6 +109,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
 
   const submitOrderStatus = (e) => {
     e.preventDefault();
+    if (orderStatus === "delivered" && !deliveryBoy?.id) {
+      return successMsg("Assign Delivery Boy Before Delivered");
+    }
     dispatch(
       orderUpdateStatus({
         orderId,
@@ -309,7 +312,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         item?.shop?._id,
         item?.orderStatus,
         setOrderFor(item?.orderFor),
-        item?.deliveryBoy && setDeliveryBoy(item?.deliveryBoy)
+        item?.deliveryBoy ? setDeliveryBoy(item?.deliveryBoy) : null
       );
     } else if (menu === "Cancel Order") {
       setOpenCancelModal(!openCancelModal);

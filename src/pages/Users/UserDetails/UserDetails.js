@@ -194,7 +194,7 @@ const UserDetails = () => {
                             />
                             <InfoTwo
                               Icon={RoomOutlinedIcon}
-                              value={user?.address[0].address}
+                              value={user?.address[0]?.address}
                               mapLink={`${MAP_URL}?z=10&t=m&q=loc:${user?.address[0]?.latitude}+${user?.address[0]?.longitude}`}
                             />
                           </>
@@ -269,7 +269,7 @@ const ImgWrapper = styled.div`
   width: 150px;
 
   img {
-    border: 1px solid #90f1c3;
+    border: 1px solid lightgray;
     border-radius: 100px;
   }
 `;
