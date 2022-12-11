@@ -110,8 +110,11 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const submitOrderStatus = (e) => {
     e.preventDefault();
     console.log(orderStatus);
-    if (orderStatus === "delivered" && !deliveryBoy?._id) {
-      return successMsg("Assign Delivery Boy Before Delivered");
+    if (
+      (orderStatus === "delivered" || orderStatus === "preparing") &&
+      !deliveryBoy?._id
+    ) {
+      return successMsg(`Assign delivery boy before ${orderStatus}`);
     }
     dispatch(
       orderUpdateStatus({

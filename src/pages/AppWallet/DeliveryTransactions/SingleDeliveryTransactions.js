@@ -144,7 +144,7 @@ const SingleDeliveryTransactions = () => {
       if (data.status) {
         setLoading(false);
         setTrxs(data.data);
-
+        console.log(data.data);
         const { cashOrderList } = data.data;
         const list = cashOrderList.map((item) => ({
           ...item,
@@ -453,7 +453,7 @@ const SingleDeliveryTransactions = () => {
                     >
                       <Thead>
                         <Tr>
-                          <Th>ID</Th>
+                          <Th>Order ID</Th>
                           <Th>Amount</Th>
                           <Th>Transaction Type</Th>
                           <Th>Date</Th>
@@ -484,7 +484,7 @@ const SingleDeliveryTransactions = () => {
                               fontWeight: "500",
                             }}
                           >
-                            <Th>{item?.autoGenId}</Th>
+                            <Th>{item?.order?.orderId}</Th>
 
                             <Td>{item?.receivedAmount}</Td>
                             <Td>{TrxType(item?.type)}</Td>
