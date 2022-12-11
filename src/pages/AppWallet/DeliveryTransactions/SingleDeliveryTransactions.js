@@ -144,7 +144,7 @@ const SingleDeliveryTransactions = () => {
       if (data.status) {
         setLoading(false);
         setTrxs(data.data);
-        console.log(data.data);
+
         const { cashOrderList } = data.data;
         const list = cashOrderList.map((item) => ({
           ...item,

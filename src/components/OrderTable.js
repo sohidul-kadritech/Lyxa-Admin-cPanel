@@ -109,7 +109,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
 
   const submitOrderStatus = (e) => {
     e.preventDefault();
-    if (orderStatus === "delivered" && !deliveryBoy?.id) {
+    console.log(orderStatus);
+    if (orderStatus === "delivered" && !deliveryBoy?._id) {
       return successMsg("Assign Delivery Boy Before Delivered");
     }
     dispatch(
@@ -424,7 +425,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                             handleMenuClick={(menu) => handleMenu(menu, item)}
                             menuItems={[
                               "Details",
-                              "Update Status",
+                              item?.orderStatus !== "cancelled" &&
+                                item?.orderStatus !== "delivered" &&
+                                "Update Status",
                               account_type === "admin" && "Flag",
                               account_type === "admin" &&
                                 item?.orderStatus !== "cancelled" &&

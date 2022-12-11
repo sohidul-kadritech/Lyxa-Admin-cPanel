@@ -51,10 +51,20 @@ const DeliveryTransactions = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (deliverySortByKey || deliverySearchKey || deliveryTrxStartDate || deliveryTrxEndDate) {
+    if (
+      deliverySortByKey ||
+      deliverySearchKey ||
+      deliveryTrxStartDate ||
+      deliveryTrxEndDate
+    ) {
       callTransList(true);
     }
-  }, [deliverySortByKey, deliverySearchKey, deliveryTrxStartDate, deliveryTrxEndDate]);
+  }, [
+    deliverySortByKey,
+    deliverySearchKey,
+    deliveryTrxStartDate,
+    deliveryTrxEndDate,
+  ]);
 
   const callTransList = (refresh = false) => {
     dispatch(getDeliveryTrx(refresh));
@@ -88,7 +98,7 @@ const DeliveryTransactions = () => {
 
     const data = deliveryTrxs.map((trx) => [
       trx?.name,
-      trx?.summary?.totalOrder,
+      trx?.summary?.orderValue?.count ?? 0,
       trx?.summary?.totalDeliveyFee,
       trx?.summary?.dropEarning,
       trx?.summary?.totalUnSettleAmount,
@@ -178,7 +188,6 @@ const DeliveryTransactions = () => {
                       </div>
                     </div>
                   </Col>
-
                 </Row>
 
                 <Row className="d-flex justify-content-center">
@@ -189,7 +198,6 @@ const DeliveryTransactions = () => {
                     />
                   </Col>
                 </Row>
-
               </CardBody>
             </Card>
 
@@ -244,7 +252,10 @@ const DeliveryTransactions = () => {
                           }
                         >
                           <Th title="Click to see details">
-                            <TableImgItem name={item?.name} id={item?.autoGenId} />
+                            <TableImgItem
+                              name={item?.name}
+                              id={item?.autoGenId}
+                            />
                           </Th>
 
                           <Td>{item?.summary?.totalOrder}</Td>

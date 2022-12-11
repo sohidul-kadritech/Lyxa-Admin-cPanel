@@ -60,11 +60,15 @@ const TrackingDeliveryBoy = ({ riderId }) => {
       <GlobalWrapper>
         <Card>
           <CardBody>
-            <Info
+            {/* <Info
               title="Total Active Time"
               value={`${hour > 0 ? `${hour}h` : ""} ${minutes} min's`}
               style={{ borderBottom: "1px solid lightgray" }}
-            ></Info>
+            ></Info> */}
+            <div>
+              <span>Total Active Time : </span>
+              <span>{`${hour > 0 ? `${hour}h` : ""} ${minutes} min's`}</span>
+            </div>
             <div className="d-flex my-3  ">
               <div className=" w-100">
                 <label>Start Date</label>

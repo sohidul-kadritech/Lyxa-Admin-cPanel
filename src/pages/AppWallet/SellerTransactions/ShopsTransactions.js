@@ -213,7 +213,7 @@ const ShopsTransactions = () => {
       return {
         id: trx?.autoGenId,
         shop: trx?.shopName,
-        orders: trx?.summary?.totalOrder,
+        orders: trx?.summary?.orderValue?.count ?? 0,
         orderAmount: trx?.summary?.orderValue?.totalAmount ?? 0,
         deliveryFee: trx?.summary?.orderValue?.deliveryFee ?? 0,
         dropEarning: trx?.summary?.totalDropGet ?? 0,
