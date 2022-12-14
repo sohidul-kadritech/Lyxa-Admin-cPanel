@@ -21,87 +21,11 @@ import activeRiderIcon from "../assets/images/dashboard/active-rider.png";
 import timerIcon from "../assets/images/dashboard/timer.png";
 import amountIcon from "../assets/images/dashboard/amount.png";
 import cashInHandIcon from "../assets/images/dashboard/cash-in-hand.png";
-import TopSummery from "./TopSummery";
+
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 const GraphInfo = lazy(() => import("./GraphInfo"));
-
-const TopLists = ({ list, type }) => {
-  return (
-    <Card style={{ height: "340px" }}>
-      <CardBody>
-        <div className="d-flex mb-2">
-          <i
-            className={`${
-              type === "user"
-                ? "fa fa-user"
-                : type === "deliveryBoy"
-                ? "fa fa-people-carry"
-                : "fa fa-store"
-            }`}
-            style={{ fontSize: "18px", padding: "5px" }}
-          ></i>
-          <h5 className="ms-2 text-dark" style={{ marginTop: 2 }}>
-            Top{" "}
-            {`${
-              type === "user"
-                ? "Users"
-                : type === "deliveryBoy"
-                ? "Delivery Boys"
-                : "Shops"
-            }`}
-          </h5>
-        </div>
-        <i className="fa-sharp fa-solid fa-moped"></i>
-        <Table
-          id="tech-companies-1"
-          className="table table__wrapper table-hover cursor-pointer"
-        >
-          <Thead>
-            <Tr style={{ color: "transparent" }}>
-              <Th></Th>
-              <Th></Th>
-              <Th className="p-0 text-muted">Orders</Th>
-            </Tr>
-          </Thead>
-          <Tbody style={{ position: "relative", borderTop: "none" }}>
-            {list?.length > 0 &&
-              list?.map((item, index) => {
-                return (
-                  <Tr
-                    key={index}
-                    className="align-middle"
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "500",
-                      color: "black",
-                    }}
-                  >
-                    <Th
-                      style={{
-                        color: `#${Math.floor(
-                          Math.random() * 16777215
-                        ).toString(16)}`,
-                      }}
-                    >
-                      #{index + 1}
-                    </Th>
-
-                    <Td>{type === "shop" ? item?.shopName : item?.name}</Td>
-                    <Td className="text-end">
-                      {type === "user"
-                        ? item?.orderCompleted
-                        : item?.totalOrder}
-                    </Td>
-                  </Tr>
-                );
-              })}
-          </Tbody>
-        </Table>
-      </CardBody>
-    </Card>
-  );
-};
+const TopSummery = lazy(() => import("./TopSummery"));
 
 const AdminDashboard = ({ summary, topActivity }) => {
   const topSummaryData = [
@@ -149,7 +73,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 6,
       title: "Shops Unsettled Amount",
       subTitle: "(Total unsettled)",
-      value: `${summary?.shopUnsettleAmount ?? 0} NGN`,
+      value: `${summary?.shopUnsettleAmount?.toFixed(2) ?? 0} NGN`,
       icon: moneyExchangeIcon,
       iconBg: "#0c9da4",
     },
@@ -293,6 +217,83 @@ const AdminDashboard = ({ summary, topActivity }) => {
         </Row>
       </GlobalWrapper>
     </React.Fragment>
+  );
+};
+
+const TopLists = ({ list, type }) => {
+  return (
+    <Card style={{ height: "340px" }}>
+      <CardBody>
+        <div className="d-flex mb-2">
+          <i
+            className={`${
+              type === "user"
+                ? "fa fa-user"
+                : type === "deliveryBoy"
+                ? "fa fa-people-carry"
+                : "fa fa-store"
+            }`}
+            style={{ fontSize: "18px", padding: "5px" }}
+          ></i>
+          <h5 className="ms-2 text-dark" style={{ marginTop: 2 }}>
+            Top{" "}
+            {`${
+              type === "user"
+                ? "Users"
+                : type === "deliveryBoy"
+                ? "Delivery Boys"
+                : "Shops"
+            }`}
+          </h5>
+        </div>
+        <i className="fa-sharp fa-solid fa-moped"></i>
+        <Table
+          id="tech-companies-1"
+          className="table table__wrapper table-hover cursor-pointer"
+        >
+          <Thead>
+            <Tr style={{ color: "transparent" }}>
+              <Th></Th>
+              <Th></Th>
+              <Th className="p-0 text-muted">Orders</Th>
+            </Tr>
+          </Thead>
+          <Tbody style={{ position: "relative", borderTop: "none" }}>
+            {list?.length > 0 &&
+              list?.map((item, index) => {
+                return (
+                  <Tr
+                    key={index}
+                    className="align-middle"
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      color: "black",
+                    }}
+                  >
+                    <Th
+                      style={{
+                        color: `#${Math.floor(
+                          Math.random() * 16777215
+                        ).toString(16)}`,
+                      }}
+                    >
+                      #{index + 1}
+                    </Th>
+
+                    <Td>{type === "shop" ? item?.shopName : item?.name}</Td>
+                    <Td className="text-end">
+                      {type === "user"
+                        ? item?.orderCompleted
+                        : item?.totalOrder}
+                    </Td>
+                  </Tr>
+                );
+              })}
+          </Tbody>
+        </Table>
+      </CardBody>
+    </Card>
   );
 };
 

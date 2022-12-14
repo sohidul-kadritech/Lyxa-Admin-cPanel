@@ -24,9 +24,7 @@ import {
   updateDashboardCardEndDate,
   updateDashboardCardStartDate,
 } from "../../store/Dashboard/dashboardAction";
-import AdminDashboard from "../../components/AdminDashboard";
-import SellerDashboard from "../../components/SellerDashboard";
-import ShopDashboard from "../../components/ShopDashboard";
+
 import { TextField } from "@mui/material";
 import styled from "styled-components";
 import noPhoto from "../../assets/images/noPhoto.jpg";
@@ -42,9 +40,12 @@ import MopedOutlinedIcon from "@mui/icons-material/MopedOutlined";
 import SettingsInputSvideoIcon from "@mui/icons-material/SettingsInputSvideo";
 import PaymentIcon from "@mui/icons-material/Payment";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-
-import InfoTwo from "../../components/InfoTwo";
 import { MAP_URL } from "../../network/Api";
+import InfoTwo from "../../components/InfoTwo";
+
+const AdminDashboard = lazy(() => import("../../components/AdminDashboard"));
+const SellerDashboard = lazy(() => import("../../components/SellerDashboard"));
+const ShopDashboard = lazy(() => import("../../components/ShopDashboard"));
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -56,11 +57,7 @@ const Dashboard = () => {
     loading,
   } = useSelector((state) => state.dashboardReducer);
 
-  const {
-    account_type,
-    adminType,
-    _id: Id,
-  } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   useEffect(() => {
     if (startDate || endDate) {
@@ -168,11 +165,20 @@ const Dashboard = () => {
 
             <div>
               {account_type === "admin" ? (
-                <AdminDashboard summary={summary} topActivity={top_activity} />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <AdminDashboard
+                    summary={summary}
+                    topActivity={top_activity}
+                  />
+                </Suspense>
               ) : account_type === "seller" ? (
-                <SellerDashboard summary={summary} />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <SellerDashboard summary={summary} />
+                </Suspense>
               ) : (
-                <ShopDashboard summary={summary} />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ShopDashboard summary={summary} />
+                </Suspense>
               )}
             </div>
           </Container>

@@ -29,11 +29,11 @@ import AppPagination from "../../components/AppPagination";
 import { useHistory } from "react-router-dom";
 import { successMsg } from "../../helpers/successMsg";
 
-const User = ({ name, route }) => {
+const TypeInfo = ({ type, linkItem, route }) => {
   const history = useHistory();
   return (
     <span className="link" onClick={() => history.push(route)}>
-      ({name})
+      {`${type} ${linkItem}`}
     </span>
   );
 };
@@ -121,175 +121,183 @@ const Transactions = () => {
 
     const { type } = trx;
 
-    if (
-      type === "adminSettlebalanceShop" ||
-      type === "adminAddBalanceShop" ||
-      type === "adminRemoveBalanceShop" ||
-      type === "shopCashInHand" ||
-      type === "shopCashInHandRemove" ||
-      type === "unSettleAmountRemove" ||
-      type === "shopProfileRemoveCash"
-    ) {
+    if (trx?.order) {
       newType = (
-        <p>
-          Shop <User name={trx?.shop?.shopName} route={shopRoute} />
-          {`${
-            type === "adminSettlebalanceShop"
-              ? "Settle"
-              : type === "adminAddBalanceShop"
-              ? "Add"
-              : type === "adminRemoveBalanceShop"
-              ? "Remove"
-              : type === "shopCashInHandRemove"
-              ? "Remove Cash In Hand"
-              : type === "unSettleAmountRemove"
-              ? "Remove Unsettle Amount"
-              : type === "shopProfileRemoveCash"
-              ? "Remove Cash"
-              : ""
-          }`}{" "}
-          {trx?.amount}{" "}
-          {trx?.order
-            ? `- Order ${(<User name={`#${trx?.order}`} route={orderRoute} />)}`
-            : ""}
-        </p>
-      );
-    } else if (type === "sellerCashInHandAdjust") {
-      newType = (
-        <p>
-          Seller <User name={trx?.seller?.name} route={sellerRoute} />
-          Adjust Hand Cash {trx?.amount} - By Lyxa
-        </p>
-      );
-    } else if (type === "sellerOrderCancel") {
-      newType = (
-        <p>
-          Seller <User name={trx?.seller?.name} route={sellerRoute} /> - Cancel
-          Order <User name={`#${trx?.order}`} route={orderRoute} />
-        </p>
-      );
-    } else if (
-      type === "deliveryBoyAmountSettle" ||
-      type === "deliveryBoyAdminAmountReceivedCash"
-    ) {
-      newType = (
-        <p>
-          Rider <User name={trx?.deliveryBoy?.name} route={riderRoute} />
-          {`${
-            type === "deliveryBoyAdminAmountReceivedCash"
-              ? "Received Cash"
-              : "Settle"
-          }`}{" "}
-          {trx?.amount} - Order{" "}
-          <User name={`#${trx?.order}`} route={orderRoute} />
-        </p>
-      );
-    } else if (
-      type === "adminGetPercentageFromOrder" ||
-      type === "DropGetFromOrder" ||
-      type === "dropGetPercentage" ||
-      type === "dropRemovePercentage"
-    ) {
-      newType = (
-        <p>
-          Lyxa {`${type === "dropRemovePercentage" ? "Remove" : "Get"}`}{" "}
-          {trx?.amount}{" "}
-          {`${
-            type === "dropGetPercentage" || type === "dropRemovePercentage"
-              ? "%"
-              : ""
-          }`}{" "}
-          - Order <User name={`#${trx?.order}`} route={orderRoute} />
-        </p>
-      );
-    } else if (
-      type === "sellerGetPaymentFromOrder" ||
-      type === "sellerGetPaymentFromOrderCash"
-    ) {
-      newType = (
-        <p>
-          Seller <User name={trx?.seller?.name} route={sellerRoute} />
-          Cut {trx?.amount} -{" "}
-          {`${type === "sellerGetPaymentFromOrderCash" ? "Cash" : ""}`} Order{" "}
-          <User name={`#${trx?.order}`} route={orderRoute} />
-        </p>
-      );
-    } else if (type === "adminWillGetPaymentFromShop") {
-      newType = (
-        <p>
-          Lyxa Get {trx?.amount} - From
-          <User name={trx?.shop?.shopName} route={shopRoute} />
-        </p>
-      );
-    } else if (
-      type === "userTopUpBalance" ||
-      type === "userBalanceAddAdmin" ||
-      type === "userBalanceWithdrawAdmin"
-    ) {
-      newType = (
-        <p>
-          User
-          <User name={trx?.user?.name} route={userRoute} />
-          {`${
-            type === "userTopUpBalance"
-              ? "Topup "
-              : type === "userBalanceAddAdmin"
-              ? "Add "
-              : "Withdraw "
-          }`}{" "}
-          {trx?.amount}- By Lyxa{" "}
-        </p>
-      );
-    } else if (
-      type === "deliveryBoyOrderDelivered" ||
-      type === "deliveryBoyOrderDeliveredCash" ||
-      type === "deliveryBoyOrderDeliveredCashPos"
-    ) {
-      newType = (
-        <p>
-          Rider <User name={trx?.deliveryBoy?.name} route={riderRoute} />
-          Cut {trx?.amount} -{" "}
-          {`${
-            type === "deliveryBoyOrderDeliveredCash"
-              ? "Cash"
-              : type === "deliveryBoyOrderDeliveredCashPos"
-              ? "Cash(Pos)"
-              : ""
-          }`}{" "}
-          Order <User name={`#${trx?.order}`} route={orderRoute} />
-        </p>
-      );
-    } else if (
-      type === "userPayForOrder" ||
-      type === "userPayBeforeReceivedOrderByWallet" ||
-      type === "userCancelOrderGetWallet"
-    ) {
-      newType = (
-        <p>
-          User <User name={trx?.user?.name} route={userRoute} />
-          {`${
-            type === "userPayBeforeReceivedOrderByWallet"
-              ? "Pay By Wallet"
-              : type === "userCancelOrderGetWallet"
-              ? "Get"
-              : "Pay"
-          }`}{" "}
-          {trx?.amount} -{" "}
-          {`${type === "userCancelOrderGetWallet" ? "Cancel" : ""}`} Order{" "}
-          <User name={`#${trx?.order}`} route={orderRoute} />
-        </p>
-      );
-    } else if (type === "deliveryBoyOrderCancel") {
-      newType = (
-        <p>
-          Rider <User name={trx?.deliveryBoy?.name} route={riderRoute} /> -
-          Cancel Order
-          <User name={`#${trx?.order}`} route={orderRoute} />
-        </p>
+        <TypeInfo type="Order" linkItem={trx?.order} route={orderRoute} />
       );
     } else {
-      newType = "N/A";
+      newType = "on going";
     }
+
+    // if (
+    //   type === "adminSettlebalanceShop" ||
+    //   type === "adminAddBalanceShop" ||
+    //   type === "adminRemoveBalanceShop" ||
+    //   type === "shopCashInHand" ||
+    //   type === "shopCashInHandRemove" ||
+    //   type === "unSettleAmountRemove" ||
+    //   type === "shopProfileRemoveCash"
+    // ) {
+    //   newType = (
+    //     <p>
+    //       Shop <User name={trx?.shop?.shopName} route={shopRoute} />
+    //       {`${
+    //         type === "adminSettlebalanceShop"
+    //           ? "Settle"
+    //           : type === "adminAddBalanceShop"
+    //           ? "Add"
+    //           : type === "adminRemoveBalanceShop"
+    //           ? "Remove"
+    //           : type === "shopCashInHandRemove"
+    //           ? "Remove Cash In Hand"
+    //           : type === "unSettleAmountRemove"
+    //           ? "Remove Unsettle Amount"
+    //           : type === "shopProfileRemoveCash"
+    //           ? "Remove Cash"
+    //           : ""
+    //       }`}{" "}
+    //       {trx?.amount}{" "}
+    //       {trx?.order
+    //         ? `- Order ${(<User name={`#${trx?.order}`} route={orderRoute} />)}`
+    //         : ""}
+    //     </p>
+    //   );
+    // } else if (type === "sellerCashInHandAdjust") {
+    //   newType = (
+    //     <p>
+    //       Seller <User name={trx?.seller?.name} route={sellerRoute} />
+    //       Adjust Hand Cash {trx?.amount} - By Lyxa
+    //     </p>
+    //   );
+    // } else if (type === "sellerOrderCancel") {
+    //   newType = (
+    //     <p>
+    //       Seller <User name={trx?.seller?.name} route={sellerRoute} /> - Cancel
+    //       Order <User name={`#${trx?.order}`} route={orderRoute} />
+    //     </p>
+    //   );
+    // } else if (
+    //   type === "deliveryBoyAmountSettle" ||
+    //   type === "deliveryBoyAdminAmountReceivedCash"
+    // ) {
+    //   newType = (
+    //     <p>
+    //       Rider <User name={trx?.deliveryBoy?.name} route={riderRoute} />
+    //       {`${
+    //         type === "deliveryBoyAdminAmountReceivedCash"
+    //           ? "Received Cash"
+    //           : "Settle"
+    //       }`}{" "}
+    //       {trx?.amount} - Order{" "}
+    //       <User name={`#${trx?.order}`} route={orderRoute} />
+    //     </p>
+    //   );
+    // } else if (
+    //   type === "adminGetPercentageFromOrder" ||
+    //   type === "DropGetFromOrder" ||
+    //   type === "dropGetPercentage" ||
+    //   type === "dropRemovePercentage"
+    // ) {
+    //   newType = (
+    //     <p>
+    //       Lyxa {`${type === "dropRemovePercentage" ? "Remove" : "Get"}`}{" "}
+    //       {trx?.amount}{" "}
+    //       {`${
+    //         type === "dropGetPercentage" || type === "dropRemovePercentage"
+    //           ? "%"
+    //           : ""
+    //       }`}{" "}
+    //       - Order <User name={`#${trx?.order}`} route={orderRoute} />
+    //     </p>
+    //   );
+    // } else if (
+    //   type === "sellerGetPaymentFromOrder" ||
+    //   type === "sellerGetPaymentFromOrderCash"
+    // ) {
+    //   newType = (
+    //     <p>
+    //       Seller <User name={trx?.seller?.name} route={sellerRoute} />
+    //       Cut {trx?.amount} -{" "}
+    //       {`${type === "sellerGetPaymentFromOrderCash" ? "Cash" : ""}`} Order{" "}
+    //       <User name={`#${trx?.order}`} route={orderRoute} />
+    //     </p>
+    //   );
+    // } else if (type === "adminWillGetPaymentFromShop") {
+    //   newType = (
+    //     <p>
+    //       Lyxa Get {trx?.amount} - From
+    //       <User name={trx?.shop?.shopName} route={shopRoute} />
+    //     </p>
+    //   );
+    // } else if (
+    //   type === "userTopUpBalance" ||
+    //   type === "userBalanceAddAdmin" ||
+    //   type === "userBalanceWithdrawAdmin"
+    // ) {
+    //   newType = (
+    //     <p>
+    //       User
+    //       <User name={trx?.user?.name} route={userRoute} />
+    //       {`${
+    //         type === "userTopUpBalance"
+    //           ? "Topup "
+    //           : type === "userBalanceAddAdmin"
+    //           ? "Add "
+    //           : "Withdraw "
+    //       }`}{" "}
+    //       {trx?.amount}- By Lyxa{" "}
+    //     </p>
+    //   );
+    // } else if (
+    //   type === "deliveryBoyOrderDelivered" ||
+    //   type === "deliveryBoyOrderDeliveredCash" ||
+    //   type === "deliveryBoyOrderDeliveredCashPos"
+    // ) {
+    //   newType = (
+    //     <p>
+    //       Rider <User name={trx?.deliveryBoy?.name} route={riderRoute} />
+    //       Cut {trx?.amount} -{" "}
+    //       {`${
+    //         type === "deliveryBoyOrderDeliveredCash"
+    //           ? "Cash"
+    //           : type === "deliveryBoyOrderDeliveredCashPos"
+    //           ? "Cash(Pos)"
+    //           : ""
+    //       }`}{" "}
+    //       Order <User name={`#${trx?.order}`} route={orderRoute} />
+    //     </p>
+    //   );
+    // } else if (
+    //   type === "userPayForOrder" ||
+    //   type === "userPayBeforeReceivedOrderByWallet" ||
+    //   type === "userCancelOrderGetWallet"
+    // ) {
+    //   newType = (
+    //     <p>
+    //       User <User name={trx?.user?.name} route={userRoute} />
+    //       {`${
+    //         type === "userPayBeforeReceivedOrderByWallet"
+    //           ? "Pay By Wallet"
+    //           : type === "userCancelOrderGetWallet"
+    //           ? "Get"
+    //           : "Pay"
+    //       }`}{" "}
+    //       {trx?.amount} -{" "}
+    //       {`${type === "userCancelOrderGetWallet" ? "Cancel" : ""}`} Order{" "}
+    //       <User name={`#${trx?.order}`} route={orderRoute} />
+    //     </p>
+    //   );
+    // } else if (type === "deliveryBoyOrderCancel") {
+    //   newType = (
+    //     <p>
+    //       Rider <User name={trx?.deliveryBoy?.name} route={riderRoute} /> -
+    //       Cancel Order
+    //       <User name={`#${trx?.order}`} route={orderRoute} />
+    //     </p>
+    //   );
+    // } else {
+    //   newType = "N/A";
+    // }
 
     return newType;
     //   [

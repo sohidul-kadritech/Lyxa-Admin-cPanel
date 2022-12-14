@@ -30,6 +30,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Search from "../../../components/Search";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import TableImgItem from "../../../components/TableImgItem";
+import { getDashboardSummary } from "../../../store/Dashboard/dashboardAction";
 
 const DropPayList = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,27 @@ const DropPayList = () => {
     searchKey: dropPaySearchKey,
   } = useSelector((state) => state.dropPayReducer);
 
+  // const {
+  //   dashboardData: { summary = {} },
+  // } = useSelector((state) => state.dashboardReducer);
+  // const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+
   const [balAddModal, setBalAddModal] = useState(false);
+
+  // useEffect(() => {
+  //   if (startDate || endDate) {
+  //     dispatch(
+  //       getDashboardSummary(
+  //         account_type === "admin" && adminType !== "customerService"
+  //           ? "admin"
+  //           : account_type === "seller"
+  //           ? "seller"
+  //           : "shop"
+  //       )
+  //     );
+  //   }
+  //   return;
+  // }, []);
 
   useEffect(() => {
     if (sortByKey || startDate || endDate || dropPaySearchKey) {
@@ -154,7 +175,10 @@ const DropPayList = () => {
 
             <Card>
               <CardBody>
-                <div className="d-flex justify-content-end">
+                <div className="d-flex justify-content-between">
+                  {/* <h4>{`Lyax Earning: ${
+                    summary?.totalDropEarning ?? 0
+                  } NGN`}</h4> */}
                   <Button
                     outline={true}
                     color="success"

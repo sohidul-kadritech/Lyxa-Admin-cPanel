@@ -49,6 +49,7 @@ const rootReducer = combineReducers({
   galleryReducer: galleryReducer,
   imageReducer,
   createFolder: folderCreateReducer,
+  dashboardReducer,
   bannerReducer,
   roleReducer,
   usersReducer,
@@ -69,7 +70,6 @@ const rootReducer = combineReducers({
   unitTypeReducer,
   notificationReducer,
   termsAndConditonReducer,
-  dashboardReducer
 });
 
 export default rootReducer;
