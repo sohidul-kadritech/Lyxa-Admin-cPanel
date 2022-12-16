@@ -199,8 +199,12 @@ const AdminLog = () => {
                           {historyType(item?.type)}
                         </Th>
 
-                        <Td>{getValue(item?.type, item?.oldValue)}</Td>
-                        <Td>{getValue(item?.type, item?.newValue)}</Td>
+                        <Td className="text-danger">
+                          {getValue(item?.type, item?.oldValue)}
+                        </Td>
+                        <Td className="text-success">
+                          {getValue(item?.type, item?.newValue)}
+                        </Td>
                         <Td>{item?.admin?.name}</Td>
                         <Td>{moment(item?.date).format("MMMM Do YYYY")}</Td>
                       </Tr>
