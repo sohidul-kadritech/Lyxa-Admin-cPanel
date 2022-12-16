@@ -154,7 +154,7 @@ export const updateDropCreditLimit = (amount) => (dispatch) => {
 
 // UPDATE APP SETTINGS
 
-export const updateAppSettings = () => async (dispatch, getState) => {
+export const updateAppSettings = (type) => async (dispatch, getState) => {
   const { appSettingsOptions } = getState().settingsReducer;
   try {
     dispatch({
@@ -170,6 +170,7 @@ export const updateAppSettings = () => async (dispatch, getState) => {
         maxDiscount: appSettingsOptions.maxDiscount,
         searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
         maxCustomerServiceValue: appSettingsOptions.maxCustomerServiceValue,
+        type,
       },
     });
 

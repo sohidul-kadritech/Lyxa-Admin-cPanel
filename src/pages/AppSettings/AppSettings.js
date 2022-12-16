@@ -32,6 +32,7 @@ const AppSettings = () => {
   );
 
   const [areaChangeKey, setAreaChangeKey] = useState("");
+  const [updatesType, setUpdatesType] = useState([]);
 
   useEffect(() => {
     dispatch(getAllAppSettings());
@@ -46,12 +47,13 @@ const AppSettings = () => {
       return successMsg("Enter Max Discount Amount");
     }
 
-    dispatch(updateAppSettings());
+    dispatch(updateAppSettings(updatesType));
   };
 
   // DISPATCH AREA SEARCH KEY
 
   const handleKmAdd = (evt) => {
+    const { name } = evt.target;
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
@@ -76,6 +78,18 @@ const AppSettings = () => {
         setAreaChangeKey("");
         dispatch(updateSearchDeliveryBoyKm(value));
       }
+
+      if (!updatesType.includes(name)) {
+        setUpdatesType([...updatesType, name]);
+      }
+    }
+  };
+
+  const checkIsUpdates = (e) => {
+    const { name, value } = e.target;
+
+    if (value != appSettingsOptions[name] && !updatesType.includes(name)) {
+      setUpdatesType([...updatesType, name]);
     }
   };
 
@@ -104,11 +118,13 @@ const AppSettings = () => {
                       variant="outlined"
                       placeholder="Enter max discount"
                       value={appSettingsOptions?.maxDiscount ?? 0}
-                      onChange={(e) =>
-                        dispatch(updateMaxDiscount(e.target.value))
-                      }
+                      onChange={(e) => {
+                        dispatch(updateMaxDiscount(e.target.value));
+                        checkIsUpdates(e);
+                      }}
                       type="number"
                       required
+                      name="maxDiscount"
                     />
                   </Col>
                   <Col lg={6} className="mt-3 mt-lg-0">
@@ -119,11 +135,13 @@ const AppSettings = () => {
                       variant="outlined"
                       placeholder="Enter drop pay limit credit "
                       value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
-                      onChange={(e) =>
-                        dispatch(updateDropCreditLimit(e.target.value))
-                      }
+                      onChange={(e) => {
+                        dispatch(updateDropCreditLimit(e.target.value));
+                        checkIsUpdates(e);
+                      }}
                       type="number"
                       required
+                      name="maxCustomerServiceValue"
                     />
                   </Col>
                 </Row>
@@ -136,11 +154,13 @@ const AppSettings = () => {
                       variant="outlined"
                       placeholder="Enter near shop Distance"
                       value={appSettingsOptions?.nearByShopKm ?? 0}
-                      onChange={(e) =>
-                        dispatch(updateNearByShopKey(e.target.value))
-                      }
+                      onChange={(e) => {
+                        dispatch(updateNearByShopKey(e.target.value));
+                        checkIsUpdates(e);
+                      }}
                       type="number"
                       required
+                      name="nearByShopKm"
                     />
                   </Col>
                   <Col lg={6} className="my-3 my-lg-0">
@@ -155,6 +175,7 @@ const AppSettings = () => {
                       onKeyDown={handleKmAdd}
                       onChange={(e) => setAreaChangeKey(e.target.value)}
                       required
+                      name="searchDeliveryBoyKm"
                     />
                     {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
                       <Paper className="mt-4 p-3">
