@@ -150,13 +150,15 @@ export const SINGLE_DELIVERY_MAN =
 export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update";
 export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/time";
 export const DELIVERY_BOY_ORDERS = ADMIN_ENDPOINT + "/order/delivery";
+export const DELIVERY_BOY_CURRENT_LOCATION =
+  ADMIN_ENDPOINT + "/delivery-boy/get-current-location";
 
 //  SETTINGS
 
 export const ADMINS_SETTINGS = "/admin/setting/admin-setting";
 export const UPDATE_ADMINS_SETTINGS = "/admin/setting/admin-setting/edit";
 
-export const UPDATE_APP_SETTINGS = "/admin/setting/app-setting/edit-update";
+export const UPDATE_APP_SETTINGS = "/admin/setting/app-setting/edit";
 export const APP_SETTINGS = "/admin/setting/app-setting";
 export const ADD_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/add";
 export const UPDATE_ORDER_CANCEL_REASON = ADMIN_ENDPOINT + "/order-cancel/edit";

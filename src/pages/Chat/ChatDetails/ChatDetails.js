@@ -20,7 +20,11 @@ import SimpleBar from "simplebar-react";
 import styled from "styled-components";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { acceptChatReq, rejectChatReq, sendMsgToUser } from "../../../store/chat/chatAction";
+import {
+  acceptChatReq,
+  rejectChatReq,
+  sendMsgToUser,
+} from "../../../store/chat/chatAction";
 import { TextField, Tooltip } from "@mui/material";
 import { SINGLE_CHAT } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
@@ -33,53 +37,58 @@ const ChatDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { status, loading, selectedMsg } = useSelector((state) => state.chatReducer);
+  const { status, loading, selectedMsg } = useSelector(
+    (state) => state.chatReducer
+  );
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
 
   const [request, setRequest] = useState(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (id) {
-      const data = await callApi(id, SINGLE_CHAT, 'chatRequest');
-      if (data) {
-        setRequest(data);
-      } else {
-        history.push("/customer-support", { replace: true });
-      }
-
+      getChatInfo()
+        .then((data) => {
+          setRequest(data);
+          setIsLoading(false);
+        })
+        .catch((e) => history.push("/customer-support", { replace: true }));
     }
+    return;
   }, [id]);
 
-
-
-  useEffect(() => {
-
-    if (socket && request) {
-      socket.on('user_and_admin_chat_send_admin', (data) => {
-        console.log(data)
-      });
-    }
-  }, [socket])
-
+  const getChatInfo = async () => {
+    setIsLoading(true);
+    const data = await callApi(id, SINGLE_CHAT, "chatRequest");
+    return data;
+  };
 
   useEffect(() => {
-
     if (socket && request) {
-      socket.on('user_and_admin_chat_send_admin', (data) => {
-        console.log(data)
+      socket.on("user_and_admin_chat_send_admin", (data) => {
+        console.log(data);
       });
     }
-  }, [socket])
+  }, [socket]);
 
+  useEffect(() => {
+    if (socket && request) {
+      socket.on("user_and_admin_chat_send_admin", (data) => {
+        console.log(data);
+      });
+    }
+  }, [socket]);
 
   const sendMsg = () => {
-    dispatch(sendMsgToUser({
-      id,
-      message
-    }))
-  }
+    dispatch(
+      sendMsgToUser({
+        id,
+        message,
+      })
+    );
+  };
 
   // ACCEPT REQUEST
 
@@ -89,25 +98,32 @@ const ChatDetails = () => {
   };
 
   useEffect(() => {
-    if (request?.status === 'accepted' && socket) {
-      socket.emit('join_user_and_admin_chat', { room: id, data: { token } });
+    if (request?.status === "accepted" && socket) {
+      socket.emit("join_user_and_admin_chat", { room: id, data: { token } });
     }
     return;
-  }, [request?.status])
+  }, [request?.status]);
 
   useEffect(() => {
     if (selectedMsg) {
       setMessage(selectedMsg);
+      var objDiv = document.getElementById("chatInfo");
+      objDiv.scrolll = objDiv.scrollHeight;
+      console.log();
     }
 
     return;
-  }, [selectedMsg])
+  }, [selectedMsg]);
 
   useEffect(() => {
     if (status) {
-
-      callApi(id);
-      setMessage("")
+      getChatInfo()
+        .then((data) => {
+          setRequest(data);
+          setIsLoading(false);
+        })
+        .catch((e) => history.push("/customer-support", { replace: true }));
+      setMessage("");
     }
   }, [status]);
 
@@ -127,108 +143,150 @@ const ChatDetails = () => {
               <Col lg={6}>
                 <Card className="card-height">
                   <CardBody>
-                    <div className='d-flex justify-content-between align-items-center'>
-                      <CardTitle>{`Conversion with ${!request?.user?.name ? "" : request?.user?.name}`}</CardTitle>
-                      <strong style={{ color: request?.status === 'pending' ? 'blue' : request?.status === 'accepted' ? 'green' : request?.status === 'resolved' ? '#42f5aa' : 'red', fontSize: '15px', textTransform: 'uppercase' }}>{request?.status}</strong>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <CardTitle>{`Conversion with ${
+                        !request?.user?.name ? "" : request?.user?.name
+                      }`}</CardTitle>
+                      <strong
+                        style={{
+                          color:
+                            request?.status === "pending"
+                              ? "blue"
+                              : request?.status === "accepted"
+                              ? "green"
+                              : request?.status === "resolved"
+                              ? "#42f5aa"
+                              : "red",
+                          fontSize: "15px",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {request?.status}
+                      </strong>
                     </div>
                     <hr />
                     <div className="chat-conversation">
-                      {request?.chats?.length > 0 && <SimpleBar style={{ height: "235px", overflow: 'hidden scroll' }}>
-                        <ul
-                          className="conversation-list"
-                          data-simplebar
-                          style={{
-                            maxHeight: "300px",
-                            width: "100%",
-                          }}
+                      {request?.chats?.length > 0 && (
+                        <SimpleBar
+                          style={{ height: "235px", overflow: "hidden scroll" }}
+                          id="chatInfo"
                         >
-                          {request?.chats?.map((chat, index, arr) => (
-                            <div key={index}>
-                              {chat?.type === "user" && (
-                                <li className="clearfix">
-                                  <div className="chat-avatar">
-                                    <Tooltip title='See user details'>
+                          <ul
+                            className="conversation-list"
+                            data-simplebar
+                            style={{
+                              maxHeight: "300px",
+                              width: "100%",
+                            }}
+                          >
+                            {request?.chats?.map((chat, index, arr) => (
+                              <div key={index}>
+                                {chat?.type === "user" && (
+                                  <li className="clearfix">
+                                    <div className="chat-avatar">
+                                      <Tooltip title="See user details">
+                                        <img
+                                          src={user1}
+                                          className="avatar-xs rounded-circle cursor-pointer"
+                                          alt="Admin"
+                                          onClick={() =>
+                                            history.push(
+                                              `/users/details/${request?.user?._id}`
+                                            )
+                                          }
+                                        />
+                                      </Tooltip>
+                                    </div>
+                                    <div className="conversation-text color-primary">
+                                      <div className="ctext-wrap">
+                                        <strong>{chat?.message}.</strong>
+                                      </div>
+                                    </div>
+                                  </li>
+                                )}
+
+                                {chat?.type === "admin" && (
+                                  <li className="clearfix odd">
+                                    <div className="chat-avatar">
                                       <img
                                         src={user1}
-                                        className="avatar-xs rounded-circle cursor-pointer"
+                                        className="avatar-xs rounded-circle"
                                         alt="Admin"
-                                        onClick={() => history.push(`/users/details/${request?.user?._id}`)}
                                       />
-                                    </Tooltip>
-                                  </div>
-                                  <div className="conversation-text color-primary" >
-                                    <div className="ctext-wrap">
-
-                                      <strong>
-                                        {chat?.message}.
-                                      </strong>
                                     </div>
-                                  </div>
-                                </li>
-                              )}
-
-                              {chat?.type === "admin" && (
-                                <li className="clearfix odd">
-                                  <div className="chat-avatar">
-                                    <img
-                                      src={user1}
-                                      className="avatar-xs rounded-circle"
-                                      alt="Admin"
-
-                                    />
-                                  </div>
-                                  <div className="conversation-text">
-                                    <div className="ctext-wrap">
-
-                                      <strong>
-                                        {chat?.message}.
-                                      </strong>
+                                    <div className="conversation-text">
+                                      <div className="ctext-wrap">
+                                        <strong>{chat?.message}.</strong>
+                                      </div>
                                     </div>
-                                  </div>
-                                </li>
-                              )}
-                            </div>
-                          ))}
-                        </ul>
-                      </SimpleBar>}
-                      {request?.status === 'pending' && (
+                                  </li>
+                                )}
+                              </div>
+                            ))}
+                          </ul>
+                        </SimpleBar>
+                      )}
+                      {request?.status === "pending" && (
                         <div className="text-center py-3">
                           <h5>Confirm Request or Reject!</h5>
-                          <Button color='primary' outline={true} onClick={handleAccept}>Accept</Button>
-                          <Button color='danger' onClick={() => dispatch(rejectChatReq(id))} outline={true} className='ms-3'>Reject</Button>
+                          <Button
+                            color="primary"
+                            outline={true}
+                            onClick={handleAccept}
+                          >
+                            Accept
+                          </Button>
+                          <Button
+                            color="danger"
+                            onClick={() => dispatch(rejectChatReq(id))}
+                            outline={true}
+                            className="ms-3"
+                          >
+                            Reject
+                          </Button>
                         </div>
                       )}
 
-                      {request?.status === 'accepted' && <Row className="mt-3 pt-1">
-                        <Col md={9} className="chat-inputbar">
-                          <TextField
-                            id="standard-multiline-flexible"
-                            label="Message"
-                            multiline
-                            variant="standard"
-                            className="chat-input w-100"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                          />
-                        </Col>
-                        <Col md={3} className="chat-send">
-                          <div className="d-grid">
-                            <Button
-                              onClick={sendMsg}
-                              type="submit"
-                              color="success"
-                              className="btn-block"
-                              disabled={loading}
-                            >
-                              {loading ? 'Sending' : 'Send'}
-                            </Button>
+                      {loading ||
+                        (isLoading && (
+                          <div className="text-center">
+                            <Spinner animation="border" color="info" />
                           </div>
-                        </Col>
-                      </Row>}
-                      {loading && (
-                        <div className="text-center">
-                          <Spinner animation="border" color="info" />
-                        </div>
+                        ))}
+
+                      {request?.status === "accepted" && (
+                        <Row
+                          className="mt-3 py-1"
+                          style={{
+                            boxShadow: "1px 1px 3px 1px #cfcaca",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          <Col md={10} className="chat-inputbar">
+                            <TextField
+                              id="standard-multiline-flexible"
+                              label="Message"
+                              multiline
+                              variant="standard"
+                              className="chat-input w-100"
+                              value={message}
+                              onChange={(e) => setMessage(e.target.value)}
+                            />
+                          </Col>
+                          <Col md={2} className="chat-send">
+                            <div className="d-flex align-items-center justify-content-end h-100">
+                              <Button
+                                onClick={sendMsg}
+                                type="submit"
+                                color="success"
+                                className="btn-block"
+                                disabled={loading}
+                              >
+                                {loading ? "Sending" : "Send"}
+                              </Button>
+                            </div>
+                          </Col>
+                        </Row>
                       )}
                     </div>
                   </CardBody>
@@ -237,17 +295,13 @@ const ChatDetails = () => {
               <Col lg={6}>
                 <Card className="card-height">
                   <CardBody>
-
                     <div className=" w-100 pb-1">
-                      <h4>Default chat</h4>
+                      <h4>Default Message</h4>
                     </div>
                     <hr />
 
                     <Row>
-                      <Col
-
-                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                      >
+                      <Col className="d-flex justify-content-between  align-items-center mt-5 mt-md-0">
                         <div className="ps-4 w-100">
                           <ChatMessageTable isFromChat={true} />
                         </div>

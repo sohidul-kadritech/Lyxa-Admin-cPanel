@@ -3,6 +3,7 @@ import { successMsg } from "../../helpers/successMsg";
 import {
   ADD_DELIVERY_MAN,
   ALL_DELIVERY_MAN,
+  DELIVERY_BOY_CURRENT_LOCATION,
   DELIVERY_BOY_ORDERS,
   EDIT_DELIVERY_MAN,
   TRACK_DELIVERY_MAN,
@@ -273,3 +274,40 @@ export const getDeliveryAllOrder =
       }
     }
   };
+
+// RIDER CURRENT LOCATION
+
+export const riderCurrentLocation = (id) => async (dispatch, getState) => {
+  // const { startDate, endDate } = getState().deliveryManReducer;
+
+  try {
+    dispatch({
+      type: actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(DELIVERY_BOY_CURRENT_LOCATION, {
+      params: {
+        deliveryBoyId: id,
+      },
+    });
+
+    if (data.status) {
+      dispatch({
+        type: actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_SUCCESS,
+        payload: data?.data?.location?.coordinates,
+      });
+    } else {
+      successMsg(data.error, "error");
+
+      dispatch({
+        type: actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};

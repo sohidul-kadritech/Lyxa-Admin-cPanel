@@ -25,6 +25,10 @@ const initialState = {
   startDate: moment().startOf("month").format("YYYY-MM-DD"),
   endDate: moment().endOf("month").format("YYYY-MM-DD"),
   liveStatus: { label: "All", value: "all" },
+  currentLocation: {
+    lat: null,
+    lng: null,
+  },
 };
 
 const deliveryManReducer = (state = initialState, action) => {
@@ -206,6 +210,32 @@ const deliveryManReducer = (state = initialState, action) => {
       return {
         ...state,
         endDate: payload,
+      };
+
+    // CURRENT LOCATION
+
+    case actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        currentLocation: {
+          lat: payload[1],
+          lng: payload[0],
+        },
+      };
+
+    case actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
 
     default:

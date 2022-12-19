@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import GlobalWrapper from "./GlobalWrapper";
-import { addDefaultMsg, editDefaultMsg, getDefaultMessage, updateDefaultSearchKey } from '../store/Settings/settingsAction';
+import {
+  addDefaultMsg,
+  editDefaultMsg,
+  getDefaultMessage,
+  updateDefaultSearchKey,
+} from "../store/Settings/settingsAction";
 import {
   Button,
   Card,
@@ -21,63 +26,67 @@ import { useEffect } from "react";
 import { selectDefaultMsg } from "../store/chat/chatAction";
 
 const ChatMessageTable = ({ isFromChat = false }) => {
-
-
-  const { defualtMessages, loading, searchKey, status } = useSelector(state => state.settingsReducer);
+  const { defualtMessages, loading, searchKey, status } = useSelector(
+    (state) => state.settingsReducer
+  );
 
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [id, setId] = useState(null);
 
   useEffect(() => {
     callList(true);
-  }, [searchKey])
-
+  }, [searchKey]);
 
   const callList = (refresh = false) => {
-    dispatch(getDefaultMessage(refresh))
-  }
+    dispatch(getDefaultMessage(refresh));
+  };
 
   const addMessage = (e) => {
     e.preventDefault();
     if (id) {
-      dispatch(editDefaultMsg({
-        id,
-        message
-      }))
+      dispatch(
+        editDefaultMsg({
+          id,
+          message,
+        })
+      );
     } else {
-      dispatch(addDefaultMsg(message))
+      dispatch(addDefaultMsg(message));
     }
-  }
-
+  };
 
   useEffect(() => {
-    setMessage('');
+    setMessage("");
     setOpenModal(false);
     setId(null);
-  }, [status])
+  }, [status]);
 
   return (
     <React.Fragment>
       <GlobalWrapper>
+        <Row className="d-flex justify-content-center align-items-center">
+          <Col lg={8}>
+            <Search
+              dispatchFunc={updateDefaultSearchKey}
+              placeholder="Search By message"
+            />
+          </Col>
+        </Row>
 
         <Card>
           <CardBody>
-            <Row className="d-flex justify-content-center align-items-center">
-              <Col lg={8}>
-                <Search dispatchFunc={updateDefaultSearchKey} placeholder='Search By message' />
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-
-        <Card>
-          <CardBody>
-
             <div className="d-flex justify-content-between align-items-center mb-2">
               <CardTitle className="h4"> Messages List</CardTitle>
-              {!isFromChat && <Button onClick={() => setOpenModal(!openModal)} className='btn btn-success'>Add New</Button>}
+              {!isFromChat && (
+                <Button
+                  onClick={() => setOpenModal(!openModal)}
+                  className="btn btn-success"
+                >
+                  Add New
+                </Button>
+              )}
             </div>
             <Table
               id="tech-companies-1"
@@ -102,38 +111,40 @@ const ChatMessageTable = ({ isFromChat = false }) => {
                         fontWeight: "500",
                       }}
                     >
-                      <Th>
-
-                        {index + 1}
-                      </Th>
-                      <Td style={{ maxWeight: isFromChat ? '150px' : '400px' }}>{item?.message}</Td>
-                      {!isFromChat && <Td>{new Date(item?.createdAt).toDateString()}</Td>}
+                      <Th>{index + 1}</Th>
+                      <Td style={{ maxWeight: isFromChat ? "150px" : "400px" }}>
+                        {item?.message}
+                      </Td>
+                      {!isFromChat && (
+                        <Td>{new Date(item?.createdAt).toDateString()}</Td>
+                      )}
                       <Td>
                         <div>
-                          {!isFromChat ? <Tooltip title="Edit">
-                            <button
-                              className="btn btn-success me-0 me-xl-2 button"
-                              onClick={() => {
-                                setOpenModal(!openModal);
-                                setId(item?._id)
-                                setMessage(item?.message);
-                              }
-
-                              }
-                            >
-                              <i className="fa fa-edit" />
-                            </button>
-                          </Tooltip> : <Tooltip title="Select to sent this message">
-                            <button
-                              className="btn btn-success me-0 me-xl-2 button"
-                              onClick={() => dispatch(selectDefaultMsg(item?.message))}
-
-
-                            >
-                              <i className="fa fa-clipboard" />
-                            </button>
-                          </Tooltip>}
-
+                          {!isFromChat ? (
+                            <Tooltip title="Edit">
+                              <button
+                                className="btn btn-success me-0 me-xl-2 button"
+                                onClick={() => {
+                                  setOpenModal(!openModal);
+                                  setId(item?._id);
+                                  setMessage(item?.message);
+                                }}
+                              >
+                                <i className="fa fa-edit" />
+                              </button>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="Select to sent this message">
+                              <button
+                                className="btn btn-success me-0 me-xl-2 button"
+                                onClick={() =>
+                                  dispatch(selectDefaultMsg(item?.message))
+                                }
+                              >
+                                <i className="fa fa-clipboard" />
+                              </button>
+                            </Tooltip>
+                          )}
                         </div>
                       </Td>
                     </Tr>
@@ -164,7 +175,9 @@ const ChatMessageTable = ({ isFromChat = false }) => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">{`${id ? 'Edit' : 'Add'}  Message`}</h5>
+            <h5 className="modal-title mt-0">{`${
+              id ? "Edit" : "Add"
+            }  Message`}</h5>
             <button
               type="button"
               onClick={() => {
@@ -179,9 +192,6 @@ const ChatMessageTable = ({ isFromChat = false }) => {
           </div>
           <div className="modal-body">
             <Form onSubmit={addMessage}>
-
-
-
               <div className="my-2">
                 <TextField
                   type="text"
@@ -192,12 +202,9 @@ const ChatMessageTable = ({ isFromChat = false }) => {
                   required
                   label="Message"
                   value={message}
-                  onChange={(e) =>
-                    setMessage(e.target.value)
-                  }
+                  onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
-
 
               <div className="d-flex justify-content-center my-3">
                 <Button
@@ -210,8 +217,10 @@ const ChatMessageTable = ({ isFromChat = false }) => {
                 >
                   {loading ? (
                     <Spinner color="danger" size="sm"></Spinner>
+                  ) : id ? (
+                    "Edit"
                   ) : (
-                    id ? 'Edit' : 'Add'
+                    "Add"
                   )}
                 </Button>
               </div>
@@ -222,8 +231,5 @@ const ChatMessageTable = ({ isFromChat = false }) => {
     </React.Fragment>
   );
 };
-
-
-
 
 export default ChatMessageTable;

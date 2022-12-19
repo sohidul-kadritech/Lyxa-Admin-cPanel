@@ -24,6 +24,7 @@ import {
 } from "../../../assets/staticData";
 import {
   allDeliveryMan,
+  riderCurrentLocation,
   updateDeliveryManSearchKey,
   updateDeliveryManSortByKey,
   updateDeliveryManStatusKey,
@@ -55,6 +56,7 @@ const DeliverymanList = () => {
     hasPreviousPage,
     currentPage,
     liveStatus,
+    currentLocation,
   } = useSelector((state) => state.deliveryManReducer);
 
   const [track, setTrack] = useState(false);
@@ -80,6 +82,7 @@ const DeliverymanList = () => {
       history.push(`/deliveryman/edit/${item._id}`);
     } else if (menu === "Current Location") {
       setTrack(true);
+      dispatch(riderCurrentLocation(item?._id));
       setRider(item);
     } else if (menu === "Active Status") {
       setOpenActiveStatus(true);
@@ -316,7 +319,7 @@ const DeliverymanList = () => {
           centered={true}
         >
           <div className="modal-header">
-            <h5 className="modal-title mt-0">Delivery boy current location.</h5>
+            <h5 className="modal-title mt-0">Delivery Boy Current Location.</h5>
             <button
               type="button"
               onClick={() => {
@@ -338,11 +341,10 @@ const DeliverymanList = () => {
               />
             </div>
 
-            {rider?.location ? (
-              <Map
-                lat={rider?.location?.coordinates[1]}
-                lng={rider?.location?.coordinates[0]}
-              />
+            {loading && <Spinner className="text-center" color="success" />}
+
+            {currentLocation?.lat && currentLocation?.lng ? (
+              <Map lat={currentLocation?.lat} lng={currentLocation?.lng} />
             ) : (
               <h5 className="text-center">No location found!</h5>
             )}
