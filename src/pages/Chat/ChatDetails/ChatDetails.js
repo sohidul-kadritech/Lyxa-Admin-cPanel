@@ -66,15 +66,7 @@ const ChatDetails = () => {
   };
 
   useEffect(() => {
-    if (socket && request) {
-      socket.on("user_and_admin_chat_send_admin", (data) => {
-        console.log(data);
-      });
-    }
-  }, [socket]);
-
-  useEffect(() => {
-    if (socket && request) {
+    if (socket) {
       socket.on("user_and_admin_chat_send_admin", (data) => {
         console.log(data);
       });
@@ -98,11 +90,11 @@ const ChatDetails = () => {
   };
 
   useEffect(() => {
-    if (request?.status === "accepted" && socket) {
+    if (request?.status === "accepted" || socket) {
       socket.emit("join_user_and_admin_chat", { room: id, data: { token } });
     }
     return;
-  }, [request?.status]);
+  }, [request?.status, socket]);
 
   useEffect(() => {
     if (selectedMsg) {

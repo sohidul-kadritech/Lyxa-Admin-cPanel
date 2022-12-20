@@ -28,7 +28,7 @@ import { useHistory } from "react-router-dom";
 const Chat = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-
+  const { socket } = useSelector((state) => state.socketReducer);
   const { loading, chatRequests, sortByKey, typeKey } = useSelector(
     (state) => state.chatReducer
   );

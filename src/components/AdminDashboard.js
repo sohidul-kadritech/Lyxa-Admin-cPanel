@@ -41,7 +41,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 2,
       title: "Order Profit",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.dropEarningTotalOfItems ?? 0} NGN`,
+      value: `${summary?.dropEarningTotalOfItems?.toFixed(2) ?? 0} NGN`,
       icon: profitFlowIcon,
       iconBg: "#56ca00",
     },

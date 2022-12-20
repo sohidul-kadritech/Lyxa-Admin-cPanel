@@ -21,8 +21,6 @@ export const socketConnect = () => async (dispatch, getState) => {
         // },
       });
 
-
-
       socket.on("connect", () => {
         console.log("socket connected");
         dispatch({
@@ -36,7 +34,6 @@ export const socketConnect = () => async (dispatch, getState) => {
           platform: "app",
         });
       });
-
     } catch (error) {
       dispatch({
         type: actionType.SOCKET_CONNECT_FAIL,
