@@ -1,55 +1,61 @@
 import { toast } from "react-toastify";
-import { ACCEPT_CHAT, CHAT_LIST, REJECT_CHAT, SEND_MESSAGE } from "../../network/Api";
+import { successMsg } from "../../helpers/successMsg";
+import {
+  ACCEPT_CHAT,
+  CHAT_LIST,
+  CLOSE_CONVERSATION,
+  REJECT_CHAT,
+  SEND_MESSAGE,
+} from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 export const getAllChat =
   (refresh = false, page) =>
-    async (dispatch, getState) => {
-      const { chatRequests, typeKey, sortByKey } = getState().chatReducer;
+  async (dispatch, getState) => {
+    const { chatRequests, typeKey, sortByKey } = getState().chatReducer;
 
-      if (chatRequests.length < 1 || refresh) {
-        try {
+    if (chatRequests.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.ALL_CHAT_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(CHAT_LIST, {
+          params: {
+            page,
+            pageSize: 50,
+            sortBy: sortByKey.value,
+            type: typeKey.value,
+          },
+        });
+
+        if (status) {
           dispatch({
-            type: actionType.ALL_CHAT_REQUEST_SEND,
+            type: actionType.ALL_CHAT_REQUEST_SUCCESS,
+            payload: data,
           });
-
-          const {
-            data: { status, error, data = null },
-          } = await requestApi().request(CHAT_LIST, {
-            params: {
-              page,
-              pageSize: 50,
-              sortBy: sortByKey.value,
-              type: typeKey.value,
-            },
-          });
-
-
-          if (status) {
-            dispatch({
-              type: actionType.ALL_CHAT_REQUEST_SUCCESS,
-              payload: data,
-            });
-          } else {
-            dispatch({
-              type: actionType.ALL_CHAT_REQUEST_FAIL,
-              payload: error,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.ALL_CHAT_REQUEST_FAIL,
-            payload: error.message,
+            payload: error,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.ALL_CHAT_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 // ACCEPT USER CHAT REQUEST
 
-export const acceptChatReq = (id) => async (dispatch) => {
-
+export const acceptChatReq = (id) => async (dispatch, getState) => {
+  const { socket } = getState().socketReducer;
   try {
     dispatch({
       type: actionType.ACCEPT_CHAT_REQUEST_SEND,
@@ -60,34 +66,17 @@ export const acceptChatReq = (id) => async (dispatch) => {
       data: { id },
     });
 
-
+    console.log(data);
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data?.message, "success");
       dispatch({
         type: actionType.ACCEPT_CHAT_REQUEST_SUCCESS,
         payload: data?.data?.request,
       });
+      socket.emit("admin_accepted_chat_request", { requestId: id });
     } else {
-      toast.success(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data?.error, "error");
       dispatch({
         type: actionType.ACCEPT_CHAT_REQUEST_FAIL,
         payload: data.error,
@@ -101,11 +90,9 @@ export const acceptChatReq = (id) => async (dispatch) => {
   }
 };
 
-
 // REJECT CHAT REQUEST
 
 export const rejectChatReq = (id) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.REJECT_CHAT_REQUEST_SEND,
@@ -157,10 +144,10 @@ export const rejectChatReq = (id) => async (dispatch) => {
   }
 };
 
-// SEND MESSEGE TO USER 
+// SEND MESSEGE TO USER
 
-export const sendMsgToUser = (values) => async (dispatch) => {
-  console.log({ values });
+export const sendMsgToUser = (values) => async (dispatch, getState) => {
+  const { socket } = getState().socketReducer;
   try {
     dispatch({
       type: actionType.SEND_MSG_TO_USER_REQUEST_SEND,
@@ -171,24 +158,15 @@ export const sendMsgToUser = (values) => async (dispatch) => {
       data: values,
     });
 
-
-    // console.log({ data });
+    console.log("sent message", data);
 
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data?.message, "success");
       dispatch({
         type: actionType.SEND_MSG_TO_USER_REQUEST_SUCCESS,
         payload: data?.data?.request,
       });
+      socket.emit("admin_message_sent", { room: values?.id });
     } else {
       toast.success(data.error, {
         // position: "bottom-right",
@@ -208,6 +186,43 @@ export const sendMsgToUser = (values) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: actionType.ACCEPT_CHAT_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// CLOSE CONVERSATION
+
+export const closeConversation = (id) => async (dispatch, getState) => {
+  const { socket } = getState().socketReducer;
+  try {
+    dispatch({
+      type: actionType.CLOSE_CONVERSATION_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(CLOSE_CONVERSATION, {
+      method: "POST",
+      data: { id },
+    });
+
+    if (data.status) {
+      console.log(data);
+      successMsg(data?.message, "success");
+      // dispatch({
+      //   type: actionType.CLOSE_CONVERSATION_REQUEST_SUCCESS,
+      //   payload: data?.data?.request,
+      // });
+      socket.emit("chat-close", { requestId: id });
+    } else {
+      successMsg(data?.error, "error");
+      dispatch({
+        type: actionType.CLOSE_CONVERSATION_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.CLOSE_CONVERSATION_REQUEST_FAIL,
       payload: error.message,
     });
   }

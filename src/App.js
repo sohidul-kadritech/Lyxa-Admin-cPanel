@@ -73,7 +73,7 @@ const App = (props) => {
         );
       });
     }
-    return socket.removeListener("user_send_chat_request");
+    return;
   }, [socket]);
 
   function getLayout() {

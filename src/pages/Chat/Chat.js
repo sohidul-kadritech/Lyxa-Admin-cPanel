@@ -24,6 +24,8 @@ import {
 } from "../../store/chat/chatAction";
 import { Tooltip } from "@mui/material";
 import { useHistory } from "react-router-dom";
+import TableImgItem from "../../components/TableImgItem";
+import noPhoto from "../../assets/images/noPhoto.jpg";
 
 const Chat = () => {
   const dispatch = useDispatch();
@@ -117,8 +119,16 @@ const Chat = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th style={{ textAlign: "left" }}>
-                            {item?.user?.name}
+                          <Th>
+                            <TableImgItem
+                              img={
+                                item?.user?.profile_photo
+                                  ? item?.user?.profile_photo
+                                  : noPhoto
+                              }
+                              name={item?.user?.name}
+                              // id={item?.user?.autoGenId}
+                            />
                           </Th>
                           {/* <Td>{item?.reasonMessage ?? "N/A"}</Td> */}
                           <Td

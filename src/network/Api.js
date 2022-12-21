@@ -239,12 +239,12 @@ export const ACTIVE_DEIVERY_BOYS =
 export const CHAT_LIST = ADMIN_ENDPOINT + "/user-chat-request";
 export const ACCEPT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/accept";
 export const SEND_MESSAGE = ADMIN_ENDPOINT + "/user-chat-request/send-message";
-export const SINGLE_CHAT =
-  ADMIN_ENDPOINT + "//user-chat-request/single-details";
+export const SINGLE_CHAT = ADMIN_ENDPOINT + "/user-chat-request/single-details";
 export const REJECT_CHAT = ADMIN_ENDPOINT + "/user-chat-request/reject";
 export const GET_DEFAULT_CHAT = ADMIN_ENDPOINT + "/message";
 export const ADD_DEFAULT_CHAT = ADMIN_ENDPOINT + "/message";
 export const EDIT_DEFAULT_CHAT = ADMIN_ENDPOINT + "/message/update";
+export const CLOSE_CONVERSATION = ADMIN_ENDPOINT + "/user-chat-request/close";
 
 // TERMS AND CONDITIONS
 

@@ -91,7 +91,7 @@ const BannerPage = () => {
 
   // DELETE BANNER
 
-  const handleDelete = (id) => {
+  const handleDelete = () => {
     // console.log(bannerId)
     dispatch(deleteBanner(bannerId));
   };

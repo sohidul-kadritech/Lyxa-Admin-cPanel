@@ -22,6 +22,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   acceptChatReq,
+  closeConversation,
   rejectChatReq,
   sendMsgToUser,
 } from "../../../store/chat/chatAction";
@@ -30,6 +31,7 @@ import { SINGLE_CHAT } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import ChatMessageTable from "../../../components/ChatMessageTable";
 import { callApi } from "../../../components/SingleApiCall";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const ChatDetails = () => {
   const { id } = useParams();
@@ -46,6 +48,10 @@ const ChatDetails = () => {
   const [request, setRequest] = useState(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [confirm_alert, setconfirm_alert] = useState(false);
+  const [success_dlg, setsuccess_dlg] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState("");
+  const [dynamic_description, setdynamic_description] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -67,7 +73,7 @@ const ChatDetails = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on("user_and_admin_chat_send_admin", (data) => {
+      socket.on("user_message_sent", (data) => {
         console.log(data);
       });
     }
@@ -99,9 +105,8 @@ const ChatDetails = () => {
   useEffect(() => {
     if (selectedMsg) {
       setMessage(selectedMsg);
-      var objDiv = document.getElementById("chatInfo");
-      objDiv.scrolll = objDiv.scrollHeight;
-      console.log();
+      // var objDiv = document.getElementById("chatInfo");
+      // objDiv.scrolll = objDiv.scrollHeight;
     }
 
     return;
@@ -119,11 +124,29 @@ const ChatDetails = () => {
     }
   }, [status]);
 
+  // CLOSE CONVERSATION ACTION
+
+  const handleResolvedConversation = () => {
+    dispatch(closeConversation(id));
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
+            {success_dlg ? (
+              <SweetAlert
+                success
+                title={dynamic_title}
+                onConfirm={() => {
+                  setsuccess_dlg(false);
+                }}
+              >
+                {dynamic_description}
+              </SweetAlert>
+            ) : null}
+
             <Breadcrumb
               maintitle="Drop"
               breadcrumbItem="Details"
@@ -139,24 +162,64 @@ const ChatDetails = () => {
                       <CardTitle>{`Conversion with ${
                         !request?.user?.name ? "" : request?.user?.name
                       }`}</CardTitle>
-                      <strong
-                        style={{
-                          color:
-                            request?.status === "pending"
-                              ? "blue"
-                              : request?.status === "accepted"
-                              ? "green"
-                              : request?.status === "resolved"
-                              ? "#42f5aa"
-                              : "red",
-                          fontSize: "15px",
-                          textTransform: "uppercase",
-                        }}
+                      <div
+                        className="d-flex align-items-center justify-content-between"
+                        style={{ width: "190px" }}
                       >
-                        {request?.status}
-                      </strong>
+                        <strong
+                          style={{
+                            color:
+                              request?.status === "pending"
+                                ? "blue"
+                                : request?.status === "accepted"
+                                ? "green"
+                                : request?.status === "resolved"
+                                ? "#42f5aa"
+                                : "red",
+                            fontSize: "15px",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {request?.status}
+                        </strong>
+                        <Button
+                          className="btn btn-success"
+                          onClick={() => setconfirm_alert(true)}
+                        >
+                          Resolved
+                        </Button>
+                        {confirm_alert ? (
+                          <SweetAlert
+                            title="Are you sure?"
+                            warning
+                            showCancel
+                            confirmButtonText="Yes, delete it!"
+                            confirmBtnBsStyle="success"
+                            cancelBtnBsStyle="danger"
+                            onConfirm={() => {
+                              handleResolvedConversation();
+                              setconfirm_alert(false);
+                              setsuccess_dlg(true);
+                              setdynamic_title("Deleted");
+                              setdynamic_description(
+                                "Your file has been deleted."
+                              );
+                            }}
+                            onCancel={() => setconfirm_alert(false)}
+                          >
+                            You won't be able to revert this!
+                          </SweetAlert>
+                        ) : null}
+                      </div>
                     </div>
                     <hr />
+                    {loading ||
+                      (isLoading && (
+                        <div className="text-center">
+                          <Spinner animation="border" color="info" />
+                        </div>
+                      ))}
+
                     <div className="chat-conversation">
                       {request?.chats?.length > 0 && (
                         <SimpleBar
@@ -178,7 +241,7 @@ const ChatDetails = () => {
                                     <div className="chat-avatar">
                                       <Tooltip title="See user details">
                                         <img
-                                          src={user1}
+                                          src={request?.user?.profile_photo}
                                           className="avatar-xs rounded-circle cursor-pointer"
                                           alt="Admin"
                                           onClick={() =>
@@ -218,6 +281,7 @@ const ChatDetails = () => {
                           </ul>
                         </SimpleBar>
                       )}
+
                       {request?.status === "pending" && (
                         <div className="text-center py-3">
                           <h5>Confirm Request or Reject!</h5>
@@ -238,13 +302,6 @@ const ChatDetails = () => {
                           </Button>
                         </div>
                       )}
-
-                      {loading ||
-                        (isLoading && (
-                          <div className="text-center">
-                            <Spinner animation="border" color="info" />
-                          </div>
-                        ))}
 
                       {request?.status === "accepted" && (
                         <Row
@@ -288,7 +345,7 @@ const ChatDetails = () => {
                 <Card className="card-height">
                   <CardBody>
                     <div className=" w-100 pb-1">
-                      <h4>Default Message</h4>
+                      <h4>Default Messages</h4>
                     </div>
                     <hr />
 
