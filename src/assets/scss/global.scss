@@ -1,0 +1,147 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// .ril-close{
+//     background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIj48cGF0aCBkPSJtIDEsMyAxLjI1LC0xLjI1IDcuNSw3LjUgNy41LC03LjUgMS4yNSwxLjI1IC03LjUsNy41IDcuNSw3LjUgLTEuMjUsMS4yNSAtNy41LC03LjUgLTcuNSw3LjUgLTEuMjUsLTEuMjUgNy41LC03LjUgLTcuNSwtNy41IHoiIGZpbGw9IiNGRkYiLz48L3N2Zz4=")
+//         no-repeat center !important;
+// }
+
+.button {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
+}
+
+.tag__wrapper {
+  background-color: #d4d5d6;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 30px;
+  height: 30px;
+  padding: 0 4px 0 1rem;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.3rem 0.3rem 0;
+
+  .button {
+    background-color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    margin-left: 10px;
+    font-weight: bold;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.hover-shadow:hover {
+  box-shadow: 0px 0px 5px 0px rgba(198, 188, 188, 0.75);
+}
+
+.details {
+  display: flex;
+  align-items: center;
+}
+
+.value {
+  color: #343a40;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.image__wrapper {
+  height: 75px;
+  max-width: 170px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 1200px) {
+    max-width: 100%;
+  }
+}
+
+input[type="date"]:required:invalid::-webkit-datetime-edit {
+  color: transparent;
+}
+
+input[type="date"]:focus::-webkit-datetime-edit {
+  color: #000000 !important;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.table-data-hover {
+  .table-hover tbody tr:hover td,
+  .table-hover tbody tr:hover th {
+    color: green !important;
+  }
+}
+
+.card-height {
+  height: 400px;
+  overflow: hidden scroll;
+}
+.active-status {
+  background-color: #e1f4d0;
+  color: #56ca00;
+  border-radius: 6px;
+  padding: 1px 2px;
+}
+
+.inactive-status {
+  background-color: #ffcfce;
+  color: #ff0000;
+  border-radius: 6px;
+  padding: 1px 2px;
+}
+.orderStatus {
+    background-color: #fff9bd;
+    color: #eac300;
+    border-radius: 6px;
+    padding: 1px 2px;
+}
+
+table th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+table th:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+table > thead {
+  background-color: #f5f4f4;
+
+  tr {
+    border-bottom: transparent !important;
+  }
+}
+
+.table :not(:first-child) {
+  border-top: none !important;
+}
+
+.table > tbody:last-child {
+  border-bottom: transparent !important;
+}
+
+.link{
+  &:hover{
+    text-decoration: underline;
+    font-weight: 500;
+  }
+}
