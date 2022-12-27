@@ -29,7 +29,6 @@ import {
 } from "../../../store/chat/chatAction";
 import { TextField, Tooltip } from "@mui/material";
 import { SINGLE_CHAT } from "../../../network/Api";
-import requestApi from "../../../network/httpRequest";
 import ChatMessageTable from "../../../components/ChatMessageTable";
 import { callApi } from "../../../components/SingleApiCall";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -40,9 +39,8 @@ const ChatDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { status, loading, selectedMsg, chatRequests } = useSelector(
-    (state) => state.chatReducer
-  );
+  const { status, loading, selectedMsg, chatRequests, isSendingMsg } =
+    useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
 
@@ -76,15 +74,22 @@ const ChatDetails = () => {
     return;
   }, [id]);
 
+  // SOCKET
+
   useEffect(() => {
     if (socket) {
       socket.on("user_message_sent", (data) => {
         setRequest((prev) => ({ ...prev, chats: [...prev?.chats, data] }));
       });
+
+      socket.on("chat-close", () => {
+        setRequest((prev) => ({ ...prev, status: "closed" }));
+      });
     }
     return;
   }, [socket]);
 
+  // SENT MESSAGE TO USER
   const sendMsg = () => {
     dispatch(
       sendMsgToUser({
@@ -100,6 +105,8 @@ const ChatDetails = () => {
     dispatch(acceptChatReq(id));
   };
 
+  //  JOIN TO THE CHAT ROOM
+
   useEffect(() => {
     if (request?.status === "accepted" && socket) {
       socket.emit("join_user_and_admin_chat", { room: id, data: { token } });
@@ -110,8 +117,6 @@ const ChatDetails = () => {
   useEffect(() => {
     if (selectedMsg) {
       setMessage(selectedMsg);
-      // var objDiv = document.getElementById("chatInfo");
-      // objDiv.scrolll = objDiv.scrollHeight;
     }
 
     return;
@@ -128,12 +133,11 @@ const ChatDetails = () => {
 
       setMessage("");
     }
-    return;
   }, [status]);
 
   // CLOSE CONVERSATION ACTION
 
-  const handleResolvedConversation = () => {
+  const handleClosedConversation = () => {
     dispatch(closeConversation(id));
   };
 
@@ -211,7 +215,7 @@ const ChatDetails = () => {
                             confirmBtnBsStyle="success"
                             cancelBtnBsStyle="danger"
                             onConfirm={() => {
-                              handleResolvedConversation();
+                              handleClosedConversation();
                               setconfirm_alert(false);
                               setsuccess_dlg(true);
                               setdynamic_title("Close");
@@ -235,7 +239,8 @@ const ChatDetails = () => {
 
                     <div className="chat-conversation">
                       {request?.chats?.length > 0 &&
-                        request?.status === "accepted" && (
+                        (request?.status === "accepted" ||
+                          request?.status === "closed") && (
                           <SimpleBar
                             style={{
                               height: "235px",
@@ -350,9 +355,9 @@ const ChatDetails = () => {
                                 type="submit"
                                 color="success"
                                 className="btn-block"
-                                disabled={loading}
+                                disabled={isSendingMsg}
                               >
-                                {loading ? "Sending" : "Send"}
+                                {isSendingMsg ? "Sending" : "Send"}
                               </Button>
                             </div>
                           </Col>

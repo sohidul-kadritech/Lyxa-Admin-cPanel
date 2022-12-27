@@ -14,6 +14,7 @@ const initialState = {
   hasPreviousPage: false,
   selectedMsg: "",
   isSelected: true,
+  isSendingMsg: false,
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -76,19 +77,21 @@ const chatReducer = (state = initialState, action) => {
     case actionType.SEND_MSG_TO_USER_REQUEST_SEND:
       return {
         ...state,
-        loading: true,
+        isSendingMsg: true,
         error: null,
         status: false,
-        isSendMsg: false,
       };
 
     case actionType.SEND_MSG_TO_USER_REQUEST_SUCCESS:
       return {
         ...state,
-        loading: false,
+        // loading: false,
         status: true,
+        isSendingMsg: false,
         chatRequests: state.chatRequests.map((item) =>
-          item._id === payload._id ? { ...item, chats: payload?.chats } : item
+          item._id === payload._id
+            ? { ...item, chats: [...item?.chats, payload] }
+            : item
         ),
       };
 
@@ -96,7 +99,7 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         error: payload,
-        loading: false,
+        isSendingMsg: false,
         status: false,
       };
 

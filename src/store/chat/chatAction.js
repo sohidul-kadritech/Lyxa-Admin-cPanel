@@ -15,7 +15,7 @@ export const getAllChat =
   async (dispatch, getState) => {
     const { chatRequests, typeKey, sortByKey } = getState().chatReducer;
 
-    if (chatRequests.length < 1 || refresh) {
+    if (chatRequests?.length < 1 || refresh) {
       try {
         dispatch({
           type: actionType.ALL_CHAT_REQUEST_SEND,
@@ -32,6 +32,7 @@ export const getAllChat =
           },
         });
 
+        console.log("chat data", data);
         if (status) {
           dispatch({
             type: actionType.ALL_CHAT_REQUEST_SUCCESS,
@@ -155,6 +156,8 @@ export const sendMsgToUser = (values) => async (dispatch, getState) => {
       method: "POST",
       data: values,
     });
+
+    console.log("sent message", data);
 
     if (data.status) {
       // successMsg(data?.message, "success");
