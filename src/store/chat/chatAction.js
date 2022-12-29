@@ -32,7 +32,6 @@ export const getAllChat =
           },
         });
 
-        console.log("chat data", data);
         if (status) {
           dispatch({
             type: actionType.ALL_CHAT_REQUEST_SUCCESS,
@@ -69,11 +68,12 @@ export const acceptChatReq = (id) => async (dispatch, getState) => {
 
     if (data.status) {
       successMsg(data?.message, "success");
+      const { request } = data?.data;
       dispatch({
         type: actionType.ACCEPT_CHAT_REQUEST_SUCCESS,
-        payload: data?.data?.request,
+        payload: request,
       });
-      socket.emit("admin_accepted_chat_request", { requestId: id });
+      socket.emit("admin_accepted_chat_request", { requestId: request?._id });
     } else {
       successMsg(data?.error, "error");
       dispatch({
@@ -102,34 +102,14 @@ export const rejectChatReq = (id) => async (dispatch) => {
       data: { id },
     });
 
-    console.log({ data });
-
     if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data?.message, "success");
       dispatch({
         type: actionType.REJECT_CHAT_REQUEST_SUCCESS,
         payload: data?.data?.request,
       });
     } else {
-      toast.success(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successMsg(data?.error, "error");
       dispatch({
         type: actionType.REJECT_CHAT_REQUEST_FAIL,
         payload: data.error,
@@ -157,13 +137,12 @@ export const sendMsgToUser = (values) => async (dispatch, getState) => {
       data: values,
     });
 
-    console.log("sent message", data);
-
     if (data.status) {
       // successMsg(data?.message, "success");
+      const { request } = data?.data;
       dispatch({
         type: actionType.SEND_MSG_TO_USER_REQUEST_SUCCESS,
-        payload: data?.data?.request,
+        payload: request,
       });
       socket.emit("admin_message_sent", { room: values?.id });
     } else {
@@ -185,6 +164,7 @@ export const sendMsgToUser = (values) => async (dispatch, getState) => {
 
 export const closeConversation = (id) => async (dispatch, getState) => {
   const { socket } = getState().socketReducer;
+
   try {
     dispatch({
       type: actionType.CLOSE_CONVERSATION_REQUEST_SEND,

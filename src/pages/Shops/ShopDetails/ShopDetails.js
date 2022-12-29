@@ -85,7 +85,7 @@ const ShopDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
-  useEffect(async () => {
+  useEffect(() => {
     if (id) {
       const findShop = shops.find((item) => item._id == id);
       if (findShop) {
@@ -94,14 +94,16 @@ const ShopDetails = () => {
         setShop(findShop);
       } else {
         // callApi(id);
-        const data = await callApi(id, SINGLE_SHOP, "shop");
-        if (data) {
-          const activeStatus = data?.liveStatus == "online" ? true : false;
-          setLiveStatus(activeStatus);
-          setShop(data);
-        } else {
-          history.push("/shops/list", { replace: true });
-        }
+        (async function getShop() {
+          const data = await callApi(id, SINGLE_SHOP, "shop");
+          if (data) {
+            const activeStatus = data?.liveStatus == "online" ? true : false;
+            setLiveStatus(activeStatus);
+            setShop(data);
+          } else {
+            history.push("/shops/list", { replace: true });
+          }
+        })();
       }
     }
   }, [id]);
@@ -119,16 +121,18 @@ const ShopDetails = () => {
     );
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (status) {
       setModalCenter(false);
-      const data = await callApi(shop?._id, SINGLE_SHOP, "shop");
+      (async function getShop() {
+        const data = await callApi(shop?._id, SINGLE_SHOP, "shop");
 
-      if (data) {
-        const activeStatus = data?.liveStatus == "online" ? true : false;
-        setLiveStatus(activeStatus);
-        setShop(data);
-      }
+        if (data) {
+          const activeStatus = data?.liveStatus == "online" ? true : false;
+          setLiveStatus(activeStatus);
+          setShop(data);
+        }
+      })();
     }
   }, [status]);
 
@@ -473,6 +477,8 @@ const ShopDetails = () => {
               </CardBody>
             </Card>
 
+            {/* SHOP FLAGS AND REVIEWS */}
+
             <Row className="mb-3">
               <Col xl={6}>
                 <FlagsAndReviews reviews={shop?.reviews} isReview={true} />
@@ -482,6 +488,7 @@ const ShopDetails = () => {
               </Col>
             </Row>
 
+            {/* SHOP PHOTOS */}
             <Row className="mb-5">
               <Col xl={6}>
                 <Accordion>

@@ -143,7 +143,7 @@ import AdminLogHistory from "./../pages/AppWallet/AdminLogHistory/AdminLogHistor
 import SellerTransactions from "./../pages/AppWallet/SellerTransactions/SellerTransactions";
 import DeliveryTransactions from "./../pages/AppWallet/DeliveryTransactions/DeliveryTransactions";
 import PaymentHistory from "./../pages/AppWallet/PaymentHistory/PaymentHistory";
-import Chat from "./../pages/Chat/Chat";
+
 import CategoryList from "./../pages/Categories&Tags/Category/CategoryList/CategoryList";
 import CategoryAdd from "./../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd";
 import TagsList from "./../pages/Categories&Tags/Tags/TagsList/TagsList";
@@ -181,6 +181,8 @@ import SellerCredentialsList from "../pages/Seller/SellerCredentials/SellerCrede
 import DefaultChat from "../pages/DefaultChat/DefaultChat";
 import ShopCredentialsList from "../pages/Shops/ShopCredentials/ShopCredentialsList";
 import Tags from "../pages/Tags/Tags";
+import Chats from "../pages/Chat/Chats";
+import ChatsListByOrder from "../pages/Chat/ChatsListByOrder/ChatsListByOrder";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -198,8 +200,6 @@ const userRoutes = [
   { path: "/banner", component: BannerPage },
   { path: "/banner/add", component: AddBanner },
   { path: "/banner/edit/:id", component: AddBanner },
-
-
 
   // Users
 
@@ -279,7 +279,11 @@ const userRoutes = [
 
   // CHAT
 
-  { path: "/customer-support", component: Chat },
+  { path: "/customer-support", component: Chats },
+  {
+    path: "/customer-support/chats-by-single-order/:id",
+    component: ChatsListByOrder,
+  },
   { path: "/customer-support/details/:id", component: ChatDetails },
 
   // CATEGORIES AND TAGS
@@ -321,14 +325,11 @@ const userRoutes = [
   { path: "/admin/send-notifications", component: SendNotifications },
   { path: "/admin/notifications/list", component: NotificationsList },
 
-
-
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
 const customerServiceRoutes = [
-
   { path: "/orders/list", component: OrdersList },
   { path: "/orders/details/:id", component: OrderDetails },
   { path: "/users/list", component: UsersList },
@@ -341,7 +342,11 @@ const customerServiceRoutes = [
   { path: "/deliveryman/details/:id", component: DeliverymanDetails },
   { path: "/deliveryman/add", component: DeliverymanAdd },
   { path: "/drop-pay", component: DropPayList },
-  { path: "/customer-support", component: Chat },
+  { path: "/customer-support", component: Chats },
+  {
+    path: "/customer-support/chats-by-single-order/:id",
+    component: ChatsListByOrder,
+  },
   { path: "/customer-support/details/:id", component: ChatDetails },
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: () => <Redirect to="/orders/list" /> },
@@ -378,7 +383,6 @@ const sellerRoutes = [
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
-
 
 const shopRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -420,10 +424,14 @@ const authRoutes = [
   { path: "/pages-404", component: Pages404 },
   { path: "/pages-500", component: Pages500 },
 
-
-
   // this route should be at the end of all other routes
   // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
 ];
 
-export { userRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };
+export {
+  userRoutes,
+  authRoutes,
+  customerServiceRoutes,
+  shopRoutes,
+  sellerRoutes,
+};

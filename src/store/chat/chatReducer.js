@@ -15,6 +15,7 @@ const initialState = {
   selectedMsg: "",
   isSelected: true,
   isSendingMsg: false,
+  isChatClose: false,
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -33,7 +34,7 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        chatRequests: payload.request,
+        chatRequests: payload.list,
         paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
@@ -151,20 +152,20 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        status: false,
+        isChatClose: false,
       };
 
     case actionType.CLOSE_CONVERSATION_REQUEST_SUCCESS:
       return {
         ...state,
-        status: true,
+        isChatClose: true,
         loading: false,
       };
 
     case actionType.CLOSE_CONVERSATION_REQUEST_FAIL:
       return {
         ...state,
-        status: false,
+        isChatClose: false,
         loading: false,
         error: payload,
       };
@@ -173,6 +174,7 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         status: false,
+        isChatClose: false,
       };
 
     default:

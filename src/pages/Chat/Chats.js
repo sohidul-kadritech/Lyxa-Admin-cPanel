@@ -27,7 +27,7 @@ import { useHistory } from "react-router-dom";
 import TableImgItem from "../../components/TableImgItem";
 import noPhoto from "../../assets/images/noPhoto.jpg";
 
-const Chat = () => {
+const Chats = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { socket } = useSelector((state) => state.socketReducer);
@@ -103,8 +103,9 @@ const Chat = () => {
                     <Tr>
                       <Th>Customer</Th>
                       {/* <Th>Reason</Th> */}
-                      <Th>Status</Th>
-                      <Th>Inquiry date</Th>
+                      <Th>Shop</Th>
+                      <Th>Order Id</Th>
+
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -127,29 +128,20 @@ const Chat = () => {
                                   : noPhoto
                               }
                               name={item?.user?.name}
-                              id={item?.shortId}
                             />
                           </Th>
-                          {/* <Td>{item?.reasonMessage ?? "N/A"}</Td> */}
-                          <Td
-                            style={{
-                              color:
-                                item?.status === "pending"
-                                  ? "#eac300"
-                                  : item?.status === "accepted"
-                                  ? "#56ca00"
-                                  : item?.status === "resolved"
-                                  ? "#42f5aa"
-                                  : "red",
-                              fontSize: "15px",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            {item?.status}
-                          </Td>
                           <Td>
-                            {new Date(item?.createdAt).toLocaleDateString()}
+                            <TableImgItem
+                              img={
+                                item?.shop?.shopLogo
+                                  ? item?.shop?.shopLogo
+                                  : noPhoto
+                              }
+                              name={item?.shop?.shopName}
+                            />
                           </Td>
+
+                          <Td>{item?.orderId}</Td>
 
                           <Td>
                             <div>
@@ -158,7 +150,7 @@ const Chat = () => {
                                   className="btn btn-info button me-2"
                                   onClick={() => {
                                     history.push(
-                                      `/customer-support/details/${item?._id}`
+                                      `/customer-support/chats-by-single-order/${item?._id}`
                                     );
                                   }}
                                 >
@@ -191,4 +183,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default Chats;
