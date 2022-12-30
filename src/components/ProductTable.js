@@ -34,9 +34,13 @@ const ProductTable = ({ products, loading }) => {
       history.push(`/products/edit/${item?._id}`);
     } else if (menu === "Update Status") {
       updateStatus(item?._id, item?.status);
-    } else {
-      history.push(`/products/details/${item?._id}`);
     }
+  };
+
+  // GO TO DETAILS
+
+  const goToDetails = (id) => {
+    history.push(`/products/details/${id}`);
   };
 
   return (
@@ -69,26 +73,30 @@ const ProductTable = ({ products, loading }) => {
               return (
                 <Tr
                   key={index}
-                  className="align-middle"
+                  className="align-middle cursor-pointer"
                   style={{
                     fontSize: "15px",
                     fontWeight: "500",
                   }}
                 >
-                  <Th>
+                  <Th onClick={() => goToDetails(item?._id)}>
                     <TableImgItem
                       img={item?.images[0]}
                       name={item?.name}
                       id={item?.autoGenId}
                     />
                   </Th>
-                  <Td>{item?.shop?.shopName}</Td>
-                  <Td>{item?.category?.name}</Td>
-                  <Td>
+                  <Td onClick={() => goToDetails(item?._id)}>
+                    {item?.shop?.shopName}
+                  </Td>
+                  <Td onClick={() => goToDetails(item?._id)}>
+                    {item?.category?.name}
+                  </Td>
+                  <Td onClick={() => goToDetails(item?._id)}>
                     <p>{item?.price}</p>
                     <p>{item?.shopEndTimeText}</p>
                   </Td>
-                  <Td>
+                  <Td onClick={() => goToDetails(item?._id)}>
                     <div
                       className={`${
                         item?.status === "active"
@@ -102,7 +110,7 @@ const ProductTable = ({ products, loading }) => {
                   <Td>
                     <ThreeDotsMenu
                       handleMenuClick={(menu) => handleMenu(menu, item)}
-                      menuItems={["Edit", "Details", "Update Status"]}
+                      menuItems={["Edit", "Update Status"]}
                     />
                   </Td>
                 </Tr>

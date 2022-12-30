@@ -343,8 +343,11 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       setSelectFlagOrder(item);
       updateIsFlaged(item?.flag);
     } else {
-      history.push(`/orders/details/${item?._id}`);
     }
+  };
+
+  const goToDetails = (id) => {
+    history.push(`/orders/details/${id}`);
   };
 
   return (
@@ -377,13 +380,13 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                     return (
                       <Tr
                         key={index}
-                        className="align-middle text-capitalize"
+                        className="align-middle text-capitalize cursor-pointer"
                         style={{
                           fontSize: "14px",
                           fontWeight: "500",
                         }}
                       >
-                        <Th>
+                        <Th onClick={() => goToDetails(item?._id)}>
                           <TableImgItem
                             img={`${
                               item?.user?.profile_photo
@@ -396,8 +399,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           />
                         </Th>
 
-                        <Td>{item?.shop?.shopName}</Td>
-                        <Td>
+                        <Td onClick={() => goToDetails(item?._id)}>
+                          {item?.shop?.shopName}
+                        </Td>
+                        <Td onClick={() => goToDetails(item?._id)}>
                           <p className="mb-0">
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </p>
@@ -405,12 +410,14 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                             {new Date(item?.createdAt).toLocaleTimeString()}
                           </span>
                         </Td>
-                        <Td>{`${item?.summary?.totalAmount} NGN`}</Td>
-                        <Td>
+                        <Td
+                          onClick={() => goToDetails(item?._id)}
+                        >{`${item?.summary?.totalAmount} NGN`}</Td>
+                        <Td onClick={() => goToDetails(item?._id)}>
                           {item?.paymentMethod}
                           {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
                         </Td>
-                        <Td>
+                        <Td onClick={() => goToDetails(item?._id)}>
                           <div
                             className={`${
                               item?.orderStatus === "cancelled"
@@ -427,7 +434,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           <ThreeDotsMenu
                             handleMenuClick={(menu) => handleMenu(menu, item)}
                             menuItems={[
-                              "Details",
                               item?.orderStatus !== "cancelled" &&
                                 item?.orderStatus !== "delivered" &&
                                 "Update Status",

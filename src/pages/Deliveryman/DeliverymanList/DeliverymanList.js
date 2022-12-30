@@ -89,8 +89,11 @@ const DeliverymanList = () => {
       setId(item._id);
       setDeliveryBoyName(item?.name);
     } else {
-      history.push(`/deliveryman/details/${item._id}`);
     }
+  };
+
+  const goToDetails = (id) => {
+    history.push(`/deliveryman/details/${id}`);
   };
 
   return (
@@ -190,22 +193,26 @@ const DeliverymanList = () => {
                       return (
                         <Tr
                           key={index}
-                          className="align-middle"
+                          className="align-middle cursor-pointer"
                           style={{
                             fontSize: "15px",
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
+                          <Th onClick={() => goToDetails(item?._id)}>
                             <TableImgItem
                               img={item?.image ? item?.image : noPhoto}
                               name={item?.name}
                               id={item?.autoGenId}
                             />
                           </Th>
-                          <Td>{item?.email}</Td>
-                          <Td>{item?.number}</Td>
-                          <Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
+                            {item?.email}
+                          </Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
+                            {item?.number}
+                          </Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
                             <div
                               className={`${
                                 item?.status === "active"
@@ -220,19 +227,22 @@ const DeliverymanList = () => {
                               }`}
                             </div>
                           </Td>
-                          <Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
                             {item?.liveStatus === "online"
                               ? "Online"
                               : "Offline"}
                           </Td>
-                          <Td>{item?.availability ? "Available" : "Busy"}</Td>
-                          <Td>{item?.totalOrder}</Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
+                            {item?.availability ? "Available" : "Busy"}
+                          </Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
+                            {item?.totalOrder}
+                          </Td>
                           <Td>
                             <ThreeDotsMenu
                               handleMenuClick={(menu) => handleMenu(menu, item)}
                               menuItems={[
                                 "Edit",
-                                "Details",
                                 "Current Location",
                                 "Active Status",
                               ]}

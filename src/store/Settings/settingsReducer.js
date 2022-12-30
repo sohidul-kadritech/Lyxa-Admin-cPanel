@@ -11,6 +11,7 @@ const initialState = {
     maxDiscount: "",
     searchDeliveryBoyKm: [],
     maxCustomerServiceValue: "",
+    currency: "",
   },
 
   dropCharge: null,
@@ -139,6 +140,14 @@ const settingsReducer = (state = initialState, action) => {
         appSettingsOptions: {
           ...state.appSettingsOptions,
           maxCustomerServiceValue: payload,
+        },
+      };
+    case actionType.UPDATE_DROP_CURRENCY:
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          currency: payload,
         },
       };
 

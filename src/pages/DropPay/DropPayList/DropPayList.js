@@ -94,8 +94,8 @@ const DropPayList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={"Drop Pay"}
+              maintitle="Lyxa"
+              breadcrumbItem={"Lyxa Pay"}
               loading={loading}
               callList={callDropPayList}
             />

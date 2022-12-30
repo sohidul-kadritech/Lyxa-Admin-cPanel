@@ -39,7 +39,7 @@ export const adminMenuItem = [
   {
     id: 3,
     name: "Banner",
-    icon: "fas fa-user-friends",
+    icon: "fas fa-image",
     link: "/#",
     isSubmenu: true,
     submenu: [
@@ -513,7 +513,6 @@ export const sellerMenuItem = [
         link: "/shops/add",
         isSubmenu: false,
       },
-
     ],
   },
   {

@@ -152,6 +152,15 @@ export const updateDropCreditLimit = (amount) => (dispatch) => {
   });
 };
 
+// UPDATE CURRENCY
+
+export const updateCurrency = (currency) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_DROP_CURRENCY,
+    payload: currency,
+  });
+};
+
 // UPDATE APP SETTINGS
 
 export const updateAppSettings = (type) => async (dispatch, getState) => {
@@ -166,10 +175,11 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
     } = await requestApi().request(UPDATE_APP_SETTINGS, {
       method: "POST",
       data: {
-        nearByShopKm: appSettingsOptions.nearByShopKm,
-        maxDiscount: appSettingsOptions.maxDiscount,
-        searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
-        maxCustomerServiceValue: appSettingsOptions.maxCustomerServiceValue,
+        // nearByShopKm: appSettingsOptions.nearByShopKm,
+        // maxDiscount: appSettingsOptions.maxDiscount,
+        // searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
+        // maxCustomerServiceValue: appSettingsOptions.maxCustomerServiceValue,
+        ...appSettingsOptions,
         type,
       },
     });

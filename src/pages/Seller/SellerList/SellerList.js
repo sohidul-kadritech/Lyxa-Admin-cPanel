@@ -11,7 +11,7 @@ import {
   Spinner,
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Tooltip from "@mui/material/Tooltip";
+
 import { useSelector, useDispatch } from "react-redux";
 import {
   getAllSeller,
@@ -80,9 +80,11 @@ const SellerList = () => {
   const handleMenu = (menu, item) => {
     if (menu === "Edit") {
       history.push(`/seller/edit/${item._id}`);
-    } else {
-      history.push(`/seller/details/${item._id}`);
     }
+  };
+
+  const goToDetails = (id) => {
+    history.push(`/seller/details/${id}`);
   };
 
   return (
@@ -187,13 +189,16 @@ const SellerList = () => {
                       return (
                         <Tr
                           key={index}
-                          className="align-middle"
+                          className="align-middle cursor-pointer"
                           style={{
                             fontSize: "15px",
                             fontWeight: "500",
                           }}
                         >
-                          <Th className="d-flex">
+                          <Th
+                            className="d-flex"
+                            onClick={() => goToDetails(item?._id)}
+                          >
                             <TableImgItem
                               img={`${
                                 item?.profile_photo
@@ -206,9 +211,13 @@ const SellerList = () => {
                             />
                           </Th>
 
-                          <Td>{item?.email}</Td>
-                          <Td>{item?.phone_number}</Td>
-                          <Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
+                            {item?.email}
+                          </Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
+                            {item?.phone_number}
+                          </Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
                             <div
                               className={`${
                                 item?.status === "active"
@@ -223,13 +232,13 @@ const SellerList = () => {
                               }`}
                             </div>
                           </Td>
-                          <Td>
+                          <Td onClick={() => goToDetails(item?._id)}>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
                           <Td>
                             <ThreeDotsMenu
                               handleMenuClick={(menu) => handleMenu(menu, item)}
-                              menuItems={["Edit", "Details"]}
+                              menuItems={["Edit"]}
                             />
                           </Td>
                         </Tr>

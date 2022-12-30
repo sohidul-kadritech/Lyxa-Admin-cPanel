@@ -172,15 +172,7 @@ const ChatsListByOrder = () => {
                           }}
                         >
                           <Th style={{ textAlign: "left" }}>{item?.shortId}</Th>
-                          <Td
-                            className={`${
-                              ["accepted", "pending"].includes(item?.status)
-                                ? "active-status"
-                                : "inactive-status"
-                            }`}
-                          >
-                            {item?.status}
-                          </Td>
+                          <Td>{item?.status}</Td>
 
                           <Td>
                             <p className="mb-0">

@@ -56,9 +56,11 @@ const ShopTable = ({ shops = [] }) => {
       goToShopProductList(item._id);
     } else if (menu === "Orders") {
       goToShopOrderList(item._id);
-    } else {
-      history.push(`/shops/details/${item._id}`);
     }
+  };
+
+  const goToDetails = (id) => {
+    history.push(`/shops/details/${id}`);
   };
 
   return (
@@ -95,13 +97,13 @@ const ShopTable = ({ shops = [] }) => {
             return (
               <Tr
                 key={index}
-                className="align-middle text-capitalize"
+                className="align-middle text-capitalize cursor-pointer"
                 style={{
                   fontSize: "15px",
                   fontWeight: "500",
                 }}
               >
-                <Th>
+                <Th onClick={() => goToDetails(item?._id)}>
                   <TableImgItem
                     img={item?.shopLogo}
                     altImg={RoomOutlinedIcon}
@@ -111,8 +113,8 @@ const ShopTable = ({ shops = [] }) => {
                   />
                 </Th>
 
-                <Td>{item?.shopType}</Td>
-                <Td>
+                <Td onClick={() => goToDetails(item?._id)}>{item?.shopType}</Td>
+                <Td onClick={() => goToDetails(item?._id)}>
                   <div
                     className={`${
                       item?.shopStatus === "active"
@@ -123,7 +125,7 @@ const ShopTable = ({ shops = [] }) => {
                     {item?.shopStatus}
                   </div>
                 </Td>
-                <Td>
+                <Td onClick={() => goToDetails(item?._id)}>
                   {item?.deals.length > 0
                     ? item?.deals.map((item, index) => (
                         <div key={index}>
@@ -132,9 +134,15 @@ const ShopTable = ({ shops = [] }) => {
                       ))
                     : "No Deals"}
                 </Td>
-                <Td>{item?.isFeatured ? "Yes" : "NO"}</Td>
-                <Td>{item?.totalOrder}</Td>
-                <Td>{item?.liveStatus}</Td>
+                <Td onClick={() => goToDetails(item?._id)}>
+                  {item?.isFeatured ? "Yes" : "NO"}
+                </Td>
+                <Td onClick={() => goToDetails(item?._id)}>
+                  {item?.totalOrder}
+                </Td>
+                <Td onClick={() => goToDetails(item?._id)}>
+                  {item?.liveStatus}
+                </Td>
                 <Td>
                   <ThreeDotsMenu
                     handleMenuClick={(menu) => handleMenu(menu, item)}

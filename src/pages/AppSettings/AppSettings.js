@@ -17,6 +17,7 @@ import {
   getAllAppSettings,
   removeSearchDeliveryBoyKm,
   updateAppSettings,
+  updateCurrency,
   updateDropCreditLimit,
   updateMaxDiscount,
   updateNearByShopKey,
@@ -39,13 +40,13 @@ const AppSettings = () => {
   }, []);
 
   const updateSettings = () => {
-    if (!appSettingsOptions?.nearByShopKm) {
-      return successMsg("Enter Near By Shop Distance(KM)");
-    }
+    // if (!appSettingsOptions?.nearByShopKm) {
+    //   return successMsg("Enter Near By Shop Distance(KM)");
+    // }
 
-    if (!appSettingsOptions?.maxDiscount) {
-      return successMsg("Enter Max Discount Amount");
-    }
+    // if (!appSettingsOptions?.maxDiscount) {
+    //   return successMsg("Enter Max Discount Amount");
+    // }
 
     dispatch(updateAppSettings(updatesType));
   };
@@ -85,6 +86,8 @@ const AppSettings = () => {
     }
   };
 
+  // CHECK FIELD UPDATE OR NOT
+
   const checkIsUpdates = (e) => {
     const { name, value } = e.target;
 
@@ -122,10 +125,39 @@ const AppSettings = () => {
                         dispatch(updateMaxDiscount(e.target.value));
                       }}
                       type="number"
-                      required
                       name="maxDiscount"
                     />
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Near Shop Distance(KM)"
+                      variant="outlined"
+                      placeholder="Enter near shop Distance"
+                      value={appSettingsOptions?.nearByShopKm ?? 0}
+                      onChange={(e) => {
+                        dispatch(updateNearByShopKey(e.target.value));
+                        checkIsUpdates(e);
+                      }}
+                      type="number"
+                      name="nearByShopKm"
+                      className="my-4"
+                    />
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Currency"
+                      variant="outlined"
+                      placeholder="Enter Curreny Name"
+                      value={appSettingsOptions?.currency ?? ""}
+                      onChange={(e) => {
+                        dispatch(updateCurrency(e.target.value));
+                        checkIsUpdates(e);
+                      }}
+                      type="text"
+                      name="currency"
+                    />
                   </Col>
+
                   <Col lg={6} className="mt-3 mt-lg-0">
                     <TextField
                       style={{ width: "100%" }}
@@ -139,30 +171,8 @@ const AppSettings = () => {
                         checkIsUpdates(e);
                       }}
                       type="number"
-                      required
                       name="maxCustomerServiceValue"
                     />
-                  </Col>
-                </Row>
-                <Row className="mt-3">
-                  <Col lg={6} className="mt-3 mt-lg-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Near Shop Distance(KM)"
-                      variant="outlined"
-                      placeholder="Enter near shop Distance"
-                      value={appSettingsOptions?.nearByShopKm ?? 0}
-                      onChange={(e) => {
-                        dispatch(updateNearByShopKey(e.target.value));
-                        checkIsUpdates(e);
-                      }}
-                      type="number"
-                      required
-                      name="nearByShopKm"
-                    />
-                  </Col>
-                  <Col lg={6} className="my-3 my-lg-0">
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
@@ -173,11 +183,11 @@ const AppSettings = () => {
                       type="number"
                       onKeyDown={handleKmAdd}
                       onChange={(e) => setAreaChangeKey(e.target.value)}
-                      required
                       name="searchDeliveryBoyKm"
+                      className="my-4"
                     />
                     {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
-                      <Paper className="mt-4 p-3">
+                      <Paper className=" p-3">
                         {appSettingsOptions?.searchDeliveryBoyKm?.map(
                           (item, index) => (
                             <div className="tag__wrapper" key={index}>

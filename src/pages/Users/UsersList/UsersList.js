@@ -27,10 +27,7 @@ import {
 import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
 import Search from "./../../../components/Search";
-import {
-  sortByOptions,
-  statusOptions,
-} from "./../../../assets/staticData";
+import { sortByOptions, statusOptions } from "./../../../assets/staticData";
 import Select from "react-select";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 import TableImgItem from "../../../components/TableImgItem";
@@ -71,9 +68,11 @@ const UsersList = () => {
   const handleMenu = (menu, user) => {
     if (menu === "Transactions") {
       history.push(`/users/transactions/${user._id}`);
-    } else {
-      history.push(`/users/details/${user._id}`);
     }
+  };
+
+  const goToDetails = (id) => {
+    history.push(`/users/details/${id}`);
   };
 
   return (
@@ -88,8 +87,8 @@ const UsersList = () => {
               hideSettingBtn={true}
               loading={loading}
               callList={callUsersList}
-            // isAddNew={true}
-            // addNewRoute="users/add"
+              // isAddNew={true}
+              // addNewRoute="users/add"
             />
 
             {/* FILTER OPTIONS */}
@@ -150,40 +149,52 @@ const UsersList = () => {
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {users &&
+                    {users.length > 0 &&
                       users.map((user, index) => {
                         return (
                           <Tr
                             key={index}
-                            className="align-middle"
+                            className="align-middle cursor-pointer"
                             style={{
                               fontSize: "15px",
                               fontWeight: "500",
                             }}
                           >
-                            <Th>
+                            <Th onClick={() => goToDetails(user?._id)}>
                               <TableImgItem
-                                img={user?.profile_photo ? user?.profile_photo : noPhoto}
+                                img={
+                                  user?.profile_photo
+                                    ? user?.profile_photo
+                                    : noPhoto
+                                }
                                 name={user?.name}
                                 id={user?.autoGenId}
                               />
                             </Th>
-                            <Td>{user?.email}</Td>
-                            <Td>
+                            <Td onClick={() => goToDetails(user?._id)}>
+                              {user?.email}
+                            </Td>
+                            <Td onClick={() => goToDetails(user?._id)}>
                               {user?.phone_number ? user?.phone_number : "N/A"}
                             </Td>
-                            <Td>{user?.gender}</Td>
-                            <Td>{new Date(user?.dob).toLocaleDateString()}</Td>
-                            <Td>
+                            <Td onClick={() => goToDetails(user?._id)}>
+                              {user?.gender}
+                            </Td>
+                            <Td onClick={() => goToDetails(user?._id)}>
+                              {new Date(user?.dob).toLocaleDateString()}
+                            </Td>
+                            <Td onClick={() => goToDetails(user?._id)}>
                               {new Date(user?.createdAt).toLocaleDateString()}
                             </Td>
-                            <Td>{user?.totalOrder ?? 0}</Td>
+                            <Td onClick={() => goToDetails(user?._id)}>
+                              {user?.totalOrder ?? 0}
+                            </Td>
                             <Td>
                               <ThreeDotsMenu
                                 handleMenuClick={(menu) =>
                                   handleMenu(menu, user)
                                 }
-                                menuItems={["Transactions", "Details"]}
+                                menuItems={["Transactions"]}
                               />
                             </Td>
                           </Tr>

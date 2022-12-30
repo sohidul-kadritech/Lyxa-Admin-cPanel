@@ -57,7 +57,7 @@ const Chats = () => {
               callList={callChatList}
             />
 
-            <Card>
+            {/* <Card>
               <CardBody>
                 <Row>
                   <Col lg={3}>
@@ -86,7 +86,7 @@ const Chats = () => {
                   </Col>
                 </Row>
               </CardBody>
-            </Card>
+            </Card> */}
 
             {/* LIST */}
             <Card>
@@ -94,7 +94,7 @@ const Chats = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Chat List</CardTitle>
+                <CardTitle className="h4"> Order Chat Requests</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table  table-hover text-center"
