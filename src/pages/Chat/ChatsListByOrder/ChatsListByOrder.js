@@ -153,7 +153,7 @@ const ChatsListByOrder = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Customer</Th>
+                      <Th>Inquery ID</Th>
                       {/* <Th>Reason</Th> */}
                       <Th>Status</Th>
                       <Th>Inquery Date</Th>
@@ -171,16 +171,7 @@ const ChatsListByOrder = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th>
-                            <TableImgItem
-                              img={
-                                item?.user?.profile_photo
-                                  ? item?.user?.profile_photo
-                                  : noPhoto
-                              }
-                              name={item?.user?.name}
-                            />
-                          </Th>
+                          <Th style={{ textAlign: "left" }}>{item?.shortId}</Th>
                           <Td
                             className={`${
                               ["accepted", "pending"].includes(item?.status)
@@ -191,7 +182,14 @@ const ChatsListByOrder = () => {
                             {item?.status}
                           </Td>
 
-                          <Td>{new Date(item?.createdAt).toDateString()}</Td>
+                          <Td>
+                            <p className="mb-0">
+                              {new Date(item?.createdAt).toLocaleDateString()}
+                            </p>
+                            <p className="mb-0">
+                              {new Date(item?.createdAt).toLocaleTimeString()}
+                            </p>
+                          </Td>
 
                           <Td>
                             {/* <div>

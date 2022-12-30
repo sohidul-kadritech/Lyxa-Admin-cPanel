@@ -101,9 +101,9 @@ const Chats = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Customer</Th>
+                      <Th>Shop/Customer</Th>
                       {/* <Th>Reason</Th> */}
-                      <Th>Shop</Th>
+                      <Th>Inquery Date</Th>
                       <Th>Order Id</Th>
 
                       <Th>Action</Th>
@@ -123,22 +123,26 @@ const Chats = () => {
                           <Th>
                             <TableImgItem
                               img={
-                                item?.user?.profile_photo
-                                  ? item?.user?.profile_photo
-                                  : noPhoto
-                              }
-                              name={item?.user?.name}
-                            />
-                          </Th>
-                          <Td>
-                            <TableImgItem
-                              img={
                                 item?.shop?.shopLogo
                                   ? item?.shop?.shopLogo
                                   : noPhoto
                               }
                               name={item?.shop?.shopName}
+                              id={item?.user?.name}
+                              fromChat={true}
                             />
+                          </Th>
+                          <Td>
+                            <p className="mb-0">
+                              {new Date(
+                                item?.admin_chat_request?.at(0).createdAt
+                              ).toLocaleDateString()}
+                            </p>
+                            <p className="mb-0">
+                              {new Date(
+                                item?.admin_chat_request?.at(0).createdAt
+                              ).toLocaleTimeString()}
+                            </p>
                           </Td>
 
                           <Td>{item?.orderId}</Td>

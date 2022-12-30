@@ -48,28 +48,28 @@ const DropPayList = () => {
     currentPage,
     searchKey: dropPaySearchKey,
   } = useSelector((state) => state.dropPayReducer);
-
-  // const {
-  //   dashboardData: { summary = {} },
-  // } = useSelector((state) => state.dashboardReducer);
-  // const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const {
+    dashboardData: { summary = {} },
+  } = useSelector((state) => state.dashboardReducer);
+  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
 
   const [balAddModal, setBalAddModal] = useState(false);
 
-  // useEffect(() => {
-  //   if (startDate || endDate) {
-  //     dispatch(
-  //       getDashboardSummary(
-  //         account_type === "admin" && adminType !== "customerService"
-  //           ? "admin"
-  //           : account_type === "seller"
-  //           ? "seller"
-  //           : "shop"
-  //       )
-  //     );
-  //   }
-  //   return;
-  // }, []);
+  useEffect(() => {
+    if (!summary) {
+    }
+    dispatch(
+      getDashboardSummary(
+        account_type === "admin" && adminType !== "customerService"
+          ? "admin"
+          : account_type === "seller"
+          ? "seller"
+          : "shop"
+      )
+    );
+
+    return;
+  }, []);
 
   useEffect(() => {
     if (sortByKey || startDate || endDate || dropPaySearchKey) {
@@ -176,9 +176,9 @@ const DropPayList = () => {
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between">
-                  {/* <h4>{`Lyax Earning: ${
+                  <h4>{`Total Lyax Earning: ${
                     summary?.totalDropEarning ?? 0
-                  } NGN`}</h4> */}
+                  } NGN`}</h4>
                   <Button
                     outline={true}
                     color="success"

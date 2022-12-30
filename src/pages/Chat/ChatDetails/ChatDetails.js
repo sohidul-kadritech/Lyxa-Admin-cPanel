@@ -174,7 +174,6 @@ const ChatDetails = () => {
       setChatStatus("closed");
     }
     if (!isSendingMsg) {
-      console.log(bottomRef?.current);
       scrollToBottom();
     }
     // return () => {

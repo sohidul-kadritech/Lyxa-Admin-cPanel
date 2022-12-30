@@ -2,7 +2,13 @@ import React from "react";
 
 import styled from "styled-components";
 
-const TableImgItem = ({ img = "", name, subTitle, id = "" }) => {
+const TableImgItem = ({
+  img = "",
+  name,
+  subTitle,
+  id = "",
+  fromChat = false,
+}) => {
   return (
     <React.Fragment>
       <div className="d-flex align-items-center">
@@ -23,10 +29,9 @@ const TableImgItem = ({ img = "", name, subTitle, id = "" }) => {
             {subTitle}
           </p>
           {id && (
-            <p
-              className="text-muted mb-0"
-              style={{ fontSize: 12 }}
-            >{`ID: ${id}`}</p>
+            <p className="text-muted mb-0" style={{ fontSize: 12 }}>{`${
+              fromChat ? "User" : "ID"
+            }: ${id}`}</p>
           )}
         </div>
       </div>

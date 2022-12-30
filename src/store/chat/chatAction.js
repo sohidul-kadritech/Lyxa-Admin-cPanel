@@ -174,7 +174,7 @@ export const closeConversation = (id) => async (dispatch, getState) => {
       method: "POST",
       data: { requestId: id },
     });
-    console.log("close chat data", data);
+
     if (data.status) {
       successMsg(data?.message, "success");
       dispatch({
