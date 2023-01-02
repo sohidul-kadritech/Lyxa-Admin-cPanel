@@ -178,18 +178,20 @@ const OrderDetails = () => {
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (id) {
       const findOrder = orders.find((order) => order._id == id);
       if (findOrder) {
         setOrder(findOrder);
       } else {
-        const data = await callApi(id, SINGLE_ORDER, "order");
-        if (data) {
-          setOrder(data);
-        } else {
-          history.push("/orders/list", { replace: true });
-        }
+        (async function getOrder() {
+          const data = await callApi(id, SINGLE_ORDER, "order");
+          if (data) {
+            setOrder(data);
+          } else {
+            history.push("/orders/list", { replace: true });
+          }
+        })();
       }
     }
     return;
@@ -280,12 +282,14 @@ const OrderDetails = () => {
     doc.save(`${order.orderId}.pdf`);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (status) {
-      const data = await callApi(id, SINGLE_ORDER, "order");
-      if (data) {
-        setOrder(data);
-      }
+      (async function getOrder() {
+        const data = await callApi(id, SINGLE_ORDER, "order");
+        if (data) {
+          setOrder(data);
+        }
+      })();
     }
     return;
   }, [status]);
@@ -527,7 +531,9 @@ const OrderDetails = () => {
 
                         <span
                           className={`px-2 ${
-                            order?.orderStatus === "cancelled"
+                            ["cancelled", "refused"].includes(
+                              order?.orderStatus
+                            )
                               ? "inactive-status"
                               : order?.orderStatus === "delivered"
                               ? "active-status"

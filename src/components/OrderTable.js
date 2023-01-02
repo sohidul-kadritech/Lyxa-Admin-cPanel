@@ -237,6 +237,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       newStatusName = "Delivered";
     } else if (statusName === "cancelled") {
       newStatusName = "Cancelled";
+    } else if (statusName === "refused") {
+      newStatusName = "Refused";
     } else {
       newStatusName = "Placed";
     }
@@ -420,7 +422,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                         <Td onClick={() => goToDetails(item?._id)}>
                           <div
                             className={`${
-                              item?.orderStatus === "cancelled"
+                              ["cancelled", "refused"].includes(
+                                item?.orderStatus
+                              )
                                 ? "inactive-status"
                                 : item?.orderStatus === "delivered"
                                 ? "active-status"

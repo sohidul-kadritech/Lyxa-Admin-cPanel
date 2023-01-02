@@ -90,6 +90,7 @@ const ChatDetails = () => {
 
       if (data.status) {
         setIsLoading(false);
+
         setRequest(data?.data?.chats);
         scrollToBottom();
       }
@@ -117,6 +118,8 @@ const ChatDetails = () => {
   // SENT MESSAGE TO USER
   const sendMsg = () => {
     const requestId = request?.at(-1)?.adminChatRequest?._id;
+    console.log({ request });
+    console.log({ requestId });
     dispatch(
       sendMsgToUser({
         id: requestId,
@@ -165,7 +168,6 @@ const ChatDetails = () => {
 
   const handleClosedConversation = () => {
     const requestId = request?.at(-1)?.adminChatRequest?._id;
-
     dispatch(closeConversation(requestId));
   };
 
