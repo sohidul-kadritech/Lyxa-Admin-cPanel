@@ -174,7 +174,8 @@ export const DeleteOrderFlag = (id) => async (dispatch) => {
 
 // CANCEL ORDER
 
-export const cancelOrderByAdmin = (values) => async (dispatch) => {
+export const cancelOrderByAdmin = (values) => async (dispatch, getState) => {
+  const { socket } = getState().socketReducer;
   try {
     dispatch({
       type: actionType.CANCEL_ORDER_REQUEST_SEND,
@@ -185,14 +186,13 @@ export const cancelOrderByAdmin = (values) => async (dispatch) => {
       data: values,
     });
 
-    console.log({ data });
-
     if (data.success) {
       successMsg(data.message, "success");
       dispatch({
         type: actionType.CANCEL_ORDER_REQUEST_SUCCESS,
         payload: data,
       });
+      socket.emit("cancelOrder", { orderId: values?.orderId });
     } else {
       successMsg(data.error, "error");
       dispatch({
