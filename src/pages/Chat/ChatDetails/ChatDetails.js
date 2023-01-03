@@ -57,6 +57,7 @@ const ChatDetails = () => {
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
   const [chatStatus, setChatStatus] = useState("");
+  const [requestId,setRequestId]=useState("");
 
   useEffect(() => {
     if (id) {
@@ -90,7 +91,10 @@ const ChatDetails = () => {
 
       if (data.status) {
         setIsLoading(false);
-
+        console.log(data);
+        let chats=data?.data?.chats;
+        let length=chats?.length;
+        setRequestId(chats[length-1]?.adminChatRequest?._id)
         setRequest(data?.data?.chats);
         scrollToBottom();
       }
@@ -104,6 +108,7 @@ const ChatDetails = () => {
   useEffect(() => {
     if (socket) {
       socket.on("user_message_sent", (data) => {
+        console.log(data);
         setRequest((prev) => [...prev, data]);
         scrollToBottom();
       });
@@ -117,9 +122,9 @@ const ChatDetails = () => {
 
   // SENT MESSAGE TO USER
   const sendMsg = () => {
-    const requestId = request?.at(-1)?.adminChatRequest?._id;
-    console.log({ request });
-    console.log({ requestId });
+    // const requestId = request?.at(-1)?.adminChatRequest?._id;
+    // console.log({ request });
+    // console.log({ requestId });
     dispatch(
       sendMsgToUser({
         id: requestId,
