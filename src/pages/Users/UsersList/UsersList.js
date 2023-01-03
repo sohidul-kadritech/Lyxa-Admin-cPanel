@@ -32,6 +32,7 @@ import Select from "react-select";
 import ThreeDotsMenu from "../../../components/ThreeDotsMenu";
 import TableImgItem from "../../../components/TableImgItem";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
+import { updateOrderChatSearchKey } from "../../../store/chat/chatAction";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -109,7 +110,7 @@ const UsersList = () => {
                     </div>
                   </Col>
                   <Col md={6}>
-                    <Search dispatchFunc={updateSearchKey} />
+                    <Search dispatchFunc={updateOrderChatSearchKey} />
                   </Col>
 
                   <Col md={3}>

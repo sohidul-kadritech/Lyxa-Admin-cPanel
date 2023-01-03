@@ -1,13 +1,15 @@
 import React from "react";
 import { Autocomplete, Box, TextField } from "@mui/material";
 
-const ShopAutocompleted = ({
+const AutocompletedInput = ({
   value,
   onChange,
   searchKey,
   onInputChange,
   list,
   disabled,
+  type,
+  showImg = false,
 }) => {
   return (
     <Autocomplete
@@ -15,7 +17,9 @@ const ShopAutocompleted = ({
       disabled={disabled}
       value={value}
       onChange={onChange}
-      getOptionLabel={(option) => option.shopName}
+      getOptionLabel={(option) =>
+        type === "shop" ? option.shopName : option?.name ? option?.name : ""
+      }
       isOptionEqualToValue={(option, item) => option?._id == item?._id}
       inputValue={searchKey}
       onInputChange={onInputChange}
@@ -23,21 +27,33 @@ const ShopAutocompleted = ({
       options={list.length > 0 ? list : []}
       sx={{ width: "100%" }}
       renderInput={(params) => (
-        <TextField {...params} label="Select a Shop" required name="shop" />
+        <TextField
+          {...params}
+          label={`Select a ${type}`}
+          required
+          name={type}
+        />
       )}
       renderOption={(props, option) => (
         <Box
           component="li"
           sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
           {...props}
-          key={option._id}
+          key={option?._id}
         >
-          <img loading="lazy" width="60" src={option.shopBanner} alt="" />
-          {option.shopName}
+          {showImg && (
+            <img
+              loading="lazy"
+              width="60"
+              src={type === "shop" ? option.shopBanner : ""}
+              alt=""
+            />
+          )}
+          {type === "shop" ? option.shopName : option?.name}
         </Box>
       )}
     />
   );
 };
 
-export default ShopAutocompleted;
+export default AutocompletedInput;

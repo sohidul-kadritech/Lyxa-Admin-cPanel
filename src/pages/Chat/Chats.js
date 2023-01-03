@@ -21,28 +21,62 @@ import {
   updateChatSortByKey,
   updateChatType,
   acceptChatReq,
+  updateOrderChatSearchKey,
 } from "../../store/chat/chatAction";
 import { Tooltip } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import TableImgItem from "../../components/TableImgItem";
 import noPhoto from "../../assets/images/noPhoto.jpg";
+import AutocompletedInput from "../../components/AutocompletedInput";
+import { getAllShop, updateShopSearchKey } from "../../store/Shop/shopAction";
+import { updateSearchKey, userList } from "../../store/Users/UsersAction";
+import Search from "../../components/Search";
+import AppPagination from "../../components/AppPagination";
 
 const Chats = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { socket } = useSelector((state) => state.socketReducer);
-  const { loading, chatRequests, sortByKey, typeKey } = useSelector(
-    (state) => state.chatReducer
+  const {
+    loading,
+    chatRequests,
+    orderChatSearchKey,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+    statusKey,
+  } = useSelector((state) => state.chatReducer);
+  const { shops, searchKey: shopSearchKey } = useSelector(
+    (state) => state.shopReducer
+  );
+  const { users, searchKey: userSearchKey } = useSelector(
+    (state) => state.usersReducer
   );
 
+  const [shop, setShop] = useState(null);
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
-    if (sortByKey || typeKey) {
-      callChatList(true);
+    callChatList(true);
+  }, [shop, user, orderChatSearchKey]);
+
+  //  GET ALL SHOP
+
+  useEffect(() => {
+    if (shopSearchKey) {
+      dispatch(getAllShop(true));
     }
-  }, [sortByKey, typeKey]);
+  }, [shopSearchKey]);
+
+  useEffect(() => {
+    if (userSearchKey) {
+      dispatch(userList(true));
+    }
+  }, [userSearchKey]);
 
   const callChatList = (refresh = false) => {
-    dispatch(getAllChat(refresh));
+    dispatch(getAllChat(refresh, user?._id, shop?._id));
   };
 
   return (
@@ -57,36 +91,47 @@ const Chats = () => {
               callList={callChatList}
             />
 
-            {/* <Card>
+            <Card>
               <CardBody>
-                <Row>
-                  <Col lg={3}>
-                    <div className="mb-4">
-                      <label className="control-label">Sort By</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sortByOptions}
-                        classNamePrefix="select2-selection"
-                        value={sortByKey}
-                        onChange={(e) => dispatch(updateChatSortByKey(e))}
-                      />
-                    </div>
+                <Row className="d-flex justify-content-center">
+                  <Col lg={4}>
+                    <label>Shop</label>
+                    <AutocompletedInput
+                      value={shop}
+                      onChange={(event, newValue) => setShop(newValue)}
+                      searchKey={shopSearchKey}
+                      onInputChange={(event, newInputValue) =>
+                        dispatch(updateShopSearchKey(newInputValue))
+                      }
+                      list={shops}
+                      type="shop"
+                      showImg={true}
+                    />
                   </Col>
-                  <Col lg={3}>
-                    <div className="mb-4">
-                      <label className="control-label">Type</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={chatOPtions}
-                        classNamePrefix="select2-selection"
-                        value={typeKey}
-                        onChange={(e) => dispatch(updateChatType(e))}
-                      />
-                    </div>
+                  <Col lg={4}>
+                    <label>User</label>
+                    <AutocompletedInput
+                      value={user}
+                      onChange={(event, newValue) => setUser(newValue)}
+                      searchKey={userSearchKey}
+                      onInputChange={(event, newInputValue) =>
+                        dispatch(updateSearchKey(newInputValue))
+                      }
+                      list={users}
+                      type="user"
+                    />
                   </Col>
                 </Row>
+                <div className="mt-3 d-flex justify-content-center">
+                  <div style={{ width: "70%" }}>
+                    <Search
+                      dispatchFunc={updateOrderChatSearchKey}
+                      placeholder="Search by order id"
+                    />
+                  </div>
+                </div>
               </CardBody>
-            </Card> */}
+            </Card>
 
             {/* LIST */}
             <Card>
@@ -180,6 +225,22 @@ const Chats = () => {
                 )}
               </CardBody>
             </Card>
+
+            <Row>
+              <Col xl={12}>
+                <div className="d-flex justify-content-center">
+                  <AppPagination
+                    paging={paging}
+                    hasNextPage={hasNextPage}
+                    hasPreviousPage={hasPreviousPage}
+                    currentPage={currentPage}
+                    lisener={(page) =>
+                      dispatch(userList(true, user?._id, shop?._id, page))
+                    }
+                  />
+                </div>
+              </Col>
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>

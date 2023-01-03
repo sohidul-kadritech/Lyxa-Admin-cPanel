@@ -57,7 +57,7 @@ import {
 } from "../../store/Product/productAction";
 import formatBytes from "../../common/imageFormatBytes";
 
-import ShopAutocompleted from "../../components/ShopAutocompleted";
+import AutocompletedInput from "../../components/AutocompletedInput";
 import SelectOption from "../../components/SelectOption";
 import ProductAutocompleted from "../../components/ProductAutocompleted";
 import { successMsg } from "../../helpers/successMsg";
@@ -335,7 +335,7 @@ const AddBanner = () => {
 
                     {shopType && (
                       <Col lg={6}>
-                        <ShopAutocompleted
+                        <AutocompletedInput
                           value={shop}
                           onChange={(event, newValue) => setShop(newValue)}
                           searchKey={searchKey}
@@ -343,6 +343,8 @@ const AddBanner = () => {
                             dispatch(updateShopSearchKey(newInputValue))
                           }
                           list={shops}
+                          type="shop"
+                          showImg={true}
                         />
                       </Col>
                     )}
@@ -441,7 +443,7 @@ const AddBanner = () => {
                 <Row className="mb-4">
                   <Col lg={6} className="mt-3 mt-lg-0">
                     {clickType === "shop" && shopType && (
-                      <ShopAutocompleted
+                      <AutocompletedInput
                         value={clickableShop}
                         onChange={(event, newValue) =>
                           setClickableShop(newValue)
@@ -451,6 +453,8 @@ const AddBanner = () => {
                           dispatch(updateShopSearchKey(newInputValue))
                         }
                         list={shops}
+                        type="shop"
+                        showImg={true}
                       />
                     )}
 
