@@ -44,7 +44,7 @@ import {
 import { foodTypeOptions2, shopTypeOptions2 } from "../../../assets/staticData";
 import { updateShopType } from "./../../../store/Shop/shopAction";
 import formatBytes from "../../../common/imageFormatBytes";
-import ShopAutocompleted from "../../../components/ShopAutocompleted";
+import AutocompletedInput from "../../../components/AutocompletedInput";
 import { successMsg } from "../../../helpers/successMsg";
 import SelectOption from "../../../components/SelectOption";
 import ProductAutocompleted from "../../../components/ProductAutocompleted";
@@ -111,19 +111,21 @@ const ProductAdd = () => {
     localStorage.getItem("admin")
   );
 
-  useEffect(async () => {
+  useEffect(() => {
     if (id) {
       const findProduct = products.find((item) => item._id == id);
 
       if (findProduct) {
         setProductValue(findProduct);
       } else {
-        const data = await callApi(id, SINGLE_PRODUCT, "product");
-        if (data) {
-          setProductValue(data);
-        } else {
-          history.push("/products/list", { replace: true });
-        }
+        (async function getProduct() {
+          const data = await callApi(id, SINGLE_PRODUCT, "product");
+          if (data) {
+            setProductValue(data);
+          } else {
+            history.push("/products/list", { replace: true });
+          }
+        })();
       }
     }
   }, [id]);
@@ -134,7 +136,7 @@ const ProductAdd = () => {
 
   // FIND SHOP BY SHOP ID
 
-  useEffect(async () => {
+  useEffect(() => {
     if (searchParams.get("shopId") || account_type === "shop") {
       const shopId = searchParams.get("shopId");
       let shop = null;
@@ -146,14 +148,14 @@ const ProductAdd = () => {
           setShop(findShop);
           dispatch(updateCategoryShopType(findShop?.shopType));
         } else {
-          const data = await callApi(id, SINGLE_SHOP, "shop");
-          if (data) {
-            setType(data?.shopType);
-            setShop(data);
-            dispatch(updateCategoryShopType(data?.shopType));
-          } else {
-            history.push("/products/list", { replace: true });
-          }
+          (async function getProduct() {
+            const data = await callApi(id, SINGLE_PRODUCT, "product");
+            if (data) {
+              setProductValue(data);
+            } else {
+              history.push("/products/list", { replace: true });
+            }
+          })();
         }
       }
     }
@@ -498,7 +500,7 @@ const ProductAdd = () => {
 
                       <Tooltip title={`${!type ? "Select Type First" : ""}`}>
                         <div className="mb-4">
-                          <ShopAutocompleted
+                          <AutocompletedInput
                             value={shop}
                             onChange={(event, newValue) => setShop(newValue)}
                             searchKey={searchKey}
@@ -514,6 +516,8 @@ const ProductAdd = () => {
                                 ? true
                                 : false
                             }
+                            type="shop"
+                            showImg={true}
                           />
                         </div>
                       </Tooltip>

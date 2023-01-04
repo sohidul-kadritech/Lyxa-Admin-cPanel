@@ -11,9 +11,9 @@ import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 export const getAllChat =
-  (refresh = false, page) =>
+  (refresh = false, userId, shopId, page = 1) =>
   async (dispatch, getState) => {
-    const { chatRequests, typeKey, sortByKey } = getState().chatReducer;
+    const { chatRequests, orderChatSearchKey } = getState().chatReducer;
 
     if (chatRequests?.length < 1 || refresh) {
       try {
@@ -27,11 +27,12 @@ export const getAllChat =
           params: {
             page,
             pageSize: 50,
-            sortBy: sortByKey.value,
-            type: typeKey.value,
+            userId,
+            shopId,
+            searchKey: orderChatSearchKey,
           },
         });
-
+        console.log("order chat data", data);
         if (status) {
           dispatch({
             type: actionType.ALL_CHAT_REQUEST_SUCCESS,
@@ -223,5 +224,14 @@ export const selectDefaultMsg = (msg) => (dispatch) => {
 export const setChatStatusFalse = () => (dispatch) => {
   dispatch({
     type: actionType.SET_STATUS_FALSE,
+  });
+};
+
+// ORDER CHAT LIST SEARCH KEY
+
+export const updateOrderChatSearchKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_ORDER_CHAT_SEARCH_KEY,
+    payload: value,
   });
 };

@@ -16,6 +16,7 @@ const initialState = {
   isSelected: true,
   isSendingMsg: false,
   isChatClose: false,
+  orderChatSearchKey: "",
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -175,6 +176,12 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         status: false,
         isChatClose: false,
+      };
+
+    case actionType.UPDATE_ORDER_CHAT_SEARCH_KEY:
+      return {
+        ...state,
+        orderChatSearchKey: payload,
       };
 
     default:
