@@ -57,20 +57,11 @@ const ChatDetails = () => {
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
   const [chatStatus, setChatStatus] = useState("");
-  const [requestId,setRequestId]=useState("");
+  const [requestId, setRequestId] = useState("");
 
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-
-      // const findChat = chatRequests.find((chat) => chat?._id === id);
-
-      // if (findChat) {
-      //   setIsLoading(false);
-      //   setRequest(findChat);
-      // } else {
-
-      // }
 
       dispatch(setChatStatusFalse());
       const status = searchParams.get("status");
@@ -91,10 +82,9 @@ const ChatDetails = () => {
 
       if (data.status) {
         setIsLoading(false);
-        console.log(data);
-        let chats=data?.data?.chats;
-        let length=chats?.length;
-        setRequestId(chats[length-1]?.adminChatRequest?._id)
+        let chats = data?.data?.chats;
+        let length = chats?.length;
+        setRequestId(chats[length - 1]?.adminChatRequest?._id);
         setRequest(data?.data?.chats);
         scrollToBottom();
       }
@@ -106,19 +96,22 @@ const ChatDetails = () => {
   // SOCKET
 
   useEffect(() => {
-    if (socket) {
-      socket.on("user_message_sent", (data) => {
-        console.log(data);
+    if (requestId && socket) {
+      socket.on(`user_message_sent`, (data) => {
         setRequest((prev) => [...prev, data]);
         scrollToBottom();
       });
 
-      socket.on("chat-close", () => {
+      socket.on(`chat-close`, () => {
         setChatStatus("closed");
       });
+      return () => {
+        console.log("muin");
+        socket.removeListener(`user_message_sent-${requestId}`);
+        socket.removeListener(`chat-close-${requestId}`);
+      };
     }
-    return;
-  }, [socket]);
+  }, [requestId, socket]);
 
   // SENT MESSAGE TO USER
   const sendMsg = () => {
@@ -220,7 +213,7 @@ const ChatDetails = () => {
 
             <Row>
               <Col lg={6}>
-                <Card style={{ height: "450px" }}>
+                <Card style={{ height: "500px" }}>
                   <CardBody>
                     <div className="d-flex justify-content-between align-items-center">
                       <CardTitle>{`Conversion with ${
@@ -290,7 +283,7 @@ const ChatDetails = () => {
                     </div>
                     <hr />
 
-                    <div className="chat-conversation">
+                    <div style={{ marginBottom: 10 }}>
                       <SimpleBar
                         style={{
                           height: "300px",
@@ -402,42 +395,46 @@ const ChatDetails = () => {
                           </Button>
                         </div>
                       )} */}
-
-                      {chatStatus === "accepted" && (
-                        <Row
-                          className="py-1"
-                          style={{
-                            boxShadow: "1px 1px 3px 1px #cfcaca",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <Col md={10} className="chat-inputbar">
-                            <TextField
-                              id="standard-multiline-flexible"
-                              label="Message"
-                              multiline
-                              variant="standard"
-                              className="chat-input w-100"
-                              value={message}
-                              onChange={(e) => setMessage(e.target.value)}
-                            />
-                          </Col>
-                          <Col md={2} className="chat-send">
-                            <div className="d-flex align-items-center justify-content-end h-100">
-                              <Button
-                                onClick={sendMsg}
-                                type="submit"
-                                color="success"
-                                className="btn-block"
-                                disabled={isSendingMsg}
-                              >
-                                {isSendingMsg ? "Sending" : "Send"}
-                              </Button>
-                            </div>
-                          </Col>
-                        </Row>
-                      )}
                     </div>
+                    {chatStatus === "accepted" && (
+                      <Row
+                        className="py-1"
+                        style={{
+                          boxShadow: "1px 1px 3px 1px #cfcaca",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        <Col md={10} className="chat-inputbar">
+                          <TextField
+                            id="standard-multiline-flexible"
+                            label="Message"
+                            multiline
+                            variant="standard"
+                            className="chat-input w-100"
+                            value={message}
+                            onChange={(e) => {
+                              setMessage(e.target.value);
+                            }}
+                          />
+                        </Col>
+                        <Col md={2} className="chat-send">
+                          <div
+                            style={{ marginTop: 2 }}
+                            className="d-flex align-items-center justify-content-end h-100"
+                          >
+                            <Button
+                              onClick={sendMsg}
+                              type="submit"
+                              color="success"
+                              className="btn-block"
+                              disabled={isSendingMsg}
+                            >
+                              {isSendingMsg ? "Sending" : "Send"}
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    )}
                   </CardBody>
                 </Card>
               </Col>
