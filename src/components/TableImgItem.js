@@ -30,8 +30,8 @@ const TableImgItem = ({
           </p>
           {id && (
             <p className="text-muted mb-0" style={{ fontSize: 12 }}>{`${
-              fromChat ? "User" : "ID"
-            }: ${id}`}</p>
+              fromChat ? "" : ""
+            } ${id}`}</p>
           )}
         </div>
       </div>
