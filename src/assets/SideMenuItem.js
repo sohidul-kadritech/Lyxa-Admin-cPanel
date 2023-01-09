@@ -357,6 +357,13 @@ export const adminMenuItem = [
         link: "/admin/default-chat-message",
         isSubmenu: false,
       },
+      {
+        id: 154,
+        name: "Database Collection",
+        icon: "fas fa-exchange-alt",
+        link: "/admin/database/collections",
+        isSubmenu: false,
+      }
     ],
   },
   {
