@@ -3,7 +3,7 @@ import GlobalWrapper from "../../components/GlobalWrapper";
 import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../components/Common/Breadcrumb";
-import { getAllDatabaseCollections } from "../../store/Settings/settingsAction";
+import { getAllDatabaseCollections, createDatabaseCollectionBackup } from "../../store/Settings/settingsAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const DatabaseSettings = () => {
@@ -92,8 +92,19 @@ const DatabaseSettings = () => {
                                 <Row className="mb-3">
                                     <Col md={3} className="text-end" />
                                 </Row>
-                                <div className="d-flex align-items-center justify-content-between">
+                                <div className="d-flex align-items-center justify-content-between mb-3">
                                     <CardTitle className="h4">Database Collection</CardTitle>
+                                    <div>
+                                        <Button
+                                            className="btn btn-success"
+                                            disabled={selectedCollections < 1 || loading}
+                                            onClick={() => {
+                                                dispatch(createDatabaseCollectionBackup(selectedCollections));
+                                            }}
+                                        >
+                                            Backup
+                                        </Button>
+                                    </div>
                                 </div>
                                 <Table className="table table-hover text-center">
                                     <Thead>
@@ -102,15 +113,17 @@ const DatabaseSettings = () => {
                                             <Th>Size</Th>
                                             <Th>Modify Time</Th>
                                             <Th className="d-flex justify-content-center align-items-center">
-                                                Action{" "}
-                                                <input
-                                                    className="form-check-input cursor-pointer  mt-0 ms-2"
-                                                    type="checkbox"
-                                                    id="flexCheckDefault"
-                                                    onChange={(e) => {
-                                                        handleCollectionSelectAll(e.target.checked);
-                                                    }}
-                                                />
+                                                <label>
+                                                    Select{" "}
+                                                    <input
+                                                        className="form-check-input cursor-pointer  mt-0 ms-2"
+                                                        type="checkbox"
+                                                        id="flexCheckDefault"
+                                                        onChange={(e) => {
+                                                            handleCollectionSelectAll(e.target.checked);
+                                                        }}
+                                                    />
+                                                </label>
                                             </Th>
                                         </Tr>
                                     </Thead>

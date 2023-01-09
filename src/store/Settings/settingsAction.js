@@ -762,3 +762,33 @@ export const getAllDatabaseCollections = () => async (dispatch) => {
     })
   }
 }
+
+export const createDatabaseCollectionBackup = (collections) => async (dispatch) => {
+  try{
+    dispatch({
+      type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND
+    })
+
+    const {success, error, message} = requestApi().request({method: 'POST', data: { collections }});
+
+    if(success){
+      dispatch({
+        type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SUCCESS,
+        payload: message
+      })
+
+    }else{
+      dispatch({
+        type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL,
+        payload: error,
+      })
+
+    }
+
+  }catch(error){
+    dispatch({
+      type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL,
+      payload: error?.message
+    })
+  }
+}
