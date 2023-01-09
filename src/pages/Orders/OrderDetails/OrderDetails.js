@@ -655,15 +655,12 @@ const OrderDetails = () => {
                             {order?.chats?.length > 0 ? (
                               order?.chats?.map((chat, index, arr) => (
                                 <div key={index}>
-                                  {console.log(chat)}
                                   {chat?.sender === "user" && (
                                     <li className="clearfix">
                                       <div className="chat-avatar">
                                         <Tooltip title="See user details">
                                           <img
-                                            src={{
-                                              uri: chat?.user?.profile_photo,
-                                            }}
+                                            src={chat?.user?.profile_photo}
                                             className="avatar-xs rounded-circle cursor-pointer"
                                             alt="User"
                                             onClick={() =>
