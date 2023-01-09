@@ -148,7 +148,7 @@ export const ALL_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy";
 export const SINGLE_DELIVERY_MAN =
   ADMIN_ENDPOINT + "/delivery-boy/get-single-delivery-boy";
 export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update";
-export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/time";
+export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/tracking";
 export const DELIVERY_BOY_ORDERS = ADMIN_ENDPOINT + "/order/delivery";
 export const DELIVERY_BOY_CURRENT_LOCATION =
   ADMIN_ENDPOINT + "/delivery-boy/get-current-location";
@@ -179,7 +179,8 @@ export const DELETE_SELLER_SPECIAL_DROP_CHARGE =
 
 export const ADMIN_LOGS_HISTORY = ADMIN_ENDPOINT + "/setting/admin-logs";
 
-export const DATABASE_ALL_COLLECTIONS = ADMIN_ENDPOINT + '/database/collections';
+export const DATABASE_ALL_COLLECTIONS =
+  ADMIN_ENDPOINT + "/database/collections";
 
 // DEAL
 

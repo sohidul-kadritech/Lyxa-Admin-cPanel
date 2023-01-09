@@ -46,6 +46,7 @@ import TableImgItem from "../../../components/TableImgItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
+import moment from "moment";
 
 const OrderInfo = ({ items = [] }) => {
   const history = useHistory();
@@ -293,6 +294,11 @@ const OrderDetails = () => {
     }
     return;
   }, [status]);
+
+  var parseTime = (date) => {
+    var m = moment(date).format("hh:mm a");
+    return m;
+  };
 
   return (
     <React.Fragment>
@@ -630,9 +636,7 @@ const OrderDetails = () => {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography>
-                      Conversations (User & Delivery Body)
-                    </Typography>
+                    <Typography>Chat (User & Rider)</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Typography>
@@ -651,12 +655,15 @@ const OrderDetails = () => {
                             {order?.chats?.length > 0 ? (
                               order?.chats?.map((chat, index, arr) => (
                                 <div key={index}>
+                                  {console.log(chat)}
                                   {chat?.sender === "user" && (
                                     <li className="clearfix">
                                       <div className="chat-avatar">
                                         <Tooltip title="See user details">
                                           <img
-                                            src={user1}
+                                            src={{
+                                              uri: chat?.user?.profile_photo,
+                                            }}
                                             className="avatar-xs rounded-circle cursor-pointer"
                                             alt="User"
                                             onClick={() =>
@@ -670,6 +677,9 @@ const OrderDetails = () => {
                                       <div className="conversation-text color-primary">
                                         <div className="ctext-wrap">
                                           <strong>{chat?.message}.</strong>
+                                          <div style={{ color: "grey" }}>
+                                            {parseTime(chat?.createdAt)}
+                                          </div>
                                         </div>
                                       </div>
                                     </li>

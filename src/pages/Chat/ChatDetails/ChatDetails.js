@@ -80,6 +80,8 @@ const ChatDetails = () => {
         },
       });
 
+      console.log(data);
+
       if (data.status) {
         setIsLoading(false);
         let chats = data?.data?.chats;

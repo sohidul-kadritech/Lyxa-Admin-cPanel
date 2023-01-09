@@ -147,6 +147,17 @@ export const trackDeliveryBoy =
         type: actionType.TRACK_DELIVERY_MAN_REQUEST_SEND,
       });
 
+      console.log({
+        id,
+        page,
+        pageSize: 15,
+        startDate,
+        endDate,
+        searchKey: "",
+        sortBy: "desc",
+        status: "",
+      });
+
       const { data } = await requestApi().request(TRACK_DELIVERY_MAN, {
         params: {
           id,
@@ -154,8 +165,13 @@ export const trackDeliveryBoy =
           pageSize: 15,
           startDate,
           endDate,
+          searchKey: "",
+          sortBy: "desc",
+          status: "",
         },
       });
+
+      // console.log(data);
 
       if (data.status) {
         dispatch({
@@ -164,7 +180,6 @@ export const trackDeliveryBoy =
         });
       } else {
         successMsg(data.error, "error");
-
         dispatch({
           type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
           payload: data.error,
