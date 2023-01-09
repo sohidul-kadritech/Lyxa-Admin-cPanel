@@ -29,6 +29,7 @@ const initialState = {
   adminLogs: [],
   defualtMessages: [],
   searchKey: "",
+  databaseCollections: [],
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -510,6 +511,31 @@ const settingsReducer = (state = initialState, action) => {
         ...state,
         searchKey: payload,
       };
+
+    case actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      }
+
+      case actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          status: true,
+          error: null,
+          databaseCollections: payload
+        }
+
+        case actionType.ALL_DATABASE_COLLECTIONS_REQUEST_FAIL:
+          return {
+            ...state,
+            loading: false,
+            status: true,
+            error: payload,
+          }
 
     default:
       return state;

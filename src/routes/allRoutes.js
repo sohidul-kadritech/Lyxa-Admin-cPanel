@@ -143,6 +143,7 @@ import AdminLogHistory from "./../pages/AppWallet/AdminLogHistory/AdminLogHistor
 import SellerTransactions from "./../pages/AppWallet/SellerTransactions/SellerTransactions";
 import DeliveryTransactions from "./../pages/AppWallet/DeliveryTransactions/DeliveryTransactions";
 import PaymentHistory from "./../pages/AppWallet/PaymentHistory/PaymentHistory";
+import DatabaseSettings from "../pages/DatabaseSettings/DatabaseSettings";
 
 import CategoryList from "./../pages/Categories&Tags/Category/CategoryList/CategoryList";
 import CategoryAdd from "./../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd";
@@ -310,6 +311,7 @@ const userRoutes = [
   { path: "/percentage-setting", component: PercentageSetting },
   { path: "/admin/percentage-settings-history", component: AdminLog },
   { path: "/admin/default-chat-message", component: DefaultChat },
+  {path: '/admin/database/collections', component: DatabaseSettings},
 
   // TERMS AND CONDTIONS
 

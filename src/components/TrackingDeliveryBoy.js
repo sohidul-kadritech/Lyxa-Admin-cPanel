@@ -21,6 +21,8 @@ import AppPagination from "./AppPagination";
 import moment from "moment";
 import Flatpickr from "react-flatpickr";
 import Info from "./Info";
+import TableImgItem from "../../src/components/TableImgItem";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 const TrackingDeliveryBoy = ({ riderId }) => {
   const {
@@ -116,7 +118,6 @@ const TrackingDeliveryBoy = ({ riderId }) => {
             >
               <Thead>
                 <Tr>
-                  <Th>Date</Th>
                   <Th>Time In</Th>
                   <Th>Time Out</Th>
                   <Th>Active Time</Th>
@@ -133,9 +134,21 @@ const TrackingDeliveryBoy = ({ riderId }) => {
                         fontWeight: "500",
                       }}
                     >
-                      <Th>{moment(item?.Date).format("D-MM-YYYY")}</Th>
-                      <Td>{moment(item?.timeIn).format("h:mm a")}</Td>
-                      <Td>{moment(item?.timeOut).format("h:mm a")}</Td>
+                      <Th>
+                        <TableImgItem
+                          altImg={AccountBalanceIcon}
+                          name={moment(item?.timeIn).format("h:mm a")}
+                          id={moment(item?.timeIn).format("D-MM-YYYY")}
+                        />
+                      </Th>
+                      <Th>
+                        <TableImgItem
+                          altImg={AccountBalanceIcon}
+                          name={moment(item?.timeOut).format("h:mm a")}
+                          id={moment(item?.timeOut).format("D-MM-YYYY")}
+                        />
+                      </Th>
+
                       <Td>{calcActiveTime(item?.activeTotal)}</Td>
                     </Tr>
                   );

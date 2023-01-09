@@ -16,6 +16,7 @@ import {
   UPDATE_APP_SETTINGS,
   UPDATE_DELIVERY_CUT,
   UPDATE_ORDER_CANCEL_REASON,
+  DATABASE_ALL_COLLECTIONS
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -729,3 +730,35 @@ export const updateDefaultSearchKey = (value) => (dispatch) => {
     payload: value,
   });
 };
+
+// DATABASE
+export const getAllDatabaseCollections = () => async (dispatch) => {
+  try{
+    dispatch({
+      type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SEND
+    })
+  
+    const {data: resData} = await requestApi().request(DATABASE_ALL_COLLECTIONS, {});
+    const {data, success, error} = resData;
+    
+
+    if(success){
+      dispatch({
+        type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SUCCESS,
+        payload: data?.tables
+      })
+
+    }else{
+      dispatch({
+        type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_FAIL,
+        payload: error
+      })
+    }
+
+  }catch(error){
+    dispatch({
+      type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_FAIL,
+      payload: error.message
+    })
+  }
+}

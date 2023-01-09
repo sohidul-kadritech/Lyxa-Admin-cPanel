@@ -179,6 +179,8 @@ export const DELETE_SELLER_SPECIAL_DROP_CHARGE =
 
 export const ADMIN_LOGS_HISTORY = ADMIN_ENDPOINT + "/setting/admin-logs";
 
+export const DATABASE_ALL_COLLECTIONS = ADMIN_ENDPOINT + '/database/collections';
+
 // DEAL
 
 export const ADD_DEAL = ADMIN_ENDPOINT + "/deal/add";
