@@ -617,7 +617,7 @@ const settingsReducer = (state = initialState, action) => {
             error: payload,
             message: payload,
           }
-          
+
           case actionType.DATABASE_DELETE_COLLECTION_REQUEST_SEND: 
           return {
             ...state, 
@@ -637,6 +637,33 @@ const settingsReducer = (state = initialState, action) => {
           }
 
           case actionType.DATABASE_DELETE_COLLECTION_REQUEST_FAIL: 
+          return {
+            ...state,
+            loading: false,
+            status: false,
+            error: payload,
+            message: payload,
+          }
+
+          case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SEND: 
+          return {
+            ...state, 
+            loading: true,
+            status: false,
+            error: null,
+            message: ''
+          }
+
+          case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SUCCESS: 
+          return {
+            ...state,
+            loading: false,
+            status: true,
+            error: null,
+            message: payload,
+          }
+
+          case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_FAIL: 
           return {
             ...state,
             loading: false,

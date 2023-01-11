@@ -20,7 +20,8 @@ import {
   DATABASE_COLLECTION_BACKUP,
   DATABASE_RESTORE_LAST_COLLECTION_BACKUP,
   DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP,
-  DATABASE_DELETE_COLLECTION
+  DATABASE_DELETE_COLLECTION,
+  DATABASE_DELETE_ALL_COLLECTION
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -924,6 +925,46 @@ export const deleteDatabaseCollection = (collectionName) => async (dispatch) => 
   }catch(error){
     dispatch({
       type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL,
+      payload: error?.message
+    })
+
+    console.log(error)
+    successMsg("Delete Failed", 'failure');
+  }
+}
+
+export const deleteDatabaseAllCollection = () => async (dispatch) => {
+  try{
+    dispatch({
+      type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SEND
+    })
+
+    const {data} = await requestApi().request(DATABASE_DELETE_ALL_COLLECTION);
+    const {success, message, error} = data;
+
+    if(success){
+      dispatch({
+        type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SUCCESS,
+        payload: message
+      })
+
+      successMsg(message, 'success');
+
+      // refresh the DB collection
+      dispatch(getAllDatabaseCollections());
+
+    }else{
+      dispatch({
+        type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_FAIL,
+        payload: error,
+      })
+
+      successMsg("Delete Failed", 'failure');
+    }
+
+  }catch(error){
+    dispatch({
+      type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_FAIL,
       payload: error?.message
     })
 
