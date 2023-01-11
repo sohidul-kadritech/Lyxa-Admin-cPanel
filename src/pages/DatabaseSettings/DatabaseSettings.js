@@ -3,7 +3,7 @@ import GlobalWrapper from "../../components/GlobalWrapper";
 import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../components/Common/Breadcrumb";
-import { getAllDatabaseCollections, createDatabaseCollectionBackup, restoreLastCollectionBackup } from "../../store/Settings/settingsAction";
+import { getAllDatabaseCollections, createDatabaseCollectionBackup, restoreCollectionLastBackup, restoreAllCollectionsLastBackup } from "../../store/Settings/settingsAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const DatabaseSettings = () => {
@@ -95,7 +95,8 @@ const DatabaseSettings = () => {
                                 </Row>
                                 <div className="d-flex align-items-center justify-content-between mb-3">
                                     <CardTitle className="h4">Database Collection</CardTitle>
-                                    <div>
+                                    <div className="d-flex align-items-center gap-2">
+                                        {/* backup button*/}
                                         <Button
                                             className="btn btn-success"
                                             disabled={selectedCollections.length < 1 || loading}
@@ -104,6 +105,12 @@ const DatabaseSettings = () => {
                                             }}
                                         >
                                             Backup
+                                        </Button>
+                                        {/* restore all backup button */}
+                                        <Button className="btn btn-primary" disabled={loading} onClick={() => {
+                                            dispatch(restoreAllCollectionsLastBackup())
+                                        }}>
+                                            Restore All
                                         </Button>
                                     </div>
                                 </div>
@@ -120,6 +127,7 @@ const DatabaseSettings = () => {
                                                         className="form-check-input cursor-pointer  mt-0 ms-2"
                                                         type="checkbox"
                                                         id="flexCheckDefault"
+                                                        disabled={loading}
                                                         onChange={(e) => {
                                                             handleCollectionSelectAll(e.target.checked);
                                                         }}
@@ -150,7 +158,7 @@ const DatabaseSettings = () => {
                                                         {
                                                             item.modifyTime && (
                                                                 <Button disabled={selectedCollections.length > 0 || loading} onClick={() => {
-                                                                    dispatch(restoreLastCollectionBackup(item.fileName))
+                                                                    dispatch(restoreCollectionLastBackup(item.fileName))
                                                                 }}>
                                                                     Restore
                                                                 </Button>
