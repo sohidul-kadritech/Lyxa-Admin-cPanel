@@ -16,7 +16,9 @@ import {
   UPDATE_APP_SETTINGS,
   UPDATE_DELIVERY_CUT,
   UPDATE_ORDER_CANCEL_REASON,
-  DATABASE_ALL_COLLECTIONS
+  DATABASE_ALL_COLLECTIONS,
+  DATABASE_COLLECTION_BACKUP,
+  DATABASE_RESTORE_LAST_COLLECTION_BACKUP
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -769,7 +771,8 @@ export const createDatabaseCollectionBackup = (collections) => async (dispatch) 
       type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND
     })
 
-    const {success, error, message} = requestApi().request({method: 'POST', data: { collections }});
+    const {data} = await requestApi().request(DATABASE_COLLECTION_BACKUP, {method: 'POST', data: { collections }});
+    const {success, message, error} = data;
 
     if(success){
       dispatch({
@@ -777,12 +780,18 @@ export const createDatabaseCollectionBackup = (collections) => async (dispatch) 
         payload: message
       })
 
+      successMsg(message, 'success');
+
+      // refresh the DB collection
+      dispatch(getAllDatabaseCollections());
+
     }else{
       dispatch({
         type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL,
         payload: error,
       })
 
+      successMsg("Backup Failed", 'failure');
     }
 
   }catch(error){
@@ -790,5 +799,48 @@ export const createDatabaseCollectionBackup = (collections) => async (dispatch) 
       type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL,
       payload: error?.message
     })
+
+    console.log(error)
+    successMsg("Backup Failed", 'failure');
+  }
+}
+
+export const restoreLastCollectionBackup = (collectionName) => async (dispatch) => {
+  try{
+    dispatch({
+      type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SEND
+    })
+
+    const {data} = await requestApi().request(DATABASE_RESTORE_LAST_COLLECTION_BACKUP, {method: 'POST', data: { collectionName }});
+    const {success, message, error} = data;
+
+    if(success){
+      dispatch({
+        type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SUCCESS,
+        payload: message
+      })
+
+      successMsg(message, 'success');
+
+      // refresh the DB collection
+      dispatch(getAllDatabaseCollections());
+
+    }else{
+      dispatch({
+        type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL,
+        payload: error,
+      })
+
+      successMsg("Backup Failed", 'failure');
+    }
+
+  }catch(error){
+    dispatch({
+      type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL,
+      payload: error?.message
+    })
+
+    console.log(error)
+    successMsg("Backup Failed", 'failure');
   }
 }

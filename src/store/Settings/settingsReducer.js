@@ -564,6 +564,33 @@ const settingsReducer = (state = initialState, action) => {
             message: payload,
           }
 
+          case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SEND: 
+          return {
+            ...state, 
+            loading: true,
+            status: false,
+            error: null,
+            message: ''
+          }
+
+          case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SUCCESS: 
+          return {
+            ...state,
+            loading: false,
+            status: true,
+            error: null,
+            message: payload,
+          }
+
+          case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL: 
+          return {
+            ...state,
+            loading: false,
+            status: false,
+            error: payload,
+            message: payload,
+          }
+
     default:
       return state;
   }

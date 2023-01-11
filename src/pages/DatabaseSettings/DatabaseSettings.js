@@ -3,7 +3,7 @@ import GlobalWrapper from "../../components/GlobalWrapper";
 import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../components/Common/Breadcrumb";
-import { getAllDatabaseCollections, createDatabaseCollectionBackup } from "../../store/Settings/settingsAction";
+import { getAllDatabaseCollections, createDatabaseCollectionBackup, restoreLastCollectionBackup } from "../../store/Settings/settingsAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const DatabaseSettings = () => {
@@ -27,6 +27,7 @@ const DatabaseSettings = () => {
 
     useEffect(() => {
         setModifiedDatabaseCollections(createModifiedDatabaseCollections(databaseCollections));
+        setSelectedCollections([])
     }, [databaseCollections]);
 
     // check / uncheck collection modified object
@@ -97,7 +98,7 @@ const DatabaseSettings = () => {
                                     <div>
                                         <Button
                                             className="btn btn-success"
-                                            disabled={selectedCollections < 1 || loading}
+                                            disabled={selectedCollections.length < 1 || loading}
                                             onClick={() => {
                                                 dispatch(createDatabaseCollectionBackup(selectedCollections));
                                             }}
@@ -111,7 +112,7 @@ const DatabaseSettings = () => {
                                         <Tr>
                                             <Th>Name</Th>
                                             <Th>Size</Th>
-                                            <Th>Modify Time</Th>
+                                            <Th>Last Backup Time</Th>
                                             <Th className="d-flex justify-content-center align-items-center">
                                                 <label>
                                                     Select{" "}
@@ -142,10 +143,21 @@ const DatabaseSettings = () => {
                                                         {item.name}
                                                     </Td>
                                                     <Td className="text-danger">{(item.size / 1000).toFixed(2)} Mb</Td>
-                                                    <Td className="text-success">{item.modifyTime}</Td>
+                                                    <Td className="text-success">{item.modifyTime || 'Not Backed'}</Td>
                                                     <Td>
+                                                        <div className="d-flex gap-2 align-items-center justify-content-center">
+
+                                                        {
+                                                            item.modifyTime && (
+                                                                <Button disabled={selectedCollections.length > 0 || loading} onClick={() => {
+                                                                    dispatch(restoreLastCollectionBackup(item.fileName))
+                                                                }}>
+                                                                    Restore
+                                                                </Button>
+                                                            )
+                                                        }
                                                         <input
-                                                            className="form-check-input cursor-pointer  "
+                                                            className="form-check-input cursor-pointer"
                                                             type="checkbox"
                                                             checked={item?.checked}
                                                             id="flexCheckDefault"
@@ -154,6 +166,7 @@ const DatabaseSettings = () => {
                                                                 handleCollectionSelect(e.target.checked, item.fileName);
                                                             }}
                                                         />
+                                                        </div>
                                                     </Td>
                                                 </Tr>
                                             );
