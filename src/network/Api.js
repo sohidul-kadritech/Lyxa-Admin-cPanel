@@ -183,6 +183,7 @@ export const DATABASE_ALL_COLLECTIONS = ADMIN_ENDPOINT + '/database/collections'
 export const DATABASE_COLLECTION_BACKUP = ADMIN_ENDPOINT + '/database/back-up';
 export const DATABASE_RESTORE_LAST_COLLECTION_BACKUP = ADMIN_ENDPOINT + '/database/restore-backup';
 export const DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP = ADMIN_ENDPOINT + '/database/restore-all-backup';
+export const DATABASE_DELETE_COLLECTION = ADMIN_ENDPOINT + '/database/delete-collection';
 
 // DEAL
 

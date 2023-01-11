@@ -3,7 +3,7 @@ import GlobalWrapper from "../../components/GlobalWrapper";
 import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../components/Common/Breadcrumb";
-import { getAllDatabaseCollections, createDatabaseCollectionBackup, restoreCollectionLastBackup, restoreAllCollectionsLastBackup } from "../../store/Settings/settingsAction";
+import { getAllDatabaseCollections, createDatabaseCollectionBackup, restoreCollectionLastBackup, restoreAllCollectionsLastBackup, deleteDatabaseCollection } from "../../store/Settings/settingsAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const DatabaseSettings = () => {
@@ -154,7 +154,13 @@ const DatabaseSettings = () => {
                                                     <Td className="text-success">{item.modifyTime || 'Not Backed'}</Td>
                                                     <Td>
                                                         <div className="d-flex gap-2 align-items-center justify-content-center">
-
+                                                        <Button className="btn-danger" onClick={() => {
+                                                            dispatch(databaseCollections(item.fileName));
+                                                        }}
+                                                        disabled={selectedCollections.length > 0 || loading}
+                                                        >
+                                                            Delete
+                                                        </Button>
                                                         {
                                                             item.modifyTime && (
                                                                 <Button disabled={selectedCollections.length > 0 || loading} onClick={() => {
