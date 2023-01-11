@@ -106,11 +106,23 @@ const DatabaseSettings = () => {
                                         >
                                             Backup
                                         </Button>
+                                        {/* backup all button */}
+                                        <Button className="btn btn-success" disabled={loading} onClick={() => {
+                                            dispatch(createDatabaseCollectionBackup([], true))
+                                        }}>
+                                            Backup All
+                                        </Button>
                                         {/* restore all backup button */}
-                                        <Button className="btn btn-primary" disabled={loading} onClick={() => {
+                                        <Button className="btn btn-success" disabled={loading} onClick={() => {
                                             dispatch(restoreAllCollectionsLastBackup())
                                         }}>
                                             Restore All
+                                        </Button>
+                                        {/* delete all collections button */}
+                                        <Button className="btn btn-danger" disabled={loading} onClick={() => {
+                                            dispatch(restoreAllCollectionsLastBackup())
+                                        }}>
+                                            Delete All
                                         </Button>
                                     </div>
                                 </div>
@@ -155,7 +167,7 @@ const DatabaseSettings = () => {
                                                     <Td>
                                                         <div className="d-flex gap-2 align-items-center justify-content-center">
                                                         <Button className="btn-danger" onClick={() => {
-                                                            dispatch(databaseCollections(item.fileName));
+                                                            dispatch(deleteDatabaseCollection(item.fileName));
                                                         }}
                                                         disabled={selectedCollections.length > 0 || loading}
                                                         >

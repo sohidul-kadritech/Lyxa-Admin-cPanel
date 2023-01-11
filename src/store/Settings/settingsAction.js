@@ -767,13 +767,21 @@ export const getAllDatabaseCollections = () => async (dispatch) => {
   }
 }
 
-export const createDatabaseCollectionBackup = (collections) => async (dispatch) => {
+export const createDatabaseCollectionBackup = (collections, backupAll) => async (dispatch) => {
   try{
     dispatch({
       type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND
     })
 
-    const {data} = await requestApi().request(DATABASE_COLLECTION_BACKUP, {method: 'POST', data: { collections }});
+    let reqData = {};
+
+    if(backupAll){
+      reqData.allBackUp = true;
+    }else{
+      reqData.collections = collections;
+    }
+
+    const {data} = await requestApi().request(DATABASE_COLLECTION_BACKUP, {method: 'POST', data: reqData});
     const {success, message, error} = data;
 
     if(success){
