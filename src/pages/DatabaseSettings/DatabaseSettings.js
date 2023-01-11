@@ -12,12 +12,20 @@ import {
   deleteDatabaseAllCollection,
 } from "../../store/Settings/settingsAction";
 import { useDispatch, useSelector } from "react-redux";
+import { AvForm, AvField } from "availity-reactstrap-validation";
 
 const DatabaseSettings = () => {
   const dispatch = useDispatch();
   const { loading, error, databaseCollections } = useSelector((store) => store.settingsReducer);
-  const [openModal, setOpenModal] = useState(false);
+  const [cofirmationModal, setConfirmationModal] = useState(false);
+  const [authModal, setAuthModal] = useState(true);
   const [actionObj, setActionObj] = useState({ action: () => {}, actionMsg: "" });
+
+  const formHandler = (event, v) => {
+    if (event.target.password.value === '1234') {
+      setAuthModal(false);
+    }
+  };
 
   useEffect(() => {
     dispatch(getAllDatabaseCollections());
@@ -29,10 +37,32 @@ const DatabaseSettings = () => {
         <div className="page-content">
           <Container fluid>
             <Breadcrumb maintitle="Drop" breadcrumbItem="Database Collection" title="Admin" loading={loading} />
+            {/* auth modaol */}
+            <Modal isOpen={authModal} centered={true}>
+              <div className="card mb-0">
+                <div className="card-body">
+                  <AvForm
+                    className="form-horizontal"
+                    onValidSubmit={(e, v) => {
+                      formHandler(e, v);
+                    }}
+                  >
+                    <h5 className="mb-4">Please enter your password before procedding</h5>
+                    <div className="mb-3">
+                      <AvField name="password" value="" type="password" required placeholder="Enter Password" />
+                    </div>
+                    <Button className="btn btn-dark w-md waves-effect waves-light" type="submit">
+                      Submit
+                    </Button>
+                  </AvForm>
+                </div>
+              </div>
+            </Modal>
+            {/* confirmation modal */}
             <Modal
-              isOpen={openModal}
+              isOpen={cofirmationModal}
               toggle={() => {
-                setOpenModal(false);
+                setConfirmationModal(false);
               }}
               centered={true}
             >
@@ -43,7 +73,7 @@ const DatabaseSettings = () => {
                     <Button
                       className="btn btn-primary mr-3"
                       onClick={() => {
-                        setOpenModal(false);
+                        setConfirmationModal(false);
                       }}
                     >
                       Cancel
@@ -52,7 +82,7 @@ const DatabaseSettings = () => {
                       className="btn btn-success"
                       onClick={() => {
                         dispatch(actionObj.action());
-                        setOpenModal(false);
+                        setConfirmationModal(false);
                       }}
                     >
                       Confirm
@@ -74,7 +104,7 @@ const DatabaseSettings = () => {
                       className="btn btn-success"
                       disabled={loading}
                       onClick={() => {
-                        setOpenModal(true);
+                        setConfirmationModal(true);
                         setActionObj({
                           action: () => createDatabaseCollectionBackup([], true),
                           actionMsg: "Backup all collections",
@@ -88,7 +118,7 @@ const DatabaseSettings = () => {
                       className="btn btn-primary"
                       disabled={loading}
                       onClick={() => {
-                        setOpenModal(true);
+                        setConfirmationModal(true);
                         setActionObj({
                           action: () => restoreAllCollectionsLastBackup(),
                           actionMsg: "Restore all collections",
@@ -102,7 +132,7 @@ const DatabaseSettings = () => {
                       className="btn btn-danger"
                       disabled={loading}
                       onClick={() => {
-                        setOpenModal(true);
+                        setConfirmationModal(true);
                         setActionObj({
                           action: () => deleteDatabaseAllCollection(),
                           actionMsg: "Delete all collections",
@@ -144,7 +174,7 @@ const DatabaseSettings = () => {
                                 className="btn btn-success"
                                 disabled={loading}
                                 onClick={() => {
-                                  setOpenModal(true);
+                                  setConfirmationModal(true);
                                   setActionObj({
                                     action: () => createDatabaseCollectionBackup([item.fileName]),
                                     actionMsg: "Backup this collection",
@@ -158,7 +188,7 @@ const DatabaseSettings = () => {
                                 <Button
                                   disabled={loading}
                                   onClick={() => {
-                                    setOpenModal(true);
+                                    setConfirmationModal(true);
                                     setActionObj({
                                       action: () => restoreCollectionLastBackup(item.fileName),
                                       actionMsg: "Restore this collection",
@@ -171,7 +201,7 @@ const DatabaseSettings = () => {
                               <Button
                                 className="btn-danger"
                                 onClick={() => {
-                                  setOpenModal(true);
+                                  setConfirmationModal(true);
                                   setActionObj({
                                     action: () => deleteDatabaseCollection(item.fileName),
                                     actionMsg: "Delete this collection",
