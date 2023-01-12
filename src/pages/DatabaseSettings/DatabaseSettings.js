@@ -13,17 +13,27 @@ import {
 } from "../../store/Settings/settingsAction";
 import { useDispatch, useSelector } from "react-redux";
 import { AvForm, AvField } from "availity-reactstrap-validation";
+import { Link } from "react-router-dom";
+import { adminAuth } from "../../store/auth/login/actions";
+import { successMsg } from "../../helpers/successMsg";
 
 const DatabaseSettings = () => {
   const dispatch = useDispatch();
   const { loading, error, databaseCollections } = useSelector((store) => store.settingsReducer);
+  const { admin, error: authError } = useSelector((store) => store.Login);
+  const { account_type, adminType, email, token } = admin;
   const [cofirmationModal, setConfirmationModal] = useState(false);
-  const [authModal, setAuthModal] = useState(true);
+  const [authModal, setAuthModal] = useState(false);
   const [actionObj, setActionObj] = useState({ action: () => {}, actionMsg: "" });
+  const [isAllDisabled, setIsAllDisabled] = useState(false);
 
   const formHandler = (event, v) => {
-    if (event.target.password.value === '1234') {
-      setAuthModal(false);
+    if (account_type !== "admin" && adminType !== "admin") {
+      successMsg("You are not allowed to this page", "warn");
+      return;
+    } else {
+      const { password } = v;
+      dispatch(adminAuth({ email, password, type: account_type }));
     }
   };
 
@@ -31,12 +41,28 @@ const DatabaseSettings = () => {
     dispatch(getAllDatabaseCollections());
   }, []);
 
+  useEffect(() => {
+    console.log(token);
+    if (token !== "") {
+      setAuthModal((v) => !v);
+      setIsAllDisabled((v) => !v);
+    }
+  }, [token]);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid>
-            <Breadcrumb maintitle="Drop" breadcrumbItem="Database Collection" title="Admin" loading={loading} />
+            <Breadcrumb
+              maintitle="Drop"
+              breadcrumbItem="Database Collection"
+              title="Admin"
+              callList={() => {
+                dispatch(getAllDatabaseCollections());
+              }}
+              loading={loading}
+            />
             {/* auth modaol */}
             <Modal isOpen={authModal} centered={true}>
               <div className="card mb-0">
@@ -47,9 +73,15 @@ const DatabaseSettings = () => {
                       formHandler(e, v);
                     }}
                   >
-                    <h5 className="mb-4">Please enter your password before procedding</h5>
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                      <h5>Please enter your password before procedding</h5>
+                      <Link className="btn btn-success" to="/">
+                        Return
+                      </Link>
+                    </div>
                     <div className="mb-3">
                       <AvField name="password" value="" type="password" required placeholder="Enter Password" />
+                      <span>{authError || ""}</span>
                     </div>
                     <Button className="btn btn-dark w-md waves-effect waves-light" type="submit">
                       Submit
@@ -102,7 +134,7 @@ const DatabaseSettings = () => {
                     {/* backup all button */}
                     <Button
                       className="btn btn-success"
-                      disabled={loading}
+                      disabled={loading || isAllDisabled}
                       onClick={() => {
                         setConfirmationModal(true);
                         setActionObj({
@@ -116,7 +148,7 @@ const DatabaseSettings = () => {
                     {/* restore all backup button */}
                     <Button
                       className="btn btn-primary"
-                      disabled={loading}
+                      disabled={loading || isAllDisabled}
                       onClick={() => {
                         setConfirmationModal(true);
                         setActionObj({
@@ -130,7 +162,7 @@ const DatabaseSettings = () => {
                     {/* delete all collections button */}
                     <Button
                       className="btn btn-danger"
-                      disabled={loading}
+                      disabled={loading || isAllDisabled}
                       onClick={() => {
                         setConfirmationModal(true);
                         setActionObj({
@@ -172,7 +204,7 @@ const DatabaseSettings = () => {
                             <div className="d-flex gap-2 align-items-center justify-content-end">
                               <Button
                                 className="btn btn-success"
-                                disabled={loading}
+                                disabled={loading || isAllDisabled}
                                 onClick={() => {
                                   setConfirmationModal(true);
                                   setActionObj({
@@ -186,7 +218,7 @@ const DatabaseSettings = () => {
 
                               {item.modifyTime && (
                                 <Button
-                                  disabled={loading}
+                                  disabled={loading || isAllDisabled}
                                   onClick={() => {
                                     setConfirmationModal(true);
                                     setActionObj({
@@ -207,7 +239,7 @@ const DatabaseSettings = () => {
                                     actionMsg: "Delete this collection",
                                   });
                                 }}
-                                disabled={loading}
+                                disabled={loading || isAllDisabled}
                               >
                                 Delete
                               </Button>

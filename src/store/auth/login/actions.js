@@ -1,13 +1,7 @@
 import { Redirect } from "react-router-dom";
 import { LOGIN } from "../../../network/Api";
 import { createBrowserHistory } from "history";
-import {
-  LOGIN_USER,
-  LOGIN_SUCCESS,
-  LOGOUT_USER,
-  LOGOUT_USER_SUCCESS,
-  API_ERROR,
-} from "./actionTypes";
+import { LOGIN_USER, LOGIN_SUCCESS, LOGOUT_USER, LOGOUT_USER_SUCCESS, API_ERROR } from "./actionTypes";
 import requestApi from "../../../network/httpRequest";
 import { toast } from "react-toastify";
 import { successMsg } from "../../../helpers/successMsg";
@@ -57,7 +51,6 @@ export const adminAuth = (user) => async (dispatch, getState) => {
       data: user,
     });
 
-
     if (status) {
       localStorage.setItem("accessToken", data.admin.token);
       localStorage.setItem("admin", JSON.stringify(data.admin));
@@ -67,6 +60,8 @@ export const adminAuth = (user) => async (dispatch, getState) => {
     } else {
       successMsg(error, "error");
       dispatch(apiError(message));
+
+      localStorage.removeItem("accessToken");
     }
   } catch (error) {
     dispatch(apiError(error.message));

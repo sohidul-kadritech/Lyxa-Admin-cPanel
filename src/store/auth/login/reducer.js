@@ -51,7 +51,7 @@ const login = (state = initialState, action) => {
       };
 
     case API_ERROR:
-      return { ...state, error: action.payload, loading: false };
+      return { ...state, error: action.payload, loading: false, accessToken: null };
 
     default:
       return state;
