@@ -99,7 +99,7 @@ const OrdersList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"List"}
               title="Orders"
               loading={loading}

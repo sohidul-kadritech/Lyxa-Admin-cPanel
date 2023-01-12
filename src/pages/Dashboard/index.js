@@ -342,7 +342,7 @@ const ShopInfo = () => {
                 Icon={AccessTimeOutlinedIcon}
               />
               <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-              <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
+              <InfoTwo classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
             </Col>
 
             <Col lg={4}>
