@@ -526,7 +526,7 @@ const OrderDetails = () => {
                         <h6 className="text-dark font-size-14">Status</h6>
                         {order?.orderCancel ? (
                           <span>
-                            {order?.orderCancel?.canceledBy} |{' '}
+                            {order?.orderCancel?.canceledBy} |{" "}
                             {order?.orderCancel?.cancelReason
                               ? order?.orderCancel?.cancelReason?.name
                               : order?.orderCancel.otherReason}
@@ -687,7 +687,7 @@ const OrderDetails = () => {
                                       <div className="chat-avatar">
                                         <Tooltip title="See delivery boy details">
                                           <img
-                                            src={user1}
+                                            src={chat?.deliveryBoy?.image}
                                             className="avatar-xs rounded-circle cursor-pointer"
                                             alt="Delivery Boy"
                                             onClick={() =>
@@ -698,9 +698,12 @@ const OrderDetails = () => {
                                           />
                                         </Tooltip>
                                       </div>
-                                      <div className="conversation-text">
+                                      <div className="conversation-text color-primary">
                                         <div className="ctext-wrap">
                                           <strong>{chat?.message}.</strong>
+                                          <div style={{ color: "grey" }}>
+                                            {parseTime(chat?.createdAt)}
+                                          </div>
                                         </div>
                                       </div>
                                     </li>

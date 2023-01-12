@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Container,
+  Input,
+  Row,
+  Spinner,
+} from "reactstrap";
 
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getAllChat, updateChatSortByKey, updateChatType, acceptChatReq } from "../../../store/chat/chatAction";
+import {
+  getAllChat,
+  updateChatSortByKey,
+  updateChatType,
+  acceptChatReq,
+} from "../../../store/chat/chatAction";
 import { Tooltip } from "@mui/material";
 import { useHistory, useParams } from "react-router-dom";
 import TableImgItem from "../../../components/TableImgItem";
@@ -19,8 +34,11 @@ const ChatsListByOrder = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
+  console.log(useParams());
+  // const id = "";
   const { socket } = useSelector((state) => state.socketReducer);
-  const { status, loading, selectedMsg, chatRequests, isSendingMsg } = useSelector((state) => state.chatReducer);
+  const { status, loading, selectedMsg, chatRequests, isSendingMsg } =
+    useSelector((state) => state.chatReducer);
 
   const [list, setList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,11 +55,14 @@ const ChatsListByOrder = () => {
     if (refresh) {
       setIsLoading(true);
       try {
-        const { data } = await requestApi().request(CHAT_REQUESTS_FOR_SINGLE_ORDER, {
-          params: {
-            orderId,
-          },
-        });
+        const { data } = await requestApi().request(
+          CHAT_REQUESTS_FOR_SINGLE_ORDER,
+          {
+            params: {
+              orderId,
+            },
+          }
+        );
 
         if (data?.status) {
           setIsLoading(false);
@@ -63,6 +84,9 @@ const ChatsListByOrder = () => {
     history.push({
       pathname: `/customer-support/details/${item?.order}`,
       search: `?status=${item?.status}`,
+      state: {
+        user: item?.user,
+      },
     });
   };
 
@@ -135,7 +159,10 @@ const ChatsListByOrder = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4"> Chat List</CardTitle>
-                <Table id="tech-companies-1" className="table  table-hover text-center">
+                <Table
+                  id="tech-companies-1"
+                  className="table  table-hover text-center"
+                >
                   <Thead>
                     <Tr>
                       <Th>Inquery ID</Th>
@@ -146,7 +173,7 @@ const ChatsListByOrder = () => {
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
                     {list?.map((item, index) => {
-                      console.log(item.status)
+                      console.log(item.status);
                       return (
                         <Tr
                           key={index}
@@ -177,8 +204,12 @@ const ChatsListByOrder = () => {
                               goToDetailPage(item);
                             }}
                           >
-                            <p className="mb-0">{new Date(item?.createdAt).toLocaleDateString()}</p>
-                            <p className="mb-0">{new Date(item?.createdAt).toLocaleTimeString()}</p>
+                            <p className="mb-0">
+                              {new Date(item?.createdAt).toLocaleDateString()}
+                            </p>
+                            <p className="mb-0">
+                              {new Date(item?.createdAt).toLocaleTimeString()}
+                            </p>
                           </Td>
 
                           <Td>

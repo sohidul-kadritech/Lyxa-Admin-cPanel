@@ -1,7 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Container,
+  Input,
+  Row,
+  Spinner,
+} from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 import user1 from "../../../assets/images/user1.jpg";
@@ -18,23 +28,28 @@ import {
   setChatStatusFalse,
 } from "../../../store/chat/chatAction";
 import { TextField, Tooltip } from "@mui/material";
-import { SINGLE_CHAT } from "../../../network/Api";
+import { LAST_FIVE_ORDER, SINGLE_CHAT } from "../../../network/Api";
 import ChatMessageTable from "../../../components/ChatMessageTable";
 import { callApi } from "../../../components/SingleApiCall";
 import SweetAlert from "react-bootstrap-sweetalert";
 import requestApi from "../../../network/httpRequest";
 import { useMemo } from "react";
+import moment from "moment";
 
 const ChatDetails = () => {
   const { id } = useParams();
+  // console.log(useParams());
 
   const dispatch = useDispatch();
   const history = useHistory();
+  const userId = history?.location?.state?.user?._id;
+
   const { search } = useLocation();
   const bottomRef = useRef(null);
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { status, loading, selectedMsg, isSendingMsg, isChatClose } = useSelector((state) => state.chatReducer);
+  const { status, loading, selectedMsg, isSendingMsg, isChatClose } =
+    useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
 
@@ -47,6 +62,7 @@ const ChatDetails = () => {
   const [dynamic_description, setdynamic_description] = useState("");
   const [chatStatus, setChatStatus] = useState("");
   const [requestId, setRequestId] = useState("");
+  const [lastFiveOrder, setLastFiveOrder] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -69,7 +85,12 @@ const ChatDetails = () => {
         },
       });
 
-      console.log(data);
+      const response = await requestApi().request(LAST_FIVE_ORDER + userId);
+      if (data?.status) {
+        setLastFiveOrder(response?.data?.data);
+      }
+
+      // console.log(response, LAST_FIVE_ORDER + orderId);
 
       if (data.status) {
         setIsLoading(false);
@@ -97,7 +118,6 @@ const ChatDetails = () => {
         setChatStatus("closed");
       });
       return () => {
-        console.log("muin");
         socket.removeListener(`user_message_sent-${requestId}`);
         socket.removeListener(`chat-close-${requestId}`);
       };
@@ -178,6 +198,11 @@ const ChatDetails = () => {
     bottomRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
   };
 
+  var parseTime = (date) => {
+    var m = moment(date).format("hh:mm a");
+    return m;
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -195,7 +220,12 @@ const ChatDetails = () => {
               </SweetAlert>
             ) : null}
 
-            <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Single Query" isRefresh={false} />
+            <Breadcrumb
+              maintitle="Lyxa"
+              breadcrumbItem="Details"
+              title="Single Query"
+              isRefresh={false}
+            />
 
             <Row>
               <Col lg={6}>
@@ -203,7 +233,9 @@ const ChatDetails = () => {
                   <CardBody>
                     <div className="d-flex justify-content-between align-items-center">
                       <CardTitle className="d-flex flex-column">
-                        <p className="mb-0">{`Conversion with ${!request[0]?.user?.name ? "" : request[0]?.user?.name}`}</p>
+                        <p className="mb-0">{`Conversion with ${
+                          !request[0]?.user?.name ? "" : request[0]?.user?.name
+                        }`}</p>
                         <strong
                           style={{
                             color:
@@ -216,7 +248,7 @@ const ChatDetails = () => {
                                 : "red",
                             fontSize: "11px",
                             textTransform: "uppercase",
-                            fontWeight: 'bold'
+                            fontWeight: "bold",
                           }}
                         >
                           {chatStatus}
@@ -253,7 +285,9 @@ const ChatDetails = () => {
                               setconfirm_alert(false);
                               setsuccess_dlg(true);
                               setdynamic_title("Close");
-                              setdynamic_description("Your file has been closed.");
+                              setdynamic_description(
+                                "Your file has been closed."
+                              );
                             }}
                             onCancel={() => setconfirm_alert(false)}
                           >
@@ -286,7 +320,11 @@ const ChatDetails = () => {
                                 <div key={index}>
                                   {chat?.type === "system" && (
                                     <div className="mb-4 ">
-                                      <p className="text-center">{new Date(chat.createdAt).toLocaleString()}</p>
+                                      <p className="text-center">
+                                        {new Date(
+                                          chat.createdAt
+                                        ).toLocaleString()}
+                                      </p>
                                       <div className="ctext-wrap">
                                         <strong>{chat?.message}.</strong>
                                       </div>
@@ -301,7 +339,11 @@ const ChatDetails = () => {
                                             src={chat?.user?.profile_photo}
                                             className="avatar-xs rounded-circle cursor-pointer"
                                             alt="Admin"
-                                            onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
+                                            onClick={() =>
+                                              history.push(
+                                                `/users/details/${chat?.user?._id}`
+                                              )
+                                            }
                                           />
                                         </Tooltip>
                                       </div>
@@ -309,6 +351,9 @@ const ChatDetails = () => {
                                         <div className="conversation-text color-primary">
                                           <div className="ctext-wrap">
                                             <strong>{chat?.message}.</strong>
+                                            <div style={{ color: "grey" }}>
+                                              {parseTime(chat?.createdAt)}
+                                            </div>
                                           </div>
                                         </div>
                                         {/* {index === arr.at(-1) && (
@@ -323,11 +368,18 @@ const ChatDetails = () => {
                                   {chat?.type === "admin" && (
                                     <li className="clearfix odd">
                                       <div className="chat-avatar">
-                                        <img src={user1} className="avatar-xs rounded-circle" alt="Admin" />
+                                        <img
+                                          src={user1}
+                                          className="avatar-xs rounded-circle"
+                                          alt="Admin"
+                                        />
                                       </div>
                                       <div className="conversation-text">
                                         <div className="ctext-wrap">
                                           <strong>{chat?.message}.</strong>
+                                          <div style={{ color: "grey" }}>
+                                            {parseTime(chat?.createdAt)}
+                                          </div>
                                         </div>
                                       </div>
                                     </li>
@@ -387,7 +439,10 @@ const ChatDetails = () => {
                           />
                         </Col>
                         <Col md={2} className="chat-send">
-                          <div style={{ marginTop: 2 }} className="d-flex align-items-center justify-content-end h-100">
+                          <div
+                            style={{ marginTop: 2 }}
+                            className="d-flex align-items-center justify-content-end h-100"
+                          >
                             <Button
                               onClick={sendMsg}
                               type="submit"
@@ -423,7 +478,10 @@ const ChatDetails = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4">User Last 5 Orders</CardTitle>
-                <Table id="tech-companies-1" className="table  table-hover text-center">
+                <Table
+                  id="tech-companies-1"
+                  className="table  table-hover text-center"
+                >
                   <Thead>
                     <Tr>
                       <Th>Order Id</Th>
@@ -436,7 +494,7 @@ const ChatDetails = () => {
                   </Thead>
 
                   <Tbody style={{ position: "relative" }}>
-                    {request?.lastFiveOrder?.map((item, index) => {
+                    {lastFiveOrder?.map((item, index) => {
                       return (
                         <Tr
                           key={index}

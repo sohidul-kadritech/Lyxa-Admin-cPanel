@@ -176,7 +176,7 @@ const DropPayList = () => {
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between">
-                  <h4>{`Total Lyax Earning: ${
+                  <h4>{`Total Lyxa Earning: ${
                     summary?.totalDropEarning ?? 0
                   } NGN`}</h4>
                   <Button
