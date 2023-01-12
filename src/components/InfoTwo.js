@@ -3,7 +3,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
-const InfoTwo = ({ value, Icon, link, mapLink }) => {
+const InfoTwo = ({ value, Icon, link, mapLink, classes }) => {
   const history = useHistory();
 
   return (
@@ -18,11 +18,11 @@ const InfoTwo = ({ value, Icon, link, mapLink }) => {
         title={`${link ? "See details" : mapLink ? "See Location" : ""}`}
       >
         {mapLink ? (
-          <a className="value" href={mapLink} target="blank">
+          <a className={`value ${classes || ''}`} href={mapLink} target="blank">
             {value}
           </a>
         ) : (
-          <span className="value">{value}</span>
+          <span className={`value ${classes || ''}`}>{value}</span>
         )}
       </Tooltip>
     </InfoWrapper>

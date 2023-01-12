@@ -269,7 +269,7 @@ const SellerInfo = () => {
             Icon={RoomOutlinedIcon}
           />
           <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-          <InfoTwo value={email} Icon={AlternateEmailOutlinedIcon} />
+          <InfoTwo classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
         </Col>
       </Row>
     </InfoWrapper>

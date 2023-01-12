@@ -363,6 +363,7 @@ const ShopDetails = () => {
                     <InfoTwo
                       Icon={AlternateEmailOutlinedIcon}
                       value={shop?.email}
+                      classes="text-lowercase"
                     />
                     <InfoTwo
                       Icon={RoomOutlinedIcon}

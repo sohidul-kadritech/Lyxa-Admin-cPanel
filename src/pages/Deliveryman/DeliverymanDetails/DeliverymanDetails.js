@@ -156,6 +156,7 @@ const DeliverymanDetails = () => {
                     <InfoTwo
                       value={deliveryMan?.email}
                       Icon={AlternateEmailOutlinedIcon}
+                      classes="text-lowercase"
                     />
                     <InfoTwo
                       value={`${deliveryMan?.address}`}

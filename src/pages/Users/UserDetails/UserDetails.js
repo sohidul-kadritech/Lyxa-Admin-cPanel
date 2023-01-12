@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Modal,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Modal, Row, Spinner } from "reactstrap";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useHistory, useParams } from "react-router-dom";
@@ -19,10 +10,7 @@ import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
 import Info from "./../../../components/Info";
 import OrderTable from "../../../components/OrderTable";
-import {
-  getUserAllOrder,
-  updateUserStatus,
-} from "../../../store/Users/UsersAction";
+import { getUserAllOrder, updateUserStatus } from "../../../store/Users/UsersAction";
 import UserCradit from "../../../components/UserCradit";
 import AppPagination from "../../../components/AppPagination";
 import FlagsAndReviews from "../../../components/FlagsAndReviews";
@@ -98,12 +86,7 @@ const UserDetails = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumbs
-              maintitle="lyxa"
-              breadcrumbItem="Details"
-              title="User"
-              isRefresh={false}
-            />
+            <Breadcrumbs maintitle="lyxa" breadcrumbItem="Details" title="User" isRefresh={false} />
 
             <Row>
               <Col lg={6}>
@@ -125,21 +108,10 @@ const UserDetails = () => {
                           className="ms-3"
                           disabled={Object.keys(user).length === 0 || loading}
                           onClick={() =>
-                            dispatch(
-                              updateUserStatus(
-                                user?._id,
-                                user?.status === "active"
-                                  ? "inactive"
-                                  : "active"
-                              )
-                            )
+                            dispatch(updateUserStatus(user?._id, user?.status === "active" ? "inactive" : "active"))
                           }
                         >
-                          {loading
-                            ? "Loading..."
-                            : user?.status === "active"
-                            ? "Inactivate"
-                            : "Activate"}
+                          {loading ? "Loading..." : user?.status === "active" ? "Inactivate" : "Activate"}
                         </Button>
                       )}
                     </div>
@@ -160,44 +132,18 @@ const UserDetails = () => {
                       <Col xl={8} className="ps-3">
                         {Object.keys(user).length > 0 ? (
                           <>
-                            <InfoTwo
-                              value={`${user?.name} (Name)`}
-                              Icon={PersonOutlineOutlinedIcon}
-                            />
-                            <InfoTwo
-                              value={user?.email}
-                              Icon={AlternateEmailOutlinedIcon}
-                            />
-                            <InfoTwo
-                              value={`${user?.gender ?? "Unknown"} (Gender)`}
-                              Icon={TransgenderIcon}
-                            />
-                            <InfoTwo
-                              value={`${new Date(
-                                user?.dob
-                              ).toDateString()} (Birth Date)`}
-                              Icon={CakeIcon}
-                            />
-                            <InfoTwo
-                              value={`${user?.tempBalance} NGN (Lyxa Balance)`}
-                              Icon={SavingsIcon}
-                            />
-                            <InfoTwo
-                              value={`${user?.orderCompleted} (Orders)`}
-                              Icon={ShoppingBasketIcon}
-                            />
+                            <InfoTwo value={`${user?.name} (Name)`} Icon={PersonOutlineOutlinedIcon} />
+                            <InfoTwo value={user?.email} Icon={AlternateEmailOutlinedIcon} classes="text-lowercase" />
+                            <InfoTwo value={`${user?.gender ?? "Unknown"} (Gender)`} Icon={TransgenderIcon} />
+                            <InfoTwo value={`${new Date(user?.dob).toDateString()} (Birth Date)`} Icon={CakeIcon} />
+                            <InfoTwo value={`${user?.tempBalance} NGN (Lyxa Balance)`} Icon={SavingsIcon} />
+                            <InfoTwo value={`${user?.orderCompleted} (Orders)`} Icon={ShoppingBasketIcon} />
                             <InfoTwo
                               value={`${user?.status} (Status)`}
-                              Icon={
-                                user?.status === "active"
-                                  ? ToggleOnIcon
-                                  : ToggleOffIcon
-                              }
+                              Icon={user?.status === "active" ? ToggleOnIcon : ToggleOffIcon}
                             />
                             <InfoTwo
-                              value={`${new Date(
-                                user?.createdAt
-                              ).toDateString()} (Join Date)`}
+                              value={`${new Date(user?.createdAt).toDateString()} (Join Date)`}
                               Icon={HowToRegIcon}
                             />
                             <InfoTwo
@@ -230,9 +176,7 @@ const UserDetails = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) =>
-                      dispatch(getUserAllOrder(true, user?._id, page))
-                    }
+                    lisener={(page) => dispatch(getUserAllOrder(true, user?._id, page))}
                   />
                 </div>
               </Col>

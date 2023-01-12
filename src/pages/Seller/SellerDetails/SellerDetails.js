@@ -150,6 +150,7 @@ const SellerDetails = () => {
                     <InfoTwo
                       value={seller?.email}
                       Icon={AlternateEmailOutlinedIcon}
+                      classes="text-lowercase"
                     />
                     <InfoTwo
                       value={`${seller?.status} (Status)`}
