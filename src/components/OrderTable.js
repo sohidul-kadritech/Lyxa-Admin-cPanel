@@ -16,17 +16,7 @@ import {
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Form,
-  Modal,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Form, Modal, Row, Spinner } from "reactstrap";
 import { orderStatusOptions } from "../assets/staticData";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -110,10 +100,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const submitOrderStatus = (e) => {
     e.preventDefault();
     console.log(orderStatus);
-    if (
-      (orderStatus === "delivered" || orderStatus === "preparing") &&
-      !deliveryBoy?._id
-    ) {
+    if ((orderStatus === "delivered" || orderStatus === "preparing") && !deliveryBoy?._id) {
       return successMsg(`Assign delivery boy before ${orderStatus}`);
     }
     dispatch(
@@ -184,14 +171,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     const { user, rider, shop } = accountType;
     const { user: flagedUser, rider: flagedRider, shop: flagedShop } = isFlaged;
 
-    if (
-      !user &&
-      !flagedUser &&
-      !rider &&
-      !flagedRider &&
-      !shop &&
-      !flagedShop
-    ) {
+    if (!user && !flagedUser && !rider && !flagedRider && !shop && !flagedShop) {
       return successMsg("Please select a account type", "error");
     }
 
@@ -201,12 +181,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         comment,
         user: flagedUser && user ? "" : user ? selectFlagOrder?.user?._id : "",
         shop: flagedShop && shop ? "" : shop ? selectFlagOrder?.shop?._id : "",
-        delivery:
-          flagedRider && rider
-            ? ""
-            : rider
-            ? selectFlagOrder?.deliveryBoy?._id
-            : "",
+        delivery: flagedRider && rider ? "" : rider ? selectFlagOrder?.deliveryBoy?._id : "",
       })
     );
   };
@@ -292,12 +267,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       partialPayment: { shop, deliveryBoy, admin },
     } = orderCancel;
 
-    if (
-      orderCancel.refundType === "partial" &&
-      !shop &&
-      !deliveryBoy &&
-      !admin
-    ) {
+    if (orderCancel.refundType === "partial" && !shop && !deliveryBoy && !admin) {
       return successMsg("Enter Minimum One Partial Amount");
     }
 
@@ -361,10 +331,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               <Col md={3} className="text-end" />
             </Row>
             <CardTitle className="h4">Orders List</CardTitle>
-            <Table
-              id="tech-companies-1"
-              className="table table__wrapper  table-hover text-center"
-            >
+            <Table id="tech-companies-1" className="table table__wrapper  table-hover text-center">
               <Thead>
                 <Tr>
                   <Th>Customer</Th>
@@ -390,31 +357,19 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                       >
                         <Th onClick={() => goToDetails(item?._id)}>
                           <TableImgItem
-                            img={`${
-                              item?.user?.profile_photo
-                                ? item?.user?.profile_photo
-                                : noPhoto
-                            }`}
+                            img={`${item?.user?.profile_photo ? item?.user?.profile_photo : noPhoto}`}
                             altImg={userIcon}
                             name={item?.user?.name}
                             id={item?.orderId}
                           />
                         </Th>
 
+                        <Td onClick={() => goToDetails(item?._id)}>{item?.shop?.shopName}</Td>
                         <Td onClick={() => goToDetails(item?._id)}>
-                          {item?.shop?.shopName}
+                          <p className="mb-0">{new Date(item?.createdAt).toLocaleDateString()}</p>
+                          <span>{new Date(item?.createdAt).toLocaleTimeString()}</span>
                         </Td>
-                        <Td onClick={() => goToDetails(item?._id)}>
-                          <p className="mb-0">
-                            {new Date(item?.createdAt).toLocaleDateString()}
-                          </p>
-                          <span>
-                            {new Date(item?.createdAt).toLocaleTimeString()}
-                          </span>
-                        </Td>
-                        <Td
-                          onClick={() => goToDetails(item?._id)}
-                        >{`${item?.summary?.totalAmount} NGN`}</Td>
+                        <Td onClick={() => goToDetails(item?._id)}>{`${item?.summary?.totalAmount} NGN`}</Td>
                         <Td onClick={() => goToDetails(item?._id)}>
                           {item?.paymentMethod}
                           {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
@@ -422,9 +377,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                         <Td onClick={() => goToDetails(item?._id)}>
                           <div
                             className={`${
-                              ["cancelled", "refused"].includes(
-                                item?.orderStatus
-                              )
+                              ["cancelled", "refused"].includes(item?.orderStatus)
                                 ? "inactive-status"
                                 : item?.orderStatus === "delivered"
                                 ? "active-status"
@@ -438,9 +391,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           <ThreeDotsMenu
                             handleMenuClick={(menu) => handleMenu(menu, item)}
                             menuItems={[
-                              item?.orderStatus !== "cancelled" &&
-                                item?.orderStatus !== "delivered" &&
-                                "Update Status",
+                              item?.orderStatus !== "cancelled" && item?.orderStatus !== "delivered" && "Update Status",
                               account_type === "admin" && "Flag",
                               account_type === "admin" &&
                                 item?.orderStatus !== "cancelled" &&
@@ -505,9 +456,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         <div className="modal-body">
           <Form className="mb-4" onSubmit={submitOrderStatus}>
             <FormControl fullWidth required>
-              <InputLabel id="demo-simple-select-label">
-                Select status
-              </InputLabel>
+              <InputLabel id="demo-simple-select-label">Select status</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -519,10 +468,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               >
                 {orderStatusOptions.map((item, index) => (
                   <MenuItem key={index} value={item.value}>
-                    {orderFor === "specific" &&
-                    item.value === "accepted_delivery_boy"
-                      ? ""
-                      : item.label}
+                    {orderFor === "specific" && item.value === "accepted_delivery_boy" ? "" : item.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -535,12 +481,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 onChange={(event, newValue) => {
                   setDeliveryBoy(newValue);
                 }}
-                getOptionLabel={(option, index) =>
-                  option.name ? option.name : ""
-                }
-                isOptionEqualToValue={(option, value) =>
-                  option?._id == value?._id
-                }
+                getOptionLabel={(option, index) => (option.name ? option.name : "")}
+                isOptionEqualToValue={(option, value) => option?._id == value?._id}
                 inputValue={deliverySearchKey}
                 onInputChange={(event, newInputValue) => {
                   setDeliverySearchKey(newInputValue);
@@ -548,16 +490,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 id="controllable-states-demo"
                 options={activeDelieryBoys?.length > 0 ? activeDelieryBoys : []}
                 sx={{ width: "100%" }}
-                renderInput={(params, index) => (
-                  <TextField {...params} label="Select a Delivery Boy" />
-                )}
+                renderInput={(params, index) => <TextField {...params} label="Select a Delivery Boy" />}
                 renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    {...props}
-                    key={option._id}
-                  >
+                  <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props} key={option._id}>
                     {option.name}
                   </Box>
                 )}
@@ -652,9 +587,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           checked={accountType.rider}
                           onChange={FlagAccountChange}
                           name="rider"
-                          disabled={
-                            !selectFlagOrder?.deliveryBoy || isFlaged.rider
-                          }
+                          disabled={!selectFlagOrder?.deliveryBoy || isFlaged.rider}
                         />
                       }
                       label="Delivery boy"
@@ -672,11 +605,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                   style={{ width: "150px" }}
                   disabled={loading}
                 >
-                  {loading ? (
-                    <Spinner color="danger" size="sm"></Spinner>
-                  ) : (
-                    "Send"
-                  )}
+                  {loading ? <Spinner color="danger" size="sm"></Spinner> : "Send"}
                 </Button>
               </div>
             </Form>
@@ -720,12 +649,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                   otherReason: "",
                 });
               }}
-              getOptionLabel={(option, index) =>
-                option.name ? option.name : ""
-              }
-              isOptionEqualToValue={(option, value) =>
-                option?._id == value?._id
-              }
+              getOptionLabel={(option, index) => (option.name ? option.name : "")}
+              isOptionEqualToValue={(option, value) => option?._id == value?._id}
               inputValue={deliverySearchKey}
               onInputChange={(event, newInputValue) => {
                 setDeliverySearchKey(newInputValue);
@@ -734,19 +659,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               options={cancelReasons.length > 0 ? cancelReasons : []}
               sx={{ width: "100%" }}
               renderInput={(params, index) => (
-                <TextField
-                  {...params}
-                  label="Select a cancel reason"
-                  required={!isOtherReason}
-                />
+                <TextField {...params} label="Select a cancel reason" required={!isOtherReason} />
               )}
               renderOption={(props, option) => (
-                <Box
-                  component="li"
-                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                  {...props}
-                  key={option?._id}
-                >
+                <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props} key={option?._id}>
                   {option?.name}
                 </Box>
               )}
@@ -796,21 +712,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 onChange={(e) => updateRefundType(e.target.value)}
                 required
               >
-                <FormControlLabel
-                  value="full"
-                  control={<Radio />}
-                  label="Full Refund"
-                />
-                <FormControlLabel
-                  value="partial"
-                  control={<Radio />}
-                  label="Partial Refund"
-                />
-                <FormControlLabel
-                  value="none"
-                  control={<Radio />}
-                  label="No Refund"
-                />
+                <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
+                <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
+                <FormControlLabel value="none" control={<Radio />} label="No Refund" />
               </RadioGroup>
             </FormControl>
 
@@ -874,11 +778,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 // style={{ width: "120px" }}
                 disabled={loading}
               >
-                {loading ? (
-                  <Spinner color="danger" size="sm"></Spinner>
-                ) : (
-                  "Confirm cancel order"
-                )}
+                {loading ? <Spinner color="danger" size="sm"></Spinner> : "Confirm cancel order"}
               </Button>
             </div>
           </Form>
