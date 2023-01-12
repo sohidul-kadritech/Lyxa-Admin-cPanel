@@ -31,10 +31,10 @@ const TrackingDeliveryBoy = ({ riderId }) => {
     statusHasNextPage,
     statusHasPreviousPage,
     statusCurrentPage,
-    riderAllActivity,
     startDate,
     endDate,
-    totalActiveTime: { hour, minutes },
+    riderAllActivity,
+    deliveryBoySummery,
   } = useSelector((state) => state.deliveryManReducer);
 
   const dispatch = useDispatch();
@@ -69,7 +69,9 @@ const TrackingDeliveryBoy = ({ riderId }) => {
             ></Info> */}
             <div>
               <span>Total Active Time : </span>
-              <span>{`${hour > 0 ? `${hour}h` : ""} ${minutes} min's`}</span>
+              <span>{`${calcActiveTime(
+                deliveryBoySummery?.totalMinutes
+              )}`}</span>
             </div>
             <div className="d-flex my-3  ">
               <div className=" w-100">

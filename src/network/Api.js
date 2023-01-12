@@ -148,7 +148,7 @@ export const ALL_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy";
 export const SINGLE_DELIVERY_MAN =
   ADMIN_ENDPOINT + "/delivery-boy/get-single-delivery-boy";
 export const EDIT_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/update";
-export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/time";
+export const TRACK_DELIVERY_MAN = ADMIN_ENDPOINT + "/delivery-boy/tracking";
 export const DELIVERY_BOY_ORDERS = ADMIN_ENDPOINT + "/order/delivery";
 export const DELIVERY_BOY_CURRENT_LOCATION =
   ADMIN_ENDPOINT + "/delivery-boy/get-current-location";
@@ -179,12 +179,17 @@ export const DELETE_SELLER_SPECIAL_DROP_CHARGE =
 
 export const ADMIN_LOGS_HISTORY = ADMIN_ENDPOINT + "/setting/admin-logs";
 
-export const DATABASE_ALL_COLLECTIONS = ADMIN_ENDPOINT + '/database/collections';
-export const DATABASE_COLLECTION_BACKUP = ADMIN_ENDPOINT + '/database/back-up';
-export const DATABASE_RESTORE_LAST_COLLECTION_BACKUP = ADMIN_ENDPOINT + '/database/restore-backup';
-export const DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP = ADMIN_ENDPOINT + '/database/restore-all-backup';
-export const DATABASE_DELETE_COLLECTION = ADMIN_ENDPOINT + '/database/delete-collection';
-export const DATABASE_DELETE_ALL_COLLECTION = ADMIN_ENDPOINT + '/database/delete-all';
+export const DATABASE_ALL_COLLECTIONS =
+  ADMIN_ENDPOINT + "/database/collections";
+export const DATABASE_COLLECTION_BACKUP = ADMIN_ENDPOINT + "/database/back-up";
+export const DATABASE_RESTORE_LAST_COLLECTION_BACKUP =
+  ADMIN_ENDPOINT + "/database/restore-backup";
+export const DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP =
+  ADMIN_ENDPOINT + "/database/restore-all-backup";
+export const DATABASE_DELETE_COLLECTION =
+  ADMIN_ENDPOINT + "/database/delete-collection";
+export const DATABASE_DELETE_ALL_COLLECTION =
+  ADMIN_ENDPOINT + "/database/delete-all";
 
 // DEAL
 

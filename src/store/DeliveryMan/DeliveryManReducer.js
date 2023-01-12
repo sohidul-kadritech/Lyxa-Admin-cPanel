@@ -185,8 +185,8 @@ const deliveryManReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        riderAllActivity: payload.activity,
-        totalActiveTime: payload.getTotalTime,
+        riderAllActivity: payload.activities,
+        deliveryBoySummery: payload.deliveryBoySummery,
         statusPaginate: payload.paginate,
         statusPaging: payload.paginate.metadata.paging,
         statusHasNextPage: payload.paginate.metadata.hasNextPage,
