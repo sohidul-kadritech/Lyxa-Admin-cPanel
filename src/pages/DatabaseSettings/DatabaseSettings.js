@@ -14,40 +14,44 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AvForm, AvField } from "availity-reactstrap-validation";
 import { Link } from "react-router-dom";
-import { adminAuth } from "../../store/auth/login/actions";
-import { successMsg } from "../../helpers/successMsg";
+// import { adminAuth } from "../../store/auth/login/actions";
+// import { successMsg } from "../../helpers/successMsg";
 
 const DatabaseSettings = () => {
   const dispatch = useDispatch();
   const { loading, error, databaseCollections } = useSelector((store) => store.settingsReducer);
-  const { admin, error: authError } = useSelector((store) => store.Login);
-  const { account_type, adminType, email, token } = admin;
+  // const { admin, error: authError } = useSelector((store) => store.Login);
+  // const { account_type, adminType, email, token } = admin;
   const [cofirmationModal, setConfirmationModal] = useState(false);
-  const [authModal, setAuthModal] = useState(false);
+  const [authModal, setAuthModal] = useState(true);
   const [actionObj, setActionObj] = useState({ action: () => {}, actionMsg: "" });
-  const [isAllDisabled, setIsAllDisabled] = useState(false);
+  const [isAllDisabled, setIsAllDisabled] = useState(true);
 
   const formHandler = (event, v) => {
-    if (account_type !== "admin" && adminType !== "admin") {
-      successMsg("You are not allowed to this page", "warn");
-      return;
-    } else {
-      const { password } = v;
-      dispatch(adminAuth({ email, password, type: account_type }));
+    if(v.password === '123321'){
+      setAuthModal(false);
+      setIsAllDisabled(false);
     }
+    // if (account_type !== "admin" && adminType !== "admin") {
+    //   successMsg("You are not allowed to this page", "warn");
+    //   return;
+    // } else {
+    //   const { password } = v;
+    //   dispatch(adminAuth({ email, password, type: account_type }));
+    // }
   };
 
   useEffect(() => {
     dispatch(getAllDatabaseCollections());
   }, []);
 
-  useEffect(() => {
-    console.log(token);
-    if (token !== "") {
-      setAuthModal((v) => !v);
-      setIsAllDisabled((v) => !v);
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   console.log(token);
+  //   if (token !== "") {
+  //     setAuthModal((v) => !v);
+  //     setIsAllDisabled((v) => !v);
+  //   }
+  // }, [token]);
 
   return (
     <React.Fragment>
@@ -81,7 +85,7 @@ const DatabaseSettings = () => {
                     </div>
                     <div className="mb-3">
                       <AvField name="password" value="" type="password" required placeholder="Enter Password" />
-                      <span>{authError || ""}</span>
+                      {/* <span>{authError || ""}</span> */}
                     </div>
                     <Button className="btn btn-dark w-md waves-effect waves-light" type="submit">
                       Submit
