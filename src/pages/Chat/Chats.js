@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Container,
+  Input,
+  Row,
+  Spinner,
+} from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -27,10 +37,22 @@ const Chats = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { socket } = useSelector((state) => state.socketReducer);
-  const { loading, chatRequests, orderChatSearchKey, paging, hasNextPage, hasPreviousPage, currentPage, statusKey } =
-    useSelector((state) => state.chatReducer);
-  const { shops, searchKey: shopSearchKey } = useSelector((state) => state.shopReducer);
-  const { users, searchKey: userSearchKey } = useSelector((state) => state.usersReducer);
+  const {
+    loading,
+    chatRequests,
+    orderChatSearchKey,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+    statusKey,
+  } = useSelector((state) => state.chatReducer);
+  const { shops, searchKey: shopSearchKey } = useSelector(
+    (state) => state.shopReducer
+  );
+  const { users, searchKey: userSearchKey } = useSelector(
+    (state) => state.usersReducer
+  );
 
   const [shop, setShop] = useState(null);
   const [user, setUser] = useState(null);
@@ -62,7 +84,12 @@ const Chats = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb maintitle="Drop" breadcrumbItem="Customer Support" loading={loading} callList={callChatList} />
+            <Breadcrumb
+              maintitle="Drop"
+              breadcrumbItem="Customer Support"
+              loading={loading}
+              callList={callChatList}
+            />
 
             <Card>
               <CardBody>
@@ -73,7 +100,9 @@ const Chats = () => {
                       value={shop}
                       onChange={(event, newValue) => setShop(newValue)}
                       searchKey={shopSearchKey}
-                      onInputChange={(event, newInputValue) => dispatch(updateShopSearchKey(newInputValue))}
+                      onInputChange={(event, newInputValue) =>
+                        dispatch(updateShopSearchKey(newInputValue))
+                      }
                       list={shops}
                       type="shop"
                       showImg={true}
@@ -85,7 +114,9 @@ const Chats = () => {
                       value={user}
                       onChange={(event, newValue) => setUser(newValue)}
                       searchKey={userSearchKey}
-                      onInputChange={(event, newInputValue) => dispatch(updateSearchKey(newInputValue))}
+                      onInputChange={(event, newInputValue) =>
+                        dispatch(updateSearchKey(newInputValue))
+                      }
                       list={users}
                       type="user"
                     />
@@ -93,7 +124,10 @@ const Chats = () => {
                 </Row>
                 <div className="mt-3 d-flex justify-content-center">
                   <div style={{ width: "70%" }}>
-                    <Search dispatchFunc={updateOrderChatSearchKey} placeholder="Search by order id" />
+                    <Search
+                      dispatchFunc={updateOrderChatSearchKey}
+                      placeholder="Search by order id"
+                    />
                   </div>
                 </div>
               </CardBody>
@@ -106,7 +140,10 @@ const Chats = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4"> Order Chat Requests</CardTitle>
-                <Table id="tech-companies-1" className="table  table-hover text-center">
+                <Table
+                  id="tech-companies-1"
+                  className="table  table-hover text-center"
+                >
                   <Thead>
                     <Tr>
                       <Th>Shop/Customer</Th>
@@ -130,7 +167,11 @@ const Chats = () => {
                         >
                           <Th>
                             <TableImgItem
-                              img={item?.shop?.shopLogo ? item?.shop?.shopLogo : noPhoto}
+                              img={
+                                item?.shop?.shopLogo
+                                  ? item?.shop?.shopLogo
+                                  : noPhoto
+                              }
                               name={item?.shop?.shopName}
                               id={item?.user?.name}
                               fromChat={true}
@@ -138,10 +179,14 @@ const Chats = () => {
                           </Th>
                           <Td>
                             <p className="mb-0">
-                              {new Date(item?.admin_chat_request?.at(0).createdAt).toLocaleDateString()}
+                              {new Date(
+                                item?.admin_chat_request?.at(0).createdAt
+                              ).toLocaleDateString()}
                             </p>
                             <p className="mb-0">
-                              {new Date(item?.admin_chat_request?.at(0).createdAt).toLocaleTimeString()}
+                              {new Date(
+                                item?.admin_chat_request?.at(0).createdAt
+                              ).toLocaleTimeString()}
                             </p>
                           </Td>
 
@@ -153,12 +198,9 @@ const Chats = () => {
                                 <button
                                   className="btn btn-info button me-2"
                                   onClick={() => {
-                                    history.push({
-                                      pathname: `/customer-support/chats-by-single-order/${item?._id}`,
-                                      state: {
-                                        userId: item?.user?._id,
-                                      },
-                                    });
+                                    history.push(
+                                      `/customer-support/chats-by-single-order/${item?._id}`
+                                    );
                                   }}
                                 >
                                   <i className="fa fa-eye" />
@@ -192,7 +234,9 @@ const Chats = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) => dispatch(userList(true, user?._id, shop?._id, page))}
+                    lisener={(page) =>
+                      dispatch(userList(true, user?._id, shop?._id, page))
+                    }
                   />
                 </div>
               </Col>

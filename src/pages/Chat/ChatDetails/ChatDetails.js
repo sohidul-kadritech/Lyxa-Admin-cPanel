@@ -1,7 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Container,
+  Input,
+  Row,
+  Spinner,
+} from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 import user1 from "../../../assets/images/user1.jpg";
@@ -30,13 +40,12 @@ const ChatDetails = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const { search, state } = useLocation();
-  const userId = state?.userId || "";
-
+  const { search } = useLocation();
   const bottomRef = useRef(null);
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { status, loading, selectedMsg, isSendingMsg, isChatClose } = useSelector((state) => state.chatReducer);
+  const { status, loading, selectedMsg, isSendingMsg, isChatClose } =
+    useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
 
@@ -48,7 +57,7 @@ const ChatDetails = () => {
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
   const [chatStatus, setChatStatus] = useState("");
-  const [requestId, setRequestId] = useState("");
+  const [requestId,setRequestId]=useState("");
 
   useEffect(() => {
     if (id) {
@@ -67,25 +76,26 @@ const ChatDetails = () => {
       const status = searchParams.get("status");
       setChatStatus(status);
 
-      callApi(userId);
+      callApi(id);
     }
     return;
   }, [id]);
 
-  const callApi = async (userId) => {
+  const callApi = async (orderId) => {
     try {
-      const { data } = await requestApi().request("/admin/order/get-five-order", {
+      const { data } = await requestApi().request(SINGLE_CHAT, {
         params: {
-          userId,
+          orderId,
         },
       });
 
       if (data.status) {
         setIsLoading(false);
-        let chats = data?.data;
-        let length = chats?.length;
-        setRequestId(chats[length - 1]?.adminChatRequest?._id);
-        setRequest(data?.data);
+        console.log(data);
+        let chats=data?.data?.chats;
+        let length=chats?.length;
+        setRequestId(chats[length-1]?.adminChatRequest?._id)
+        setRequest(data?.data?.chats);
         scrollToBottom();
       }
     } catch (e) {
@@ -112,7 +122,9 @@ const ChatDetails = () => {
 
   // SENT MESSAGE TO USER
   const sendMsg = () => {
-    const requestId = request?.at(-1)?.admin_chat_request.at(-1);
+    // const requestId = request?.at(-1)?.adminChatRequest?._id;
+    // console.log({ request });
+    // console.log({ requestId });
     dispatch(
       sendMsgToUser({
         id: requestId,
@@ -199,7 +211,12 @@ const ChatDetails = () => {
               </SweetAlert>
             ) : null}
 
-            <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Single Query" isRefresh={false} />
+            <Breadcrumb
+              maintitle="Lyxa"
+              breadcrumbItem="Details"
+              title="Single Query"
+              isRefresh={false}
+            />
 
             <Row>
               <Col lg={6}>
@@ -216,7 +233,9 @@ const ChatDetails = () => {
                       )}
                       <div
                         className={`d-flex align-items-center ${
-                          request?.status === "accepted" ? "justify-content-between" : "justify-content-end"
+                          request?.status === "accepted"
+                            ? "justify-content-between"
+                            : "justify-content-end"
                         }`}
                         style={{ width: "190px" }}
                       >
@@ -258,7 +277,9 @@ const ChatDetails = () => {
                               setconfirm_alert(false);
                               setsuccess_dlg(true);
                               setdynamic_title("Close");
-                              setdynamic_description("Your file has been closed.");
+                              setdynamic_description(
+                                "Your file has been closed."
+                              );
                             }}
                             onCancel={() => setconfirm_alert(false)}
                           >
@@ -287,61 +308,70 @@ const ChatDetails = () => {
                               //   width: "100%",
                               // }}
                             >
-                              {request?.map((chat, index, arr) => {
-                                console.log(chat);
-                                return (
-                                  <div key={index}>
-                                    {chat?.type === "system" && (
-                                      <div className="mb-4 ">
-                                        <p className="text-center">{new Date(chat.createdAt).toLocaleString()}</p>
-                                        <div className="ctext-wrap">
-                                          <strong>{chat?.message}.</strong>
-                                        </div>
+                              {request?.map((chat, index, arr) => (
+                                <div key={index}>
+                                  {chat?.type === "system" && (
+                                    <div className="mb-4 ">
+                                      <p className="text-center">
+                                        {new Date(
+                                          chat.createdAt
+                                        ).toLocaleString()}
+                                      </p>
+                                      <div className="ctext-wrap">
+                                        <strong>{chat?.message}.</strong>
                                       </div>
-                                    )}
+                                    </div>
+                                  )}
 
-                                    {chat?.type === "user" && (
-                                      <li className="clearfix">
-                                        <div className="chat-avatar">
-                                          <Tooltip title="See user details">
-                                            <img
-                                              src={chat?.user?.profile_photo}
-                                              className="avatar-xs rounded-circle cursor-pointer"
-                                              alt="Admin"
-                                              onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
-                                            />
-                                          </Tooltip>
-                                        </div>
-                                        <div className="d-flex flex-column">
-                                          <div className="conversation-text color-primary">
-                                            <div className="ctext-wrap">
-                                              <strong>{chat?.message}.</strong>
-                                            </div>
-                                          </div>
-                                          {/* {index === arr.at(-1) && (
-                                            <small className="ms-3">
-                                              {chat?.seen && "Seen"}
-                                            </small>
-                                          )} */}
-                                        </div>
-                                      </li>
-                                    )}
-
-                                    {chat?.type === "admin" && (
-                                      <li className="clearfix odd">
-                                        <div className="chat-avatar">
-                                          <img src={user1} className="avatar-xs rounded-circle" alt="Admin" />
-                                        </div>
-                                        <div className="conversation-text">
+                                  {chat?.type === "user" && (
+                                    <li className="clearfix">
+                                      <div className="chat-avatar">
+                                        <Tooltip title="See user details">
+                                          <img
+                                            src={chat?.user?.profile_photo}
+                                            className="avatar-xs rounded-circle cursor-pointer"
+                                            alt="Admin"
+                                            onClick={() =>
+                                              history.push(
+                                                `/users/details/${chat?.user?._id}`
+                                              )
+                                            }
+                                          />
+                                        </Tooltip>
+                                      </div>
+                                      <div className="d-flex flex-column">
+                                        <div className="conversation-text color-primary">
                                           <div className="ctext-wrap">
                                             <strong>{chat?.message}.</strong>
                                           </div>
                                         </div>
-                                      </li>
-                                    )}
-                                  </div>
-                                );
-                              })}
+                                        {/* {index === arr.at(-1) && (
+                                          <small className="ms-3">
+                                            {chat?.seen && "Seen"}
+                                          </small>
+                                        )} */}
+                                      </div>
+                                    </li>
+                                  )}
+
+                                  {chat?.type === "admin" && (
+                                    <li className="clearfix odd">
+                                      <div className="chat-avatar">
+                                        <img
+                                          src={user1}
+                                          className="avatar-xs rounded-circle"
+                                          alt="Admin"
+                                        />
+                                      </div>
+                                      <div className="conversation-text">
+                                        <div className="ctext-wrap">
+                                          <strong>{chat?.message}.</strong>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  )}
+                                </div>
+                              ))}
                               <li ref={bottomRef}></li>
                             </ul>
                           </>
@@ -430,7 +460,10 @@ const ChatDetails = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4">User Last 5 Orders</CardTitle>
-                <Table id="tech-companies-1" className="table  table-hover text-center">
+                <Table
+                  id="tech-companies-1"
+                  className="table  table-hover text-center"
+                >
                   <Thead>
                     <Tr>
                       <Th>Order Id</Th>
@@ -443,7 +476,7 @@ const ChatDetails = () => {
                   </Thead>
 
                   <Tbody style={{ position: "relative" }}>
-                    {request?.map((item, index) => {
+                    {request?.lastFiveOrder?.map((item, index) => {
                       return (
                         <Tr
                           key={index}
