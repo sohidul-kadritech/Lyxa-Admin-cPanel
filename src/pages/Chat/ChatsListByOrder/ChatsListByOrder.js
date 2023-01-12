@@ -21,7 +21,7 @@ import {
   acceptChatReq,
 } from "../../../store/chat/chatAction";
 import { Tooltip } from "@mui/material";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import TableImgItem from "../../../components/TableImgItem";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
 import requestApi from "../../../network/httpRequest";
@@ -34,15 +34,18 @@ const ChatsListByOrder = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
+  const location = useLocation();
+  const userId = location?.state?.userId || '';
   const { socket } = useSelector((state) => state.socketReducer);
   const { status, loading, selectedMsg, chatRequests, isSendingMsg } =
     useSelector((state) => state.chatReducer);
+
 
   const [list, setList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (id) {
+    if (id || userId) {
       callOrderQueryList(true);
     } else {
       history.push("/customer-support", { replace: true });
@@ -86,6 +89,9 @@ const ChatsListByOrder = () => {
       history.push({
         pathname: `/customer-support/details/${item?.order}`,
         search: `?status=${item?.status}`,
+        state: {
+          userId,
+        }
       });
     }
   };
