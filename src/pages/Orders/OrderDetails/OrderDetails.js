@@ -526,7 +526,7 @@ const OrderDetails = () => {
                         <h6 className="text-dark font-size-14">Status</h6>
                         {order?.orderCancel ? (
                           <span>
-                            {order?.orderCancel?.canceledBy} |
+                            {order?.orderCancel?.canceledBy} |{' '}
                             {order?.orderCancel?.cancelReason
                               ? order?.orderCancel?.cancelReason?.name
                               : order?.orderCancel.otherReason}

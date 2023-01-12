@@ -67,7 +67,7 @@ const ChatMessageTable = ({ isFromChat = false }) => {
     <React.Fragment>
       <GlobalWrapper>
         <Row className="d-flex justify-content-center align-items-center">
-          <Col lg={8}>
+          <Col lg={12}>
             <Search
               dispatchFunc={updateDefaultSearchKey}
               placeholder="Search By message"

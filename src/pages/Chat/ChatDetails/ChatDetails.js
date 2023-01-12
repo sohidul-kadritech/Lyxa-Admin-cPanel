@@ -1,17 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Input,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
 import user1 from "../../../assets/images/user1.jpg";
@@ -44,8 +34,7 @@ const ChatDetails = () => {
   const bottomRef = useRef(null);
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { status, loading, selectedMsg, isSendingMsg, isChatClose } =
-    useSelector((state) => state.chatReducer);
+  const { status, loading, selectedMsg, isSendingMsg, isChatClose } = useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
 
@@ -206,34 +195,15 @@ const ChatDetails = () => {
               </SweetAlert>
             ) : null}
 
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem="Details"
-              title="Single Query"
-              isRefresh={false}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Single Query" isRefresh={false} />
 
             <Row>
               <Col lg={6}>
                 <Card style={{ height: "500px" }}>
                   <CardBody>
                     <div className="d-flex justify-content-between align-items-center">
-                      <CardTitle>{`Conversion with ${
-                        !request[0]?.user?.name ? "" : request[0]?.user?.name
-                      }`}</CardTitle>
-                      {(loading || isLoading) && (
-                        <div className="text-center">
-                          <Spinner animation="border" color="info" />
-                        </div>
-                      )}
-                      <div
-                        className={`d-flex align-items-center ${
-                          request?.status === "accepted"
-                            ? "justify-content-between"
-                            : "justify-content-end"
-                        }`}
-                        style={{ width: "190px" }}
-                      >
+                      <CardTitle className="d-flex flex-column">
+                        <p className="mb-0">{`Conversion with ${!request[0]?.user?.name ? "" : request[0]?.user?.name}`}</p>
                         <strong
                           style={{
                             color:
@@ -244,12 +214,23 @@ const ChatDetails = () => {
                                 : chatStatus === "resolved"
                                 ? "#42f5aa"
                                 : "red",
-                            fontSize: "15px",
+                            fontSize: "11px",
                             textTransform: "uppercase",
+                            fontWeight: 'bold'
                           }}
                         >
                           {chatStatus}
                         </strong>
+                      </CardTitle>
+                      {(loading || isLoading) && (
+                        <div className="text-center">
+                          <Spinner animation="border" color="info" />
+                        </div>
+                      )}
+                      <div
+                        className={`d-flex align-items-center justify-content-end`}
+                        style={{ width: "190px" }}
+                      >
                         {chatStatus === "accepted" ? (
                           <Button
                             className="btn btn-danger ms-1"
@@ -272,9 +253,7 @@ const ChatDetails = () => {
                               setconfirm_alert(false);
                               setsuccess_dlg(true);
                               setdynamic_title("Close");
-                              setdynamic_description(
-                                "Your file has been closed."
-                              );
+                              setdynamic_description("Your file has been closed.");
                             }}
                             onCancel={() => setconfirm_alert(false)}
                           >
@@ -307,11 +286,7 @@ const ChatDetails = () => {
                                 <div key={index}>
                                   {chat?.type === "system" && (
                                     <div className="mb-4 ">
-                                      <p className="text-center">
-                                        {new Date(
-                                          chat.createdAt
-                                        ).toLocaleString()}
-                                      </p>
+                                      <p className="text-center">{new Date(chat.createdAt).toLocaleString()}</p>
                                       <div className="ctext-wrap">
                                         <strong>{chat?.message}.</strong>
                                       </div>
@@ -326,11 +301,7 @@ const ChatDetails = () => {
                                             src={chat?.user?.profile_photo}
                                             className="avatar-xs rounded-circle cursor-pointer"
                                             alt="Admin"
-                                            onClick={() =>
-                                              history.push(
-                                                `/users/details/${chat?.user?._id}`
-                                              )
-                                            }
+                                            onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
                                           />
                                         </Tooltip>
                                       </div>
@@ -352,11 +323,7 @@ const ChatDetails = () => {
                                   {chat?.type === "admin" && (
                                     <li className="clearfix odd">
                                       <div className="chat-avatar">
-                                        <img
-                                          src={user1}
-                                          className="avatar-xs rounded-circle"
-                                          alt="Admin"
-                                        />
+                                        <img src={user1} className="avatar-xs rounded-circle" alt="Admin" />
                                       </div>
                                       <div className="conversation-text">
                                         <div className="ctext-wrap">
@@ -420,10 +387,7 @@ const ChatDetails = () => {
                           />
                         </Col>
                         <Col md={2} className="chat-send">
-                          <div
-                            style={{ marginTop: 2 }}
-                            className="d-flex align-items-center justify-content-end h-100"
-                          >
+                          <div style={{ marginTop: 2 }} className="d-flex align-items-center justify-content-end h-100">
                             <Button
                               onClick={sendMsg}
                               type="submit"
@@ -459,10 +423,7 @@ const ChatDetails = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4">User Last 5 Orders</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table  table-hover text-center"
-                >
+                <Table id="tech-companies-1" className="table  table-hover text-center">
                   <Thead>
                     <Tr>
                       <Th>Order Id</Th>
