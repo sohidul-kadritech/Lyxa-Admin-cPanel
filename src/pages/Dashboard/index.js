@@ -404,10 +404,7 @@ const ShopInfo = () => {
                 Icon={MopedOutlinedIcon}
               />
 
-              <InfoTwo
-                value={`${deals.length > 0 ? deals[0]?.name : 0} (Deals)`}
-                Icon={SettingsInputSvideoIcon}
-              />
+              <InfoTwo value={deals} Icon={SettingsInputSvideoIcon} />
             </Col>
           </Row>
         </Col>
