@@ -32,6 +32,7 @@ const InfoTwo = ({ value, Icon, link, mapLink, classes }) => {
         </Tooltip>
       </InfoWrapper>
     );
+    
   } else {
     return (
       <InfoWrapper
