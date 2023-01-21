@@ -363,7 +363,7 @@ export const adminMenuItem = [
         icon: "fas fa-exchange-alt",
         link: "/admin/database/collections",
         isSubmenu: false,
-      }
+      },
     ],
   },
   {
@@ -470,7 +470,7 @@ export const customerServiceMenuItem = [
   },
   {
     id: 6,
-    name: "Drop Pay",
+    name: "Lyxa Pay",
     icon: "fas fa-comment-dollar",
     link: "/drop-pay",
     isSubmenu: false,

@@ -145,7 +145,7 @@ const SendNotifications = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Send Notifications"
               //   loading={loading}
               //   callList={callSellerList}

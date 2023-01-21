@@ -395,7 +395,7 @@ const ShopInfo = () => {
               {/* <InfoTwo value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
               <InfoTwo
                 value={`${
-                  haveOwnDeliveryBoy ? "Self" : "Drop"
+                  haveOwnDeliveryBoy ? "Self" : "Lyxa"
                 } (Delivery Type)`}
                 Icon={PaymentIcon}
               />

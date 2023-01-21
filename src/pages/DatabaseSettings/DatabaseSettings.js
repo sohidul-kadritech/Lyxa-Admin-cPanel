@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import GlobalWrapper from "../../components/GlobalWrapper";
-import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner, Modal } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Container,
+  Row,
+  Spinner,
+  Modal,
+} from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import {
@@ -19,16 +29,21 @@ import { Link } from "react-router-dom";
 
 const DatabaseSettings = () => {
   const dispatch = useDispatch();
-  const { loading, error, databaseCollections } = useSelector((store) => store.settingsReducer);
+  const { loading, error, databaseCollections } = useSelector(
+    (store) => store.settingsReducer
+  );
   // const { admin, error: authError } = useSelector((store) => store.Login);
   // const { account_type, adminType, email, token } = admin;
   const [cofirmationModal, setConfirmationModal] = useState(false);
   const [authModal, setAuthModal] = useState(true);
-  const [actionObj, setActionObj] = useState({ action: () => {}, actionMsg: "" });
+  const [actionObj, setActionObj] = useState({
+    action: () => {},
+    actionMsg: "",
+  });
   const [isAllDisabled, setIsAllDisabled] = useState(true);
 
   const formHandler = (event, v) => {
-    if(v.password === '123321'){
+    if (v.password === "123321") {
       setAuthModal(false);
       setIsAllDisabled(false);
     }
@@ -59,7 +74,7 @@ const DatabaseSettings = () => {
         <div className="page-content">
           <Container fluid>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Database Collection"
               title="Admin"
               callList={() => {
@@ -84,10 +99,19 @@ const DatabaseSettings = () => {
                       </Link>
                     </div>
                     <div className="mb-3">
-                      <AvField name="password" value="" type="password" required placeholder="Enter Password" />
+                      <AvField
+                        name="password"
+                        value=""
+                        type="password"
+                        required
+                        placeholder="Enter Password"
+                      />
                       {/* <span>{authError || ""}</span> */}
                     </div>
-                    <Button className="btn btn-dark w-md waves-effect waves-light" type="submit">
+                    <Button
+                      className="btn btn-dark w-md waves-effect waves-light"
+                      type="submit"
+                    >
                       Submit
                     </Button>
                   </AvForm>
@@ -104,7 +128,9 @@ const DatabaseSettings = () => {
             >
               <div className="card mb-0">
                 <div className="card-body">
-                  <h4 className="mb-5 text-black">Are you sure you want to {actionObj.actionMsg} ?</h4>
+                  <h4 className="mb-5 text-black">
+                    Are you sure you want to {actionObj.actionMsg} ?
+                  </h4>
                   <div className="d-flex gap-3">
                     <Button
                       className="btn btn-primary mr-3"
@@ -142,7 +168,8 @@ const DatabaseSettings = () => {
                       onClick={() => {
                         setConfirmationModal(true);
                         setActionObj({
-                          action: () => createDatabaseCollectionBackup([], true),
+                          action: () =>
+                            createDatabaseCollectionBackup([], true),
                           actionMsg: "Backup all collections",
                         });
                       }}
@@ -201,7 +228,9 @@ const DatabaseSettings = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Td className="text-capitalize d-flex align-items-center">{item.name}</Td>
+                          <Td className="text-capitalize d-flex align-items-center">
+                            {item.name}
+                          </Td>
                           <Td>{(item.size / 1000).toFixed(2)} Mb</Td>
                           <Td>{item.modifyTime || "Not Backed"}</Td>
                           <Td>
@@ -212,7 +241,10 @@ const DatabaseSettings = () => {
                                 onClick={() => {
                                   setConfirmationModal(true);
                                   setActionObj({
-                                    action: () => createDatabaseCollectionBackup([item.fileName]),
+                                    action: () =>
+                                      createDatabaseCollectionBackup([
+                                        item.fileName,
+                                      ]),
                                     actionMsg: "Backup this collection",
                                   });
                                 }}
@@ -226,7 +258,10 @@ const DatabaseSettings = () => {
                                   onClick={() => {
                                     setConfirmationModal(true);
                                     setActionObj({
-                                      action: () => restoreCollectionLastBackup(item.fileName),
+                                      action: () =>
+                                        restoreCollectionLastBackup(
+                                          item.fileName
+                                        ),
                                       actionMsg: "Restore this collection",
                                     });
                                   }}
@@ -239,7 +274,8 @@ const DatabaseSettings = () => {
                                 onClick={() => {
                                   setConfirmationModal(true);
                                   setActionObj({
-                                    action: () => deleteDatabaseCollection(item.fileName),
+                                    action: () =>
+                                      deleteDatabaseCollection(item.fileName),
                                     actionMsg: "Delete this collection",
                                   });
                                 }}
@@ -259,7 +295,11 @@ const DatabaseSettings = () => {
                     <Spinner animation="border" variant="success" />
                   </div>
                 )}
-                {error && <div className="text-center">{error?.message || "Someting went wrong"}</div>}
+                {error && (
+                  <div className="text-center">
+                    {error?.message || "Someting went wrong"}
+                  </div>
+                )}
               </CardBody>
             </Card>
           </Container>

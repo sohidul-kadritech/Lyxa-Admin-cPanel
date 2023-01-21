@@ -445,7 +445,7 @@ const ProductAdd = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={id ? "Edit" : "Add"}
               title="Product"
               //   loading={loading}

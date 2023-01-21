@@ -60,7 +60,7 @@ const columns = [
     width: 150,
   },
   {
-    label: "Drop earning",
+    label: "Lyxa earning",
     field: "dropEarning",
     sort: "asc",
     width: 100,
@@ -153,7 +153,7 @@ const ShopsTransactions = () => {
         "Total Orders",
         "Order amount",
         "Delivery fee",
-        "Drop earning",
+        "Lyxa earning",
         "Unsettled amount",
         "Shop earning",
       ],
@@ -235,7 +235,7 @@ const ShopsTransactions = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={companyName}
               title="App Wallet"
               isRefresh={false}

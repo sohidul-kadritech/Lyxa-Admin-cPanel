@@ -82,7 +82,7 @@ const UsersList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumbs
-              maintitle="lyxa"
+              maintitle="Lyxa"
               breadcrumbItem="List"
               title="User"
               hideSettingBtn={true}

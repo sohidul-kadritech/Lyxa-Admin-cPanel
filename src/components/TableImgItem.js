@@ -1,3 +1,4 @@
+import { width } from "@mui/system";
 import React from "react";
 
 import styled from "styled-components";
@@ -13,11 +14,16 @@ const TableImgItem = ({
     <React.Fragment>
       <div className="d-flex align-items-center">
         {img ? (
-          <div style={{ width: "60px", height: "60px" }}>
+          <div
+            style={{
+              width: "60px",
+              height: "60px",
+            }}
+          >
             <img
               className="w-100 h-100"
               loading="lazy"
-              style={{ borderRadius: "6px" }}
+              style={{ borderRadius: "6px", objectFit: "cover" }}
               src={img}
               alt=""
             />

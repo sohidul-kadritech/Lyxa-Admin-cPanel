@@ -151,7 +151,7 @@ const SingleShopTransactions = () => {
   useEffect(() => {
     const summaryList = [
       {
-        title: "Drop Earning",
+        title: "Lyxa Earning",
         value: `${shopTrxs?.summary?.totalDropGet} NGN`,
         icon: earningFlowIcon,
         iconBg: "red",
@@ -244,7 +244,7 @@ const SingleShopTransactions = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={shopName}
               title="App Wallet"
               callList={callTransList}

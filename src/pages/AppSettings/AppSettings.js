@@ -102,7 +102,7 @@ const AppSettings = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"App Settings"}
               isRefresh={false}
             />

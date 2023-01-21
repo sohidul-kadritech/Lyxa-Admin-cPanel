@@ -87,7 +87,7 @@ const DeliveryTransactions = () => {
         "Name",
         "Total Orders",
         "Delivery fee",
-        "Drop earning",
+        "Lyxa earning",
         "Unsettled amount",
         "Delivery earning",
         "Cash in hand",
@@ -124,7 +124,7 @@ const DeliveryTransactions = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem=" Delivery Transactions"
               title="App Wallet"
               loading={loading}
@@ -228,7 +228,7 @@ const DeliveryTransactions = () => {
                       <Th>ID/Name</Th>
                       <Th>Orders</Th>
                       <Th>Delivery fee</Th>
-                      <Th>Drop earning</Th>
+                      <Th>Lyxa earning</Th>
                       <Th>Unsettled amount</Th>
                       <Th>Delivery earning</Th>
                       <Th>Cash in hand</Th>

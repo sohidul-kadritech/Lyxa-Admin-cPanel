@@ -4,3 +4,4 @@ build
 k8s
 .DS_Store
 
+k8s/deployment.yaml

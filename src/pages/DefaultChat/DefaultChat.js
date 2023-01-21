@@ -6,48 +6,35 @@ import ChatMessageTable from "../../components/ChatMessageTable";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 
-
 const DefaultChat = () => {
+  const { loading } = useSelector((state) => state.settingsReducer);
 
-    const { loading } = useSelector(state => state.settingsReducer);
+  return (
+    <React.Fragment>
+      <GlobalWrapper>
+        <div className="page-content">
+          <Container fluid={true}>
+            <Breadcrumb
+              maintitle="Lyxa"
+              breadcrumbItem="Default Chat Message"
+              title="Admin"
+              // loading={loading}
+              // callList={callList}
+              isRefresh={false}
+            />
 
-
-    return (
-        <React.Fragment>
-            <GlobalWrapper>
-
-                <div className="page-content" >
-                    <Container fluid={true}>
-                        <Breadcrumb
-                            maintitle="Drop"
-                            breadcrumbItem="Default Chat Message"
-                            title="Admin"
-                            // loading={loading}
-                            // callList={callList}
-                            isRefresh={false}
-                        />
-
-                        <ChatMessageTable />
-
-                    </Container>
-                </div>
-
-
-
-            </GlobalWrapper>
-        </React.Fragment>
-    );
+            <ChatMessageTable />
+          </Container>
+        </div>
+      </GlobalWrapper>
+    </React.Fragment>
+  );
 };
 
-
 const Wrapper = styled.div`
-
-
-.heading{
-  color: red;
-}
-
-
-`
+  .heading {
+    color: red;
+  }
+`;
 
 export default DefaultChat;

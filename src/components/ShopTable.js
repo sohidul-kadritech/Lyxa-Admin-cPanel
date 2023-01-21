@@ -132,7 +132,7 @@ const ShopTable = ({ shops = [] }) => {
                           <p>{item?.name}</p>
                         </div>
                       ))
-                    : "No Deals"}
+                    : "--"}
                 </Td>
                 <Td onClick={() => goToDetails(item?._id)}>
                   {item?.isFeatured ? "Yes" : "NO"}

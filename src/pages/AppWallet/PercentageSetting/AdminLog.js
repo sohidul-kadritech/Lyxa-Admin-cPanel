@@ -128,7 +128,7 @@ const AdminLog = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Percentage Settings History"
               title="Admin"
               loading={loading}

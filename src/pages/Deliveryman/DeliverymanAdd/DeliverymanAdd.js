@@ -303,7 +303,7 @@ const DeliverymanAdd = () => {
           <div className="page-content">
             <Container fluid={true}>
               <Breadcrumb
-                maintitle="Drop"
+                maintitle="Lyxa"
                 breadcrumbItem={id ? "Edit" : "Add"}
                 title="Deliveryman"
                 // loading={loading}

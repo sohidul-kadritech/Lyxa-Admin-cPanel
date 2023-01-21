@@ -32,9 +32,7 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
     dropPercentageType: "",
     dropPercentage: "",
   });
-  const {
-    loading,
-  } = useSelector((state) => state.settingsReducer);
+  const { loading } = useSelector((state) => state.settingsReducer);
 
   // const [loading, setLoading] = useState(false);
 
@@ -60,7 +58,7 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
       return successMsg("Enter delivery charge type");
     }
     if (!dropPercentage) {
-      return successMsg("Enter Drop charge");
+      return successMsg("Enter Lyxa charge");
     }
     // setLoading(true);
     submitData();
@@ -85,14 +83,14 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
         <Col lg={6}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">
-              Drop Charge Type
+              Lyxa Charge Type
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               name="dropPercentageType"
               value={feeInfo.dropPercentageType}
-              label="Drop Charge Type"
+              label="Lyxa Charge Type"
               onChange={handleChange}
               required
             >
@@ -104,10 +102,11 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
         <Col lg={6} className="mt-4 mt-lg-0">
           <TextField
             style={{ width: "100%" }}
-            label={`Drop Charge (${feeInfo.dropPercentageType === "amount" ? "Amount" : "Percentage"
-              })`}
+            label={`Lyxa Charge (${
+              feeInfo.dropPercentageType === "amount" ? "Amount" : "Percentage"
+            })`}
             variant="outlined"
-            placeholder="Enter Drop Charge"
+            placeholder="Enter Lyxa Charge"
             name="dropPercentage"
             value={feeInfo.dropPercentage}
             onChange={handleChange}

@@ -227,7 +227,7 @@ const DealsAdd = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={id ? "Edit" : "Add"}
               title="Deal"
               isRefresh={false}
@@ -286,15 +286,15 @@ const DealsAdd = () => {
                             >
                               {shopType === "restaurant"
                                 ? resturantDeals.map((item, index) => (
-                                  <MenuItem key={index} value={item.value}>
-                                    {item.label}
-                                  </MenuItem>
-                                ))
+                                    <MenuItem key={index} value={item.value}>
+                                      {item.label}
+                                    </MenuItem>
+                                  ))
                                 : pharmacyAndGroceryDeals.map((item, index) => (
-                                  <MenuItem key={index} value={item.value}>
-                                    {item.label}
-                                  </MenuItem>
-                                ))}
+                                    <MenuItem key={index} value={item.value}>
+                                      {item.label}
+                                    </MenuItem>
+                                  ))}
                             </Select>
                           </FormControl>
                         </div>
@@ -410,14 +410,14 @@ const DealsAdd = () => {
                         onDrop={(acceptedFiles) => {
                           handleAcceptedFiles(acceptedFiles);
                         }}
-                        accept='.jpg, .jpeg, .png'
+                        accept=".jpg, .jpeg, .png"
                       >
                         {({ getRootProps, getInputProps }) => (
                           <div className="dropzone">
                             <div
                               className="dz-message needsclick"
                               {...getRootProps()}
-                            // onClick={() => setmodal_fullscreen(true)}
+                              // onClick={() => setmodal_fullscreen(true)}
                             >
                               <input {...getInputProps()} />
                               <div className="mb-3">

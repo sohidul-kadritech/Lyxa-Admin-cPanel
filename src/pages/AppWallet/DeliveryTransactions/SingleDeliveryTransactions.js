@@ -164,7 +164,7 @@ const SingleDeliveryTransactions = () => {
     if (trxs) {
       const summaryList = [
         {
-          title: "Drop Earning",
+          title: "Lyxa Earning",
           value: `${trxs?.summary?.dropEarning} NGN`,
           icon: earningFlowIcon,
           iconBg: "red",

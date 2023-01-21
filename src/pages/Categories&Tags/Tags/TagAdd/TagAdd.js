@@ -14,7 +14,6 @@ import {
 import Select from "react-select";
 
 const TagAdd = () => {
-
   const options = [
     { label: "Mustard", value: "Mustard" },
     { label: "Ketchup", value: "Ketchup" },
@@ -27,7 +26,7 @@ const TagAdd = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"Add"}
               title="Tags"
               // loading={loading}
