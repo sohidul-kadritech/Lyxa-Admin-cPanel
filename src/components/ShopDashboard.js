@@ -53,7 +53,7 @@ const ShopDashboard = ({ summary }) => {
       id: 5,
       title: "Order Amount",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.orderValue?.totalAmount ?? 0} NGN`,
+      value: `${summary?.orderValue?.productAmount ?? 0} NGN`,
       icon: orderAmountIcon,
       iconBg: "#ff5ca7",
     },

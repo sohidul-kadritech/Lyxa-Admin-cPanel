@@ -1,8 +1,9 @@
-// export const API_URL = "http://localhost:5000";
+// export const API_URL = "http://localhost:5001";
 // export const FTP_URL = "http://localhost:1000";
 
 export const API_URL = "https://apiv2.drop-deliveryapp.com/";
 export const SOCKET_CONNECTION = "https://apiv2.drop-deliveryapp.com";
+// export const SOCKET_CONNECTION = "http://localhost:5001";
 export const MAP_URL = "http://maps.google.com/maps";
 
 const ADMIN_ENDPOINT = "admin";
