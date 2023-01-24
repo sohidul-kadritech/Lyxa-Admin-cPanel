@@ -70,7 +70,7 @@ export const getAllOrder =
 
 // ORDER UPDATE STATUS
 
-export const orderUpdateStatus = (values) => async (dispatch) => {
+export const orderUpdateStatus = (values, socket) => async (dispatch) => {
   try {
     dispatch({
       type: actionType.ORDER_UPDATE_STATUS_REQUEST_SEND,
@@ -87,6 +87,14 @@ export const orderUpdateStatus = (values) => async (dispatch) => {
         type: actionType.ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
         payload: data,
       });
+
+      if (values?.orderStatus === "accepted_delivery_boy") {
+        socket.emit("adminAcceptedOrder", { orderId: values?.orderId });
+      } else {
+        socket.emit("updateOrder", {
+          orderId: values?.orderId,
+        });
+      }
     } else {
       successMsg(data.error, "error");
       dispatch({
