@@ -181,6 +181,7 @@ const DealsAdd = () => {
   // SUBMIT DATA
 
   const submitData = (image = null) => {
+    
     const data = {
       name,
       type: shopType,
@@ -189,6 +190,7 @@ const DealsAdd = () => {
       image,
       tag: tag?._id,
     };
+    console.log(data);
     if (id) {
       dispatch(
         editDeal({
@@ -220,6 +222,8 @@ const DealsAdd = () => {
       }
     }
   }, [status]);
+
+  // console.log(percentage)
 
   return (
     <React.Fragment>
