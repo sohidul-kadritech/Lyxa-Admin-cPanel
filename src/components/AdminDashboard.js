@@ -33,7 +33,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 1,
       title: "Lyxa Earnings",
       subTitle: "(Total earnings)",
-      value: `${summary?.totalDropEarning ?? 0} NGN`,
+      value: `${summary?.totalDropEarning?.toFixed(2) ?? 0} NGN`,
       icon: earningFlowIcon,
       iconBg: "red",
     },
@@ -49,7 +49,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 3,
       title: "Delivery Profit",
       subTitle: "(Only from delivery fees)",
-      value: `${summary?.dropEarningTotalOfDeliveryFee ?? 0} NGN`,
+      value: `${summary?.dropEarningTotalOfDeliveryFee?.toFixed(2) ?? 0} NGN`,
       icon: profitUpArrowIcon,
       iconBg: "#f7c137",
     },
@@ -57,7 +57,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 4,
       title: "Delivery Fee's",
       subTitle: "(Total delivery fees)",
-      value: `${summary?.ordersDeliveryFeesTotal ?? 0} NGN`,
+      value: `${summary?.ordersDeliveryFeesTotal?.toFixed(2) ?? 0} NGN`,
       icon: deliveryIcon,
       iconBg: "#00dcff",
     },
@@ -65,7 +65,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 5,
       title: "Order Amount",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.ordersItemTotal ?? 0} NGN`,
+      value: `${summary?.ordersItemTotal?.toFixed(2) ?? 0} NGN`,
       icon: orderAmountIcon,
       iconBg: "#ff5ca7",
     },
@@ -169,7 +169,9 @@ const AdminDashboard = ({ summary, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Riders Unsettled Amount"
-                  value={`${summary?.deliveryBoyUnsettleAmount ?? 0} NGN`}
+                  value={`${
+                    summary?.deliveryBoyUnsettleAmount?.toFixed(2) ?? 0
+                  } NGN`}
                   icon={amountIcon}
                   color={"#8c54ff"}
                 />
@@ -177,7 +179,9 @@ const AdminDashboard = ({ summary, topActivity }) => {
               <Col xl={4}>
                 <DashboardCard
                   title="Riders cash in hands"
-                  value={`${summary?.chashInHandDeliveryBoy ?? 0} NGN`}
+                  value={`${
+                    summary?.chashInHandDeliveryBoy?.toFixed(2) ?? 0
+                  } NGN`}
                   icon={cashInHandIcon}
                   color={"yellow"}
                 />
