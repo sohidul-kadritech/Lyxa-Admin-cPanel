@@ -120,7 +120,7 @@ const ProductDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"Details"}
               title="Product"
               //   loading={loading}
@@ -168,7 +168,7 @@ const ProductDetails = () => {
                 <Row className="py-4">
                   <Col xl={2} className="text-center text-capitalize">
                     <img
-                      className="rounded-circle avatar-xl cursor-pointer"
+                      className="cursor-pointer imgSetting"
                       alt="Product"
                       src={!product?.images[0] ? noPhoto : product?.images[0]}
                       onClick={() => {
@@ -176,7 +176,10 @@ const ProductDetails = () => {
                         setSelectedImg(product?.images[0]);
                       }}
                     />
-                    <h5 className="text-center mt-3 text-success">
+                    <h5
+                      className="text-center mt-3"
+                      style={{ color: "#6b6b6b !important" }}
+                    >
                       {product?.name}
                     </h5>
                   </Col>

@@ -78,7 +78,7 @@ const SellerTransactions = () => {
         "Total Orders",
         "Order amount",
         "Delivery fee",
-        "Drop earning",
+        "Lyxa earning",
         "Unsettled amount",
         "Seller earning",
       ],
@@ -112,7 +112,7 @@ const SellerTransactions = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Sellers Wallet"
               loading={loading}
               callList={callTransList}
@@ -201,7 +201,7 @@ const SellerTransactions = () => {
                       <Th>Order</Th>
                       <Th>Order amount</Th>
                       <Th>Delivery fee</Th>
-                      <Th>Drop earning</Th>
+                      <Th>Lyxa earning</Th>
                       <Th>Unsettled amount</Th>
                       <Th>Seller earning</Th>
                     </Tr>

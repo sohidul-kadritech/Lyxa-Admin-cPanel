@@ -24,9 +24,7 @@ import AppPagination from "../../../components/AppPagination";
 import { Tooltip } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
-
 const DropTransactions = () => {
-
   const history = useHistory();
 
   const {
@@ -58,8 +56,8 @@ const DropTransactions = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem=" Drop Transactions"
+              maintitle="Lyxa"
+              breadcrumbItem=" Lyxa Transactions"
               title="App Wallet"
               loading={loading}
               callList={callTransList}

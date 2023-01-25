@@ -85,7 +85,7 @@ const Chats = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Customer Support"
               loading={loading}
               callList={callChatList}

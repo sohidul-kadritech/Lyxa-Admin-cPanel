@@ -166,7 +166,7 @@ const Login = (props) => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Login | Drop</title>
+        <title>Login | Lyxa</title>
       </MetaTags>
 
       <GlobalWrapper>

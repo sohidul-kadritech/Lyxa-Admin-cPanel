@@ -2,7 +2,7 @@ import React from "react";
 import { Container } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import TableForList from './../../../components/TableForList';
+import TableForList from "./../../../components/TableForList";
 
 const AdminLogHistory = () => {
   return (
@@ -11,9 +11,9 @@ const AdminLogHistory = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Admin Log History"
-              title='App Wallet'
+              title="App Wallet"
               // loading={loading}
               // callList={callTransList}
             />

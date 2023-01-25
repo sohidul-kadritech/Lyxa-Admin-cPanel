@@ -25,7 +25,7 @@ const DealForAdd = ({ type, item, shopType }) => {
     if (item.deals.length === 0) {
       callApi(type);
     } else {
-      const findDeal = item?.deals.find((item) => item._id == deal._id);
+      const findDeal = item?.deals.find((item) => item.option == deal.option);
       const findDoubleDeal = item?.deals.find(
         (item) => item.option === "double_menu"
       );
@@ -75,10 +75,9 @@ const DealForAdd = ({ type, item, shopType }) => {
       <Autocomplete
         className="cursor-pointer"
         onChange={(event, newValue) => {
-          // console.log(newValue);
           setDeal(newValue);
         }}
-        getOptionLabel={(option) => option.option}
+        getOptionLabel={(option) => option.name}
         isOptionEqualToValue={(option, value) => option._id == value._id}
         inputValue={searchDealKey}
         onInputChange={(event, newInputValue) => {

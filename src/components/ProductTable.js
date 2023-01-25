@@ -61,7 +61,7 @@ const ProductTable = ({ products, loading }) => {
           <Tr>
             <Th>Product</Th>
             <Th>Shop</Th>
-            <Th>Category</Th>
+            <Th>Deal</Th>
             <Th>Price</Th>
             <Th>Status</Th>
             <Th>Action</Th>
@@ -70,6 +70,7 @@ const ProductTable = ({ products, loading }) => {
         <Tbody style={{ position: "relative" }}>
           {products?.length > 0 &&
             products?.map((item, index) => {
+              console.log(item);
               return (
                 <Tr
                   key={index}
@@ -83,19 +84,30 @@ const ProductTable = ({ products, loading }) => {
                     <TableImgItem
                       img={item?.images[0]}
                       name={item?.name}
+                      subTitle={item?.category?.name}
                       id={item?.autoGenId}
                     />
                   </Th>
+
                   <Td onClick={() => goToDetails(item?._id)}>
-                    {item?.shop?.shopName}
+                    <p>{item?.shop?.shopName}</p>
                   </Td>
+
                   <Td onClick={() => goToDetails(item?._id)}>
-                    {item?.category?.name}
+                    {item?.deals.length > 0
+                      ? item?.deals.map((item, index) => (
+                          <div key={index}>
+                            <p>{item?.name}</p>
+                          </div>
+                        ))
+                      : "--"}
                   </Td>
+
                   <Td onClick={() => goToDetails(item?._id)}>
                     <p>{item?.price}</p>
                     <p>{item?.shopEndTimeText}</p>
                   </Td>
+
                   <Td onClick={() => goToDetails(item?._id)}>
                     <div
                       className={`${

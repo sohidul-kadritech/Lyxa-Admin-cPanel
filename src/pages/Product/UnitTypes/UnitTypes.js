@@ -72,12 +72,12 @@ const UnitTypes = () => {
   // HANDLE MENU ITEM
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Edit') {
-      handleEditUnit(item._id)
+    if (menu === "Edit") {
+      handleEditUnit(item._id);
     } else {
-      dispatch(deleteUnitType(item._id))
+      dispatch(deleteUnitType(item._id));
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -85,7 +85,7 @@ const UnitTypes = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Product Unit"
               loading={loading}
               callList={callUnitList}
@@ -169,10 +169,7 @@ const UnitTypes = () => {
                                   handleMenuClick={(menu) =>
                                     handleMenu(menu, item)
                                   }
-                                  menuItems={[
-                                    "Edit",
-                                    "Delete",
-                                  ]}
+                                  menuItems={["Edit", "Delete"]}
                                 />
                               </Td>
                             </Tr>

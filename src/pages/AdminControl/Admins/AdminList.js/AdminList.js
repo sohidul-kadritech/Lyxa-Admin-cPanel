@@ -62,7 +62,7 @@ const AdminList = () => {
           ) : null}
 
           <Breadcrumb
-            maintitle="Drop"
+            maintitle="Lyxa"
             breadcrumbItem={"List"}
             title="Admin"
             loading={loading}

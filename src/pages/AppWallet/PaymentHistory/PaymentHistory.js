@@ -20,7 +20,7 @@ const PaymentHistory = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem="Payment History"
               title="App Wallet"
               // loading={loading}

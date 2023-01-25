@@ -57,7 +57,7 @@ export const getAllNotifications =
             params: {
               page,
               pageSize: 50,
-              sortBy: 'asc',
+              sortBy: 'desc',
               status: activeStatus.value,
               type: type.value,
               accountType: accountType.value,

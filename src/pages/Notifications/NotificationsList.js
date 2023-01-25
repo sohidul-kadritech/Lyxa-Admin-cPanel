@@ -78,7 +78,7 @@ const NotificationsList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               title="Notifications"
               breadcrumbItem="List"
               loading={loading}
@@ -153,9 +153,9 @@ const NotificationsList = () => {
                       <Th>Account Type</Th>
                       {/* <Th>Type</Th> */}
                       <Th>Sent to</Th>
-                      <Th>Status</Th>
+                      {/* <Th>Status</Th> */}
                       <Th>Created At</Th>
-                      <Th>Action</Th>
+                      {/* <Th>Action</Th> */}
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
@@ -191,7 +191,7 @@ const NotificationsList = () => {
                               ? item?.deliveryBoy?.name
                               : "All users"}
                           </Td>
-                          <Td>
+                          {/* <Td>
                             <div
                               className={`${
                                 item?.status === "active"
@@ -205,12 +205,12 @@ const NotificationsList = () => {
                                   : "Inactive"
                               }`}
                             </div>
-                          </Td>
+                          </Td> */}
                           <Td>
                             {new Date(item?.createdAt).toLocaleDateString()}
                           </Td>
 
-                          <Td>
+                          {/* <Td>
                             <div>
                               <Tooltip title="Delete">
                                 <button
@@ -224,7 +224,7 @@ const NotificationsList = () => {
                                 </button>
                               </Tooltip>
                             </div>
-                          </Td>
+                          </Td> */}
                         </Tr>
                       );
                     })}

@@ -205,15 +205,15 @@ const CategoryDetails = () => {
     setSlug(generateSlug);
   };
 
-  // HANDLE MENU 
+  // HANDLE MENU
 
   const handleMenu = (menu, item) => {
-    if (menu === 'Delete') {
+    if (menu === "Delete") {
       setconfirm_alert(true);
     } else {
-      handleEditSubCategory(item._id)
+      handleEditSubCategory(item._id);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -221,7 +221,7 @@ const CategoryDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"Details"}
               title="Category"
               loading={loading}
@@ -423,10 +423,7 @@ const CategoryDetails = () => {
                                     handleMenuClick={(menu) =>
                                       handleMenu(menu, item)
                                     }
-                                    menuItems={[
-                                      "Edit",
-                                      "Delete"
-                                    ]}
+                                    menuItems={["Edit", "Delete"]}
                                   />
                                   {confirm_alert ? (
                                     <SweetAlert
@@ -447,8 +444,8 @@ const CategoryDetails = () => {
                                       }}
                                       onCancel={() => setconfirm_alert(false)}
                                     >
-                                      Are You Sure! You want to delete this
-                                      Sub Category.
+                                      Are You Sure! You want to delete this Sub
+                                      Category.
                                     </SweetAlert>
                                   ) : null}
                                 </Td>
@@ -485,8 +482,6 @@ const CategoryDetails = () => {
             )}
           </Container>
         </div>
-
-
       </GlobalWrapper>
     </React.Fragment>
   );

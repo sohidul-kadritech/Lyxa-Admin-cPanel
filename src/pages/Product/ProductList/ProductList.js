@@ -187,7 +187,7 @@ const ProductList = () => {
                   <Col lg={8}>
                     <Search
                       dispatchFunc={updateProductSearchKey}
-                      placeholder="Search by id or name"
+                      placeholder="Search Item Name"
                     />
                   </Col>
                   <Col lg={4}>

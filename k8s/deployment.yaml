@@ -29,8 +29,8 @@ spec:
               protocol: TCP
       imagePullSecrets:
         - name: dropimagepullkey
-# docker build -t gcr.io/for-poc-325210/drop-admin:v24 .
+# docker build -t gcr.io/for-poc-325210/drop-admin:v50 .
 
-# docker push gcr.io/for-poc-325210/drop-admin:v24
+# docker push gcr.io/for-poc-325210/drop-admin:v50
 
 # kubectl apply -f k8s/deployment.yaml

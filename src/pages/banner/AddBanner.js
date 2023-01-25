@@ -270,7 +270,7 @@ const AddBanner = () => {
       <div className="page-content">
         <Container fluid={true}>
           <Breadcrumb
-            maintitle="Drop"
+            maintitle="Lyxa"
             breadcrumbItem={id ? "Update" : "Add New"}
             title="Banner"
             // loading={loading}

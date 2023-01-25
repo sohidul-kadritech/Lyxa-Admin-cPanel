@@ -80,7 +80,7 @@ const DealsList = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
+              maintitle="Lyxa"
               breadcrumbItem={"List"}
               title="Deal"
               loading={loading}
@@ -175,18 +175,22 @@ const DealsList = () => {
                             />
                           </Th>
                           <Td>{item?.type}</Td>
-                          <Td className='text-capitalize'>{`${item?.percentage ?? ""} ${(item?.option).split('_').join(" ")}`}</Td>
+                          <Td className="text-capitalize">{`${
+                            item?.percentage ?? ""
+                          } ${(item?.option).split("_").join(" ")}`}</Td>
                           <Td>
                             <div
-                              className={`${item?.status === "active"
-                                ? "active-status"
-                                : "inactive-status"
-                                }`}
+                              className={`${
+                                item?.status === "active"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
                             >
-                              {`${item?.status === "active"
-                                ? "Active"
-                                : "Inactive"
-                                }`}
+                              {`${
+                                item?.status === "active"
+                                  ? "Active"
+                                  : "Inactive"
+                              }`}
                             </div>
                           </Td>
                           <Td>

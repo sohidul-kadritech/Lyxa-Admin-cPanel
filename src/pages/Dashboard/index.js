@@ -269,7 +269,11 @@ const SellerInfo = () => {
             Icon={RoomOutlinedIcon}
           />
           <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-          <InfoTwo classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+          <InfoTwo
+            classes="text-lowercase"
+            value={email}
+            Icon={AlternateEmailOutlinedIcon}
+          />
         </Col>
       </Row>
     </InfoWrapper>
@@ -305,6 +309,7 @@ const ShopInfo = () => {
         <Col md={1} className="px-0 d-flex align-items-center">
           <div className="img_wrapper">
             <img
+              style={{ borderRadius: 200, width: 70, height: 70 }}
               className="rounded-circle avatar-xl cursor-pointer"
               alt="Seller"
               src={!shopLogo ? noPhoto : shopLogo}
@@ -342,7 +347,11 @@ const ShopInfo = () => {
                 Icon={AccessTimeOutlinedIcon}
               />
               <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-              <InfoTwo classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+              <InfoTwo
+                classes="text-lowercase"
+                value={email}
+                Icon={AlternateEmailOutlinedIcon}
+              />
             </Col>
 
             <Col lg={4}>
@@ -386,7 +395,7 @@ const ShopInfo = () => {
               {/* <InfoTwo value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
               <InfoTwo
                 value={`${
-                  haveOwnDeliveryBoy ? "Self" : "Drop"
+                  haveOwnDeliveryBoy ? "Self" : "Lyxa"
                 } (Delivery Type)`}
                 Icon={PaymentIcon}
               />
@@ -394,10 +403,8 @@ const ShopInfo = () => {
                 value={`${deliveryFee} (Delivery Fee)`}
                 Icon={MopedOutlinedIcon}
               />
-              <InfoTwo
-                value={`${deals.length > 0 ? deals[0] : 0} (Deals)`}
-                Icon={SettingsInputSvideoIcon}
-              />
+
+              <InfoTwo value={deals} Icon={SettingsInputSvideoIcon} />
             </Col>
           </Row>
         </Col>

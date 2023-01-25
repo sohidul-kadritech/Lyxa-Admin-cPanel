@@ -5,28 +5,53 @@ import styled from "styled-components";
 
 const InfoTwo = ({ value, Icon, link, mapLink, classes }) => {
   const history = useHistory();
-
-  return (
-    <InfoWrapper
-      className={`${link && "cursor-pointer"}  }`}
-      onClick={() => history.push(link)}
-      link={link}
-      mapLink={mapLink}
-    >
-      <Icon className="text-danger" />
-      <Tooltip
-        title={`${link ? "See details" : mapLink ? "See Location" : ""}`}
+  let check = Array.isArray(value);
+  if (!check) {
+    return (
+      <InfoWrapper
+        className={`${link && "cursor-pointer"}  }`}
+        onClick={() => history.push(link)}
+        link={link}
+        mapLink={mapLink}
       >
-        {mapLink ? (
-          <a className={`value ${classes || ''}`} href={mapLink} target="blank">
-            {value}
-          </a>
-        ) : (
-          <span className={`value ${classes || ''}`}>{value}</span>
-        )}
-      </Tooltip>
-    </InfoWrapper>
-  );
+        <Icon className="text-danger" />
+        <Tooltip
+          title={`${link ? "See details" : mapLink ? "See Location" : ""}`}
+        >
+          {mapLink ? (
+            <a
+              className={`value ${classes || ""}`}
+              href={mapLink}
+              target="blank"
+            >
+              {value}
+            </a>
+          ) : (
+            <span className={`value ${classes || ""}`}>{value}</span>
+          )}
+        </Tooltip>
+      </InfoWrapper>
+    );
+    
+  } else {
+    return (
+      <InfoWrapper
+        className={`${link && "cursor-pointer"}  }`}
+        onClick={() => history.push(link)}
+        link={link}
+        mapLink={mapLink}
+      >
+        <Icon className="text-danger" />
+        {value?.map((item, index) => {
+          return (
+            <span className={`value ${classes || ""}`}>
+              {index !== 0 && `, `} {item?.name}
+            </span>
+          );
+        })}
+      </InfoWrapper>
+    );
+  }
 };
 
 export default InfoTwo;

@@ -10,9 +10,7 @@ const DropTransactionsDetails = () => {
   const { id } = useParams();
   const history = useHistory();
 
-  const { loading, dropTrxs } = useSelector(
-    (state) => state.appWalletReducer
-  );
+  const { loading, dropTrxs } = useSelector((state) => state.appWalletReducer);
 
   const [trx, setTrx] = useState(null);
 
@@ -36,8 +34,8 @@ const DropTransactionsDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem="Drop Transaction Details"
+              maintitle="Lyxa"
+              breadcrumbItem="Lyxa Transaction Details"
               title="App Wallet"
               isRefresh={false}
             />
@@ -47,10 +45,7 @@ const DropTransactionsDetails = () => {
                   <CardBody>
                     <CardTitle>Transaction Details</CardTitle>
                     <hr />
-                    <Info
-                      title="Payment Method"
-                      value={trx?.paymentMethod}
-                    />
+                    <Info title="Payment Method" value={trx?.paymentMethod} />
                     <Info title="Amount" value={trx?.amount} />
                     <Info title="Admin Note" value={trx?.adminNote} />
                     <Info title="User Note" value={trx?.userNote} />
