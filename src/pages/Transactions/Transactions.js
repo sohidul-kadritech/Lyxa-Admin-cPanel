@@ -123,7 +123,7 @@ const Transactions = () => {
 
     if (trx?.order) {
       newType = (
-        <TypeInfo type="Order" linkItem={trx?.order} route={orderRoute} />
+        <TypeInfo type="Order" linkItem={trx?.order.autoGenId} route={orderRoute} />
       );
     } else {
       newType = "on going";
