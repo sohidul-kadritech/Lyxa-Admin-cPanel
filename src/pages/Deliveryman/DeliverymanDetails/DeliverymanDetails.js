@@ -65,6 +65,7 @@ const DeliverymanDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
 
+
   useEffect(async () => {
     if (id) {
       // dispatch(setDeliveryStatusFalse());
@@ -138,14 +139,19 @@ const DeliverymanDetails = () => {
                 <Row>
                   <Col lg={2}>
                     <ImageWrapper className="text-center">
+                      <div style={{position: 'relative'}}>
                       <img
-                        className=" cursor-pointer rounded"
+                        className="cursor-pointer rounded"
                         alt="User"
                         src={deliveryMan?.image ?? noPhoto}
                         loading="lazy"
                         height="100%"
                         width="100%"
                       />
+                      <div className={`img-tag ${deliveryMan?.liveStatus === 'online' ? 'img-tag-active' : 'img-tag-inactive'}`}>
+                        {deliveryMan?.liveStatus}
+                      </div>
+                      </div>
                     </ImageWrapper>
                   </Col>
                   <Col lg={5}>

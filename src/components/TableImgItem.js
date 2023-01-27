@@ -3,12 +3,43 @@ import React from "react";
 
 import styled from "styled-components";
 
+const activeIndicator = {
+  width: '100%',
+  height: '25%',
+  position: 'absolute',
+  bottom: '0px',
+  left: '0px',
+  borderRadius: '0px 0px 5px 5px',
+  background: '#e1f4d0',
+  color: '#56ca00',
+  fontSize: '9px',
+  display: 'block'
+}
+
+const inActiveIndicator = {
+  width: '100%',
+  height: '25%',
+  position: 'absolute',
+  bottom: '0px',
+  left: '0px',
+  borderRadius: '0px 0px 5px 5px',
+  background: '#ffcfce',
+  color: '#ff0000',
+  fontSize: '9px',
+  display: 'block'
+}
+
+const baseIndicator = {
+  display: 'none'
+}
+
 const TableImgItem = ({
   img = "",
   name,
   subTitle,
   id = "",
   fromChat = false,
+  status,
 }) => {
   return (
     <React.Fragment>
@@ -18,6 +49,7 @@ const TableImgItem = ({
             style={{
               width: "60px",
               height: "60px",
+              position: 'relative',
             }}
           >
             <img
@@ -27,6 +59,9 @@ const TableImgItem = ({
               src={img}
               alt=""
             />
+            <div style={status === 'active' ? activeIndicator : status === 'inactive' ? inActiveIndicator : baseIndicator }>
+              {status === 'active' ? 'Online' : 'Offline' }
+            </div>
           </div>
         ) : null}
         <div style={{ flex: "1", textAlign: "left" }} className="ps-2">

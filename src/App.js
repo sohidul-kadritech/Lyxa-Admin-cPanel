@@ -67,6 +67,7 @@ const App = (props) => {
   useEffect(() => {
     if (socket) {
       socket.on("user_send_chat_request", (data) => {
+        console.log('from socket',data)
         return successMsg(
           `New chat request from ${data?.user?.name}`,
           "success"

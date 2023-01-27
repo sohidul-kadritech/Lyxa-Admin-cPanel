@@ -65,6 +65,8 @@ const DeliverymanList = () => {
   const [deliveryBoyName, setDeliveryBoyName] = useState("");
   const [rider, setRider] = useState(null);
 
+  console.log(deliveryMans);
+
   useEffect(() => {
     if (sortByKey || statusKey || searchKey || liveStatus) {
       callDeliveryManList(true);
@@ -174,15 +176,15 @@ const DeliverymanList = () => {
               <CardBody>
                 <Table
                   id="tech-companies-1"
-                  className="table  table-hover text-center"
+                  className="table table-hover text-center"
                 >
                   <Thead>
                     <Tr>
                       <Th>Rider</Th>
                       <Th>Email</Th>
                       <Th>Phone</Th>
+                      {/* <Th>Status</Th> */}
                       <Th>Status</Th>
-                      <Th>Live status</Th>
                       <Th>Current availability</Th>
                       <Th>Orders</Th>
                       <Th>Action</Th>
@@ -204,6 +206,7 @@ const DeliverymanList = () => {
                               img={item?.image ? item?.image : noPhoto}
                               name={item?.name}
                               id={item?.autoGenId}
+                              status={item?.liveStatus === 'online' ? 'active' : 'inactive'}
                             />
                           </Th>
                           <Td onClick={() => goToDetails(item?._id)}>
@@ -212,7 +215,7 @@ const DeliverymanList = () => {
                           <Td onClick={() => goToDetails(item?._id)}>
                             {item?.number}
                           </Td>
-                          <Td onClick={() => goToDetails(item?._id)}>
+                          {/* <Td onClick={() => goToDetails(item?._id)}>
                             <div
                               className={`${
                                 item?.status === "active"
@@ -226,14 +229,31 @@ const DeliverymanList = () => {
                                   : "Inactive"
                               }`}
                             </div>
+                          </Td> */}
+                          <Td onClick={() => goToDetails(item?._id)}>
+                          {/* <div
+                              className={`${
+                                item?.status === "online"
+                                  ? "active-status"
+                                  : "inactive-status"
+                              }`}
+                            >
+                              {`${
+                                item?.liveStatus === "online"
+                                ? "Online"
+                                : "Offline"
+                              }`}
+                            </div> */}
+                            {`${
+                                item?.status === "active"
+                                  ? "Active"
+                                  : "Inactive"
+                              }`}
                           </Td>
                           <Td onClick={() => goToDetails(item?._id)}>
-                            {item?.liveStatus === "online"
-                              ? "Online"
-                              : "Offline"}
-                          </Td>
-                          <Td onClick={() => goToDetails(item?._id)}>
-                            {item?.availability ? "Available" : "Busy"}
+                            <span className={`${item?.availability ? 'active-status' : 'inactive-status'}`} style={{padding: '5px 14px'}}>
+                              {item?.availability ? "Available" : "Busy"}
+                            </span>
                           </Td>
                           <Td onClick={() => goToDetails(item?._id)}>
                             {item?.totalOrder}
