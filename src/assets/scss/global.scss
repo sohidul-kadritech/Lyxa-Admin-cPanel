@@ -114,6 +114,28 @@ input[type="date"]:focus::-webkit-datetime-edit {
   border-radius: 6px;
   padding: 1px 2px;
 }
+
+.img-tag{
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
+  left: 0px;
+  text-transform: capitalize;
+  text-align: center;
+  padding: 6px 0px;
+  background: #e1f4d0;
+  font-size: 12px;
+}
+
+.img-tag-active{
+  color: #56ca00;
+}
+
+.img-tag-inactive{
+  background: #ffcfce;
+  color: #ff0000;
+}
+
 .orderStatus {
     background-color: #fff9bd;
     color: #eac300;

@@ -34,7 +34,7 @@ const ChatsListByOrder = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
-  console.log(useParams());
+  // console.log(useParams());
   // const id = "";
   const { socket } = useSelector((state) => state.socketReducer);
   const { status, loading, selectedMsg, chatRequests, isSendingMsg } =
@@ -173,7 +173,7 @@ const ChatsListByOrder = () => {
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
                     {list?.map((item, index) => {
-                      console.log(item.status);
+                      // console.log(item.status);
                       return (
                         <Tr
                           key={index}
@@ -231,7 +231,7 @@ const ChatsListByOrder = () => {
                               handleMenuClick={(menu) => handleMenu(menu, item)}
                               menuItems={[
                                 item?.status === "pending" && "Accept",
-                                item?.status === "pending" && "Reject",
+                                // item?.status === "pending" && "Reject",
                                 item?.status !== "pending" && "No Action",
                               ]}
                             />
