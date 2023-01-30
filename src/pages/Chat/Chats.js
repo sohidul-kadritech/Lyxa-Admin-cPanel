@@ -76,6 +76,7 @@ const Chats = () => {
   }, [userSearchKey]);
 
   const callChatList = (refresh = false) => {
+    console.log({user})
     dispatch(getAllChat(refresh, user?._id, shop?._id));
   };
 

@@ -17,6 +17,7 @@ const initialState = {
   isSendingMsg: false,
   isChatClose: false,
   orderChatSearchKey: "",
+  openChats: 0,
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -184,6 +185,27 @@ const chatReducer = (state = initialState, action) => {
         orderChatSearchKey: payload,
       };
 
+    // UNSEEN CHAT REQUESTS
+    case actionType.OPEN_CHATS_VALUE: {
+      return {
+        ...state,
+        openChats: payload
+      }
+    }
+
+    case actionType.OPEN_CHATS_INCREMENT_VALUE: {
+      return {
+        ...state,
+        openChats: state.openChats + 1
+      }
+    }
+
+    case actionType.OPEN_CHATS_DECREMENT_VALUE: {
+      return {
+        ...state,
+        openChats: state.openChats - 1
+      }
+    }
     default:
       return state;
   }

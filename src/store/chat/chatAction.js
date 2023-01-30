@@ -32,12 +32,31 @@ export const getAllChat =
             searchKey: orderChatSearchKey,
           },
         });
+
         console.log("order chat data", data);
+
         if (status) {
+          let openChats = 0;
+
           dispatch({
             type: actionType.ALL_CHAT_REQUEST_SUCCESS,
             payload: data,
           });
+
+          data?.list?.forEach(order => {
+            order?.admin_chat_request.forEach((chat) => {
+              if(chat?.status !== 'closed'){
+                openChats++;
+              }
+            })
+          })
+
+          // dispatch action for intial open chats
+          dispatch({
+            type: actionType.OPEN_CHATS_VALUE,
+            payload: openChats
+          })
+
         } else {
           dispatch({
             type: actionType.ALL_CHAT_REQUEST_FAIL,
@@ -181,6 +200,11 @@ export const closeConversation = (id) => async (dispatch, getState) => {
       dispatch({
         type: actionType.CLOSE_CONVERSATION_REQUEST_SUCCESS,
       });
+
+      dispatch({
+        type: actionType.OPEN_CHATS_DECREMENT_VALUE
+      })
+      
       socket.emit("chat-close", { requestId: id });
     } else {
       successMsg(data?.error, "error");
@@ -235,3 +259,23 @@ export const updateOrderChatSearchKey = (value) => (dispatch) => {
     payload: value,
   });
 };
+
+
+export const setOpenChats = (openChats) => (dispatch) => {
+  dispatch({
+    type: actionType.OPEN_CHATS_VALUE,
+    payload: openChats,
+  })
+}
+
+export const incrementOpenChats = () => (dispatch) => {
+  dispatch({
+    type: actionType.OPEN_CHATS_INCREMENT_VALUE,
+  })
+}
+
+export const decrementOpenChats = () => (dispatch) => {
+  dispatch({
+    type: actionType.OPEN_CHATS_DECREMENT_VALUE,
+  })
+}
