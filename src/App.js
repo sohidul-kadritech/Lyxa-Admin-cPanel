@@ -28,7 +28,7 @@ import NonAuthLayout from "./components/NonAuthLayout";
 // Import scss
 import "./assets/scss/theme.scss";
 import { socketConnect } from "./store/socket/socketAction";
-import { incrementNewUnseenChatRequests } from "./store/chat/chatAction";
+import { getAllChat, incrementOpenChats } from "./store/chat/chatAction";
 
 import { SOCKET_CONNECTION } from "./network/Api";
 import Login from "./pages/Authentication/Login";
@@ -44,6 +44,8 @@ const App = (props) => {
     admin: { account_type, adminType },
   } = useSelector((state) => state.Login);
 
+  const {openChats} = useSelector((store) => store.chatReducer);
+
   useEffect(() => {
     if (account_type === "admin" && adminType !== "customerService") {
       setRouteList(userRoutes);
@@ -54,9 +56,13 @@ const App = (props) => {
     } else {
       setRouteList(shopRoutes);
     }
-    // else {
-    //   history.push('/login', { replace: true });
-    // }
+  }, [account_type]);
+
+  useEffect(() => {
+    if(account_type === 'admin'){
+      // fetch chat list data
+      dispatch(getAllChat())
+    }
   }, [account_type]);
 
   useEffect(() => {
@@ -68,7 +74,7 @@ const App = (props) => {
   useEffect(() => {
     if (socket) {
       socket.on("user_send_chat_request", (data) => {
-        dispatch(incrementNewUnseenChatRequests())
+        dispatch(incrementOpenChats())
         console.log('from socket',data);
         // dispatch action
         return successMsg(
@@ -79,6 +85,7 @@ const App = (props) => {
     }
     return;
   }, [socket]);
+
 
   function getLayout() {
     // default Vertical

@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { successMsg } from "../../../helpers/successMsg";
 
 export const loginSuccess = (admin, accessToken, message) => {
-  // console.log(user);
   return {
     type: LOGIN_SUCCESS,
     payload: { admin, accessToken, message },

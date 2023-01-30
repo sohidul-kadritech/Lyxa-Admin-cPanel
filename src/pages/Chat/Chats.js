@@ -32,7 +32,6 @@ import { getAllShop, updateShopSearchKey } from "../../store/Shop/shopAction";
 import { updateSearchKey, userList } from "../../store/Users/UsersAction";
 import Search from "../../components/Search";
 import AppPagination from "../../components/AppPagination";
-import { resetNewUnseenChatRequests } from "../../store/chat/chatAction";
 
 const Chats = () => {
   const dispatch = useDispatch();
@@ -77,8 +76,8 @@ const Chats = () => {
   }, [userSearchKey]);
 
   const callChatList = (refresh = false) => {
+    console.log({user})
     dispatch(getAllChat(refresh, user?._id, shop?._id));
-    dispatch(resetNewUnseenChatRequests());
   };
 
   return (

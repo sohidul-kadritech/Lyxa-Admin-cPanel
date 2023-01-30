@@ -35,6 +35,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import requestApi from "../../../network/httpRequest";
 import { useMemo } from "react";
 import moment from "moment";
+import { actionTypes } from "redux-form";
 
 const ChatDetails = () => {
   const { id } = useParams();
@@ -116,6 +117,11 @@ const ChatDetails = () => {
 
       socket.on(`chat-close`, () => {
         setChatStatus("closed");
+
+        dispatch({
+          type: actionTypes.OPEN_CHATS_DECREMENT_VALUE
+        })
+        
       });
       return () => {
         socket.removeListener(`user_message_sent-${requestId}`);
