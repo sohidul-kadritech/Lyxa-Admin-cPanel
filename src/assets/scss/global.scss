@@ -52,8 +52,8 @@
 
 .imgSetting {
   object-fit: contain;
-  width:10rem;
-  border-radius:10px;
+  width: 10rem;
+  border-radius: 10px;
 }
 
 .details {
@@ -115,7 +115,7 @@ input[type="date"]:focus::-webkit-datetime-edit {
   padding: 1px 2px;
 }
 
-.img-tag{
+.img-tag {
   position: absolute;
   width: 100%;
   bottom: 0px;
@@ -127,20 +127,20 @@ input[type="date"]:focus::-webkit-datetime-edit {
   font-size: 12px;
 }
 
-.img-tag-active{
+.img-tag-active {
   color: #56ca00;
 }
 
-.img-tag-inactive{
+.img-tag-inactive {
   background: #ffcfce;
   color: #ff0000;
 }
 
 .orderStatus {
-    background-color: #fff9bd;
-    color: #eac300;
-    border-radius: 6px;
-    padding: 1px 2px;
+  background-color: #fff9bd;
+  color: #eac300;
+  border-radius: 6px;
+  padding: 1px 2px;
 }
 
 table th:first-child {
@@ -167,9 +167,33 @@ table > thead {
   border-bottom: transparent !important;
 }
 
-.link{
-  &:hover{
+.link {
+  &:hover {
     text-decoration: underline;
     font-weight: 500;
+  }
+}
+
+#side-menu {
+  > li p {
+    position: relative;
+
+    > .cs-badge{
+      font-size: 9px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 13px;
+      background: #f7c137;
+      position: absolute;
+      top: 2px;
+      right: -20px;
+      color: #000000;
+    }
+
+    .cs-badge:empty{
+      display: none;
+    }
   }
 }

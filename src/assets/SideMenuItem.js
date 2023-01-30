@@ -268,6 +268,7 @@ export const adminMenuItem = [
     icon: "fas fa-comment-dollar",
     link: "/customer-support",
     isSubmenu: false,
+    badgeId: 'sidebar-item-chat-badges'
   },
   {
     id: 13,

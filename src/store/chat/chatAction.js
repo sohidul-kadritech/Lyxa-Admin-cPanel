@@ -235,3 +235,18 @@ export const updateOrderChatSearchKey = (value) => (dispatch) => {
     payload: value,
   });
 };
+
+
+// INCREMENT UNSEEN CHAT REQUEST 
+
+export const incrementNewUnseenChatRequests = () => (dispatch) => {
+  dispatch({
+    type: actionType.INCREMENT_NEW_UNSEEN_CHAT_REQUESTS,
+  })
+}
+
+export const resetNewUnseenChatRequests = () => (dispatch) => {
+  dispatch({
+    type: actionType.RESET_NEW_UNSEEN_CHAT_REQUESTS,
+  })
+}

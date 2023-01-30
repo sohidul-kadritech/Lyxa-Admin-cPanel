@@ -104,29 +104,44 @@ const SidebarContent = (props) => {
               </Link>
             </li> */}
 
-            {props?.list?.map((item, index) => (
-              <li key={index}>
-                <Link
-                  to={item.link}
-                  className={`waves-effect ${item.isSubmenu && "has-arrow"}`}
-                >
-                  <i className={item.icon} />
-                  <span>{props.t(item.name === 'Products' && (account_type === 'shop' || account_type === 'seller') && shopType === 'food' ? 'Menu' : item.name)}</span>
-                </Link>
-                {item.isSubmenu && (
-                  <ul className="sub-menu" aria-expanded="false">
-                    {item?.submenu?.map((sub, index) => (
-                      <li key={index}>
-                        <Link to={sub.link}>
-                          <i className={sub.icon} />
-                          <span>{props.t(sub.name)} </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
+            {props?.list?.map((item, index) => {
+              return (
+                <li key={index}>
+                  <Link to={item.link} className={`waves-effect ${item.isSubmenu && "has-arrow"}`}>
+                    <i className={item.icon} />
+                    <p className="d-inline">
+                      {
+                        item?.badgeId && (
+                          <span className="cs-badge" id={item.badgeId}>
+                          </span>
+                        )
+                      }
+                      <span>
+                        {props.t(
+                          item.name === "Products" &&
+                            (account_type === "shop" || account_type === "seller") &&
+                            shopType === "food"
+                            ? "Menu"
+                            : item.name
+                        )}
+                      </span>
+                    </p>
+                  </Link>
+                  {item.isSubmenu && (
+                    <ul className="sub-menu" aria-expanded="false">
+                      {item?.submenu?.map((sub, index) => (
+                        <li key={index}>
+                          <Link to={sub.link}>
+                            <i className={sub.icon} />
+                            <span>{props.t(sub.name)} </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
 
             {/* ORDERS */}
 

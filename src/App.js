@@ -28,6 +28,7 @@ import NonAuthLayout from "./components/NonAuthLayout";
 // Import scss
 import "./assets/scss/theme.scss";
 import { socketConnect } from "./store/socket/socketAction";
+import { incrementNewUnseenChatRequests } from "./store/chat/chatAction";
 
 import { SOCKET_CONNECTION } from "./network/Api";
 import Login from "./pages/Authentication/Login";
@@ -67,7 +68,9 @@ const App = (props) => {
   useEffect(() => {
     if (socket) {
       socket.on("user_send_chat_request", (data) => {
-        console.log('from socket',data)
+        dispatch(incrementNewUnseenChatRequests())
+        console.log('from socket',data);
+        // dispatch action
         return successMsg(
           `New chat request from ${data?.user?.name}`,
           "success"
