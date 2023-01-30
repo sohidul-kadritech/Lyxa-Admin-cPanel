@@ -229,7 +229,7 @@ const SellerTransactions = () => {
 
                           <Td>{trx?.summary?.orderValue?.count ?? 0}</Td>
                           <Td>
-                            {trx?.summary?.orderValue?.totalAmount.toFixed(2) ??
+                            {trx?.summary?.orderValue?.productAmount.toFixed(2) ??
                               0}
                           </Td>
                           <Td>{trx?.summary?.orderValue?.deliveryFee ?? 0}</Td>
