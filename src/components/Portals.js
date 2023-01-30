@@ -8,8 +8,6 @@ function Portals({openChats}) {
   const {pathname} = useLocation();
   const newUnseenChatRequestBadge = useRef();
 
-  console.log(openChats)
-
   useEffect(() => {
     newUnseenChatRequestBadge.current = document.getElementById("sidebar-item-chat-badges");
   }, [pathname]);

@@ -1,21 +1,10 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import {
-  Switch,
-  BrowserRouter as Router,
-  useHistory,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { Switch, BrowserRouter as Router, useHistory, Route, Redirect } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
 
 // Import Routes all
-import {
-  userRoutes,
-  sellerRoutes,
-  customerServiceRoutes,
-  shopRoutes,
-} from "./routes/allRoutes";
+import { userRoutes, sellerRoutes, customerServiceRoutes, shopRoutes } from "./routes/allRoutes";
 
 // Import all middleware
 import Authmiddleware from "./routes/middleware/Authmiddleware";
@@ -44,7 +33,7 @@ const App = (props) => {
     admin: { account_type, adminType },
   } = useSelector((state) => state.Login);
 
-  const {openChats} = useSelector((store) => store.chatReducer);
+  const { openChats } = useSelector((store) => store.chatReducer);
 
   useEffect(() => {
     if (account_type === "admin" && adminType !== "customerService") {
@@ -59,9 +48,9 @@ const App = (props) => {
   }, [account_type]);
 
   useEffect(() => {
-    if(account_type === 'admin'){
+    if (account_type === "admin") {
       // fetch chat list data
-      dispatch(getAllChat())
+      dispatch(getAllChat());
     }
   }, [account_type]);
 
@@ -72,20 +61,20 @@ const App = (props) => {
   }, [socket]);
 
   useEffect(() => {
+    let listenerID;
+
     if (socket) {
-      socket.on("user_send_chat_request", (data) => {
-        dispatch(incrementOpenChats())
-        console.log('from socket',data);
-        // dispatch action
-        return successMsg(
-          `New chat request from ${data?.user?.name}`,
-          "success"
-        );
+      listenerID = socket.on("user_send_chat_request", (data) => {
+        dispatch(incrementOpenChats());
+        return successMsg(`New chat request from ${data?.user?.name}`, "success");
       });
     }
-    return;
+    return () => {
+      if (socket) {
+        socket.off("user_send_chat_request", listenerID);
+      }
+    };
   }, [socket]);
-
 
   function getLayout() {
     // default Vertical
@@ -117,12 +106,7 @@ const App = (props) => {
             />
           ))} */}
 
-          <Authmiddleware
-            path={"/login"}
-            layout={NonAuthLayout}
-            component={Login}
-            isAuthProtected={false}
-          />
+          <Authmiddleware path={"/login"} layout={NonAuthLayout} component={Login} isAuthProtected={false} />
 
           {account_type ? (
             routeList?.map((route, idx) => (

@@ -51,8 +51,6 @@ export const getAllChat =
             })
           })
 
-          console.log(openChats)
-
           // dispatch action for intial open chats
           dispatch({
             type: actionType.OPEN_CHATS_VALUE,
