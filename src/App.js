@@ -18,10 +18,12 @@ import NonAuthLayout from "./components/NonAuthLayout";
 import "./assets/scss/theme.scss";
 import { socketConnect } from "./store/socket/socketAction";
 import { getAllChat, incrementOpenChats } from "./store/chat/chatAction";
+import { setAdmin } from "./store/actions";
 
-import { SOCKET_CONNECTION } from "./network/Api";
+import { SINGLE_SHOP, SINGLE_ADMIN, SINGLE_SELLER, SOCKET_CONNECTION } from "./network/Api";
 import Login from "./pages/Authentication/Login";
 import { successMsg } from "./helpers/successMsg";
+import requestApi from "./network/httpRequest";
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -33,9 +35,61 @@ const App = (props) => {
     admin: { account_type, adminType },
   } = useSelector((state) => state.Login);
 
-  const { openChats } = useSelector((store) => store.chatReducer);
+  // set admin
+  const setAdminToLocal = (oldAdmin, newAdmin) => {
+    dispatch(setAdmin({...oldAdmin, ...newAdmin}));
+    localStorage.setItem('admin', JSON.stringify({...oldAdmin, ...newAdmin}));
+  }
+
+  // get admin
+  const getAdmin = async () => { 
+    try{
+      const admin = JSON.parse(localStorage.getItem('admin'));
+
+      // shop
+      if(admin.account_type === 'shop'){
+        const {data: resData} = await requestApi().request(SINGLE_SHOP, {
+          params: {
+            id: admin._id
+          }
+        })
+
+        const {data: {shop}} = resData;
+        setAdminToLocal(admin, shop);
+
+        // admin
+      }else if (admin.account_type === 'admin'){
+        const {data: resData} = await requestApi().request(SINGLE_ADMIN, {
+          params: {
+            id: admin._id
+          }
+        })
+
+        const {data: {admin: newAdmin}} = resData;
+        setAdminToLocal(admin, newAdmin);
+
+        // seller
+      } else if(admin.account_type === 'seller'){
+        const {data: resData} = await requestApi().request(SINGLE_SELLER, {
+          params: {
+            id: admin._id
+          }
+        })
+
+        const {data: {seller}} = resData;
+        setAdminToLocal(admin, seller)
+      }
+
+    }catch(error){
+      console.log(error);
+    }
+    
+  }
 
   useEffect(() => {
+    // refresh localstorage data
+    getAdmin();
+
     if (account_type === "admin" && adminType !== "customerService") {
       setRouteList(userRoutes);
     } else if (account_type === "admin" && adminType === "customerService") {

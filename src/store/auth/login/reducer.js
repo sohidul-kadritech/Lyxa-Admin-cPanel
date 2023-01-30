@@ -3,7 +3,8 @@ import {
   LOGIN_SUCCESS,
   LOGOUT_USER,
   LOGOUT_USER_SUCCESS,
-  API_ERROR
+  API_ERROR,
+  SET_ADMIN
 } from "./actionTypes";
 
 const initialState = {
@@ -20,6 +21,12 @@ const initialState = {
 
 const login = (state = initialState, action) => {
   switch (action.type) {
+    case SET_ADMIN:
+    return {
+      ...state,
+      admin: action.payload,
+    }
+    
     case LOGIN_USER:
       return {
         ...state,
