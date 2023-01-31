@@ -1,3 +1,4 @@
+import { actionTypes } from "redux-form";
 import * as actionType from "../actionType";
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   isSelected: true,
   isSendingMsg: false,
   isChatClose: false,
+  isChatAccepted: false,
   orderChatSearchKey: "",
   openChats: 0,
 };
@@ -65,11 +67,18 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
+        isChatAccepted: true,
         chatRequests: state.chatRequests.map((item) =>
           item._id === payload._id ? payload : item
         ),
       };
 
+    case actionTypes.SET_CHAT_ACCEPT: 
+    return {
+      ...state,
+      isChatAccepted: payload,
+    }
+    
     case actionType.ACCEPT_CHAT_REQUEST_FAIL:
       return {
         ...state,

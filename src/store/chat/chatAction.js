@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { actionTypes } from "redux-form";
 import { successMsg } from "../../helpers/successMsg";
 import {
   ACCEPT_CHAT,
@@ -89,6 +90,8 @@ export const acceptChatReq = (id) => async (dispatch, getState) => {
     if (data.status) {
       successMsg(data?.message, "success");
       const { request } = data?.data;
+      console.log('chat accept data', data);
+
       dispatch({
         type: actionType.ACCEPT_CHAT_REQUEST_SUCCESS,
         payload: request,
@@ -220,6 +223,15 @@ export const closeConversation = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+// accept
+
+export const setAcceptChat = (value) => async (dispatch, getState) => {
+  dispatch({
+    type: actionTypes.SET_CHAT_ACCEPT,
+    payload: value,
+  })
+} 
 
 // FITLERS
 
