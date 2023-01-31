@@ -104,16 +104,17 @@ const DeliverymanAdd = () => {
       contractImage,
     } = data;
     const findStatus = activeOptions.find((option) => option.value === status);
-    const findVahicleType = DeliveryBoyVehicleOPtions.find(
-      (option) => option.value === vehicleType
-    );
+    // const findVahicleType = DeliveryBoyVehicleOPtions.find(
+    //   (option) => option.value === vehicleType
+    // );
+    console.log()
     setName(name);
     setEmail(email);
     setPhone(number);
     setActiveStatus(findStatus);
     setNid(nationalIdDocument);
     setVehicleDoc(vehicleRegistrationDocument);
-    setVehicleType(findVahicleType);
+    setVehicleType(vehicleType);
     setVehicleNum(vehicleNumber);
     setContractPaper(contractImage);
   };
@@ -227,7 +228,8 @@ const DeliverymanAdd = () => {
       email,
       password,
       number: phone,
-      vehicleType: vehicleType.value,
+      // vehicleType: vehicleType.value,
+      vehicleType: vehicleType,
       vehicleNumber: vehicleNum,
       nationalIdDocument: nidUrl,
       vehicleRegistrationDocument: docUrl,
@@ -348,7 +350,16 @@ const DeliverymanAdd = () => {
 
                         <div className="mb-4">
                           <label className="control-label">Vehicle Type</label>
-                          <Select
+                          <input
+                            className="form-control"
+                            name="Vehicle Type"
+                            type="text"
+                            placeholder="Vahicle Type"
+                            required
+                            value={vehicleType}
+                            onChange={(e) => setVehicleType(e.target.value)}
+                          />
+                          {/* <Select
                             palceholder="Select Vahicle Type"
                             options={DeliveryBoyVehicleOPtions}
                             classNamePrefix="select2-selection"
@@ -357,7 +368,7 @@ const DeliverymanAdd = () => {
                             value={vehicleType}
                             onChange={(e) => setVehicleType(e)}
                             defaultValue={""}
-                          />
+                          /> */}
                         </div>
 
                         <div className="mb-4">
