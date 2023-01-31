@@ -24,6 +24,7 @@ import {
   acceptChatReq,
   closeConversation,
   rejectChatReq,
+  setAcceptChat,
   sendMsgToUser,
   setChatStatusFalse,
 } from "../../../store/chat/chatAction";
@@ -49,7 +50,7 @@ const ChatDetails = () => {
   const bottomRef = useRef(null);
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { status, loading, selectedMsg, isSendingMsg, isChatClose } =
+  const { status, loading, selectedMsg, isSendingMsg, isChatClose, isChatAccepted } =
     useSelector((state) => state.chatReducer);
   const { socket } = useSelector((state) => state.socketReducer);
   const { token } = JSON.parse(localStorage.getItem("admin"));
@@ -67,12 +68,12 @@ const ChatDetails = () => {
 
   useEffect(() => {
     if (id) {
-      setIsLoading(true);
-
-      dispatch(setChatStatusFalse());
+      setIsLoading(true)
       const status = searchParams.get("status");
-      setChatStatus(status);
 
+      dispatch(setChatStatusFalse(status === 'closed'));
+      dispatch(setAcceptChat(status === 'accepted'))
+      setChatStatus(status);
       callApi(id);
     }
     return;
@@ -180,23 +181,45 @@ const ChatDetails = () => {
   }, [status]);
 
   // CLOSE CONVERSATION ACTION
-
   const handleClosedConversation = () => {
     const requestId = request?.at(-1)?.adminChatRequest?._id;
     dispatch(closeConversation(requestId));
+    setconfirm_alert(false);
+    setsuccess_dlg(true);
+    setdynamic_title("Close");
+    setdynamic_description(
+      "Your file has been closed."
+    );
   };
+
+  // accept conversation
+  const handleAcceptConversation = () => {
+    const requestId = request?.at(-1)?.adminChatRequest?._id;
+    dispatch(acceptChatReq(requestId));
+    setconfirm_alert(false);
+    setsuccess_dlg(true);
+    setdynamic_title("Accept");
+    setdynamic_description(
+      "Your chat has been accepted."
+    );
+  }
 
   useEffect(() => {
     if (isChatClose) {
       setChatStatus("closed");
     }
+
+    if(isChatAccepted){
+      setChatStatus("accepted");
+    }
+
     if (!isSendingMsg) {
       scrollToBottom();
     }
     // return () => {
     //   setChatStatus("");
     // };
-  }, [isChatClose, isSendingMsg]);
+  }, [isChatClose, isSendingMsg, isChatAccepted]);
 
   // Scroll to Bottom
 
@@ -249,7 +272,7 @@ const ChatDetails = () => {
                                 ? "blue"
                                 : chatStatus === "accepted"
                                 ? "green"
-                                : chatStatus === "resolved"
+                                : chatStatus === "closed"
                                 ? "#42f5aa"
                                 : "red",
                             fontSize: "11px",
@@ -269,31 +292,33 @@ const ChatDetails = () => {
                         className={`d-flex align-items-center justify-content-end`}
                         style={{ width: "190px" }}
                       >
-                        {chatStatus === "accepted" ? (
+                        {chatStatus !== "closed" ? (
                           <Button
-                            className="btn btn-danger ms-1"
+                            className={`btn ms-1 ${chatStatus === 'accepted' ? 'btn-danger' : 'btn-success'}`}
                             onClick={() => setconfirm_alert(true)}
                             disabled={loading}
                           >
-                            Close chat
+                            {
+                              chatStatus === 'accepted' ? 'Close Chat' : 'Accept Chat'
+                            }
                           </Button>
                         ) : null}
                         {confirm_alert ? (
                           <SweetAlert
-                            title="You want to close this conversation?"
-                            warning
+                            title={`${ chatStatus === 'accepted' ? 'You want to close this conversation?' : 'You want to accept this conversation?' }`}
+                            success={chatStatus !== 'accepted'}
+                            warning={chatStatus === 'accepted'}
                             showCancel
-                            confirmButtonText="Yes, close it!"
+                            confirmButtonText={chatStatus === 'accepted' ? "Yes, close it!" : "Yes, accept it!"}
                             confirmBtnBsStyle="success"
                             cancelBtnBsStyle="danger"
                             onConfirm={() => {
-                              handleClosedConversation();
-                              setconfirm_alert(false);
-                              setsuccess_dlg(true);
-                              setdynamic_title("Close");
-                              setdynamic_description(
-                                "Your file has been closed."
-                              );
+                              console.log(chatStatus);
+                              if(chatStatus === 'accepted'){
+                                handleClosedConversation();
+                              }else{
+                                handleAcceptConversation();
+                              }
                             }}
                             onCancel={() => setconfirm_alert(false)}
                           >

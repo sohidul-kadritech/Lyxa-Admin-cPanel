@@ -246,6 +246,7 @@ const SellerInfo = () => {
           <div className="img_wrapper">
             <img
               className="rounded-circle avatar-xl cursor-pointer"
+              style={{ borderRadius: 200, width: 90, height: 90, objectFit: 'cover' }}
               alt="Seller"
               src={!profile_photo ? noPhoto : profile_photo}
             />
@@ -307,17 +308,17 @@ const ShopInfo = () => {
   return (
     <InfoWrapper>
       <Row>
-        <Col md={1} className="px-0 d-flex align-items-center">
+        <Col md={1} className="px-0 d-flex align-items-center justify-content-center">
           <div className="img_wrapper">
             <img
-              style={{ borderRadius: 200, width: 70, height: 70 }}
+              style={{ borderRadius: 200, width: 90, height: 90, objectFit: 'cover' }}
               className="rounded-circle avatar-xl cursor-pointer"
               alt="Seller"
               src={!shopLogo ? noPhoto : shopLogo}
             />
           </div>
         </Col>
-        <Col md={11}>
+        <Col md={10}>
           <div className="d-flex align-items-center pb-1">
             <h5>
               Welcome, <span className="text-danger me-2">{shopName}</span>
@@ -357,7 +358,7 @@ const ShopInfo = () => {
 
             <Col lg={4}>
               <InfoTwo
-                value={`${minOrderAmount} NGN`}
+                value={`${minOrderAmount} NGN (Min Order)`}
                 Icon={StorefrontOutlinedIcon}
               />
               <InfoTwo
@@ -374,10 +375,10 @@ const ShopInfo = () => {
                 } (Rating)`}
                 Icon={SentimentSatisfiedOutlinedIcon}
               />
-              <InfoTwo
+              {/* <InfoTwo
                 value={`${minOrderAmount} NGN`}
                 Icon={WorkHistoryOutlinedIcon}
-              />
+              /> */}
               <InfoTwo
                 value={`${
                   expensive === 1
@@ -405,7 +406,7 @@ const ShopInfo = () => {
                 Icon={MopedOutlinedIcon}
               />
 
-              <InfoTwo value={deals} Icon={SettingsInputSvideoIcon} />
+              <InfoTwo value={deals.length || 'No Deals'} Icon={SettingsInputSvideoIcon} />
             </Col>
           </Row>
         </Col>

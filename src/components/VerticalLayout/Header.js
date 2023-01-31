@@ -1,37 +1,32 @@
-import PropTypes from 'prop-types'
-import React, { useState } from "react"
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { connect, useSelector } from "react-redux";
+import { Form, Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Input, Button } from "reactstrap";
 
-import { connect } from "react-redux"
-import { Form, Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Input, Button } from "reactstrap"
-
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 // Import menuDropdown
-import LanguageDropdown from "../CommonForBoth/TopbarDropdown/LanguageDropdown"
-import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDropdown"
-import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
+import LanguageDropdown from "../CommonForBoth/TopbarDropdown/LanguageDropdown";
+import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDropdown";
+import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu";
 
 import logodarkImg from "../../assets/images/lyxa.svg";
 import logolightImg from "../../assets/images/lyxa.svg";
 
-import { logoSvg } from '../../assets/staticData';
-
+import { logoSvg } from "../../assets/staticData";
 
 //i18n
-import { withTranslation } from "react-i18next"
+import { withTranslation } from "react-i18next";
 
 // Redux Store
-import {
-  showRightSidebarAction,
-  toggleLeftmenu,
-  changeSidebarType,
-} from "../../store/actions"
+import { showRightSidebarAction, toggleLeftmenu, changeSidebarType } from "../../store/actions";
 
-const Header = props => {
-  const [search, setsearch] = useState(false)
-  const [singlebtn, setSinglebtn] = useState(false)
+const Header = (props) => {
+  const [search, setsearch] = useState(false);
+  const [singlebtn, setSinglebtn] = useState(false);
+  const { account_type } = useSelector((store) => store.Login.admin);
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   function toggleFullscreen() {
     if (
@@ -41,21 +36,19 @@ const Header = props => {
     ) {
       // current working methods
       if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen()
+        document.documentElement.requestFullscreen();
       } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen()
+        document.documentElement.mozRequestFullScreen();
       } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen(
-          Element.ALLOW_KEYBOARD_INPUT
-        )
+        document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
       }
     } else {
       if (document.cancelFullScreen) {
-        document.cancelFullScreen()
+        document.cancelFullScreen();
       } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen()
+        document.mozCancelFullScreen();
       } else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen()
+        document.webkitCancelFullScreen();
       }
     }
   }
@@ -82,24 +75,33 @@ const Header = props => {
                   {logoSvg}
                 </span>
                 <span className="logo-lg">
-                  <img src={logodarkImg} alt="" height="17" />
+                  <span>
+                    <img src={logodarkImg} alt="" height="17" />
+                  </span>
+                  <span className="header-logo-text">{account_type?.toUpperCase()}</span>
                 </span>
               </Link>
 
               <Link to="/" className="logo logo-light">
                 <span className="logo-sm">
+                  <span>{logoSvg}</span>
                   {/* <img src={logoSvg} alt="" height="22" /> */}
-                  {logoSvg}
+                  {/* <span className="header-logo-text">{account_type?.toUpperCase()}</span> */}
                 </span>
-                <span className="logo-lg">
-                  <img src={logolightImg} alt="" height="18" />
+                <span className="logo-lg ">
+                  <span>
+                    <img src={logolightImg} alt="" height="18" />
+                  </span>
+                  <span className="header-logo-text">{account_type?.toUpperCase()}</span>
                 </span>
               </Link>
             </div>
-            <button type="button" className="btn btn-sm px-3 font-size-24 header-item waves-effect"
+            <button
+              type="button"
+              className="btn btn-sm px-3 font-size-24 header-item waves-effect"
               id="vertical-menu-btn"
               onClick={() => {
-                tToggle()
+                tToggle();
               }}
               data-target="#topnav-menu-content"
             >
@@ -108,17 +110,14 @@ const Header = props => {
           </div>
 
           <div className="d-flex">
-
-
-
             {/* <NotificationDropdown /> */}
             <ProfileMenu />
           </div>
         </div>
       </header>
     </React.Fragment>
-  )
-}
+  );
+};
 
 Header.propTypes = {
   changeSidebarType: PropTypes.func,
@@ -127,21 +126,16 @@ Header.propTypes = {
   showRightSidebar: PropTypes.any,
   showRightSidebarAction: PropTypes.func,
   t: PropTypes.any,
-  toggleLeftmenu: PropTypes.func
-}
+  toggleLeftmenu: PropTypes.func,
+};
 
-const mapStatetoProps = state => {
-  const {
-    layoutType,
-    showRightSidebar,
-    leftMenu,
-    leftSideBarType,
-  } = state.Layout
-  return { layoutType, showRightSidebar, leftMenu, leftSideBarType }
-}
+const mapStatetoProps = (state) => {
+  const { layoutType, showRightSidebar, leftMenu, leftSideBarType } = state.Layout;
+  return { layoutType, showRightSidebar, leftMenu, leftSideBarType };
+};
 
 export default connect(mapStatetoProps, {
   showRightSidebarAction,
   toggleLeftmenu,
   changeSidebarType,
-})(withTranslation()(Header))
+})(withTranslation()(Header));

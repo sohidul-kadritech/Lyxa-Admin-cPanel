@@ -54,7 +54,13 @@ import earningFlowIcon from "../../../assets/images/dashboard/earning-flow.png";
 import moneyExchangeIcon from "../../../assets/images/dashboard/money-exchange.png";
 import deliveryIcon from "../../../assets/images/dashboard/delivery.png";
 import orderAmountIcon from "../../../assets/images/dashboard/order-amount.png";
+// import profitUpArrowIcon from "../assets/images/dashboard/profit-up-arrow.png";
+import profitUpArrowIcon from '../../../assets/images/dashboard/profit-up-arrow.png'
+import profitFlowIcon from "../../../assets/images/dashboard/profit-flow.png";
+
+// import profitUpArrowIcon from '../../../assets/images/dashboard/profit-up-arrow.png'
 import TopSummery from "../../../components/TopSummery";
+// import earningFlowIcon from "../assets/images/dashboard/earning-flow.png";
 
 const SingleShopTransactions = () => {
   const history = useHistory();
@@ -150,13 +156,20 @@ const SingleShopTransactions = () => {
 
   useEffect(() => {
     const summaryList = [
+      // {
+      //   title: "Lyxa Earning",
+      //   value: `${shopTrxs?.summary?.totalDropGet} NGN`,
+      //   icon: earningFlowIcon,
+      //   iconBg: "red",
+      // },
+
+
       {
-        title: "Lyxa Earning",
-        value: `${shopTrxs?.summary?.totalDropGet} NGN`,
+        title: "Shop Earning",
+        value: `${shopTrxs?.summary?.totalShopEarning} NGN`,
         icon: earningFlowIcon,
         iconBg: "red",
       },
-
       {
         title: "Unsetlled Amount",
         value: `${shopTrxs?.summary?.totalShopUnsettle} NGN`,
@@ -164,16 +177,18 @@ const SingleShopTransactions = () => {
         iconBg: "#0c9da4",
       },
       {
-        title: "Shop Earning",
-        value: `${shopTrxs?.summary?.totalShopEarning} NGN`,
-        icon: deliveryIcon,
-        iconBg: "#00dcff",
+        id: 3,
+        title: "Delivery Profit",
+        // subTitle: "(Only from own riders)",
+        value: `${shopTrxs?.summary?.orderValue?.deliveryFee || 0} NGN`,
+        icon: profitUpArrowIcon,
+        iconBg: "#f7c137",
       },
       {
         title: "Total Profit",
         value: `${shopTrxs?.summary?.toalShopProfile} NGN`,
-        icon: orderAmountIcon,
-        iconBg: "#ff5ca7",
+        icon: profitFlowIcon,
+        iconBg: "#56ca00",
       },
     ];
     setSummary(summaryList);
@@ -417,7 +432,7 @@ const SingleShopTransactions = () => {
             </Card>
 
             <div>
-              <TopSummery fromWallet={true} data={summary} />
+              <TopSummery fromSingleShop={true} fromWallet={true} data={summary} />
             </div>
 
             <Card>
