@@ -170,6 +170,7 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         isChatClose: true,
+        isChatAccepted: false,
         loading: false,
       };
 

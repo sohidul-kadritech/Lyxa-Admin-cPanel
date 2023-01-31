@@ -123,6 +123,7 @@ const AppSettings = () => {
                       value={appSettingsOptions?.maxDiscount ?? 0}
                       onChange={(e) => {
                         dispatch(updateMaxDiscount(e.target.value));
+                        checkIsUpdates(e);
                       }}
                       type="number"
                       name="maxDiscount"

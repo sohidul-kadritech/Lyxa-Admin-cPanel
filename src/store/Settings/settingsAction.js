@@ -69,6 +69,8 @@ export const getAllAdminSettings = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(ADMINS_SETTINGS);
 
+    console.log('form server', {data})
+
     if (status) {
       dispatch({
         type: actionType.ALL_ADMIN_SETTINGS_REQUEST_SUCCESS,
@@ -176,6 +178,8 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
       type: actionType.UPDATE_APP_SETTINGS_REQUEST_SEND,
     });
 
+    console.log({appSettingsOptions});
+
     const {
       data: { status, error, message, data },
     } = await requestApi().request(UPDATE_APP_SETTINGS, {
@@ -223,6 +227,8 @@ export const getAllAppSettings = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(APP_SETTINGS);
 
+    console.log('from server', data);
+
     if (status) {
       dispatch({
         type: actionType.ALL_APP_SETTINGS_REQUEST_SUCCESS,
@@ -254,8 +260,6 @@ export const addPercentage = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
-    console.log({ data });
 
     if (data.status) {
       const { charge } = data?.data;
