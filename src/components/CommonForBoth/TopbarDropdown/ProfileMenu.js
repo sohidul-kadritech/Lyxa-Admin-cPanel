@@ -15,6 +15,8 @@ import { withTranslation } from "react-i18next";
 // Redux
 import { connect } from "react-redux";
 import { withRouter, Link, useHistory } from "react-router-dom";
+import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject'
+import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject'
 
 // users
 import user1 from "../../../assets/images/users/user-4.jpg";
@@ -62,9 +64,12 @@ const ProfileMenu = props => {
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("admin");
+    
+    // remove all cookies
+    const authCookies = getCookiesAsObject();
+    setCookiesAsObject(authCookies, 0)
     window.location.reload(true);
-    // history.push("/login", { replace: true })
-    // <Redirect to="/dashboard" />
+
   };
 
   return (
