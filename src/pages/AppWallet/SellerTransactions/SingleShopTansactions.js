@@ -100,6 +100,8 @@ const SingleShopTransactions = () => {
   } = JSON.parse(localStorage.getItem("admin"));
 
   const { admins } = useSelector((state) => state.adminReducer);
+  console.log({account_type})
+
 
   useEffect(() => {
     if (account_type !== "shop") {
@@ -155,43 +157,66 @@ const SingleShopTransactions = () => {
   // SUMMARY
 
   useEffect(() => {
-    const summaryList = [
-      // {
-      //   title: "Lyxa Earning",
-      //   value: `${shopTrxs?.summary?.totalDropGet} NGN`,
-      //   icon: earningFlowIcon,
-      //   iconBg: "red",
-      // },
-
-
+    const summaryListShop = [
       {
         title: "Shop Earning",
-        value: `${shopTrxs?.summary?.totalShopEarning} NGN`,
+        value: `${shopTrxs?.summary?.totalShopEarning?.toFixed(2)} NGN`,
         icon: earningFlowIcon,
-        iconBg: "red",
+        iconBg: "#0008C1",
       },
       {
         title: "Unsetlled Amount",
-        value: `${shopTrxs?.summary?.totalShopUnsettle} NGN`,
+        value: `${shopTrxs?.summary?.totalShopUnsettle?.toFixed(2)} NGN`,
         icon: moneyExchangeIcon,
         iconBg: "#0c9da4",
       },
       {
         id: 3,
         title: "Delivery Profit",
-        // subTitle: "(Only from own riders)",
-        value: `${shopTrxs?.summary?.orderValue?.deliveryFee || 0} NGN`,
+        value: `${shopTrxs?.summary?.orderValue?.deliveryFee?.toFixed(2) || (0).toFixed(2)} NGN`,
         icon: profitUpArrowIcon,
-        iconBg: "#f7c137",
+        iconBg: "#1A4D2E",
       },
       {
         title: "Total Profit",
-        value: `${shopTrxs?.summary?.toalShopProfile} NGN`,
+        value: `${shopTrxs?.summary?.toalShopProfile?.toFixed(2)} NGN`,
         icon: profitFlowIcon,
         iconBg: "#56ca00",
       },
     ];
-    setSummary(summaryList);
+    const summaryListAdmin = [
+      {
+        title: "Lyxa Earning",
+        value: `${shopTrxs?.summary?.totalDropGet?.toFixed(2)} NGN`,
+        icon: earningFlowIcon,
+        iconBg: "red",
+      },
+      {
+        title: "Shop Earning",
+        value: `${shopTrxs?.summary?.totalShopEarning?.toFixed(2)} NGN`,
+        icon: earningFlowIcon,
+        iconBg: "#f7c137",
+      },
+      {
+        title: "Unsetlled Amount",
+        value: `${shopTrxs?.summary?.totalShopUnsettle?.toFixed(2)} NGN`,
+        icon: moneyExchangeIcon,
+        iconBg: "#0c9da4",
+      },
+      {
+        title: "Total Shop Profit",
+        value: `${shopTrxs?.summary?.toalShopProfile?.toFixed(2)} NGN`,
+        icon: profitFlowIcon,
+        iconBg: "#56ca00",
+      },
+    ];
+
+    if(account_type === 'admin'){
+      setSummary(summaryListAdmin)
+    }else{
+      setSummary(summaryListShop)
+    }
+    
   }, [shopTrxs]);
 
   // const topSummaryData = [
