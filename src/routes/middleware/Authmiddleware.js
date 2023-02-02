@@ -2,12 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Route, Redirect } from "react-router-dom";
 import Portals from "../../components/Portals";
+import { useSelector } from "react-redux";
 
-const Authmiddleware = ({ component: Component, layout: Layout, isAuthProtected, ...rest }) => (
-  <Route
+const Authmiddleware = ({ component: Component, layout: Layout, isAuthProtected, ...rest }) => {
+  const {account_type} = useSelector((store) => store.Login.admin)
+  
+  return <Route
     {...rest}
     render={(props) => {
-      if (isAuthProtected && !localStorage.getItem("accessToken")) {
+      if (isAuthProtected && !account_type) {
         return <Redirect to={{ pathname: "/login", state: { from: props.location } }} />;
       } else {
         return (
@@ -21,7 +24,7 @@ const Authmiddleware = ({ component: Component, layout: Layout, isAuthProtected,
       }
     }}
   />
-);
+};
 
 Authmiddleware.propTypes = {
   isAuthProtected: PropTypes?.bool,

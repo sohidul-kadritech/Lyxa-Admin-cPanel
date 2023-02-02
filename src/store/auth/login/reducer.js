@@ -10,13 +10,8 @@ import {
 const initialState = {
   error: "",
   loading: false,
-  admin: localStorage.getItem("admin")
-    ? JSON.parse(localStorage.getItem("admin"))
-    : { account_type: '', adminType: '' },
+  admin: {},
   message: "",
-  accessToken: localStorage.getItem("accessToken")
-    ? localStorage.getItem("accessToken")
-    : null
 };
 
 const login = (state = initialState, action) => {

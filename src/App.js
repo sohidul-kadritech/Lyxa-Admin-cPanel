@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Switch, BrowserRouter as Router, useHistory, Route, Redirect } from "react-router-dom";
+import { Switch, BrowserRouter as Router, Redirect, useHistory } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
 
 // Import Routes all
@@ -19,77 +19,86 @@ import "./assets/scss/theme.scss";
 import { socketConnect } from "./store/socket/socketAction";
 import { getAllChat, incrementOpenChats } from "./store/chat/chatAction";
 import { setAdmin } from "./store/actions";
+import getCookiesAsObject from "./helpers/cookies/getCookiesAsObject";
+import { Spinner } from "reactstrap";
 
-import { SINGLE_SHOP, SINGLE_ADMIN, SINGLE_SELLER, SOCKET_CONNECTION } from "./network/Api";
+import { SINGLE_SHOP, SINGLE_ADMIN, SINGLE_SELLER } from "./network/Api";
 import Login from "./pages/Authentication/Login";
 import { successMsg } from "./helpers/successMsg";
 import requestApi from "./network/httpRequest";
+import setCookiesAsObj from "./helpers/cookies/setCookiesAsObject";
 
 const App = (props) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const [routeList, setRouteList] = useState([]);
   const { socket } = useSelector((state) => state.socketReducer);
 
   const {
     admin: { account_type, adminType },
   } = useSelector((state) => state.Login);
+  const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
 
-  // set admin
-  const setAdminToLocal = (oldAdmin, newAdmin) => {
-    dispatch(setAdmin({...oldAdmin, ...newAdmin}));
-    localStorage.setItem('admin', JSON.stringify({...oldAdmin, ...newAdmin}));
-  }
+  // get admin data
+  const fetchAdminData = async (accountType, id) => {
+    let ADMIN_DATA;
+    let ENDPOINT;
 
-  // get admin
-  const getAdmin = async () => { 
-    try{
-      const admin = JSON.parse(localStorage.getItem('admin'));
+    const requestOptions = {
+      method: "GET",
+      params: {
+        id: id,
+      },
+    };
 
-      // shop
-      if(admin.account_type === 'shop'){
-        const {data: resData} = await requestApi().request(SINGLE_SHOP, {
-          params: {
-            id: admin._id
-          }
-        })
+    if (accountType === "shop") {
+      ENDPOINT = SINGLE_SHOP;
+    } else if (accountType === "admin") {
+      ENDPOINT = SINGLE_ADMIN;
+    } else if (accountType === "seller") {
+      ENDPOINT = SINGLE_SELLER;
+    } else {
+      setAdminDataIsLoading(false);
+      return;
+    }
 
-        const {data: {shop}} = resData;
-        setAdminToLocal(admin, shop);
+    try {
+      const { data: respData } = await requestApi().request(ENDPOINT, requestOptions);
+      console.log(respData);
 
-        // admin
-      }else if (admin.account_type === 'admin'){
-        const {data: resData} = await requestApi().request(SINGLE_ADMIN, {
-          params: {
-            id: admin._id
-          }
-        })
-
-        const {data: {admin: newAdmin}} = resData;
-        setAdminToLocal(admin, newAdmin);
-
-        // seller
-      } else if(admin.account_type === 'seller'){
-        const {data: resData} = await requestApi().request(SINGLE_SELLER, {
-          params: {
-            id: admin._id
-          }
-        })
-
-        const {data: {seller}} = resData;
-        setAdminToLocal(admin, seller)
+      if (respData?.status) {
+        ADMIN_DATA = respData?.data?.[accountType];
+        dispatch(setAdmin({ ...ADMIN_DATA, account_type: accountType } || {}));
       }
-
-    }catch(error){
+      setAdminDataIsLoading(false);
+    } catch (error) {
       console.log(error);
     }
-    
+  };
+
+  // remove auth cookies
+  const removeAuthCookies = () => {
+    const cookies = getCookiesAsObject();
+    setCookiesAsObj(cookies, 0);
   }
 
+  // read cookies and fetch admin data
   useEffect(() => {
-    // refresh localstorage data
-    getAdmin();
+    if (document.cookie.length < 1) {
+      setAdminDataIsLoading(false);
 
+    } else {
+      const { account_type: cookie_account_type, account_id: cookie_account_id, access_token } = getCookiesAsObject();
+
+      if (!cookie_account_type || !cookie_account_id || !access_token) {
+        removeAuthCookies();
+        setAdminDataIsLoading(false);
+      } else {
+        fetchAdminData(cookie_account_type, cookie_account_id);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (account_type === "admin" && adminType !== "customerService") {
       setRouteList(userRoutes);
     } else if (account_type === "admin" && adminType === "customerService") {
@@ -103,7 +112,6 @@ const App = (props) => {
 
   useEffect(() => {
     if (account_type === "admin") {
-      // fetch chat list data
       dispatch(getAllChat());
     }
   }, [account_type]);
@@ -150,19 +158,28 @@ const App = (props) => {
     <React.Fragment>
       <Router>
         <Switch>
-          {/* {authRoutes.map((route, idx) => (
-            <Authmiddleware
-              path={route.path}
-              layout={NonAuthLayout}
-              component={route.component}
-              key={idx}
-              isAuthProtected={false}
-            />
-          ))} */}
-
+          {/* login */}
           <Authmiddleware path={"/login"} layout={NonAuthLayout} component={Login} isAuthProtected={false} />
+          {/* admin data is loading */}
+          {adminDataIsLoading && (
+            <div
+              style={{
+                width: "100%",
+                height: "100vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Spinner color="primary" />
+            </div>
+          )}
+          {/* admin data not found */}
+          {!adminDataIsLoading && !account_type && <Redirect to="/login" replace={true} />}
 
-          {account_type ? (
+          {/* admin data is fetched */}
+          {!adminDataIsLoading &&
+            account_type &&
             routeList?.map((route, idx) => (
               <Authmiddleware
                 path={route.path}
@@ -172,10 +189,7 @@ const App = (props) => {
                 isAuthProtected={true}
                 exact
               />
-            ))
-          ) : (
-            <Redirect to={{ pathname: "/login" }} />
-          )}
+            ))}
         </Switch>
       </Router>
     </React.Fragment>

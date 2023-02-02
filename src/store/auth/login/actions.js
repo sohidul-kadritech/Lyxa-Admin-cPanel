@@ -37,7 +37,7 @@ export const logoutAdmin = () => (dispatch) => {
   });
 };
 
-export const adminAuth = (user) => async (dispatch, getState) => {
+export const adminAuth = (user) => async (dispatch) => {
   try {
     dispatch({ type: LOGIN_USER });
 
@@ -73,7 +73,7 @@ export const adminAuth = (user) => async (dispatch, getState) => {
   }
 };
 
-export const setAdmin = (admin) => (dispatch, getState) => {
+export const setAdmin = (admin) => (dispatch) => {
   dispatch({
     type: SET_ADMIN,
     payload: admin,
