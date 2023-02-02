@@ -156,6 +156,8 @@ const SingleShopTransactions = () => {
 
   // SUMMARY
 
+  console.log(shopTrxs?.summary?.totalShopUnsettle)
+
   useEffect(() => {
     const summaryListShop = [
       {
@@ -277,6 +279,8 @@ const SingleShopTransactions = () => {
       callTransList(true, shopId);
     }
   }, [status]);
+
+  console.log(shopTrxs?.trxs);
 
   return (
     <React.Fragment>

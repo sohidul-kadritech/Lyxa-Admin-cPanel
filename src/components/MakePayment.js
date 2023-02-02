@@ -18,7 +18,7 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
   const [settleAmount, setSettleAmount] = useState("");
 
   useEffect(() => {
-    setSettleAmount(unSettleAmount);
+    setSettleAmount(Math.abs(unSettleAmount));
   }, []);
 
   const submitSettleAmount = (e) => {
@@ -36,6 +36,10 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
 
   const submitData = () => {
     if (userType === "shop") {
+      console.log({
+        shopId: id,
+        amount: settleAmount,
+      })
       dispatch(
         shopMakePayment({
           shopId: id,
@@ -101,10 +105,10 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
             <span
               className="title"
               style={{
-                color: unSettleAmount - settleAmount < 0 ? "red" : "black",
+                color: Math.abs(unSettleAmount) - Math.abs(settleAmount) < 0 ? "red" : "black",
               }}
             >
-              {unSettleAmount - settleAmount} NGN
+              {Math.abs(unSettleAmount) - Math.abs(settleAmount)} NGN
             </span>
           </div>
         </SummaryWrapper>

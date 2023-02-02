@@ -11,7 +11,7 @@ const TransactionsTable = ({ trxs = [], loading }) => {
       <Table id="tech-companies-1" className="table  table-hover text-center">
         <Thead>
           <Tr>
-            <Th>Order ID</Th>
+            <Th>Trx ID</Th>
             <Th>Amount</Th>
             <Th>Transaction Type</Th>
             <Th>Date</Th>
@@ -28,7 +28,7 @@ const TransactionsTable = ({ trxs = [], loading }) => {
                 fontWeight: "500",
               }}
             >
-              <Th>{item?.order?.orderId}</Th>
+              <Th>{item?.autoGenId}</Th>
 
               <Td>{item?.amount}</Td>
               <Td>{TrxType(item?.type)}</Td>
