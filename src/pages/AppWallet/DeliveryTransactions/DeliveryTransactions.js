@@ -264,7 +264,7 @@ const DeliveryTransactions = () => {
                           <Td>{item?.summary?.totalUnSettleAmount}</Td>
                           <Td>{item?.summary?.riderEarning}</Td>
                           <Td>{item?.summary.totalCashInHand}</Td>
-                          <Td>{item?.summary.settleAmount}</Td>
+                          <Td>{item?.summary.totalCashReceived}</Td>
                         </Tr>
                       ))}
                   </Tbody>
