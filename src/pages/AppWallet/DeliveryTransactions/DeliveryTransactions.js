@@ -230,7 +230,7 @@ const DeliveryTransactions = () => {
                       <Th>Delivery fee</Th>
                       <Th>Lyxa earning</Th>
                       <Th>Unsettled amount</Th>
-                      <Th>Delivery earning</Th>
+                      <Th>Rider earning</Th>
                       <Th>Cash in hand</Th>
                       <Th>Settled cash</Th>
                     </Tr>

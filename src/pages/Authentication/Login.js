@@ -26,7 +26,6 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import { adminAuth, apiError } from "../../store/actions";
 
 // import images
-import logoSm from "../../assets/images/drop_logo.png";
 import lyxaLogo from "../../assets/images/lyxa.png";
 import { toast } from "react-toastify";
 import GlobalWrapper from "./../../components/GlobalWrapper";
@@ -35,15 +34,14 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  Switch,
   TextField,
 } from "@mui/material";
 import { FormControlLabel } from "@material-ui/core";
 import Footer from "../../components/VerticalLayout/Footer";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import styled from "styled-components";
-import { successMsg } from "../../helpers/successMsg";
-import requestApi from "../../network/httpRequest";
+// import { successMsg } from "../../helpers/successMsg";
+// import requestApi from "../../network/httpRequest";
 import { FORGET_PASS } from "../../network/Api";
 import axios from "axios";
 

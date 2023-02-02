@@ -1,10 +1,8 @@
-import { Redirect } from "react-router-dom";
 import { LOGIN } from "../../../network/Api";
-import { createBrowserHistory } from "history";
 import { LOGIN_USER, LOGIN_SUCCESS, LOGOUT_USER, LOGOUT_USER_SUCCESS, API_ERROR, SET_ADMIN } from "./actionTypes";
 import requestApi from "../../../network/httpRequest";
-import { toast } from "react-toastify";
 import { successMsg } from "../../../helpers/successMsg";
+import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject';
 
 export const loginSuccess = (admin, accessToken, message) => {
   return {
@@ -53,7 +51,15 @@ export const adminAuth = (user) => async (dispatch, getState) => {
     if (status) {
       localStorage.setItem("accessToken", data.admin.token);
       localStorage.setItem("admin", JSON.stringify(data.admin));
-      // localStorage.setItem("accountType", JSON.stringify(data.admin));
+      
+      // set cookies
+      const authCookies = {
+        access_token: data.admin.token,
+        account_type: data.admin.account_type,
+        account_id: data.admin._id,
+      }
+
+      setCookiesAsObject(authCookies, 15)
 
       dispatch(loginSuccess(data.admin, data.admin.token, message));
     } else {
