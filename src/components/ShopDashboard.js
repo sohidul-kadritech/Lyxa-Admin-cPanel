@@ -27,8 +27,8 @@ const ShopDashboard = ({ summary }) => {
     },
     {
       id: 2,
-      title: "Profit",
-      subTitle: "(from Order Products)",
+      title: "Total Profit",
+      subTitle: "(From order amount)",
       value: `${summary?.toalShopProfile?.toFixed(2) ?? 0} NGN`,
       icon: profitFlowIcon,
       iconBg: "#56ca00",
