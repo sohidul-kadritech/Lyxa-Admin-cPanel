@@ -51,7 +51,7 @@ const ShopList = () => {
     currentPage,
     liveStatus,
   } = useSelector((state) => state.shopReducer);
-  const { account_type, adminType, _id: Id } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType, _id: Id } = useSelector(store => store.Login.admin);
 
   const [myShop, setMyShop] = useState([]);
 

@@ -43,7 +43,7 @@ const UserDetails = () => {
     loading,
   } = useSelector((state) => state.usersReducer);
   const { status } = useSelector((state) => state.dropPayReducer);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = useSelector(store => store.Login.admin);
 
   const [user, setUser] = useState({});
   const [balAddModal, setBalAddModal] = useState(false);

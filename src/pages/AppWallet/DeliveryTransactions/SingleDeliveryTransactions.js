@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-  Modal,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner, Modal } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
@@ -98,33 +88,18 @@ const SingleDeliveryTransactions = () => {
     riderCashTrxEndDate,
     loading: isLoading,
   } = useSelector((state) => state.appWalletReducer);
-  const {
-    shopName: name,
-    _id: accountId,
-    account_type,
-  } = JSON.parse(localStorage.getItem("admin"));
+  const { shopName: name, _id: accountId, account_type } = useSelector((store) => store.Login.admin);
 
   useEffect(() => {
     if (id) {
-      if (
-        riderTrxEndDate ||
-        riderTrxStartDate ||
-        riderCashTrxStartDate ||
-        riderCashTrxEndDate
-      ) {
+      if (riderTrxEndDate || riderTrxStartDate || riderCashTrxStartDate || riderCashTrxEndDate) {
         callApi(id);
       }
       setRiderId(id);
     } else {
       history.push("/add-wallet/delivery-transactions", { replace: true });
     }
-  }, [
-    id,
-    riderTrxEndDate,
-    riderTrxStartDate,
-    riderCashTrxStartDate,
-    riderCashTrxEndDate,
-  ]);
+  }, [id, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate]);
 
   const callApi = async (deiveryId, page = 1) => {
     setLoading(true);
@@ -256,9 +231,7 @@ const SingleDeliveryTransactions = () => {
     }));
     setCashOrders(list);
     setSelectedCash(checked ? cashOrders : []);
-    const totalAmount = checked
-      ? cashOrders.reduce((total, item) => item?.receivedAmount + total, 0)
-      : 0;
+    const totalAmount = checked ? cashOrders.reduce((total, item) => item?.receivedAmount + total, 0) : 0;
     setTotalSelectdAmount(totalAmount);
   };
 
@@ -286,11 +259,7 @@ const SingleDeliveryTransactions = () => {
 
             <Box sx={{ width: "100%" }}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={tabItem}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-                >
+                <Tabs value={tabItem} onChange={handleChange} aria-label="basic tabs example">
                   <Tab label="Transactions List" {...a11yProps(0)} />
                   <Tab label="Cash order List" {...a11yProps(1)} />
                 </Tabs>
@@ -327,9 +296,7 @@ const SingleDeliveryTransactions = () => {
                               id="endDate"
                               placeholder="Select End Date"
                               value={riderTrxEndDate}
-                              onChange={(selectedDates, dateStr, instance) =>
-                                dispatch(updateRiderTrxEndDate(dateStr))
-                              }
+                              onChange={(selectedDates, dateStr, instance) => dispatch(updateRiderTrxEndDate(dateStr))}
                               options={{
                                 altInput: true,
                                 altFormat: "F j, Y",
@@ -363,10 +330,7 @@ const SingleDeliveryTransactions = () => {
                       )}
                     </div>
 
-                    <TransactionsTable
-                      trxs={trxs?.transections}
-                      loading={loading}
-                    />
+                    <TransactionsTable trxs={trxs?.transections} loading={loading} />
                   </CardBody>
                 </Card>
               </TabPanel>
@@ -425,20 +389,14 @@ const SingleDeliveryTransactions = () => {
                           {totalSelectedAmount > 0 && (
                             <SummaryWrapper>
                               <span className="title">Total Amount: </span>
-                              <span className="title">
-                                {totalSelectedAmount} NGN
-                              </span>
+                              <span className="title">{totalSelectedAmount} NGN</span>
                             </SummaryWrapper>
                           )}
                           <div>
                             <Button
                               className="btn btn-success "
                               onClick={receivedCashFromRider}
-                              disabled={
-                                isLoading ||
-                                cashOrders.length < 1 ||
-                                selectedCash.length < 1
-                              }
+                              disabled={isLoading || cashOrders.length < 1 || selectedCash.length < 1}
                             >
                               {isLoading ? "Receiving..." : "Receive Cash"}
                             </Button>
@@ -447,10 +405,7 @@ const SingleDeliveryTransactions = () => {
                       )}
                     </div>
 
-                    <Table
-                      id="tech-companies-1"
-                      className="table  table-hover text-center"
-                    >
+                    <Table id="tech-companies-1" className="table  table-hover text-center">
                       <Thead>
                         <Tr>
                           <Th>Order ID</Th>
@@ -488,9 +443,7 @@ const SingleDeliveryTransactions = () => {
 
                             <Td>{item?.receivedAmount}</Td>
                             <Td>{TrxType(item?.type)}</Td>
-                            <Td>
-                              {new Date(item?.createdAt).toLocaleDateString()}
-                            </Td>
+                            <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
                             <Td>
                               <div className="form-check d-flex justify-content-center">
                                 <input
@@ -565,11 +518,7 @@ const SingleDeliveryTransactions = () => {
           </button>
         </div>
         <div className="modal-body">
-          <MakePayment
-            unSettleAmount={trxs?.summary?.totalUnSettleAmount}
-            id={trxs?.deliveryBoy?._id}
-            type="rider"
-          />
+          <MakePayment unSettleAmount={trxs?.summary?.totalUnSettleAmount} id={trxs?.deliveryBoy?._id} type="rider" />
         </div>
       </Modal>
     </React.Fragment>

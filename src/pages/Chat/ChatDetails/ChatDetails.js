@@ -27,6 +27,7 @@ import requestApi from "../../../network/httpRequest";
 import { useMemo } from "react";
 import moment from "moment";
 import { actionTypes } from "redux-form";
+import getCookiesAsObject from "../../../helpers/cookies/getCookiesAsObject";
 
 const ChatDetails = () => {
   const { id } = useParams();
@@ -45,7 +46,7 @@ const ChatDetails = () => {
   );
   console.log(isChatClose);
   const { socket } = useSelector((state) => state.socketReducer);
-  const { token } = JSON.parse(localStorage.getItem("admin"));
+  const { access_token } = getCookiesAsObject();
 
   const [request, setRequest] = useState([]);
   const [message, setMessage] = useState("");
@@ -139,7 +140,7 @@ const ChatDetails = () => {
 
   useEffect(() => {
     if (chatStatus === "accepted" && socket) {
-      socket.emit("join_user_and_admin_chat", { room: id, data: { token } });
+      socket.emit("join_user_and_admin_chat", { room: id, data: { access_token } });
     }
     return;
   }, [chatStatus, socket]);

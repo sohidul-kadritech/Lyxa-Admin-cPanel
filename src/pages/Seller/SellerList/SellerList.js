@@ -59,8 +59,7 @@ const SellerList = () => {
     typeKey,
     subTypeKey,
   } = useSelector((state) => state.sellerReducer);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
-
+  const { account_type, adminType } = useSelector(store => store.Login.admin);
   useEffect(() => {
     dispatch(setSellerStatusFalse());
   }, []);

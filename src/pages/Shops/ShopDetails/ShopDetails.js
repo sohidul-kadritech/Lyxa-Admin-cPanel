@@ -83,7 +83,7 @@ const ShopDetails = () => {
   const [isImportProductOpen, setIsImportProductOpen] = useState(false);
   const [productsFile, setProductsFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = useSelector(store => store.Login.admin);
 
   useEffect(() => {
     if (id) {

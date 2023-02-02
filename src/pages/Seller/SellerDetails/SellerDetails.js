@@ -41,7 +41,7 @@ const SellerDetails = () => {
 
   const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.shopReducer);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = useSelector(store => store.Login.admin);
 
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);

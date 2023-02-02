@@ -11,12 +11,13 @@ import {
 } from "../network/Api";
 import requestApi from "../network/httpRequest";
 import Graph from "./Graph";
+import { useSelector } from "react-redux";
 
 const GraphInfo = ({ graphType }) => {
   const initStartDate = moment().startOf("month").format("YYYY-MM-DD");
   const initEndDate = moment().endOf("month").format("YYYY-MM-DD");
 
-  const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, _id: Id } = useSelector((store) => store.Login.admin);
   const [filterType, setFilterType] = useState({
     label: "Daily",
     value: "normal",

@@ -107,9 +107,7 @@ const ProductAdd = () => {
     },
   ]);
 
-  const { account_type, _id: accountId } = JSON.parse(
-    localStorage.getItem("admin")
-  );
+  const { account_type, _id: accountId } = useSelector(store => store.Login.admin);
 
   useEffect(() => {
     if (id) {

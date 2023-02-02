@@ -1,9 +1,16 @@
 import { SOCKET_CONNECTION } from "../../network/Api";
 import * as actionType from "../actionType";
 import { io } from "socket.io-client";
+import getCookiesAsObject from "../../helpers/cookies/getCookiesAsObject";
 
 export const socketConnect = () => async (dispatch, getState) => {
   const { socket: oldSocket } = getState().socketReducer;
+  let accessToken;
+
+  if(document.cookie.length){
+    const {access_token} = getCookiesAsObject();
+    accessToken = access_token || null;
+  }
 
   if (!oldSocket) {
     try {
@@ -13,12 +20,6 @@ export const socketConnect = () => async (dispatch, getState) => {
 
       const socket = io(SOCKET_CONNECTION, {
         transports: ["websocket"],
-        // query: {
-        //     authorization: "authorization",
-        //     token: localStorage.getItem('accessToken'),
-        //     type: "user",
-        //     platform: "web"
-        // },
       });
 
       socket.on("connect", () => {
@@ -29,7 +30,7 @@ export const socketConnect = () => async (dispatch, getState) => {
         });
 
         socket.emit("join_drop", {
-          token: localStorage.getItem("accessToken"),
+          token: accessToken,
           type: "admin",
           platform: "app",
         });

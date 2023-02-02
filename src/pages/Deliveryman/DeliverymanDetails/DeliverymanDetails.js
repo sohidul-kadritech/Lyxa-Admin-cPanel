@@ -59,7 +59,7 @@ const DeliverymanDetails = () => {
     hasPreviousPage,
     currentPage,
   } = useSelector((state) => state.deliveryManReducer);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = useSelector(store => store.Login.admin);
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);

@@ -117,10 +117,10 @@ const App = (props) => {
   }, [account_type]);
 
   useEffect(() => {
-    if (!socket) {
+    if (!socket && account_type) {
       dispatch(socketConnect());
     }
-  }, [socket]);
+  }, [socket, account_type]);
 
   useEffect(() => {
     let listenerID;

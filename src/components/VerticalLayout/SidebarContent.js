@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 
 // //Import Scrollbar
 import SimpleBar from "simplebar-react";
@@ -14,7 +15,7 @@ import { withTranslation } from "react-i18next";
 
 const SidebarContent = (props) => {
   const ref = useRef();
-  const { account_type, adminType, shopType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType, shopType } = useSelector((store) => store.Login.admin);
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
   useEffect(() => {
     const pathName = props.location.pathname;

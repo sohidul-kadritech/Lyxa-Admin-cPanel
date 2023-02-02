@@ -51,7 +51,7 @@ const DropPayList = () => {
   const {
     dashboardData: { summary = {} },
   } = useSelector((state) => state.dashboardReducer);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = useSelector(store => store.Login.admin);
 
   const [balAddModal, setBalAddModal] = useState(false);
 

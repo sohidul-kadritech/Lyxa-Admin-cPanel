@@ -120,9 +120,7 @@ const ShopAdd = () => {
   const [accountName, setAccountName] = useState("");
   const [accountNum, setAccountNum] = useState("");
 
-  const { account_type, _id: accountId } = JSON.parse(
-    localStorage.getItem("admin")
-  );
+  const { account_type, _id: accountId } = useSelector(store => store.Login.admin);
 
   // GET SELLER
 

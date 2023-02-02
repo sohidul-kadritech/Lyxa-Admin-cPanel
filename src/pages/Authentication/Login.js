@@ -48,7 +48,7 @@ import axios from "axios";
 const Login = (props) => {
   const history = useHistory();
 
-  const { admin, accessToken, message, loading } = useSelector(
+  const { admin, message, loading } = useSelector(
     (state) => state.Login
   );
 
@@ -66,33 +66,14 @@ const Login = (props) => {
   });
 
   useEffect(() => {
-    // console.log(admin);
-    if (accessToken) {
-      toast.success(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
-      if (
-        admin?.account_type == "admin" &&
-        admin?.adminType === "customerService"
-      ) {
-        history.push("/orders/list");
-      } else {
-        history.push("/dashboard");
-      }
+    if(admin?.account_type){
+      console.log('triggered')
+      history.push("/dashboard");
     }
-  }, [accessToken]);
+  }, [admin]);
 
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
-    // console.log({ values, type });
     props.adminAuth({ ...values, type }, props.history);
   };
 

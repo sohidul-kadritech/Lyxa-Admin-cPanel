@@ -51,7 +51,7 @@ const CategoryList = () => {
     _id: Id,
     shopType: adminShopType,
     sellerType,
-  } = JSON.parse(localStorage.getItem("admin"));
+  } = useSelector(store => store.Login.admin);
 
   useEffect(() => {
     if (account_type === "shop" || account_type === "seller") {

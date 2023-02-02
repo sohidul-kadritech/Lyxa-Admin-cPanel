@@ -21,7 +21,7 @@ const UserCradit = ({ user = null }) => {
     account_type,
     adminType,
     _id: accountId,
-  } = JSON.parse(localStorage.getItem("admin"));
+  } = useSelector((store) => store.Login.admin);
 
   const dispatch = useDispatch();
 

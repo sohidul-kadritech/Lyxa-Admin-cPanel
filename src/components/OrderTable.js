@@ -88,7 +88,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     rider: false,
   });
 
-  const { account_type } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type } = useSelector((store) => store.Login.admin);
 
   // UPDATE ORDER STATUS
 

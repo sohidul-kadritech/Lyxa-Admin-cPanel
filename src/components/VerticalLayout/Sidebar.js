@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 //i18n
@@ -14,7 +14,7 @@ import {
 } from "../../assets/SideMenuItem";
 
 const Sidebar = (props) => {
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   return (
     <React.Fragment>

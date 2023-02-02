@@ -31,13 +31,12 @@ const login = (state = initialState, action) => {
       };
 
     case LOGIN_SUCCESS:
-      const { admin, accessToken, message } = action.payload;
+      const { admin, message } = action.payload;
 
       return {
         ...state,
         loading: false,
         admin,
-        accessToken,
         message,
         error: null
       };
@@ -53,7 +52,7 @@ const login = (state = initialState, action) => {
       };
 
     case API_ERROR:
-      return { ...state, error: action.payload, loading: false, accessToken: null };
+      return { ...state, error: action.payload, loading: false };
 
     default:
       return state;

@@ -48,9 +48,7 @@ const CreateAdmin = () => {
   const [role, setRole] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
 
-  const { account_type: accountType, _id: accountId } = JSON.parse(
-    localStorage.getItem("admin")
-  );
+  const { account_type: accountType, _id: accountId } = useSelector(store => store.Login.admin);
 
   useEffect(() => {
     if (id) {

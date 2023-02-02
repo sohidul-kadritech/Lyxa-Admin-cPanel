@@ -27,7 +27,7 @@ const ShopTable = ({ shops = [] }) => {
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { account_type, adminType } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   // GO TO SHOP PRODUCT LIST
 

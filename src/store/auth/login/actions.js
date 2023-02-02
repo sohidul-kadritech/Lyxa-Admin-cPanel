@@ -1,13 +1,13 @@
 import { LOGIN } from "../../../network/Api";
 import { LOGIN_USER, LOGIN_SUCCESS, LOGOUT_USER, LOGOUT_USER_SUCCESS, API_ERROR, SET_ADMIN } from "./actionTypes";
 import requestApi from "../../../network/httpRequest";
-import { successMsg } from "../../../helpers/successMsg";
+// import { successMsg } from "../../../helpers/successMsg";
 import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject';
 
-export const loginSuccess = (admin, accessToken, message) => {
+export const loginSuccess = (admin, message) => {
   return {
     type: LOGIN_SUCCESS,
-    payload: { admin, accessToken, message },
+    payload: { admin, message },
   };
 };
 
@@ -38,6 +38,8 @@ export const logoutAdmin = () => (dispatch) => {
 };
 
 export const adminAuth = (user) => async (dispatch) => {
+
+
   try {
     dispatch({ type: LOGIN_USER });
 
@@ -49,9 +51,6 @@ export const adminAuth = (user) => async (dispatch) => {
     });
 
     if (status) {
-      localStorage.setItem("accessToken", data.admin.token);
-      localStorage.setItem("admin", JSON.stringify(data.admin));
-      
       // set cookies
       const authCookies = {
         access_token: data.admin.token,
@@ -61,14 +60,16 @@ export const adminAuth = (user) => async (dispatch) => {
 
       setCookiesAsObject(authCookies, 15)
 
-      dispatch(loginSuccess(data.admin, data.admin.token, message));
-    } else {
-      successMsg(error, "error");
-      dispatch(apiError(message));
+      const admin = {...data.admin};
+      delete admin.token;
+      dispatch(loginSuccess(admin, message));
 
-      localStorage.removeItem("accessToken");
+    } else {
+      // successMsg(error, "error");
+      dispatch(apiError(message));
     }
   } catch (error) {
+    console.log('authCookies');
     dispatch(apiError(error.message));
   }
 };

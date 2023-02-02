@@ -97,7 +97,7 @@ const SingleShopTransactions = () => {
     shopName: name,
     _id: accountId,
     account_type,
-  } = JSON.parse(localStorage.getItem("admin"));
+  } = useSelector((store) => store.Login.admin);;
 
   const { admins } = useSelector((state) => state.adminReducer);
   console.log({account_type})

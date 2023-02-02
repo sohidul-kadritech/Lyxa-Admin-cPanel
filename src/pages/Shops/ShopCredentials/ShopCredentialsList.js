@@ -11,9 +11,7 @@ const ShopCredentialsList = () => {
 
     const { loading, shopCredentials } = useSelector((state) => state.adminReducer);
     const dispatch = useDispatch();
-    const { account_type: accountType, _id: accountId } = JSON.parse(
-        localStorage.getItem("admin")
-    );
+    const { account_type: accountType, _id: accountId } = useSelector(store => store.Login.admin);
 
     useEffect(() => {
         callList(true);

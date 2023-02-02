@@ -48,7 +48,7 @@ const OrdersList = () => {
     status,
   } = useSelector((state) => state.orderReducer);
 
-  const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, _id: Id } = useSelector((store) => store.Login.admin);
 
   const callOrderList = (refresh = false) => {
     dispatch(

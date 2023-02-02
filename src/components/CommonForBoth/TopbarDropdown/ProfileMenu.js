@@ -1,100 +1,73 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Modal
-} from "reactstrap";
-
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal } from "reactstrap";
 
 //i18n
 import { withTranslation } from "react-i18next";
 // Redux
 import { connect } from "react-redux";
 import { withRouter, Link, useHistory } from "react-router-dom";
-import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject'
-import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject'
+import getCookiesAsObject from "../../../helpers/cookies/getCookiesAsObject";
+import setCookiesAsObject from "../../../helpers/cookies/setCookiesAsObject";
 
 // users
 import user1 from "../../../assets/images/users/user-4.jpg";
 
-import ChangePassword from './../ChangePassword';
+import ChangePassword from "./../ChangePassword";
 
-const ProfileMenu = props => {
+const ProfileMenu = (props) => {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false);
 
-  const [username, setusername] = useState("Admin");
+  // const [username, setusername] = useState("Admin");
   // const { accessToken } = useSelector(state => state.login);
   const { loading, status } = useSelector((state) => state.Profile);
-  const { admin: { name, account_type, shopName = "" } } = useSelector((state) => state.Login);
-
+  const {
+    admin: { name, account_type, shopName = "" },
+  } = useSelector((state) => state.Login);
 
   const [isChangePass, setIsChangePass] = useState(false);
-  const history = useHistory();
+  // const history = useHistory();
 
   useEffect(() => {
     if (status) {
       setIsChangePass(false);
     }
-  }, [status])
+  }, [status]);
 
-
-  useEffect(
-    () => {
-      if (localStorage.getItem("authUser")) {
-        if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-          const obj = JSON.parse(localStorage.getItem("authUser"));
-          setusername(obj.displayName);
-        } else if (
-          process.env.REACT_APP_DEFAULTAUTH === "fake" ||
-          process.env.REACT_APP_DEFAULTAUTH === "jwt"
-        ) {
-          const obj = JSON.parse(localStorage.getItem("authUser"));
-          setusername(obj.username);
-        }
-      }
-    },
-    [props.success]
-  );
+  // useEffect(() => {
+  //   if (localStorage.getItem("authUser")) {
+  //     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
+  //       const obj = JSON.parse(localStorage.getItem("authUser"));
+  //       setusername(obj.displayName);
+  //     } else if (process.env.REACT_APP_DEFAULTAUTH === "fake" || process.env.REACT_APP_DEFAULTAUTH === "jwt") {
+  //       const obj = JSON.parse(localStorage.getItem("authUser"));
+  //       setusername(obj.username);
+  //     }
+  //   }
+  // }, [props.success]);
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("admin");
-    
     // remove all cookies
     const authCookies = getCookiesAsObject();
-    setCookiesAsObject(authCookies, 0)
+    setCookiesAsObject(authCookies, 0);
     window.location.reload(true);
-
   };
 
   return (
     <React.Fragment>
-
       <div>
+        <span>{account_type === "shop" ? shopName : name}</span>
 
-        <span>{account_type === 'shop' ? shopName : name}</span>
-
-        <Dropdown
-          isOpen={menu}
-          toggle={() => setMenu(!menu)}
-          className="d-inline-block"
-        >
-          <DropdownToggle
-            className="btn header-item waves-effect"
-            id="page-header-user-dropdown"
-            tag="button"
-          >
+        <Dropdown isOpen={menu} toggle={() => setMenu(!menu)} className="d-inline-block">
+          <DropdownToggle className="btn header-item waves-effect" id="page-header-user-dropdown" tag="button">
             {/* <img
       className="rounded-circle header-profile-user"
       src={user1}
       alt="Header Avatar"
     /> */}
-            <i className="fas fa-user-circle" style={{ fontSize: '24px' }} aria-hidden="true"></i>
+            <i className="fas fa-user-circle" style={{ fontSize: "24px" }} aria-hidden="true"></i>
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-end">
             {/* <DropdownItem tag="a" href="/profile">
@@ -150,11 +123,9 @@ ProfileMenu.propTypes = {
   t: PropTypes.any,
 };
 
-const mapStatetoProps = state => {
+const mapStatetoProps = (state) => {
   const { error, success } = state.Profile;
   return { error, success };
 };
 
-export default withRouter(
-  connect(mapStatetoProps, {})(withTranslation()(ProfileMenu))
-);
+export default withRouter(connect(mapStatetoProps, {})(withTranslation()(ProfileMenu)));

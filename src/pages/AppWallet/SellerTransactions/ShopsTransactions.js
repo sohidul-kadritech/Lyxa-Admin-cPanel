@@ -98,7 +98,8 @@ const ShopsTransactions = () => {
     account_type,
     _id: accountId,
     company_name,
-  } = JSON.parse(localStorage.getItem("admin"));
+  } = useSelector(store => store.Login.admin);
+  
 
   useEffect(() => {
     if (shopsTrxStartDate || shopsTrxEndDate) {

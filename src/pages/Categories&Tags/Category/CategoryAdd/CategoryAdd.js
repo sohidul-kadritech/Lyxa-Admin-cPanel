@@ -37,9 +37,7 @@ const CategoryAdd = () => {
     (state) => state.categoryReducer
   );
 
-  const { account_type, shopType = '', sellerType = '' } = JSON.parse(
-    localStorage.getItem("admin")
-  );
+  const { account_type, shopType = '', sellerType = '' } =  useSelector(store => store.Login.admin);
 
   const [name, setName] = useState("");
   const [type, setType] = useState(null);

@@ -55,7 +55,7 @@ const ProductList = () => {
   const { shops } = useSelector((state) => state.shopReducer);
   const { categories } = useSelector((state) => state.categoryReducer);
 
-  const { account_type, _id: Id } = JSON.parse(localStorage.getItem("admin"));
+  const { account_type, _id: Id } = useSelector(store => store.Login.admin);
 
   const [shop, setShop] = useState(null);
   const [categorySearchKey, setCategorySearchKey] = useState("");
