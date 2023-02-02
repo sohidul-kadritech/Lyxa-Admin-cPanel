@@ -215,7 +215,7 @@ const ShopsTransactions = () => {
         id: trx?.autoGenId,
         shop: trx?.shopName,
         orders: trx?.summary?.orderValue?.count ?? 0,
-        orderAmount: trx?.summary?.orderValue?.totalAmount ?? 0,
+        orderAmount: trx?.summary?.orderValue?.productAmount ?? 0,
         deliveryFee: trx?.summary?.orderValue?.deliveryFee ?? 0,
         dropEarning: trx?.summary?.totalDropGet ?? 0,
         unsettledAmount: trx?.summary?.totalShopUnsettle ?? 0,

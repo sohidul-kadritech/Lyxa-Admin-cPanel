@@ -139,10 +139,18 @@ const AdminDashboard = ({ summary, topActivity }) => {
           </Col>
           <Col md={9}>
             <Row>
+            <Col xl={4}>
+                <DashboardCard
+                  title="Available Riders"
+                  value={summary?.totalAvailableDeliveryBoy}
+                  icon={activeRiderIcon}
+                  color={"#459ed8"}
+                />
+              </Col>
               <Col xl={4}>
                 <DashboardCard
-                  title="Delivery Boy's"
-                  value={summary?.totalDeliveryBoy}
+                  title="Online Riders"
+                  value={summary?.totalOnlineDeliveryBoy}
                   icon={riderIcon}
                   color={"#f05179"}
                 />
@@ -153,15 +161,6 @@ const AdminDashboard = ({ summary, topActivity }) => {
                   value={summary?.totalActiveDeliveryBoy}
                   icon={availableRiderIcon}
                   color={"#0c9da4"}
-                />
-              </Col>
-
-              <Col xl={4}>
-                <DashboardCard
-                  title="Available Riders"
-                  value={summary?.totalAvailableDeliveryBoy}
-                  icon={activeRiderIcon}
-                  color={"#459ed8"}
                 />
               </Col>
             </Row>

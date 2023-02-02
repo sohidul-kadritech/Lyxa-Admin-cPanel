@@ -173,7 +173,7 @@ const SingleShopTransactions = () => {
       {
         id: 3,
         title: "Delivery Profit",
-        value: `${shopTrxs?.summary?.orderValue?.deliveryFee?.toFixed(2) || (0).toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.totalShopDeliveryFee?.toFixed(2) || (0).toFixed(2)} NGN`,
         icon: profitUpArrowIcon,
         iconBg: "#1A4D2E",
       },
