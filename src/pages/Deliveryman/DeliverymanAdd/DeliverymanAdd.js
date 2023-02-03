@@ -154,6 +154,11 @@ const DeliverymanAdd = () => {
       return successMsg("Invalid Email");
     }
 
+    if(!isValidPhoneNumber(phone.number)){
+      setIsValidPhone(false)
+      return successMsg("Invalid Phone");
+    }
+
     uploadImages();
   };
 
