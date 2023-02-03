@@ -154,9 +154,10 @@ const AppSettings = () => {
                         value={appSettingsOptions?.currency ?? ""}
                         label="Currency"
                         onChange={(e) => {
-                          console.log(e);
+                          dispatch(updateCurrency(e.target.value))
+                          checkIsUpdates(e)
                         }}
-                        input={<OutlinedInput label="Currency" />}
+                        input={<OutlinedInput label="Currency" name="currency" />}
                         MenuProps={MenuProps}
                       >
                         {currenciesList.map(({ key, value }) => (
