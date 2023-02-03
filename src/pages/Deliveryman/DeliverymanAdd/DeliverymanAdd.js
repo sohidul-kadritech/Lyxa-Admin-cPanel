@@ -1,38 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Form, Input, Label, Row, Spinner } from "reactstrap";
 import Select from "react-select";
 import Switch from "react-switch";
 import Flatpickr from "react-flatpickr";
 import PlacesAutocomplete from "react-places-autocomplete";
-import {
-  geocodeByAddress,
-  geocodeByPlaceId,
-  getLatLng,
-} from "react-places-autocomplete";
+import { geocodeByAddress, geocodeByPlaceId, getLatLng } from "react-places-autocomplete";
 import { toast } from "react-toastify";
-import {
-  addDeliveryMan,
-  editDeliveryMan,
-} from "../../../store/DeliveryMan/DeliveryManAction";
+import { addDeliveryMan, editDeliveryMan } from "../../../store/DeliveryMan/DeliveryManAction";
+import PhoneInput, { getCountryCallingCode, isValidPhoneNumber } from "react-phone-number-input";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import {
-  activeOptions,
-  DeliveryBoyVehicleOPtions,
-} from "../../../assets/staticData";
+import { activeOptions, DeliveryBoyVehicleOPtions } from "../../../assets/staticData";
 import requestApi from "../../../network/httpRequest";
 import { IMAGE_UPLOAD, SINGLE_DELIVERY_MAN } from "../../../network/Api";
 import { useHistory } from "react-router-dom";
@@ -46,16 +26,17 @@ const DeliverymanAdd = () => {
   const { id } = useParams();
   const history = useHistory();
 
-  const { loading, deliveryMans, status } = useSelector(
-    (state) => state.deliveryManReducer
-  );
+  const { loading, deliveryMans, status } = useSelector((state) => state.deliveryManReducer);
 
   const [deliveryBoyAddress, setDeliveryBoyAddress] = useState("");
   const [address, setAddress] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState({
+    country: "BD",
+    number: "",
+  });
   const [pin, setPin] = useState("");
   // const [latLng, setLatLng] = useState(null);
   // const [fullAddress, setFullAddress] = useState("");
@@ -66,9 +47,15 @@ const DeliverymanAdd = () => {
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleNum, setVehicleNum] = useState("");
   const [nid, setNid] = useState("");
+  const [profile, setProfile] = useState();
   const [vehicleDoc, setVehicleDoc] = useState("");
   const [contractPaper, setContractPaper] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidPhone, setIsValidPhone] = useState(true);
+
+  const handlePhoneChange = (value) => {
+    setPhone((prev) => ({ ...prev, number: value }));
+  };
 
   // ID FROM PARAMSnumber
 
@@ -91,7 +78,6 @@ const DeliverymanAdd = () => {
   // UPDATE DATA
 
   const updateData = (data) => {
-    console.log(data);
     const {
       name,
       email,
@@ -102,17 +88,23 @@ const DeliverymanAdd = () => {
       vehicleType,
       vehicleNumber,
       contractImage,
+      image,
+      countryCode,
     } = data;
+    console.log(data)
     const findStatus = activeOptions.find((option) => option.value === status);
     // const findVahicleType = DeliveryBoyVehicleOPtions.find(
     //   (option) => option.value === vehicleType
     // );
-    console.log()
     setName(name);
     setEmail(email);
-    setPhone(number);
+    setPhone({
+      number,
+      country: countryCode || '',
+    });
     setActiveStatus(findStatus);
     setNid(nationalIdDocument);
+    setProfile(image)
     setVehicleDoc(vehicleRegistrationDocument);
     setVehicleType(vehicleType);
     setVehicleNum(vehicleNumber);
@@ -169,12 +161,21 @@ const DeliverymanAdd = () => {
     let nidUrl = null;
     let docUrl = null;
     let contractUrl = null;
+    let profileUrl = null;
+
     setIsLoading(true);
     if (nid) {
       if (typeof nid === "string") {
         nidUrl = nid;
       } else {
         nidUrl = await imageUploadToServer(nid);
+      }
+    }
+    if (profile) {
+      if (typeof profile === "string") {
+        profileUrl = profile;
+      } else {
+        profileUrl = await imageUploadToServer(profile);
       }
     }
     if (vehicleDoc) {
@@ -192,9 +193,9 @@ const DeliverymanAdd = () => {
       }
     }
 
-    if (nidUrl && docUrl && contractUrl) {
+    if (nidUrl && docUrl && contractUrl && profileUrl) {
       setIsLoading(false);
-      submitData(nidUrl, docUrl, contractUrl);
+      submitData(nidUrl, docUrl, contractUrl, profileUrl);
     }
   };
 
@@ -222,19 +223,34 @@ const DeliverymanAdd = () => {
 
   // SUBMIT DATA
 
-  const submitData = (nidUrl, docUrl, contractUrl) => {
+  const formatNumber = (numberObj) => {
+    const countryCode = numberObj.country
+    const countrySFix = "+" + getCountryCallingCode(countryCode);
+    const number = numberObj.number.slice(countrySFix.length);
+
+    return {countryCode, number}
+  }
+
+  const submitData = (nidUrl, docUrl, contractUrl, profileUrl) => {
+    const {number, countryCode} = formatNumber(phone);
+    console.log({number, countryCode});
+
     const data = {
       name,
       email,
       password,
-      number: phone,
+      number,
+      countryCode,
       // vehicleType: vehicleType.value,
       vehicleType: vehicleType,
       vehicleNumber: vehicleNum,
       nationalIdDocument: nidUrl,
       vehicleRegistrationDocument: docUrl,
       contractImage: contractUrl,
+      image: profileUrl,
     };
+
+    console.log(data);
 
     if (id) {
       dispatch(
@@ -293,6 +309,8 @@ const DeliverymanAdd = () => {
       setNid(files[0]);
     } else if (type === "contract") {
       setContractPaper(files[0]);
+    } else if (type === "profile") {
+      setProfile(files[0]);
     } else {
       setVehicleDoc(files[0]);
     }
@@ -334,18 +352,25 @@ const DeliverymanAdd = () => {
                             onChange={(e) => setName(e.target.value)}
                           />
                         </div>
-
                         <div className="mb-4">
-                          <Label>Phone</Label>
-                          <input
-                            className="form-control"
-                            name="phone"
-                            type="phone"
-                            placeholder="Enter Phone number"
-                            required
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                          <label className="control-label">Phone</label>
+                          <PhoneInput
+                            defaultCountry="BD"
+                            placeholder="Enter phone number"
+                            value={phone.number}
+                            international
+                            countryCallingCodeEditable={false}
+                            onCountryChange={(e) => {
+                              setPhone((prev) => ({ ...prev, country: e }));
+                            }}
+                            onChange={(value) => {
+                              handlePhoneChange(value);
+                            }}
+                            onBlur={() => {
+                              setIsValidPhone(isValidPhoneNumber(phone.number));
+                            }}
                           />
+                          {!isValidPhone && <div style={{ color: "red", fontSize: "12px" }}>Number is invalid</div>}
                         </div>
 
                         <div className="mb-4">
@@ -534,9 +559,7 @@ const DeliverymanAdd = () => {
                               multiple
                               rows="4"
                               value={deliveryBoyAddress}
-                              onChange={(e) =>
-                                setDeliveryBoyAddress(e.target.value)
-                              }
+                              onChange={(e) => setDeliveryBoyAddress(e.target.value)}
                             />
                           </div>
                         )}
@@ -544,6 +567,83 @@ const DeliverymanAdd = () => {
                     </Row>
 
                     <Row>
+                      <Col lg={6}>
+                        <Label>Profile Image</Label>
+                        <div className="mb-5">
+                          <Dropzone
+                            onDrop={(acceptedFiles) => {
+                              handleAcceptedFiles(acceptedFiles, "profile");
+                            }}
+                            accept=".jpg, .jpeg, .png"
+                          >
+                            {({ getRootProps, getInputProps }) => (
+                              <div className="dropzone">
+                                <div
+                                  className="dz-message needsclick"
+                                  {...getRootProps()}
+                                  // onClick={() => setmodal_fullscreen(true)}
+                                >
+                                  <input {...getInputProps()} />
+                                  <div className="mb-3">
+                                    <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                  </div>
+                                  <h4>Drop files here or click to upload.</h4>
+                                </div>
+                              </div>
+                            )}
+                          </Dropzone>
+                          <div className="dropzone-previews mt-3" id="file-previews">
+                            {profile && (
+                              <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
+                                <div className="p-2">
+                                  <Row className="align-items-center position-relative">
+                                    <Col className="col-auto">
+                                      <img
+                                        data-dz-thumbnail=""
+                                        // height="80"
+                                        style={{
+                                          maxWidth: "80px",
+                                        }}
+                                        className=" bg-light"
+                                        src={profile.preview ? profile.preview : profile}
+                                        alt=""
+                                      />
+                                    </Col>
+                                    <Col>
+                                      <Link to="#" className="text-muted font-weight-bold">
+                                        {profile.name ? profile.name : "Profile"}
+                                      </Link>
+                                      <p className="mb-0">
+                                        <strong>{profile.formattedSize && profile.formattedSize}</strong>
+                                      </p>
+                                    </Col>
+
+                                    <div
+                                      className="position-absolute"
+                                      style={{
+                                        left: "0px",
+                                        top: "0px",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <i
+                                        onClick={() => setProfile(null)}
+                                        className="mdi mdi-delete text-danger "
+                                        style={{
+                                          fontSize: "25px",
+                                          cursor: "pointer",
+                                        }}
+                                      ></i>
+                                    </div>
+                                  </Row>
+                                </div>
+                              </Card>
+                            )}
+                          </div>
+                        </div>
+                      </Col>
                       <Col lg={6}>
                         <Label> National ID</Label>
                         <div className="mb-5">
@@ -569,10 +669,7 @@ const DeliverymanAdd = () => {
                               </div>
                             )}
                           </Dropzone>
-                          <div
-                            className="dropzone-previews mt-3"
-                            id="file-previews"
-                          >
+                          <div className="dropzone-previews mt-3" id="file-previews">
                             {nid && (
                               <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                                 <div className="p-2">
@@ -590,17 +687,11 @@ const DeliverymanAdd = () => {
                                       />
                                     </Col>
                                     <Col>
-                                      <Link
-                                        to="#"
-                                        className="text-muted font-weight-bold"
-                                      >
+                                      <Link to="#" className="text-muted font-weight-bold">
                                         {nid.name ? nid.name : "NID"}
                                       </Link>
                                       <p className="mb-0">
-                                        <strong>
-                                          {nid.formattedSize &&
-                                            nid.formattedSize}
-                                        </strong>
+                                        <strong>{nid.formattedSize && nid.formattedSize}</strong>
                                       </p>
                                     </Col>
 
@@ -655,10 +746,7 @@ const DeliverymanAdd = () => {
                               </div>
                             )}
                           </Dropzone>
-                          <div
-                            className="dropzone-previews mt-3"
-                            id="file-previews"
-                          >
+                          <div className="dropzone-previews mt-3" id="file-previews">
                             {vehicleDoc && (
                               <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                                 <div className="p-2">
@@ -671,28 +759,16 @@ const DeliverymanAdd = () => {
                                           maxWidth: "80px",
                                         }}
                                         className=" bg-light"
-                                        src={
-                                          vehicleDoc.preview
-                                            ? vehicleDoc.preview
-                                            : vehicleDoc
-                                        }
+                                        src={vehicleDoc.preview ? vehicleDoc.preview : vehicleDoc}
                                         alt=""
                                       />
                                     </Col>
                                     <Col>
-                                      <Link
-                                        to="#"
-                                        className="text-muted font-weight-bold"
-                                      >
-                                        {vehicleDoc.name
-                                          ? vehicleDoc.name
-                                          : "Vehicle Document"}
+                                      <Link to="#" className="text-muted font-weight-bold">
+                                        {vehicleDoc.name ? vehicleDoc.name : "Vehicle Document"}
                                       </Link>
                                       <p className="mb-0">
-                                        <strong>
-                                          {vehicleDoc.formattedSize &&
-                                            vehicleDoc.formattedSize}
-                                        </strong>
+                                        <strong>{vehicleDoc.formattedSize && vehicleDoc.formattedSize}</strong>
                                       </p>
                                     </Col>
 
@@ -722,9 +798,6 @@ const DeliverymanAdd = () => {
                           </div>
                         </div>
                       </Col>
-                    </Row>
-
-                    <Row>
                       <Col lg={6}>
                         <Label>Contract Paper</Label>
                         <div className="mb-5">
@@ -736,10 +809,7 @@ const DeliverymanAdd = () => {
                           >
                             {({ getRootProps, getInputProps }) => (
                               <div className="dropzone">
-                                <div
-                                  className="dz-message needsclick"
-                                  {...getRootProps()}
-                                >
+                                <div className="dz-message needsclick" {...getRootProps()}>
                                   <input {...getInputProps()} />
                                   <div className="mb-3">
                                     <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
@@ -749,10 +819,7 @@ const DeliverymanAdd = () => {
                               </div>
                             )}
                           </Dropzone>
-                          <div
-                            className="dropzone-previews mt-3"
-                            id="file-previews"
-                          >
+                          <div className="dropzone-previews mt-3" id="file-previews">
                             {contractPaper && (
                               <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                                 <div className="p-2">
@@ -765,28 +832,16 @@ const DeliverymanAdd = () => {
                                           maxWidth: "80px",
                                         }}
                                         className=" bg-light"
-                                        src={
-                                          contractPaper?.preview
-                                            ? contractPaper.preview
-                                            : contractPaper
-                                        }
+                                        src={contractPaper?.preview ? contractPaper.preview : contractPaper}
                                         alt=""
                                       />
                                     </Col>
                                     <Col>
-                                      <Link
-                                        to="#"
-                                        className="text-muted font-weight-bold"
-                                      >
-                                        {contractPaper?.name
-                                          ? contractPaper.name
-                                          : "Contract Paper"}
+                                      <Link to="#" className="text-muted font-weight-bold">
+                                        {contractPaper?.name ? contractPaper.name : "Contract Paper"}
                                       </Link>
                                       <p className="mb-0">
-                                        <strong>
-                                          {contractPaper?.formattedSize &&
-                                            contractPaper.formattedSize}
-                                        </strong>
+                                        <strong>{contractPaper?.formattedSize && contractPaper.formattedSize}</strong>
                                       </p>
                                     </Col>
 
@@ -817,20 +872,10 @@ const DeliverymanAdd = () => {
                         </div>
                       </Col>
                     </Row>
-
                     <div className="my-5 d-flex justify-content-center">
-                      <Button
-                        color="primary"
-                        className="px-5"
-                        type="submit"
-                        disabled={isLoading || loading}
-                      >
+                      <Button color="primary" className="px-5" type="submit" disabled={isLoading || loading}>
                         {loading || isLoading ? (
-                          <Spinner
-                            animation="border"
-                            size="sm"
-                            variant="success"
-                          ></Spinner>
+                          <Spinner animation="border" size="sm" variant="success"></Spinner>
                         ) : id ? (
                           "Save"
                         ) : (
