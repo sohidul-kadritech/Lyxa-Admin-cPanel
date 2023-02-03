@@ -179,6 +179,7 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
     });
 
     console.log({appSettingsOptions});
+    console.log({type});
 
     const {
       data: { status, error, message, data },
