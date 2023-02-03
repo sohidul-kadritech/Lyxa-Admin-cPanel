@@ -240,6 +240,7 @@ export const getAllAppSettings = () => async (dispatch) => {
       type: actionType.ALL_APP_SETTINGS_REQUEST_FAIL,
       payload: error.message,
     });
+    console.log(error)
   }
 };
 

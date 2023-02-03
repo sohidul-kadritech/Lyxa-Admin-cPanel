@@ -618,8 +618,8 @@ const OrderDetails = () => {
                       <Th>Attributes</Th>
                       <Th>Type</Th>
                       <Th>Quantity</Th>
-                      <Th>{`Discount(${currency})`}</Th>
-                      <Th>{`Total Price(${currency})`}</Th>
+                      <Th>{`Discount (${currency})`}</Th>
+                      <Th>{`Total Price (${currency})`}</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }} id="table-data">

@@ -59,6 +59,7 @@ const Transactions = () => {
     }
     return;
   }, [trxSortByKey, trxSearchKey, trxAccountType]);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
 
   const callTransList = (refresh = false) => {
     dispatch(getAllTransctions(refresh));
@@ -112,6 +113,7 @@ const Transactions = () => {
       : null;
     let orderRoute = trx?.order ? `/orders/details/${trx?.order}` : null;
     let userRoute = trx?.user ? `/users/details/${trx?.user?._id}` : null;
+
 
     //  const Details = ({data}) =>{
     //     return(
@@ -377,7 +379,7 @@ const Transactions = () => {
                   <Thead>
                     <Tr>
                       <Th>ID</Th>
-                      <Th>Amount</Th>
+                      <Th>Amount ({currency})</Th>
                       <Th>Type</Th>
                       <Th>Payment Method/By</Th>
                       <Th>Date</Th>

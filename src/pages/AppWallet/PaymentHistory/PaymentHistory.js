@@ -13,7 +13,11 @@ import {
   Container,
   Row,
 } from "reactstrap";
+import { useSelector } from "react-redux";
+
 const PaymentHistory = () => {
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -41,7 +45,7 @@ const PaymentHistory = () => {
                     <Tr>
                       <Th>User name & Type</Th>
                       <Th>ID</Th>
-                      <Th>Amount</Th>
+                      <Th>Amount ({currency})</Th>
                       <Th>Transactions Type</Th>
                       <Th>Date</Th>
                       <Th>Amin name & Type</Th>

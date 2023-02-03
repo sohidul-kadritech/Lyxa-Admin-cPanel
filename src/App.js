@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Switch, BrowserRouter as Router, Redirect, useHistory } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
 import 'react-phone-number-input/style.css'
-
+import { getAllAppSettings } from "./store/Settings/settingsAction";
 
 // Import Routes all
 import { userRoutes, sellerRoutes, customerServiceRoutes, shopRoutes } from "./routes/allRoutes";
@@ -85,6 +85,11 @@ const App = (props) => {
 
   // read cookies and fetch admin data
   useEffect(() => {
+  
+    if(!localStorage.getItem('currency')){
+      dispatch(getAllAppSettings());
+    }
+
     if (document.cookie.length < 1) {
       setAdminDataIsLoading(false);
 

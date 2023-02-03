@@ -366,7 +366,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                   <Th>Customer</Th>
                   <Th>Shop</Th>
                   <Th>Order Date</Th>
-                  <Th>Amount</Th>
+                  <Th>Amount ({currency})</Th>
                   <Th>Payment method</Th>
                   <Th>Order Status</Th>
                   {account_type === "admin" && <Th>Action</Th>}

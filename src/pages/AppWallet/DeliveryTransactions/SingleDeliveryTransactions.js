@@ -417,7 +417,6 @@ const SingleDeliveryTransactions = () => {
                           <Th>Date</Th>
                           <Th className="d-flex justify-content-center align-items-center">
                             <span>Select </span>
-
                             <input
                               className="form-check-input cursor-pointer  mt-0 ms-2"
                               type="checkbox"
@@ -428,7 +427,6 @@ const SingleDeliveryTransactions = () => {
                               }}
                               disabled={cashOrders?.length < 1}
                             />
-                            <span>(All)</span>
                           </Th>
                         </Tr>
                       </Thead>

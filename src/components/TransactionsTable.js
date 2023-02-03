@@ -4,15 +4,18 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Spinner } from "reactstrap";
 import AppPagination from "./AppPagination";
 import { TrxType } from "./updateTrxsType";
+import { useSelector } from "react-redux";
 
 const TransactionsTable = ({ trxs = [], loading }) => {
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
   return (
     <div>
       <Table id="tech-companies-1" className="table  table-hover text-center">
         <Thead>
           <Tr>
             <Th>Trx ID</Th>
-            <Th>Amount</Th>
+            <Th>Amount ({currency})</Th>
             <Th>Transaction Type</Th>
             <Th>Date</Th>
             <Th>Admin</Th>

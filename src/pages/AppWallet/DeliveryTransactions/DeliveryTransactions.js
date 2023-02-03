@@ -46,6 +46,8 @@ const DeliveryTransactions = () => {
     deliverySortByKey,
     deliverySearchKey,
   } = useSelector((state) => state.appWalletReducer);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -227,12 +229,12 @@ const DeliveryTransactions = () => {
                     <Tr>
                       <Th>ID/Name</Th>
                       <Th>Orders</Th>
-                      <Th>Delivery fee</Th>
-                      <Th>Lyxa earning</Th>
-                      <Th>Unsettled amount</Th>
-                      <Th>Rider earning</Th>
-                      <Th>Cash in hand</Th>
-                      <Th>Settled cash</Th>
+                      <Th>Delivery fee ({currency})</Th>
+                      <Th>Lyxa earning ({currency})</Th>
+                      <Th>Unsettled amount ({currency})</Th>
+                      <Th>Rider earning ({currency})</Th>
+                      <Th>Cash in hand ({currency})</Th>
+                      <Th>Settled cash ({currency})</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>

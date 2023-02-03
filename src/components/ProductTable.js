@@ -10,10 +10,13 @@ import { updateProductStatus } from "../store/Product/productAction";
 import styled from "styled-components";
 import ThreeDotsMenu from "./ThreeDotsMenu";
 import TableImgItem from "./TableImgItem";
+import { useSelector } from "react-redux";
 
 const ProductTable = ({ products, loading }) => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -62,7 +65,7 @@ const ProductTable = ({ products, loading }) => {
             <Th>Product</Th>
             <Th>Shop</Th>
             <Th>Deal</Th>
-            <Th>Price</Th>
+            <Th>Price ({currency})</Th>
             <Th>Status</Th>
             <Th>Action</Th>
           </Tr>

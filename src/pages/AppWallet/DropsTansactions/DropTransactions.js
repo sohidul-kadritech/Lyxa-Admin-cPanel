@@ -26,6 +26,7 @@ import { useHistory } from "react-router-dom";
 
 const DropTransactions = () => {
   const history = useHistory();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
 
   const {
     loading,
@@ -129,7 +130,7 @@ const DropTransactions = () => {
                   <Thead>
                     <Tr>
                       <Th>Payment status</Th>
-                      <Th>Amount</Th>
+                      <Th>Amount ({currency})</Th>
                       <Th>Status</Th>
                       <Th>admin Note</Th>
                       <Th>User Note</Th>

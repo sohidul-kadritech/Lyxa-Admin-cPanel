@@ -30,6 +30,8 @@ import TableImgItem from "../../../components/TableImgItem";
 const SellerTransactions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   const {
     loading,
@@ -199,11 +201,11 @@ const SellerTransactions = () => {
                     <Tr>
                       <Th>ID/Company</Th>
                       <Th>Order</Th>
-                      <Th>Order amount</Th>
-                      <Th>Delivery fee</Th>
-                      <Th>Lyxa earning</Th>
-                      <Th>Unsettled amount</Th>
-                      <Th>Seller earning</Th>
+                      <Th>Order amount ({currency})</Th>
+                      <Th>Delivery fee ({currency})</Th>
+                      <Th>Lyxa earning ({currency})</Th>
+                      <Th>Unsettled amount ({currency})</Th>
+                      <Th>Seller earning ({currency})</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>

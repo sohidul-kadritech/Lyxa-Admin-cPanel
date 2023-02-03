@@ -2,24 +2,11 @@ import React, { useState, useEffect, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-  Button,
-} from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Container, Row, Spinner, Button } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import {
-  getSellerTrx,
-  updateShopsTrxEndDate,
-  updateShopsTrxStartDate,
-} from "../../../store/appWallet/appWalletAction";
+import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate } from "../../../store/appWallet/appWalletAction";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Flatpickr from "react-flatpickr";
@@ -27,6 +14,10 @@ import { shopsTrxsFilterOptions } from "../../../assets/staticData";
 import Select from "react-select";
 // import { DataGrid } from '@mui/x-data-grid';
 import { MDBDataTable } from "mdbreact";
+import store from "../../../store";
+
+const state = store.getState();
+const currency = state.settingsReducer.appSettingsOptions.currency.toUpperCase();
 
 const columns = [
   {
@@ -48,31 +39,31 @@ const columns = [
     width: 200,
   },
   {
-    label: "Order Amount",
+    label: `Order Amount (${currency})`,
     field: "orderAmount",
     sort: "asc",
     width: 100,
   },
   {
-    label: "Delivery fee",
+    label: `Delivery fee (${currency})`,
     field: "deliveryFee",
     sort: "asc",
     width: 150,
   },
   {
-    label: "Lyxa earning",
+    label: `Lyxa earning (${currency})`,
     field: "dropEarning",
     sort: "asc",
     width: 100,
   },
   {
-    label: "Unsettled Amount",
+    label: `Unsettled Amount (${currency})`,
     field: "unsettledAmount",
     sort: "asc",
     width: 100,
   },
   {
-    label: "Shop Earning",
+    label: `Shop Earning (${currency})`,
     field: "shopEarning",
     sort: "asc",
     width: 100,
@@ -80,8 +71,7 @@ const columns = [
 ];
 
 const ShopsTransactions = () => {
-  const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } =
-    useSelector((state) => state.appWalletReducer);
+  const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = useSelector((state) => state.appWalletReducer);
 
   const { search } = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -94,23 +84,14 @@ const ShopsTransactions = () => {
   const [filterType, setFilterType] = useState("");
   const [fromNum, setFromNum] = useState(0);
   const [toNum, setToNum] = useState(0);
-  const {
-    account_type,
-    _id: accountId,
-    company_name,
-  } = useSelector(store => store.Login.admin);
-  
+  const { account_type, _id: accountId, company_name } = useSelector((store) => store.Login.admin);
 
   useEffect(() => {
     if (shopsTrxStartDate || shopsTrxEndDate) {
-      searchParams.get("companyName")
-        ? setCompanyName(searchParams.get("companyName"))
-        : setCompanyName(company_name);
+      searchParams.get("companyName") ? setCompanyName(searchParams.get("companyName")) : setCompanyName(company_name);
 
       let id = null;
-      searchParams.get("sellerId")
-        ? (id = searchParams.get("sellerId"))
-        : (id = accountId);
+      searchParams.get("sellerId") ? (id = searchParams.get("sellerId")) : (id = accountId);
 
       dispatch(getSellerTrx(true, id));
 
@@ -149,15 +130,7 @@ const ShopsTransactions = () => {
 
     const title = `${companyName} Shops Transactions`;
     const headers = [
-      [
-        "Shop",
-        "Total Orders",
-        "Order amount",
-        "Delivery fee",
-        "Lyxa earning",
-        "Unsettled amount",
-        "Shop earning",
-      ],
+      ["Shop", "Total Orders", "Order amount", "Delivery fee", "Lyxa earning", "Unsettled amount", "Shop earning"],
     ];
     const marginLeft = 40;
 
@@ -235,12 +208,7 @@ const ShopsTransactions = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={companyName}
-              title="App Wallet"
-              isRefresh={false}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem={companyName} title="App Wallet" isRefresh={false} />
 
             <Card>
               <CardBody>
@@ -255,9 +223,7 @@ const ShopsTransactions = () => {
                             id="startDate"
                             placeholder="Start Date"
                             value={shopsTrxStartDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateShopsTrxStartDate(dateStr))
-                            }
+                            onChange={(selectedDates, dateStr, instance) => dispatch(updateShopsTrxStartDate(dateStr))}
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -274,9 +240,7 @@ const ShopsTransactions = () => {
                             id="endDate"
                             placeholder="Select End Date"
                             value={shopsTrxEndDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateShopsTrxEndDate(dateStr))
-                            }
+                            onChange={(selectedDates, dateStr, instance) => dispatch(updateShopsTrxEndDate(dateStr))}
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -350,11 +314,7 @@ const ShopsTransactions = () => {
                 </Row>
                 <div className="d-flex align-items-center justify-content-between">
                   <CardTitle className="h4">Shops Wallets List</CardTitle>
-                  <Button
-                    outline={true}
-                    color="success"
-                    onClick={() => downloadPdf()}
-                  >
+                  <Button outline={true} color="success" onClick={() => downloadPdf()}>
                     Download PDF
                   </Button>
                 </div>
