@@ -64,6 +64,8 @@ const DeliverymanDetails = () => {
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
 
   useEffect(async () => {
@@ -199,11 +201,11 @@ const DeliverymanDetails = () => {
                       }
                     />
                     <InfoTwo
-                      value={`${deliveryMan?.totalIncome} NGN (Total Income's)`}
+                      value={`${deliveryMan?.totalIncome} ${currency} (Total Income's)`}
                       Icon={MoneyIcon}
                     />
                     <InfoTwo
-                      value={`${deliveryMan?.balance} NGN (Balance's)`}
+                      value={`${deliveryMan?.balance} ${currency} (Balance's)`}
                       Icon={AccountBalanceIcon}
                     />
                     <InfoTwo

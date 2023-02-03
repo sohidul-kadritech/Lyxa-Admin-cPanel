@@ -55,6 +55,9 @@ const ProductDetails = () => {
     (state) => state.productReducer
   );
 
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
+
   const [product, setProduct] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -197,7 +200,7 @@ const ProductDetails = () => {
                       />
                       <InfoTwo
                         Icon={PriceCheckIcon}
-                        value={`${product?.price} NGN (Price)`}
+                        value={`${product?.price} ${currency} (Price)`}
                       />
 
                       <InfoTwo
@@ -219,7 +222,7 @@ const ProductDetails = () => {
                     />
                     <InfoTwo
                       Icon={DiscountIcon}
-                      value={`${product?.discountPrice} NGN (Discount)`}
+                      value={`${product?.discountPrice} ${currency} (Discount)`}
                     />
                     <InfoTwo
                       Icon={AcUnitIcon}

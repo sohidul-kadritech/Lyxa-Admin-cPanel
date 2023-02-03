@@ -73,9 +73,7 @@ const ShopDetails = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { shops, status } = useSelector((state) => state.shopReducer);
-
   const [shop, setShop] = useState(null);
-
   const [liveStatus, setLiveStatus] = useState(false);
   const [modalCenter, setModalCenter] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -84,6 +82,8 @@ const ShopDetails = () => {
   const [productsFile, setProductsFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { account_type, adminType } = useSelector(store => store.Login.admin);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   useEffect(() => {
     if (id) {
@@ -216,6 +216,7 @@ const ShopDetails = () => {
       let formData = new FormData();
       formData.append("shopId", shop?._id);
       formData.append("file", productsFile);
+      
 
       try {
         setIsLoading(true);
@@ -413,7 +414,7 @@ const ShopDetails = () => {
                     />
                     <InfoTwo
                       Icon={WorkHistoryOutlinedIcon}
-                      value={`${shop?.minOrderAmount} NGN (Minimum Order)`}
+                      value={`${shop?.minOrderAmount} ${currency} (Minimum Order)`}
                     />
                   </Col>
                   <Col xl={4}>
@@ -427,7 +428,7 @@ const ShopDetails = () => {
                     {shop?.haveOwnDeliveryBoy && (
                       <InfoTwo
                         Icon={PaymentIcon}
-                        value={`${shop?.deliveryFee ?? 0} NGN (Delivery Fee)`}
+                        value={`${shop?.deliveryFee ?? 0} ${currency} (Delivery Fee)`}
                       />
                     )}
 

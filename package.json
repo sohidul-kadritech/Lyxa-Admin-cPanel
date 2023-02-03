@@ -97,6 +97,7 @@
     "react-modal": "^3.14.4",
     "react-modal-video": "^1.2.7",
     "react-perfect-scrollbar": "^1.5.8",
+    "react-phone-number-input": "^3.2.17",
     "react-places-autocomplete": "^7.3.0",
     "react-rangeslider": "^2.2.0",
     "react-rating": "^2.0.5",

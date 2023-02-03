@@ -236,6 +236,7 @@ const SellerInfo = () => {
     },
   } = useSelector((state) => state.Login);
 
+
   return (
     <InfoWrapper>
       <Row>
@@ -304,6 +305,8 @@ const ShopInfo = () => {
       address: { address, latitude, longitude },
     },
   } = useSelector((state) => state.Login);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   return (
     <InfoWrapper>
@@ -358,7 +361,7 @@ const ShopInfo = () => {
 
             <Col lg={4}>
               <InfoTwo
-                value={`${minOrderAmount} NGN (Min Order)`}
+                value={`${minOrderAmount} ${currency} (Min Order)`}
                 Icon={StorefrontOutlinedIcon}
               />
               <InfoTwo

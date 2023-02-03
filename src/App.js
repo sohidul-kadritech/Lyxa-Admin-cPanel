@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Switch, BrowserRouter as Router, Redirect, useHistory } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
+import 'react-phone-number-input/style.css'
+
 
 // Import Routes all
 import { userRoutes, sellerRoutes, customerServiceRoutes, shopRoutes } from "./routes/allRoutes";

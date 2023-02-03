@@ -12,16 +12,21 @@ import TopSummery from "./TopSummery";
 
 import cancelBagIcon from "../assets/images/dashboard/cancel-bag.png";
 import bagIcon from "../assets/images/dashboard/bag.png";
+import { useSelector } from "react-redux";
 
 const GraphInfo = lazy(() => import("./GraphInfo"));
 
 const ShopDashboard = ({ summary }) => {
+  const currency = useSelector(
+    (store) => store.settingsReducer.appSettingsOptions.currency
+  ).toUpperCase();
+
   const topSummaryData = [
     {
       id: 1,
       title: "Earnings",
       subTitle: "(Total earnings)",
-      value: `${summary?.totalShopEarning?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.totalShopEarning?.toFixed(2) ?? 0} ${currency}`,
       icon: earningFlowIcon,
       iconBg: "#0008C1",
     },
@@ -29,7 +34,7 @@ const ShopDashboard = ({ summary }) => {
       id: 2,
       title: "Total Profit",
       subTitle: "(From order amount)",
-      value: `${summary?.toalShopProfile?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.toalShopProfile?.toFixed(2) ?? 0}${currency}`,
       icon: profitFlowIcon,
       iconBg: "#56ca00",
     },
@@ -37,7 +42,7 @@ const ShopDashboard = ({ summary }) => {
       id: 3,
       title: "Delivery Profit",
       subTitle: "(Only from own riders)",
-      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || 0} NGN`,
+      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || 0} ${currency}`,
       icon: profitUpArrowIcon,
       iconBg: "#1A4D2E",
     },
@@ -53,7 +58,9 @@ const ShopDashboard = ({ summary }) => {
       id: 5,
       title: "Order Amount",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.orderValue?.productAmount?.toFixed(2) ?? 0} NGN`,
+      value: `${
+        summary?.orderValue?.productAmount?.toFixed(2) ?? 0
+      } ${currency}`,
       icon: orderAmountIcon,
       iconBg: "#ff5ca7",
     },
@@ -61,7 +68,7 @@ const ShopDashboard = ({ summary }) => {
       id: 6,
       title: "Unsettled Amount",
       subTitle: "(Total unsettled)",
-      value: `${summary?.totalShopUnsettle?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.totalShopUnsettle?.toFixed(2) ?? 0} ${currency}`,
       icon: moneyExchangeIcon,
       iconBg: "#0c9da4",
     },

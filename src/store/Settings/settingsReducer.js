@@ -11,7 +11,7 @@ const initialState = {
     maxDiscount: "",
     searchDeliveryBoyKm: [],
     maxCustomerServiceValue: "",
-    currency: "",
+    currency: localStorage.getItem('currency') || '',
   },
 
   dropCharge: null,

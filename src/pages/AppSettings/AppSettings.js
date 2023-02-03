@@ -1,16 +1,7 @@
-import { Paper, TextField } from "@mui/material";
+import { Paper, TextField, Select, OutlinedInput, MenuItem, InputLabel, FormControl } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import {
@@ -24,13 +15,23 @@ import {
   updateSearchDeliveryBoyKm,
 } from "../../store/Settings/settingsAction";
 import { toast } from "react-toastify";
-import { successMsg } from "../../helpers/successMsg";
+import currenciesList from "../../common/data/currencyList";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const AppSettings = () => {
   const dispatch = useDispatch();
-  const { loading, appSettingsOptions } = useSelector(
-    (state) => state.settingsReducer
-  );
+  const { loading, appSettingsOptions } = useSelector((state) => state.settingsReducer);
 
   const [areaChangeKey, setAreaChangeKey] = useState("");
   const [updatesType, setUpdatesType] = useState([]);
@@ -40,14 +41,6 @@ const AppSettings = () => {
   }, []);
 
   const updateSettings = () => {
-    // if (!appSettingsOptions?.nearByShopKm) {
-    //   return successMsg("Enter Near By Shop Distance(KM)");
-    // }
-
-    // if (!appSettingsOptions?.maxDiscount) {
-    //   return successMsg("Enter Max Discount Amount");
-    // }
-
     dispatch(updateAppSettings(updatesType));
   };
 
@@ -96,16 +89,14 @@ const AppSettings = () => {
     }
   };
 
+  //
+
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={"App Settings"}
-              isRefresh={false}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem={"App Settings"} isRefresh={false} />
 
             <Card>
               <CardBody>
@@ -143,20 +134,25 @@ const AppSettings = () => {
                       name="nearByShopKm"
                       className="my-4"
                     />
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Currency"
-                      variant="outlined"
-                      placeholder="Enter Curreny Name"
-                      value={appSettingsOptions?.currency ?? ""}
-                      onChange={(e) => {
-                        dispatch(updateCurrency(e.target.value));
-                        checkIsUpdates(e);
-                      }}
-                      type="text"
-                      name="currency"
-                    />
+                    <FormControl sx={{ width: "100%" }}>
+                      <InputLabel>Currency</InputLabel>
+                      <Select
+                        value={appSettingsOptions?.currency ?? ""}
+                        label="Currency"
+                        onChange={(e) => {
+                          dispatch(updateCurrency(e.target.value))
+                          checkIsUpdates(e)
+                        }}
+                        input={<OutlinedInput label="Currency" name="currency" />}
+                        MenuProps={MenuProps}
+                      >
+                        {currenciesList.map(({ key, value }) => (
+                          <MenuItem key={key} value={key}>
+                            {value}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Col>
 
                   <Col lg={6} className="mt-3 mt-lg-0">
@@ -189,43 +185,26 @@ const AppSettings = () => {
                     />
                     {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
                       <Paper className=" p-3">
-                        {appSettingsOptions?.searchDeliveryBoyKm?.map(
-                          (item, index) => (
-                            <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() =>
-                                  dispatch(removeSearchDeliveryBoyKm(index))
-                                }
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          )
-                        )}
+                        {appSettingsOptions?.searchDeliveryBoyKm?.map((item, index) => (
+                          <div className="tag__wrapper" key={index}>
+                            {item}
+                            <button
+                              type="button"
+                              className="button"
+                              onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
                       </Paper>
                     )}
                   </Col>
                 </Row>
 
                 <div className="d-flex justify-content-center mt-5 mb-2">
-                  <Button
-                    color="success"
-                    style={{ padding: "10px 50px" }}
-                    onClick={updateSettings}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <Spinner
-                        animation="border"
-                        variant="success"
-                        size="sm"
-                      ></Spinner>
-                    ) : (
-                      "UPDATE"
-                    )}
+                  <Button color="success" style={{ padding: "10px 50px" }} onClick={updateSettings} disabled={loading}>
+                    {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
                   </Button>
                 </div>
               </CardBody>

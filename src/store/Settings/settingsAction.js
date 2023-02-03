@@ -21,7 +21,7 @@ import {
   DATABASE_RESTORE_LAST_COLLECTION_BACKUP,
   DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP,
   DATABASE_DELETE_COLLECTION,
-  DATABASE_DELETE_ALL_COLLECTION
+  DATABASE_DELETE_ALL_COLLECTION,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -69,8 +69,6 @@ export const getAllAdminSettings = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(ADMINS_SETTINGS);
 
-    console.log('form server', {data})
-
     if (status) {
       dispatch({
         type: actionType.ALL_ADMIN_SETTINGS_REQUEST_SUCCESS,
@@ -93,8 +91,7 @@ export const getAllAdminSettings = () => async (dispatch) => {
 // UPDATE ADMIN SETTINGS
 
 export const updateAdminSettings = () => async (dispatch, getState) => {
-  const { googleMapKey, deliveryFeePerKm, searchDeliveryBoyKm } =
-    getState().settingsReducer;
+  const { googleMapKey, deliveryFeePerKm, searchDeliveryBoyKm } = getState().settingsReducer;
 
   try {
     dispatch({
@@ -178,17 +175,11 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
       type: actionType.UPDATE_APP_SETTINGS_REQUEST_SEND,
     });
 
-    console.log({appSettingsOptions});
-
     const {
       data: { status, error, message, data },
     } = await requestApi().request(UPDATE_APP_SETTINGS, {
       method: "POST",
       data: {
-        // nearByShopKm: appSettingsOptions.nearByShopKm,
-        // maxDiscount: appSettingsOptions.maxDiscount,
-        // searchDeliveryBoyKm: appSettingsOptions.searchDeliveryBoyKm,
-        // maxCustomerServiceValue: appSettingsOptions.maxCustomerServiceValue,
         ...appSettingsOptions,
         type,
       },
@@ -200,6 +191,9 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
         type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
         payload: data.appSetting,
       });
+      
+      localStorage.setItem('currency', data?.appSetting?.currency);
+
     } else {
       successMsg(message, "error");
       dispatch({
@@ -227,7 +221,8 @@ export const getAllAppSettings = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(APP_SETTINGS);
 
-    console.log('from server', data);
+    // save current currency to localStorage
+    localStorage.setItem('currency', data?.appSetting?.currency);
 
     if (status) {
       dispatch({
@@ -531,15 +526,12 @@ export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
       type: actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_SEND,
     });
 
-    const { data } = await requestApi().request(
-      DELETE_SELLER_SPECIAL_DROP_CHARGE,
-      {
-        method: "POST",
-        data: {
-          sellerId,
-        },
-      }
-    );
+    const { data } = await requestApi().request(DELETE_SELLER_SPECIAL_DROP_CHARGE, {
+      method: "POST",
+      data: {
+        sellerId,
+      },
+    });
 
     if (data.status) {
       successMsg(data.message, "success");
@@ -742,237 +734,230 @@ export const updateDefaultSearchKey = (value) => (dispatch) => {
 
 // DATABASE
 export const getAllDatabaseCollections = () => async (dispatch) => {
-  try{
+  try {
     dispatch({
-      type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SEND
-    })
-  
-    const {data: resData} = await requestApi().request(DATABASE_ALL_COLLECTIONS, {});
-    const {data, success, error} = resData;
-    
+      type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SEND,
+    });
 
-    if(success){
+    const { data: resData } = await requestApi().request(DATABASE_ALL_COLLECTIONS, {});
+    const { data, success, error } = resData;
+
+    if (success) {
       dispatch({
         type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SUCCESS,
-        payload: data?.tables
-      })
-
-    }else{
+        payload: data?.tables,
+      });
+    } else {
       dispatch({
         type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_FAIL,
-        payload: error
-      })
+        payload: error,
+      });
     }
-
-  }catch(error){
+  } catch (error) {
     dispatch({
       type: actionType.ALL_DATABASE_COLLECTIONS_REQUEST_FAIL,
-      payload: error.message
-    })
+      payload: error.message,
+    });
   }
-}
+};
 
 export const createDatabaseCollectionBackup = (collections, backupAll) => async (dispatch) => {
-  try{
+  try {
     dispatch({
-      type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND
-    })
+      type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND,
+    });
 
     let reqData = {};
 
-    if(backupAll){
+    if (backupAll) {
       reqData.allBackUp = true;
-    }else{
+    } else {
       reqData.collections = collections;
     }
 
-    const {data} = await requestApi().request(DATABASE_COLLECTION_BACKUP, {method: 'POST', data: reqData});
-    const {success, message, error} = data;
+    const { data } = await requestApi().request(DATABASE_COLLECTION_BACKUP, { method: "POST", data: reqData });
+    const { success, message, error } = data;
 
-    if(success){
+    if (success) {
       dispatch({
         type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SUCCESS,
-        payload: message
-      })
+        payload: message,
+      });
 
-      successMsg(message, 'success');
+      successMsg(message, "success");
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
-
-    }else{
+    } else {
       dispatch({
         type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL,
         payload: error,
-      })
+      });
 
-      successMsg("Backup Failed", 'failure');
+      successMsg("Backup Failed", "failure");
     }
-
-  }catch(error){
+  } catch (error) {
     dispatch({
       type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL,
-      payload: error?.message
-    })
+      payload: error?.message,
+    });
 
-    successMsg("Backup Failed", 'failure');
+    successMsg("Backup Failed", "failure");
   }
-}
+};
 
 export const restoreCollectionLastBackup = (collectionName) => async (dispatch) => {
-  try{
+  try {
     dispatch({
-      type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SEND
-    })
+      type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SEND,
+    });
 
-    const {data} = await requestApi().request(DATABASE_RESTORE_LAST_COLLECTION_BACKUP, {method: 'POST', data: { collectionName }});
-    const {success, message, error} = data;
+    const { data } = await requestApi().request(DATABASE_RESTORE_LAST_COLLECTION_BACKUP, {
+      method: "POST",
+      data: { collectionName },
+    });
+    const { success, message, error } = data;
 
-    if(success){
+    if (success) {
       dispatch({
         type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SUCCESS,
-        payload: message
-      })
+        payload: message,
+      });
 
-      successMsg(message, 'success');
+      successMsg(message, "success");
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
-
-    }else{
+    } else {
       dispatch({
         type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL,
         payload: error,
-      })
+      });
 
-      successMsg("Backup Failed", 'failure');
+      successMsg("Backup Failed", "failure");
     }
-
-  }catch(error){
+  } catch (error) {
     dispatch({
       type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL,
-      payload: error?.message
-    })
+      payload: error?.message,
+    });
 
-    successMsg("Backup Failed", 'failure');
+    successMsg("Backup Failed", "failure");
   }
-}
+};
 
 export const restoreAllCollectionsLastBackup = () => async (dispatch) => {
-  try{
+  try {
     dispatch({
-      type: actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SEND
-    })
+      type: actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SEND,
+    });
 
-    const {data} = await requestApi().request(DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP);
-    const {success, message, error} = data;
+    const { data } = await requestApi().request(DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP);
+    const { success, message, error } = data;
 
-    if(success){
+    if (success) {
       dispatch({
         type: actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SUCCESS,
-        payload: message
-      })
+        payload: message,
+      });
 
-      successMsg(message, 'success');
+      successMsg(message, "success");
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
-
-    }else{
+    } else {
       dispatch({
         type: actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_FAIL,
         payload: error,
-      })
+      });
 
-      successMsg("Backup Failed", 'failure');
+      successMsg("Backup Failed", "failure");
     }
-
-  }catch(error){
+  } catch (error) {
     dispatch({
       type: actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_FAIL,
-      payload: error?.message
-    })
+      payload: error?.message,
+    });
 
-    successMsg("Backup Failed", 'failure');
+    successMsg("Backup Failed", "failure");
   }
-}
+};
 
 export const deleteDatabaseCollection = (collectionName) => async (dispatch) => {
-  try{
+  try {
     dispatch({
-      type: actionType.DATABASE_DELETE_COLLECTION_REQUEST_SEND
-    })
+      type: actionType.DATABASE_DELETE_COLLECTION_REQUEST_SEND,
+    });
 
-    const {data} = await requestApi().request(DATABASE_DELETE_COLLECTION, {method: 'POST', data: { collectionName }});
-    const {success, message, error} = data;
+    const { data } = await requestApi().request(DATABASE_DELETE_COLLECTION, {
+      method: "POST",
+      data: { collectionName },
+    });
+    const { success, message, error } = data;
 
-    if(success){
+    if (success) {
       dispatch({
         type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SUCCESS,
-        payload: message
-      })
+        payload: message,
+      });
 
-      successMsg(message, 'success');
+      successMsg(message, "success");
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
-
-    }else{
+    } else {
       dispatch({
         type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL,
         payload: error,
-      })
+      });
 
-      successMsg("Delete Failed", 'failure');
+      successMsg("Delete Failed", "failure");
     }
-
-  }catch(error){
+  } catch (error) {
     dispatch({
       type: actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL,
-      payload: error?.message
-    })
+      payload: error?.message,
+    });
 
-    console.log(error)
-    successMsg("Delete Failed", 'failure');
+    console.log(error);
+    successMsg("Delete Failed", "failure");
   }
-}
+};
 
 export const deleteDatabaseAllCollection = () => async (dispatch) => {
-  try{
+  try {
     dispatch({
-      type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SEND
-    })
+      type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SEND,
+    });
 
-    const {data} = await requestApi().request(DATABASE_DELETE_ALL_COLLECTION);
-    const {success, message, error} = data;
+    const { data } = await requestApi().request(DATABASE_DELETE_ALL_COLLECTION);
+    const { success, message, error } = data;
 
-    if(success){
+    if (success) {
       dispatch({
         type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SUCCESS,
-        payload: message
-      })
+        payload: message,
+      });
 
-      successMsg(message, 'success');
+      successMsg(message, "success");
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
-
-    }else{
+    } else {
       dispatch({
         type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_FAIL,
         payload: error,
-      })
+      });
 
-      successMsg("Delete Failed", 'failure');
+      successMsg("Delete Failed", "failure");
     }
-
-  }catch(error){
+  } catch (error) {
     dispatch({
       type: actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_FAIL,
-      payload: error?.message
-    })
+      payload: error?.message,
+    });
 
-    console.log(error)
-    successMsg("Delete Failed", 'failure');
+    console.log(error);
+    successMsg("Delete Failed", "failure");
   }
-}
+};

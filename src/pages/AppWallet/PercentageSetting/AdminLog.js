@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -22,19 +14,12 @@ import {
 } from "../../../store/Settings/settingsAction";
 import moment from "moment";
 import AppPagination from "./../../../components/AppPagination";
+import store from "../../../store";
 
 const AdminLog = () => {
   const dispatch = useDispatch();
-  const {
-    loading,
-    adminLogType,
-    logSortBy,
-    adminLogs,
-    paging,
-    hasNextPage,
-    hasPreviousPage,
-    currentPage,
-  } = useSelector((state) => state.settingsReducer);
+  const { loading, adminLogType, logSortBy, adminLogs, paging, hasNextPage, hasPreviousPage, currentPage } =
+    useSelector((state) => state.settingsReducer);
 
   useEffect(() => {
     if (adminLogType || logSortBy) {
@@ -84,15 +69,15 @@ const AdminLog = () => {
   // GET  VALUE
 
   const getValue = (type, value) => {
+    const state = store.getState();
+    console.log({state})
+    const currency = state.settingsReducer.appSettingsOptions.currency.toUpperCase();
+
     let newValue = null;
     if (!value || value.length <= 0) {
       newValue = 0;
     } else {
-      if (
-        type === "maxDiscount" ||
-        type === "maxCustomerServiceValue" ||
-        type === "nearByShopKm"
-      ) {
+      if (type === "maxDiscount" || type === "maxCustomerServiceValue" || type === "nearByShopKm") {
         newValue = value;
       } else if (type === "searchDeliveryBoyKm") {
         newValue = value.map((item, index) => <p key={index}>{item}</p>);
@@ -102,14 +87,9 @@ const AdminLog = () => {
         type === "sellerDropChargeReset"
       ) {
         newValue = (
-          <span>{`${value?.dropPercentage ?? 0} ${
-            value?.dropPercentageType === "parcentage" ? "%" : "NGN"
-          }`}</span>
+          <span>{`${value?.dropPercentage ?? 0} ${value?.dropPercentageType === "parcentage" ? "%" : currency}`}</span>
         );
-      } else if (
-        type === "globalDeliveryCut" ||
-        type === "specificSellerDeliveryCut"
-      ) {
+      } else if (type === "globalDeliveryCut" || type === "specificSellerDeliveryCut") {
         newValue = value.map((item, index) => (
           <p
             key={index}
@@ -172,10 +152,7 @@ const AdminLog = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4">Admin Logs History</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table  table-hover text-center"
-                >
+                <Table id="tech-companies-1" className="table  table-hover text-center">
                   <Thead>
                     <Tr>
                       <Th>Type</Th>
@@ -195,16 +172,10 @@ const AdminLog = () => {
                           fontWeight: "500",
                         }}
                       >
-                        <Th className="text-capitalize">
-                          {historyType(item?.type)}
-                        </Th>
+                        <Th className="text-capitalize">{historyType(item?.type)}</Th>
 
-                        <Td className="text-danger">
-                          {getValue(item?.type, item?.oldValue)}
-                        </Td>
-                        <Td className="text-success">
-                          {getValue(item?.type, item?.newValue)}
-                        </Td>
+                        <Td className="text-danger">{getValue(item?.type, item?.oldValue)}</Td>
+                        <Td className="text-success">{getValue(item?.type, item?.newValue)}</Td>
                         <Td>{item?.admin?.name}</Td>
                         <Td>{moment(item?.date).format("MMMM Do YYYY")}</Td>
                       </Tr>

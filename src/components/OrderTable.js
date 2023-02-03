@@ -344,6 +344,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     }
   };
 
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
+
   const goToDetails = (id) => {
     history.push(`/orders/details/${id}`);
   };
@@ -395,7 +398,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           <p className="mb-0">{new Date(item?.createdAt).toLocaleDateString()}</p>
                           <span>{new Date(item?.createdAt).toLocaleTimeString()}</span>
                         </Td>
-                        <Td onClick={() => goToDetails(item?._id)}>{`${item?.summary?.totalAmount} NGN`}</Td>
+                        <Td onClick={() => goToDetails(item?._id)}>{`${item?.summary?.totalAmount} ${currency}`}</Td>
                         <Td onClick={() => goToDetails(item?._id)}>
                           {item?.paymentMethod}
                           {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
