@@ -91,7 +91,7 @@ const DeliverymanAdd = () => {
       image,
       countryCode,
     } = data;
-    console.log(data)
+    
     const findStatus = activeOptions.find((option) => option.value === status);
     // const findVahicleType = DeliveryBoyVehicleOPtions.find(
     //   (option) => option.value === vehicleType
@@ -99,8 +99,8 @@ const DeliverymanAdd = () => {
     setName(name);
     setEmail(email);
     setPhone({
-      number,
-      country: countryCode || '',
+      number: `+${getCountryCallingCode(countryCode)}${number}`,
+      country: countryCode,
     });
     setActiveStatus(findStatus);
     setNid(nationalIdDocument);
@@ -279,7 +279,10 @@ const DeliverymanAdd = () => {
         setName("");
         setEmail("");
         setPassword("");
-        setPhone("");
+        setPhone({
+          number: '',
+          country: ''
+        });
         setPin("");
         setActiveStatus("");
         setAddress(null);
