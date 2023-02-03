@@ -44,18 +44,14 @@ import TransactionsTable from "../../../components/TransactionsTable";
 import Select from "react-select";
 import Search from "../../../components/Search";
 import Flatpickr from "react-flatpickr";
-import {
-  shopTrxsAmountFilterOptions,
-  shopTrxsTypeOptions,
-  sortByOptions,
-} from "../../../assets/staticData";
+import { shopTrxsAmountFilterOptions, shopTrxsTypeOptions, sortByOptions } from "../../../assets/staticData";
 import { getAllAdmin } from "../../../store/AdminControl/Admin/adminAction";
 import earningFlowIcon from "../../../assets/images/dashboard/earning-flow.png";
 import moneyExchangeIcon from "../../../assets/images/dashboard/money-exchange.png";
 import deliveryIcon from "../../../assets/images/dashboard/delivery.png";
 import orderAmountIcon from "../../../assets/images/dashboard/order-amount.png";
 // import profitUpArrowIcon from "../assets/images/dashboard/profit-up-arrow.png";
-import profitUpArrowIcon from '../../../assets/images/dashboard/profit-up-arrow.png'
+import profitUpArrowIcon from "../../../assets/images/dashboard/profit-up-arrow.png";
 import profitFlowIcon from "../../../assets/images/dashboard/profit-flow.png";
 
 // import profitUpArrowIcon from '../../../assets/images/dashboard/profit-up-arrow.png'
@@ -67,6 +63,7 @@ const SingleShopTransactions = () => {
   const dispatch = useDispatch();
   const { search } = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
 
   const {
     loading,
@@ -93,15 +90,10 @@ const SingleShopTransactions = () => {
   const [shopId, setShopId] = useState("");
   const [adminSearchKey, setAdminSearchKey] = useState("");
 
-  const {
-    shopName: name,
-    _id: accountId,
-    account_type,
-  } = useSelector((store) => store.Login.admin);;
+  const { shopName: name, _id: accountId, account_type } = useSelector((store) => store.Login.admin);
 
   const { admins } = useSelector((state) => state.adminReducer);
-  console.log({account_type})
-
+  console.log({ account_type });
 
   useEffect(() => {
     if (account_type !== "shop") {
@@ -111,13 +103,9 @@ const SingleShopTransactions = () => {
 
   useEffect(() => {
     if (searchParams.get("shopId") || accountId) {
-      searchParams.get("shopName")
-        ? setShopName(searchParams.get("shopName"))
-        : setShopName(name);
+      searchParams.get("shopName") ? setShopName(searchParams.get("shopName")) : setShopName(name);
       let id = null;
-      searchParams.get("shopId")
-        ? (id = searchParams.get("shopId"))
-        : (id = accountId);
+      searchParams.get("shopId") ? (id = searchParams.get("shopId")) : (id = accountId);
       if (id) {
         if (
           shopTrxStartDate ||
@@ -156,32 +144,32 @@ const SingleShopTransactions = () => {
 
   // SUMMARY
 
-  console.log(shopTrxs?.summary?.totalShopUnsettle)
+  console.log(shopTrxs?.summary?.totalShopUnsettle);
 
   useEffect(() => {
     const summaryListShop = [
       {
         title: "Shop Earning",
-        value: `${shopTrxs?.summary?.totalShopEarning?.toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.totalShopEarning?.toFixed(2)} ${currency}`,
         icon: earningFlowIcon,
         iconBg: "#0008C1",
       },
       {
         title: "Unsetlled Amount",
-        value: `${shopTrxs?.summary?.totalShopUnsettle?.toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.totalShopUnsettle?.toFixed(2)} ${currency}`,
         icon: moneyExchangeIcon,
         iconBg: "#0c9da4",
       },
       {
         id: 3,
         title: "Delivery Profit",
-        value: `${shopTrxs?.summary?.totalShopDeliveryFee?.toFixed(2) || (0).toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.totalShopDeliveryFee?.toFixed(2) || (0).toFixed(2)} ${currency}`,
         icon: profitUpArrowIcon,
         iconBg: "#1A4D2E",
       },
       {
         title: "Total Profit",
-        value: `${shopTrxs?.summary?.toalShopProfile?.toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.toalShopProfile?.toFixed(2)} ${currency}`,
         icon: profitFlowIcon,
         iconBg: "#56ca00",
       },
@@ -189,36 +177,35 @@ const SingleShopTransactions = () => {
     const summaryListAdmin = [
       {
         title: "Lyxa Earning",
-        value: `${shopTrxs?.summary?.totalDropGet?.toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.totalDropGet?.toFixed(2)} ${currency}`,
         icon: earningFlowIcon,
         iconBg: "red",
       },
       {
         title: "Shop Earning",
-        value: `${shopTrxs?.summary?.totalShopEarning?.toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.totalShopEarning?.toFixed(2)} ${currency}`,
         icon: earningFlowIcon,
         iconBg: "#f7c137",
       },
       {
         title: "Unsetlled Amount",
-        value: `${shopTrxs?.summary?.totalShopUnsettle?.toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.totalShopUnsettle?.toFixed(2)} ${currency}`,
         icon: moneyExchangeIcon,
         iconBg: "#0c9da4",
       },
       {
         title: "Total Shop Profit",
-        value: `${shopTrxs?.summary?.toalShopProfile?.toFixed(2)} NGN`,
+        value: `${shopTrxs?.summary?.toalShopProfile?.toFixed(2)} ${currency}`,
         icon: profitFlowIcon,
         iconBg: "#56ca00",
       },
     ];
 
-    if(account_type === 'admin'){
-      setSummary(summaryListAdmin)
-    }else{
-      setSummary(summaryListShop)
+    if (account_type === "admin") {
+      setSummary(summaryListAdmin);
+    } else {
+      setSummary(summaryListShop);
     }
-    
   }, [shopTrxs]);
 
   // const topSummaryData = [
@@ -308,9 +295,7 @@ const SingleShopTransactions = () => {
                             id="startDate"
                             placeholder="Select Start Date"
                             value={shopTrxStartDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateShopTrxStartDate(dateStr))
-                            }
+                            onChange={(selectedDates, dateStr, instance) => dispatch(updateShopTrxStartDate(dateStr))}
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -327,9 +312,7 @@ const SingleShopTransactions = () => {
                             id="endDate"
                             placeholder="Select End Date"
                             value={shopTrxEndDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateShopTrxEndDate(dateStr))
-                            }
+                            onChange={(selectedDates, dateStr, instance) => dispatch(updateShopTrxEndDate(dateStr))}
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -351,12 +334,8 @@ const SingleShopTransactions = () => {
                           onChange={(event, newValue) => {
                             dispatch(updateShopTrxBy(newValue));
                           }}
-                          getOptionLabel={(option, index) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={(option, value) =>
-                            option?._id === value?._id
-                          }
+                          getOptionLabel={(option, index) => (option.name ? option.name : "")}
+                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
                           inputValue={adminSearchKey}
                           onInputChange={(event, newInputValue) => {
                             setAdminSearchKey(newInputValue);
@@ -365,11 +344,7 @@ const SingleShopTransactions = () => {
                           options={admins.length > 0 ? admins : []}
                           sx={{ width: "100%" }}
                           renderInput={(params, index) => (
-                            <TextField
-                              {...params}
-                              label="Select a Admin"
-                              style={{ padding: "0 !important" }}
-                            />
+                            <TextField {...params} label="Select a Admin" style={{ padding: "0 !important" }} />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -423,9 +398,7 @@ const SingleShopTransactions = () => {
                         type="number"
                         placeholder="Enter a amount "
                         value={shopTrxAmountRange}
-                        onChange={(e) =>
-                          dispatch(updateShopAmountRange(e.target.value))
-                        }
+                        onChange={(e) => dispatch(updateShopAmountRange(e.target.value))}
                       />
                     </div>
                   </Col>
@@ -440,9 +413,7 @@ const SingleShopTransactions = () => {
                           classNamePrefix="select2-selection"
                           required
                           value={shopTrxAmountRangeType}
-                          onChange={(e) =>
-                            dispatch(updateShopAmountRangeType(e))
-                          }
+                          onChange={(e) => dispatch(updateShopAmountRangeType(e))}
                         />
                       </div>
                     </Col>
@@ -451,10 +422,7 @@ const SingleShopTransactions = () => {
 
                 <Row className="mt-3">
                   <Col lg={6}>
-                    <Search
-                      dispatchFunc={updateShopSearchKey}
-                      placeholder="Search by id"
-                    />
+                    <Search dispatchFunc={updateShopSearchKey} placeholder="Search by id" />
                   </Col>
                 </Row>
               </CardBody>
@@ -473,16 +441,10 @@ const SingleShopTransactions = () => {
                   <CardTitle className="h4"> Shop Transactions List</CardTitle>
                   {account_type === "admin" && (
                     <div>
-                      <Button
-                        className="btn btn-success"
-                        onClick={() => setOpenCreditModal(!openCreditModal)}
-                      >
+                      <Button className="btn btn-success" onClick={() => setOpenCreditModal(!openCreditModal)}>
                         Add/Remove Credit
                       </Button>
-                      <Button
-                        className="btn btn-info ms-4"
-                        onClick={() => setIsMakePayment(!isMakePayment)}
-                      >
+                      <Button className="btn btn-info ms-4" onClick={() => setIsMakePayment(!isMakePayment)}>
                         Make Payment
                       </Button>
                     </div>
@@ -500,9 +462,7 @@ const SingleShopTransactions = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) =>
-                      dispatch(getShopTrxs(true, shopId, page))
-                    }
+                    lisener={(page) => dispatch(getShopTrxs(true, shopId, page))}
                   />
                 </div>
               </Col>
@@ -580,9 +540,7 @@ const SingleShopTransactions = () => {
 };
 
 const AdminFilter = styled.div`
-  .css-dd2h8b-MuiAutocomplete-root
-    .MuiOutlinedInput-root
-    .MuiAutocomplete-input {
+  .css-dd2h8b-MuiAutocomplete-root .MuiOutlinedInput-root .MuiAutocomplete-input {
     padding: 3px 0px !important;
   }
 `;

@@ -12,7 +12,7 @@ import styled from "styled-components";
 
 const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
   const { loading } = useSelector((state) => state.appWalletReducer);
-
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
   const dispatch = useDispatch();
 
   const [settleAmount, setSettleAmount] = useState("");
@@ -88,7 +88,7 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
               className="title"
               style={{ color: unSettleAmount < 0 ? "red" : "black" }}
             >
-              {unSettleAmount} NGN
+              {`${unSettleAmount} ${currency}`}
             </span>
           </div>
           <div className="item">
@@ -97,7 +97,7 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
               className="title"
               style={{ color: settleAmount < 0 ? "red" : "black" }}
             >
-              {settleAmount} NGN
+              {`${settleAmount} ${currency}`}
             </span>
           </div>
           <div className="item remaining">
@@ -108,7 +108,7 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
                 color: Math.abs(unSettleAmount) - Math.abs(settleAmount) < 0 ? "red" : "black",
               }}
             >
-              {Math.abs(unSettleAmount) - Math.abs(settleAmount)} NGN
+              {`${Math.abs(unSettleAmount) - Math.abs(settleAmount)} ${currency}`} 
             </span>
           </div>
         </SummaryWrapper>

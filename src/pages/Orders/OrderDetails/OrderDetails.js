@@ -32,6 +32,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import moment from "moment";
+import store from '../../../store'
 
 const OrderInfo = ({ items = [] }) => {
   const history = useHistory();
@@ -62,10 +63,12 @@ const OrderInfo = ({ items = [] }) => {
 };
 
 const SummaryInfo = ({ title, value }) => {
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
   return (
     <div className="item">
       <span>{title}</span>
-      <span className="summary-value">{value} NGN</span>
+      <span className="summary-value">{`${value} ${currency}`}</span>
     </div>
   );
 };
@@ -142,6 +145,8 @@ const OrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   useEffect(() => {
     if (id) {
@@ -200,13 +205,13 @@ const OrderDetails = () => {
 
     const title = "Order Informations";
     const shopName = `Shop Name : ${order?.shop?.shopName}. `;
-    const price = `Price : ${order?.summary?.totalAmount} NGN.`;
+    const price = `Price : ${order?.summary?.totalAmount} ${currency}.`;
     const address = `Address : ${order?.dropOffLocation?.address}.`;
     const paymentMethod = `Payment Method : ${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""}`;
 
     const orderTime = `Order Time : ${new Date(order?.createdAt).toLocaleString()}`;
 
-    const headers = [["Product", "Attribute", "Type", "Quantity", "Discount(NGN)", "Total Price(NGN)"]];
+    const headers = [["Product", "Attribute", "Type", "Quantity", `Discount(${currency})`, `Total Price(${currency})`]];
     const marginLeft = 40;
 
     const productData = order?.productsDetails.map((item) => [
@@ -613,8 +618,8 @@ const OrderDetails = () => {
                       <Th>Attributes</Th>
                       <Th>Type</Th>
                       <Th>Quantity</Th>
-                      <Th>Discount(NGN)</Th>
-                      <Th>Total Price(NGN)</Th>
+                      <Th>{`Discount(${currency})`}</Th>
+                      <Th>{`Total Price(${currency})`}</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }} id="table-data">

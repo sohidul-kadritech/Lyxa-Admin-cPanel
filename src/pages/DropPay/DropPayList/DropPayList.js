@@ -54,6 +54,8 @@ const DropPayList = () => {
   const { account_type, adminType } = useSelector(store => store.Login.admin);
 
   const [balAddModal, setBalAddModal] = useState(false);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   useEffect(() => {
     if (!summary) {
@@ -178,7 +180,7 @@ const DropPayList = () => {
                 <div className="d-flex justify-content-between">
                   <h4>{`Total Lyxa Earning: ${
                     summary?.totalDropEarning ?? 0
-                  } NGN`}</h4>
+                  } ${currency}`}</h4>
                   <Button
                     outline={true}
                     color="success"

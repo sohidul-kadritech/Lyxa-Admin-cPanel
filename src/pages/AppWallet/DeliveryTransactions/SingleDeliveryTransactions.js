@@ -80,6 +80,9 @@ const SingleDeliveryTransactions = () => {
   const [cashOrders, setCashOrders] = useState([]);
   const [tabItem, setTabItem] = useState(0);
 
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
+
   const {
     status,
     riderTrxEndDate,
@@ -140,32 +143,32 @@ const SingleDeliveryTransactions = () => {
       const summaryList = [
         {
           title: "Lyxa Earning",
-          value: `${trxs?.summary?.dropEarning} NGN`,
+          value: `${trxs?.summary?.dropEarning} ${currency}`,
           icon: earningFlowIcon,
           iconBg: "red",
         },
 
         {
           title: "Unsetlled Amount",
-          value: `${trxs?.summary?.totalUnSettleAmount} NGN`,
+          value: `${trxs?.summary?.totalUnSettleAmount} ${currency}`,
           icon: moneyExchangeIcon,
           iconBg: "#0c9da4",
         },
         {
           title: "Rider Earning",
-          value: `${trxs?.summary?.riderEarning} NGN`,
+          value: `${trxs?.summary?.riderEarning} ${currency}`,
           icon: deliveryIcon,
           iconBg: "#00dcff",
         },
         {
           title: "Total Profit",
-          value: `${trxs?.summary?.totalProfitRider} NGN`,
+          value: `${trxs?.summary?.totalProfitRider} ${currency}`,
           icon: profitFlowIcon,
           iconBg: "#ff5ca7",
         },
         {
           title: "Cash In Hand",
-          value: `${trxs?.summary?.totalCashInHand} NGN`,
+          value: `${trxs?.summary?.totalCashInHand} ${currency}`,
           icon: orderAmountIcon,
           iconBg: "#56ca00",
         },
@@ -389,7 +392,7 @@ const SingleDeliveryTransactions = () => {
                           {totalSelectedAmount > 0 && (
                             <SummaryWrapper>
                               <span className="title">Total Amount: </span>
-                              <span className="title">{totalSelectedAmount} NGN</span>
+                              <span className="title">{`${totalSelectedAmount} ${currency}`}</span>
                             </SummaryWrapper>
                           )}
                           <div>

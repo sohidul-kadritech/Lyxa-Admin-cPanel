@@ -233,7 +233,6 @@ const DeliverymanAdd = () => {
 
   const submitData = (nidUrl, docUrl, contractUrl, profileUrl) => {
     const {number, countryCode} = formatNumber(phone);
-    console.log({number, countryCode});
 
     const data = {
       name,

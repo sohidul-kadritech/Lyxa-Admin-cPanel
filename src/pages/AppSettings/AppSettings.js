@@ -134,20 +134,6 @@ const AppSettings = () => {
                       name="nearByShopKm"
                       className="my-4"
                     />
-                    {/* <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Currency"
-                      variant="outlined"
-                      placeholder="Enter Curreny Name"
-                      value={appSettingsOptions?.currency ?? ""}
-                      onChange={(e) => {
-                        dispatch(updateCurrency(e.target.value));
-                        checkIsUpdates(e);
-                      }}
-                      type="text"
-                      name="currency"
-                      /> */}
                     <FormControl sx={{ width: "100%" }}>
                       <InputLabel>Currency</InputLabel>
                       <Select

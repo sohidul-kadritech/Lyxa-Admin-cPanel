@@ -9,6 +9,7 @@ import profitFlowIcon from "../assets/images/dashboard/profit-flow.png";
 import profitUpArrowIcon from "../assets/images/dashboard/profit-up-arrow.png";
 import earningFlowIcon from "../assets/images/dashboard/earning-flow.png";
 import TopSummery from "./TopSummery";
+import { useSelector } from "react-redux";
 
 import cancelBagIcon from "../assets/images/dashboard/cancel-bag.png";
 import shopIcon from "../assets/images/dashboard/shop.png";
@@ -17,12 +18,14 @@ import bagIcon from "../assets/images/dashboard/bag.png";
 const GraphInfo = lazy(() => import("./GraphInfo"));
 
 const SellerDashboard = ({ summary }) => {
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
   const topSummaryData = [
     {
       id: 1,
       title: "Earnings",
       subTitle: "(Total earnings)",
-      value: `${summary?.totalSellerEarning?.toFixed(2) ?? (0)?.toFixed(2)} NGN`,
+      value: `${summary?.totalSellerEarning?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
       icon: earningFlowIcon,
       iconBg: "#6C00FF",
     },
@@ -30,7 +33,7 @@ const SellerDashboard = ({ summary }) => {
       id: 2,
       title: "Order Profit",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.orderValue?.productAmount?.toFixed(2) ?? (0)?.toFixed(2)} NGN`,
+      value: `${summary?.orderValue?.productAmount?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
       icon: profitFlowIcon,
       iconBg: "#56ca00",
     },
@@ -38,7 +41,7 @@ const SellerDashboard = ({ summary }) => {
       id: 3,
       title: "Delivery Profit",
       subTitle: "(Only from delivery fees)",
-      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || (0)?.toFixed(2)} NGN`,
+      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || (0)?.toFixed(2)} ${currency}`,
       icon: profitUpArrowIcon,
       iconBg: "#4C0033",
     },
@@ -54,7 +57,7 @@ const SellerDashboard = ({ summary }) => {
       id: 5,
       title: "Order Amount",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.orderValue?.totalAmount?.toFixed(2) ?? (0)?.toFixed(2)} NGN`,
+      value: `${summary?.orderValue?.totalAmount?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
       icon: orderAmountIcon,
       iconBg: "#ff5ca7",
     },
@@ -62,7 +65,7 @@ const SellerDashboard = ({ summary }) => {
       id: 6,
       title: "Unsettled Amount",
       subTitle: "(Total unsettled)",
-      value: `${summary?.totalSellerUnsettle?.toFixed(2) ?? (0)?.toFixed(2)} NGN`,
+      value: `${summary?.totalSellerUnsettle?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
       icon: moneyExchangeIcon,
       iconBg: "#0c9da4",
     },

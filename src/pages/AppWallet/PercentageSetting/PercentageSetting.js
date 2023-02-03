@@ -45,6 +45,8 @@ const PercentageSetting = () => {
   const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   const {
     loading,
@@ -329,8 +331,8 @@ const PercentageSetting = () => {
                                         }
                                       ></i>
                                     </div>
-                                    <p className="mb-0">{`Charge: ${item.charge} NGN`}</p>
-                                    <p>{`Delivery Person: ${item.deliveryPersonCut} NGN`}</p>
+                                    <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
+                                    <p>{`Delivery Person: ${item.deliveryPersonCut} ${currency}`}</p>
                                   </li>
                                 </ul>
                               ))}

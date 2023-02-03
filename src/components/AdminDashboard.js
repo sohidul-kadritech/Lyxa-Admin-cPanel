@@ -23,17 +23,20 @@ import amountIcon from "../assets/images/dashboard/amount.png";
 import cashInHandIcon from "../assets/images/dashboard/cash-in-hand.png";
 
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import { useSelector } from "react-redux";
 
 const GraphInfo = lazy(() => import("./GraphInfo"));
 const TopSummery = lazy(() => import("./TopSummery"));
 
 const AdminDashboard = ({ summary, topActivity }) => {
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
   const topSummaryData = [
     {
       id: 1,
       title: "Lyxa Earnings",
       subTitle: "(Total earnings)",
-      value: `${summary?.totalDropEarning?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.totalDropEarning?.toFixed(2) ?? 0} ${currency}`,
       icon: earningFlowIcon,
       iconBg: "red",
     },
@@ -41,7 +44,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 2,
       title: "Order Profit",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.dropEarningTotalOfItems?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.dropEarningTotalOfItems?.toFixed(2) ?? 0} ${currency}`,
       icon: profitFlowIcon,
       iconBg: "#56ca00",
     },
@@ -49,7 +52,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 3,
       title: "Delivery Profit",
       subTitle: "(Only from delivery fees)",
-      value: `${summary?.dropEarningTotalOfDeliveryFee?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.dropEarningTotalOfDeliveryFee?.toFixed(2) ?? 0} ${currency}`,
       icon: profitUpArrowIcon,
       iconBg: "#f7c137",
     },
@@ -57,7 +60,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 4,
       title: "Delivery Fee's",
       subTitle: "(Total delivery fees)",
-      value: `${summary?.ordersDeliveryFeesTotal?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.ordersDeliveryFeesTotal?.toFixed(2) ?? 0} ${currency}`,
       icon: deliveryIcon,
       iconBg: "#00dcff",
     },
@@ -65,7 +68,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 5,
       title: "Order Amount",
       subTitle: "(Ex delivery fees)",
-      value: `${summary?.ordersItemTotal?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.ordersItemTotal?.toFixed(2) ?? 0} ${currency}`,
       icon: orderAmountIcon,
       iconBg: "#ff5ca7",
     },
@@ -73,7 +76,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
       id: 6,
       title: "Shops Unsettled Amount",
       subTitle: "(Total unsettled)",
-      value: `${summary?.shopUnsettleAmount?.toFixed(2) ?? 0} NGN`,
+      value: `${summary?.shopUnsettleAmount?.toFixed(2) ?? 0} ${currency}`,
       icon: moneyExchangeIcon,
       iconBg: "#0c9da4",
     },
@@ -170,7 +173,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
                   title="Riders Unsettled Amount"
                   value={`${
                     summary?.deliveryBoyUnsettleAmount?.toFixed(2) ?? 0
-                  } NGN`}
+                  } ${currency}`}
                   icon={amountIcon}
                   color={"#8c54ff"}
                 />
@@ -180,7 +183,7 @@ const AdminDashboard = ({ summary, topActivity }) => {
                   title="Riders cash in hands"
                   value={`${
                     summary?.chashInHandDeliveryBoy?.toFixed(2) ?? 0
-                  } NGN`}
+                  } ${currency}`}
                   icon={cashInHandIcon}
                   color={"yellow"}
                 />

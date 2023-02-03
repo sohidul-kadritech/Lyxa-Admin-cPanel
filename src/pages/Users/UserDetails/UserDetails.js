@@ -29,6 +29,7 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 
 const UserDetails = () => {
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -136,7 +137,7 @@ const UserDetails = () => {
                             <InfoTwo value={user?.email} Icon={AlternateEmailOutlinedIcon} classes="text-lowercase" />
                             <InfoTwo value={`${user?.gender ?? "Unknown"} (Gender)`} Icon={TransgenderIcon} />
                             <InfoTwo value={`${new Date(user?.dob).toDateString()} (Birth Date)`} Icon={CakeIcon} />
-                            <InfoTwo value={`${user?.tempBalance} NGN (Lyxa Balance)`} Icon={SavingsIcon} />
+                            <InfoTwo value={`${user?.tempBalance} ${currency} (Lyxa Balance)`} Icon={SavingsIcon} />
                             <InfoTwo value={`${user?.orderCompleted} (Orders)`} Icon={ShoppingBasketIcon} />
                             <InfoTwo
                               value={`${user?.status} (Status)`}

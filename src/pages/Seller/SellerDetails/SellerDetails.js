@@ -42,6 +42,8 @@ const SellerDetails = () => {
   const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.shopReducer);
   const { account_type, adminType } = useSelector(store => store.Login.admin);
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+
 
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -164,7 +166,7 @@ const SellerDetails = () => {
                       <InfoTwo
                         Icon={PaidOutlinedIcon}
                         value={`${seller?.dropPercentage} ${
-                          seller?.dropPercentageType === "amount" ? "NGN" : "%"
+                          seller?.dropPercentageType === "amount" ? currency : "%"
                         } (Lyxa Charge)`}
                       />
                     )}
