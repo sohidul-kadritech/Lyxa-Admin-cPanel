@@ -16,7 +16,17 @@ import {
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { Button, Card, CardBody, CardTitle, Col, Form, Modal, Row, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Form,
+  Modal,
+  Row,
+  Spinner,
+} from "reactstrap";
 import { orderStatusOptions } from "../assets/staticData";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -103,21 +113,22 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const submitOrderStatus = (e) => {
     e.preventDefault();
     if (
-        (orderStatus === "delivered" || orderStatus === "preparing") &&
-        (!deliveryBoy?._id && shopDeliveryMethod === 'drop')
+      (orderStatus === "delivered" || orderStatus === "preparing") &&
+      !deliveryBoy?._id &&
+      shopDeliveryMethod === "drop"
     ) {
       return successMsg(`Assign delivery boy before ${orderStatus}`);
     }
     dispatch(
-        orderUpdateStatus(
-            {
-              orderId,
-              orderStatus,
-              shop,
-              deliveryBoy: deliveryBoy?._id,
-            },
-            socket
-        )
+      orderUpdateStatus(
+        {
+          orderId,
+          orderStatus,
+          shop,
+          deliveryBoy: deliveryBoy?._id,
+        },
+        socket
+      )
     );
   };
 
@@ -180,29 +191,29 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     const { user: flagedUser, rider: flagedRider, shop: flagedShop } = isFlaged;
 
     if (
-        !user &&
-        !flagedUser &&
-        !rider &&
-        !flagedRider &&
-        !shop &&
-        !flagedShop
+      !user &&
+      !flagedUser &&
+      !rider &&
+      !flagedRider &&
+      !shop &&
+      !flagedShop
     ) {
       return successMsg("Please select a account type", "error");
     }
 
     dispatch(
-        sentOrderFlag({
-          orderId: selectFlagOrder?._id,
-          comment,
-          user: flagedUser && user ? "" : user ? selectFlagOrder?.user?._id : "",
-          shop: flagedShop && shop ? "" : shop ? selectFlagOrder?.shop?._id : "",
-          delivery:
-              flagedRider && rider
-                  ? ""
-                  : rider
-                      ? selectFlagOrder?.deliveryBoy?._id
-                      : "",
-        })
+      sentOrderFlag({
+        orderId: selectFlagOrder?._id,
+        comment,
+        user: flagedUser && user ? "" : user ? selectFlagOrder?.user?._id : "",
+        shop: flagedShop && shop ? "" : shop ? selectFlagOrder?.shop?._id : "",
+        delivery:
+          flagedRider && rider
+            ? ""
+            : rider
+            ? selectFlagOrder?.deliveryBoy?._id
+            : "",
+      })
     );
   };
 
@@ -247,13 +258,13 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
       ...orderCancel,
       refundType: type,
       partialPayment:
-          type === "full"
-              ? orderPayment
-              : {
-                shop: "",
-                deliveryBoy: "",
-                admin: "",
-              },
+        type === "full"
+          ? orderPayment
+          : {
+              shop: "",
+              deliveryBoy: "",
+              admin: "",
+            },
     });
   };
 
@@ -288,19 +299,19 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     } = orderCancel;
 
     if (
-        orderCancel.refundType === "partial" &&
-        !shop &&
-        !deliveryBoy &&
-        !admin
+      orderCancel.refundType === "partial" &&
+      !shop &&
+      !deliveryBoy &&
+      !admin
     ) {
       return successMsg("Enter Minimum One Partial Amount");
     }
 
     dispatch(
-        cancelOrderByAdmin({
-          ...orderCancel,
-          cancelReason: orderCancel?.cancelReason?._id ?? "",
-        })
+      cancelOrderByAdmin({
+        ...orderCancel,
+        cancelReason: orderCancel?.cancelReason?._id ?? "",
+      })
     );
   };
 
@@ -309,12 +320,12 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   const handleMenu = (menu, item) => {
     if (menu === "Update Status") {
       updateOrderStatus(
-          item?._id,
-          item?.shop?._id,
-          item?.orderStatus,
-          item?.shopDeliveryMethod,
-          setOrderFor(item?.orderFor),
-          item?.deliveryBoy ? setDeliveryBoy(item?.deliveryBoy) : null
+        item?._id,
+        item?.shop?._id,
+        item?.orderStatus,
+        item?.shopDeliveryMethod,
+        setOrderFor(item?.orderFor),
+        item?.deliveryBoy ? setDeliveryBoy(item?.deliveryBoy) : null
       );
     } else if (menu === "Cancel Order") {
       setOpenCancelModal(!openCancelModal);
@@ -322,6 +333,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         ...orderCancel,
         cancelReason: "",
         otherReason: "",
+        paymentMethod: item?.paymentMethod,
         orderId: item?._id,
         refundType: "none",
         partialPayment: {
@@ -344,8 +356,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     }
   };
 
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
-
+  const currency = useSelector(
+    (store) => store.settingsReducer.appSettingsOptions.currency
+  ).toUpperCase();
 
   const goToDetails = (id) => {
     history.push(`/orders/details/${id}`);
@@ -360,7 +373,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               <Col md={3} className="text-end" />
             </Row>
             <CardTitle className="h4">Orders List</CardTitle>
-            <Table id="tech-companies-1" className="table table__wrapper  table-hover text-center">
+            <Table
+              id="tech-companies-1"
+              className="table table__wrapper  table-hover text-center"
+            >
               <Thead>
                 <Tr>
                   <Th>Customer</Th>
@@ -386,28 +402,45 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                       >
                         <Th onClick={() => goToDetails(item?._id)}>
                           <TableImgItem
-                            img={`${item?.user?.profile_photo ? item?.user?.profile_photo : noPhoto}`}
+                            img={`${
+                              item?.user?.profile_photo
+                                ? item?.user?.profile_photo
+                                : noPhoto
+                            }`}
                             altImg={userIcon}
                             name={item?.user?.name}
                             id={item?.orderId}
                           />
                         </Th>
 
-                        <Td onClick={() => goToDetails(item?._id)}>{item?.shop?.shopName}</Td>
                         <Td onClick={() => goToDetails(item?._id)}>
-                          <p className="mb-0">{new Date(item?.createdAt).toLocaleDateString()}</p>
-                          <span>{new Date(item?.createdAt).toLocaleTimeString()}</span>
+                          {item?.shop?.shopName}
                         </Td>
-                        <Td onClick={() => goToDetails(item?._id)}>{`${item?.summary?.totalAmount} ${currency}`}</Td>
+
+                        <Td onClick={() => goToDetails(item?._id)}>
+                          <p className="mb-0">
+                            {new Date(item?.createdAt).toLocaleDateString()}
+                          </p>
+                          <span>
+                            {new Date(item?.createdAt).toLocaleTimeString()}
+                          </span>
+                        </Td>
+
+                        <Td
+                          onClick={() => goToDetails(item?._id)}
+                        >{`${item?.summary?.totalAmount} ${currency}`}</Td>
                         <Td onClick={() => goToDetails(item?._id)}>
                           {item?.paymentMethod}
                           {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
                         </Td>
+
                         <Td onClick={() => goToDetails(item?._id)}>
                           <div
                             className={`${
-                              ["cancelled", "refused"].includes(item?.orderStatus)
+                              item?.orderStatus === "cancelled"
                                 ? "inactive-status"
+                                : item?.orderStatus === "refused"
+                                ? " refused-inactive-status"
                                 : item?.orderStatus === "delivered"
                                 ? "active-status"
                                 : "orderStatus"
@@ -416,6 +449,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                             {modifiedOrderStatus(item?.orderStatus)}
                           </div>
                         </Td>
+
                         {account_type === "admin" && (
                           <Td>
                             <ThreeDotsMenu
@@ -423,11 +457,13 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                               menuItems={[
                                 item?.orderStatus !== "cancelled" &&
                                   item?.orderStatus !== "delivered" &&
+                                  item?.orderStatus !== "refused" &&
                                   "Update Status",
                                 account_type === "admin" && "Flag",
                                 account_type === "admin" &&
                                   item?.orderStatus !== "cancelled" &&
                                   item?.orderStatus !== "delivered" &&
+                                  item?.orderStatus !== "refused" &&
                                   "Cancel Order",
                               ]}
                             />
@@ -454,16 +490,16 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               </Tbody>
             </Table>
 
-              {!loading && orders?.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Order!</h4>
-                  </div>
-              )}
-            </CardBody>
-          </Card>
-        </div>
+            {!loading && orders?.length < 1 && (
+              <div className="text-center">
+                <h4>No Order!</h4>
+              </div>
+            )}
+          </CardBody>
+        </Card>
+      </div>
 
-        {/* UPDATE ORDER STATUS */}
+      {/* UPDATE ORDER STATUS */}
 
       <Modal
         isOpen={isUpdateStatus}
@@ -489,7 +525,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         <div className="modal-body">
           <Form className="mb-4" onSubmit={submitOrderStatus}>
             <FormControl fullWidth required>
-              <InputLabel id="demo-simple-select-label">Select status</InputLabel>
+              <InputLabel id="demo-simple-select-label">
+                Select status
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -501,7 +539,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               >
                 {orderStatusOptions.map((item, index) => (
                   <MenuItem key={index} value={item.value}>
-                    {orderFor === "specific" && item.value === "accepted_delivery_boy" ? "" : item.label}
+                    {orderFor === "specific" &&
+                    item.value === "accepted_delivery_boy"
+                      ? ""
+                      : item.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -514,8 +555,12 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 onChange={(event, newValue) => {
                   setDeliveryBoy(newValue);
                 }}
-                getOptionLabel={(option, index) => (option.name ? option.name : "")}
-                isOptionEqualToValue={(option, value) => option?._id == value?._id}
+                getOptionLabel={(option, index) =>
+                  option.name ? option.name : ""
+                }
+                isOptionEqualToValue={(option, value) =>
+                  option?._id == value?._id
+                }
                 inputValue={deliverySearchKey}
                 onInputChange={(event, newInputValue) => {
                   setDeliverySearchKey(newInputValue);
@@ -523,70 +568,77 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 id="controllable-states-demo"
                 options={activeDelieryBoys?.length > 0 ? activeDelieryBoys : []}
                 sx={{ width: "100%" }}
-                renderInput={(params, index) => <TextField {...params} label="Select a Delivery Boy" />}
+                renderInput={(params, index) => (
+                  <TextField {...params} label="Select a Delivery Boy" />
+                )}
                 renderOption={(props, option) => (
-                  <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props} key={option._id}>
+                  <Box
+                    component="li"
+                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                    {...props}
+                    key={option._id}
+                  >
                     {option.name}
                   </Box>
                 )}
               />
             )}
 
-              <div className="mt-3 d-flex justify-content-end">
-                <Button type="submit" color="success" disabled={loading}>
-                  {loading ? "Updating..." : "Update"}
-                </Button>
-              </div>
-            </Form>
-          </div>
-        </Modal>
+            <div className="mt-3 d-flex justify-content-end">
+              <Button type="submit" color="success" disabled={loading}>
+                {loading ? "Updating..." : "Update"}
+              </Button>
+            </div>
+          </Form>
+        </div>
+      </Modal>
 
-        {/* CREATE FLEG */}
+      {/* CREATE FLEG */}
 
-        <Modal
-            isOpen={openFlagModal}
-            toggle={() => {
-              setOpenFlagModal(!openFlagModal);
+      <Modal
+        isOpen={openFlagModal}
+        toggle={() => {
+          setOpenFlagModal(!openFlagModal);
+        }}
+        centered={true}
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Send Flag</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setOpenFlagModal(false);
             }}
-            centered={true}
-        >
-          <div className="modal-header">
-            <h5 className="modal-title mt-0">Send Flag</h5>
-            <button
-                type="button"
-                onClick={() => {
-                  setOpenFlagModal(false);
-                }}
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            {isFlaged.shop && isFlaged.user && isFlaged.rider ? (
-                <div>
-                  <h5>Everyone has been Flaged!.</h5>
-                  <span>Please go to order details to see flag information.</span>
-                </div>
-            ) : (
-                <Form onSubmit={submitOrderFlag}>
-                  <div className="mb-4">
-                    <TextField
-                        type="text"
-                        className="form-control"
-                        placeholder="Enter comment here"
-                        required
-                        label="Comment"
-                        name="comment"
-                        multiline
-                        maxRows="4"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                    />
-                  </div>
-                  <div className="mb-4"></div>
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          {isFlaged.shop && isFlaged.user && isFlaged.rider ? (
+            <div>
+              <h5>Everyone has been Flaged!.</h5>
+              <span>Please go to order details to see flag information.</span>
+            </div>
+          ) : (
+            <Form onSubmit={submitOrderFlag}>
+              <div className="mb-4">
+                <TextField
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter comment here"
+                  required
+                  label="Comment"
+                  name="comment"
+                  multiline
+                  maxRows="4"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </div>
+              <div className="mb-4"></div>
 
               <div className="mb-4">
                 <FormControl component="fieldset" variant="standard">
@@ -620,7 +672,9 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           checked={accountType.rider}
                           onChange={FlagAccountChange}
                           name="rider"
-                          disabled={!selectFlagOrder?.deliveryBoy || isFlaged.rider}
+                          disabled={
+                            !selectFlagOrder?.deliveryBoy || isFlaged.rider
+                          }
                         />
                       }
                       label="Delivery boy"
@@ -638,7 +692,11 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                   style={{ width: "150px" }}
                   disabled={loading}
                 >
-                  {loading ? <Spinner color="danger" size="sm"></Spinner> : "Send"}
+                  {loading ? (
+                    <Spinner color="danger" size="sm"></Spinner>
+                  ) : (
+                    "Send"
+                  )}
                 </Button>
               </div>
             </Form>
@@ -682,8 +740,12 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                   otherReason: "",
                 });
               }}
-              getOptionLabel={(option, index) => (option.name ? option.name : "")}
-              isOptionEqualToValue={(option, value) => option?._id == value?._id}
+              getOptionLabel={(option, index) =>
+                option.name ? option.name : ""
+              }
+              isOptionEqualToValue={(option, value) =>
+                option?._id == value?._id
+              }
               inputValue={deliverySearchKey}
               onInputChange={(event, newInputValue) => {
                 setDeliverySearchKey(newInputValue);
@@ -692,50 +754,58 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               options={cancelReasons.length > 0 ? cancelReasons : []}
               sx={{ width: "100%" }}
               renderInput={(params, index) => (
-                <TextField {...params} label="Select a cancel reason" required={!isOtherReason} />
+                <TextField
+                  {...params}
+                  label="Select a cancel reason"
+                  required={!isOtherReason}
+                />
               )}
               renderOption={(props, option) => (
-                <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props} key={option?._id}>
+                <Box
+                  component="li"
+                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                  {...props}
+                  key={option?._id}
+                >
                   {option?.name}
                 </Box>
               )}
             />
 
+            <div className="mt-2">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isOtherReason}
+                    onChange={(e) => setIsOtherReason(e.target.checked)}
+                    name="otherReason"
+                  />
+                }
+                label="Send other reason"
+              />
+            </div>
+
+            {isOtherReason && (
               <div className="mt-2">
-                <FormControlLabel
-                    control={
-                      <Checkbox
-                          checked={isOtherReason}
-                          onChange={(e) => setIsOtherReason(e.target.checked)}
-                          name="otherReason"
-                      />
-                    }
-                    label="Send other reason"
+                <TextField
+                  type="text"
+                  multiline
+                  className="form-control"
+                  placeholder="Type other reason"
+                  maxRows={4}
+                  required={isOtherReason}
+                  label="Other reason"
+                  value={orderCancel.otherReason}
+                  onChange={(e) =>
+                    setOrderCancel({
+                      ...orderCancel,
+                      otherReason: e.target.value,
+                      cancelReason: null,
+                    })
+                  }
                 />
               </div>
-
-              {isOtherReason && (
-                  <div className="mt-2">
-                    <TextField
-                        type="text"
-                        multiline
-                        className="form-control"
-                        placeholder="Type other reason"
-                        maxRows={4}
-                        required={isOtherReason}
-                        label="Other reason"
-                        value={orderCancel.otherReason}
-                        onChange={(e) =>
-                            setOrderCancel({
-                              ...orderCancel,
-                              otherReason: e.target.value,
-                              cancelReason: null,
-                            })
-                        }
-                    />
-                  </div>
-              )}
-
+            )}
             <FormControl className="py-3">
               <RadioGroup
                 row
@@ -745,62 +815,79 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 onChange={(e) => updateRefundType(e.target.value)}
                 required
               >
-                <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
-                <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
-                <FormControlLabel value="none" control={<Radio />} label="No Refund" />
+                {orderCancel?.paymentMethod !== "cash" && (
+                  <>
+                    {" "}
+                    <FormControlLabel
+                      value="full"
+                      control={<Radio />}
+                      label="Full Refund"
+                    />
+                    <FormControlLabel
+                      value="partial"
+                      control={<Radio />}
+                      label="Partial Refund"
+                    />
+                  </>
+                )}
+                <FormControlLabel
+                  value="none"
+                  control={<Radio />}
+                  label="No Refund"
+                />
               </RadioGroup>
             </FormControl>
 
-              {orderCancel?.refundType === "partial" && (
-                  <CancelOrderRefunds>
-                    <div className="refund_item_wrapper">
-                      <input
-                          className="form-control refund_input"
-                          placeholder="Enter Shop Amount"
-                          type="number"
-                          min={0}
-                          max={orderPayment?.shop}
-                          name="shop"
-                          onChange={updateRefundAmount}
-                          value={orderCancel?.partialPayment?.shop}
-                      />
-                      <span>Shop Earning: {orderPayment?.shop}</span>
-                    </div>
-                    <div className="refund_item_wrapper">
-                      <input
-                          type="number"
-                          className="form-control refund_input"
-                          placeholder="Enter Admin Amount"
-                          min={0}
-                          max={orderPayment?.admin}
-                          onChange={updateRefundAmount}
-                          name="admin"
-                          value={orderCancel?.partialPayment?.admin}
-                      />
-                      <span>Lyxa Earning: {orderPayment?.admin}</span>
-                    </div>
-                    <div className="refund_item_wrapper">
-                      <input
-                          type="number"
-                          className="form-control refund_input"
-                          placeholder="Enter Delivery Amount"
-                          min={0}
-                          max={orderPayment?.deliveryBoy}
-                          onChange={updateRefundAmount}
-                          name="deliveryBoy"
-                          value={orderCancel?.partialPayment?.deliveryBoy}
-                      />
-                      <span>Delivery Earning: {orderPayment?.deliveryBoy}</span>
-                    </div>
-                  </CancelOrderRefunds>
-              )}
+            {orderCancel?.refundType === "partial" && (
+              <CancelOrderRefunds>
+                <div className="refund_item_wrapper">
+                  <input
+                    className="form-control refund_input"
+                    placeholder="Enter Shop Amount"
+                    type="number"
+                    min={0}
+                    max={orderPayment?.shop}
+                    name="shop"
+                    onChange={updateRefundAmount}
+                    value={orderCancel?.partialPayment?.shop}
+                  />
+                  <span>Shop Earning: {orderPayment?.shop}</span>
+                </div>
+                <div className="refund_item_wrapper">
+                  <input
+                    type="number"
+                    className="form-control refund_input"
+                    placeholder="Enter Admin Amount"
+                    min={0}
+                    max={orderPayment?.admin}
+                    onChange={updateRefundAmount}
+                    name="admin"
+                    value={orderCancel?.partialPayment?.admin}
+                  />
+                  <span>Lyxa Earning: {orderPayment?.admin}</span>
+                </div>
+                <div className="refund_item_wrapper">
+                  <input
+                    type="number"
+                    className="form-control refund_input"
+                    placeholder="Enter Delivery Amount"
+                    min={0}
+                    max={orderPayment?.deliveryBoy}
+                    onChange={updateRefundAmount}
+                    name="deliveryBoy"
+                    value={orderCancel?.partialPayment?.deliveryBoy}
+                  />
+                  <span>Delivery Earning: {orderPayment?.deliveryBoy}</span>
+                </div>
+              </CancelOrderRefunds>
+            )}
 
-              <h5>
-                Total Refund Amount:{" "}
-                {Number(orderCancel?.partialPayment?.shop) +
-                    Number(orderCancel?.partialPayment?.admin) +
-                    Number(orderCancel?.partialPayment?.deliveryBoy)}
-              </h5>
+            <h5>
+              Total Refund Amount:{" "}
+              {Number(orderCancel?.partialPayment?.shop) +
+                Number(orderCancel?.partialPayment?.admin) +
+                Number(orderCancel?.partialPayment?.deliveryBoy)}
+            </h5>
 
             <div className="d-flex justify-content-center my-3 pt-3">
               <Button
@@ -811,7 +898,11 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 // style={{ width: "120px" }}
                 disabled={loading}
               >
-                {loading ? <Spinner color="danger" size="sm"></Spinner> : "Confirm cancel order"}
+                {loading ? (
+                  <Spinner color="danger" size="sm"></Spinner>
+                ) : (
+                  "Confirm cancel order"
+                )}
               </Button>
             </div>
           </Form>
