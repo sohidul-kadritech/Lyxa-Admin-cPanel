@@ -372,7 +372,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
             <Row className="mb-3">
               <Col md={3} className="text-end" />
             </Row>
-            <CardTitle className="h4">Orders List</CardTitle>
+            <CardTitle className="h4">Orders List </CardTitle>
             <Table
               id="tech-companies-1"
               className="table table__wrapper  table-hover text-center"
