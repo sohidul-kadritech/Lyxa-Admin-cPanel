@@ -59,7 +59,9 @@ const Transactions = () => {
     }
     return;
   }, [trxSortByKey, trxSearchKey, trxAccountType]);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(
+    (store) => store.settingsReducer.appSettingsOptions.currency
+  ).toUpperCase();
 
   const callTransList = (refresh = false) => {
     dispatch(getAllTransctions(refresh));
@@ -114,7 +116,6 @@ const Transactions = () => {
     let orderRoute = trx?.order ? `/orders/details/${trx?.order}` : null;
     let userRoute = trx?.user ? `/users/details/${trx?.user?._id}` : null;
 
-
     //  const Details = ({data}) =>{
     //     return(
 
@@ -125,7 +126,11 @@ const Transactions = () => {
 
     if (trx?.order) {
       newType = (
-        <TypeInfo type="Order" linkItem={trx?.order.autoGenId} route={orderRoute} />
+        <TypeInfo
+          type="Order"
+          linkItem={trx?.order.autoGenId}
+          route={orderRoute}
+        />
       );
     } else {
       newType = "on going";
@@ -403,7 +408,39 @@ const Transactions = () => {
                             {item?.autoGenId}
                           </Th>
 
-                          <Td>{item?.amount}</Td>
+                          {/* <Td >{item?.amount}</Td> */}
+                          <Td
+                            className={
+                              item?.type === "userBalanceWithdrawAdmin" ||
+                              item?.type === "adminAddBalanceShop" ||
+                              item?.type === "userPayAfterReceivedOrder" ||
+                              item?.type === "userPayBeforeReceivedOrderByWallet" ||
+                              item?.type === "userPayForOrder" ||
+                              item?.type === "deliveryBoyAdminAmountReceivedCash"
+                                ? "active-status"
+                                : item?.type === "userBalanceAddAdmin" ||
+                                item?.type === "adminRemoveBalanceShop" ||
+                                item?.type === "userCancelOrderGetWallet" ||
+                                item?.type === "sellerOrderCancel"
+                                ? "inactive-status"
+                                : ""
+                            }
+                          >{`${
+                            item?.type === "userBalanceWithdrawAdmin" ||
+                            item?.type === "adminAddBalanceShop" ||
+                            item?.type === "userPayAfterReceivedOrder" ||
+                            item?.type ===
+                              "userPayBeforeReceivedOrderByWallet" ||
+                            item?.type === "userPayForOrder" ||
+                            item?.type === "deliveryBoyAdminAmountReceivedCash"
+                              ? "+"
+                              : item?.type === "userBalanceAddAdmin" ||
+                                item?.type === "adminRemoveBalanceShop" ||
+                                item?.type === "userCancelOrderGetWallet" ||
+                                item?.type === "sellerOrderCancel"
+                              ? "-"
+                              : ""
+                          }${item?.amount}`}</Td>
                           {/*  */}
                           <Td>{updateTrxType(item)}</Td>
                           <Td className="text-capitalize">

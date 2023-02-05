@@ -225,14 +225,14 @@ const DropPayList = () => {
                           <Td>{item?.user?.email}</Td>
                           <Td
                             className={
-                              item?.type === "userBalanceAddAdmin"
+                              item?.type === "userBalanceAddAdmin" || item?.type === "userCancelOrderGetWallet" 
                                 ? "active-status"
                                 : item?.type === "userBalanceWithdrawAdmin"
                                 ? "inactive-status"
                                 : ""
                             }
                           >{`${
-                            item?.type === "userBalanceAddAdmin"
+                            item?.type === "userBalanceAddAdmin" || item?.type === "userCancelOrderGetWallet" 
                               ? "+"
                               : item?.type === "userBalanceWithdrawAdmin"
                               ? "-"
