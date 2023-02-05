@@ -421,7 +421,8 @@ const Transactions = () => {
                                 : item?.type === "userBalanceAddAdmin" ||
                                 item?.type === "adminRemoveBalanceShop" ||
                                 item?.type === "userCancelOrderGetWallet" ||
-                                item?.type === "sellerOrderCancel"
+                                item?.type === "sellerOrderCancel" ||
+                                item?.type === "shopProfileRemoveCash"
                                 ? "inactive-status"
                                 : ""
                             }
@@ -437,7 +438,8 @@ const Transactions = () => {
                               : item?.type === "userBalanceAddAdmin" ||
                                 item?.type === "adminRemoveBalanceShop" ||
                                 item?.type === "userCancelOrderGetWallet" ||
-                                item?.type === "sellerOrderCancel"
+                                item?.type === "sellerOrderCancel" ||
+                                item?.type === "shopProfileRemoveCash"
                               ? "-"
                               : ""
                           }${item?.amount}`}</Td>
