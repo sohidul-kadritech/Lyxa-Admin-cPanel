@@ -580,37 +580,32 @@ const OrderDetails = () => {
                     </Summery>
                   </Col>
                 </Row>
-                {console.log(order)}
-                <Col xl={12}>
-                  {order?.orderStatus === "delivered" && (
-                    <OrderInfo
-                      items={[
-                        {
-                          title: "LYXA Profit",
-                          value: `${order?.dropCharge?.totalDropAmount}`,
-                        },
-                        {
-                          title: "LYXA Profit from Rider",
-                          value: `${order?.dropCharge?.dropChargeFromDelivery}`,
-                        },
-                        {
-                          title: "LYXA Profit from Order",
-                          value: `${order?.dropCharge?.dropChargeFromOrder}`,
-                        },
-                        {
-                          title: "Rider Profit",
-                          value: `${order?.deliveryBoyFee}`,
 
-                          link: null,
-                        },
-                        {
-                          title: "Shop Profit",
-                          value: `${order?.sellerEarnings}`,
-                        },
-                      ]}
-                    />
-                  )}
-                </Col>
+                <h5 className="text-dark" style={{ marginBottom: "30px" }}>
+                  Order Amount Details
+                </h5>
+                <Summery>
+                  <SummaryInfo
+                    title="Shop Profit"
+                    value={order?.sellerEarnings}
+                  />
+                  <SummaryInfo
+                    title="Rider Profit"
+                    value={order?.deliveryBoyFee}
+                  />
+                  <SummaryInfo
+                    title="Lyxa Delivery Profit"
+                    value={order?.dropCharge?.dropChargeFromDelivery}
+                  />
+                  <SummaryInfo
+                    title="Lyxa Order Profit"
+                    value={order?.dropCharge?.dropChargeFromOrder}
+                  />
+                  <SummaryInfo
+                    title="Total Lyxa Profit"
+                    value={order?.dropCharge?.totalDropAmount}
+                  />
+                </Summery>
               </CardBody>
             </Card>
 
