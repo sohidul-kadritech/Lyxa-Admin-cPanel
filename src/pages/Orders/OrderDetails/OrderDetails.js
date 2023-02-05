@@ -95,7 +95,9 @@ const SummaryInfo = ({ title, value }) => {
   return (
     <div className="item">
       <span>{title}</span>
-      <span className="summary-value">{`${value} ${currency}`}</span>
+      <span className="summary-value">{`${value}  ${
+        isNaN(value) ? `` : currency
+      }`}</span>
     </div>
   );
 };
@@ -205,8 +207,6 @@ const OrderDetails = () => {
     }
     return;
   }, [id]);
-
-  console.log(order);
 
   const calProductAmount = (product) => {
     if (product.selectedAttributes.length > 0) {
@@ -520,7 +520,14 @@ const OrderDetails = () => {
                         title="Delivery Charge"
                         value={order?.summary?.deliveryFee}
                       />
-                      <SummaryInfo title="Discount" value={0} />
+                      <SummaryInfo
+                        title="Discount"
+                        value={
+                          order?.summary?.deliveryFee === 0
+                            ? "Free Delivery"
+                            : order?.products[0]?.totalDiscount
+                        }
+                      />
                       <SummaryInfo
                         title="Total Amount"
                         value={order?.summary?.totalAmount}
