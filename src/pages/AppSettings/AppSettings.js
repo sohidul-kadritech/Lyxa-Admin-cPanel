@@ -1,7 +1,18 @@
-import { Paper, TextField, Select, OutlinedInput, MenuItem, InputLabel, FormControl } from "@mui/material";
+import {
+  Paper,
+  TextField,
+  Select,
+  OutlinedInput,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Box,
+  Grid,
+  Stack,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Card, CardBody, CardTitle, Col, Container, Input, Row, Spinner } from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import {
@@ -34,14 +45,14 @@ const AppSettings = () => {
   const { loading, appSettingsOptions } = useSelector((state) => state.settingsReducer);
 
   const [areaChangeKey, setAreaChangeKey] = useState("");
-  const [updatesType, setUpdatesType] = useState([]);
+  // const [updatesType, setUpdatesType] = useState([]);
 
   useEffect(() => {
     dispatch(getAllAppSettings());
   }, []);
 
-  const updateSettings = () => {
-    dispatch(updateAppSettings(updatesType));
+  const updateSettings = (type) => {
+    dispatch(updateAppSettings(type));
   };
 
   // DISPATCH AREA SEARCH KEY
@@ -73,170 +84,303 @@ const AppSettings = () => {
         dispatch(updateSearchDeliveryBoyKm(value));
       }
 
-      if (!updatesType.includes(name)) {
-        setUpdatesType([...updatesType, name]);
-      }
+      // if (!updatesType.includes(name)) {
+      //   setUpdatesType([...updatesType, name]);
+      // }
     }
   };
 
   // CHECK FIELD UPDATE OR NOT
 
-  const checkIsUpdates = (e) => {
-    const { name, value } = e.target;
+  // const checkIsUpdates = (e) => {
+  //   const { name, value } = e.target;
+  //   if (value != appSettingsOptions[name] && !updatesType.includes(name)) {
+  //     setUpdatesType([...updatesType, name]);
+  //   }
+  // };
 
-    if (value != appSettingsOptions[name] && !updatesType.includes(name)) {
-      setUpdatesType([...updatesType, name]);
-    }
-  };
-  
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumb maintitle="Lyxa" breadcrumbItem={"App Settings"} isRefresh={false} />
-
-            <Card>
-              <CardBody>
-                <CardTitle>Informations</CardTitle>
-                <hr />
-
-                <Row>
-                  <Col lg={6}>
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Max Discount(Amount)"
-                      variant="outlined"
-                      placeholder="Enter max discount"
-                      value={appSettingsOptions?.maxDiscount ?? 0}
-                      onChange={(e) => {
-                        dispatch(updateMaxDiscount(e.target.value));
-                        checkIsUpdates(e);
-                      }}
-                      type="number"
-                      name="maxDiscount"
-                    />
-                     <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="VAT (Amount)"
-                      variant="outlined"
-                      placeholder="Enter max discount"
-                      value={0}
-                      onChange={(e) => {
-                        // dispatch(updateMaxDiscount(e.target.value));
-                        // checkIsUpdates(e);
-                      }}
-                      type="number"
-                      name="maxDiscount"
-                      className="mt-4"
-                    />
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Near Shop Distance(KM)"
-                      variant="outlined"
-                      placeholder="Enter near shop Distance"
-                      value={appSettingsOptions?.nearByShopKm ?? 0}
-                      onChange={(e) => {
-                        dispatch(updateNearByShopKey(e.target.value));
-                        checkIsUpdates(e);
-                      }}
-                      type="number"
-                      name="nearByShopKm"
-                      className="my-4"
-                    />
-                    <FormControl sx={{ width: "100%" }}>
-                      <InputLabel>Currency</InputLabel>
-                      <Select
-                        value={appSettingsOptions?.currency ?? ""}
-                        label="Currency"
+            <Grid container spacing={3}>
+              {/* max discount */}
+              <Grid item md={6}>
+                <Card style={{ marginBottom: "0px" }}>
+                  <CardBody>
+                    <CardTitle>Max Discount</CardTitle>
+                    <hr />
+                    <Stack spacing={2}>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Max Discount(Amount)"
+                        variant="outlined"
+                        placeholder="Enter max discount"
+                        value={appSettingsOptions?.maxDiscount ?? 0}
                         onChange={(e) => {
-                          dispatch(updateCurrency(e.target.value));
-                          checkIsUpdates(e);
+                          dispatch(updateMaxDiscount(e.target.value));
+                          // checkIsUpdates(e);
                         }}
-                        input={<OutlinedInput label="Currency" name="currency" />}
-                        MenuProps={MenuProps}
+                        type="number"
+                        name="maxDiscount"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["maxDiscount"]);
+                        }}
+                        disabled={loading}
+                        className="d-block"
+                        style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {currenciesList.map(({ key, value }) => (
-                          <MenuItem key={key} value={key}>
-                            {value}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Col>
-
-                  <Col lg={6} className="mt-3 mt-lg-0">
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Lyxa pay limit credit"
-                      variant="outlined"
-                      placeholder="Enter drop pay limit credit "
-                      value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
-                      onChange={(e) => {
-                        dispatch(updateDropCreditLimit(e.target.value));
-                        checkIsUpdates(e);
-                      }}
-                      type="number"
-                      name="maxCustomerServiceValue"
-                    />
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Max Butler Item (Amount)"
-                      variant="outlined"
-                      placeholder="Enter max discount"
-                      value={0}
-                      onChange={(e) => {
-                        // dispatch(updateMaxDiscount(e.target.value));
-                        // checkIsUpdates(e);
-                      }}
-                      type="number"
-                      name="maxDiscount"
-                      className="mt-4"
-                    />
-                    <TextField
-                      style={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Delivery Boy Search Area"
-                      variant="outlined"
-                      placeholder="Type search area then press Enter"
-                      value={areaChangeKey}
-                      type="number"
-                      onKeyDown={handleKmAdd}
-                      onChange={(e) => setAreaChangeKey(e.target.value)}
-                      name="searchDeliveryBoyKm"
-                      className="my-4"
-                    />
-                    {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
-                      <Paper className=" p-3">
-                        {appSettingsOptions?.searchDeliveryBoyKm?.map((item, index) => (
-                          <div className="tag__wrapper" key={index}>
-                            {item}
-                            <button
-                              type="button"
-                              className="button"
-                              onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
-                            >
-                              &times;
-                            </button>
-                          </div>
-                        ))}
-                      </Paper>
-                    )}
-                  </Col>
-                </Row>
-
-                <div className="d-flex justify-content-center mt-5 mb-2">
-                  <Button color="success" style={{ padding: "10px 50px" }} onClick={updateSettings} disabled={loading}>
-                    {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
+                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                      </Button>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Grid>
+              {/* pay credit */}
+              <Grid item md={6}>
+                <Card style={{ marginBottom: "0px" }}>
+                  <CardBody>
+                    <CardTitle>Lyxa Pay Credit</CardTitle>
+                    <hr />
+                    <Stack spacing={2}>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="VAT (Amount)"
+                        variant="outlined"
+                        placeholder="Enter max discount"
+                        value={0}
+                        onChange={(e) => {
+                          console.log(e);
+                        }}
+                        type="number"
+                        name="maxDiscount"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["maxDiscount"]);
+                        }}
+                        disabled={loading}
+                        className="d-block"
+                        style={{ width: "100%", padding: "10px 0" }}
+                      >
+                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                      </Button>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Grid>
+              {/* Near shop distance */}
+              <Grid item md={6}>
+                <Card style={{ marginBottom: "0px" }}>
+                  <CardBody>
+                    <CardTitle>Near Shop Distance</CardTitle>
+                    <hr />
+                    <Stack spacing={2}>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Near Shop Distance(KM)"
+                        variant="outlined"
+                        placeholder="Enter near shop Distance"
+                        value={appSettingsOptions?.nearByShopKm ?? 0}
+                        onChange={(e) => {
+                          dispatch(updateNearByShopKey(e.target.value));
+                          // checkIsUpdates(e);
+                        }}
+                        type="number"
+                        name="nearByShopKm"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["nearByShopKm"]);
+                        }}
+                        disabled={loading}
+                        className="d-block"
+                        style={{ width: "100%", padding: "10px 0" }}
+                      >
+                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                      </Button>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Grid>
+              {/* currency */}
+              <Grid item md={6}>
+                <Card style={{ marginBottom: "0px" }}>
+                  <CardBody>
+                    <CardTitle>Currency</CardTitle>
+                    <hr />
+                    <Stack spacing={2}>
+                      <FormControl sx={{ width: "100%" }}>
+                        <InputLabel>Currency</InputLabel>
+                        <Select
+                          value={appSettingsOptions?.currency?.code ?? ""}
+                          label="Currency"
+                          onChange={(e) => {
+                            const currencyObj = currenciesList.find(
+                              (currencyObj) => currencyObj.code === e.target.value
+                            );
+                            dispatch(updateCurrency(currencyObj));
+                            // checkIsUpdates(e);
+                          }}
+                          input={<OutlinedInput label="Currency" name="currency" />}
+                          MenuProps={MenuProps}
+                        >
+                          {currenciesList.map(({ code, name }) => (
+                            <MenuItem key={code} value={code}>
+                              {name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["currency"]);
+                        }}
+                        disabled={loading}
+                        className="d-block"
+                        style={{ width: "100%", padding: "10px 0" }}
+                      >
+                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                      </Button>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Grid>
+              {/* lyxa pay credit */}
+              <Grid item md={6}>
+                <Card style={{ marginBottom: "0px" }}>
+                  <CardBody>
+                    <CardTitle>Lyxa Pay Limit</CardTitle>
+                    <hr />
+                    <Stack spacing={2}>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Lyxa pay limit credit"
+                        variant="outlined"
+                        placeholder="Enter drop pay limit credit "
+                        value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
+                        onChange={(e) => {
+                          dispatch(updateDropCreditLimit(e.target.value));
+                          // checkIsUpdates(e);
+                        }}
+                        type="number"
+                        name="maxCustomerServiceValue"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["maxCustomerServiceValue"]);
+                        }}
+                        disabled={loading}
+                        className="d-block"
+                        style={{ width: "100%", padding: "10px 0" }}
+                      >
+                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                      </Button>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Grid>
+              {/* lyxa pay credit */}
+              <Grid item md={6}>
+                <Card style={{ marginBottom: "0px" }}>
+                  <CardBody>
+                    <CardTitle>Max Butler Item</CardTitle>
+                    <hr />
+                    <Stack spacing={2}>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Max Butler Item (Amount)"
+                        variant="outlined"
+                        placeholder="Enter max discount"
+                        value={0}
+                        onChange={(e) => {
+                          // dispatch(updateMaxDiscount(e.target.value));
+                          // checkIsUpdates(e);
+                        }}
+                        type="number"
+                        name="maxDiscount"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["maxDiscount"]);
+                        }}
+                        disabled={loading}
+                        className="d-block"
+                        style={{ width: "100%", padding: "10px 0" }}
+                      >
+                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                      </Button>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Grid>
+              {/* Delivery Boy Search Area */}
+              <Grid item md={6}>
+                <Card style={{ marginBottom: "0px" }}>
+                  <CardBody>
+                    <CardTitle>Delivery Boy Search</CardTitle>
+                    <hr />
+                    <Stack spacing={2}>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Delivery Boy Search Area"
+                        variant="outlined"
+                        placeholder="Type search area then press Enter"
+                        value={areaChangeKey}
+                        type="number"
+                        onKeyDown={handleKmAdd}
+                        onChange={(e) => setAreaChangeKey(e.target.value)}
+                        name="searchDeliveryBoyKm"
+                        // className="mb-1"
+                      />
+                      {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
+                        <Paper className=" p-3">
+                          {appSettingsOptions?.searchDeliveryBoyKm?.map((item, index) => (
+                            <div className="tag__wrapper" key={index}>
+                              {item}
+                              <button
+                                type="button"
+                                className="button"
+                                onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
+                              >
+                                &times;
+                              </button>
+                            </div>
+                          ))}
+                        </Paper>
+                      )}
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["searchDeliveryBoyKm"]);
+                        }}
+                        disabled={loading}
+                        className="d-block"
+                        style={{ width: "100%", padding: "10px 0" }}
+                      >
+                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                      </Button>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Grid>
+            </Grid>
           </Container>
         </div>
       </GlobalWrapper>

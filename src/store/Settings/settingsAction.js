@@ -25,6 +25,7 @@ import {
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
+import currenciesList from "../../common/data/currencyList";
 
 // UPDATE GOOGLE MAP KEY
 export const updateGoogleMapApiKey = (key) => (dispatch) => {

@@ -12,7 +12,7 @@ import styled from "styled-components";
 
 const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
   const { loading } = useSelector((state) => state.appWalletReducer);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const dispatch = useDispatch();
 
   const [settleAmount, setSettleAmount] = useState("");

@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 const ProductTable = ({ products, loading }) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
 
   const [selectedImg, setSelectedImg] = useState(null);

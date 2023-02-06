@@ -357,7 +357,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
   };
 
   const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency
+    (store) => store.settingsReducer.appSettingsOptions.currency.code
   ).toUpperCase();
 
   const goToDetails = (id) => {
