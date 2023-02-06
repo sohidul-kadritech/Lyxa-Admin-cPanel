@@ -11,7 +11,7 @@ const initialState = {
     maxDiscount: "",
     searchDeliveryBoyKm: [],
     maxCustomerServiceValue: "",
-    currency: JSON.parse(localStorage.getItem("currency")),
+    currency: localStorage.getItem("currency") ? JSON.parse(localStorage.getItem("currency")) : {code: ''}
   },
 
   dropCharge: null,
