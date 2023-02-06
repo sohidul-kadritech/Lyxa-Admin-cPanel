@@ -120,7 +120,7 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
         <Button
           disabled={loading}
           style={{ maxWidth: "200px", width: "100%" }}
-          color="primary"
+          color="success"
           onClick={deliveryFeeSubmit}
         >
           {loading ? "Loading..." : "Update"}

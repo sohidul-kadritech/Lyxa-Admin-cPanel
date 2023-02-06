@@ -1,30 +1,10 @@
-import {
-  Autocomplete,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Box, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
 import { toast } from "react-toastify";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Row,
-  Form,
-  Modal,
-  CardTitle,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Row, Form, Modal, CardTitle, Spinner } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import DropCharge from "../../../components/DropCharge";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -45,19 +25,10 @@ const PercentageSetting = () => {
   const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
 
-
-  const {
-    loading,
-    dropCharge,
-    status,
-    sellersDropCharge,
-    paging,
-    hasNextPage,
-    hasPreviousPage,
-    currentPage,
-  } = useSelector((state) => state.settingsReducer);
+  const { loading, dropCharge, status, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } =
+    useSelector((state) => state.settingsReducer);
 
   const [deliveryCut, setDeliveryCut] = useState([]);
   const [isOpenSuggestion, setIsOpenSuggestion] = useState(false);
@@ -124,27 +95,16 @@ const currency = useSelector(store => store.settingsReducer.appSettingsOptions.c
       return successMsg("From Range should be less than To Range", "error");
     }
 
-    if (
-      rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut
-    ) {
-      return successMsg(
-        "Delivery person cut can't be getter than charge",
-        "error"
-      );
+    if (rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut) {
+      return successMsg("Delivery person cut can't be getter than charge", "error");
     }
 
     const isExistCharge = deliveryCut?.filter((item) => {
-      if (
-        rangeWiseDeliveryCharge.from >= item.from &&
-        rangeWiseDeliveryCharge.from <= item?.to
-      ) {
+      if (rangeWiseDeliveryCharge.from >= item.from && rangeWiseDeliveryCharge.from <= item?.to) {
         return item;
       }
 
-      if (
-        rangeWiseDeliveryCharge.to >= item.from &&
-        rangeWiseDeliveryCharge.to <= item?.to
-      ) {
+      if (rangeWiseDeliveryCharge.to >= item.from && rangeWiseDeliveryCharge.to <= item?.to) {
         return item;
       }
     });
@@ -205,11 +165,7 @@ const currency = useSelector(store => store.settingsReducer.appSettingsOptions.c
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center">
                   <CardTitle>Global Lyxa Charge</CardTitle>
-                  <Button
-                    outline={true}
-                    color="success"
-                    onClick={() => setIsOpenSuggestion(!isOpenSuggestion)}
-                  >
+                  <Button outline={true} color="success" onClick={() => setIsOpenSuggestion(!isOpenSuggestion)}>
                     See Sellers Special Charge
                   </Button>
                 </div>
@@ -221,143 +177,264 @@ const currency = useSelector(store => store.settingsReducer.appSettingsOptions.c
                 />
               </CardBody>
             </Card>
-
-            <Card>
-              <CardBody>
-                <CardTitle>Delivery Cut</CardTitle>
-                <hr />
-                <Form onSubmit={submitChargeRangeWise}>
-                  <Row className="mt-3">
-                    <Col sm={6}>
-                      <TextField
-                        id="variant name"
-                        label="Range From(km)"
-                        name="from"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={rangeWiseDeliveryCharge?.from}
-                        onChange={(event) => changeRangeWiseCharge(event)}
-                        type="number"
-                        required
-                      />
-                    </Col>
-                    <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                      <TextField
-                        name="to"
-                        label="Range To(km)"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={rangeWiseDeliveryCharge?.to}
-                        onChange={(event) => changeRangeWiseCharge(event)}
-                        type="number"
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="mt-3">
-                    <Col sm={6}>
-                      <TextField
-                        id="variant name"
-                        label="Charge"
-                        name="charge"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={rangeWiseDeliveryCharge?.charge}
-                        onChange={(event) => changeRangeWiseCharge(event)}
-                        type="number"
-                        required
-                      />
-                    </Col>
-                    <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                      <TextField
-                        name="deliveryPersonCut"
-                        label="Delivery Person Cut"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={rangeWiseDeliveryCharge?.deliveryPersonCut}
-                        onChange={(event) => changeRangeWiseCharge(event)}
-                        type="number"
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <div>
-                    <Button
-                      outline={true}
-                      color="primary"
-                      type="submit"
-                      className="mt-2"
-                    >
-                      Add Item
-                    </Button>
-                  </div>
-                </Form>
-                <Row className="mt-4">
-                  <Col lg={6}>
-                    <div>
-                      {deliveryCut?.length > 0 && (
-                        <div className="mb-4">
-                          <Paper className="py-2">
-                            <h5 className="text-center">Charge List</h5>
-                            <hr />
-                            {deliveryCut?.length > 0 &&
-                              deliveryCut?.map((item, index) => (
-                                <ul
-                                  key={index}
-                                  style={{ listStyleType: "square" }}
-                                >
-                                  <li>
-                                    <div className="d-flex justify-content-between">
-                                      <span
-                                        style={{
-                                          fontSize: "15px",
-                                          fontWeight: "500",
-                                        }}
-                                      >
-                                        {`Range: ${item.from}km - ${item.to}km`}
-                                      </span>
-                                      <i
-                                        className="fas fa-trash cursor-pointer me-3"
-                                        style={{
-                                          color: "#BD381C",
-                                          fontSize: "15px",
-                                        }}
-                                        onClick={() =>
-                                          deleteDeliveryCharge(index)
-                                        }
-                                      ></i>
-                                    </div>
-                                    <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
-                                    <p>{`Delivery Person: ${item.deliveryPersonCut} ${currency}`}</p>
-                                  </li>
-                                </ul>
-                              ))}
-                          </Paper>
+            <Grid container spacing={3}>
+              <Grid item md={6}>
+                <Card>
+                  <CardBody>
+                    <CardTitle>Delivery Cut</CardTitle>
+                    <hr />
+                    <Form onSubmit={submitChargeRangeWise}>
+                      <Row className="mt-3">
+                        <Col sm={6}>
+                          <TextField
+                            id="variant name"
+                            label="Range From(km)"
+                            name="from"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.from}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                          <TextField
+                            name="to"
+                            label="Range To(km)"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.to}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-3">
+                        <Col sm={6}>
+                          <TextField
+                            id="variant name"
+                            label="Charge"
+                            name="charge"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.charge}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                          <TextField
+                            name="deliveryPersonCut"
+                            label="Delivery Person Cut"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.deliveryPersonCut}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                      </Row>
+                      <div>
+                        <Button style={{ maxWidth: "200px", width: "100%" }} color="primary" type="submit" className="mt-2">
+                          Add Item
+                        </Button>
+                      </div>
+                    </Form>
+                    <Row className="mt-4">
+                      <Col lg={6}>
+                        <div>
+                          {deliveryCut?.length > 0 && (
+                            <div className="mb-4">
+                              <Paper className="py-2">
+                                <h5 className="text-center">Charge List</h5>
+                                <hr />
+                                {deliveryCut?.length > 0 &&
+                                  deliveryCut?.map((item, index) => (
+                                    <ul key={index} style={{ listStyleType: "square" }}>
+                                      <li>
+                                        <div className="d-flex justify-content-between">
+                                          <span
+                                            style={{
+                                              fontSize: "15px",
+                                              fontWeight: "500",
+                                            }}
+                                          >
+                                            {`Range: ${item.from}km - ${item.to}km`}
+                                          </span>
+                                          <i
+                                            className="fas fa-trash cursor-pointer me-3"
+                                            style={{
+                                              color: "#BD381C",
+                                              fontSize: "15px",
+                                            }}
+                                            onClick={() => deleteDeliveryCharge(index)}
+                                          ></i>
+                                        </div>
+                                        <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
+                                        <p>{`Delivery Person: ${item.deliveryPersonCut} ${currency}`}</p>
+                                      </li>
+                                    </ul>
+                                  ))}
+                              </Paper>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </Col>
-                </Row>
-                {deliveryCut?.length > 0 && (
-                  <div className="text-center">
-                    <Button
-                      style={{ maxWidth: "200px", width: "100%" }}
-                      color="success"
-                      size="lg"
-                      className="px-4"
-                      onClick={submitDeliveryCut}
-                      disabled={loading}
-                    >
-                      {loading ? "Loading..." : "Update"}
-                    </Button>
-                  </div>
-                )}
-              </CardBody>
-            </Card>
+                      </Col>
+                    </Row>
+                    {deliveryCut?.length > 0 && (
+                      <div className="text-center">
+                        <Button
+                          style={{ maxWidth: "200px", width: "100%" }}
+                          color="success"
+                          size="md"
+                          className="px-4"
+                          onClick={submitDeliveryCut}
+                          disabled={loading}
+                        >
+                          {loading ? "Loading..." : "Update"}
+                        </Button>
+                      </div>
+                    )}
+                  </CardBody>
+                </Card>
+              </Grid>
+              <Grid item md={6}>
+                <Card>
+                  <CardBody>
+                    <CardTitle>Butler Delivery Cut</CardTitle>
+                    <hr />
+                    <Form onSubmit={submitChargeRangeWise}>
+                      <Row className="mt-3">
+                        <Col sm={6}>
+                          <TextField
+                            id="variant name"
+                            label="Range From(km)"
+                            name="from"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.from}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                          <TextField
+                            name="to"
+                            label="Range To(km)"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.to}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-3">
+                        <Col sm={6}>
+                          <TextField
+                            id="variant name"
+                            label="Charge"
+                            name="charge"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.charge}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                          <TextField
+                            name="deliveryPersonCut"
+                            label="Delivery Person Cut"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                            autoComplete="off"
+                            value={rangeWiseDeliveryCharge?.deliveryPersonCut}
+                            onChange={(event) => changeRangeWiseCharge(event)}
+                            type="number"
+                            required
+                          />
+                        </Col>
+                      </Row>
+                      <div>
+                        <Button color="primary" style={{ maxWidth: "200px", width: "100%" }} size="md" type="submit" className="mt-2">
+                          Add Item
+                        </Button>
+                      </div>
+                    </Form>
+                    <Row className="mt-4">
+                      <Col lg={6}>
+                        <div>
+                          {deliveryCut?.length > 0 && (
+                            <div className="mb-4">
+                              <Paper className="py-2">
+                                <h5 className="text-center">Charge List</h5>
+                                <hr />
+                                {deliveryCut?.length > 0 &&
+                                  deliveryCut?.map((item, index) => (
+                                    <ul key={index} style={{ listStyleType: "square" }}>
+                                      <li>
+                                        <div className="d-flex justify-content-between">
+                                          <span
+                                            style={{
+                                              fontSize: "15px",
+                                              fontWeight: "500",
+                                            }}
+                                          >
+                                            {`Range: ${item.from}km - ${item.to}km`}
+                                          </span>
+                                          <i
+                                            className="fas fa-trash cursor-pointer me-3"
+                                            style={{
+                                              color: "#BD381C",
+                                              fontSize: "15px",
+                                            }}
+                                            onClick={() => deleteDeliveryCharge(index)}
+                                          ></i>
+                                        </div>
+                                        <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
+                                        <p>{`Delivery Person: ${item.deliveryPersonCut} ${currency}`}</p>
+                                      </li>
+                                    </ul>
+                                  ))}
+                              </Paper>
+                            </div>
+                          )}
+                        </div>
+                      </Col>
+                    </Row>
+                    {deliveryCut?.length > 0 && (
+                      <div className="text-center">
+                        <Button
+                          style={{ maxWidth: "200px", width: "100%" }}
+                          color="success"
+                          size="md"
+                          className="px-4"
+                          onClick={submitDeliveryCut}
+                          disabled={loading}
+                        >
+                          {loading ? "Loading..." : "Update"}
+                        </Button>
+                      </div>
+                    )}
+                  </CardBody>
+                </Card>
+              </Grid>
+            </Grid>
           </Container>
         </div>
 
@@ -451,9 +528,7 @@ const currency = useSelector(store => store.settingsReducer.appSettingsOptions.c
                               setconfirm_alert(false);
                               setsuccess_dlg(true);
                               setdynamic_title("Deleted");
-                              setdynamic_description(
-                                "Charge has been deleted."
-                              );
+                              setdynamic_description("Charge has been deleted.");
                             }}
                             onCancel={() => setconfirm_alert(false)}
                           >
@@ -484,9 +559,7 @@ const currency = useSelector(store => store.settingsReducer.appSettingsOptions.c
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) =>
-                      dispatch(getSellerSpecialDropCharge(page))
-                    }
+                    lisener={(page) => dispatch(getSellerSpecialDropCharge(page))}
                   />
                 </div>
               </Col>

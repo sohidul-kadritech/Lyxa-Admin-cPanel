@@ -88,9 +88,7 @@ const AppSettings = () => {
       setUpdatesType([...updatesType, name]);
     }
   };
-
-  //
-
+  
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -119,6 +117,21 @@ const AppSettings = () => {
                       type="number"
                       name="maxDiscount"
                     />
+                     <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="VAT (Amount)"
+                      variant="outlined"
+                      placeholder="Enter max discount"
+                      value={0}
+                      onChange={(e) => {
+                        // dispatch(updateMaxDiscount(e.target.value));
+                        // checkIsUpdates(e);
+                      }}
+                      type="number"
+                      name="maxDiscount"
+                      className="mt-4"
+                    />
                     <TextField
                       style={{ width: "100%" }}
                       id="outlined-basic"
@@ -140,8 +153,8 @@ const AppSettings = () => {
                         value={appSettingsOptions?.currency ?? ""}
                         label="Currency"
                         onChange={(e) => {
-                          dispatch(updateCurrency(e.target.value))
-                          checkIsUpdates(e)
+                          dispatch(updateCurrency(e.target.value));
+                          checkIsUpdates(e);
                         }}
                         input={<OutlinedInput label="Currency" name="currency" />}
                         MenuProps={MenuProps}
@@ -169,6 +182,21 @@ const AppSettings = () => {
                       }}
                       type="number"
                       name="maxCustomerServiceValue"
+                    />
+                    <TextField
+                      style={{ width: "100%" }}
+                      id="outlined-basic"
+                      label="Max Butler Item (Amount)"
+                      variant="outlined"
+                      placeholder="Enter max discount"
+                      value={0}
+                      onChange={(e) => {
+                        // dispatch(updateMaxDiscount(e.target.value));
+                        // checkIsUpdates(e);
+                      }}
+                      type="number"
+                      name="maxDiscount"
+                      className="mt-4"
                     />
                     <TextField
                       style={{ width: "100%" }}

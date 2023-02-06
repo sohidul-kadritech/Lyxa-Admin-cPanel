@@ -194,11 +194,13 @@ const OrderDetails = () => {
       const findOrder = orders.find((order) => order._id == id);
       if (findOrder) {
         setOrder(findOrder);
+        console.log({findOrder})
       } else {
         (async function getOrder() {
           const data = await callApi(id, SINGLE_ORDER, "order");
           if (data) {
             setOrder(data);
+            console.log({data});
           } else {
             history.push("/orders/list", { replace: true });
           }

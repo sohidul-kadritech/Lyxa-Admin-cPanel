@@ -37,6 +37,29 @@ export const adminMenuItem = [
     ],
   },
   {
+    id: 31,
+    name: "Butler",
+    icon: "fas fa-truck",
+    link: "/#",
+    isSubmenu: true,
+    submenu: [
+      {
+        id: 32,
+        icon: "fas fa-cart-plus",
+        name: "All Orders",
+        link: "/orders/list",
+        isSubmenu: false,
+      },
+      {
+        id: 33,
+        icon: "fas fa-cart-plus",
+        name: "Cancelled Orders",
+        link: "/orders/refused",
+        isSubmenu: false,
+      },
+    ],
+  },
+  {
     id: 3,
     name: "Banner",
     icon: "fas fa-image",
