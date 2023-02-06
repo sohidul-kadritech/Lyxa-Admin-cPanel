@@ -416,7 +416,8 @@ const Transactions = () => {
                               item?.type === "userPayAfterReceivedOrder" ||
                               item?.type === "userPayBeforeReceivedOrderByWallet" ||
                               item?.type === "userPayForOrder" ||
-                              item?.type === "deliveryBoyAdminAmountReceivedCash"
+                              item?.type === "deliveryBoyAdminAmountReceivedCash" ||
+                              item?.type === "sellerGetPaymentFromOrderCash"
                                 ? "active-status"
                                 : item?.type === "userBalanceAddAdmin" ||
                                 item?.type === "adminRemoveBalanceShop" ||
@@ -433,7 +434,8 @@ const Transactions = () => {
                             item?.type ===
                               "userPayBeforeReceivedOrderByWallet" ||
                             item?.type === "userPayForOrder" ||
-                            item?.type === "deliveryBoyAdminAmountReceivedCash"
+                            item?.type === "deliveryBoyAdminAmountReceivedCash" ||
+                            item?.type === "sellerGetPaymentFromOrderCash"
                               ? "+"
                               : item?.type === "userBalanceAddAdmin" ||
                                 item?.type === "adminRemoveBalanceShop" ||
