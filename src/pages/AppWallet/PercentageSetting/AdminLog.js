@@ -71,7 +71,7 @@ const AdminLog = () => {
   const getValue = (type, value) => {
     const state = store.getState();
     console.log({state})
-    const currency = state.settingsReducer.appSettingsOptions.currency.toUpperCase();
+    const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
 
     let newValue = null;
     if (!value || value.length <= 0) {

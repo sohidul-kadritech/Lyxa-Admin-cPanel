@@ -42,7 +42,7 @@ const SellerDetails = () => {
   const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.shopReducer);
   const { account_type, adminType } = useSelector(store => store.Login.admin);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
 
   const [seller, setSeller] = useState(null);

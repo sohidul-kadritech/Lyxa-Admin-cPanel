@@ -26,7 +26,7 @@ import { useHistory } from "react-router-dom";
 
 const DropTransactions = () => {
   const history = useHistory();
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const {
     loading,

@@ -18,7 +18,7 @@ const GraphInfo = lazy(() => import("./GraphInfo"));
 
 const ShopDashboard = ({ summary }) => {
   const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency
+    (store) => store.settingsReducer.appSettingsOptions.currency.code
   ).toUpperCase();
 
   const topSummaryData = [

@@ -25,7 +25,7 @@ const PercentageSetting = () => {
   const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const { loading, dropCharge, status, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.settingsReducer);

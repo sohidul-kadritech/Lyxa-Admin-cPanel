@@ -2,16 +2,7 @@ import React, { useEffect } from "react";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { Tooltip } from "@mui/material";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import Select from "react-select";
 import { accountsOptions, sortByOptions } from "../../assets/staticData";
@@ -59,9 +50,7 @@ const Transactions = () => {
     }
     return;
   }, [trxSortByKey, trxSearchKey, trxAccountType]);
-  const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency
-  ).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const callTransList = (refresh = false) => {
     dispatch(getAllTransctions(refresh));
@@ -107,12 +96,8 @@ const Transactions = () => {
     let newType = null;
 
     let shopRoute = trx.shop ? `/shops/details/${trx?.shop?._id}` : null;
-    let sellerRoute = trx?.seller
-      ? `/seller/details/${trx?.seller?._id}`
-      : null;
-    let riderRoute = trx?.deliveryBoy
-      ? `/deliveryman/details/${trx?.deliveryBoy?._id}`
-      : null;
+    let sellerRoute = trx?.seller ? `/seller/details/${trx?.seller?._id}` : null;
+    let riderRoute = trx?.deliveryBoy ? `/deliveryman/details/${trx?.deliveryBoy?._id}` : null;
     let orderRoute = trx?.order ? `/orders/details/${trx?.order}` : null;
     let userRoute = trx?.user ? `/users/details/${trx?.user?._id}` : null;
 
@@ -125,13 +110,7 @@ const Transactions = () => {
     const { type } = trx;
 
     if (trx?.order) {
-      newType = (
-        <TypeInfo
-          type="Order"
-          linkItem={trx?.order.autoGenId}
-          route={orderRoute}
-        />
-      );
+      newType = <TypeInfo type="Order" linkItem={trx?.order.autoGenId} route={orderRoute} />;
     } else {
       newType = "on going";
     }
@@ -319,12 +298,7 @@ const Transactions = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem="Transactions"
-              loading={loading}
-              callList={callTransList}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem="Transactions" loading={loading} callList={callTransList} />
 
             <Card>
               <CardBody>
@@ -367,20 +341,13 @@ const Transactions = () => {
                 </Row>
                 <div className="d-flex align-items-center justify-content-between">
                   <CardTitle className="h4">Transactions</CardTitle>
-                  <Button
-                    outline={true}
-                    color="success"
-                    onClick={() => downloadPdf()}
-                  >
+                  <Button outline={true} color="success" onClick={() => downloadPdf()}>
                     Download PDF
                   </Button>
                 </div>
                 <hr />
 
-                <Table
-                  id="tech-companies-1"
-                  className="table  table-hover text-center"
-                >
+                <Table id="tech-companies-1" className="table  table-hover text-center">
                   <Thead>
                     <Tr>
                       <Th>ID</Th>
@@ -401,10 +368,7 @@ const Transactions = () => {
                             fontWeight: "500",
                           }}
                         >
-                          <Th
-                            style={{ textAlign: "left" }}
-                            title="Click to see details"
-                          >
+                          <Th style={{ textAlign: "left" }} title="Click to see details">
                             {item?.autoGenId}
                           </Th>
 
@@ -420,10 +384,10 @@ const Transactions = () => {
                               item?.type === "sellerGetPaymentFromOrderCash"
                                 ? "active-status"
                                 : item?.type === "userBalanceAddAdmin" ||
-                                item?.type === "adminRemoveBalanceShop" ||
-                                item?.type === "userCancelOrderGetWallet" ||
-                                item?.type === "sellerOrderCancel" ||
-                                item?.type === "shopProfileRemoveCash"
+                                  item?.type === "adminRemoveBalanceShop" ||
+                                  item?.type === "userCancelOrderGetWallet" ||
+                                  item?.type === "sellerOrderCancel" ||
+                                  item?.type === "shopProfileRemoveCash"
                                 ? "inactive-status"
                                 : ""
                             }
@@ -431,8 +395,7 @@ const Transactions = () => {
                             item?.type === "userBalanceWithdrawAdmin" ||
                             item?.type === "adminAddBalanceShop" ||
                             item?.type === "userPayAfterReceivedOrder" ||
-                            item?.type ===
-                              "userPayBeforeReceivedOrderByWallet" ||
+                            item?.type === "userPayBeforeReceivedOrderByWallet" ||
                             item?.type === "userPayForOrder" ||
                             item?.type === "deliveryBoyAdminAmountReceivedCash" ||
                             item?.type === "sellerGetPaymentFromOrderCash"
@@ -447,12 +410,8 @@ const Transactions = () => {
                           }${item?.amount}`}</Td>
                           {/*  */}
                           <Td>{updateTrxType(item)}</Td>
-                          <Td className="text-capitalize">
-                            {item?.paymentMethod ?? "Admin"}
-                          </Td>
-                          <Td>
-                            {new Date(item?.createdAt).toLocaleDateString()}
-                          </Td>
+                          <Td className="text-capitalize">{item?.paymentMethod ?? "Admin"}</Td>
+                          <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
                         </Tr>
                       );
                     })}

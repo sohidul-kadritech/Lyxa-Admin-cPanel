@@ -11,7 +11,7 @@ const initialState = {
     maxDiscount: "",
     searchDeliveryBoyKm: [],
     maxCustomerServiceValue: "",
-    currency: localStorage.getItem('currency') || '',
+    currency: JSON.parse(localStorage.getItem("currency")),
   },
 
   dropCharge: null,
@@ -30,7 +30,7 @@ const initialState = {
   defualtMessages: [],
   searchKey: "",
   databaseCollections: [],
-  message: '',
+  message: "",
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -55,10 +55,7 @@ const settingsReducer = (state = initialState, action) => {
         ...state,
         appSettingsOptions: {
           ...state.appSettingsOptions,
-          searchDeliveryBoyKm: [
-            ...state.appSettingsOptions.searchDeliveryBoyKm,
-            payload,
-          ],
+          searchDeliveryBoyKm: [...state.appSettingsOptions.searchDeliveryBoyKm, payload],
         },
       };
 
@@ -319,9 +316,7 @@ const settingsReducer = (state = initialState, action) => {
     case actionType.UPDATE_REASON_REQUEST_SUCCESS:
       return {
         ...state,
-        cancelReasons: state.cancelReasons.map((item) =>
-          item._id === payload._id ? payload : item
-        ),
+        cancelReasons: state.cancelReasons.map((item) => (item._id === payload._id ? payload : item)),
         loading: false,
         status: true,
       };
@@ -375,9 +370,7 @@ const settingsReducer = (state = initialState, action) => {
     case actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_SUCCESS:
       return {
         ...state,
-        sellersDropCharge: state.sellersDropCharge.filter(
-          (item) => item._id !== payload
-        ),
+        sellersDropCharge: state.sellersDropCharge.filter((item) => item._id !== payload),
         loading: false,
         status: true,
       };
@@ -494,9 +487,7 @@ const settingsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        defualtMessages: state.defualtMessages.map((item) =>
-          item._id === payload._id ? payload : item
-        ),
+        defualtMessages: state.defualtMessages.map((item) => (item._id === payload._id ? payload : item)),
         status: true,
       };
 
@@ -519,158 +510,158 @@ const settingsReducer = (state = initialState, action) => {
         loading: true,
         status: false,
         error: null,
-      }
+      };
 
-      case actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SUCCESS:
-        return {
-          ...state,
-          loading: false,
-          status: true,
-          error: null,
-          databaseCollections: payload
-        }
+    case actionType.ALL_DATABASE_COLLECTIONS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        error: null,
+        databaseCollections: payload,
+      };
 
-        case actionType.ALL_DATABASE_COLLECTIONS_REQUEST_FAIL:
-          return {
-            ...state,
-            loading: false,
-            status: false,
-            error: payload,
-          }
+    case actionType.ALL_DATABASE_COLLECTIONS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
 
-          case actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND: 
-          return {
-            ...state, 
-            loading: true,
-            status: false,
-            error: null,
-          }
+    case actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
 
-          case actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SUCCESS: 
-          return {
-            ...state,
-            loading: false,
-            status: true,
-            error: null,
-            message: payload,
-          }
+    case actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        error: null,
+        message: payload,
+      };
 
-          case actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL: 
-          return {
-            ...state,
-            loading: false,
-            status: false,
-            error: payload,
-            message: payload,
-          }
+    case actionType.DATABASE_COLLECTION_BACKUP_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+        message: payload,
+      };
 
-          case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SEND: 
-          return {
-            ...state, 
-            loading: true,
-            status: false,
-            error: null,
-            message: ''
-          }
+    case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+        message: "",
+      };
 
-          case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SUCCESS: 
-          return {
-            ...state,
-            loading: false,
-            status: true,
-            error: null,
-            message: payload,
-          }
+    case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        error: null,
+        message: payload,
+      };
 
-          case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL: 
-          return {
-            ...state,
-            loading: false,
-            status: false,
-            error: payload,
-            message: payload,
-          }
+    case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+        message: payload,
+      };
 
-          case actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SEND: 
-          return {
-            ...state, 
-            loading: true,
-            status: false,
-            error: null,
-            message: ''
-          }
+    case actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+        message: "",
+      };
 
-          case actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SUCCESS: 
-          return {
-            ...state,
-            loading: false,
-            status: true,
-            error: null,
-            message: payload,
-          }
+    case actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        error: null,
+        message: payload,
+      };
 
-          case actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_FAIL: 
-          return {
-            ...state,
-            loading: false,
-            status: false,
-            error: payload,
-            message: payload,
-          }
+    case actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+        message: payload,
+      };
 
-          case actionType.DATABASE_DELETE_COLLECTION_REQUEST_SEND: 
-          return {
-            ...state, 
-            loading: true,
-            status: false,
-            error: null,
-            message: ''
-          }
+    case actionType.DATABASE_DELETE_COLLECTION_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+        message: "",
+      };
 
-          case actionType.DATABASE_DELETE_COLLECTION_REQUEST_SUCCESS: 
-          return {
-            ...state,
-            loading: false,
-            status: true,
-            error: null,
-            message: payload,
-          }
+    case actionType.DATABASE_DELETE_COLLECTION_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        error: null,
+        message: payload,
+      };
 
-          case actionType.DATABASE_DELETE_COLLECTION_REQUEST_FAIL: 
-          return {
-            ...state,
-            loading: false,
-            status: false,
-            error: payload,
-            message: payload,
-          }
+    case actionType.DATABASE_DELETE_COLLECTION_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+        message: payload,
+      };
 
-          case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SEND: 
-          return {
-            ...state, 
-            loading: true,
-            status: false,
-            error: null,
-            message: ''
-          }
+    case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+        message: "",
+      };
 
-          case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SUCCESS: 
-          return {
-            ...state,
-            loading: false,
-            status: true,
-            error: null,
-            message: payload,
-          }
+    case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        error: null,
+        message: payload,
+      };
 
-          case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_FAIL: 
-          return {
-            ...state,
-            loading: false,
-            status: false,
-            error: payload,
-            message: payload,
-          }
+    case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+        message: payload,
+      };
 
     default:
       return state;

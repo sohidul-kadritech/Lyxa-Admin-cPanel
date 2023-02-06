@@ -193,7 +193,7 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
         payload: data.appSetting,
       });
       
-      localStorage.setItem('currency', data?.appSetting?.currency);
+      localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency));
 
     } else {
       successMsg(message, "error");
@@ -211,7 +211,6 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
 };
 
 // GET ALL APP SETTINGS
-
 export const getAllAppSettings = () => async (dispatch) => {
   try {
     dispatch({
@@ -223,7 +222,7 @@ export const getAllAppSettings = () => async (dispatch) => {
     } = await requestApi().request(APP_SETTINGS);
 
     // save current currency to localStorage
-    localStorage.setItem('currency', data?.appSetting?.currency);
+    localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency));
 
     if (status) {
       dispatch({
@@ -246,7 +245,6 @@ export const getAllAppSettings = () => async (dispatch) => {
 };
 
 // ADD PERCENTAGE SETTING
-
 export const addPercentage = (values) => async (dispatch) => {
   try {
     dispatch({

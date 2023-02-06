@@ -64,7 +64,7 @@ const DeliverymanDetails = () => {
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
 
 

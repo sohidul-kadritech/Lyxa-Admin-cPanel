@@ -17,7 +17,7 @@ import { MDBDataTable } from "mdbreact";
 import store from "../../../store";
 
 const state = store.getState();
-const currency = state.settingsReducer.appSettingsOptions.currency.toUpperCase();
+const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
 
 const columns = [
   {

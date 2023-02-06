@@ -82,7 +82,7 @@ const ShopDetails = () => {
   const [productsFile, setProductsFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { account_type, adminType } = useSelector(store => store.Login.admin);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
 
   useEffect(() => {

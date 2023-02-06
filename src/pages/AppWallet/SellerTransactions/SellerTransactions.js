@@ -30,7 +30,7 @@ import TableImgItem from "../../../components/TableImgItem";
 const SellerTransactions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
 
   const {

@@ -7,7 +7,7 @@ import { TrxType } from "./updateTrxsType";
 import { useSelector } from "react-redux";
 
 const TransactionsTable = ({ trxs = [], loading }) => {
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   return (
     <div>

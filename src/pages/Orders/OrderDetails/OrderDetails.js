@@ -89,7 +89,7 @@ const OrderInfo = ({ items = [] }) => {
 
 const SummaryInfo = ({ title, value }) => {
   const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency
+    (store) => store.settingsReducer.appSettingsOptions.currency.code
   ).toUpperCase();
 
   return (
@@ -186,7 +186,7 @@ const OrderDetails = () => {
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency
+    (store) => store.settingsReducer.appSettingsOptions.currency.code
   ).toUpperCase();
 
   useEffect(() => {

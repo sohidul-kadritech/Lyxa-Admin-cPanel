@@ -18,7 +18,7 @@ import bagIcon from "../assets/images/dashboard/bag.png";
 const GraphInfo = lazy(() => import("./GraphInfo"));
 
 const SellerDashboard = ({ summary }) => {
-const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const topSummaryData = [
     {

@@ -55,7 +55,7 @@ const ProductDetails = () => {
     (state) => state.productReducer
   );
 
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
 
   const [product, setProduct] = useState(null);

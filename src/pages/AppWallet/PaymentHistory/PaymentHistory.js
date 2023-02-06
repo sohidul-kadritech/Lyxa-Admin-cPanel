@@ -16,7 +16,7 @@ import {
 import { useSelector } from "react-redux";
 
 const PaymentHistory = () => {
-const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   return (
     <React.Fragment>

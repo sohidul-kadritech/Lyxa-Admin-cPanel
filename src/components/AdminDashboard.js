@@ -29,7 +29,7 @@ const GraphInfo = lazy(() => import("./GraphInfo"));
 const TopSummery = lazy(() => import("./TopSummery"));
 
 const AdminDashboard = ({ summary, topActivity }) => {
-const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code)
 
   const topSummaryData = [
     {

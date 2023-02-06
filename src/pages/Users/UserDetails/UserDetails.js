@@ -30,7 +30,7 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 
 const UserDetails = () => {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();

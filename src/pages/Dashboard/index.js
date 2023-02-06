@@ -305,7 +305,7 @@ const ShopInfo = () => {
       address: { address, latitude, longitude },
     },
   } = useSelector((state) => state.Login);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
 
   return (

@@ -63,7 +63,7 @@ const SingleShopTransactions = () => {
   const dispatch = useDispatch();
   const { search } = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const {
     loading,
