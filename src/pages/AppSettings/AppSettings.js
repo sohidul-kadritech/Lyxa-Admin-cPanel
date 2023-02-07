@@ -1,18 +1,7 @@
-import {
-  Paper,
-  TextField,
-  Select,
-  OutlinedInput,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Box,
-  Grid,
-  Stack,
-} from "@mui/material";
+import { Paper, TextField, Select, OutlinedInput, MenuItem, InputLabel, FormControl, Grid, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Container, Spinner } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import {
@@ -28,37 +17,49 @@ import {
 import { toast } from "react-toastify";
 import currenciesList from "../../common/data/currencyList";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
 const MenuProps = {
   PaperProps: {
     style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      maxHeight: 48 * 4.5 + 8,
       width: 250,
     },
   },
 };
 
+const dataLoadingIntitial = {
+  maxDiscount: false,
+  vat: false,
+  nearByShopKm: false,
+  currency: false,
+  maxCustomerServiceValue: false,
+  maxCustomerButlerServiceValue: false,
+  searchDeliveryBoyKm: false,
+};
+
 const AppSettings = () => {
   const dispatch = useDispatch();
   const { loading, appSettingsOptions } = useSelector((state) => state.settingsReducer);
-
   const [areaChangeKey, setAreaChangeKey] = useState("");
-  // const [updatesType, setUpdatesType] = useState([]);
+  const [dataIsLoading, setDataIsLoading] = useState(dataLoadingIntitial);
 
+  // get all settings
   useEffect(() => {
     dispatch(getAllAppSettings());
   }, []);
+
+  // change state for buttons
+  useEffect(() => {
+    if (loading === false) {
+      setDataIsLoading(dataLoadingIntitial);
+    }
+  }, [loading]);
 
   const updateSettings = (type) => {
     dispatch(updateAppSettings(type));
   };
 
-  // DISPATCH AREA SEARCH KEY
-
+  // dispatch area search key
   const handleKmAdd = (evt) => {
-    const { name } = evt.target;
     if (["Enter", "Tab", ","].includes(evt.key)) {
       evt.preventDefault();
 
@@ -66,7 +67,6 @@ const AppSettings = () => {
 
       if (appSettingsOptions.searchDeliveryBoyKm.length === 3) {
         return toast.warn("Maximum 3 items can add", {
-          // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
           hideProgressBar: true,
@@ -77,27 +77,12 @@ const AppSettings = () => {
         });
       }
 
-      // console.log({ value });
-
       if (value) {
         setAreaChangeKey("");
         dispatch(updateSearchDeliveryBoyKm(value));
       }
-
-      // if (!updatesType.includes(name)) {
-      //   setUpdatesType([...updatesType, name]);
-      // }
     }
   };
-
-  // CHECK FIELD UPDATE OR NOT
-
-  // const checkIsUpdates = (e) => {
-  //   const { name, value } = e.target;
-  //   if (value != appSettingsOptions[name] && !updatesType.includes(name)) {
-  //     setUpdatesType([...updatesType, name]);
-  //   }
-  // };
 
   return (
     <React.Fragment>
@@ -107,12 +92,12 @@ const AppSettings = () => {
             <Breadcrumb maintitle="Lyxa" breadcrumbItem={"App Settings"} isRefresh={false} />
             <Grid container spacing={3}>
               {/* max discount */}
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card style={{ marginBottom: "0px" }}>
                   <CardBody>
                     <CardTitle>Max Discount</CardTitle>
                     <hr />
-                    <Stack spacing={2}>
+                    <Stack spacing={2} direction="row">
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
@@ -122,7 +107,6 @@ const AppSettings = () => {
                         value={appSettingsOptions?.maxDiscount ?? 0}
                         onChange={(e) => {
                           dispatch(updateMaxDiscount(e.target.value));
-                          // checkIsUpdates(e);
                         }}
                         type="number"
                         name="maxDiscount"
@@ -131,69 +115,78 @@ const AppSettings = () => {
                         color="success"
                         onClick={() => {
                           updateSettings(["maxDiscount"]);
+                          setDataIsLoading((prev) => ({ ...prev, maxDiscount: true }));
                         }}
-                        disabled={loading}
+                        disabled={dataIsLoading.maxDiscount}
                         className="d-block"
                         style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                        {dataIsLoading.maxDiscount ? (
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
+                        ) : (
+                          "UPDATE"
+                        )}
                       </Button>
                     </Stack>
                   </CardBody>
                 </Card>
               </Grid>
               {/* pay credit */}
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card style={{ marginBottom: "0px" }}>
                   <CardBody>
-                    <CardTitle>Lyxa Pay Credit</CardTitle>
+                    <CardTitle>Lyxa VAT</CardTitle>
                     <hr />
-                    <Stack spacing={2}>
+                    <Stack spacing={2} direction="row">
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
                         label="VAT (Amount)"
                         variant="outlined"
-                        placeholder="Enter max discount"
+                        placeholder="Enter VAT Amount"
                         value={0}
                         onChange={(e) => {
                           console.log(e);
                         }}
                         type="number"
-                        name="maxDiscount"
+                        name="vat"
                       />
                       <Button
                         color="success"
                         onClick={() => {
-                          updateSettings(["maxDiscount"]);
+                          updateSettings(["vat"]);
+                          setDataIsLoading((prev) => ({ ...prev, vat: true }));
                         }}
-                        disabled={loading}
+                        disabled={dataIsLoading.vat}
                         className="d-block"
                         style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                        {dataIsLoading.vat ? (
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
+                        ) : (
+                          "UPDATE"
+                        )}
                       </Button>
                     </Stack>
                   </CardBody>
                 </Card>
               </Grid>
               {/* Near shop distance */}
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card style={{ marginBottom: "0px" }}>
                   <CardBody>
                     <CardTitle>Near Shop Distance</CardTitle>
                     <hr />
-                    <Stack spacing={2}>
+                    <Stack spacing={2} direction="row">
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="Near Shop Distance(KM)"
+                        label="Near Shop Distance (KM)"
                         variant="outlined"
                         placeholder="Enter near shop Distance"
                         value={appSettingsOptions?.nearByShopKm ?? 0}
                         onChange={(e) => {
                           dispatch(updateNearByShopKey(e.target.value));
-                          // checkIsUpdates(e);
                         }}
                         type="number"
                         name="nearByShopKm"
@@ -202,24 +195,29 @@ const AppSettings = () => {
                         color="success"
                         onClick={() => {
                           updateSettings(["nearByShopKm"]);
+                          setDataIsLoading((prev) => ({ ...prev, nearByShopKm: true }));
                         }}
-                        disabled={loading}
+                        disabled={dataIsLoading.nearByShopKm}
                         className="d-block"
                         style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                        {dataIsLoading.nearByShopKm ? (
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
+                        ) : (
+                          "UPDATE"
+                        )}
                       </Button>
                     </Stack>
                   </CardBody>
                 </Card>
               </Grid>
               {/* currency */}
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card style={{ marginBottom: "0px" }}>
                   <CardBody>
                     <CardTitle>Currency</CardTitle>
                     <hr />
-                    <Stack spacing={2}>
+                    <Stack spacing={2} direction="row">
                       <FormControl sx={{ width: "100%" }}>
                         <InputLabel>Currency</InputLabel>
                         <Select
@@ -230,7 +228,6 @@ const AppSettings = () => {
                               (currencyObj) => currencyObj.code === e.target.value
                             );
                             dispatch(updateCurrency(currencyObj));
-                            // checkIsUpdates(e);
                           }}
                           input={<OutlinedInput label="Currency" name="currency" />}
                           MenuProps={MenuProps}
@@ -246,34 +243,39 @@ const AppSettings = () => {
                         color="success"
                         onClick={() => {
                           updateSettings(["currency"]);
+                          setDataIsLoading((prev) => ({ ...prev, currency: true }));
                         }}
-                        disabled={loading}
+                        disabled={dataIsLoading.currency}
                         className="d-block"
                         style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                        {dataIsLoading.currency ? (
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
+                        ) : (
+                          "UPDATE"
+                        )}
                       </Button>
                     </Stack>
                   </CardBody>
                 </Card>
               </Grid>
               {/* lyxa pay credit */}
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card style={{ marginBottom: "0px" }}>
                   <CardBody>
                     <CardTitle>Lyxa Pay Limit</CardTitle>
                     <hr />
-                    <Stack spacing={2}>
+                    <Stack spacing={2} direction="row">
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="Lyxa pay limit credit"
+                        label="Lyxa pay limit"
                         variant="outlined"
                         placeholder="Enter drop pay limit credit "
                         value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
                         onChange={(e) => {
                           dispatch(updateDropCreditLimit(e.target.value));
-                          // checkIsUpdates(e);
+                          setDataIsLoading((prev) => ({ ...prev, maxCustomerServiceValue: true }));
                         }}
                         type="number"
                         name="maxCustomerServiceValue"
@@ -282,60 +284,70 @@ const AppSettings = () => {
                         color="success"
                         onClick={() => {
                           updateSettings(["maxCustomerServiceValue"]);
+                          setDataIsLoading((prev) => ({ ...prev, maxCustomerServiceValue: true }));
                         }}
-                        disabled={loading}
+                        disabled={dataIsLoading.maxCustomerServiceValue}
                         className="d-block"
                         style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                        {dataIsLoading.maxCustomerServiceValue ? (
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
+                        ) : (
+                          "UPDATE"
+                        )}
                       </Button>
                     </Stack>
                   </CardBody>
                 </Card>
               </Grid>
               {/* lyxa pay credit */}
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card style={{ marginBottom: "0px" }}>
                   <CardBody>
-                    <CardTitle>Max Butler Item</CardTitle>
+                    <CardTitle>Max Item Price (Butler)</CardTitle>
                     <hr />
-                    <Stack spacing={2}>
+                    <Stack spacing={2} direction="row">
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="Max Butler Item (Amount)"
+                        label="Max Item Price"
                         variant="outlined"
-                        placeholder="Enter max discount"
+                        placeholder="Enter max amount"
                         value={0}
                         onChange={(e) => {
                           // dispatch(updateMaxDiscount(e.target.value));
                           // checkIsUpdates(e);
                         }}
                         type="number"
-                        name="maxDiscount"
+                        name="maxCustomerButlerServiceValue"
                       />
                       <Button
                         color="success"
                         onClick={() => {
-                          updateSettings(["maxDiscount"]);
+                          updateSettings(["maxCustomerButlerServiceValue"]);
+                          setDataIsLoading((prev) => ({ ...prev, maxCustomerButlerServiceValue: true }));
                         }}
-                        disabled={loading}
+                        disabled={dataIsLoading.maxCustomerButlerServiceValue}
                         className="d-block"
                         style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                        {dataIsLoading.maxCustomerButlerServiceValue ? (
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
+                        ) : (
+                          "UPDATE"
+                        )}
                       </Button>
                     </Stack>
                   </CardBody>
                 </Card>
               </Grid>
               {/* Delivery Boy Search Area */}
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card style={{ marginBottom: "0px" }}>
                   <CardBody>
                     <CardTitle>Delivery Boy Search</CardTitle>
                     <hr />
-                    <Stack spacing={2}>
+                    <Stack spacing={2} direction="row" mb={2}>
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
@@ -347,36 +359,40 @@ const AppSettings = () => {
                         onKeyDown={handleKmAdd}
                         onChange={(e) => setAreaChangeKey(e.target.value)}
                         name="searchDeliveryBoyKm"
-                        // className="mb-1"
                       />
-                      {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
-                        <Paper className=" p-3">
-                          {appSettingsOptions?.searchDeliveryBoyKm?.map((item, index) => (
-                            <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          ))}
-                        </Paper>
-                      )}
                       <Button
                         color="success"
                         onClick={() => {
                           updateSettings(["searchDeliveryBoyKm"]);
+                          setDataIsLoading((prev) => ({ ...prev, searchDeliveryBoyKm: true }));
                         }}
-                        disabled={loading}
+                        disabled={dataIsLoading.searchDeliveryBoyKm}
                         className="d-block"
                         style={{ width: "100%", padding: "10px 0" }}
                       >
-                        {loading ? <Spinner animation="border" variant="success" size="sm"></Spinner> : "UPDATE"}
+                        {dataIsLoading.searchDeliveryBoyKm ? (
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
+                        ) : (
+                          "UPDATE"
+                        )}
                       </Button>
                     </Stack>
+                    {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
+                      <Paper className=" p-3">
+                        {appSettingsOptions?.searchDeliveryBoyKm?.map((item, index) => (
+                          <div className="tag__wrapper" key={index}>
+                            {item}
+                            <button
+                              type="button"
+                              className="button"
+                              onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                      </Paper>
+                    )}
                   </CardBody>
                 </Card>
               </Grid>

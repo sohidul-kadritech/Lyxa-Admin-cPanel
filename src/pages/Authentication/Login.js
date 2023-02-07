@@ -111,14 +111,17 @@ const Login = (props) => {
 
     try {
       setIsloading(true);
-      const { data } = await axios({
+      const resp = await axios({
         method: "POST",
         url: FORGET_PASS,
         data: {
           ...forgetPassData,
           type: forgetPassData.type,
         },
-      });
+      }); 
+
+      const {data} = resp;
+      console.log(resp);
 
       if (data) {
         setIsloading(false);
