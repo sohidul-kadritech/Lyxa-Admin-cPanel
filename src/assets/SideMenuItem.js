@@ -27,13 +27,6 @@ export const adminMenuItem = [
         link: "/orders/refused",
         isSubmenu: false,
       },
-      {
-        id: 22,
-        icon: "fas fa-times",
-        name: "Cancel Reason",
-        link: "/orders/cancel-reason",
-        isSubmenu: false,
-      },
     ],
   },
   {
@@ -382,7 +375,14 @@ export const adminMenuItem = [
         isSubmenu: false,
       },
       {
-        id: 154,
+        id: 155,
+        icon: "fas fa-times",
+        name: "Cancel Reason",
+        link: "/admin/cancel-reason",
+        isSubmenu: false,
+      },
+      {
+        id: 156,
         name: "Database Collection",
         icon: "fas fa-exchange-alt",
         link: "/admin/database/collections",
