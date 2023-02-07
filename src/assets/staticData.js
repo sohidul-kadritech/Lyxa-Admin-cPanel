@@ -258,7 +258,7 @@ export const cancelReasonOptions = [
   { label: "Shop", value: "shopCancel" },
   { label: "Admin", value: "admin" },
   { label: "User", value: "userCancel" },
-  { label: "User Refund", value: "userRefund" },
+  { label: "Butler", value: "butler" },
 ];
 
 export const cancelReasonOptions2 = [

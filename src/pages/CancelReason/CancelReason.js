@@ -1,27 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Tooltip } from "@mui/material";
-
-import {
-  cancelReasonOptions,
-  cancelReasonOptions2,
-  statusOptions,
-  statusOptions2,
-} from "../../assets/staticData";
+import { cancelReasonOptions, cancelReasonOptions2, statusOptions, statusOptions2 } from "../../assets/staticData";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import SelectOption from "./../../components/SelectOption";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-  Button,
-  Modal,
-  Form,
-} from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Container, Row, Spinner, Button, Modal, Form } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import {
   addCancelReason,
@@ -34,9 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const CancelReason = () => {
   const dispatch = useDispatch();
-  const { loading, cancelReasons, status, typeKey, activeStatus } = useSelector(
-    (state) => state.settingsReducer
-  );
+  const { loading, cancelReasons, status, typeKey, activeStatus } = useSelector((state) => state.settingsReducer);
 
   const [openModal, setOpenModal] = useState(false);
   const [cancelReason, setCancelReason] = useState({
@@ -130,9 +111,7 @@ const CancelReason = () => {
                         options={statusOptions}
                         classNamePrefix="select2-selection"
                         value={activeStatus}
-                        onChange={(e) =>
-                          dispatch(updateReasonStatusKey(e.target.value))
-                        }
+                        onChange={(e) => dispatch(updateReasonStatusKey(e.target.value))}
                       />
                     </div>
                   </Col>
@@ -143,9 +122,7 @@ const CancelReason = () => {
                         options={cancelReasonOptions2}
                         classNamePrefix="select2-selection"
                         value={typeKey}
-                        onChange={(e) =>
-                          dispatch(updateReasonTypeKey(e.target.value))
-                        }
+                        onChange={(e) => dispatch(updateReasonTypeKey(e.target.value))}
                       />
                     </div>
                   </Col>
@@ -172,10 +149,7 @@ const CancelReason = () => {
                   </Button>
                 </div>
                 <hr />
-                <Table
-                  id="tech-companies-1"
-                  className="table  table-hover text-center"
-                >
+                <Table id="tech-companies-1" className="table  table-hover text-center">
                   <Thead>
                     <Tr>
                       <Th>SL</Th>
@@ -203,17 +177,13 @@ const CancelReason = () => {
                           <Td>
                             <div
                               className={`text-capitalize ${
-                                item?.status === "active"
-                                  ? "active-status"
-                                  : "inactive-status"
+                                item?.status === "active" ? "active-status" : "inactive-status"
                               }`}
                             >
                               {item?.status}
                             </div>
                           </Td>
-                          <Td>
-                            {new Date(item?.createdAt).toLocaleDateString()}
-                          </Td>
+                          <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
                           <Td>
                             <div>
                               <Tooltip title="Update">
@@ -316,12 +286,7 @@ const CancelReason = () => {
               </div>
 
               <div className="d-flex justify-content-center mt-3">
-                <Button
-                  color="primary"
-                  disabled={loading}
-                  type="submit"
-                  className="px-4"
-                >
+                <Button color="primary" disabled={loading} type="submit" className="px-4">
                   {loading ? "Loading..." : id ? "Update" : "Add"}
                 </Button>
               </div>

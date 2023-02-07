@@ -4,41 +4,13 @@ import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import {
-  API_URL,
-  DOWNLOAD_PRODUCT_TEMPLATE,
-  MAP_URL,
-  SINGLE_SHOP,
-  UPLOAD_PRODUCT_FILE,
-} from "../../../network/Api";
+import { API_URL, DOWNLOAD_PRODUCT_TEMPLATE, MAP_URL, SINGLE_SHOP, UPLOAD_PRODUCT_FILE } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Label,
-  Modal,
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Row, Label, Modal } from "reactstrap";
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Switch,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Switch, Typography } from "@mui/material";
 
-import {
-  deleteDealOfShop,
-  setAsFeaturedShop,
-  ShopLiveStatus,
-  updateShopStatus,
-} from "../../../store/Shop/shopAction";
+import { deleteDealOfShop, setAsFeaturedShop, ShopLiveStatus, updateShopStatus } from "../../../store/Shop/shopAction";
 import DealForAdd from "../../../components/DealForAdd";
 
 import Lightbox from "react-image-lightbox";
@@ -81,9 +53,8 @@ const ShopDetails = () => {
   const [isImportProductOpen, setIsImportProductOpen] = useState(false);
   const [productsFile, setProductsFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { account_type, adminType } = useSelector(store => store.Login.admin);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   useEffect(() => {
     if (id) {
@@ -162,10 +133,7 @@ const ShopDetails = () => {
 
   const updateActiveStatus = () => {
     if (shop?.seller?.status === "inactive") {
-      return successMsg(
-        "Seller is inactive. Please contact with your seller.",
-        "error"
-      );
+      return successMsg("Seller is inactive. Please contact with your seller.", "error");
     } else {
       dispatch(
         updateShopStatus({
@@ -177,13 +145,7 @@ const ShopDetails = () => {
   };
 
   const updatePriceRange = (value) => {
-    return value === 1
-      ? "$"
-      : value === 2
-      ? "$$"
-      : value === "3"
-      ? "$$$"
-      : "$$$$";
+    return value === 1 ? "$" : value === 2 ? "$$" : value === "3" ? "$$$" : "$$$$";
   };
 
   // DOWNLOAD PRODUCT TEMPLATE
@@ -201,7 +163,6 @@ const ShopDetails = () => {
   };
 
   // IMPORT PRODUCT FILE
-
   const submitProductFile = async () => {
     if (!productsFile) {
       return successMsg("Upload products file");
@@ -216,7 +177,6 @@ const ShopDetails = () => {
       let formData = new FormData();
       formData.append("shopId", shop?._id);
       formData.append("file", productsFile);
-      
 
       try {
         setIsLoading(true);
@@ -247,12 +207,7 @@ const ShopDetails = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={"Details"}
-              title="Shop"
-              isRefresh={false}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem={"Details"} title="Shop" isRefresh={false} />
 
             {isOpen && (
               <Lightbox
@@ -269,12 +224,7 @@ const ShopDetails = () => {
                 <HeaderWrapper>
                   <h4>Shop</h4>
                   <div className="d-flex flex-wrap  align-items-center">
-                    <Button
-                      outline={true}
-                      color="success"
-                      onClick={downloadProductTemplate}
-                      className="me-3"
-                    >
+                    <Button outline={true} color="success" onClick={downloadProductTemplate} className="me-3">
                       <TemplateButton
                         href={`${API_URL}${DOWNLOAD_PRODUCT_TEMPLATE}?sellerId=${shop?.seller?._id}`}
                         target="_blank"
@@ -286,9 +236,7 @@ const ShopDetails = () => {
                     <Button
                       outline={true}
                       color="success"
-                      onClick={() =>
-                        setIsImportProductOpen(!isImportProductOpen)
-                      }
+                      onClick={() => setIsImportProductOpen(!isImportProductOpen)}
                       className="me-3"
                     >
                       Import Products
@@ -307,25 +255,11 @@ const ShopDetails = () => {
                     </Button>
                     {account_type === "admin" && (
                       <>
-                        <Button
-                          outline={true}
-                          color="success"
-                          onClick={setAsFeatured}
-                          className="me-3"
-                        >
-                          {!shop?.isFeatured
-                            ? "Set as featured"
-                            : "Remove featured"}
+                        <Button outline={true} color="success" onClick={setAsFeatured} className="me-3">
+                          {!shop?.isFeatured ? "Set as featured" : "Remove featured"}
                         </Button>
-                        <Button
-                          outline={true}
-                          color="success"
-                          onClick={updateActiveStatus}
-                          className="me-3"
-                        >
-                          {shop?.shopStatus === "active"
-                            ? "Inactive"
-                            : "Activate"}
+                        <Button outline={true} color="success" onClick={updateActiveStatus} className="me-3">
+                          {shop?.shopStatus === "active" ? "Inactive" : "Activate"}
                         </Button>
                       </>
                     )}
@@ -335,9 +269,7 @@ const ShopDetails = () => {
                         onChange={changeLiveStatus}
                         inputProps={{ "aria-label": "controlled" }}
                       />
-                      <Label className="mt-2">
-                        {liveStatus ? "Online" : "Busy"}
-                      </Label>
+                      <Label className="mt-2">{liveStatus ? "Online" : "Busy"}</Label>
                     </div>
                   </div>
                 </HeaderWrapper>
@@ -346,50 +278,36 @@ const ShopDetails = () => {
                   <Col xl={4}>
                     <InfoTwo
                       Icon={ApartmentOutlinedIcon}
-                      value={`${shop?.seller?.name} (Seller)`}
-                      link={
-                        account_type === "admin"
-                          ? `/seller/details/${shop?.seller?._id}`
-                          : ""
-                      }
+                      value={`${shop?.seller?.name}`}
+                      name="Seller"
+                      link={account_type === "admin" ? `/seller/details/${shop?.seller?._id}` : ""}
                     />
-                    <InfoTwo
-                      Icon={StoreOutlinedIcon}
-                      value={`${shop?.shopName} (Shop Name)`}
-                    />
-                    <InfoTwo
-                      Icon={LocalPhoneOutlinedIcon}
-                      value={shop?.phone_number}
-                    />
+                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopName}`} name="Shop Name" />
+                    <InfoTwo Icon={LocalPhoneOutlinedIcon} value={shop?.phone_number} name="Phone" />
                     <InfoTwo
                       Icon={AlternateEmailOutlinedIcon}
                       value={shop?.email}
+                      name="Email"
                       classes="text-lowercase"
                     />
                     <InfoTwo
                       Icon={RoomOutlinedIcon}
                       value={shop?.address.address}
                       mapLink={`${MAP_URL}?z=10&t=m&q=loc:${shop?.address?.latitude}+${shop?.address?.longitude}`}
+                      name="Location"
                     />
 
                     <InfoTwo
                       value={`Mon to Fri - ${shop?.shopStartTimeText} ${
                         shop?.shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                      } - ${shop?.shopEndTimeText} ${
-                        shop?.shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                      }`}
+                      } - ${shop?.shopEndTimeText} ${shop?.shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"}`}
                       Icon={AccessTimeOutlinedIcon}
+                      name="Available"
                     />
                   </Col>
                   <Col xl={4}>
-                    <InfoTwo
-                      Icon={StoreOutlinedIcon}
-                      value={`${shop?.shopType} (Shop Type)`}
-                    />
-                    <InfoTwo
-                      value={`${shop?.shopStatus} (Status)`}
-                      Icon={AutorenewOutlinedIcon}
-                    />
+                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType}`} name="Shop Type" />
+                    <InfoTwo value={`${shop?.shopStatus}`} Icon={AutorenewOutlinedIcon} name="Status" />
                     <InfoTwo
                       value={`${
                         shop?.rating === 4
@@ -401,79 +319,66 @@ const ShopDetails = () => {
                           : shop?.rating === 1
                           ? "Bad"
                           : ""
-                      } (Rating)`}
+                      }`}
                       Icon={SentimentSatisfiedOutlinedIcon}
+                      name="Rating"
                     />
                     <InfoTwo
                       Icon={ProductionQuantityLimitsOutlinedIcon}
-                      value={`${shop?.totalOrder} (Total Orders)`}
+                      value={`${shop?.totalOrder}`}
+                      name="Total Orders"
                     />
                     <InfoTwo
                       Icon={FeaturedPlayListOutlinedIcon}
-                      value={`${shop?.isFeatured ? "Yes" : "No"} (Featured)`}
+                      value={`${shop?.isFeatured ? "Yes" : "No"}`}
+                      name="Featured"
                     />
                     <InfoTwo
                       Icon={WorkHistoryOutlinedIcon}
-                      value={`${shop?.minOrderAmount} ${currency} (Minimum Order)`}
+                      value={`${shop?.minOrderAmount} ${currency}`}
+                      name="Minimum Order"
                     />
                   </Col>
                   <Col xl={4}>
                     {shop?.foodType && (
-                      <InfoTwo
-                        Icon={FoodBankOutlinedIcon}
-                        value={`${shop?.foodType} (Food Type)`}
-                      />
+                      <InfoTwo Icon={FoodBankOutlinedIcon} value={`${shop?.foodType}`} name="Food Type" />
                     )}
-
                     {shop?.haveOwnDeliveryBoy && (
-                      <InfoTwo
-                        Icon={PaymentIcon}
-                        value={`${shop?.deliveryFee ?? 0} ${currency} (Delivery Fee)`}
-                      />
+                      <InfoTwo Icon={PaymentIcon} value={`${shop?.deliveryFee ?? 0} ${currency}`} name="Delivery Fee" />
                     )}
-
                     <InfoTwo
                       Icon={DeliveryDiningOutlinedIcon}
-                      value={`${
-                        shop?.freeDelivery ? "Yes" : "No"
-                      } (Free Delivery)`}
+                      value={`${shop?.freeDelivery ? "Yes" : "No"}`}
+                      name="Free Delivery"
                     />
 
                     <InfoTwo
                       Icon={PaidOutlinedIcon}
-                      value={`${updatePriceRange(
-                        shop?.expensive
-                      )} (Price Range)`}
+                      value={`${updatePriceRange(shop?.expensive)}`}
+                      name="Price Range"
                     />
 
                     {shop?.tags?.length > 0 && (
                       <InfoTwo
                         Icon={TagOutlinedIcon}
-                        value={`${shop?.tags
-                          ?.map((item) => item)
-                          .join(", ")}. (Tags)`}
+                        value={`${shop?.tags?.map((item) => item).join(", ")}`}
+                        name="Tags"
                       />
                     )}
                     {shop?.cuisineType?.length > 0 && (
                       <InfoTwo
                         Icon={FastfoodOutlinedIcon}
-                        value={`${shop?.cuisineType
-                          ?.map((item) => item.name)
-                          .join(", ")}. (Cuisines)`}
+                        value={`${shop?.cuisineType?.map((item) => item.name).join(", ")}`}
+                        name="Cuisines"
                       />
                     )}
-                    <InfoTwo
-                      Icon={AccountBalanceOutlinedIcon}
-                      value={`${shop?.bank_name} (Bank Name)`}
-                    />
+                    <InfoTwo Icon={AccountBalanceOutlinedIcon} value={`${shop?.bank_name}`} name="Bank Name" />
                     <InfoTwo
                       Icon={AccountBalanceWalletOutlinedIcon}
-                      value={`${shop?.account_name} (Bank Account Name)`}
+                      value={`${shop?.account_name}`}
+                      name="Bank Account Name"
                     />
-                    <InfoTwo
-                      Icon={SavingsOutlinedIcon}
-                      value={`${shop?.account_number} (Bank Account No)`}
-                    />
+                    <InfoTwo Icon={SavingsOutlinedIcon} value={`${shop?.account_number}`} name="Bank Account No" />
                   </Col>
                 </Row>
               </CardBody>
@@ -494,18 +399,12 @@ const ShopDetails = () => {
             <Row className="mb-5">
               <Col xl={6}>
                 <Accordion>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                     <Typography>Shop Photos</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Typography>
-                      {shop?.shopBanner ||
-                      shop?.shopPhotos ||
-                      shop?.shopLogo ? (
+                      {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
                         <Row>
                           <Col md={6}>
                             <ImageWrapper
@@ -624,8 +523,7 @@ const ShopDetails = () => {
                                   <span>{deal?.type}-</span>
                                   <span className="ms-1">
                                     {deal?.option}
-                                    {deal?.percentage &&
-                                      `(${deal?.percentage}%)`}
+                                    {deal?.percentage && `(${deal?.percentage}%)`}
                                   </span>
                                 </li>
                               </ul>
@@ -704,12 +602,7 @@ const ShopDetails = () => {
                 accept=".xlsx,.xls"
               />
             </div>
-            <Button
-              onClick={submitProductFile}
-              className="mt-3 px-4"
-              color="success"
-              disabled={isLoading}
-            >
+            <Button onClick={submitProductFile} className="mt-3 px-4" color="success" disabled={isLoading}>
               {isLoading ? "Importing..." : "Import"}
             </Button>
           </div>
