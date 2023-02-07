@@ -13,7 +13,7 @@ const AdminLogHistory = () => {
             <Breadcrumb
               maintitle="Lyxa"
               breadcrumbItem="Admin Log History"
-              title="App Wallet"
+
               // loading={loading}
               // callList={callTransList}
             />

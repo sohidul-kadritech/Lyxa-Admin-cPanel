@@ -17,7 +17,6 @@ const DefaultChat = () => {
             <Breadcrumb
               maintitle="Lyxa"
               breadcrumbItem="Default Chat Message"
-              title="Admin"
               // loading={loading}
               // callList={callList}
               isRefresh={false}
