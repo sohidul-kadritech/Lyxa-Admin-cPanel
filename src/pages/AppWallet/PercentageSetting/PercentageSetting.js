@@ -1,9 +1,6 @@
-import { Autocomplete, Box, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import { Grid, Paper, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
-
-import { toast } from "react-toastify";
 import { Button, Card, CardBody, Col, Container, Row, Form, Modal, CardTitle, Spinner } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import DropCharge from "../../../components/DropCharge";
@@ -22,17 +19,11 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 const PercentageSetting = () => {
   const dispatch = useDispatch();
-  const { search } = useLocation();
-
-  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
-  const { loading, dropCharge, status, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } =
-    useSelector((state) => state.settingsReducer);
-
+  const { loading, dropCharge, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
+    (state) => state.settingsReducer
+  );
   const [deliveryCut, setDeliveryCut] = useState([]);
-  const [isOpenSuggestion, setIsOpenSuggestion] = useState(false);
-
   const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
     from: 0,
     to: 0,
@@ -41,20 +32,12 @@ const PercentageSetting = () => {
   });
 
   const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
   const [sellerId, setSellerId] = useState("");
 
   useEffect(() => {
     dispatch(getPercentageSetting());
+    dispatch(getSellerSpecialDropCharge());
   }, []);
-
-  useEffect(() => {
-    if (isOpenSuggestion) {
-      dispatch(getSellerSpecialDropCharge());
-    }
-  }, [isOpenSuggestion]);
 
   useEffect(() => {
     if (dropCharge) {
@@ -62,8 +45,7 @@ const PercentageSetting = () => {
     }
   }, [dropCharge]);
 
-  //  CHANGE RANGE WISE CHARGE EVENT
-
+  // CHANGE RANGE WISE CHARGE EVENT
   const changeRangeWiseCharge = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -74,7 +56,6 @@ const PercentageSetting = () => {
   };
 
   // SUBMIT CHARGE RANGE WISE
-
   const submitChargeRangeWise = (e) => {
     e.preventDefault();
 
@@ -87,9 +68,6 @@ const PercentageSetting = () => {
     if (!rangeWiseDeliveryCharge.charge) {
       return successMsg("Enter Charge", "error");
     }
-    // if (!rangeWiseDeliveryCharge.deliveryPersonCut) {
-    //   return successMsg("Enter Delivery Person Charge", "error");
-    // }
 
     if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
       return successMsg("From Range should be less than To Range", "error");
@@ -98,7 +76,6 @@ const PercentageSetting = () => {
     if (rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut) {
       return successMsg("Delivery person cut can't be getter than charge", "error");
     }
-
     const isExistCharge = deliveryCut?.filter((item) => {
       if (rangeWiseDeliveryCharge.from >= item.from && rangeWiseDeliveryCharge.from <= item?.to) {
         return item;
@@ -114,7 +91,6 @@ const PercentageSetting = () => {
     }
 
     setDeliveryCut([...deliveryCut, rangeWiseDeliveryCharge]);
-
     setRangeWiseDeliveryCharge({
       from: 0,
       to: 0,
@@ -124,7 +100,6 @@ const PercentageSetting = () => {
   };
 
   // DELETE DELIVERY CHARGE
-
   const deleteDeliveryCharge = (index) => {
     let newDeliveryCharge = [...deliveryCut];
     newDeliveryCharge.splice(index, 1);
@@ -132,17 +107,9 @@ const PercentageSetting = () => {
   };
 
   // UPDATE DELIVERY CUT
-
   const submitDeliveryCut = () => {
     dispatch(updateDeliveryCut(deliveryCut));
   };
-
-  useEffect(() => {
-    if (status) {
-      // setModalOpen(false);
-    }
-  }, [status]);
-
   const deleteSellerDropCharge = () => {
     dispatch(deleteSellerSpecialDropCharge(sellerId));
   };
@@ -157,26 +124,115 @@ const PercentageSetting = () => {
               title="App Wallet"
               breadcrumbItem={"Percentage Setting"}
               loading={loading}
-              // callList={callDeliveryFee}
               isRefresh={false}
             />
-
-            <Card>
-              <CardBody>
-                <div className="d-flex justify-content-between align-items-center">
-                  <CardTitle>Global Lyxa Charge</CardTitle>
-                  <Button outline={true} color="success" onClick={() => setIsOpenSuggestion(!isOpenSuggestion)}>
-                    See Sellers Special Charge
-                  </Button>
-                </div>
-                <hr />
-                <DropCharge
-                  chargeType={dropCharge?.dropPercentageType}
-                  chargeValue={dropCharge?.dropPercentage}
-                  type="global"
-                />
-              </CardBody>
-            </Card>
+            <Grid container spacing={3} mb={3}>
+              <Grid item md={6}>
+                <Card className="mb-0">
+                  <CardBody>
+                    <CardTitle>Global Lyxa Charge</CardTitle>
+                    <hr />
+                    <DropCharge
+                      chargeType={dropCharge?.dropPercentageType}
+                      chargeValue={dropCharge?.dropPercentage}
+                      type="global"
+                    />
+                  </CardBody>
+                </Card>
+              </Grid>
+              <Grid item md={6}>
+                <Card className="mb-0">
+                  <CardBody>
+                    <CardTitle>Sellers Special Charge List</CardTitle>
+                    <hr />
+                    <Table
+                      id="tech-companies-1"
+                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                    >
+                      <Thead>
+                        <Tr>
+                          <Th>Seller</Th>
+                          <Th>Charge Type</Th>
+                          <Th>Charge</Th>
+                          <Th>Action</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody style={{ position: "relative" }}>
+                        {sellersDropCharge.map((seller, index) => {
+                          return (
+                            <Tr
+                              key={index}
+                              className="align-middle"
+                              style={{
+                                fontSize: "15px",
+                                fontWeight: "500",
+                              }}
+                            >
+                              <Th>
+                                <div style={{ maxWidth: "120px" }}>
+                                  <span>{seller?.company_name}</span>
+                                </div>
+                              </Th>
+                              <Td>{seller?.dropPercentageType}</Td>
+                              <Td>{seller?.dropPercentage}</Td>
+                              <Td>
+                                <Tooltip title="Delete">
+                                  <button
+                                    className="btn btn-danger button"
+                                    onClick={() => {
+                                      setconfirm_alert(true);
+                                      setSellerId(seller?._id);
+                                    }}
+                                  >
+                                    <i className="fa fa-trash" />
+                                  </button>
+                                </Tooltip>
+                                {confirm_alert ? (
+                                  <SweetAlert
+                                    title="Are you sure?"
+                                    warning
+                                    showCancel
+                                    confirmButtonText="Yes, delete it!"
+                                    confirmBtnBsStyle="success"
+                                    cancelBtnBsStyle="danger"
+                                    onConfirm={() => {
+                                      deleteSellerDropCharge();
+                                      setconfirm_alert(false);
+                                    }}
+                                    onCancel={() => setconfirm_alert(false)}
+                                  >
+                                    {`You want to delete ${seller?.company_name} Lyxa charge.`}
+                                  </SweetAlert>
+                                ) : null}
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                      </Tbody>
+                    </Table>
+                    {loading && (
+                      <div className="text-center">
+                        <Spinner animation="border" variant="info" />
+                      </div>
+                    )}
+                    {!loading && sellersDropCharge.length < 1 && (
+                      <div className="text-center">
+                        <h4>No Data</h4>
+                      </div>
+                    )}
+                    <div className="d-flex justify-content-center">
+                      <AppPagination
+                        paging={paging}
+                        hasNextPage={hasNextPage}
+                        hasPreviousPage={hasPreviousPage}
+                        currentPage={currentPage}
+                        lisener={(page) => dispatch(getSellerSpecialDropCharge(page))}
+                      />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Grid>
+            </Grid>
             <Grid container spacing={3}>
               <Grid item md={6}>
                 <Card>
@@ -188,7 +244,7 @@ const PercentageSetting = () => {
                         <Col sm={6}>
                           <TextField
                             id="variant name"
-                            label="Range From(km)"
+                            label="Range From (km)"
                             name="from"
                             variant="outlined"
                             style={{ width: "100%" }}
@@ -202,7 +258,7 @@ const PercentageSetting = () => {
                         <Col sm={6} className="mt-3 mt-sm-0 d-flex">
                           <TextField
                             name="to"
-                            label="Range To(km)"
+                            label="Range To (km)"
                             variant="outlined"
                             style={{ width: "100%" }}
                             autoComplete="off"
@@ -243,13 +299,18 @@ const PercentageSetting = () => {
                         </Col>
                       </Row>
                       <div>
-                        <Button style={{ maxWidth: "200px", width: "100%" }} color="primary" type="submit" className="mt-2">
+                        <Button
+                          style={{ maxWidth: "200px", width: "100%" }}
+                          color="primary"
+                          type="submit"
+                          className="mt-2"
+                        >
                           Add Item
                         </Button>
                       </div>
                     </Form>
                     <Row className="mt-4">
-                      <Col lg={6}>
+                      <Col lg={12}>
                         <div>
                           {deliveryCut?.length > 0 && (
                             <div className="mb-4">
@@ -316,7 +377,7 @@ const PercentageSetting = () => {
                         <Col sm={6}>
                           <TextField
                             id="variant name"
-                            label="Range From(km)"
+                            label="Range From (km)"
                             name="from"
                             variant="outlined"
                             style={{ width: "100%" }}
@@ -330,7 +391,7 @@ const PercentageSetting = () => {
                         <Col sm={6} className="mt-3 mt-sm-0 d-flex">
                           <TextField
                             name="to"
-                            label="Range To(km)"
+                            label="Range To (km)"
                             variant="outlined"
                             style={{ width: "100%" }}
                             autoComplete="off"
@@ -371,13 +432,19 @@ const PercentageSetting = () => {
                         </Col>
                       </Row>
                       <div>
-                        <Button color="primary" style={{ maxWidth: "200px", width: "100%" }} size="md" type="submit" className="mt-2">
+                        <Button
+                          color="primary"
+                          style={{ maxWidth: "200px", width: "100%" }}
+                          size="md"
+                          type="submit"
+                          className="mt-2"
+                        >
                           Add Item
                         </Button>
                       </div>
                     </Form>
                     <Row className="mt-4">
-                      <Col lg={6}>
+                      <Col lg={12}>
                         <div>
                           {deliveryCut?.length > 0 && (
                             <div className="mb-4">
@@ -437,135 +504,6 @@ const PercentageSetting = () => {
             </Grid>
           </Container>
         </div>
-
-        <Modal
-          isOpen={isOpenSuggestion}
-          toggle={() => {
-            setIsOpenSuggestion(!isOpenSuggestion);
-          }}
-          centered={true}
-        >
-          {success_dlg ? (
-            <SweetAlert
-              success
-              title={dynamic_title}
-              onConfirm={() => {
-                setsuccess_dlg(false);
-              }}
-            >
-              {dynamic_description}
-            </SweetAlert>
-          ) : null}
-
-          <div className="modal-header">
-            <h5 className="modal-title mt-0">Sellers Special Charge List</h5>
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpenSuggestion(false);
-              }}
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-
-          <div className="modal-body">
-            <Table
-              id="tech-companies-1"
-              className="table table__wrapper table-striped table-bordered table-hover text-center"
-            >
-              <Thead>
-                <Tr>
-                  <Th>Seller</Th>
-                  <Th>Charge Type</Th>
-                  <Th>Charge</Th>
-                  <Th>Action</Th>
-                </Tr>
-              </Thead>
-              <Tbody style={{ position: "relative" }}>
-                {sellersDropCharge.map((seller, index) => {
-                  return (
-                    <Tr
-                      key={index}
-                      className="align-middle"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "500",
-                      }}
-                    >
-                      <Th>
-                        <div style={{ maxWidth: "120px" }}>
-                          <span>{seller?.company_name}</span>
-                        </div>
-                      </Th>
-                      <Td>{seller?.dropPercentageType}</Td>
-                      <Td>{seller?.dropPercentage}</Td>
-                      <Td>
-                        <Tooltip title="Delete">
-                          <button
-                            className="btn btn-danger button"
-                            onClick={() => {
-                              setconfirm_alert(true);
-                              setSellerId(seller?._id);
-                            }}
-                          >
-                            <i className="fa fa-trash" />
-                          </button>
-                        </Tooltip>
-                        {confirm_alert ? (
-                          <SweetAlert
-                            title="Are you sure?"
-                            warning
-                            showCancel
-                            confirmButtonText="Yes, delete it!"
-                            confirmBtnBsStyle="success"
-                            cancelBtnBsStyle="danger"
-                            onConfirm={() => {
-                              deleteSellerDropCharge();
-                              setconfirm_alert(false);
-                              setsuccess_dlg(true);
-                              setdynamic_title("Deleted");
-                              setdynamic_description("Charge has been deleted.");
-                            }}
-                            onCancel={() => setconfirm_alert(false)}
-                          >
-                            {`You want to delete ${seller?.company_name} Lyxa charge.`}
-                          </SweetAlert>
-                        ) : null}
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-            {loading && (
-              <div className="text-center">
-                <Spinner animation="border" variant="info" />
-              </div>
-            )}
-            {!loading && sellersDropCharge.length < 1 && (
-              <div className="text-center">
-                <h4>No Data</h4>
-              </div>
-            )}
-            <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(getSellerSpecialDropCharge(page))}
-                  />
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </Modal>
       </GlobalWrapper>
     </React.Fragment>
   );
