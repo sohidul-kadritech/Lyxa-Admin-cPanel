@@ -333,6 +333,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         ...orderCancel,
         cancelReason: "",
         otherReason: "",
+        orderActivity: item?.orderActivity,
         paymentMethod: item?.paymentMethod,
         orderId: item?._id,
         refundType: "none",
@@ -355,7 +356,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
     } else {
     }
   };
-
+  console.log(orderCancel);
   const currency = useSelector(
     (store) => store.settingsReducer.appSettingsOptions.currency.code
   ).toUpperCase();
@@ -806,6 +807,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 />
               </div>
             )}
+
             <FormControl className="py-3">
               <RadioGroup
                 row
@@ -817,17 +819,18 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
               >
                 {orderCancel?.paymentMethod !== "cash" && (
                   <>
-                    {" "}
                     <FormControlLabel
                       value="full"
                       control={<Radio />}
                       label="Full Refund"
                     />
-                    <FormControlLabel
-                      value="partial"
-                      control={<Radio />}
-                      label="Partial Refund"
-                    />
+                    {orderCancel?.orderActivity?.length > 2 && (
+                      <FormControlLabel
+                        value="partial"
+                        control={<Radio />}
+                        label="Partial Refund"
+                      />
+                    )}
                   </>
                 )}
                 <FormControlLabel
