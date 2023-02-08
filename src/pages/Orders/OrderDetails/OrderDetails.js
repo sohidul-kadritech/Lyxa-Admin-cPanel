@@ -1,15 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Input,
-  Row,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Timeline from "@mui/lab/Timeline";
@@ -23,13 +13,7 @@ import styled from "styled-components";
 import SimpleBar from "simplebar-react";
 import { useHistory, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Tooltip, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
@@ -57,27 +41,15 @@ const OrderInfo = ({ items = [] }) => {
         {items?.map((item, index) => (
           <Col xl={4} key={index} className={`info cursor-pointer`}>
             <span className="title">{item?.title}</span>
-            <div
-              className={`${
-                item?.valueTwo
-                  ? "d-flex justify-content-center  align-items-center"
-                  : ""
-              }`}
-            >
+            <div className={`${item?.valueTwo ? "d-flex justify-content-center  align-items-center" : ""}`}>
               <h6
-                className={`info-value text-capitalize ${
-                  item?.link ? "link" : ""
-                }`}
+                className={`info-value text-capitalize ${item?.link ? "link" : ""}`}
                 onClick={item?.link ? () => history.push(item?.link) : null}
               >
                 {item?.value}
               </h6>
               {item?.valueTwo ? (
-                <h6
-                  className={`info-value-two text-capitalize font-size-13  ${item?.class}`}
-                >
-                  {item?.valueTwo}
-                </h6>
+                <h6 className={`info-value-two text-capitalize font-size-13  ${item?.class}`}>{item?.valueTwo}</h6>
               ) : null}
             </div>
           </Col>
@@ -88,16 +60,12 @@ const OrderInfo = ({ items = [] }) => {
 };
 
 const SummaryInfo = ({ title, value }) => {
-  const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency.code
-  ).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   return (
     <div className="item">
       <span>{title}</span>
-      <span className="summary-value">{`${value}  ${
-        isNaN(value) ? `` : currency
-      }`}</span>
+      <span className="summary-value">{`${value}  ${isNaN(value) ? `` : currency}`}</span>
     </div>
   );
 };
@@ -107,19 +75,12 @@ const Riders = ({ list = [], heading }) => {
   return (
     <>
       <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
           <Typography>{heading}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <Table
-              id="tech-companies-1"
-              className="table table__wrapper table-hover cursor-pointer"
-            >
+            <Table id="tech-companies-1" className="table table__wrapper table-hover cursor-pointer">
               <Thead>
                 <Tr style={{ color: "black" }}>
                   <Th>SL.</Th>
@@ -138,17 +99,13 @@ const Riders = ({ list = [], heading }) => {
                             fontWeight: "500",
                             color: "black",
                           }}
-                          onClick={() =>
-                            history.push(`/deliveryman/details/${rider._id}`)
-                          }
+                          onClick={() => history.push(`/deliveryman/details/${rider._id}`)}
                           key={index}
                           title="Click to see details"
                         >
                           <Th
                             style={{
-                              color: `#${Math.floor(
-                                Math.random() * 16777215
-                              ).toString(16)}`,
+                              color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                             }}
                           >
                             #{index + 1}
@@ -181,26 +138,32 @@ const OrderDetails = () => {
   const { id } = useParams();
   const { orders, status } = useSelector((state) => state.orderReducer);
   const history = useHistory();
-  // const pdfRef = useRef(null);
   const [order, setOrder] = useState(null);
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
-  const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency.code
-  ).toUpperCase();
+  const [orderTimeline, setOrderTimeline] = useState([]);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+
+  const getProperOrderTimeline = (orderObj) => {
+    if (orderObj?.shop?.haveOwnDeliveryBoy) {
+      const timeline = orderObj?.timeline?.filter((item) => item.status !== "ready_to_pickup");
+      return timeline;
+    }
+    return orderObj?.timeline;
+  };
 
   useEffect(() => {
     if (id) {
       const findOrder = orders.find((order) => order._id == id);
       if (findOrder) {
         setOrder(findOrder);
-        console.log({findOrder})
+        setOrderTimeline(getProperOrderTimeline(findOrder));
       } else {
         (async function getOrder() {
           const data = await callApi(id, SINGLE_ORDER, "order");
           if (data) {
             setOrder(data);
-            console.log({data});
+            setOrderTimeline(getProperOrderTimeline(data));
           } else {
             history.push("/orders/list", { replace: true });
           }
@@ -250,24 +213,11 @@ const OrderDetails = () => {
     const shopName = `Shop Name : ${order?.shop?.shopName}. `;
     const price = `Price : ${order?.summary?.totalAmount} ${currency}.`;
     const address = `Address : ${order?.dropOffLocation?.address}.`;
-    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${
-      order?.selectPos !== "no" ? "(Pos)" : ""
-    }`;
+    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${order?.selectPos !== "no" ? "(Pos)" : ""}`;
 
-    const orderTime = `Order Time : ${new Date(
-      order?.createdAt
-    ).toLocaleString()}`;
+    const orderTime = `Order Time : ${new Date(order?.createdAt).toLocaleString()}`;
 
-    const headers = [
-      [
-        "Product",
-        "Attribute",
-        "Type",
-        "Quantity",
-        `Discount(${currency})`,
-        `Total Price(${currency})`,
-      ],
-    ];
+    const headers = [["Product", "Attribute", "Type", "Quantity", `Discount(${currency})`, `Total Price(${currency})`]];
     const marginLeft = 40;
 
     const productData = order?.productsDetails.map((item) => [
@@ -354,27 +304,15 @@ const OrderDetails = () => {
                           className="rounded-circle avatar-lg cursor-pointer me-1"
                           alt="Seller"
                           loading="lazy"
-                          src={
-                            order?.seller?.profile_photo
-                              ? order?.seller?.profile_photo
-                              : noPhoto
-                          }
+                          src={order?.seller?.profile_photo ? order?.seller?.profile_photo : noPhoto}
                           style={{
                             border: "1px solid lightgray",
                             objectFit: "cover",
                           }}
-                          onClick={() =>
-                            history.push(
-                              `/seller/details/${order?.seller?._id}`
-                            )
-                          }
+                          onClick={() => history.push(`/seller/details/${order?.seller?._id}`)}
                         />
                         <h6
-                          onClick={() =>
-                            history.push(
-                              `/seller/details/${order?.seller?._id}`
-                            )
-                          }
+                          onClick={() => history.push(`/seller/details/${order?.seller?._id}`)}
                           className="cursor-pointer link"
                         >
                           {order?.seller?.company_name}
@@ -385,23 +323,15 @@ const OrderDetails = () => {
                           className="rounded-circle avatar-lg cursor-pointer me-1"
                           alt="User"
                           loading="lazy"
-                          src={
-                            order?.user?.profile_photo
-                              ? order?.user?.profile_photo
-                              : noPhoto
-                          }
+                          src={order?.user?.profile_photo ? order?.user?.profile_photo : noPhoto}
                           style={{
                             border: "1px solid lightgray",
                             objectFit: "cover",
                           }}
-                          onClick={() =>
-                            history.push(`/users/details/${order?.user?._id}`)
-                          }
+                          onClick={() => history.push(`/users/details/${order?.user?._id}`)}
                         />
                         <h6
-                          onClick={() =>
-                            history.push(`/users/details/${order?.user?._id}`)
-                          }
+                          onClick={() => history.push(`/users/details/${order?.user?._id}`)}
                           className="cursor-pointer link"
                         >
                           {order?.user?.name}
@@ -414,10 +344,7 @@ const OrderDetails = () => {
                         items={[
                           {
                             title: "Order Time",
-                            value: new Date(order?.createdAt).toLocaleString(
-                              "en-US",
-                              { hour12: false }
-                            ),
+                            value: new Date(order?.createdAt).toLocaleString("en-US", { hour12: false }),
                           },
                           {
                             title: "Payment Method",
@@ -458,20 +385,14 @@ const OrderDetails = () => {
                         items={[
                           {
                             title: "Delivery Boy",
-                            value: order?.deliveryBoy
-                              ? order?.deliveryBoy?.name
-                              : "Not Assigned",
-                            link: order?.deliveryBoy
-                              ? `/deliveryman/details/${order?.deliveryBoy?._id}`
-                              : null,
+                            value: order?.deliveryBoy ? order?.deliveryBoy?.name : order?.shop?.haveOwnDeliveryBoy ? 'Self Delivered' : 'Not Assigned',
+                            link: order?.deliveryBoy ? `/deliveryman/details/${order?.deliveryBoy?._id}` : null,
                           },
                           {
                             title: "Delivered Time",
                             value: `${
                               order?.orderStatus === "delivered"
-                                ? new Date(
-                                    order?.timeline.at(-1)?.createdAt
-                                  ).toLocaleString("en-US", { hour12: false })
+                                ? new Date(order?.timeline.at(-1)?.createdAt).toLocaleString("en-US", { hour12: false })
                                 : "No Time"
                             }`,
                           },
@@ -485,28 +406,16 @@ const OrderDetails = () => {
                   </Col>
 
                   <Col xl={6}>
-                    <div
-                      className="d-flex justify-content-between align-items-center"
-                      style={{ height: "37px" }}
-                    >
+                    <div className="d-flex justify-content-between align-items-center" style={{ height: "37px" }}>
                       <h5 className="text-dark">Delivery Address</h5>
-                      <Button
-                        outline={true}
-                        color="success"
-                        onClick={() => downloadPdf()}
-                      >
+                      <Button outline={true} color="success" onClick={() => downloadPdf()}>
                         Download PDF
                       </Button>
                     </div>
                     <hr />
-                    <div
-                      className="d-flex align-items-center"
-                      style={{ padding: "2px 0px" }}
-                    >
+                    <div className="d-flex align-items-center" style={{ padding: "2px 0px" }}>
                       <RoomOutlinedIcon className="text-danger" />
-                      <h6 className="text-dark font-size-14">
-                        {order?.dropOffLocation?.address}
-                      </h6>
+                      <h6 className="text-dark font-size-14">{order?.dropOffLocation?.address}</h6>
                     </div>
                     <hr />
 
@@ -514,26 +423,13 @@ const OrderDetails = () => {
                       Summary
                     </h5>
                     <Summery>
-                      <SummaryInfo
-                        title="Products Amount"
-                        value={order?.summary?.productAmount}
-                      />
-                      <SummaryInfo
-                        title="Delivery Charge"
-                        value={order?.summary?.deliveryFee}
-                      />
+                      <SummaryInfo title="Products Amount" value={order?.summary?.productAmount} />
+                      <SummaryInfo title="Delivery Charge" value={order?.summary?.deliveryFee} />
                       <SummaryInfo
                         title="Discount"
-                        value={
-                          order?.summary?.deliveryFee === 0
-                            ? "Free Delivery"
-                            : order?.products[0]?.totalDiscount
-                        }
+                        value={order?.summary?.deliveryFee === 0 ? "Free Delivery" : order?.products[0]?.totalDiscount}
                       />
-                      <SummaryInfo
-                        title="Total Amount"
-                        value={order?.summary?.totalAmount}
-                      />
+                      <SummaryInfo title="Total Amount" value={order?.summary?.totalAmount} />
                     </Summery>
 
                     <Summery
@@ -562,9 +458,7 @@ const OrderDetails = () => {
 
                         <span
                           className={`px-2 ${
-                            ["cancelled", "refused"].includes(
-                              order?.orderStatus
-                            )
+                            ["cancelled", "refused"].includes(order?.orderStatus)
                               ? "inactive-status"
                               : order?.orderStatus === "delivered"
                               ? "active-status"
@@ -577,13 +471,9 @@ const OrderDetails = () => {
                       <hr style={{ margin: "6px 0px" }} />
 
                       <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="text-dark font-size-14">
-                          Delivery Time
-                        </h6>
+                        <h6 className="text-dark font-size-14">Delivery Time</h6>
                         <span className="">
-                          {order?.deliveredMinutes === 0
-                            ? "Not Delivered."
-                            : `${order?.deliveredMinutes} Min`}
+                          {order?.deliveredMinutes === 0 ? "Not Delivered." : `${order?.deliveredMinutes} Min`}
                         </span>
                       </div>
                     </Summery>
@@ -594,26 +484,11 @@ const OrderDetails = () => {
                   Order Amount Details
                 </h5>
                 <Summery>
-                  <SummaryInfo
-                    title="Shop Profit"
-                    value={order?.sellerEarnings}
-                  />
-                  <SummaryInfo
-                    title="Rider Profit"
-                    value={order?.deliveryBoyFee}
-                  />
-                  <SummaryInfo
-                    title="Lyxa Delivery Profit"
-                    value={order?.dropCharge?.dropChargeFromDelivery}
-                  />
-                  <SummaryInfo
-                    title="Lyxa Order Profit"
-                    value={order?.dropCharge?.dropChargeFromOrder}
-                  />
-                  <SummaryInfo
-                    title="Total Lyxa Profit"
-                    value={order?.dropCharge?.totalDropAmount}
-                  />
+                  <SummaryInfo title="Shop Profit" value={order?.sellerEarnings} />
+                  <SummaryInfo title="Rider Profit" value={order?.deliveryBoyFee} />
+                  <SummaryInfo title="Lyxa Delivery Profit" value={order?.dropCharge?.dropChargeFromDelivery} />
+                  <SummaryInfo title="Lyxa Order Profit" value={order?.dropCharge?.dropChargeFromOrder} />
+                  <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge?.totalDropAmount} />
                 </Summery>
               </CardBody>
             </Card>
@@ -626,42 +501,32 @@ const OrderDetails = () => {
                     <CardTitle>Order Timeline</CardTitle>
                     <hr />
                     <Timeline>
-                      {order?.timeline?.map((item, index) => (
-                        <TimelineItem key={index}>
-                          <TimelineOppositeContent color="text.secondary">
-                            {item.active && (
-                              <Box>
-                                <Typography>
-                                  {new Date(item?.createdAt).toLocaleString()}
-                                </Typography>
-                                <Typography>{item?.note}</Typography>
-                              </Box>
-                            )}
-                          </TimelineOppositeContent>
-                          <TimelineSeparator>
-                            <TimelineDot
-                              color={item?.active ? "success" : "grey"}
-                              className="m-0"
-                            />
-                            <TimelineConnector
-                              style={{
-                                backgroundColor: item?.active
-                                  ? "#2e7d32"
-                                  : "grey",
-                                display:
-                                  index === order?.timeline.length - 1 &&
-                                  "none",
-                              }}
-                            />
-                          </TimelineSeparator>
-                          <TimelineContent
-                            color={item?.active ? "green" : "black"}
-                            className="text-capitalize"
-                          >
-                            {item?.status.split("_").join(" ")}
-                          </TimelineContent>
-                        </TimelineItem>
-                      ))}
+                      {orderTimeline.map((item, index) => {
+                        return (
+                          <TimelineItem key={index}>
+                            <TimelineOppositeContent color="text.secondary">
+                              {item.active && (
+                                <Box>
+                                  <Typography>{new Date(item?.createdAt).toLocaleString()}</Typography>
+                                  <Typography>{item?.note}</Typography>
+                                </Box>
+                              )}
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                              <TimelineDot color={item?.active ? "success" : "grey"} className="m-0" />
+                              <TimelineConnector
+                                style={{
+                                  backgroundColor: item?.active ? "#2e7d32" : "grey",
+                                  display: index === orderTimeline.length - 1 && "none",
+                                }}
+                              />
+                            </TimelineSeparator>
+                            <TimelineContent color={item?.active ? "green" : "black"} className="text-capitalize">
+                              {item?.status.split("_").join(" ")}
+                            </TimelineContent>
+                          </TimelineItem>
+                        );
+                      })}
                     </Timeline>
                   </CardBody>
                 </Card>
@@ -669,10 +534,7 @@ const OrderDetails = () => {
 
               <Col lg={6} className="card-height">
                 {order?.pickUpLocation && order?.dropOffLocation && (
-                  <OrderTrackingMap
-                    pickup={order?.pickUpLocation}
-                    dropoff={order?.dropOffLocation}
-                  />
+                  <OrderTrackingMap pickup={order?.pickUpLocation} dropoff={order?.dropOffLocation} />
                 )}
               </Col>
             </Row>
@@ -713,20 +575,14 @@ const OrderDetails = () => {
                                               src={chat?.user?.profile_photo}
                                               className="avatar-xs rounded-circle cursor-pointer"
                                               alt="User"
-                                              onClick={() =>
-                                                history.push(
-                                                  `/users/details/${chat?.user?._id}`
-                                                )
-                                              }
+                                              onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
                                             />
                                           </Tooltip>
                                         </div>
                                         <div className="conversation-text color-primary">
                                           <div className="ctext-wrap">
                                             <strong>{chat?.message}.</strong>
-                                            <div style={{ color: "grey" }}>
-                                              {parseTime(chat?.createdAt)}
-                                            </div>
+                                            <div style={{ color: "grey" }}>{parseTime(chat?.createdAt)}</div>
                                           </div>
                                         </div>
                                       </li>
@@ -741,9 +597,7 @@ const OrderDetails = () => {
                                               className="avatar-xs rounded-circle cursor-pointer"
                                               alt="Delivery Boy"
                                               onClick={() =>
-                                                history.push(
-                                                  `/deliveryman/details/${chat?.deliveryBoy?._id}`
-                                                )
+                                                history.push(`/deliveryman/details/${chat?.deliveryBoy?._id}`)
                                               }
                                             />
                                           </Tooltip>
@@ -751,9 +605,7 @@ const OrderDetails = () => {
                                         <div className="conversation-text color-primary">
                                           <div className="ctext-wrap">
                                             <strong>{chat?.message}.</strong>
-                                            <div style={{ color: "grey" }}>
-                                              {parseTime(chat?.createdAt)}
-                                            </div>
+                                            <div style={{ color: "grey" }}>{parseTime(chat?.createdAt)}</div>
                                           </div>
                                         </div>
                                       </li>
@@ -774,14 +626,8 @@ const OrderDetails = () => {
                 </Col>
                 {/* Riders */}
                 <Col lg={6}>
-                  <Riders
-                    list={order?.deliveryBoyList}
-                    heading="Available Riders"
-                  />
-                  <Riders
-                    list={order?.rejectedDeliveryBoy}
-                    heading="Rejected Riders"
-                  />
+                  <Riders list={order?.deliveryBoyList} heading="Available Riders" />
+                  <Riders list={order?.rejectedDeliveryBoy} heading="Rejected Riders" />
                 </Col>
               </Row>
             )}
@@ -793,10 +639,7 @@ const OrderDetails = () => {
                   <Col md={3} className="text-end" />
                 </Row>
                 <CardTitle className="h4"> Product List</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table  table-hover text-center"
-                >
+                <Table id="tech-companies-1" className="table  table-hover text-center">
                   <Thead>
                     <Tr>
                       <Th>Product</Th>
@@ -845,14 +688,9 @@ const OrderDetails = () => {
                             {item?.selectedAttributes.length > 0
                               ? item?.selectedAttributes.map((att, index) => (
                                   <div key={index}>
-                                    <span style={{ fontSize: "12px" }}>
-                                      {att?.name}
-                                    </span>
+                                    <span style={{ fontSize: "12px" }}>{att?.name}</span>
                                     {att?.selectedItems?.map((item, index) => (
-                                      <p
-                                        key={index}
-                                        style={{ fontSize: "12px" }}
-                                      >
+                                      <p key={index} style={{ fontSize: "12px" }}>
                                         {item?.name}
                                       </p>
                                     ))}
