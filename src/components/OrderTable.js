@@ -490,7 +490,6 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 )}
               </Tbody>
             </Table>
-
             {!loading && orders?.length < 1 && (
               <div className="text-center">
                 <h4>No Order!</h4>

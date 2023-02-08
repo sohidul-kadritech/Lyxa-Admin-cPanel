@@ -40,6 +40,8 @@ import ProductionQuantityLimitsOutlinedIcon from "@mui/icons-material/Production
 import InfoTwo from "../../../components/InfoTwo";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoTwoWrapper from "../../../components/InfoTwoWrapper";
+// import ReviewTable from "../../../components/ReviewTable";
+import ReviewTable from "../../../components/ReviewTable.js";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -399,7 +401,15 @@ const ShopDetails = () => {
 
             <Row className="mb-3">
               <Col xl={6}>
-                <FlagsAndReviews reviews={shop?.reviews} isReview={true} />
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                    <Typography>Order Reviews</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ReviewTable reviews={shop?.reviews} isFromOrder={false} />
+                  </AccordionDetails>
+                  {/* {shop?.reviews?.length > 0 && <ReviewTable reviews={shop?.reviews} isFromOrder={false} />} */}
+                </Accordion>
               </Col>
               <Col xl={6}>
                 <FlagsAndReviews flags={shop?.flags} />
@@ -494,7 +504,6 @@ const ShopDetails = () => {
                   </AccordionDetails>
                 </Accordion>
               </Col>
-
               <Col xl={6}>
                 <div className="mb-4">
                   <Accordion>

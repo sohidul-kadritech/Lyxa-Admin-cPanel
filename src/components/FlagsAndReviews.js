@@ -6,7 +6,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { Card, CardBody, CardTitle } from "reactstrap";
 import styled from "styled-components";
 import { DeleteOrderFlag } from "../store/order/orderAction";
 import Info from "./Info";

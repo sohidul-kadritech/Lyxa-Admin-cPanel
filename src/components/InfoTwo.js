@@ -35,7 +35,7 @@ const InfoTwo = ({ name, value, Icon, link, mapLink, classes }) => {
             <Icon className="text-danger" />
           </span>
         </Td>
-        <Td style={{ width: "1px", "white-space": "nowrap", textAlign: "left", paddingBottom: "5px" }}>
+        <Td style={{ width: "1px", whiteSpace: "nowrap", textAlign: "left", paddingBottom: "5px" }}>
           <span style={nameStyle}>{name}:</span>
         </Td>
         <Td style={{ textAlign: "left", paddingLeft: "8px", paddingBottom: "5px" }}>
