@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Modal,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Modal, Row, Spinner } from "reactstrap";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
@@ -51,11 +41,10 @@ const DropPayList = () => {
   const {
     dashboardData: { summary = {} },
   } = useSelector((state) => state.dashboardReducer);
-  const { account_type, adminType } = useSelector(store => store.Login.admin);
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   const [balAddModal, setBalAddModal] = useState(false);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   useEffect(() => {
     if (!summary) {
@@ -71,7 +60,7 @@ const DropPayList = () => {
     );
 
     return;
-  }, []);
+  }, [credits]);
 
   useEffect(() => {
     if (sortByKey || startDate || endDate || dropPaySearchKey) {
@@ -95,13 +84,7 @@ const DropPayList = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={"Lyxa Pay"}
-              loading={loading}
-              callList={callDropPayList}
-            />
-
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem={"Lyxa Pay"} loading={loading} callList={callDropPayList} />
             <Card>
               <CardBody>
                 <Row>
@@ -128,9 +111,7 @@ const DropPayList = () => {
                             id="startDate"
                             placeholder="Start Date"
                             value={startDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateDropPayStartDate(dateStr))
-                            }
+                            onChange={(selectedDates, dateStr, instance) => dispatch(updateDropPayStartDate(dateStr))}
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -147,9 +128,7 @@ const DropPayList = () => {
                             id="endDate"
                             placeholder="Select End Date"
                             value={endDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateDropPayEndDate(dateStr))
-                            }
+                            onChange={(selectedDates, dateStr, instance) => dispatch(updateDropPayEndDate(dateStr))}
                             options={{
                               altInput: true,
                               altFormat: "F j, Y",
@@ -172,28 +151,17 @@ const DropPayList = () => {
                 </Row>
               </CardBody>
             </Card>
-
             {/* TABLE */}
-
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between">
-                  <h4>{`Total Lyxa Earning: ${
-                    summary?.totalDropEarning ?? 0
-                  } ${currency}`}</h4>
-                  <Button
-                    outline={true}
-                    color="success"
-                    onClick={() => setBalAddModal(!balAddModal)}
-                  >
+                  <h4>{`Total Lyxa Earning: ${summary?.totalDropEarning ?? 0} ${currency}`}</h4>
+                  <Button outline={true} color="success" onClick={() => setBalAddModal(!balAddModal)}>
                     Add/Remove Credit
                   </Button>
                 </div>
                 <hr />
-                <Table
-                  id="tech-companies-1"
-                  className="table  table-hover text-center"
-                >
+                <Table id="tech-companies-1" className="table  table-hover text-center">
                   <Thead>
                     <Tr>
                       <Th>Customer</Th>
@@ -216,36 +184,26 @@ const DropPayList = () => {
                           }}
                         >
                           <Th>
-                            <TableImgItem
-                              altImg={AccountBalanceIcon}
-                              name={item?.user?.name}
-                              id={item?.autoGenId}
-                            />
+                            <TableImgItem altImg={AccountBalanceIcon} name={item?.user?.name} id={item?.autoGenId} />
                           </Th>
                           <Td>{item?.user?.email}</Td>
                           <Td
                             className={
-                              item?.type === "userBalanceAddAdmin" || item?.type === "userCancelOrderGetWallet" 
+                              item?.type === "userBalanceAddAdmin" || item?.type === "userCancelOrderGetWallet"
                                 ? "active-status"
                                 : item?.type === "userBalanceWithdrawAdmin"
                                 ? "inactive-status"
                                 : ""
                             }
                           >{`${
-                            item?.type === "userBalanceAddAdmin" || item?.type === "userCancelOrderGetWallet" 
+                            item?.type === "userBalanceAddAdmin" || item?.type === "userCancelOrderGetWallet"
                               ? "+"
                               : item?.type === "userBalanceWithdrawAdmin"
                               ? "-"
                               : ""
                           }${item?.amount}`}</Td>
-                          <Td>
-                            {item?.type === "userPayAfterReceivedOrderByCard"
-                              ? "Card"
-                              : "Lyxa"}
-                          </Td>
-                          <Td>
-                            {new Date(item?.createdAt).toLocaleDateString()}
-                          </Td>
+                          <Td>{item?.type === "userPayAfterReceivedOrderByCard" ? "Card" : "Lyxa"}</Td>
+                          <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
                         </Tr>
                       );
                     })}

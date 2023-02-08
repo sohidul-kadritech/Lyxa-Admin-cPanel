@@ -1,69 +1,60 @@
 import { toast } from "react-toastify";
-import {
-  ADD_USER_BALANCE,
-  DROP_PAY_LIST,
-  REMOVE_USER_BALANCE,
-} from "../../network/Api";
+import { ADD_USER_BALANCE, DROP_PAY_LIST, REMOVE_USER_BALANCE } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 // GET ALL DROP PAY
 export const getAllDropPay =
   (refresh = false, page = 1) =>
-    async (dispatch, getState) => {
-      const { sortByKey, startDate, endDate, credits, searchKey } =
-        getState().dropPayReducer;
+  async (dispatch, getState) => {
+    const { sortByKey, startDate, endDate, credits, searchKey } = getState().dropPayReducer;
 
-      if (credits.length < 1 || refresh) {
-        try {
+    if (credits.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.ALL_DROP_PAY_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(DROP_PAY_LIST, {
+          params: {
+            page: page,
+            startDate,
+            endDate,
+            sortBy: sortByKey.value,
+            pageSize: 50,
+            searchKey,
+          },
+        });
+
+        if (status) {
           dispatch({
-            type: actionType.ALL_DROP_PAY_REQUEST_SEND,
+            type: actionType.ALL_DROP_PAY_REQUEST_SUCCESS,
+            payload: data,
           });
-
-          const {
-            data: { status, error, data = null },
-          } = await requestApi().request(DROP_PAY_LIST, {
-            params: {
-              page: page,
-              startDate,
-              endDate,
-              sortBy: sortByKey.value,
-              pageSize: 50,
-              searchKey
-            },
-          });
-
-
-
-          if (status) {
-            dispatch({
-              type: actionType.ALL_DROP_PAY_REQUEST_SUCCESS,
-              payload: data,
-            });
-          } else {
-            dispatch({
-              type: actionType.ALL_DROP_PAY_REQUEST_FAIL,
-              payload: error,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.ALL_DROP_PAY_REQUEST_FAIL,
-            payload: error.message,
+            payload: error,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.ALL_DROP_PAY_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 //   ADD USER AMOUNT
 
 export const addUserAmount = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_USER_AMOUNT_REQUEST_SEND,
     });
-
     const {
       data: { status, message, error, data = null },
     } = await requestApi().request(ADD_USER_BALANCE, {
@@ -71,7 +62,8 @@ export const addUserAmount = (values) => async (dispatch) => {
       data: values,
     });
 
-
+    console.log({ values });
+    console.log({ data });
 
     if (status) {
       toast.success(message, {
@@ -116,7 +108,6 @@ export const addUserAmount = (values) => async (dispatch) => {
 //  WITHDRAW AMOUNT
 
 export const withdrawUserAmount = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.REMOVE_USER_AMOUNT_REQUEST_SEND,
@@ -128,7 +119,6 @@ export const withdrawUserAmount = (values) => async (dispatch) => {
       method: "POST",
       data: values,
     });
-
 
     if (status) {
       toast.success(message, {
@@ -192,7 +182,6 @@ export const updateDropPayStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateDropPayEndDate = (date) => (dispatch) => {
-
   dispatch({
     type: actionType.UPDATE_END_DATE,
     payload: date,

@@ -1,14 +1,10 @@
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { isNull } from "lodash";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { successMsg } from "../helpers/successMsg";
-import {
-  addUserAmount,
-  withdrawUserAmount,
-} from "../store/DropPay/dropPayAction";
+import { addUserAmount, withdrawUserAmount } from "../store/DropPay/dropPayAction";
 import { getAllAppSettings } from "../store/Settings/settingsAction";
 import { updateSearchKey, userList } from "../store/Users/UsersAction";
 
@@ -17,11 +13,7 @@ const UserCradit = ({ user = null }) => {
   const { loading, status } = useSelector((state) => state.dropPayReducer);
   const { appSettingsOptions } = useSelector((state) => state.settingsReducer);
 
-  const {
-    account_type,
-    adminType,
-    _id: accountId,
-  } = useSelector((store) => store.Login.admin);
+  const { account_type, adminType} = useSelector((store) => store.Login.admin);
 
   const dispatch = useDispatch();
 
@@ -43,9 +35,6 @@ const UserCradit = ({ user = null }) => {
   }, []);
 
   useEffect(() => {
-    // if (searchKey) {
-    //   dispatch(userList(true));
-    // }
     dispatch(userList(true));
   }, [searchKey]);
 
@@ -62,15 +51,11 @@ const UserCradit = ({ user = null }) => {
     if (
       amount > !appSettingsOptions?.maxCustomerServiceValue
         ? 0
-        : appSettingsOptions?.maxCustomerServiceValue &&
-          account_type === "admin" &&
-          adminType === "customerService"
+        : appSettingsOptions?.maxCustomerServiceValue && account_type === "admin" && adminType === "customerService"
     ) {
       return successMsg(
         `Amount can't be more than ${
-          !appSettingsOptions?.maxCustomerServiceValue
-            ? 0
-            : appSettingsOptions?.maxCustomerServiceValue
+          !appSettingsOptions?.maxCustomerServiceValue ? 0 : appSettingsOptions?.maxCustomerServiceValue
         }`,
         "error"
       );
@@ -121,16 +106,9 @@ const UserCradit = ({ user = null }) => {
           id="controllable-states-demo"
           options={users.length > 0 ? users : []}
           sx={{ width: "100%" }}
-          renderInput={(params) => (
-            <TextField {...params} label="Select a User" />
-          )}
+          renderInput={(params) => <TextField {...params} label="Select a User" />}
           renderOption={(props, option) => (
-            <Box
-              component="li"
-              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-              {...props}
-              key={option._id}
-            >
+            <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props} key={option._id}>
               {option.name}
             </Box>
           )}
@@ -176,20 +154,10 @@ const UserCradit = ({ user = null }) => {
         />
       </div>
       <div className="d-flex justify-content-center mt-3">
-        <Button
-          color="primary"
-          disabled={loading}
-          className="px-4"
-          onClick={() => submitBalance("add")}
-        >
+        <Button color="primary" disabled={loading} className="px-4" onClick={() => submitBalance("add")}>
           Add
         </Button>
-        <Button
-          color="primary"
-          disabled={loading}
-          className="px-4 ms-3"
-          onClick={() => submitBalance("remove")}
-        >
+        <Button color="primary" disabled={loading} className="px-4 ms-3" onClick={() => submitBalance("remove")}>
           Remove
         </Button>
       </div>
