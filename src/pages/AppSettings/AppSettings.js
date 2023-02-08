@@ -122,7 +122,102 @@ const AppSettings = () => {
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="Max Discount(Amount)"
+                        label="Near Shop Distance (KM)"
+                        variant="outlined"
+                        placeholder="Enter near shop Distance"
+                        value={appSettingsOptions?.nearByShopKm ?? 0}
+                        onChange={(e) => {
+                          dispatch(updateNearByShopKey(e.target.value));
+                        }}
+                        type="number"
+                        name="nearByShopKm"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["nearByShopKm"]);
+                          setDataIsLoading((prev) => ({
+                            ...prev,
+                            nearByShopKm: true,
+                          }));
+                        }}
+                        disabled={dataIsLoading.nearByShopKm}
+                        className="d-block"
+                        style={{
+                          width: "20%",
+                          padding: "10px 0",
+                          backgroundColor: "#313131",
+                          marginLeft: "5px",
+                          border: 0,
+                        }}
+                      >
+                        {dataIsLoading.nearByShopKm ? (
+                          <Spinner
+                            animation="border"
+                            variant="success"
+                            size="sm"
+                          ></Spinner>
+                        ) : (
+                          "Update"
+                        )}
+                      </Button>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Lyxa Pay Limit (Customer Service)"
+                        variant="outlined"
+                        placeholder="Enter drop pay limit credit "
+                        value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
+                        onChange={(e) => {
+                          dispatch(updateDropCreditLimit(e.target.value));
+                          setDataIsLoading((prev) => ({
+                            ...prev,
+                            maxCustomerServiceValue: true,
+                          }));
+                        }}
+                        type="number"
+                        name="maxCustomerServiceValue"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["maxCustomerServiceValue"]);
+                          setDataIsLoading((prev) => ({
+                            ...prev,
+                            maxCustomerServiceValue: true,
+                          }));
+                        }}
+                        disabled={dataIsLoading.maxCustomerServiceValue}
+                        className="d-block"
+                        style={{
+                          width: "20%",
+                          padding: "10px 0",
+                          backgroundColor: "#313131",
+                          marginLeft: "5px",
+                          border: 0,
+                        }}
+                      >
+                        {dataIsLoading.maxCustomerServiceValue ? (
+                          <Spinner
+                            animation="border"
+                            variant="success"
+                            size="sm"
+                          ></Spinner>
+                        ) : (
+                          "Update"
+                        )}
+                      </Button>
+                    </Stack>
+
+                    <Stack
+                      spacing={2}
+                      direction="row"
+                      style={{ marginTop: "25px" }}
+                    >
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Max Discount Amount (Shops)"
                         variant="outlined"
                         placeholder="Enter max discount"
                         value={appSettingsOptions?.maxDiscount ?? 0}
@@ -144,10 +239,11 @@ const AppSettings = () => {
                         disabled={dataIsLoading.maxDiscount}
                         className="d-block"
                         style={{
-                          width: "10%",
+                          width: "20%",
                           padding: "10px 0",
-                          backgroundColor: "#df1e32",
+                          backgroundColor: "#313131",
                           border: 0,
+                          marginLeft: "5px",
                         }}
                       >
                         {dataIsLoading.maxDiscount ? (
@@ -160,7 +256,51 @@ const AppSettings = () => {
                           "Update"
                         )}
                       </Button>
+                      <TextField
+                        style={{ width: "100%" }}
+                        id="outlined-basic"
+                        label="Max Item Price (Butler)"
+                        variant="outlined"
+                        placeholder="Enter max amount"
+                        value={0}
+                        onChange={(e) => {
+                          // dispatch(updateMaxDiscount(e.target.value));
+                          // checkIsUpdates(e);
+                        }}
+                        type="number"
+                        name="maxCustomerButlerServiceValue"
+                      />
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          updateSettings(["maxCustomerButlerServiceValue"]);
+                          setDataIsLoading((prev) => ({
+                            ...prev,
+                            maxCustomerButlerServiceValue: true,
+                          }));
+                        }}
+                        disabled={dataIsLoading.maxCustomerButlerServiceValue}
+                        className="d-block"
+                        style={{
+                          width: "20%",
+                          padding: "10px 0",
+                          backgroundColor: "#313131",
+                          marginLeft: "5px",
+                          border: 0,
+                        }}
+                      >
+                        {dataIsLoading.maxCustomerButlerServiceValue ? (
+                          <Spinner
+                            animation="border"
+                            variant="success"
+                            size="sm"
+                          ></Spinner>
+                        ) : (
+                          "Update"
+                        )}
+                      </Button>
                     </Stack>
+                    <Stack spacing={2} direction="row"></Stack>
                     <Stack
                       spacing={2}
                       direction="row"
@@ -188,9 +328,10 @@ const AppSettings = () => {
                         disabled={dataIsLoading.vat}
                         className="d-block"
                         style={{
-                          width: "10%",
+                          width: "20%",
                           padding: "10px 0",
-                          backgroundColor: "#df1e32",
+                          backgroundColor: "#313131",
+                          marginLeft: "5px",
                           border: 0,
                         }}
                       >
@@ -204,55 +345,7 @@ const AppSettings = () => {
                           "Update"
                         )}
                       </Button>
-                    </Stack>
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      style={{ marginTop: "25px", marginBottom: "25px" }}
-                    >
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Near Shop Distance (KM)"
-                        variant="outlined"
-                        placeholder="Enter near shop Distance"
-                        value={appSettingsOptions?.nearByShopKm ?? 0}
-                        onChange={(e) => {
-                          dispatch(updateNearByShopKey(e.target.value));
-                        }}
-                        type="number"
-                        name="nearByShopKm"
-                      />
-                      <Button
-                        color="success"
-                        onClick={() => {
-                          updateSettings(["nearByShopKm"]);
-                          setDataIsLoading((prev) => ({
-                            ...prev,
-                            nearByShopKm: true,
-                          }));
-                        }}
-                        disabled={dataIsLoading.nearByShopKm}
-                        className="d-block"
-                        style={{
-                          width: "10%",
-                          padding: "10px 0",
-                          backgroundColor: "#df1e32",
-                          border: 0,
-                        }}
-                      >
-                        {dataIsLoading.nearByShopKm ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
-                        ) : (
-                          "Update"
-                        )}
-                      </Button>
-                    </Stack>
-                    <Stack spacing={2} direction="row">
+
                       <FormControl sx={{ width: "100%" }}>
                         <InputLabel>Currency</InputLabel>
                         <Select
@@ -289,112 +382,14 @@ const AppSettings = () => {
                         disabled={dataIsLoading.currency}
                         className="d-block"
                         style={{
-                          width: "10%",
+                          width: "20%",
                           padding: "10px 0",
-                          backgroundColor: "#df1e32",
+                          backgroundColor: "#313131",
+                          marginLeft: "5px",
                           border: 0,
                         }}
                       >
                         {dataIsLoading.currency ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
-                        ) : (
-                          "Update"
-                        )}
-                      </Button>
-                    </Stack>
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      style={{ marginTop: "25px" }}
-                    >
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Lyxa pay limit"
-                        variant="outlined"
-                        placeholder="Enter drop pay limit credit "
-                        value={appSettingsOptions?.maxCustomerServiceValue ?? 0}
-                        onChange={(e) => {
-                          dispatch(updateDropCreditLimit(e.target.value));
-                          setDataIsLoading((prev) => ({
-                            ...prev,
-                            maxCustomerServiceValue: true,
-                          }));
-                        }}
-                        type="number"
-                        name="maxCustomerServiceValue"
-                      />
-                      <Button
-                        color="success"
-                        onClick={() => {
-                          updateSettings(["maxCustomerServiceValue"]);
-                          setDataIsLoading((prev) => ({
-                            ...prev,
-                            maxCustomerServiceValue: true,
-                          }));
-                        }}
-                        disabled={dataIsLoading.maxCustomerServiceValue}
-                        className="d-block"
-                        style={{
-                          width: "10%",
-                          padding: "10px 0",
-                          backgroundColor: "#df1e32",
-                          border: 0,
-                        }}
-                      >
-                        {dataIsLoading.maxCustomerServiceValue ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
-                        ) : (
-                          "Update"
-                        )}
-                      </Button>
-                    </Stack>
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      style={{ marginTop: "25px" }}
-                    >
-                      <TextField
-                        style={{ width: "100%" }}
-                        id="outlined-basic"
-                        label="Max Item Price (Butler)"
-                        variant="outlined"
-                        placeholder="Enter max amount"
-                        value={0}
-                        onChange={(e) => {
-                          // dispatch(updateMaxDiscount(e.target.value));
-                          // checkIsUpdates(e);
-                        }}
-                        type="number"
-                        name="maxCustomerButlerServiceValue"
-                      />
-                      <Button
-                        color="success"
-                        onClick={() => {
-                          updateSettings(["maxCustomerButlerServiceValue"]);
-                          setDataIsLoading((prev) => ({
-                            ...prev,
-                            maxCustomerButlerServiceValue: true,
-                          }));
-                        }}
-                        disabled={dataIsLoading.maxCustomerButlerServiceValue}
-                        className="d-block"
-                        style={{
-                          width: "10%",
-                          padding: "10px 0",
-                          backgroundColor: "#df1e32",
-                          border: 0,
-                        }}
-                      >
-                        {dataIsLoading.maxCustomerButlerServiceValue ? (
                           <Spinner
                             animation="border"
                             variant="success"
@@ -436,9 +431,10 @@ const AppSettings = () => {
                         disabled={dataIsLoading.searchDeliveryBoyKm}
                         className="d-block"
                         style={{
-                          width: "10%",
+                          width: "20%",
                           padding: "10px 0",
-                          backgroundColor: "#df1e32",
+                          backgroundColor: "#313131",
+                          marginLeft: "5px",
                           border: 0,
                         }}
                       >

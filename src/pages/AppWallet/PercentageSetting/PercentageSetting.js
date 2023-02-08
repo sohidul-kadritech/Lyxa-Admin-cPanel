@@ -1,7 +1,18 @@
-import { Grid, Paper, TextField } from "@mui/material";
+import { Grid, Paper, TextField, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, CardBody, Col, Container, Row, Form, Modal, CardTitle, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Row,
+  Form,
+  Modal,
+  CardTitle,
+  Spinner,
+} from "reactstrap";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import DropCharge from "../../../components/DropCharge";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -19,10 +30,18 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 const PercentageSetting = () => {
   const dispatch = useDispatch();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-  const { loading, dropCharge, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
-    (state) => state.settingsReducer
-  );
+  const currency = useSelector(
+    (store) => store.settingsReducer.appSettingsOptions.currency.code
+  ).toUpperCase();
+  const {
+    loading,
+    dropCharge,
+    sellersDropCharge,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+  } = useSelector((state) => state.settingsReducer);
   const [deliveryCut, setDeliveryCut] = useState([]);
   const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
     from: 0,
@@ -73,15 +92,26 @@ const PercentageSetting = () => {
       return successMsg("From Range should be less than To Range", "error");
     }
 
-    if (rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut) {
-      return successMsg("Delivery person cut can't be getter than charge", "error");
+    if (
+      rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut
+    ) {
+      return successMsg(
+        "Delivery person cut can't be getter than charge",
+        "error"
+      );
     }
     const isExistCharge = deliveryCut?.filter((item) => {
-      if (rangeWiseDeliveryCharge.from >= item.from && rangeWiseDeliveryCharge.from <= item?.to) {
+      if (
+        rangeWiseDeliveryCharge.from >= item.from &&
+        rangeWiseDeliveryCharge.from <= item?.to
+      ) {
         return item;
       }
 
-      if (rangeWiseDeliveryCharge.to >= item.from && rangeWiseDeliveryCharge.to <= item?.to) {
+      if (
+        rangeWiseDeliveryCharge.to >= item.from &&
+        rangeWiseDeliveryCharge.to <= item?.to
+      ) {
         return item;
       }
     });
@@ -121,13 +151,12 @@ const PercentageSetting = () => {
           <Container fluid={true}>
             <Breadcrumb
               maintitle="Lyxa"
-              title="App Wallet"
               breadcrumbItem={"Percentage Setting"}
               loading={loading}
               isRefresh={false}
             />
             <Grid container spacing={3} mb={3}>
-              <Grid item md={6}>
+              <Grid item md={12}>
                 <Card className="mb-0">
                   <CardBody>
                     <CardTitle>Global Lyxa Charge</CardTitle>
@@ -138,16 +167,13 @@ const PercentageSetting = () => {
                       type="global"
                     />
                   </CardBody>
-                </Card>
-              </Grid>
-              <Grid item md={6}>
-                <Card className="mb-0">
+                  <hr />
                   <CardBody>
                     <CardTitle>Sellers Special Charge List</CardTitle>
                     <hr />
                     <Table
                       id="tech-companies-1"
-                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                      className="table table__wrapper text-center"
                     >
                       <Thead>
                         <Tr>
@@ -157,7 +183,12 @@ const PercentageSetting = () => {
                           <Th>Action</Th>
                         </Tr>
                       </Thead>
-                      <Tbody style={{ position: "relative" }}>
+                      <Tbody
+                        style={{
+                          position: "relative",
+                          backgroundColor: "white",
+                        }}
+                      >
                         {sellersDropCharge.map((seller, index) => {
                           return (
                             <Tr
@@ -226,22 +257,25 @@ const PercentageSetting = () => {
                         hasNextPage={hasNextPage}
                         hasPreviousPage={hasPreviousPage}
                         currentPage={currentPage}
-                        lisener={(page) => dispatch(getSellerSpecialDropCharge(page))}
+                        lisener={(page) =>
+                          dispatch(getSellerSpecialDropCharge(page))
+                        }
                       />
                     </div>
                   </CardBody>
                 </Card>
               </Grid>
             </Grid>
+
             <Grid container spacing={3}>
               <Grid item md={6}>
                 <Card>
                   <CardBody>
-                    <CardTitle>Delivery Cut</CardTitle>
+                    <CardTitle>Delivery Charge</CardTitle>
                     <hr />
                     <Form onSubmit={submitChargeRangeWise}>
                       <Row className="mt-3">
-                        <Col sm={6}>
+                        <Stack spacing={2} direction="row">
                           <TextField
                             id="variant name"
                             label="Range From (km)"
@@ -254,8 +288,6 @@ const PercentageSetting = () => {
                             type="number"
                             required
                           />
-                        </Col>
-                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
                           <TextField
                             name="to"
                             label="Range To (km)"
@@ -267,24 +299,26 @@ const PercentageSetting = () => {
                             type="number"
                             required
                           />
-                        </Col>
+                        </Stack>
                       </Row>
-                      <Row className="mt-3">
-                        <Col sm={6}>
+                      <Row>
+                        <Stack
+                          spacing={2}
+                          direction="row"
+                          style={{ marginTop: "20px" }}
+                        >
                           <TextField
                             id="variant name"
                             label="Charge"
                             name="charge"
                             variant="outlined"
-                            style={{ width: "100%" }}
+                            style={{ width: "144%" }}
                             autoComplete="off"
                             value={rangeWiseDeliveryCharge?.charge}
                             onChange={(event) => changeRangeWiseCharge(event)}
                             type="number"
                             required
                           />
-                        </Col>
-                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
                           <TextField
                             name="deliveryPersonCut"
                             label="Delivery Person Cut"
@@ -296,19 +330,22 @@ const PercentageSetting = () => {
                             type="number"
                             required
                           />
-                        </Col>
+                          <Button
+                            style={{
+                              width: "40%",
+                              padding: "10px 0",
+                              marginLeft: "5px",
+                              border: 0,
+                            }}
+                            color="primary"
+                            type="submit"
+                          >
+                            Add Item
+                          </Button>
+                        </Stack>
                       </Row>
-                      <div>
-                        <Button
-                          style={{ maxWidth: "200px", width: "100%" }}
-                          color="primary"
-                          type="submit"
-                          className="mt-2"
-                        >
-                          Add Item
-                        </Button>
-                      </div>
                     </Form>
+                    <hr />
                     <Row className="mt-4">
                       <Col lg={12}>
                         <div>
@@ -319,7 +356,10 @@ const PercentageSetting = () => {
                                 <hr />
                                 {deliveryCut?.length > 0 &&
                                   deliveryCut?.map((item, index) => (
-                                    <ul key={index} style={{ listStyleType: "square" }}>
+                                    <ul
+                                      key={index}
+                                      style={{ listStyleType: "square" }}
+                                    >
                                       <li>
                                         <div className="d-flex justify-content-between">
                                           <span
@@ -336,7 +376,9 @@ const PercentageSetting = () => {
                                               color: "#BD381C",
                                               fontSize: "15px",
                                             }}
-                                            onClick={() => deleteDeliveryCharge(index)}
+                                            onClick={() =>
+                                              deleteDeliveryCharge(index)
+                                            }
                                           ></i>
                                         </div>
                                         <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
@@ -350,31 +392,36 @@ const PercentageSetting = () => {
                         </div>
                       </Col>
                     </Row>
-                    {deliveryCut?.length > 0 && (
-                      <div className="text-center">
+                    <div style={{ textAlign: "center" }}>
+                      {deliveryCut?.length > 0 && (
                         <Button
-                          style={{ maxWidth: "200px", width: "100%" }}
+                          style={{
+                            width: "40%",
+                            padding: "10px 0",
+                            backgroundColor: "#313131",
+                            marginLeft: "5px",
+                            border: 0,
+                          }}
                           color="success"
-                          size="md"
-                          className="px-4"
                           onClick={submitDeliveryCut}
                           disabled={loading}
                         >
                           {loading ? "Loading..." : "Update"}
                         </Button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </CardBody>
                 </Card>
               </Grid>
               <Grid item md={6}>
                 <Card>
                   <CardBody>
-                    <CardTitle>Butler Delivery Cut</CardTitle>
+                    <CardTitle>Butler Delivery Charge</CardTitle>
                     <hr />
                     <Form onSubmit={submitChargeRangeWise}>
                       <Row className="mt-3">
-                        <Col sm={6}>
+                        <Stack spacing={2} direction="row">
+                          {" "}
                           <TextField
                             id="variant name"
                             label="Range From (km)"
@@ -387,8 +434,6 @@ const PercentageSetting = () => {
                             type="number"
                             required
                           />
-                        </Col>
-                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
                           <TextField
                             name="to"
                             label="Range To (km)"
@@ -400,24 +445,24 @@ const PercentageSetting = () => {
                             type="number"
                             required
                           />
-                        </Col>
-                      </Row>
-                      <Row className="mt-3">
-                        <Col sm={6}>
+                        </Stack>
+                        <Stack
+                          spacing={2}
+                          direction="row"
+                          style={{ marginTop: "20px" }}
+                        >
                           <TextField
                             id="variant name"
                             label="Charge"
                             name="charge"
                             variant="outlined"
-                            style={{ width: "100%" }}
+                            style={{ width: "144%" }}
                             autoComplete="off"
                             value={rangeWiseDeliveryCharge?.charge}
                             onChange={(event) => changeRangeWiseCharge(event)}
                             type="number"
                             required
                           />
-                        </Col>
-                        <Col sm={6} className="mt-3 mt-sm-0 d-flex">
                           <TextField
                             name="deliveryPersonCut"
                             label="Delivery Person Cut"
@@ -429,20 +474,25 @@ const PercentageSetting = () => {
                             type="number"
                             required
                           />
-                        </Col>
+                          <Button
+                            color="primary"
+                            style={{
+                              width: "40%",
+                              padding: "10px 0",
+                              marginLeft: "5px",
+                              border: 0,
+                            }}
+                            size="md"
+                            type="submit"
+                          >
+                            Add Item
+                          </Button>
+                        </Stack>
                       </Row>
-                      <div>
-                        <Button
-                          color="primary"
-                          style={{ maxWidth: "200px", width: "100%" }}
-                          size="md"
-                          type="submit"
-                          className="mt-2"
-                        >
-                          Add Item
-                        </Button>
-                      </div>
+
+                      <div style={{ textAlign: "center" }}></div>
                     </Form>
+                    <hr />
                     <Row className="mt-4">
                       <Col lg={12}>
                         <div>
@@ -453,7 +503,10 @@ const PercentageSetting = () => {
                                 <hr />
                                 {deliveryCut?.length > 0 &&
                                   deliveryCut?.map((item, index) => (
-                                    <ul key={index} style={{ listStyleType: "square" }}>
+                                    <ul
+                                      key={index}
+                                      style={{ listStyleType: "square" }}
+                                    >
                                       <li>
                                         <div className="d-flex justify-content-between">
                                           <span
@@ -470,7 +523,9 @@ const PercentageSetting = () => {
                                               color: "#BD381C",
                                               fontSize: "15px",
                                             }}
-                                            onClick={() => deleteDeliveryCharge(index)}
+                                            onClick={() =>
+                                              deleteDeliveryCharge(index)
+                                            }
                                           ></i>
                                         </div>
                                         <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
@@ -487,7 +542,13 @@ const PercentageSetting = () => {
                     {deliveryCut?.length > 0 && (
                       <div className="text-center">
                         <Button
-                          style={{ maxWidth: "200px", width: "100%" }}
+                          style={{
+                            width: "40%",
+                            padding: "10px 0",
+                            backgroundColor: "#313131",
+                            marginLeft: "5px",
+                            border: 0,
+                          }}
                           color="success"
                           size="md"
                           className="px-4"
