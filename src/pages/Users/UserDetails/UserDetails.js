@@ -28,6 +28,7 @@ import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
+import InfoTwoWrapper from "../../../components/InfoTwoWrapper";
 
 const UserDetails = () => {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
@@ -133,7 +134,7 @@ const UserDetails = () => {
                       </Col>
                       <Col xl={8} className="ps-3">
                         {Object.keys(user).length > 0 ? (
-                          <>
+                          <InfoTwoWrapper>
                             <InfoTwo name={"Name"} value={`${user?.name}`} Icon={PersonOutlineOutlinedIcon} />
                             <InfoTwo
                               name={"Email"}
@@ -174,7 +175,7 @@ const UserDetails = () => {
                               mapLink={`${MAP_URL}?z=10&t=m&q=loc:${user?.address[0]?.latitude}+${user?.address[0]?.longitude}`}
                               name="Location"
                             />
-                          </>
+                          </InfoTwoWrapper>
                         ) : (
                           <Spinner color="danger" size="lg"></Spinner>
                         )}

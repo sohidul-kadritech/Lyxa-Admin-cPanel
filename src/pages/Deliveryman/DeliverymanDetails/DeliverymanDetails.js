@@ -8,6 +8,7 @@ import Breadcrumb from "../../../components/Common/Breadcrumb";
 import styled from "styled-components";
 import { Button, Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
 import Lightbox from "react-image-lightbox";
+import InfoTwoWrapper from "../../../components/InfoTwoWrapper";
 
 import { getDeliveryAllOrder, setDeliveryStatusFalse } from "../../../store/DeliveryMan/DeliveryManAction";
 
@@ -125,36 +126,44 @@ const DeliverymanDetails = () => {
                     </ImageWrapper>
                   </Col>
                   <Col lg={5}>
-                    <InfoTwo name={"Name"} value={`${deliveryMan?.name}`} Icon={PersonOutlineOutlinedIcon} />
-                    <InfoTwo
-                      name={"Email"}
-                      value={deliveryMan?.email}
-                      Icon={AlternateEmailOutlinedIcon}
-                      classes="text-lowercase"
-                    />
-                    <InfoTwo name={"Address"} value={`${deliveryMan?.address}`} Icon={LocationOnIcon} />
-                    <InfoTwo name={"Vahicle Type"} value={`${deliveryMan?.vehicleType}`} Icon={MopedIcon} />
-                    <InfoTwo name={"Vahicle No"} value={`${deliveryMan?.vehicleNumber}`} Icon={MopedIcon} />
-                    <InfoTwo name={"Address"} value={`${deliveryMan?.address}`} Icon={RoomOutlinedIcon} />
+                    <InfoTwoWrapper>
+                      <InfoTwo name={"Name"} value={`${deliveryMan?.name}`} Icon={PersonOutlineOutlinedIcon} />
+                      <InfoTwo
+                        name={"Email"}
+                        value={deliveryMan?.email}
+                        Icon={AlternateEmailOutlinedIcon}
+                        classes="text-lowercase"
+                      />
+                      <InfoTwo name={"Address"} value={`${deliveryMan?.address}`} Icon={LocationOnIcon} />
+                      <InfoTwo name={"Vahicle Type"} value={`${deliveryMan?.vehicleType}`} Icon={MopedIcon} />
+                      <InfoTwo name={"Vahicle No"} value={`${deliveryMan?.vehicleNumber}`} Icon={MopedIcon} />
+                      <InfoTwo name={"Address"} value={`${deliveryMan?.address}`} Icon={RoomOutlinedIcon} />
+                    </InfoTwoWrapper>
                   </Col>
                   <Col lg={5}>
-                    <InfoTwo
-                      name={"Status"}
-                      value={`${deliveryMan?.status}`}
-                      Icon={deliveryMan?.status === "active" ? ToggleOnIcon : ToggleOffIcon}
-                    />
-                    <InfoTwo
-                      name={"Live Status"}
-                      value={`${deliveryMan?.liveStatus}`}
-                      Icon={deliveryMan?.liveStatus === "online" ? ToggleOnIcon : ToggleOffIcon}
-                    />
-                    <InfoTwo name={"Total Income"} value={`${deliveryMan?.totalIncome} ${currency}`} Icon={MoneyIcon} />
-                    <InfoTwo
-                      name={"Balance"}
-                      value={`${deliveryMan?.balance} ${currency} ()`}
-                      Icon={AccountBalanceIcon}
-                    />
-                    <InfoTwo name={"Orders"} value={`${deliveryMan?.totalOrder}`} Icon={LocalShippingIcon} />
+                    <InfoTwoWrapper>
+                      <InfoTwo
+                        name={"Status"}
+                        value={`${deliveryMan?.status}`}
+                        Icon={deliveryMan?.status === "active" ? ToggleOnIcon : ToggleOffIcon}
+                      />
+                      <InfoTwo
+                        name={"Live Status"}
+                        value={`${deliveryMan?.liveStatus}`}
+                        Icon={deliveryMan?.liveStatus === "online" ? ToggleOnIcon : ToggleOffIcon}
+                      />
+                      <InfoTwo
+                        name={"Total Income"}
+                        value={`${deliveryMan?.totalIncome} ${currency}`}
+                        Icon={MoneyIcon}
+                      />
+                      <InfoTwo
+                        name={"Balance"}
+                        value={`${deliveryMan?.balance} ${currency}`}
+                        Icon={AccountBalanceIcon}
+                      />
+                      <InfoTwo name={"Orders"} value={`${deliveryMan?.totalOrder}`} Icon={LocalShippingIcon} />
+                    </InfoTwoWrapper>
                   </Col>
                 </Row>
               </CardBody>

@@ -39,6 +39,7 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import ProductionQuantityLimitsOutlinedIcon from "@mui/icons-material/ProductionQuantityLimitsOutlined";
 import InfoTwo from "../../../components/InfoTwo";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InfoTwoWrapper from "../../../components/InfoTwoWrapper";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -276,109 +277,119 @@ const ShopDetails = () => {
                 <hr />
                 <Row>
                   <Col xl={4}>
-                    <InfoTwo
-                      Icon={ApartmentOutlinedIcon}
-                      value={`${shop?.seller?.name}`}
-                      name="Seller"
-                      link={account_type === "admin" ? `/seller/details/${shop?.seller?._id}` : ""}
-                    />
-                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopName}`} name="Shop Name" />
-                    <InfoTwo Icon={LocalPhoneOutlinedIcon} value={shop?.phone_number} name="Phone" />
-                    <InfoTwo
-                      Icon={AlternateEmailOutlinedIcon}
-                      value={shop?.email}
-                      name="Email"
-                      classes="text-lowercase"
-                    />
-                    <InfoTwo
-                      Icon={RoomOutlinedIcon}
-                      value={shop?.address.address}
-                      mapLink={`${MAP_URL}?z=10&t=m&q=loc:${shop?.address?.latitude}+${shop?.address?.longitude}`}
-                      name="Location"
-                    />
+                    <InfoTwoWrapper>
+                      <InfoTwo
+                        Icon={ApartmentOutlinedIcon}
+                        value={`${shop?.seller?.name}`}
+                        name="Seller"
+                        link={account_type === "admin" ? `/seller/details/${shop?.seller?._id}` : ""}
+                      />
+                      <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopName}`} name="Shop Name" />
+                      <InfoTwo Icon={LocalPhoneOutlinedIcon} value={shop?.phone_number} name="Phone" />
+                      <InfoTwo
+                        Icon={AlternateEmailOutlinedIcon}
+                        value={shop?.email}
+                        name="Email"
+                        classes="text-lowercase"
+                      />
+                      <InfoTwo
+                        Icon={RoomOutlinedIcon}
+                        value={shop?.address.address}
+                        mapLink={`${MAP_URL}?z=10&t=m&q=loc:${shop?.address?.latitude}+${shop?.address?.longitude}`}
+                        name="Location"
+                      />
 
-                    <InfoTwo
-                      value={`Mon to Fri - ${shop?.shopStartTimeText} ${
-                        shop?.shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                      } - ${shop?.shopEndTimeText} ${shop?.shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"}`}
-                      Icon={AccessTimeOutlinedIcon}
-                      name="Available"
-                    />
+                      <InfoTwo
+                        value={`Mon to Fri - ${shop?.shopStartTimeText} ${
+                          shop?.shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
+                        } - ${shop?.shopEndTimeText} ${shop?.shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"}`}
+                        Icon={AccessTimeOutlinedIcon}
+                        name="Available"
+                      />
+                      <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType}`} name="Shop Type" />
+                    </InfoTwoWrapper>
                   </Col>
                   <Col xl={4}>
-                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType}`} name="Shop Type" />
-                    <InfoTwo value={`${shop?.shopStatus}`} Icon={AutorenewOutlinedIcon} name="Status" />
-                    <InfoTwo
-                      value={`${
-                        shop?.rating === 4
-                          ? "Excellent"
-                          : shop?.rating === 3
-                          ? "Very good"
-                          : shop?.rating === 2
-                          ? "Good"
-                          : shop?.rating === 1
-                          ? "Bad"
-                          : ""
-                      }`}
-                      Icon={SentimentSatisfiedOutlinedIcon}
-                      name="Rating"
-                    />
-                    <InfoTwo
-                      Icon={ProductionQuantityLimitsOutlinedIcon}
-                      value={`${shop?.totalOrder}`}
-                      name="Total Orders"
-                    />
-                    <InfoTwo
-                      Icon={FeaturedPlayListOutlinedIcon}
-                      value={`${shop?.isFeatured ? "Yes" : "No"}`}
-                      name="Featured"
-                    />
-                    <InfoTwo
-                      Icon={WorkHistoryOutlinedIcon}
-                      value={`${shop?.minOrderAmount} ${currency}`}
-                      name="Minimum Order"
-                    />
+                    <InfoTwoWrapper>
+                      <InfoTwo value={`${shop?.shopStatus}`} Icon={AutorenewOutlinedIcon} name="Status" />
+                      <InfoTwo
+                        value={`${
+                          shop?.rating === 4
+                            ? "Excellent"
+                            : shop?.rating === 3
+                            ? "Very good"
+                            : shop?.rating === 2
+                            ? "Good"
+                            : shop?.rating === 1
+                            ? "Bad"
+                            : ""
+                        }`}
+                        Icon={SentimentSatisfiedOutlinedIcon}
+                        name="Rating"
+                      />
+                      <InfoTwo
+                        Icon={ProductionQuantityLimitsOutlinedIcon}
+                        value={`${shop?.totalOrder}`}
+                        name="Total Orders"
+                      />
+                      <InfoTwo
+                        Icon={FeaturedPlayListOutlinedIcon}
+                        value={`${shop?.isFeatured ? "Yes" : "No"}`}
+                        name="Featured"
+                      />
+                      <InfoTwo
+                        Icon={WorkHistoryOutlinedIcon}
+                        value={`${shop?.minOrderAmount} ${currency}`}
+                        name="Minimum Order"
+                      />
+                      {shop?.haveOwnDeliveryBoy && (
+                        <InfoTwo
+                          Icon={PaymentIcon}
+                          value={`${shop?.deliveryFee ?? 0} ${currency}`}
+                          name="Delivery Fee"
+                        />
+                      )}
+                      <InfoTwo
+                        Icon={DeliveryDiningOutlinedIcon}
+                        value={`${shop?.freeDelivery ? "Yes" : "No"}`}
+                        name="Free Delivery"
+                      />
+                    </InfoTwoWrapper>
                   </Col>
                   <Col xl={4}>
-                    {shop?.foodType && (
-                      <InfoTwo Icon={FoodBankOutlinedIcon} value={`${shop?.foodType}`} name="Food Type" />
-                    )}
-                    {shop?.haveOwnDeliveryBoy && (
-                      <InfoTwo Icon={PaymentIcon} value={`${shop?.deliveryFee ?? 0} ${currency}`} name="Delivery Fee" />
-                    )}
-                    <InfoTwo
-                      Icon={DeliveryDiningOutlinedIcon}
-                      value={`${shop?.freeDelivery ? "Yes" : "No"}`}
-                      name="Free Delivery"
-                    />
+                    <InfoTwoWrapper>
+                      {shop?.foodType && (
+                        <InfoTwo Icon={FoodBankOutlinedIcon} value={`${shop?.foodType}`} name="Food Type" />
+                      )}
 
-                    <InfoTwo
-                      Icon={PaidOutlinedIcon}
-                      value={`${updatePriceRange(shop?.expensive)}`}
-                      name="Price Range"
-                    />
+                      <InfoTwo
+                        Icon={PaidOutlinedIcon}
+                        value={`${updatePriceRange(shop?.expensive)}`}
+                        name="Price Range"
+                      />
 
-                    {shop?.tags?.length > 0 && (
+                      {shop?.tags?.length > 0 && (
+                        <InfoTwo
+                          Icon={TagOutlinedIcon}
+                          value={`${shop?.tags?.map((item) => item).join(", ")}`}
+                          name="Tags"
+                        />
+                      )}
+                      {shop?.cuisineType?.length > 0 && (
+                        <InfoTwo
+                          Icon={FastfoodOutlinedIcon}
+                          value={`${shop?.cuisineType?.map((item) => item.name).join(", ")}`}
+                          name="Cuisines"
+                        />
+                      )}
+                      <InfoTwo Icon={AccountBalanceOutlinedIcon} value={`${shop?.bank_name}`} name="Bank Name" />
                       <InfoTwo
-                        Icon={TagOutlinedIcon}
-                        value={`${shop?.tags?.map((item) => item).join(", ")}`}
-                        name="Tags"
+                        Icon={AccountBalanceWalletOutlinedIcon}
+                        value={`${shop?.account_name}`}
+                        name="Bank Account Name"
                       />
-                    )}
-                    {shop?.cuisineType?.length > 0 && (
-                      <InfoTwo
-                        Icon={FastfoodOutlinedIcon}
-                        value={`${shop?.cuisineType?.map((item) => item.name).join(", ")}`}
-                        name="Cuisines"
-                      />
-                    )}
-                    <InfoTwo Icon={AccountBalanceOutlinedIcon} value={`${shop?.bank_name}`} name="Bank Name" />
-                    <InfoTwo
-                      Icon={AccountBalanceWalletOutlinedIcon}
-                      value={`${shop?.account_name}`}
-                      name="Bank Account Name"
-                    />
-                    <InfoTwo Icon={SavingsOutlinedIcon} value={`${shop?.account_number}`} name="Bank Account No" />
+                      <InfoTwo Icon={SavingsOutlinedIcon} value={`${shop?.account_number}`} name="Bank Account No" />
+                    </InfoTwoWrapper>
                   </Col>
                 </Row>
               </CardBody>

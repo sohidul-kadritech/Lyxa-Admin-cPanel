@@ -1,7 +1,23 @@
-import { Tooltip } from "@mui/material";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import styled from "styled-components";
+import { Tr, Td } from "react-super-responsive-table";
+import { Tooltip } from "@mui/material";
+
+const valueStyle = {
+  fontSize: "14px",
+  textTransform: "capitalize",
+  fontWeight: "500",
+  color: "#6b6b6b",
+  verticalAlign: "middle",
+};
+
+const nameStyle = {
+  verticalAlign: "middle",
+  fontSize: "16px",
+  textTransform: "capitalize",
+  color: "rgba(0, 0, 0, 0.75)",
+  fontWeight: "500",
+};
 
 const InfoTwo = ({ name, value, Icon, link, mapLink, classes }) => {
   const history = useHistory();
@@ -9,89 +25,65 @@ const InfoTwo = ({ name, value, Icon, link, mapLink, classes }) => {
 
   if (!check) {
     return (
-      <InfoWrapper
-        className={`${link && "cursor-pointer"}}`}
-        onClick={() => history.push(link)}
-        link={link}
-        mapLink={mapLink}
+      <Tr
+        onClick={() => {
+          link && history.push(link);
+        }}
       >
-        <Icon className="text-danger" />
-        <Tooltip title={`${link ? "See details" : mapLink ? "See Location" : ""}`}>
-          {mapLink ? (
-            <a className={`item-wrap`} href={mapLink} target="blank">
-              <span className="name">{name}:</span>
-              <span className={`value ${classes}`}>{value}:</span>
-            </a>
-          ) : (
-            <span className={`item-wrap`}>
-              <span className="name">{name}:</span>
-              <span className={`value ${classes}`}>{value}</span>
-            </span>
-          )}
-        </Tooltip>
-      </InfoWrapper>
+        <Td style={{ width: "35px", paddingBottom: "5px" }}>
+          <span style={{ verticalAlign: "middle" }}>
+            <Icon className="text-danger" />
+          </span>
+        </Td>
+        <Td style={{ width: "1px", "white-space": "nowrap", textAlign: "left", paddingBottom: "5px" }}>
+          <span style={nameStyle}>{name}:</span>
+        </Td>
+        <Td style={{ textAlign: "left", paddingLeft: "8px", paddingBottom: "5px" }}>
+          <Tooltip title={`${link ? "See details" : mapLink ? "See Location" : ""}`}>
+            {mapLink ? (
+              <a href={mapLink} target="blank">
+                <span className={`underline ${classes}`} style={valueStyle}>
+                  {value}
+                </span>
+              </a>
+            ) : (
+              <span className={`${classes} ${link && "underline"}`} style={valueStyle}>
+                {value}
+              </span>
+            )}
+          </Tooltip>
+        </Td>
+      </Tr>
     );
   } else {
     return (
-      <InfoWrapper
-        className={`${link && "cursor-pointer"}  }`}
-        onClick={() => history.push(link)}
-        link={link}
-        mapLink={mapLink}
+      <Tr
+        onClick={() => {
+          link && history.push(link);
+        }}
       >
-        <Icon className="text-danger" />
-        {value?.map((item, index) => {
-          return (
-            <span className={`value ${classes || ""}`}>
-              {index !== 0 && `, `} {item?.name}
-            </span>
-          );
-        })}
-      </InfoWrapper>
+        <Td style={{ width: "35px", paddingBottom: "5px" }}>
+          <span style={{ verticalAlign: "middle" }}>
+            <Icon className="text-danger" />
+          </span>
+        </Td>
+        <Td style={{ width: "1px", "white-space": "nowrap", textAlign: "left", paddingBottom: "5px" }}>
+          <span style={nameStyle}>{name}:</span>
+        </Td>
+        <Td style={{ textAlign: "left", paddingLeft: "8px", paddingBottom: "5px" }}>
+          <span className={`${classes}`}>
+            {value?.map((item, index) => {
+              return (
+                <span className={`value ${classes || ""}`}>
+                  {index !== 0 && `, `} {item?.name}
+                </span>
+              );
+            })}
+          </span>
+        </Td>
+      </Tr>
     );
   }
 };
 
 export default InfoTwo;
-
-const InfoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding-bottom: 8px;
-  &:hover {
-    text-decoration: ${({ link }) => link && "underline"};
-    .value {
-      color: ${({ link, mapLink }) => (link || mapLink ? "green" : "black")};
-      font-weight: ${({ link, mapLink }) => (link || mapLink) && "500 !important"};
-      text-decoration: ${({ mapLink }) => mapLink && "underline !important"};
-    }
-  }
-  .img {
-    font-size: 20px;
-    color: #e95b5b;
-    margin-right: 10px;
-  }
-  .item-wrap {
-    display: inline-flex;
-    align-items: baseline;
-    justify-items: flex-start;
-    gap: 3px;
-    font-size: 14px;
-    padding-left: 4px;
-
-    .name {
-      text-transform: capitalize;
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.75);
-      font-size: 16px;
-      font-weight: bold,
-    }
-
-    .value {
-      font-size: 14px;
-      text-transform: capitalize;
-      font-weight: 500;
-      color: #6b6b6b;
-    }
-  }
-`;

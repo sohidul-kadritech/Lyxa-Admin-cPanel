@@ -312,7 +312,7 @@ const userRoutes = [
   { path: "/admin/percentage-settings-history", component: AdminLog },
   { path: "/admin/cancel-reason", component: CancelReason },
   { path: "/admin/default-chat-message", component: DefaultChat },
-  {path: '/admin/database/collections', component: DatabaseSettings},
+  { path: "/admin/database/collections", component: DatabaseSettings },
 
   // TERMS AND CONDTIONS
 
@@ -430,10 +430,4 @@ const authRoutes = [
   // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
 ];
 
-export {
-  userRoutes,
-  authRoutes,
-  customerServiceRoutes,
-  shopRoutes,
-  sellerRoutes,
-};
+export { userRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };
