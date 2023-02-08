@@ -23,12 +23,7 @@ import * as actionTypes from "../actionType";
 export const getSellersTrx =
   (refresh = false, page) =>
   async (dispatch, getState) => {
-    const {
-      sellerTrxEndDate,
-      sellerTrxStartDate,
-      sellersTrxs,
-      sellerSearchKey,
-    } = getState().appWalletReducer;
+    const { sellerTrxEndDate, sellerTrxStartDate, sellersTrxs, sellerSearchKey } = getState().appWalletReducer;
 
     if (sellersTrxs.length < 1 || refresh) {
       try {
@@ -71,8 +66,7 @@ export const getSellersTrx =
 export const getSellerTrx =
   (refresh = false, sellerId, page) =>
   async (dispatch, getState) => {
-    const { sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } =
-      getState().appWalletReducer;
+    const { sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = getState().appWalletReducer;
 
     if (sellerTrxs.length < 1 || refresh) {
       try {
@@ -144,13 +138,7 @@ export const getShopTrxs =
             tnxFilter: {
               startDate: shopTrxStartDate,
               endDate: shopTrxEndDate,
-              type: !value
-                ? [
-                    "adminAddBalanceShop",
-                    "adminRemoveBalanceShop",
-                    "adminSettlebalanceShop",
-                  ]
-                : [value],
+              type: !value ? ["adminAddBalanceShop", "adminRemoveBalanceShop", "adminSettlebalanceShop"] : [value],
               searchKey: shopSearchKey,
               amountBy: orderBy,
               amountRange: shopTrxAmountRange,
@@ -401,13 +389,8 @@ export const updateDeliveryTrxEndDate = (date) => (dispatch) => {
 export const getDeliveryTrx =
   (refresh = false, page) =>
   async (dispatch, getState) => {
-    const {
-      deliverySortByKey,
-      deliverySearchKey,
-      deliveryTrxs,
-      deliveryTrxStartDate,
-      deliveryTrxEndDate,
-    } = getState().appWalletReducer;
+    const { deliverySortByKey, deliverySearchKey, deliveryTrxs, deliveryTrxStartDate, deliveryTrxEndDate } =
+      getState().appWalletReducer;
 
     if (deliveryTrxs.length < 1 || refresh) {
       try {
@@ -497,8 +480,7 @@ export const updateRiderCashTrxEndDate = (date) => (dispatch) => {
 export const getDropTrx =
   (refresh = false, page) =>
   async (dispatch, getState) => {
-    const { dropTrxEndDate, dropTrxStartDate, dropTrxs } =
-      getState().appWalletReducer;
+    const { dropTrxEndDate, dropTrxStartDate, dropTrxs } = getState().appWalletReducer;
 
     if (dropTrxs.length < 1 || refresh) {
       try {
@@ -640,8 +622,7 @@ export const updateShopTrxBy = (value) => (dispatch) => {
 export const getAllTransctions =
   (refresh = false, page) =>
   async (dispatch, getState) => {
-    const { trxSortByKey, trxSearchKey, trxAccountType, allTrxs } =
-      getState().appWalletReducer;
+    const { trxSortByKey, trxSearchKey, trxAccountType, allTrxs } = getState().appWalletReducer;
 
     if (allTrxs.length < 1 || refresh) {
       try {

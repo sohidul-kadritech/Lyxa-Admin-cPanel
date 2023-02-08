@@ -6,32 +6,16 @@ import requestApi from "../../../network/httpRequest";
 import { MAP_URL, SINGLE_DELIVERY_MAN } from "../../../network/Api";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import styled from "styled-components";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
 import Lightbox from "react-image-lightbox";
 
-import {
-  getDeliveryAllOrder,
-  setDeliveryStatusFalse,
-} from "../../../store/DeliveryMan/DeliveryManAction";
+import { getDeliveryAllOrder, setDeliveryStatusFalse } from "../../../store/DeliveryMan/DeliveryManAction";
 
 import OrderTable from "../../../components/OrderTable";
 import AppPagination from "../../../components/AppPagination";
 import FlagsAndReviews from "../../../components/FlagsAndReviews";
 import { callApi } from "../../../components/SingleApiCall";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Typography,
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import noPhoto from "../../../assets/images/noPhoto.jpg";
 import InfoTwo from "../../../components/InfoTwo";
@@ -51,22 +35,15 @@ const DeliverymanDetails = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const {
-    deliveryMans,
-    orders,
-    paging,
-    hasNextPage,
-    hasPreviousPage,
-    currentPage,
-  } = useSelector((state) => state.deliveryManReducer);
-  const { account_type, adminType } = useSelector(store => store.Login.admin);
+  const { deliveryMans, orders, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
+    (state) => state.deliveryManReducer
+  );
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
-
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   useEffect(async () => {
     if (id) {
@@ -91,12 +68,7 @@ const DeliverymanDetails = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={"Details"}
-              title="Delivery Boy"
-              isRefresh={false}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem={"Details"} title="Delivery Boy" isRefresh={false} />
 
             {isOpen && (
               <Lightbox
@@ -114,22 +86,14 @@ const DeliverymanDetails = () => {
                 <div className="d-flex justify-content-between">
                   <CardTitle>Delivery Man Informations</CardTitle>
                   <div>
-                    <Button
-                      outline={true}
-                      color="primary"
-                      onClick={() => history.push(`/deliveryman/edit/${id}`)}
-                    >
+                    <Button outline={true} color="primary" onClick={() => history.push(`/deliveryman/edit/${id}`)}>
                       Edit
                     </Button>
                     {account_type === "admin" && adminType === "admin" && (
                       <Button
                         outline={true}
                         color="primary"
-                        onClick={() =>
-                          history.push(
-                            `/add-wallet/single-delivery-transactions/${id}`
-                          )
-                        }
+                        onClick={() => history.push(`/add-wallet/single-delivery-transactions/${id}`)}
                         className="ms-2"
                       >
                         Payment history
@@ -141,77 +105,56 @@ const DeliverymanDetails = () => {
                 <Row>
                   <Col lg={2}>
                     <ImageWrapper className="text-center">
-                      <div style={{position: 'relative'}}>
-                      <img
-                        className="cursor-pointer rounded"
-                        alt="User"
-                        src={deliveryMan?.image ?? noPhoto}
-                        loading="lazy"
-                        height="100%"
-                        width="100%"
-                      />
-                      <div className={`img-tag ${deliveryMan?.liveStatus === 'online' ? 'img-tag-active' : 'img-tag-inactive'}`}>
-                        {deliveryMan?.liveStatus}
-                      </div>
+                      <div style={{ position: "relative" }}>
+                        <img
+                          className="cursor-pointer rounded"
+                          alt="User"
+                          src={deliveryMan?.image ?? noPhoto}
+                          loading="lazy"
+                          height="100%"
+                          width="100%"
+                        />
+                        <div
+                          className={`img-tag ${
+                            deliveryMan?.liveStatus === "online" ? "img-tag-active" : "img-tag-inactive"
+                          }`}
+                        >
+                          {deliveryMan?.liveStatus}
+                        </div>
                       </div>
                     </ImageWrapper>
                   </Col>
                   <Col lg={5}>
+                    <InfoTwo name={"Name"} value={`${deliveryMan?.name}`} Icon={PersonOutlineOutlinedIcon} />
                     <InfoTwo
-                      value={`${deliveryMan?.name} (Name)`}
-                      Icon={PersonOutlineOutlinedIcon}
-                    />
-                    <InfoTwo
+                      name={"Email"}
                       value={deliveryMan?.email}
                       Icon={AlternateEmailOutlinedIcon}
                       classes="text-lowercase"
                     />
-                    <InfoTwo
-                      value={`${deliveryMan?.address}`}
-                      Icon={LocationOnIcon}
-                    />
-                    <InfoTwo
-                      value={`${deliveryMan?.vehicleType} (Vahicle Type)`}
-                      Icon={MopedIcon}
-                    />
-                    <InfoTwo
-                      value={`${deliveryMan?.vehicleNumber} (Vahicle No)`}
-                      Icon={MopedIcon}
-                    />
-                    <InfoTwo
-                      value={`${deliveryMan?.address}`}
-                      Icon={RoomOutlinedIcon}
-                    />
+                    <InfoTwo name={"Address"} value={`${deliveryMan?.address}`} Icon={LocationOnIcon} />
+                    <InfoTwo name={"Vahicle Type"} value={`${deliveryMan?.vehicleType}`} Icon={MopedIcon} />
+                    <InfoTwo name={"Vahicle No"} value={`${deliveryMan?.vehicleNumber}`} Icon={MopedIcon} />
+                    <InfoTwo name={"Address"} value={`${deliveryMan?.address}`} Icon={RoomOutlinedIcon} />
                   </Col>
                   <Col lg={5}>
                     <InfoTwo
-                      value={`${deliveryMan?.status} (Status)`}
-                      Icon={
-                        deliveryMan?.status === "active"
-                          ? ToggleOnIcon
-                          : ToggleOffIcon
-                      }
+                      name={"Status"}
+                      value={`${deliveryMan?.status}`}
+                      Icon={deliveryMan?.status === "active" ? ToggleOnIcon : ToggleOffIcon}
                     />
                     <InfoTwo
-                      value={`${deliveryMan?.liveStatus} (Live Status)`}
-                      Icon={
-                        deliveryMan?.liveStatus === "online"
-                          ? ToggleOnIcon
-                          : ToggleOffIcon
-                      }
+                      name={"Live Status"}
+                      value={`${deliveryMan?.liveStatus}`}
+                      Icon={deliveryMan?.liveStatus === "online" ? ToggleOnIcon : ToggleOffIcon}
                     />
+                    <InfoTwo name={"Total Income"} value={`${deliveryMan?.totalIncome} ${currency}`} Icon={MoneyIcon} />
                     <InfoTwo
-                      value={`${deliveryMan?.totalIncome} ${currency} (Total Income's)`}
-                      Icon={MoneyIcon}
-                    />
-                    <InfoTwo
-                      value={`${deliveryMan?.balance} ${currency} (Balance's)`}
+                      name={"Balance"}
+                      value={`${deliveryMan?.balance} ${currency} ()`}
                       Icon={AccountBalanceIcon}
                     />
-                    <InfoTwo
-                      value={`${deliveryMan?.totalOrder} (Order's)`}
-                      Icon={LocalShippingIcon}
-                    />
+                    <InfoTwo name={"Orders"} value={`${deliveryMan?.totalOrder}`} Icon={LocalShippingIcon} />
                   </Col>
                 </Row>
               </CardBody>
@@ -220,11 +163,7 @@ const DeliverymanDetails = () => {
             <Row className="mb-4">
               <Col lg={6}>
                 <Accordion>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                     <Typography>Images</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -256,10 +195,7 @@ const DeliverymanDetails = () => {
                               }}
                               className="img-fluid cursor-pointer rounded"
                               alt="Vahicle Document"
-                              src={
-                                deliveryMan?.vehicleRegistrationDocument ??
-                                noPhoto
-                              }
+                              src={deliveryMan?.vehicleRegistrationDocument ?? noPhoto}
                               width="100%"
                               height="100%"
                             />
@@ -287,11 +223,7 @@ const DeliverymanDetails = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={(page) =>
-                      dispatch(
-                        getDeliveryAllOrder(true, deliveryMan?._id, page)
-                      )
-                    }
+                    lisener={(page) => dispatch(getDeliveryAllOrder(true, deliveryMan?._id, page))}
                   />
                 </div>
               </Col>

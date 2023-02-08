@@ -1,15 +1,7 @@
 import PropTypes from "prop-types";
 import React, { lazy, Suspense, useState } from "react";
 import MetaTags from "react-meta-tags";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  CardBody,
-  Spinner,
-  CardTitle,
-} from "reactstrap";
+import { Container, Row, Col, Card, CardBody, Spinner, CardTitle } from "reactstrap";
 
 import GlobalWrapper from "../../components/GlobalWrapper";
 
@@ -97,9 +89,7 @@ const Dashboard = () => {
                       <>
                         <h6 className="page-title text-danger">Dashboard</h6>
                         <ol className="breadcrumb m-0">
-                          <li className="breadcrumb-item active">
-                            Welcome to Lyxa Dashboard
-                          </li>
+                          <li className="breadcrumb-item active">Welcome to Lyxa Dashboard</li>
                         </ol>
                       </>
                     ) : account_type === "seller" ? (
@@ -109,11 +99,7 @@ const Dashboard = () => {
                     )}
                   </Col>
                   <Col md={account_type === "shop" ? 3 : 6}>
-                    <div
-                      className={`d-flex ${
-                        account_type === "shop" && "flex-column"
-                      }`}
-                    >
+                    <div className={`d-flex ${account_type === "shop" && "flex-column"}`}>
                       <DateFilter className=" me-2 ">
                         <div className="date-label">
                           <small>Start</small>
@@ -126,16 +112,10 @@ const Dashboard = () => {
                           variant="standard"
                           format={"YYYY-MM-DD"}
                           value={startDate}
-                          onChange={(e) =>
-                            dispatch(
-                              updateDashboardCardStartDate(e.target.value)
-                            )
-                          }
+                          onChange={(e) => dispatch(updateDashboardCardStartDate(e.target.value))}
                         />
                       </DateFilter>
-                      <DateFilter
-                        className={`${account_type !== "shop" && "ps-3"}`}
-                      >
+                      <DateFilter className={`${account_type !== "shop" && "ps-3"}`}>
                         <div className="date-label">
                           <small>End</small>
                           <h5>Date</h5>
@@ -147,9 +127,7 @@ const Dashboard = () => {
                           variant="standard"
                           format={"YYYY-MM-DD"}
                           value={endDate}
-                          onChange={(e) =>
-                            dispatch(updateDashboardCardEndDate(e.target.value))
-                          }
+                          onChange={(e) => dispatch(updateDashboardCardEndDate(e.target.value))}
                         />
                       </DateFilter>
                     </div>
@@ -167,10 +145,7 @@ const Dashboard = () => {
             <div>
               {account_type === "admin" ? (
                 <Suspense fallback={<div>Loading...</div>}>
-                  <AdminDashboard
-                    summary={summary}
-                    topActivity={top_activity}
-                  />
+                  <AdminDashboard summary={summary} topActivity={top_activity} />
                 </Suspense>
               ) : account_type === "seller" ? (
                 <Suspense fallback={<div>Loading...</div>}>
@@ -236,18 +211,14 @@ const SellerInfo = () => {
     },
   } = useSelector((state) => state.Login);
 
-
   return (
     <InfoWrapper>
       <Row>
-        <Col
-          md={2}
-          className="px-0 d-flex align-items-center justify-content-center"
-        >
+        <Col md={2} className="px-0 d-flex align-items-center justify-content-center">
           <div className="img_wrapper">
             <img
               className="rounded-circle avatar-xl cursor-pointer"
-              style={{ borderRadius: 200, width: 90, height: 90, objectFit: 'cover' }}
+              style={{ borderRadius: 200, width: 90, height: 90, objectFit: "cover" }}
               alt="Seller"
               src={!profile_photo ? noPhoto : profile_photo}
             />
@@ -262,21 +233,15 @@ const SellerInfo = () => {
             <h6 className="text-capitalize">{sellerType}</h6>
           </div>
 
-          <InfoTwo
-            value={`${name} (Manager)`}
-            Icon={PersonOutlineOutlinedIcon}
-          />
+          <InfoTwo value={`${name}`} Icon={PersonOutlineOutlinedIcon} name="Manager" />
           <InfoTwo
             value={`${address}`}
             mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
             Icon={RoomOutlinedIcon}
+            name="Location"
           />
-          <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-          <InfoTwo
-            classes="text-lowercase"
-            value={email}
-            Icon={AlternateEmailOutlinedIcon}
-          />
+          <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} name="Phone" />
+          <InfoTwo name={"Email"} classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
         </Col>
       </Row>
     </InfoWrapper>
@@ -305,8 +270,7 @@ const ShopInfo = () => {
       address: { address, latitude, longitude },
     },
   } = useSelector((state) => state.Login);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   return (
     <InfoWrapper>
@@ -314,7 +278,7 @@ const ShopInfo = () => {
         <Col md={1} className="px-0 d-flex align-items-center justify-content-center">
           <div className="img_wrapper">
             <img
-              style={{ borderRadius: 200, width: 90, height: 90, objectFit: 'cover' }}
+              style={{ borderRadius: 200, width: 90, height: 90, objectFit: "cover" }}
               className="rounded-circle avatar-xl cursor-pointer"
               alt="Seller"
               src={!shopLogo ? noPhoto : shopLogo}
@@ -328,9 +292,7 @@ const ShopInfo = () => {
             </h5>
             <h6 className="text-capitalize me-1">{`Status - ${shopStatus}`}</h6>
             <h6 className="text-capitalize me-1">{shopType}</h6>
-            <h6 className="text-capitalize me-1">{`Featured - ${
-              isFeatured ? "Yes" : "No"
-            }`}</h6>
+            <h6 className="text-capitalize me-1">{`Featured - ${isFeatured ? "Yes" : "No"}`}</h6>
             <h6 className="text-capitalize me-1">{`Cuisines - ${
               cuisineType.length > 0 ? cuisineType[0]?.name : "N/A"
             }`}</h6>
@@ -342,28 +304,21 @@ const ShopInfo = () => {
                 mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
                 value={address}
                 Icon={RoomOutlinedIcon}
+                name={"Location"}
               />
               <InfoTwo
                 value={`Mon to Fri - ${shopStartTimeText} ${
                   shopStartTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                } - ${shopEndTimeText} ${
-                  shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"
-                }`}
+                } - ${shopEndTimeText} ${shopEndTimeText.split(":")[0] < 12 ? "AM" : "PM"}`}
                 Icon={AccessTimeOutlinedIcon}
+                name={"Open"}
               />
-              <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-              <InfoTwo
-                classes="text-lowercase"
-                value={email}
-                Icon={AlternateEmailOutlinedIcon}
-              />
+              <InfoTwo name={"Phone"} value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+              <InfoTwo name={"Email"} classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
             </Col>
 
             <Col lg={4}>
-              <InfoTwo
-                value={`${minOrderAmount} ${currency} (Min Order)`}
-                Icon={StorefrontOutlinedIcon}
-              />
+              <InfoTwo name={"Min Order"} value={`${minOrderAmount} ${currency}`} Icon={StorefrontOutlinedIcon} />
               <InfoTwo
                 value={`${
                   rating === 4
@@ -375,41 +330,22 @@ const ShopInfo = () => {
                     : rating === 1
                     ? "Bad"
                     : ""
-                } (Rating)`}
+                }`}
+                name="Rating"
                 Icon={SentimentSatisfiedOutlinedIcon}
               />
-              {/* <InfoTwo
-                value={`${minOrderAmount} NGN`}
-                Icon={WorkHistoryOutlinedIcon}
-              /> */}
               <InfoTwo
-                value={`${
-                  expensive === 1
-                    ? "$"
-                    : expensive === 2
-                    ? "$$"
-                    : expensive === "3"
-                    ? "$$$"
-                    : "$$$$"
-                } (Price Range)`}
+                name={"Price Range"}
+                value={`${expensive === 1 ? "$" : expensive === 2 ? "$$" : expensive === "3" ? "$$$" : "$$$$"}`}
                 Icon={WorkHistoryOutlinedIcon}
               />
             </Col>
 
             <Col lg={4}>
-              {/* <InfoTwo value={`${}`} Icon={ViewInArOutlinedIcon} /> */}
-              <InfoTwo
-                value={`${
-                  haveOwnDeliveryBoy ? "Self" : "Lyxa"
-                } (Delivery Type)`}
-                Icon={PaymentIcon}
-              />
-              <InfoTwo
-                value={`${deliveryFee} (Delivery Fee)`}
-                Icon={MopedOutlinedIcon}
-              />
+              <InfoTwo name={"Delivery Type"} value={`${haveOwnDeliveryBoy ? "Self" : "Lyxa"}`} Icon={PaymentIcon} />
+              <InfoTwo name={"Delivery Fee"} value={`${deliveryFee}`} Icon={MopedOutlinedIcon} />
 
-              <InfoTwo value={deals.length || 'No Deals'} Icon={SettingsInputSvideoIcon} />
+              <InfoTwo name={"No Deals"} value={deals.length || ""} Icon={SettingsInputSvideoIcon} />
             </Col>
           </Row>
         </Col>

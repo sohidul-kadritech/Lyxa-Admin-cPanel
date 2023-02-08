@@ -3,16 +3,7 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Modal,
-  Row,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row } from "reactstrap";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
 import AppPagination from "../../../components/AppPagination";
@@ -39,11 +30,11 @@ const SellerDetails = () => {
   const dispatch = useDispatch();
   const { sellers, status } = useSelector((state) => state.sellerReducer);
 
-  const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } =
-    useSelector((state) => state.shopReducer);
-  const { account_type, adminType } = useSelector(store => store.Login.admin);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
+  const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
+    (state) => state.shopReducer
+  );
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -87,14 +78,7 @@ const SellerDetails = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={"Details"}
-              title="Seller"
-              //   loading={loading}
-              //   callList={callSellerList}
-              isRefresh={false}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem={"Details"} title="Seller" isRefresh={false} />
 
             {isOpen && (
               <Lightbox
@@ -120,11 +104,7 @@ const SellerDetails = () => {
                     >
                       Update Drop Charge
                     </Button>
-                    <Button
-                      color="primary"
-                      outline={true}
-                      onClick={() => history.push(`/seller/edit/${id}`)}
-                    >
+                    <Button color="primary" outline={true} onClick={() => history.push(`/seller/edit/${id}`)}>
                       Edit
                     </Button>
                   </div>
@@ -132,42 +112,28 @@ const SellerDetails = () => {
                 <hr className="my-2" />
                 <Row className="px-3">
                   <Col lg={6}>
-                    <InfoTwo
-                      value={`${seller?.company_name} (Company)`}
-                      Icon={ApartmentOutlinedIcon}
-                    />
-                    <InfoTwo
-                      value={`${seller?.name} (Manager)`}
-                      Icon={PersonOutlineOutlinedIcon}
-                    />
+                    <InfoTwo name={"Company"} value={`${seller?.company_name}`} Icon={ApartmentOutlinedIcon} />
+                    <InfoTwo name={"Manager"} value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} />
                     <InfoTwo
                       value={`${seller?.addressSeller?.address}`}
                       Icon={RoomOutlinedIcon}
                       mapLink={`${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
+                      name={"Location"}
                     />
+                    <InfoTwo name={"Phone"} value={seller?.phone_number} Icon={LocalPhoneOutlinedIcon} />
                     <InfoTwo
-                      value={seller?.phone_number}
-                      Icon={LocalPhoneOutlinedIcon}
-                    />
-                    <InfoTwo
+                      name={"Email"}
                       value={seller?.email}
                       Icon={AlternateEmailOutlinedIcon}
                       classes="text-lowercase"
                     />
-                    <InfoTwo
-                      value={`${seller?.status} (Status)`}
-                      Icon={AutorenewOutlinedIcon}
-                    />
-                    <InfoTwo
-                      value={`${seller?.sellerType} (Type)`}
-                      Icon={StoreOutlinedIcon}
-                    />
+                    <InfoTwo name={"Status"} value={`${seller?.status}`} Icon={AutorenewOutlinedIcon} />
+                    <InfoTwo name={"Type"} value={`${seller?.sellerType}`} Icon={StoreOutlinedIcon} />
                     {seller?.dropPercentage && (
                       <InfoTwo
                         Icon={PaidOutlinedIcon}
-                        value={`${seller?.dropPercentage} ${
-                          seller?.dropPercentageType === "amount" ? currency : "%"
-                        } (Lyxa Charge)`}
+                        name={"Lyxa Charge"}
+                        value={`${seller?.dropPercentage}${seller?.dropPercentageType === "amount" ? currency : "%"}`}
                       />
                     )}
                   </Col>
@@ -188,11 +154,7 @@ const SellerDetails = () => {
                             }}
                             className="img-fluid cursor-pointer"
                             alt=""
-                            src={
-                              !seller?.profile_photo
-                                ? noPhoto
-                                : seller?.profile_photo
-                            }
+                            src={!seller?.profile_photo ? noPhoto : seller?.profile_photo}
                             width="100%"
                             loading="lazy"
                           />
@@ -210,17 +172,11 @@ const SellerDetails = () => {
                           <img
                             onClick={() => {
                               setIsOpen(true);
-                              setSelectedImg(
-                                seller?.certificate_of_incorporation
-                              );
+                              setSelectedImg(seller?.certificate_of_incorporation);
                             }}
                             className="img-fluid cursor-pointer"
                             alt=""
-                            src={
-                              !seller?.certificate_of_incorporation
-                                ? noPhoto
-                                : seller?.certificate_of_incorporation
-                            }
+                            src={!seller?.certificate_of_incorporation ? noPhoto : seller?.certificate_of_incorporation}
                             width="100%"
                             loading="lazy"
                           />
@@ -242,11 +198,7 @@ const SellerDetails = () => {
                             }}
                             className="img-fluid cursor-pointer"
                             alt=""
-                            src={
-                              !seller?.national_id
-                                ? noPhoto
-                                : seller?.national_id
-                            }
+                            src={!seller?.national_id ? noPhoto : seller?.national_id}
                             loading="lazy"
                           />
                           <small>National Id</small>

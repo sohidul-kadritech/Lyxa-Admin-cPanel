@@ -5,26 +5,10 @@ import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { SINGLE_PRODUCT } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Modal,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row, Modal } from "reactstrap";
 import styled from "styled-components";
 import Lightbox from "react-image-lightbox";
-import {
-  AccordionDetails,
-  Accordion,
-  AccordionSummary,
-  Paper,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { AccordionDetails, Accordion, AccordionSummary, Paper, Tooltip, Typography } from "@mui/material";
 import DealForAdd from "../../../components/DealForAdd";
 import Info from "./../../../components/Info";
 import { deleteDealOfProduct } from "../../../store/Product/productAction";
@@ -51,12 +35,9 @@ const ProductDetails = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { products, loading, status } = useSelector(
-    (state) => state.productReducer
-  );
+  const { products, loading, status } = useSelector((state) => state.productReducer);
 
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const [product, setProduct] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -179,94 +160,68 @@ const ProductDetails = () => {
                         setSelectedImg(product?.images[0]);
                       }}
                     />
-                    <h5
-                      className="text-center mt-3"
-                      style={{ color: "#6b6b6b !important" }}
-                    >
+                    <h5 className="text-center mt-3" style={{ color: "#6b6b6b !important" }}>
                       {product?.name}
                     </h5>
                   </Col>
                   <Col xl={3}>
                     <div className="ps-0 ps-xl-3">
                       <InfoTwo
+                        name={"Seller"}
                         Icon={Person3Icon}
-                        value={`${product?.seller?.name} (Seller)`}
+                        value={`${product?.seller?.name}`}
                         link={`/seller/details/${product?.seller?._id}`}
                       />
                       <InfoTwo
                         Icon={ShopIcon}
-                        value={`${product?.shop?.shopName} (Shop)`}
+                        name={"Shop"}
+                        value={`${product?.shop?.shopName}`}
                         link={`/shops/details/${product?.shop?._id}`}
                       />
-                      <InfoTwo
-                        Icon={PriceCheckIcon}
-                        value={`${product?.price} ${currency} (Price)`}
-                      />
+                      <InfoTwo name={"Price"} Icon={PriceCheckIcon} value={`${product?.price} ${currency}`} />
 
-                      <InfoTwo
-                        Icon={AllInclusiveIcon}
-                        value={`${product?.type} (Type)`}
-                      />
+                      <InfoTwo name={"Type"} Icon={AllInclusiveIcon} value={`${product?.type}`} />
                       {product?.type === "food" && (
-                        <InfoTwo
-                          Icon={FoodBankIcon}
-                          value={`${product?.foodType} (Food Type)`}
-                        />
+                        <InfoTwo name={"Food Type"} Icon={FoodBankIcon} value={`${product?.foodType}`} />
                       )}
                     </div>
                   </Col>
                   <Col xl={3}>
-                    <InfoTwo
-                      Icon={ShoppingCartIcon}
-                      value={`${product?.quantity ?? 1}(Quantity)`}
-                    />
-                    <InfoTwo
-                      Icon={DiscountIcon}
-                      value={`${product?.discountPrice} ${currency} (Discount)`}
-                    />
-                    <InfoTwo
-                      Icon={AcUnitIcon}
-                      value={`${product?.unit ?? "Unknown"} (Unit)`}
-                    />
+                    <InfoTwo name={"Quantity"} Icon={ShoppingCartIcon} value={`${product?.quantity ?? 1}`} />
+                    <InfoTwo name={"Discount"} Icon={DiscountIcon} value={`${product?.discountPrice} ${currency}`} />
+                    <InfoTwo name={"Unit"} Icon={AcUnitIcon} value={`${product?.unit ?? "Unknown"}`} />
 
                     <InfoTwo
-                      Icon={
-                        product?.status === "active" ? CheckBoxIcon : BlockIcon
-                      }
-                      value={`${
-                        product?.status === "active"
-                          ? "available"
-                          : "unavailable"
-                      } (Status)`}
+                      Icon={product?.status === "active" ? CheckBoxIcon : BlockIcon}
+                      value={`${product?.status === "active" ? "available" : "unavailable"}`}
+                      name={"Status"}
                     />
                   </Col>
                   <Col xl={3}>
                     <InfoTwo
                       Icon={CategoryIcon}
-                      value={`${product?.category?.name} (Category)`}
+                      value={`${product?.category?.name}`}
                       link={`/category/details/${product?.category?._id}`}
+                      name={"Category"}
                     />
 
                     <InfoTwo
                       Icon={CategoryIcon}
-                      value={`${
-                        product?.subCategory?.name ?? "Has't Any"
-                      } (Sub-Category)`}
+                      value={`${product?.subCategory?.name ?? "Has't Any"}`}
                       link={`/category/details/${product?.subCategory?._id}`}
+                      name={"Sub-Category"}
                     />
 
                     <InfoTwo
                       Icon={DeliveryDiningIcon}
-                      value={`${
-                        product?.freeDelivery ? "Yes" : "No"
-                      } (Free Delivery)`}
+                      value={`${product?.freeDelivery ? "Yes" : "No"}`}
+                      name={"Free Delivery"}
                     />
 
                     <InfoTwo
                       Icon={AddCircleIcon}
-                      value={`${new Date(
-                        product?.createdAt
-                      ).toDateString()} (Added Date)`}
+                      value={`${new Date(product?.createdAt).toDateString()}`}
+                      name={"Added Date"}
                     />
                   </Col>
                 </Row>
@@ -306,9 +261,7 @@ const ProductDetails = () => {
                                 <ul key={index}>
                                   <li>
                                     <span>{item.name}-</span>
-                                    <span className="ms-1">
-                                      {item.extraPrice}
-                                    </span>
+                                    <span className="ms-1">{item.extraPrice}</span>
                                   </li>
                                 </ul>
                               ))}
@@ -341,12 +294,7 @@ const ProductDetails = () => {
                               <li>
                                 <div className="d-flex justify-content-between">
                                   <div>
-                                    <img
-                                      loading="lazy"
-                                      width="60"
-                                      src={item.images[0]}
-                                      alt=""
-                                    />
+                                    <img loading="lazy" width="60" src={item.images[0]} alt="" />
                                     <span
                                       style={{
                                         fontSize: "15px",
@@ -409,8 +357,7 @@ const ProductDetails = () => {
                                   <span>{deal?.type}-</span>
                                   <span className="ms-1">
                                     {deal?.option}
-                                    {deal?.percentage &&
-                                      `(${deal?.percentage}%)`}
+                                    {deal?.percentage && `(${deal?.percentage}%)`}
                                   </span>
                                 </li>
                               </ul>
@@ -452,11 +399,7 @@ const ProductDetails = () => {
             </button>
           </div>
           <div className="modal-body">
-            <DealForAdd
-              type="product"
-              item={product}
-              shopType={product?.type}
-            />
+            <DealForAdd type="product" item={product} shopType={product?.type} />
           </div>
         </Modal>
       </GlobalWrapper>

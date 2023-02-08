@@ -4,7 +4,6 @@ import { Row, Col } from "reactstrap";
 import DashboardCard from "./DashboardCard";
 import moneyExchangeIcon from "../assets/images/dashboard/money-exchange.png";
 import orderAmountIcon from "../assets/images/dashboard/order-amount.png";
-import deliveryIcon from "../assets/images/dashboard/delivery.png";
 import profitFlowIcon from "../assets/images/dashboard/profit-flow.png";
 import profitUpArrowIcon from "../assets/images/dashboard/profit-up-arrow.png";
 import earningFlowIcon from "../assets/images/dashboard/earning-flow.png";
@@ -17,9 +16,7 @@ import { useSelector } from "react-redux";
 const GraphInfo = lazy(() => import("./GraphInfo"));
 
 const ShopDashboard = ({ summary }) => {
-  const currency = useSelector(
-    (store) => store.settingsReducer.appSettingsOptions.currency.code
-  ).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const topSummaryData = [
     {
@@ -58,9 +55,7 @@ const ShopDashboard = ({ summary }) => {
       id: 5,
       title: "Order Amount",
       subTitle: "(Ex delivery fees)",
-      value: `${
-        summary?.orderValue?.productAmount?.toFixed(2) ?? 0
-      } ${currency}`,
+      value: `${summary?.orderValue?.productAmount?.toFixed(2) ?? 0} ${currency}`,
       icon: orderAmountIcon,
       iconBg: "#ff5ca7",
     },
@@ -77,22 +72,12 @@ const ShopDashboard = ({ summary }) => {
     <React.Fragment>
       <GlobalWrapper>
         {topSummaryData.length > 0 && <TopSummery data={topSummaryData} />}
-
         <Row>
           <Suspense fallback={<div>Loading...</div>}>
             <GraphInfo graphType="earning" />
           </Suspense>
         </Row>
-
         <Row>
-          {/* <Col xl={4} md={6}>
-                        <DashboardCard
-                            title="Shops"
-                            value={summary?.totalShops}
-                            icon={shopIcon}
-                            color={"#22a6ac"}
-                        />
-                    </Col> */}
           <Col xl={4} md={6}>
             <DashboardCard
               title="Deliverd Orders"

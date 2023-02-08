@@ -2,9 +2,7 @@
 // import requestApi from '../../network/httpRequest';
 // import * as actionType from '../actionType'
 
-
 // export const imageFolderListAction = () => async (dispatch, getState) => {
-
 
 //     try {
 //         dispatch({
@@ -35,9 +33,7 @@
 
 // }
 
-
 // export const imageFolderCreateAction = (name) => async (dispatch, getState) => {
-
 
 //     try {
 //         dispatch({

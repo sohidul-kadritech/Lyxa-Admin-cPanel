@@ -19,7 +19,7 @@ import noPhoto from "../../../assets/images/noPhoto.jpg";
 import InfoTwo from "../../../components/InfoTwo";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
-import ContactsIcon from '@mui/icons-material/Contacts';
+import ContactsIcon from "@mui/icons-material/Contacts";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import CakeIcon from "@mui/icons-material/Cake";
 import SavingsIcon from "@mui/icons-material/Savings";
@@ -68,7 +68,6 @@ const UserDetails = () => {
       }
     }
   }, [id]);
-
 
   useEffect(() => {
     if (status || userStatus) {
@@ -135,25 +134,45 @@ const UserDetails = () => {
                       <Col xl={8} className="ps-3">
                         {Object.keys(user).length > 0 ? (
                           <>
-                            <InfoTwo value={`${user?.name} (Name)`} Icon={PersonOutlineOutlinedIcon} />
-                            <InfoTwo value={user?.email} Icon={AlternateEmailOutlinedIcon} classes="text-lowercase" />
-                            <InfoTwo value={`${(user?.registerType || 'email')} (Register Type)`} Icon={ContactsIcon} classes="" />
-                            <InfoTwo value={`${user?.gender ?? "Unknown"} (Gender)`} Icon={TransgenderIcon} />
-                            <InfoTwo value={`${new Date(user?.dob).toDateString()} (Birth Date)`} Icon={CakeIcon} />
-                            <InfoTwo value={`${user?.tempBalance} ${currency} (Lyxa Balance)`} Icon={SavingsIcon} />
-                            <InfoTwo value={`${user?.orderCompleted} (Orders)`} Icon={ShoppingBasketIcon} />
+                            <InfoTwo name={"Name"} value={`${user?.name}`} Icon={PersonOutlineOutlinedIcon} />
                             <InfoTwo
-                              value={`${user?.status} (Status)`}
+                              name={"Email"}
+                              value={user?.email}
+                              Icon={AlternateEmailOutlinedIcon}
+                              classes="text-lowercase"
+                            />
+                            <InfoTwo
+                              value={`${user?.registerType || "email"}`}
+                              Icon={ContactsIcon}
+                              name={"Register Type"}
+                            />
+                            <InfoTwo name={"Gender"} value={`${user?.gender ?? "Unknown"}`} Icon={TransgenderIcon} />
+                            <InfoTwo
+                              name={"Birth Date"}
+                              value={`${new Date(user?.dob).toDateString()}`}
+                              Icon={CakeIcon}
+                            />
+                            <InfoTwo
+                              name={"Lyxa Balance"}
+                              value={`${user?.tempBalance} ${currency}`}
+                              Icon={SavingsIcon}
+                            />
+                            <InfoTwo name={"Orders"} value={`${user?.orderCompleted}`} Icon={ShoppingBasketIcon} />
+                            <InfoTwo
+                              name={"Status"}
+                              value={`${user?.status}`}
                               Icon={user?.status === "active" ? ToggleOnIcon : ToggleOffIcon}
                             />
                             <InfoTwo
-                              value={`${new Date(user?.createdAt).toDateString()} (Join Date)`}
+                              name={"Join Date"}
+                              value={`${new Date(user?.createdAt).toDateString()}`}
                               Icon={HowToRegIcon}
                             />
                             <InfoTwo
                               Icon={RoomOutlinedIcon}
                               value={user?.address[0]?.address}
                               mapLink={`${MAP_URL}?z=10&t=m&q=loc:${user?.address[0]?.latitude}+${user?.address[0]?.longitude}`}
+                              name="Location"
                             />
                           </>
                         ) : (
