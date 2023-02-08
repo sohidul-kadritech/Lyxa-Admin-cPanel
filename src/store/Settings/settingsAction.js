@@ -25,7 +25,6 @@ import {
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
-import currenciesList from "../../common/data/currencyList";
 
 // UPDATE GOOGLE MAP KEY
 export const updateGoogleMapApiKey = (key) => (dispatch) => {
@@ -40,6 +39,14 @@ export const updateDeliveryFee = (fee) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_DELIVERY_FEE,
     payload: fee,
+  });
+};
+
+// SEARCH DELIVERY BOY DISTANCE KM
+export const updateVat = (percentage) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_VAT,
+    payload: percentage,
   });
 };
 
@@ -192,9 +199,8 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
         type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
         payload: data.appSetting,
       });
-      
-      localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency));
 
+      localStorage.setItem("currency", JSON.stringify(data?.appSetting?.currency));
     } else {
       successMsg(message, "error");
       dispatch({
@@ -222,7 +228,7 @@ export const getAllAppSettings = () => async (dispatch) => {
     } = await requestApi().request(APP_SETTINGS);
 
     // save current currency to localStorage
-    localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency));
+    localStorage.setItem("currency", JSON.stringify(data?.appSetting?.currency));
 
     if (status) {
       dispatch({
@@ -240,7 +246,7 @@ export const getAllAppSettings = () => async (dispatch) => {
       type: actionType.ALL_APP_SETTINGS_REQUEST_FAIL,
       payload: error.message,
     });
-    console.log(error)
+    console.log(error);
   }
 };
 

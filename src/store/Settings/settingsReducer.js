@@ -11,7 +11,8 @@ const initialState = {
     maxDiscount: "",
     searchDeliveryBoyKm: [],
     maxCustomerServiceValue: "",
-    currency: localStorage.getItem("currency") ? JSON.parse(localStorage.getItem("currency")) : {code: ''}
+    vat: "",
+    currency: localStorage.getItem("currency") ? JSON.parse(localStorage.getItem("currency")) : { code: "" },
   },
 
   dropCharge: null,
@@ -56,6 +57,15 @@ const settingsReducer = (state = initialState, action) => {
         appSettingsOptions: {
           ...state.appSettingsOptions,
           searchDeliveryBoyKm: [...state.appSettingsOptions.searchDeliveryBoyKm, payload],
+        },
+      };
+
+    case actionType.UPDATE_VAT:
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          vat: payload,
         },
       };
 

@@ -1,24 +1,7 @@
-import {
-  Paper,
-  TextField,
-  Select,
-  OutlinedInput,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Grid,
-  Stack,
-} from "@mui/material";
+import { Paper, TextField, Select, OutlinedInput, MenuItem, InputLabel, FormControl, Grid, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Container,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Container, Spinner } from "reactstrap";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../components/GlobalWrapper";
 import {
@@ -30,6 +13,7 @@ import {
   updateMaxDiscount,
   updateNearByShopKey,
   updateSearchDeliveryBoyKm,
+  updateVat,
 } from "../../store/Settings/settingsAction";
 import { toast } from "react-toastify";
 import currenciesList from "../../common/data/currencyList";
@@ -55,9 +39,7 @@ const dataLoadingIntitial = {
 
 const AppSettings = () => {
   const dispatch = useDispatch();
-  const { loading, appSettingsOptions } = useSelector(
-    (state) => state.settingsReducer
-  );
+  const { loading, appSettingsOptions } = useSelector((state) => state.settingsReducer);
   const [areaChangeKey, setAreaChangeKey] = useState("");
   const [dataIsLoading, setDataIsLoading] = useState(dataLoadingIntitial);
 
@@ -103,16 +85,14 @@ const AppSettings = () => {
     }
   };
 
+  console.log(appSettingsOptions);
+
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={"App Settings"}
-              isRefresh={false}
-            />
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem={"App Settings"} isRefresh={false} />
             <Grid container spacing={3}>
               {/* max discount */}
               <Grid item md={12}>
@@ -152,11 +132,7 @@ const AppSettings = () => {
                         }}
                       >
                         {dataIsLoading.nearByShopKm ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
                         ) : (
                           "Update"
                         )}
@@ -198,22 +174,14 @@ const AppSettings = () => {
                         }}
                       >
                         {dataIsLoading.maxCustomerServiceValue ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
                         ) : (
                           "Update"
                         )}
                       </Button>
                     </Stack>
 
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      style={{ marginTop: "25px" }}
-                    >
+                    <Stack spacing={2} direction="row" style={{ marginTop: "25px" }}>
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
@@ -247,11 +215,7 @@ const AppSettings = () => {
                         }}
                       >
                         {dataIsLoading.maxDiscount ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
                         ) : (
                           "Update"
                         )}
@@ -290,31 +254,23 @@ const AppSettings = () => {
                         }}
                       >
                         {dataIsLoading.maxCustomerButlerServiceValue ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
                         ) : (
                           "Update"
                         )}
                       </Button>
                     </Stack>
                     <Stack spacing={2} direction="row"></Stack>
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      style={{ marginTop: "25px" }}
-                    >
+                    <Stack spacing={2} direction="row" style={{ marginTop: "25px" }}>
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
-                        label="VAT (Amount)"
+                        label="VAT (Percentage)"
                         variant="outlined"
-                        placeholder="Enter VAT Amount"
-                        value={0}
+                        placeholder="Enter VAT Percentage"
+                        value={appSettingsOptions?.vat || 0}
                         onChange={(e) => {
-                          console.log(e);
+                          dispatch(updateVat(e.target.value));
                         }}
                         type="number"
                         name="vat"
@@ -336,11 +292,7 @@ const AppSettings = () => {
                         }}
                       >
                         {dataIsLoading.vat ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
                         ) : (
                           "Update"
                         )}
@@ -353,14 +305,11 @@ const AppSettings = () => {
                           label="Currency"
                           onChange={(e) => {
                             const currencyObj = currenciesList.find(
-                              (currencyObj) =>
-                                currencyObj.code === e.target.value
+                              (currencyObj) => currencyObj.code === e.target.value
                             );
                             dispatch(updateCurrency(currencyObj));
                           }}
-                          input={
-                            <OutlinedInput label="Currency" name="currency" />
-                          }
+                          input={<OutlinedInput label="Currency" name="currency" />}
                           MenuProps={MenuProps}
                         >
                           {currenciesList.map(({ code, name }) => (
@@ -390,23 +339,14 @@ const AppSettings = () => {
                         }}
                       >
                         {dataIsLoading.currency ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
                         ) : (
                           "Update"
                         )}
                       </Button>
                     </Stack>
 
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      mb={2}
-                      style={{ marginTop: "25px" }}
-                    >
+                    <Stack spacing={2} direction="row" mb={2} style={{ marginTop: "25px" }}>
                       <TextField
                         style={{ width: "100%" }}
                         id="outlined-basic"
@@ -439,11 +379,7 @@ const AppSettings = () => {
                         }}
                       >
                         {dataIsLoading.searchDeliveryBoyKm ? (
-                          <Spinner
-                            animation="border"
-                            variant="success"
-                            size="sm"
-                          ></Spinner>
+                          <Spinner animation="border" variant="success" size="sm"></Spinner>
                         ) : (
                           "Update"
                         )}
@@ -451,22 +387,18 @@ const AppSettings = () => {
                     </Stack>
                     {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
                       <Paper className=" p-3">
-                        {appSettingsOptions?.searchDeliveryBoyKm?.map(
-                          (item, index) => (
-                            <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() =>
-                                  dispatch(removeSearchDeliveryBoyKm(index))
-                                }
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          )
-                        )}
+                        {appSettingsOptions?.searchDeliveryBoyKm?.map((item, index) => (
+                          <div className="tag__wrapper" key={index}>
+                            {item}
+                            <button
+                              type="button"
+                              className="button"
+                              onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
                       </Paper>
                     )}
                   </CardBody>
