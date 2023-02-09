@@ -145,8 +145,11 @@ const OrderDetails = () => {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const getProperOrderTimeline = (orderObj) => {
+    console.log(orderObj?.timeline);
     if (orderObj?.orderFor === "specific") {
-      const timeline = orderObj?.timeline?.filter((item) => item.status !== "ready_to_pickup");
+      const timeline = orderObj?.timeline?.filter(
+        (item) => item.status !== "ready_to_pickup" && item.status !== "accepted_delivery_boy"
+      );
       return timeline;
     }
     return orderObj?.timeline;
@@ -387,7 +390,7 @@ const OrderDetails = () => {
                             value: order?.deliveryBoy
                               ? order?.deliveryBoy?.name
                               : order?.orderFor === "specific"
-                              ? "Self Delivered"
+                              ? "Self Delivery"
                               : "Not Assigned",
                             link: order?.deliveryBoy ? `/deliveryman/details/${order?.deliveryBoy?._id}` : null,
                           },

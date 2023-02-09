@@ -95,44 +95,46 @@ const UserDetails = () => {
               <Col lg={6}>
                 <Card className="card-height">
                   <CardBody>
-                    <div className="d-flex justify-content-end">
-                      <Button
-                        outline={true}
-                        color="success"
-                        disabled={Object.keys(user).length === 0}
-                        onClick={() => setBalAddModal(!balAddModal)}
-                      >
-                        Add/Remove Credit
-                      </Button>
-                      {account_type === "admin" && adminType === "admin" && (
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div style={{ width: "60px", height: "60px", borderRadius: "50%", overflow: "hidden" }}>
+                        <img
+                          className=" cursor-pointer"
+                          alt="User"
+                          src={user?.profile_photo ?? noPhoto}
+                          loading="lazy"
+                          height="100%"
+                          width="100%"
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
+                      <div className="d-flex justify-content-end align-items-center">
                         <Button
                           outline={true}
                           color="success"
-                          className="ms-3"
-                          disabled={Object.keys(user).length === 0 || loading}
-                          onClick={() =>
-                            dispatch(updateUserStatus(user?._id, user?.status === "active" ? "inactive" : "active"))
-                          }
+                          disabled={Object.keys(user).length === 0}
+                          onClick={() => setBalAddModal(!balAddModal)}
                         >
-                          {loading ? "Loading..." : user?.status === "active" ? "Inactivate" : "Activate"}
+                          Add/Remove Credit
                         </Button>
-                      )}
+                        {account_type === "admin" && adminType === "admin" && (
+                          <Button
+                            outline={true}
+                            color="success"
+                            className="ms-3"
+                            disabled={Object.keys(user).length === 0 || loading}
+                            onClick={() =>
+                              dispatch(updateUserStatus(user?._id, user?.status === "active" ? "inactive" : "active"))
+                            }
+                          >
+                            {loading ? "Loading..." : user?.status === "active" ? "Inactivate" : "Activate"}
+                          </Button>
+                        )}
+                      </div>
                     </div>
+
                     <hr />
                     <Row>
-                      <Col xl={4}>
-                        <ImgWrapper>
-                          <img
-                            className=" cursor-pointer"
-                            alt="User"
-                            src={user?.profile_photo ?? noPhoto}
-                            loading="lazy"
-                            height="100%"
-                            width="100%"
-                          />
-                        </ImgWrapper>
-                      </Col>
-                      <Col xl={8} className="ps-3">
+                      <Col xl={12} className="ps-3">
                         {Object.keys(user).length > 0 ? (
                           <InfoTwoWrapper>
                             <InfoTwo name={"Name"} value={`${user?.name}`} Icon={PersonOutlineOutlinedIcon} />
