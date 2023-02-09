@@ -328,11 +328,13 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
         item?.deliveryBoy ? setDeliveryBoy(item?.deliveryBoy) : null
       );
     } else if (menu === "Cancel Order") {
+      console.log(item);
       setOpenCancelModal(!openCancelModal);
       setOrderCancel({
         ...orderCancel,
         cancelReason: "",
         otherReason: "",
+        orderFor: item.orderFor,
         orderActivity: item?.orderActivity,
         paymentMethod: item?.paymentMethod,
         orderId: item?._id,
@@ -490,6 +492,7 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                 )}
               </Tbody>
             </Table>
+
             {!loading && orders?.length < 1 && (
               <div className="text-center">
                 <h4>No Order!</h4>
@@ -823,7 +826,10 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                       control={<Radio />}
                       label="Full Refund"
                     />
-                    {orderCancel?.orderActivity?.length > 2 && (
+                    {((orderCancel?.orderFor === "specific" &&
+                      orderCancel?.orderActivity?.length > 1) ||
+                      (orderCancel?.orderFor === "global" &&
+                        orderCancel?.orderActivity?.length > 2)) && (
                       <FormControlLabel
                         value="partial"
                         control={<Radio />}
@@ -868,19 +874,21 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                   />
                   <span>Lyxa Earning: {orderPayment?.admin}</span>
                 </div>
-                <div className="refund_item_wrapper">
-                  <input
-                    type="number"
-                    className="form-control refund_input"
-                    placeholder="Enter Delivery Amount"
-                    min={0}
-                    max={orderPayment?.deliveryBoy}
-                    onChange={updateRefundAmount}
-                    name="deliveryBoy"
-                    value={orderCancel?.partialPayment?.deliveryBoy}
-                  />
-                  <span>Delivery Earning: {orderPayment?.deliveryBoy}</span>
-                </div>
+                {orderCancel?.orderFor === "global" && (
+                  <div className="refund_item_wrapper">
+                    <input
+                      type="number"
+                      className="form-control refund_input"
+                      placeholder="Enter Delivery Amount"
+                      min={0}
+                      max={orderPayment?.deliveryBoy}
+                      onChange={updateRefundAmount}
+                      name="deliveryBoy"
+                      value={orderCancel?.partialPayment?.deliveryBoy}
+                    />
+                    <span>Delivery Earning: {orderPayment?.deliveryBoy}</span>
+                  </div>
+                )}
               </CancelOrderRefunds>
             )}
 
