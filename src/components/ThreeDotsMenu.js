@@ -1,9 +1,9 @@
-import { Button, Menu, MenuItem } from "@mui/material";
-import React from "react";
+import { Button, Menu, MenuItem } from '@mui/material';
+import React from 'react';
 
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const ThreeDotsMenu = ({ menuItems = [], handleMenuClick }) => {
+function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (e) => {
@@ -15,22 +15,16 @@ const ThreeDotsMenu = ({ menuItems = [], handleMenuClick }) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Button onClick={handleClick}>
         <MoreVertIcon />
       </Button>
-      <Menu
-        id="card-actions-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
+      <Menu id="card-actions-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {menuItems?.map(
-          (menu, index) =>
+          (menu) =>
             menu && (
               <MenuItem
-                key={index}
+                key={Math.random()}
                 value={menu}
                 onClick={() => {
                   handleMenuClick(menu);
@@ -42,8 +36,8 @@ const ThreeDotsMenu = ({ menuItems = [], handleMenuClick }) => {
             )
         )}
       </Menu>
-    </React.Fragment>
+    </>
   );
-};
+}
 
 export default ThreeDotsMenu;

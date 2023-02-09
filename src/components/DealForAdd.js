@@ -1,59 +1,28 @@
-import { Autocomplete, Box, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { Button } from "reactstrap";
-import { successMsg } from "../helpers/successMsg";
-import { getAllDealForAdd } from "../store/Deal/dealAction";
-import { addProductDeal } from "../store/Product/productAction";
-import { addShopDeal } from "../store/Shop/shopAction";
+import { Autocomplete, Box, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'reactstrap';
+import { successMsg } from '../helpers/successMsg';
+import { getAllDealForAdd } from '../store/Deal/dealAction';
+import { addProductDeal } from '../store/Product/productAction';
+import { addShopDeal } from '../store/Shop/shopAction';
 
-const DealForAdd = ({ type, item, shopType }) => {
+function DealForAdd({ type, item, shopType }) {
   const dispatch = useDispatch();
   const { deals } = useSelector((state) => state.dealReducer);
   const { loading } = useSelector((state) => state.productReducer);
   const { loading: shopLoading } = useSelector((state) => state.shopReducer);
 
   const [deal, setDeal] = useState(null);
-  const [searchDealKey, setSearchDealKey] = useState("");
+  const [searchDealKey, setSearchDealKey] = useState('');
 
   useEffect(() => {
     dispatch(getAllDealForAdd(type, shopType));
   }, []);
 
-  const addDeal = () => {
-    if (item.deals.length === 0) {
-      callApi(type);
-    } else {
-      const findDeal = item?.deals.find((item) => item.option == deal.option);
-      const findDoubleDeal = item?.deals.find(
-        (item) => item.option === "double_menu"
-      );
-      const findPercentage = item?.deals.find(
-        (item) => item.option === "percentage"
-      );
-      // console.log({ findDoubleDeal, findPercentage });
-      if (
-        (deal.option === "percentage" && findDoubleDeal) ||
-        (deal.option === "double_menu" && findPercentage)
-      ) {
-        return successMsg(
-          "You can not add percentage or double deal in same shop"
-        );
-      }
-
-      if (findDeal) {
-        return successMsg("Deal Already Added!.Try Another One");
-      } else {
-        callApi(type);
-      }
-    }
-  };
-
   // DEAL SAVE TO SERVER
-
   const callApi = (value) => {
-    if (value === "product") {
+    if (value === 'product') {
       dispatch(
         addProductDeal({
           productId: item._id,
@@ -70,6 +39,26 @@ const DealForAdd = ({ type, item, shopType }) => {
     }
   };
 
+  // eslint-disable-next-line consistent-return
+  const addDeal = () => {
+    if (item.deals.length === 0) {
+      callApi(type);
+    } else {
+      const findDeal = item?.deals.find((item) => item.option === deal.option);
+      const findDoubleDeal = item?.deals.find((item) => item.option === 'double_menu');
+      const findPercentage = item?.deals.find((item) => item.option === 'percentage');
+      // console.log({ findDoubleDeal, findPercentage });
+      if ((deal.option === 'percentage' && findDoubleDeal) || (deal.option === 'double_menu' && findPercentage)) {
+        return successMsg('You can not add percentage or double deal in same shop');
+      }
+
+      if (findDeal) {
+        return successMsg('Deal Already Added!.Try Another One');
+      }
+      callApi(type);
+    }
+  };
+
   return (
     <div>
       <Autocomplete
@@ -78,7 +67,7 @@ const DealForAdd = ({ type, item, shopType }) => {
           setDeal(newValue);
         }}
         getOptionLabel={(option) => option.name}
-        isOptionEqualToValue={(option, value) => option._id == value._id}
+        isOptionEqualToValue={(option, value) => option._id === value._id}
         inputValue={searchDealKey}
         onInputChange={(event, newInputValue) => {
           setSearchDealKey(newInputValue);
@@ -86,29 +75,22 @@ const DealForAdd = ({ type, item, shopType }) => {
         }}
         id="controllable-states-demo"
         options={deals.length > 0 ? deals : []}
-        sx={{ width: "100%" }}
-        renderInput={(params) => (
-          <TextField {...params} label="Select a Deal" />
-        )}
+        sx={{ width: '100%' }}
+        renderInput={(params) => <TextField {...params} label="Select a Deal" />}
         renderOption={(props, option) => (
-          <Box
-            component="li"
-            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-            {...props}
-            key={option?._id}
-          >
+          <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props} key={option?._id}>
             {option?.name}
-            {option.option === "percentage" && `(${option.percentage}%)`}
+            {option.option === 'percentage' && `(${option.percentage}%)`}
           </Box>
         )}
       />
       <div className="d-flex justify-content-center mt-3">
         <Button color="primary" className="px-4" onClick={addDeal}>
-          {loading || shopLoading ? "Loading..." : "Add"}
+          {loading || shopLoading ? 'Loading...' : 'Add'}
         </Button>
       </div>
     </div>
   );
-};
+}
 
 export default DealForAdd;

@@ -1,4 +1,6 @@
-import * as actionType from "../../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../../actionType';
 
 const initialState = {
   loading: false,
@@ -6,7 +8,7 @@ const initialState = {
   error: null,
   status: false,
   sellerCredentials: [],
-  shopCredentials: []
+  shopCredentials: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -70,11 +72,7 @@ const adminReducer = (state = initialState, action) => {
         status: false,
       };
     case actionType.DELETE_ADMIN_REQUEST_SUCCESS:
-      let index = state.admins
-        .map((x) => {
-          return x._id;
-        })
-        .indexOf(payload?._id);
+      const index = state.admins.map((x) => x._id).indexOf(payload?._id);
       state.admins.splice(index, 1);
 
       return {
@@ -101,9 +99,7 @@ const adminReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_ADMIN_REQUEST_SUCCESS:
-      const updateData = state.admins.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const updateData = state.admins.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -165,7 +161,7 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        sellerCredentials: payload
+        sellerCredentials: payload,
       };
 
     case actionType.GET_SELLER_CREDENTIALS_REQUEST_FAIL:
@@ -188,7 +184,7 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        sellerCredentials: payload
+        sellerCredentials: payload,
       };
 
     case actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_FAIL:
@@ -222,7 +218,6 @@ const adminReducer = (state = initialState, action) => {
         error: payload,
       };
 
-
     case actionType.GET_SHOP_CREDENTIALS_REQUEST_SEND:
       return {
         ...state,
@@ -236,7 +231,7 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        shopCredentials: payload
+        shopCredentials: payload,
       };
 
     case actionType.GET_SHOP_CREDENTIALS_REQUEST_FAIL:
@@ -245,7 +240,6 @@ const adminReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
       };
-
 
     case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_SEND:
       return {
@@ -260,7 +254,7 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        shopCredentials: payload
+        shopCredentials: payload,
       };
 
     case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_FAIL:
@@ -269,7 +263,6 @@ const adminReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
       };
-
 
     default:
       return state;

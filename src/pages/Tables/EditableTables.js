@@ -1,13 +1,13 @@
-import React from "react"
+import React from 'react';
 import MetaTags from 'react-meta-tags';
 
-import { Row, Col, Card, CardBody, CardTitle } from "reactstrap"
+import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
 // Editable
-import BootstrapTable from "react-bootstrap-table-next"
-import cellEditFactory from "react-bootstrap-table2-editor"
+import BootstrapTable from 'react-bootstrap-table-next';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 
-//Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb"
+// Import Breadcrumb
+import Breadcrumbs from '../../components/Common/Breadcrumb';
 
 const products = [
   { id: 1, age: 25, qty: 1500, cost: 1000 },
@@ -15,59 +15,57 @@ const products = [
   { id: 3, age: 67, qty: 1300, cost: 1300 },
   { id: 4, age: 23, qty: 1100, cost: 6400 },
   { id: 5, age: 78, qty: 1400, cost: 4000 },
-]
+];
 
 const columns = [
   {
-    dataField: "id",
-    text: "ID",
+    dataField: 'id',
+    text: 'ID',
   },
   {
-    dataField: "age",
-    text: "Age(AutoFill)",
+    dataField: 'age',
+    text: 'Age(AutoFill)',
   },
   {
-    dataField: "qty",
-    text: "Qty(AutoFill and Editable)",
+    dataField: 'qty',
+    text: 'Qty(AutoFill and Editable)',
   },
   {
-    dataField: "cost",
-    text: "Cost(Editable)",
+    dataField: 'cost',
+    text: 'Cost(Editable)',
   },
-]
+];
 
-const EditableTables = () => {
+function EditableTables() {
   return (
-    <React.Fragment>
-      <div className="page-content">
-        <MetaTags>
-          <title>Editable Tables | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
-        </MetaTags>
-        <div className="container-fluid">
-          <Breadcrumbs maintitle="Veltrix" title="Tables" breadcrumbItem="Editable Table" />
+    <div className="page-content">
+      <MetaTags>
+        <title>Editable Tables | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
+      </MetaTags>
+      <div className="container-fluid">
+        <Breadcrumbs maintitle="Veltrix" title="Tables" breadcrumbItem="Editable Table" />
 
-          <Row>
-            <Col>
-              <Card>
-                <CardBody>
-                  <CardTitle className="h4">Datatable Editable </CardTitle>
+        <Row>
+          <Col>
+            <Card>
+              <CardBody>
+                <CardTitle className="h4">Datatable Editable </CardTitle>
 
-                  <div className="table-responsive">
-                    <BootstrapTable
-                      keyField="id"
-                      data={products}
-                      columns={columns}
-                      cellEdit={cellEditFactory({ mode: "click" })}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </div>
+                <div className="table-responsive">
+                  <BootstrapTable
+                    keyField="id"
+                    data={products}
+                    columns={columns}
+                    cellEdit={cellEditFactory({ mode: 'click' })}
+                  />
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
       </div>
-    </React.Fragment>
-  )
+    </div>
+  );
 }
 
-export default EditableTables
+export default EditableTables;

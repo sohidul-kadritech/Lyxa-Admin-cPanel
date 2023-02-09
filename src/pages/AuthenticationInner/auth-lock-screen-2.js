@@ -1,22 +1,22 @@
-import React from "react"
+import React from 'react';
 import MetaTags from 'react-meta-tags';
-import logoDark from "../../assets/images/logo-dark.png";
-import user6 from "../../assets/images/users/user-6.jpg";
-import bg from "../../assets/images/bg.jpg";
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
+import bg from '../../assets/images/bg.jpg';
+import logoDark from '../../assets/images/logo-dark.png';
+import user6 from '../../assets/images/users/user-6.jpg';
 
-const LockScreen2 = () => {
+function LockScreen2() {
   return (
-    <React.Fragment>
+    <>
       <MetaTags>
         <title>Lock Screen 2 | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
       </MetaTags>
       <div
         className="accountbg"
         style={{
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundImage: `url(${bg})`
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundImage: `url(${bg})`,
         }}
       ></div>
       <div className="wrapper-page account-page-full">
@@ -32,58 +32,40 @@ const LockScreen2 = () => {
                   </div>
 
                   <h4 className="font-size-18 mt-5 text-center">Locked</h4>
-                  <p className="text-muted text-center">
-                    Hello Smith, enter your password to unlock the screen!
-                    </p>
+                  <p className="text-muted text-center">Hello Smith, enter your password to unlock the screen!</p>
 
                   <form className="mt-4" action="#">
                     <div className="pt-3 text-center">
-                      <img
-                        src={user6}
-                        className="rounded-circle img-thumbnail avatar-lg"
-                        alt="thumbnail"
-                      />
+                      <img src={user6} className="rounded-circle img-thumbnail avatar-lg" alt="thumbnail" />
                       <h6 className="font-size-16 mt-3">Robert Smith</h6>
                     </div>
 
                     <div className="mb-3">
                       <label htmlFor="userpassword">Password</label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        id="userpassword"
-                        placeholder="Enter password"
-                      />
+                      <input type="password" className="form-control" id="userpassword" placeholder="Enter password" />
                     </div>
 
                     <div className="row">
                       <div className="col-12 text-end">
-                        <button
-                          className="btn btn-primary w-md waves-effect waves-light"
-                          type="submit"
-                        >
+                        <button className="btn btn-primary w-md waves-effect waves-light" type="submit">
                           Unlock
-                          </button>
+                        </button>
                       </div>
                     </div>
                   </form>
 
                   <div className="mt-5 pt-4 text-center">
                     <p>
-                      Not you ? return{" "}
-                      <Link
-                        to="pages-login-2"
-                        className="fw-medium text-primary"
-                      >
-                        {" "}
-                          Sign In{" "}
-                      </Link>{" "}
+                      Not you ? return{' '}
+                      <Link to="pages-login-2" className="fw-medium text-primary">
+                        {' '}
+                        Sign In{' '}
+                      </Link>{' '}
                     </p>
                     <p>
-                      © {new Date().getFullYear()} Veltrix. Crafted with{" "}
-                      <i className="mdi mdi-heart text-danger"></i> by
-                        Themesbrand
-                      </p>
+                      © {new Date().getFullYear()} Veltrix. Crafted with
+                      <i className="mdi mdi-heart text-danger"></i> by Themesbrand
+                    </p>
                   </div>
                 </div>
               </div>
@@ -91,8 +73,8 @@ const LockScreen2 = () => {
           </div>
         </div>
       </div>
-    </React.Fragment>
-  )
+    </>
+  );
 }
 
 export default LockScreen2;

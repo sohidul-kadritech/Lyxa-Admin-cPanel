@@ -1,48 +1,21 @@
-import React, { useState } from "react";
-import { Editor } from "react-draft-wysiwyg";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Form,
-  Row,
-  Spinner,
-} from "reactstrap";
-import GlobalWrapper from "../GlobalWrapper";
-import Breadcrumbs from "../Common/Breadcrumb";
-import {
-  convertFromRaw,
-  convertToRaw,
-  ContentState,
-  EditorState,
-} from "draft-js";
+import { convertToHTML } from 'draft-convert';
+import { ContentState, EditorState } from 'draft-js';
+import htmlToDraft from 'html-to-draftjs';
+import React, { useState } from 'react';
+import { Editor } from 'react-draft-wysiwyg';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Card, CardBody, CardTitle, Col, Form, Row, Spinner } from 'reactstrap';
+import GlobalWrapper from '../GlobalWrapper';
 
-import { useDispatch, useSelector } from "react-redux";
-import { convertToHTML } from "draft-convert";
-import htmlToDraft from "html-to-draftjs";
-import requestApi from "../../network/httpRequest";
-import Breadcrumb from "../Common/Breadcrumb";
-import {
-  getAllAppSettings,
-  updateAppSettings,
-} from "../../store/Settings/settingsAction";
-import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import {
-  getTermAndCondition,
-  updateTermAndCondition,
-} from "../../store/termsAndConditions/termsAndConditionAction";
-import { GET_CONDITION } from "../../network/Api";
+import { GET_CONDITION } from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import { updateTermAndCondition } from '../../store/termsAndConditions/termsAndConditionAction';
+import Breadcrumb from '../Common/Breadcrumb';
 
-const TextEditor = ({ title, type = "" }) => {
+function TextEditor({ title, type = '' }) {
   const dispatch = useDispatch();
-  const history = useHistory();
 
-  const { loading, description } = useSelector(
-    (state) => state.termsAndConditonReducer
-  );
+  const { loading } = useSelector((state) => state.termsAndConditonReducer);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -50,7 +23,7 @@ const TextEditor = ({ title, type = "" }) => {
     EditorState.createEmpty();
   });
 
-  const [condition, setCondition] = useState("");
+  const [condition, setCondition] = useState('');
 
   useState(() => {
     const callApi = async () => {
@@ -58,7 +31,7 @@ const TextEditor = ({ title, type = "" }) => {
       try {
         const { data } = await requestApi().request(GET_CONDITION, {
           params: {
-            type: type,
+            type,
           },
         });
         if (data.message) {
@@ -67,13 +40,9 @@ const TextEditor = ({ title, type = "" }) => {
           if (value != null) {
             const contentBlock = htmlToDraft(value);
             if (contentBlock) {
-              const contentState = ContentState.createFromBlockArray(
-                contentBlock.contentBlocks
-              );
-              const outputEditorState =
-                EditorState.createWithContent(contentState);
+              const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+              const outputEditorState = EditorState.createWithContent(contentState);
               setEditorState(outputEditorState);
-
             }
           } else {
             setEditorState(EditorState.createEmpty());
@@ -94,7 +63,7 @@ const TextEditor = ({ title, type = "" }) => {
 
   const updateDescription = async (state) => {
     setEditorState(state);
-    let currentContentAsHTML = convertToHTML(editorState?.getCurrentContent());
+    const currentContentAsHTML = convertToHTML(editorState?.getCurrentContent());
     setCondition(currentContentAsHTML);
   };
 
@@ -102,60 +71,48 @@ const TextEditor = ({ title, type = "" }) => {
     dispatch(updateTermAndCondition(type, condition));
   };
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <Breadcrumb
-          maintitle="Lyxa"
-          // title={title}
-          breadcrumbItem={title}
-          // loading={loading}
-          // callList={callDeliveryFee}
-          isRefresh={false}
-        />
+    <GlobalWrapper>
+      <Breadcrumb
+        maintitle="Lyxa"
+        // title={title}
+        breadcrumbItem={title}
+        // loading={loading}
+        // callList={callDeliveryFee}
+        isRefresh={false}
+      />
 
-        <Row>
-          <Col>
-            <Card>
-              <CardBody>
-                <div className="d-flex justify-content-between">
-                  <CardTitle className="h4">{title}</CardTitle>
-                  {isLoading && (
-                    <Spinner animation="border" color="success" size="lg" />
-                  )}
-                </div>
-                <hr />
-                <Form>
-                  <Editor
-                    onEditorStateChange={updateDescription}
-                    toolbarClassName="toolbarClassName"
-                    wrapperClassName="wrapperClassName"
-                    editorClassName="editorClassName"
-                    editorState={editorState}
-                    defaultEditorState={editorState}
-                    placeholder=" Enter Terms And Conditions"
-                  />
-                </Form>
+      <Row>
+        <Col>
+          <Card>
+            <CardBody>
+              <div className="d-flex justify-content-between">
+                <CardTitle className="h4">{title}</CardTitle>
+                {isLoading && <Spinner animation="border" color="success" size="lg" />}
+              </div>
+              <hr />
+              <Form>
+                <Editor
+                  onEditorStateChange={updateDescription}
+                  toolbarClassName="toolbarClassName"
+                  wrapperClassName="wrapperClassName"
+                  editorClassName="editorClassName"
+                  editorState={editorState}
+                  defaultEditorState={editorState}
+                  placeholder=" Enter Terms And Conditions"
+                />
+              </Form>
 
-                <div className="button__wrapper py-4 text-center">
-                  <Button
-                    color="success"
-                    onClick={handleSubmit}
-                    className="btn btn-md px-5"
-                  >
-                    {loading ? (
-                      <Spinner animation="border" color="info" size="sm" />
-                    ) : (
-                      "Update"
-                    )}
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </GlobalWrapper>
-    </React.Fragment>
+              <div className="button__wrapper py-4 text-center">
+                <Button color="success" onClick={handleSubmit} className="btn btn-md px-5">
+                  {loading ? <Spinner animation="border" color="info" size="sm" /> : 'Update'}
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    </GlobalWrapper>
   );
-};
+}
 
 export default TextEditor;

@@ -1,67 +1,46 @@
-import React, { useEffect, useState } from "react";
-import Breadcrumb from "../../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../../components/GlobalWrapper";
-import {
-  Card,
-  Col,
-  Container,
-  Row,
-  Button,
-  CardBody,
-  Spinner,
-  Form,
-} from "reactstrap";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, CardBody, Col, Container, Form, Row, Spinner } from 'reactstrap';
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import Breadcrumb from '../../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../../components/GlobalWrapper';
+import { SINGLE_ADMIN } from '../../../../network/Api';
+import requestApi from '../../../../network/httpRequest';
 import {
   addAdmin,
   addSellerCredential,
   addShopCredential,
   editAdmin,
-} from "../../../../store/AdminControl/Admin/adminAction";
-import { useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import requestApi from "../../../../network/httpRequest";
-import { SINGLE_ADMIN } from "../../../../network/Api";
+} from '../../../../store/AdminControl/Admin/adminAction';
 
-const CreateAdmin = () => {
+function CreateAdmin() {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const { id } = useParams();
 
-  const { status, loading, admins } = useSelector(
-    (state) => state.adminReducer
-  );
+  const { status, loading, admins } = useSelector((state) => state.adminReducer);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState("");
-  const [activeStatus, setActiveStatus] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [role, setRole] = useState('');
+  const [activeStatus, setActiveStatus] = useState('');
 
-  const { account_type: accountType, _id: accountId } = useSelector(store => store.Login.admin);
+  const { account_type: accountType, _id: accountId } = useSelector((store) => store.Login.admin);
 
-  useEffect(() => {
-    if (id) {
-      const findAdmin = admins.find((admin) => admin._id == id);
+  const updateData = (data) => {
+    const { email, name, phone_number, status, adminType } = data;
 
-      if (findAdmin) {
-        updateData(findAdmin);
-        // console.log(findAdmin);
-      } else {
-        callApi(id);
-      }
-    }
-  }, [id]);
+    setName(name);
+    setEmail(email);
+    setPhoneNumber(phone_number);
+    setActiveStatus(status);
+    setRole(adminType);
+  };
 
   // CALL API FOR SINGLE ADMIN
 
@@ -75,23 +54,26 @@ const CreateAdmin = () => {
     if (data.status) {
       updateData(data.data.admin);
     } else {
-      history.push("/admin/list", { replace: true });
+      history.push('/admin/list', { replace: true });
     }
   };
 
-  const updateData = (data) => {
-    const { email, name, phone_number, status, adminType } = data;
+  useEffect(() => {
+    if (id) {
+      const findAdmin = admins.find((admin) => admin._id === id);
 
-    setName(name);
-    setEmail(email);
-    setPhoneNumber(phone_number);
-    setActiveStatus(status);
-    setRole(adminType);
-  };
+      if (findAdmin) {
+        updateData(findAdmin);
+        // console.log(findAdmin);
+      } else {
+        callApi(id);
+      }
+    }
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (accountType === "admin") {
+    if (accountType === 'admin') {
       const data = {
         name,
         email,
@@ -112,7 +94,7 @@ const CreateAdmin = () => {
       } else {
         dispatch(addAdmin(data));
       }
-    } else if (accountType === "seller") {
+    } else if (accountType === 'seller') {
       dispatch(
         addSellerCredential({
           email,
@@ -137,177 +119,150 @@ const CreateAdmin = () => {
       if (id) {
         history.goBack();
       } else {
-        setName("");
-        setEmail("");
-        setPhoneNumber("");
-        setPassword("");
-        setRole("");
+        setName('');
+        setEmail('');
+        setPhoneNumber('');
+        setPassword('');
+        setRole('');
       }
     }
   }, [status]);
 
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={id ? "Edit" : "Create"}
-              title={
-                accountType === "shop"
-                  ? "Shop Crediantial"
-                  : accountType === "seller"
-                  ? "Seller Crediantial"
-                  : "Admin"
-              }
-              // loading={loading}
-              // callList={callCarList}
-              isRefresh={false}
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb
+            maintitle="Lyxa"
+            breadcrumbItem={id ? 'Edit' : 'Create'}
+            title={
+              accountType === 'shop' ? 'Shop Crediantial' : accountType === 'seller' ? 'Seller Crediantial' : 'Admin'
+            }
+            isRefresh={false}
+          />
 
-            <Form onSubmit={handleSubmit}>
-              <Card>
-                <CardBody>
-                  <div className="py-3">
-                    <h5>
-                      {accountType === "shop"
-                        ? "Shop Crediantial Informations"
-                        : accountType === "Seller"
-                        ? "Shop Crediantial Informations"
-                        : "Admin Informations"}
-                    </h5>
-                    <hr />
-                  </div>
-                  {accountType === "admin" && (
-                    <Row className="mb-3">
-                      <Col xl={6} className="mb-3 mb-xl-0">
-                        <TextField
-                          id="name"
-                          label="Name"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          autoComplete="off"
-                          value={name}
-                          onChange={(event) => setName(event.target.value)}
-                          required
-                        />
-                      </Col>
-
-                      <Col xl={6} className="mb-3 mb-xl-0">
-                        <TextField
-                          id="phoneNumber"
-                          label="Phone Number"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          type="number"
-                          value={phoneNumber}
-                          onChange={(event) =>
-                            setPhoneNumber(event.target.value.toString())
-                          }
-                          required
-                        />
-                      </Col>
-                    </Row>
-                  )}
+          <Form onSubmit={handleSubmit}>
+            <Card>
+              <CardBody>
+                <div className="py-3">
+                  <h5>
+                    {accountType === 'shop'
+                      ? 'Shop Crediantial Informations'
+                      : accountType === 'Seller'
+                      ? 'Shop Crediantial Informations'
+                      : 'Admin Informations'}
+                  </h5>
+                  <hr />
+                </div>
+                {accountType === 'admin' && (
                   <Row className="mb-3">
                     <Col xl={6} className="mb-3 mb-xl-0">
                       <TextField
-                        id="email"
-                        label="Email"
+                        id="name"
+                        label="Name"
                         variant="outlined"
-                        style={{ width: "100%" }}
-                        value={email}
-                        type="gmail"
-                        onChange={(event) => setEmail(event.target.value)}
+                        style={{ width: '100%' }}
+                        autoComplete="off"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
                         required
                       />
                     </Col>
 
-                    <Col xl={6}>
-                      {id ? (
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Status
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={activeStatus}
-                            label="Role"
-                            onChange={(event) =>
-                              setActiveStatus(event.target.value)
-                            }
-                          >
-                            <MenuItem value="active">Active</MenuItem>
-                            <MenuItem value="inactive">Inactive</MenuItem>
-                          </Select>
-                        </FormControl>
-                      ) : null}
-                    </Col>
-                  </Row>
-                  <Row className="mb-3">
-                    <Col xl={6}>
+                    <Col xl={6} className="mb-3 mb-xl-0">
                       <TextField
-                        id="password"
-                        label={`${id ? "New Password" : "Password"}`}
+                        id="phoneNumber"
+                        label="Phone Number"
                         variant="outlined"
-                        style={{ width: "100%" }}
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        required={!id}
+                        style={{ width: '100%' }}
+                        type="number"
+                        value={phoneNumber}
+                        onChange={(event) => setPhoneNumber(event.target.value.toString())}
+                        required
                       />
                     </Col>
-                    {accountType === "admin" && (
-                      <Col xl={6} className="mb-3 mb-xl-0">
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Role
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={role}
-                            label="Role"
-                            onChange={(e) => setRole(e.target.value)}
-                          >
-                            <MenuItem value={"admin"}>Admin</MenuItem>
-                            <MenuItem value={"customerService"}>
-                              Customer Service
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Col>
-                    )}
                   </Row>
-                  <div className="pt-3 my-3 d-flex justify-content-center">
-                    <Button
-                      color="primary"
-                      className="px-5"
-                      type="submit"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <Spinner
-                          border="animation"
-                          variant="info"
-                          size="sm"
-                        ></Spinner>
-                      ) : id ? (
-                        "Update"
-                      ) : (
-                        "Create"
-                      )}
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
-            </Form>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+                )}
+                <Row className="mb-3">
+                  <Col xl={6} className="mb-3 mb-xl-0">
+                    <TextField
+                      id="email"
+                      label="Email"
+                      variant="outlined"
+                      style={{ width: '100%' }}
+                      value={email}
+                      type="gmail"
+                      onChange={(event) => setEmail(event.target.value)}
+                      required
+                    />
+                  </Col>
+
+                  <Col xl={6}>
+                    {id ? (
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={activeStatus}
+                          label="Role"
+                          onChange={(event) => setActiveStatus(event.target.value)}
+                        >
+                          <MenuItem value="active">Active</MenuItem>
+                          <MenuItem value="inactive">Inactive</MenuItem>
+                        </Select>
+                      </FormControl>
+                    ) : null}
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col xl={6}>
+                    <TextField
+                      id="password"
+                      label={`${id ? 'New Password' : 'Password'}`}
+                      variant="outlined"
+                      style={{ width: '100%' }}
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      required={!id}
+                    />
+                  </Col>
+                  {accountType === 'admin' && (
+                    <Col xl={6} className="mb-3 mb-xl-0">
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={role}
+                          label="Role"
+                          onChange={(e) => setRole(e.target.value)}
+                        >
+                          <MenuItem value="admin">Admin</MenuItem>
+                          <MenuItem value="customerService">Customer Service</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Col>
+                  )}
+                </Row>
+                <div className="pt-3 my-3 d-flex justify-content-center">
+                  <Button color="primary" className="px-5" type="submit" disabled={loading}>
+                    {loading ? (
+                      <Spinner border="animation" variant="info" size="sm"></Spinner>
+                    ) : id ? (
+                      'Update'
+                    ) : (
+                      'Create'
+                    )}
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          </Form>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default CreateAdmin;

@@ -1,46 +1,36 @@
-import * as actionType from "../actionType";
-import requestApi from "../../network/httpRequest";
-import {
-  ADD_SELLER,
-  ADD_SELLER_CREDENTIAL,
-  ALL_SELLER,
-  DELETE_SELLER,
-  EDIT_SELLER,
-  SELLER_DROP_CHARGE,
-} from "../../network/Api";
-import { toast } from "react-toastify";
-import { successMsg } from "../../helpers/successMsg";
+/* eslint-disable no-unsafe-optional-chaining */
+import { successMsg } from '../../helpers/successMsg';
+import { ADD_SELLER, ALL_SELLER, DELETE_SELLER, EDIT_SELLER, SELLER_DROP_CHARGE } from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // ADD
 export const addSeller = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.ADD_SELLER_REQUEST_SEND,
     });
     const { data } = await requestApi().request(ADD_SELLER, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
-
-
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       dispatch({
         type: actionType.ADD_SELLER_REQUEST_SUCCESS,
         payload: data.data.seller,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.ADD_SELLER_REQUEST_FAIL,
         payload: data.error,
       });
     }
   } catch (error) {
-    successMsg(error.message, "error");
+    successMsg(error.message, 'error');
     dispatch({
       type: actionType.ADD_SELLER_REQUEST_FAIL,
       payload: error.message,
@@ -49,70 +39,62 @@ export const addSeller = (values) => async (dispatch) => {
 };
 
 // GET ALL
-
 export const getAllSeller =
   (refresh = false, page = 1) =>
-    async (dispatch, getState) => {
-      const { sellers, sortByKey, searchKey, statusKey, typeKey, subTypeKey } =
-        getState().sellerReducer;
+  async (dispatch, getState) => {
+    const { sellers, sortByKey, searchKey, statusKey, typeKey, subTypeKey } = getState().sellerReducer;
 
-      if (sellers.length < 1 || refresh) {
-        try {
+    if (sellers.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.GET_ALL_SELLER_REQUEST_SEND,
+        });
+
+        const { data } = await requestApi().request(ALL_SELLER, {
+          params: {
+            page,
+            pageSize: 50,
+            sortBy: sortByKey.value,
+            sellerStatus: statusKey.value,
+            sellerType: typeKey.value,
+            subType: subTypeKey.value,
+            searchKey,
+          },
+        });
+
+        if (data.status) {
           dispatch({
-            type: actionType.GET_ALL_SELLER_REQUEST_SEND,
+            type: actionType.GET_ALL_SELLER_REQUEST_SUCCESS,
+            payload: data.data,
           });
-
-          const { data } = await requestApi().request(ALL_SELLER, {
-            params: {
-              page,
-              pageSize: 50,
-              sortBy: sortByKey.value,
-              sellerStatus: statusKey.value,
-              sellerType: typeKey.value,
-              subType: subTypeKey.value,
-              searchKey,
-            },
-          });
-
-
-
-          if (data.status) {
-            dispatch({
-              type: actionType.GET_ALL_SELLER_REQUEST_SUCCESS,
-              payload: data.data,
-            });
-          } else {
-            dispatch({
-              type: actionType.GET_ALL_SELLER_REQUEST_FAIL,
-              payload: data.message,
-            });
-          }
-        } catch (error) {
+        } else {
           dispatch({
             type: actionType.GET_ALL_SELLER_REQUEST_FAIL,
-            payload: error.message,
+            payload: data.message,
           });
         }
+      } catch (error) {
+        dispatch({
+          type: actionType.GET_ALL_SELLER_REQUEST_FAIL,
+          payload: error.message,
+        });
       }
-    };
+    }
+  };
 
 // EDIT
-
 export const editSeller = (values) => async (dispatch) => {
-
   try {
     dispatch({
       type: actionType.EDIT_SELLER_REQUEST_SEND,
     });
     const { data } = await requestApi().request(EDIT_SELLER, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
-
-
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       setTimeout(() => {
         dispatch({
@@ -121,7 +103,7 @@ export const editSeller = (values) => async (dispatch) => {
         });
       }, 450);
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.EDIT_SELLER_REQUEST_FAIL,
@@ -137,26 +119,25 @@ export const editSeller = (values) => async (dispatch) => {
 };
 
 //   DELETE
-
 export const deleteSeller = (id) => async (dispatch) => {
   try {
     dispatch({
       type: actionType.DELETE_SELLER_REQUEST_SEND,
     });
     const { data } = await requestApi().request(DELETE_SELLER, {
-      method: "POST",
+      method: 'POST',
       data: { id },
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       dispatch({
         type: actionType.DELETE_SELLER_REQUEST_SUCCESS,
         payload: data.data.seller,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.DELETE_SELLER_REQUEST_FAIL,
         payload: data.message,
@@ -171,7 +152,6 @@ export const deleteSeller = (id) => async (dispatch) => {
 };
 
 // SET STATUS FALSE
-
 export const setSellerStatusFalse = () => (dispatch) => {
   dispatch({
     type: actionType.SET_STATUS_FALSE,
@@ -179,7 +159,6 @@ export const setSellerStatusFalse = () => (dispatch) => {
 };
 
 // UPDATE SORT BY KEY
-
 export const updateSellerSortByKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_SORT_BY_KEY,
@@ -188,7 +167,6 @@ export const updateSellerSortByKey = (value) => (dispatch) => {
 };
 
 // UPDATE SELLER TYPE
-
 export const updateSellerType = (selectedType) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_TYPE_KEY,
@@ -197,7 +175,6 @@ export const updateSellerType = (selectedType) => (dispatch) => {
 };
 
 // SELLER STATUS
-
 export const updateSellerStatusKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_STATUS_KEY,
@@ -206,7 +183,6 @@ export const updateSellerStatusKey = (value) => (dispatch) => {
 };
 
 // SELLER SUB TYPE
-
 export const updateSellerSubTypeKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_SELLER_SUB_TYPE,
@@ -215,7 +191,6 @@ export const updateSellerSubTypeKey = (value) => (dispatch) => {
 };
 
 // UPDATE SEARCH KEY
-
 export const updateSellerSearchKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_SEARCH_KEY,
@@ -224,7 +199,6 @@ export const updateSellerSearchKey = (value) => (dispatch) => {
 };
 
 // ADD SELLER DLIVERY CHARGE
-
 export const addSellerCharge = (values) => async (dispatch) => {
   try {
     dispatch({
@@ -232,21 +206,19 @@ export const addSellerCharge = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(SELLER_DROP_CHARGE, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
-
-
     if (data.status) {
       const { seller } = data?.data;
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.ADD_SELLER_DROP_CHARGE_REQUEST_SUCCESS,
         payload: seller,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.ADD_SELLER_DROP_CHARGE_REQUEST_FAIL,
@@ -260,6 +232,3 @@ export const addSellerCharge = (values) => async (dispatch) => {
     });
   }
 };
-
-// GET SELLER CREDENTIALS
-

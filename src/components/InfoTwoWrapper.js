@@ -1,4 +1,4 @@
-import { Table, Tbody} from "react-super-responsive-table";
+import { Table, Tbody } from 'react-super-responsive-table';
 
 function InfoTwoWrapper({ children }) {
   return (

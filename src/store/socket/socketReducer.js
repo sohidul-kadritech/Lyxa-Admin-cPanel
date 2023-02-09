@@ -1,8 +1,9 @@
-import * as actionType from "../actionType";
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   socket: null,
-  message: "",
+  message: '',
   loading: false,
   error: null,
 };

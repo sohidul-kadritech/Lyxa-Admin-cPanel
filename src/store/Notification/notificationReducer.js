@@ -1,4 +1,5 @@
-import * as actionType from "../actionType";
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
@@ -10,9 +11,9 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  activeStatus: { label: "All", value: "all" },
-  accountType: { label: "All", value: "all" },
-  type: { label: "All", value: "all" },
+  activeStatus: { label: 'All', value: 'all' },
+  accountType: { label: 'All', value: 'all' },
+  type: { label: 'All', value: 'all' },
 };
 
 const notificationReducer = (state = initialState, action) => {

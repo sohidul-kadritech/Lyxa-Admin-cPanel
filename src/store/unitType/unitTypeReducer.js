@@ -1,4 +1,5 @@
-import * as actionType from "../actionType";
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
@@ -33,7 +34,6 @@ const unitTypeReducer = (state = initialState, action) => {
       };
 
     //   GET ALL
-
     case actionType.GET_ALL_UNIT_REQUEST_SEND:
       return {
         ...state,
@@ -55,7 +55,6 @@ const unitTypeReducer = (state = initialState, action) => {
       };
 
     //   UPDAT UNIT
-
     case actionType.EDIT_UNIT_REQUEST_SEND:
       return {
         ...state,
@@ -85,7 +84,6 @@ const unitTypeReducer = (state = initialState, action) => {
       };
 
     //   DELETE UNIT
-
     case actionType.DELETE_UNIT_REQUEST_SEND:
       return {
         ...state,

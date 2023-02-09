@@ -1,49 +1,48 @@
-import React, { Suspense, lazy } from "react";
-import GlobalWrapper from "./GlobalWrapper";
-import { Row, Col } from "reactstrap";
-import DashboardCard from "./DashboardCard";
-import moneyExchangeIcon from "../assets/images/dashboard/money-exchange.png";
-import orderAmountIcon from "../assets/images/dashboard/order-amount.png";
-import deliveryIcon from "../assets/images/dashboard/delivery.png";
-import profitFlowIcon from "../assets/images/dashboard/profit-flow.png";
-import profitUpArrowIcon from "../assets/images/dashboard/profit-up-arrow.png";
-import earningFlowIcon from "../assets/images/dashboard/earning-flow.png";
-import TopSummery from "./TopSummery";
-import { useSelector } from "react-redux";
+import React, { lazy, Suspense } from 'react';
+import { useSelector } from 'react-redux';
+import { Col, Row } from 'reactstrap';
+import earningFlowIcon from '../assets/images/dashboard/earning-flow.png';
+import moneyExchangeIcon from '../assets/images/dashboard/money-exchange.png';
+import orderAmountIcon from '../assets/images/dashboard/order-amount.png';
+import profitFlowIcon from '../assets/images/dashboard/profit-flow.png';
+import profitUpArrowIcon from '../assets/images/dashboard/profit-up-arrow.png';
+import DashboardCard from './DashboardCard';
+import GlobalWrapper from './GlobalWrapper';
+import TopSummery from './TopSummery';
 
-import cancelBagIcon from "../assets/images/dashboard/cancel-bag.png";
-import shopIcon from "../assets/images/dashboard/shop.png";
-import bagIcon from "../assets/images/dashboard/bag.png";
+import bagIcon from '../assets/images/dashboard/bag.png';
+import cancelBagIcon from '../assets/images/dashboard/cancel-bag.png';
+import shopIcon from '../assets/images/dashboard/shop.png';
 
-const GraphInfo = lazy(() => import("./GraphInfo"));
+const GraphInfo = lazy(() => import('./GraphInfo'));
 
-const SellerDashboard = ({ summary }) => {
-const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+function SellerDashboard({ summary }) {
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const topSummaryData = [
     {
       id: 1,
-      title: "Earnings",
-      subTitle: "(Total earnings)",
-      value: `${summary?.totalSellerEarning?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
+      title: 'Earnings',
+      subTitle: '(Total earnings)',
+      value: `${summary?.totalSellerEarning?.toFixed(2) ?? 0?.toFixed(2)} ${currency}`,
       icon: earningFlowIcon,
-      iconBg: "#6C00FF",
+      iconBg: '#6C00FF',
     },
     {
       id: 2,
-      title: "Order Profit",
-      subTitle: "(Ex delivery fees)",
-      value: `${summary?.orderValue?.productAmount?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
+      title: 'Order Profit',
+      subTitle: '(Ex delivery fees)',
+      value: `${summary?.orderValue?.productAmount?.toFixed(2) ?? 0?.toFixed(2)} ${currency}`,
       icon: profitFlowIcon,
-      iconBg: "#56ca00",
+      iconBg: '#56ca00',
     },
     {
       id: 3,
-      title: "Delivery Profit",
-      subTitle: "(Only from delivery fees)",
-      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || (0)?.toFixed(2)} ${currency}`,
+      title: 'Delivery Profit',
+      subTitle: '(Only from delivery fees)',
+      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || 0?.toFixed(2)} ${currency}`,
       icon: profitUpArrowIcon,
-      iconBg: "#4C0033",
+      iconBg: '#4C0033',
     },
     // {
     //   id: 4,
@@ -55,69 +54,57 @@ const currency = useSelector(store => store.settingsReducer.appSettingsOptions.c
     // },
     {
       id: 5,
-      title: "Order Amount",
-      subTitle: "(Ex delivery fees)",
-      value: `${summary?.orderValue?.totalAmount?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
+      title: 'Order Amount',
+      subTitle: '(Ex delivery fees)',
+      value: `${summary?.orderValue?.totalAmount?.toFixed(2) ?? 0?.toFixed(2)} ${currency}`,
       icon: orderAmountIcon,
-      iconBg: "#ff5ca7",
+      iconBg: '#ff5ca7',
     },
     {
       id: 6,
-      title: "Unsettled Amount",
-      subTitle: "(Total unsettled)",
-      value: `${summary?.totalSellerUnsettle?.toFixed(2) ?? (0)?.toFixed(2)} ${currency}`,
+      title: 'Unsettled Amount',
+      subTitle: '(Total unsettled)',
+      value: `${summary?.totalSellerUnsettle?.toFixed(2) ?? 0?.toFixed(2)} ${currency}`,
       icon: moneyExchangeIcon,
-      iconBg: "#0c9da4",
+      iconBg: '#0c9da4',
     },
   ];
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        {topSummaryData.length > 0 && <TopSummery data={topSummaryData} />}
+    <GlobalWrapper>
+      {topSummaryData.length > 0 && <TopSummery data={topSummaryData} />}
 
-        <Row>
-          <Suspense fallback={<div>Loading...</div>}>
-            <GraphInfo graphType="earning" />
-          </Suspense>
-        </Row>
+      <Row>
+        <Suspense fallback={<div>Loading...</div>}>
+          <GraphInfo graphType="earning" />
+        </Suspense>
+      </Row>
 
-        <Row>
-          <Col xl={4} md={6}>
-            <DashboardCard
-              title="Shops"
-              value={summary?.toalShopProfile}
-              icon={shopIcon}
-              color={"#22a6ac"}
-            />
-          </Col>
-          <Col xl={4} md={6}>
-            <DashboardCard
-              title="Orders"
-              value={summary?.totalOrder}
-              icon={bagIcon}
-              color={"#459ed8"}
-            />
-          </Col>
+      <Row>
+        <Col xl={4} md={6}>
+          <DashboardCard title="Shops" value={summary?.toalShopProfile} icon={shopIcon} color="#22a6ac" />
+        </Col>
+        <Col xl={4} md={6}>
+          <DashboardCard title="Orders" value={summary?.totalOrder} icon={bagIcon} color="#459ed8" />
+        </Col>
 
-          <Col xl={4} md={6}>
-            <DashboardCard
-              title="Cancel Orders"
-              value={summary?.totalCancelOrder}
-              icon={cancelBagIcon}
-              border={"#f05179"}
-              color="#8c54ff"
-            />
-          </Col>
-        </Row>
+        <Col xl={4} md={6}>
+          <DashboardCard
+            title="Cancel Orders"
+            value={summary?.totalCancelOrder}
+            icon={cancelBagIcon}
+            border="#f05179"
+            color="#8c54ff"
+          />
+        </Col>
+      </Row>
 
-        <Row>
-          <Suspense fallback={<div>Loading...</div>}>
-            <GraphInfo graphType="order" />
-          </Suspense>
-        </Row>
-      </GlobalWrapper>
-    </React.Fragment>
+      <Row>
+        <Suspense fallback={<div>Loading...</div>}>
+          <GraphInfo graphType="order" />
+        </Suspense>
+      </Row>
+    </GlobalWrapper>
   );
-};
+}
 
 export default SellerDashboard;

@@ -1,30 +1,31 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Route, Redirect } from "react-router-dom";
-import Portals from "../../components/Portals";
-import { useSelector } from "react-redux";
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Redirect, Route } from 'react-router-dom';
+import Portals from '../../components/Portals';
 
-const Authmiddleware = ({ component: Component, layout: Layout, isAuthProtected, ...rest }) => {
-  const {account_type} = useSelector((store) => store.Login.admin)
-  
-  return <Route
-    {...rest}
-    render={(props) => {
-      if (isAuthProtected && !account_type) {
-        return <Redirect to={{ pathname: "/login", state: { from: props.location } }} />;
-      } else {
+function Authmiddleware({ component: Component, layout: Layout, isAuthProtected, ...rest }) {
+  const { account_type } = useSelector((store) => store.Login.admin);
+
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
+        if (isAuthProtected && !account_type) {
+          return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />;
+        }
         return (
-          <React.Fragment>
+          <>
             <Layout>
               <Component {...props} />
             </Layout>
-            <Portals/>
-          </React.Fragment>
+            <Portals />
+          </>
         );
-      }
-    }}
-  />
-};
+      }}
+    />
+  );
+}
 
 Authmiddleware.propTypes = {
   isAuthProtected: PropTypes?.bool,

@@ -1,15 +1,16 @@
-import React, { useEffect, useMemo } from "react";
-import { Card, CardBody, Col, Container, Row } from "reactstrap";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import Flatpickr from "react-flatpickr";
-import Select from "react-select";
-import {
-  orderTypesOptions,
-  shopTypeOptions,
-  sortByOptions,
-} from "../../../assets/staticData";
+import React, { useEffect, useMemo } from 'react';
+import Flatpickr from 'react-flatpickr';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import Select from 'react-select';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
+import { orderTypesOptions, shopTypeOptions, sortByOptions } from '../../../assets/staticData';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
 
+import AppPagination from '../../../components/AppPagination';
+import OrderTable from '../../../components/OrderTable';
+import Search from '../../../components/Search';
 import {
   getAllOrder,
   updateOrderByShopType,
@@ -18,14 +19,9 @@ import {
   updateOrderSortByKey,
   updateOrderStartDate,
   updateOrderType,
-} from "../../../store/order/orderAction";
-import { useDispatch, useSelector } from "react-redux";
-import AppPagination from "./../../../components/AppPagination";
-import { useHistory, useLocation } from "react-router-dom";
-import Search from "./../../../components/Search";
-import OrderTable from "../../../components/OrderTable";
+} from '../../../store/order/orderAction';
 
-const OrdersList = () => {
+function OrdersList() {
   const dispatch = useDispatch();
 
   const { search } = useLocation();
@@ -54,38 +50,17 @@ const OrdersList = () => {
     dispatch(
       getAllOrder(
         refresh,
-        searchParams.get("shopId")
-          ? searchParams.get("shopId")
-          : account_type === "shop"
-            ? Id
-            : null,
-        account_type === "seller" ? Id : null
+        searchParams.get('shopId') ? searchParams.get('shopId') : account_type === 'shop' ? Id : null,
+        account_type === 'seller' ? Id : null
       )
     );
   };
 
   useEffect(() => {
-    if (
-      sortByKey ||
-      startDate ||
-      endDate ||
-      typeKey ||
-      orderType ||
-      orderSearchKey ||
-      searchParams.get("shopId")
-    ) {
+    if (sortByKey || startDate || endDate || typeKey || orderType || orderSearchKey || searchParams.get('shopId')) {
       callOrderList(true);
     }
-    return;
-  }, [
-    sortByKey,
-    startDate,
-    endDate,
-    typeKey,
-    orderType,
-    orderSearchKey,
-    searchParams.get("shopId"),
-  ]);
+  }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey, searchParams.get('shopId')]);
 
   useEffect(() => {
     if (status) {
@@ -94,150 +69,135 @@ const OrdersList = () => {
   }, [status]);
 
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={"List"}
-              title="Orders"
-              loading={loading}
-              callList={callOrderList}
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb
+            maintitle="Lyxa"
+            breadcrumbItem="List"
+            title="Orders"
+            loading={loading}
+            callList={callOrderList}
+          />
 
-            {/* FITLERS */}
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col lg={3}>
-                    <div className="mb-4">
-                      <label className="control-label">Sort By</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sortByOptions}
-                        classNamePrefix="select2-selection"
-                        value={sortByKey}
-                        onChange={(e) => dispatch(updateOrderSortByKey(e))}
-                      />
-                    </div>
-                  </Col>
-
-                  <Col lg={6}>
-                    <div className="d-flex my-3 my-md-0 ">
-                      <div className=" w-100">
-                        <label>Start Date</label>
-                        <div className="form-group mb-0 w-100">
-                          <Flatpickr
-                            className="form-control d-block"
-                            id="startDate"
-                            placeholder="Start Date"
-                            value={startDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateOrderStartDate(dateStr))
-                            }
-                            options={{
-                              altInput: true,
-                              altFormat: "F j, Y",
-                              dateFormat: "Y-m-d",
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="ms-2 w-100">
-                        <label>End Date</label>
-                        <div className="form-group mb-0">
-                          <Flatpickr
-                            className="form-control w-100"
-                            id="endDate"
-                            placeholder="Select End Date"
-                            value={endDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateOrderEndDate(dateStr))
-                            }
-                            options={{
-                              altInput: true,
-                              altFormat: "F j, Y",
-                              dateFormat: "Y-m-d",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col lg={3}>
-                    <div className="mb-4">
-                      <label className="control-label">Order Status</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={orderTypesOptions}
-                        classNamePrefix="select2-selection"
-                        value={typeKey}
-                        onChange={(e) => dispatch(updateOrderType(e))}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">
-                        Order By Shop Type
-                      </label>
-                      <Select
-                        palceholder="Select Status"
-                        options={shopTypeOptions}
-                        classNamePrefix="select2-selection"
-                        value={orderType}
-                        onChange={(e) => dispatch(updateOrderByShopType(e))}
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={8}>
-                    <Search
-                      placeholder="Search by Order Id"
-                      dispatchFunc={updateOrderSearchKey}
+          {/* FITLERS */}
+          <Card>
+            <CardBody>
+              <Row>
+                <Col lg={3}>
+                  <div className="mb-4">
+                    <label className="control-label">Sort By</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={sortByOptions}
+                      classNamePrefix="select2-selection"
+                      value={sortByKey}
+                      onChange={(e) => dispatch(updateOrderSortByKey(e))}
                     />
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
+                  </div>
+                </Col>
 
-            <div>
-              <OrderTable orders={orders} status={status} loading={loading} />
-            </div>
-            <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) =>
-                      dispatch(
-                        getAllOrder(
-                          true,
-                          searchParams.get("shopId")
-                            ? searchParams.get("shopId")
-                            : account_type === "shop"
-                              ? Id
-                              : null,
-                          account_type === "seller" ? Id : null,
-                          page
-                        )
+                <Col lg={6}>
+                  <div className="d-flex my-3 my-md-0 ">
+                    <div className=" w-100">
+                      <label>Start Date</label>
+                      <div className="form-group mb-0 w-100">
+                        <Flatpickr
+                          className="form-control d-block"
+                          id="startDate"
+                          placeholder="Start Date"
+                          value={startDate}
+                          onChange={(selectedDates, dateStr) => dispatch(updateOrderStartDate(dateStr))}
+                          options={{
+                            altInput: true,
+                            altFormat: 'F j, Y',
+                            dateFormat: 'Y-m-d',
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="ms-2 w-100">
+                      <label>End Date</label>
+                      <div className="form-group mb-0">
+                        <Flatpickr
+                          className="form-control w-100"
+                          id="endDate"
+                          placeholder="Select End Date"
+                          value={endDate}
+                          onChange={(selectedDates, dateStr) => dispatch(updateOrderEndDate(dateStr))}
+                          options={{
+                            altInput: true,
+                            altFormat: 'F j, Y',
+                            dateFormat: 'Y-m-d',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+                <Col lg={3}>
+                  <div className="mb-4">
+                    <label className="control-label">Order Status</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={orderTypesOptions}
+                      classNamePrefix="select2-selection"
+                      value={typeKey}
+                      onChange={(e) => dispatch(updateOrderType(e))}
+                    />
+                  </div>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Order By Shop Type</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={shopTypeOptions}
+                      classNamePrefix="select2-selection"
+                      value={orderType}
+                      onChange={(e) => dispatch(updateOrderByShopType(e))}
+                    />
+                  </div>
+                </Col>
+                <Col lg={8}>
+                  <Search placeholder="Search by Order Id" dispatchFunc={updateOrderSearchKey} />
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+
+          <div>
+            <OrderTable orders={orders} status={status} loading={loading} />
+          </div>
+          <Row>
+            <Col xl={12}>
+              <div className="d-flex justify-content-center">
+                <AppPagination
+                  paging={paging}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  currentPage={currentPage}
+                  lisener={(page) =>
+                    dispatch(
+                      getAllOrder(
+                        true,
+                        searchParams.get('shopId') ? searchParams.get('shopId') : account_type === 'shop' ? Id : null,
+                        account_type === 'seller' ? Id : null,
+                        page
                       )
-                    }
-                  />
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+                    )
+                  }
+                />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default OrdersList;

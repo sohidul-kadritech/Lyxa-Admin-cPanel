@@ -1,38 +1,36 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable max-len */
 import React, { Component } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
 class Apexdonut extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            options: {
-                plotOptions: {
-                    radialBar: {
-                        hollow: {
-                            size: '45%',
-                        },
-                        dataLabels: {
-                            value: {
-                                show: false
-                            }
-                        }
-                    },
-                },
-                colors: ['rgb(2, 164, 153)'],
-                labels: ['']
+    this.state = {
+      options: {
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '45%',
             },
-            series: [60],
-        }
-    }
+            dataLabels: {
+              value: {
+                show: false,
+              },
+            },
+          },
+        },
+        colors: ['rgb(2, 164, 153)'],
+        labels: [''],
+      },
+      series: [60],
+    };
+  }
 
-    render() {
-        return (
-            <React.Fragment>
-                <ReactApexChart options={this.state.options} series={this.state.series} type="radialBar" height="140px" />
-            </React.Fragment>
-        );
-    }
+  render() {
+    return <ReactApexChart options={this.state.options} series={this.state.series} type="radialBar" height="140px" />;
+  }
 }
 
 export default Apexdonut;

@@ -1,15 +1,10 @@
-import { toast } from "react-toastify";
-import { actionTypes } from "redux-form";
-import { successMsg } from "../../helpers/successMsg";
-import {
-  ACCEPT_CHAT,
-  CHAT_LIST,
-  CLOSE_CONVERSATION,
-  REJECT_CHAT,
-  SEND_MESSAGE,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable default-param-last */
+import { actionTypes } from 'redux-form';
+import { successMsg } from '../../helpers/successMsg';
+import { ACCEPT_CHAT, CHAT_LIST, CLOSE_CONVERSATION, REJECT_CHAT, SEND_MESSAGE } from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 export const getAllChat =
   (refresh = false, userId, shopId, page = 1) =>
@@ -34,7 +29,7 @@ export const getAllChat =
           },
         });
 
-        console.log("order chat data", data);
+        console.log('order chat data', data);
 
         if (status) {
           let openChats = 0;
@@ -44,20 +39,19 @@ export const getAllChat =
             payload: data,
           });
 
-          data?.list?.forEach(order => {
+          data?.list?.forEach((order) => {
             order?.admin_chat_request.forEach((chat) => {
-              if(chat?.status !== 'closed'){
+              if (chat?.status !== 'closed') {
                 openChats++;
               }
-            })
-          })
+            });
+          });
 
           // dispatch action for intial open chats
           dispatch({
             type: actionType.OPEN_CHATS_VALUE,
-            payload: openChats
-          })
-
+            payload: openChats,
+          });
         } else {
           dispatch({
             type: actionType.ALL_CHAT_REQUEST_FAIL,
@@ -83,12 +77,12 @@ export const acceptChatReq = (id) => async (dispatch, getState) => {
     });
 
     const { data } = await requestApi().request(ACCEPT_CHAT, {
-      method: "POST",
+      method: 'POST',
       data: { id },
     });
 
     if (data.status) {
-      successMsg(data?.message, "success");
+      successMsg(data?.message, 'success');
       const { request } = data?.data;
       console.log('chat accept data', data);
 
@@ -96,9 +90,9 @@ export const acceptChatReq = (id) => async (dispatch, getState) => {
         type: actionType.ACCEPT_CHAT_REQUEST_SUCCESS,
         payload: request,
       });
-      socket.emit("admin_accepted_chat_request", { requestId: request?._id });
+      socket.emit('admin_accepted_chat_request', { requestId: request?._id });
     } else {
-      successMsg(data?.error, "error");
+      successMsg(data?.error, 'error');
       dispatch({
         type: actionType.ACCEPT_CHAT_REQUEST_FAIL,
         payload: data.error,
@@ -121,18 +115,18 @@ export const rejectChatReq = (id) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(REJECT_CHAT, {
-      method: "POST",
+      method: 'POST',
       data: { id },
     });
 
     if (data.status) {
-      successMsg(data?.message, "success");
+      successMsg(data?.message, 'success');
       dispatch({
         type: actionType.REJECT_CHAT_REQUEST_SUCCESS,
         payload: data?.data?.request,
       });
     } else {
-      successMsg(data?.error, "error");
+      successMsg(data?.error, 'error');
       dispatch({
         type: actionType.REJECT_CHAT_REQUEST_FAIL,
         payload: data.error,
@@ -156,7 +150,7 @@ export const sendMsgToUser = (values) => async (dispatch, getState) => {
     });
 
     const { data } = await requestApi().request(SEND_MESSAGE, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
@@ -167,9 +161,9 @@ export const sendMsgToUser = (values) => async (dispatch, getState) => {
         type: actionType.SEND_MSG_TO_USER_REQUEST_SUCCESS,
         payload: request,
       });
-      socket.emit("admin_message_sent", { room: values?.id });
+      socket.emit('admin_message_sent', { room: values?.id });
     } else {
-      successMsg(data?.error, "error");
+      successMsg(data?.error, 'error');
       dispatch({
         type: actionType.SEND_MSG_TO_USER_REQUEST_FAIL,
         payload: data.error,
@@ -194,23 +188,23 @@ export const closeConversation = (id) => async (dispatch, getState) => {
     });
 
     const { data } = await requestApi().request(CLOSE_CONVERSATION, {
-      method: "POST",
+      method: 'POST',
       data: { requestId: id },
     });
 
     if (data.status) {
-      successMsg(data?.message, "success");
+      successMsg(data?.message, 'success');
       dispatch({
         type: actionType.CLOSE_CONVERSATION_REQUEST_SUCCESS,
       });
 
       dispatch({
-        type: actionType.OPEN_CHATS_DECREMENT_VALUE
-      })
-      
-      socket.emit("chat-close", { requestId: id });
+        type: actionType.OPEN_CHATS_DECREMENT_VALUE,
+      });
+
+      socket.emit('chat-close', { requestId: id });
     } else {
-      successMsg(data?.error, "error");
+      successMsg(data?.error, 'error');
       dispatch({
         type: actionType.CLOSE_CONVERSATION_REQUEST_FAIL,
         payload: data.error,
@@ -226,12 +220,12 @@ export const closeConversation = (id) => async (dispatch, getState) => {
 
 // accept
 
-export const setAcceptChat = (value) => async (dispatch, getState) => {
+export const setAcceptChat = (value) => async (dispatch) => {
   dispatch({
     type: actionTypes.SET_CHAT_ACCEPT,
     payload: value,
-  })
-} 
+  });
+};
 
 // FITLERS
 
@@ -272,22 +266,21 @@ export const updateOrderChatSearchKey = (value) => (dispatch) => {
   });
 };
 
-
 export const setOpenChats = (openChats) => (dispatch) => {
   dispatch({
     type: actionType.OPEN_CHATS_VALUE,
     payload: openChats,
-  })
-}
+  });
+};
 
 export const incrementOpenChats = () => (dispatch) => {
   dispatch({
     type: actionType.OPEN_CHATS_INCREMENT_VALUE,
-  })
-}
+  });
+};
 
 export const decrementOpenChats = () => (dispatch) => {
   dispatch({
     type: actionType.OPEN_CHATS_DECREMENT_VALUE,
-  })
-}
+  });
+};

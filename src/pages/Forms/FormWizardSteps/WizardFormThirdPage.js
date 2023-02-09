@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import React from "react"
-import { reduxForm } from "redux-form"
-import validate from "./validate"
-import { Row, Col } from "reactstrap"
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Col, Row } from 'reactstrap';
+import { reduxForm } from 'redux-form';
+import validate from './validate';
 
-const WizardFormThirdPage = props => {
-  const { handleSubmit, previousPage } = props
+function WizardFormThirdPage(props) {
+  const { handleSubmit, previousPage } = props;
   return (
     <form onSubmit={handleSubmit}>
       <h6 className="text-muted">Bank Details</h6>
@@ -17,29 +17,17 @@ const WizardFormThirdPage = props => {
                 Name on Card
               </label>
               <Col lg={9}>
-                <input
-                  id="txtNameCard"
-                  name="txtNameCard"
-                  type="text"
-                  className="form-control"
-                />
+                <input id="txtNameCard" name="txtNameCard" type="text" className="form-control" />
               </Col>
             </div>
           </Col>
           <Col md={6}>
             <div className="form-group row">
-              <label
-                htmlFor="ddlCreditCardType"
-                className="col-lg-3 col-form-label"
-              >
+              <label htmlFor="ddlCreditCardType" className="col-lg-3 col-form-label">
                 Credit Card Type
               </label>
               <Col lg={9}>
-                <select
-                  id="ddlCreditCardType"
-                  name="ddlCreditCardType"
-                  className="form-control"
-                >
+                <select id="ddlCreditCardType" name="ddlCreditCardType" className="form-control">
                   <option value="">--Please Select--</option>
                   <option value="AE">American Express</option>
                   <option value="VI">Visa</option>
@@ -53,28 +41,17 @@ const WizardFormThirdPage = props => {
         <Row>
           <Col md={6}>
             <div className="form-group row">
-              <label
-                htmlFor="txtCreditCardNumber"
-                className="col-lg-3 col-form-label"
-              >
+              <label htmlFor="txtCreditCardNumber" className="col-lg-3 col-form-label">
                 Credit Card Number
               </label>
               <Col lg={9}>
-                <input
-                  id="txtCreditCardNumber"
-                  name="txtCreditCardNumber"
-                  type="text"
-                  className="form-control"
-                />
+                <input id="txtCreditCardNumber" name="txtCreditCardNumber" type="text" className="form-control" />
               </Col>
             </div>
           </Col>
           <Col md={6}>
             <div className="form-group row">
-              <label
-                htmlFor="txtCardVerificationNumber"
-                className="col-lg-3 col-form-label"
-              >
+              <label htmlFor="txtCardVerificationNumber" className="col-lg-3 col-form-label">
                 Card Verification Number
               </label>
               <Col lg={9}>
@@ -91,19 +68,11 @@ const WizardFormThirdPage = props => {
         <Row>
           <Col md={6}>
             <div className="form-group row">
-              <label
-                htmlFor="txtExpirationDate"
-                className="col-lg-3 col-form-label"
-              >
+              <label htmlFor="txtExpirationDate" className="col-lg-3 col-form-label">
                 Expiration Date
               </label>
               <Col lg={9}>
-                <input
-                  id="txtExpirationDate"
-                  name="txtExpirationDate"
-                  type="text"
-                  className="form-control"
-                />
+                <input id="txtExpirationDate" name="txtExpirationDate" type="text" className="form-control" />
               </Col>
             </div>
           </Col>
@@ -111,32 +80,28 @@ const WizardFormThirdPage = props => {
       </fieldset>
 
       <div id="btn_div" className="float-right">
-        <button
-          type="button"
-          className="btn btn-primary previous"
-          onClick={previousPage}
-        >
-          {" "}
-          Previous{" "}
-        </button>{" "}
+        <button type="button" className="btn btn-primary previous" onClick={previousPage}>
+          {' '}
+          Previous{' '}
+        </button>{' '}
         &nbsp;
         <button type="submit" className="btn btn-primary next">
-          {" "}
-          Next{" "}
+          {' '}
+          Next{' '}
         </button>
       </div>
     </form>
-  )
+  );
 }
 
 WizardFormThirdPage.propTypes = {
   handleSubmit: PropTypes.func,
-  previousPage: PropTypes.func
-}
+  previousPage: PropTypes.func,
+};
 
 export default reduxForm({
-  form: "wizard", //Form name is same
+  form: 'wizard', // Form name is same
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
   validate,
-})(WizardFormThirdPage)
+})(WizardFormThirdPage);

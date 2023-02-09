@@ -1,9 +1,6 @@
-// import React from "react";
-// import { useHistory } from "react-router-dom";
-import requestApi from "../network/httpRequest";
+import requestApi from '../network/httpRequest';
 
-// const history = useHistory();
-
+// eslint-disable-next-line consistent-return
 export const callApi = async (sId, api, type) => {
   try {
     const { data } = await requestApi().request(api, {
@@ -13,7 +10,7 @@ export const callApi = async (sId, api, type) => {
     });
 
     if (data.status) {
-      console.log("single order dta", data);
+      console.log('single order dta', data);
       return data.data[type];
     }
   } catch (e) {

@@ -1,5 +1,5 @@
-import { toast } from "react-toastify";
-import { successMsg } from "../../helpers/successMsg";
+/* eslint-disable default-param-last */
+import { successMsg } from '../../helpers/successMsg';
 import {
   ADD_DELIVERY_MAN,
   ALL_DELIVERY_MAN,
@@ -7,9 +7,9 @@ import {
   DELIVERY_BOY_ORDERS,
   EDIT_DELIVERY_MAN,
   TRACK_DELIVERY_MAN,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
+} from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // ADD
 export const addDeliveryMan = (values) => async (dispatch) => {
@@ -21,19 +21,19 @@ export const addDeliveryMan = (values) => async (dispatch) => {
     const {
       data: { status, error, message, data = null },
     } = await requestApi().request(ADD_DELIVERY_MAN, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       dispatch({
         type: actionType.ADD_DELIVERY_MAN_REQUEST_SUCCESS,
         payload: data.deliveryBoyFinal,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
 
       dispatch({
         type: actionType.ADD_DELIVERY_MAN_REQUEST_FAIL,
@@ -53,8 +53,7 @@ export const addDeliveryMan = (values) => async (dispatch) => {
 export const allDeliveryMan =
   (refresh, page = 1) =>
   async (dispatch, getState) => {
-    const { deliveryMans, sortByKey, statusKey, searchKey, liveStatus } =
-      getState().deliveryManReducer;
+    const { deliveryMans, sortByKey, statusKey, searchKey, liveStatus } = getState().deliveryManReducer;
 
     if (refresh || deliveryMans.length < 1) {
       try {
@@ -106,12 +105,12 @@ export const editDeliveryMan = (values) => async (dispatch) => {
     const {
       data: { status, error, message, data = null },
     } = await requestApi().request(EDIT_DELIVERY_MAN, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       setTimeout(() => {
         dispatch({
@@ -120,7 +119,7 @@ export const editDeliveryMan = (values) => async (dispatch) => {
         });
       }, [450]);
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
 
       dispatch({
         type: actionType.EDIT_DELIVERY_MAN_REQUEST_FAIL,
@@ -153,9 +152,9 @@ export const trackDeliveryBoy =
         pageSize: 15,
         startDate,
         endDate,
-        searchKey: "",
-        sortBy: "desc",
-        status: "",
+        searchKey: '',
+        sortBy: 'desc',
+        status: '',
       });
 
       const { data } = await requestApi().request(TRACK_DELIVERY_MAN, {
@@ -165,13 +164,11 @@ export const trackDeliveryBoy =
           pageSize: 15,
           startDate,
           endDate,
-          searchKey: "",
-          sortBy: "desc",
-          status: "",
+          searchKey: '',
+          sortBy: 'desc',
+          status: '',
         },
       });
-
-      // console.log(data);
 
       if (data.status) {
         dispatch({
@@ -179,7 +176,7 @@ export const trackDeliveryBoy =
           payload: data.data,
         });
       } else {
-        successMsg(data.error, "error");
+        successMsg(data.error, 'error');
         dispatch({
           type: actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL,
           payload: data.error,
@@ -292,9 +289,7 @@ export const getDeliveryAllOrder =
 
 // RIDER CURRENT LOCATION
 
-export const riderCurrentLocation = (id) => async (dispatch, getState) => {
-  // const { startDate, endDate } = getState().deliveryManReducer;
-
+export const riderCurrentLocation = (id) => async (dispatch) => {
   try {
     dispatch({
       type: actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_SEND,
@@ -312,7 +307,7 @@ export const riderCurrentLocation = (id) => async (dispatch, getState) => {
         payload: data?.data?.location?.coordinates,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
 
       dispatch({
         type: actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_FAIL,

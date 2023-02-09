@@ -1,3 +1,5 @@
+/* eslint-disable default-param-last */
+import { successMsg } from '../../helpers/successMsg';
 import {
   ACTIVE_DEIVERY_BOYS,
   CANCEL_ORDER,
@@ -5,25 +7,15 @@ import {
   ORDER_LIST,
   ORDRE_UPDATE_STATUS,
   SEND_ORDER_FLAG,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
-import { successMsg } from "./../../helpers/successMsg";
+} from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // GET ALL ORDER
-
 export const getAllOrder =
   (refresh = false, shop, seller, page = 1) =>
   async (dispatch, getState) => {
-    const {
-      orders,
-      typeKey,
-      startDate,
-      endDate,
-      sortByKey,
-      orderSearchKey,
-      orderType,
-    } = getState().orderReducer;
+    const { orders, typeKey, startDate, endDate, sortByKey, orderSearchKey, orderType } = getState().orderReducer;
 
     if (orders.length < 1 || refresh) {
       try {
@@ -77,26 +69,26 @@ export const orderUpdateStatus = (values, socket) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(ORDRE_UPDATE_STATUS, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
         payload: data,
       });
 
-      if (values?.orderStatus === "accepted_delivery_boy") {
-        socket.emit("adminAcceptedOrder", { orderId: values?.orderId });
+      if (values?.orderStatus === 'accepted_delivery_boy') {
+        socket.emit('adminAcceptedOrder', { orderId: values?.orderId });
       } else {
-        socket.emit("updateOrder", {
+        socket.emit('updateOrder', {
           orderId: values?.orderId,
         });
       }
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL,
         payload: data.error,
@@ -119,18 +111,18 @@ export const sentOrderFlag = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(SEND_ORDER_FLAG, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.SEND_ORDER_FLAG_REQUEST_SUCCESS,
         payload: data,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
         payload: data.error,
@@ -153,20 +145,20 @@ export const DeleteOrderFlag = (id) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(DELETE_ORDER_FLAG, {
-      method: "POST",
+      method: 'POST',
       data: {
         id,
       },
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.DELETE_ORDER_FLAG_REQUEST_SUCCESS,
         payload: data,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.DELETE_ORDER_FLAG_REQUEST_FAIL,
         payload: data.error,
@@ -190,19 +182,19 @@ export const cancelOrderByAdmin = (values) => async (dispatch, getState) => {
     });
 
     const { data } = await requestApi().request(CANCEL_ORDER, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.success) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.CANCEL_ORDER_REQUEST_SUCCESS,
         payload: data,
       });
-      socket.emit("cancelOrder", { orderId: values?.orderId });
+      socket.emit('cancelOrder', { orderId: values?.orderId });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.CANCEL_ORDER_REQUEST_FAIL,
         payload: data.error,
@@ -261,39 +253,37 @@ export const updateOrderByShopType = (type) => (dispatch) => {
 };
 
 // GET ACTIVE DELIVERY BOY
+export const getAllActiveDeliveryMan = (orderId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND,
+    });
 
-export const getAllActiveDeliveryMan =
-  (orderId) => async (dispatch, getState) => {
-    try {
+    const {
+      data: { status, error, data = null },
+    } = await requestApi().request(ACTIVE_DEIVERY_BOYS, {
+      params: {
+        orderId,
+      },
+    });
+
+    console.log('delivery boys', data);
+
+    if (status) {
       dispatch({
-        type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND,
+        type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SUCCESS,
+        payload: data?.nearByDeliveryBoys,
       });
-
-      const {
-        data: { status, error, data = null },
-      } = await requestApi().request(ACTIVE_DEIVERY_BOYS, {
-        params: {
-          orderId,
-        },
-      });
-
-      console.log("delivery boys", data);
-
-      if (status) {
-        dispatch({
-          type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_SUCCESS,
-          payload: data?.nearByDeliveryBoys,
-        });
-      } else {
-        dispatch({
-          type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
-          payload: error,
-        });
-      }
-    } catch (error) {
+    } else {
       dispatch({
         type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
-        payload: error.message,
+        payload: error,
       });
     }
-  };
+  } catch (error) {
+    dispatch({
+      type: actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};

@@ -1,9 +1,5 @@
 // import React from "react"
 
-import { calenderDefaultCategories, events } from "./calender"
+import { calenderDefaultCategories, events } from './calender';
 
-
-export {
-  events,
-  calenderDefaultCategories,
-}
+export { events, calenderDefaultCategories };

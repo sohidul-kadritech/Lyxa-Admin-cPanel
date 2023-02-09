@@ -1,23 +1,20 @@
-import React, { useState } from "react";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { Spinner } from "reactstrap";
-import { Tooltip } from "@mui/material";
+import React, { useState } from 'react';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Spinner } from 'reactstrap';
 
-import Lightbox from "react-image-lightbox";
-import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { updateProductStatus } from "../store/Product/productAction";
-import styled from "styled-components";
-import ThreeDotsMenu from "./ThreeDotsMenu";
-import TableImgItem from "./TableImgItem";
-import { useSelector } from "react-redux";
+import Lightbox from 'react-image-lightbox';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { updateProductStatus } from '../store/Product/productAction';
+import TableImgItem from './TableImgItem';
+import ThreeDotsMenu from './ThreeDotsMenu';
 
-const ProductTable = ({ products, loading }) => {
+function ProductTable({ products, loading }) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
-
+  // eslint-disable-next-line no-unused-vars
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,7 +22,7 @@ const ProductTable = ({ products, loading }) => {
     dispatch(
       updateProductStatus({
         id,
-        status: status === "active" ? "inactive" : "active",
+        status: status === 'active' ? 'inactive' : 'active',
       })
     );
   };
@@ -33,9 +30,9 @@ const ProductTable = ({ products, loading }) => {
   // HANDLE MENU
 
   const handleMenu = (menu, item) => {
-    if (menu === "Edit") {
+    if (menu === 'Edit') {
       history.push(`/products/edit/${item?._id}`);
-    } else if (menu === "Update Status") {
+    } else if (menu === 'Update Status') {
       updateStatus(item?._id, item?.status);
     }
   };
@@ -51,7 +48,7 @@ const ProductTable = ({ products, loading }) => {
       {isOpen && (
         <Lightbox
           mainSrc={selectedImg}
-          enableZoom={true}
+          enableZoom
           imageCaption="img"
           onCloseRequest={() => {
             setIsOpen(!isOpen);
@@ -70,17 +67,17 @@ const ProductTable = ({ products, loading }) => {
             <Th>Action</Th>
           </Tr>
         </Thead>
-        <Tbody style={{ position: "relative" }}>
+        <Tbody style={{ position: 'relative' }}>
           {products?.length > 0 &&
-            products?.map((item, index) => {
+            products?.map((item) => {
               console.log(item);
               return (
                 <Tr
-                  key={index}
+                  key={Math.random()}
                   className="align-middle cursor-pointer"
                   style={{
-                    fontSize: "15px",
-                    fontWeight: "500",
+                    fontSize: '15px',
+                    fontWeight: '500',
                   }}
                 >
                   <Th onClick={() => goToDetails(item?._id)}>
@@ -98,12 +95,12 @@ const ProductTable = ({ products, loading }) => {
 
                   <Td onClick={() => goToDetails(item?._id)}>
                     {item?.deals.length > 0
-                      ? item?.deals.map((item, index) => (
-                          <div key={index}>
+                      ? item?.deals.map((item) => (
+                          <div key={Math.random()}>
                             <p>{item?.name}</p>
                           </div>
                         ))
-                      : "--"}
+                      : '--'}
                   </Td>
 
                   <Td onClick={() => goToDetails(item?._id)}>
@@ -112,20 +109,14 @@ const ProductTable = ({ products, loading }) => {
                   </Td>
 
                   <Td onClick={() => goToDetails(item?._id)}>
-                    <div
-                      className={`${
-                        item?.status === "active"
-                          ? "active-status"
-                          : "inactive-status"
-                      }`}
-                    >{`${
-                      item?.status === "active" ? "Active" : "Inactive"
+                    <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{`${
+                      item?.status === 'active' ? 'Active' : 'Inactive'
                     }`}</div>
                   </Td>
                   <Td>
                     <ThreeDotsMenu
                       handleMenuClick={(menu) => handleMenu(menu, item)}
-                      menuItems={["Edit", "Update Status"]}
+                      menuItems={['Edit', 'Update Status']}
                     />
                   </Td>
                 </Tr>
@@ -136,9 +127,9 @@ const ProductTable = ({ products, loading }) => {
               <Td>
                 <Spinner
                   style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
+                    position: 'fixed',
+                    left: '50%',
+                    top: '50%',
                   }}
                   animation="border"
                   color="danger"
@@ -156,6 +147,6 @@ const ProductTable = ({ products, loading }) => {
       )}
     </div>
   );
-};
+}
 
 export default ProductTable;

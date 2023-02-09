@@ -1,90 +1,65 @@
-import PropTypes from "prop-types";
-import MetaTags from "react-meta-tags";
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/destructuring-assignment */
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import MetaTags from 'react-meta-tags';
 
-import {
-  Row,
-  Col,
-  CardBody,
-  Card,
-  Alert,
-  Container,
-  Modal,
-  Spinner,
-  Form,
-  Button,
-} from "reactstrap";
+import { Alert, Button, Card, CardBody, Col, Container, Form, Modal, Row, Spinner } from 'reactstrap';
 
 // Redux
-import { connect, useSelector } from "react-redux";
-import { withRouter, Link, useHistory } from "react-router-dom";
+import { connect, useSelector } from 'react-redux';
+import { Link, useHistory, withRouter } from 'react-router-dom';
 
 // availity-reactstrap-validation
-import { AvForm, AvField } from "availity-reactstrap-validation";
-
-// actions
-import { adminAuth, apiError } from "../../store/actions";
+import { AvField, AvForm } from 'availity-reactstrap-validation';
 
 // import images
-import lyxaLogo from "../../assets/images/lyxa.png";
-import { toast } from "react-toastify";
-import GlobalWrapper from "./../../components/GlobalWrapper";
-import {
-  FormControl,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-} from "@mui/material";
-import { FormControlLabel } from "@material-ui/core";
-import Footer from "../../components/VerticalLayout/Footer";
-import LockResetIcon from "@mui/icons-material/LockReset";
-import styled from "styled-components";
+import { FormControlLabel } from '@material-ui/core';
+import LockResetIcon from '@mui/icons-material/LockReset';
+import { FormControl, FormLabel, Radio, RadioGroup, TextField } from '@mui/material';
+import styled from 'styled-components';
 // import { successMsg } from "../../helpers/successMsg";
 // import requestApi from "../../network/httpRequest";
-import { FORGET_PASS } from "../../network/Api";
-import axios from "axios";
+import axios from 'axios';
+import lyxaLogo from '../../assets/images/lyxa.png';
+import GlobalWrapper from '../../components/GlobalWrapper';
+import Footer from '../../components/VerticalLayout/Footer';
+import { FORGET_PASS } from '../../network/Api';
+import { adminAuth, apiError } from '../../store/actions';
 
-const Login = (props) => {
+function Login(props) {
   const history = useHistory();
-
-  const { admin, message, loading } = useSelector(
-    (state) => state.Login
-  );
-
-  const [type, setType] = useState("admin");
-
+  const { admin, loading } = useSelector((state) => state.Login);
+  const [type, setType] = useState('admin');
   const [isForgetPassword, setIsForgetPassword] = useState(false);
   const [forgetPassData, setForgetPassData] = useState({
-    type: "",
-    to_email: "",
+    type: '',
+    to_email: '',
   });
   const [isLoading, setIsloading] = useState(false);
   const [forgetStatus, setForgetStatus] = useState({
-    status: "",
-    msg: "",
+    status: '',
+    msg: '',
   });
 
   useEffect(() => {
-    if(admin?.account_type){
-      console.log('triggered')
-      history.push("/dashboard");
+    if (admin?.account_type) {
+      console.log('triggered');
+      history.push('/dashboard');
     }
   }, [admin]);
 
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
+    // eslint-disable-next-line react/destructuring-assignment
     props.adminAuth({ ...values, type }, props.history);
   };
 
   // ROLL CHANGE
-
   const handleLoginRoleChange = (e) => {
     setType(e.target.value);
   };
 
   // FORGET PASSWORD INPUT CHANGE
-
   const handleChangeForgetPass = (e) => {
     const { name, value } = e.target;
 
@@ -92,36 +67,36 @@ const Login = (props) => {
   };
 
   // SUBMIT FORGET PASS
-
+  // eslint-disable-next-line consistent-return
   const submitForgetPass = async (e) => {
     e.preventDefault();
 
     if (!forgetPassData.type) {
-      return setForgetStatus({ status: "error", msg: "Select Role" });
+      return setForgetStatus({ status: 'error', msg: 'Select Role' });
     }
     if (!forgetPassData.to_email) {
-      return setForgetStatus({ status: "error", msg: "Enter Valid Email" });
+      return setForgetStatus({ status: 'error', msg: 'Enter Valid Email' });
     }
 
-    let emailRex = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/;
+    // eslint-disable-next-line no-useless-escape
+    const emailRex = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/;
 
     if (!forgetPassData.to_email.match(emailRex)) {
-      return setForgetStatus({ status: "error", msg: " Invalid Email" });
+      return setForgetStatus({ status: 'error', msg: ' Invalid Email' });
     }
 
     try {
       setIsloading(true);
       const resp = await axios({
-        method: "POST",
+        method: 'POST',
         url: FORGET_PASS,
         data: {
           ...forgetPassData,
           type: forgetPassData.type,
         },
-      }); 
+      });
 
-      const {data} = resp;
-      console.log(resp);
+      const { data } = resp;
 
       if (data) {
         setIsloading(false);
@@ -129,14 +104,14 @@ const Login = (props) => {
         if (data.status) {
           setForgetStatus({
             msg: `${data.message} Successfully`,
-            status: "success",
+            status: 'success',
           });
           setForgetPassData({
-            type: "",
-            to_email: "",
+            type: '',
+            to_email: '',
           });
         } else {
-          setForgetStatus({ msg: data.message, status: "error" });
+          setForgetStatus({ msg: data.message, status: 'error' });
         }
       }
     } catch (e) {
@@ -146,7 +121,7 @@ const Login = (props) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <MetaTags>
         <title>Login | Lyxa</title>
       </MetaTags>
@@ -159,12 +134,8 @@ const Login = (props) => {
                 <Card className="overflow-hidden">
                   <div className="bg-dark">
                     <div className="text-primary text-center p-4">
-                      <h5 className="text-white font-size-20">
-                        Welcome Back !
-                      </h5>
-                      <p className="text-white-50">
-                        Sign in to continue to Lyxa.
-                      </p>
+                      <h5 className="text-white font-size-20">Welcome Back !</h5>
+                      <p className="text-white-50">Sign in to continue to Lyxa.</p>
                       <Link to="/" className="logo logo-admin">
                         <img src={lyxaLogo} height="24" alt="logo" />
                       </Link>
@@ -179,15 +150,11 @@ const Login = (props) => {
                           handleValidSubmit(e, v);
                         }}
                       >
-                        {props.error ? (
-                          <Alert color="danger">{props.error}</Alert>
-                        ) : null}
+                        {props.error ? <Alert color="danger">{props.error}</Alert> : null}
 
                         <div className="mb-2">
                           <FormControl>
-                            <FormLabel id="demo-controlled-radio-buttons-group">
-                              Login As
-                            </FormLabel>
+                            <FormLabel id="demo-controlled-radio-buttons-group">Login As</FormLabel>
                             <RadioGroup
                               aria-labelledby="demo-controlled-radio-buttons-group"
                               name="controlled-radio-buttons-group"
@@ -195,26 +162,14 @@ const Login = (props) => {
                               onChange={handleLoginRoleChange}
                             >
                               <div className="d-flex justify-content-center flex-wrap">
-                                <FormControlLabel
-                                  value="admin"
-                                  control={<Radio />}
-                                  label="Admin"
-                                />
+                                <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                                 <FormControlLabel
                                   value="customerService"
                                   control={<Radio />}
                                   label="Customer Service"
                                 />
-                                <FormControlLabel
-                                  value="seller"
-                                  control={<Radio />}
-                                  label="Seller"
-                                />
-                                <FormControlLabel
-                                  value="shop"
-                                  control={<Radio />}
-                                  label="Shop"
-                                />
+                                <FormControlLabel value="seller" control={<Radio />} label="Seller" />
+                                <FormControlLabel value="shop" control={<Radio />} label="Shop" />
                               </div>
                             </RadioGroup>
                           </FormControl>
@@ -249,11 +204,10 @@ const Login = (props) => {
                             className=" ms-1 cursor-pointer"
                             onClick={() => {
                               setIsForgetPassword(!isForgetPassword);
-                              setForgetStatus({ status: "", msg: "" });
+                              setForgetStatus({ status: '', msg: '' });
                               setForgetPassData({
                                 ...forgetPassData,
-                                type:
-                                  type === "customerService" ? "admin" : type,
+                                type: type === 'customerService' ? 'admin' : type,
                               });
                             }}
                           >
@@ -268,7 +222,7 @@ const Login = (props) => {
                               type="submit"
                               disabled={loading}
                             >
-                              {loading ? "Loading..." : "Log In"}
+                              {loading ? 'Loading...' : 'Log In'}
                             </button>
                           </Col>
                         </Row>
@@ -287,7 +241,7 @@ const Login = (props) => {
           toggle={() => {
             setIsForgetPassword(!isForgetPassword);
           }}
-          centered={true}
+          centered
         >
           <div className="modal-header">
             <h5 className="modal-title mt-0">Forget Password</h5>
@@ -306,19 +260,13 @@ const Login = (props) => {
           </div>
           <div className="modal-body">
             {forgetStatus.msg ? (
-              <Alert
-                color={forgetStatus.status === "error" ? "danger" : "success"}
-              >
-                {forgetStatus.msg}
-              </Alert>
+              <Alert color={forgetStatus.status === 'error' ? 'danger' : 'success'}>{forgetStatus.msg}</Alert>
             ) : null}
-            {forgetStatus.status !== "success" ? (
+            {forgetStatus.status !== 'success' ? (
               <Form onSubmit={submitForgetPass}>
                 <div className="mb-2">
                   <FormControl>
-                    <FormLabel id="demo-controlled-radio-buttons-group">
-                      Role
-                    </FormLabel>
+                    <FormLabel id="demo-controlled-radio-buttons-group">Role</FormLabel>
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
                       name="type"
@@ -327,21 +275,9 @@ const Login = (props) => {
                       required
                     >
                       <div className="d-flex justify-content-center flex-wrap">
-                        <FormControlLabel
-                          value="admin"
-                          control={<Radio />}
-                          label="Admin / Customer Service"
-                        />
-                        <FormControlLabel
-                          value="seller"
-                          control={<Radio />}
-                          label="Seller"
-                        />
-                        <FormControlLabel
-                          value="shop"
-                          control={<Radio />}
-                          label="Shop"
-                        />
+                        <FormControlLabel value="admin" control={<Radio />} label="Admin / Customer Service" />
+                        <FormControlLabel value="seller" control={<Radio />} label="Seller" />
+                        <FormControlLabel value="shop" control={<Radio />} label="Shop" />
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -365,18 +301,10 @@ const Login = (props) => {
                     size="lg"
                     className="px-4"
                     type="submit"
-                    style={{ width: "150px" }}
-                    disabled={
-                      isLoading ||
-                      !forgetPassData.to_email ||
-                      !forgetPassData.type
-                    }
+                    style={{ width: '150px' }}
+                    disabled={isLoading || !forgetPassData.to_email || !forgetPassData.type}
                   >
-                    {isLoading ? (
-                      <Spinner color="danger" size="sm"></Spinner>
-                    ) : (
-                      "Send"
-                    )}
+                    {isLoading ? <Spinner color="danger" size="sm"></Spinner> : 'Send'}
                   </Button>
                 </div>
               </Form>
@@ -384,9 +312,9 @@ const Login = (props) => {
           </div>
         </Modal>
       </GlobalWrapper>
-    </React.Fragment>
+    </>
   );
-};
+}
 
 const ForgatPassword = styled.div`
   &:hover {
@@ -400,12 +328,9 @@ const mapStateToProps = (state) => {
   return { error };
 };
 
-export default withRouter(
-  connect(mapStateToProps, { adminAuth, apiError })(Login)
-);
+export default withRouter(connect(mapStateToProps, { adminAuth, apiError })(Login));
 
 Login.propTypes = {
   error: PropTypes.any,
   history: PropTypes.object,
-  loginUser: PropTypes.func,
 };

@@ -1,17 +1,17 @@
-import React from "react"
+import React from 'react';
 // availity-reactstrap-validation
+import { AvField, AvForm } from 'availity-reactstrap-validation';
 import MetaTags from 'react-meta-tags';
-import { AvForm, AvField } from "availity-reactstrap-validation"
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 
-import { Row, Col, CardBody, Card, Container } from "reactstrap"
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
 
 // import images
-import logoSm from "../../assets/images/logo-sm.png";
+import logoSm from '../../assets/images/logo-sm.png';
 
-const Register = () => {
+function Register() {
   return (
-    <React.Fragment>
+    <>
       <MetaTags>
         <title>Register | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
       </MetaTags>
@@ -49,13 +49,7 @@ const Register = () => {
                       </div>
 
                       <div className="mb-3">
-                        <AvField
-                          name="username"
-                          label="Username"
-                          type="text"
-                          required
-                          placeholder="Enter username"
-                        />
+                        <AvField name="username" label="Username" type="text" required placeholder="Enter username" />
                       </div>
                       <div className="mb-3">
                         <AvField
@@ -69,10 +63,7 @@ const Register = () => {
 
                       <div className="mb-3 row">
                         <div className="col-12 text-end">
-                          <button
-                            className="btn btn-primary w-md waves-effect waves-light"
-                            type="submit"
-                          >
+                          <button className="btn btn-primary w-md waves-effect waves-light" type="submit">
                             Register
                           </button>
                         </div>
@@ -81,7 +72,7 @@ const Register = () => {
                       <div className="mt-2 mb-0 row">
                         <div className="col-12 mt-4">
                           <p className="mb-0">
-                            By registering you agree to the Veltrix{" "}
+                            By registering you agree to the Veltrix{' '}
                             <Link to="#" className="text-primary">
                               Terms of Use
                             </Link>
@@ -94,26 +85,23 @@ const Register = () => {
               </Card>
               <div className="mt-5 text-center">
                 <p>
-                  Already have an account ?{" "}
-                  <Link
-                    to="/pages-login"
-                    className="fw-medium text-primary"
-                  >
-                    {" "}
-                      Login
-                    </Link>{" "}
+                  Already have an account ?{' '}
+                  <Link to="/pages-login" className="fw-medium text-primary">
+                    {' '}
+                    Login
+                  </Link>{' '}
                 </p>
                 <p>
-                  © {new Date().getFullYear()} Veltrix. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger" /> by Themesbrand
-                  </p>
+                  © {new Date().getFullYear()} Veltrix. Crafted with <i className="mdi mdi-heart text-danger" /> by
+                  Themesbrand
+                </p>
               </div>
             </Col>
           </Row>
         </Container>
       </div>
-    </React.Fragment>
-  )
+    </>
+  );
 }
 
-export default Register
+export default Register;

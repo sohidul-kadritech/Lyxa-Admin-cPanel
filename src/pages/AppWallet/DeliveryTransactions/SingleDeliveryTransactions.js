@@ -1,36 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner, Modal } from "reactstrap";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import Flatpickr from "react-flatpickr";
-import TransactionsCard from "../../../components/TransactionsCard";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import requestApi from "../../../network/httpRequest";
-import { DELIVERY_TRX, SINGLE_DELIVERY_TRX } from "../../../network/Api";
-import AppPagination from "../../../components/AppPagination";
-import TransactionsTable from "../../../components/TransactionsTable";
-import MakePayment from "../../../components/MakePayment";
-import PropTypes from "prop-types";
-import { Box, Tab, Typography } from "@mui/material";
-import { Tabs } from "@material-ui/core";
-import styled from "styled-components";
-import { TrxType } from "../../../components/updateTrxsType";
-import { successMsg } from "../../../helpers/successMsg";
+import { Tabs } from '@material-ui/core';
+import { Box, Tab, Typography } from '@mui/material';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import Flatpickr from 'react-flatpickr';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row, Spinner } from 'reactstrap';
+import styled from 'styled-components';
+import deliveryIcon from '../../../assets/images/dashboard/delivery.png';
+import earningFlowIcon from '../../../assets/images/dashboard/earning-flow.png';
+import moneyExchangeIcon from '../../../assets/images/dashboard/money-exchange.png';
+import orderAmountIcon from '../../../assets/images/dashboard/order-amount.png';
+import profitFlowIcon from '../../../assets/images/dashboard/profit-flow.png';
+import AppPagination from '../../../components/AppPagination';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+import MakePayment from '../../../components/MakePayment';
+import TopSummery from '../../../components/TopSummery';
+import TransactionsTable from '../../../components/TransactionsTable';
+import { TrxType } from '../../../components/updateTrxsType';
+import { successMsg } from '../../../helpers/successMsg';
+import { SINGLE_DELIVERY_TRX } from '../../../network/Api';
+import requestApi from '../../../network/httpRequest';
 import {
   riderReceivedPayment,
   updateRiderCashTrxEndDate,
   updateRiderCashTrxStartDate,
   updateRiderTrxEndDate,
   updateRiderTrxStartDate,
-} from "../../../store/appWallet/appWalletAction";
-import earningFlowIcon from "../../../assets/images/dashboard/earning-flow.png";
-import moneyExchangeIcon from "../../../assets/images/dashboard/money-exchange.png";
-import deliveryIcon from "../../../assets/images/dashboard/delivery.png";
-import orderAmountIcon from "../../../assets/images/dashboard/order-amount.png";
-import profitFlowIcon from "../../../assets/images/dashboard/profit-flow.png";
-import TopSummery from "../../../components/TopSummery";
+} from '../../../store/appWallet/appWalletAction';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,11 +60,11 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 
-const SingleDeliveryTransactions = () => {
+function SingleDeliveryTransactions() {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -80,8 +79,7 @@ const SingleDeliveryTransactions = () => {
   const [cashOrders, setCashOrders] = useState([]);
   const [tabItem, setTabItem] = useState(0);
 
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const {
     status,
@@ -91,18 +89,7 @@ const SingleDeliveryTransactions = () => {
     riderCashTrxEndDate,
     loading: isLoading,
   } = useSelector((state) => state.appWalletReducer);
-  const { shopName: name, _id: accountId, account_type } = useSelector((store) => store.Login.admin);
-
-  useEffect(() => {
-    if (id) {
-      if (riderTrxEndDate || riderTrxStartDate || riderCashTrxStartDate || riderCashTrxEndDate) {
-        callApi(id);
-      }
-      setRiderId(id);
-    } else {
-      history.push("/add-wallet/delivery-transactions", { replace: true });
-    }
-  }, [id, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate]);
+  const { account_type } = useSelector((store) => store.Login.admin);
 
   const callApi = async (deiveryId, page = 1) => {
     setLoading(true);
@@ -130,47 +117,58 @@ const SingleDeliveryTransactions = () => {
         }));
         setCashOrders(list);
       } else {
-        history.push("/add-wallet/delivery-transactions", { replace: true });
+        history.push('/add-wallet/delivery-transactions', { replace: true });
       }
     } catch (error) {
-      history.push("/add-wallet/delivery-transactions", { replace: true });
+      history.push('/add-wallet/delivery-transactions', { replace: true });
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      if (riderTrxEndDate || riderTrxStartDate || riderCashTrxStartDate || riderCashTrxEndDate) {
+        callApi(id);
+      }
+      setRiderId(id);
+    } else {
+      history.push('/add-wallet/delivery-transactions', { replace: true });
+    }
+  }, [id, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate]);
 
   // SUMMARY LST
   useEffect(() => {
     if (trxs) {
       const summaryList = [
         {
-          title: "Lyxa Earning",
+          title: 'Lyxa Earning',
           value: `${trxs?.summary?.dropEarning} ${currency}`,
           icon: earningFlowIcon,
-          iconBg: "red",
+          iconBg: 'red',
         },
 
         {
-          title: "Unsetlled Amount",
+          title: 'Unsetlled Amount',
           value: `${trxs?.summary?.totalUnSettleAmount} ${currency}`,
           icon: moneyExchangeIcon,
-          iconBg: "#0c9da4",
+          iconBg: '#0c9da4',
         },
         {
-          title: "Rider Earning",
+          title: 'Rider Earning',
           value: `${trxs?.summary?.riderEarning} ${currency}`,
           icon: deliveryIcon,
-          iconBg: "#00dcff",
+          iconBg: '#00dcff',
         },
         {
-          title: "Total Profit",
+          title: 'Total Profit',
           value: `${trxs?.summary?.totalProfitRider} ${currency}`,
           icon: profitFlowIcon,
-          iconBg: "#ff5ca7",
+          iconBg: '#ff5ca7',
         },
         {
-          title: "Cash In Hand",
+          title: 'Cash In Hand',
           value: `${trxs?.summary?.totalCashInHand} ${currency}`,
           icon: orderAmountIcon,
-          iconBg: "#56ca00",
+          iconBg: '#56ca00',
         },
       ];
 
@@ -183,13 +181,11 @@ const SingleDeliveryTransactions = () => {
   }, [trxs]);
 
   //  TAB CHANGE
-
   const handleChange = (event, newValue) => {
     setTabItem(newValue);
   };
 
   // SELECT CASH AMOUNT
-
   const handleSelectCash = (checked, trx) => {
     cashOrders?.map((item) => {
       if (item?._id === trx?._id) {
@@ -198,34 +194,31 @@ const SingleDeliveryTransactions = () => {
       return item;
     });
     if (checked) {
-      // setSelected(checked);
       setSelectedCash([...selectedCash, trx]);
       setTotalSelectdAmount((prev) => prev + trx.receivedAmount);
     } else {
-      let newList = selectedCash.filter((item) => item._id !== trx._id);
+      const newList = selectedCash.filter((item) => item._id !== trx._id);
       setSelectedCash(newList);
       setTotalSelectdAmount((prev) => prev - trx.receivedAmount);
     }
   };
 
   //  RECEIVED CASH
-
+  // eslint-disable-next-line consistent-return
   const receivedCashFromRider = () => {
     if (selectedCash.length === 0) {
-      return successMsg("Select at least one transactions");
-    } else {
-      const trxIds = selectedCash.map((item) => item._id);
-      dispatch(
-        riderReceivedPayment({
-          deliveryBoyId: trxs?.deliveryBoy?._id,
-          idList: trxIds,
-        })
-      );
+      return successMsg('Select at least one transactions');
     }
+    const trxIds = selectedCash.map((item) => item._id);
+    dispatch(
+      riderReceivedPayment({
+        deliveryBoyId: trxs?.deliveryBoy?._id,
+        idList: trxIds,
+      })
+    );
   };
 
   // SELECT ALL CASH FOR RECEIVED
-
   const selectAllReceivedCash = (checked) => {
     const list = cashOrders?.map((item) => ({
       ...item,
@@ -234,6 +227,7 @@ const SingleDeliveryTransactions = () => {
     }));
     setCashOrders(list);
     setSelectedCash(checked ? cashOrders : []);
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const totalAmount = checked ? cashOrders.reduce((total, item) => item?.receivedAmount + total, 0) : 0;
     setTotalSelectdAmount(totalAmount);
   };
@@ -245,14 +239,13 @@ const SingleDeliveryTransactions = () => {
       setSelectedCash([]);
       setTotalSelectdAmount(0);
     }
-    return;
   }, [status]);
 
   return (
-    <React.Fragment>
+    <>
       <GlobalWrapper>
         <div className="page-content">
-          <Container fluid={true}>
+          <Container fluid>
             <Breadcrumb
               maintitle="Lyxa"
               breadcrumbItem={trxs?.deliveryBoy?.name}
@@ -260,8 +253,8 @@ const SingleDeliveryTransactions = () => {
               isRefresh={false}
             />
 
-            <Box sx={{ width: "100%" }}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Box sx={{ width: '100%' }}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={tabItem} onChange={handleChange} aria-label="basic tabs example">
                   <Tab label="Transactions List" {...a11yProps(0)} />
                   <Tab label="Cash order List" {...a11yProps(1)} />
@@ -280,13 +273,11 @@ const SingleDeliveryTransactions = () => {
                               id="startDate"
                               placeholder="Start Date"
                               value={riderTrxStartDate}
-                              onChange={(selectedDates, dateStr, instance) =>
-                                dispatch(updateRiderTrxStartDate(dateStr))
-                              }
+                              onChange={(selectedDates, dateStr) => dispatch(updateRiderTrxStartDate(dateStr))}
                               options={{
                                 altInput: true,
-                                altFormat: "F j, Y",
-                                dateFormat: "Y-m-d",
+                                altFormat: 'F j, Y',
+                                dateFormat: 'Y-m-d',
                               }}
                             />
                           </div>
@@ -299,11 +290,11 @@ const SingleDeliveryTransactions = () => {
                               id="endDate"
                               placeholder="Select End Date"
                               value={riderTrxEndDate}
-                              onChange={(selectedDates, dateStr, instance) => dispatch(updateRiderTrxEndDate(dateStr))}
+                              onChange={(selectedDates, dateStr) => dispatch(updateRiderTrxEndDate(dateStr))}
                               options={{
                                 altInput: true,
-                                altFormat: "F j, Y",
-                                dateFormat: "Y-m-d",
+                                altFormat: 'F j, Y',
+                                dateFormat: 'Y-m-d',
                               }}
                             />
                           </div>
@@ -313,20 +304,16 @@ const SingleDeliveryTransactions = () => {
                   </CardBody>
                 </Card>
                 <div>
-                  <TopSummery fromWallet={true} data={summary} />
+                  <TopSummery fromWallet data={summary} />
                 </div>
                 <Card>
                   <CardBody>
                     <div className="d-flex justify-content-between align-items-center pb-3">
                       <CardTitle className="h4"> Transactions List</CardTitle>
 
-                      {account_type === "admin" && (
+                      {account_type === 'admin' && (
                         <div className="d-flex justify-content-end">
-                          <Button
-                            className="btn btn-info ms-4"
-                            onClick={() => setIsMakePayment(!isMakePayment)}
-                            // disabled={trxs?.summary?.totalUnSettleAmount === 0}
-                          >
+                          <Button className="btn btn-info ms-4" onClick={() => setIsMakePayment(!isMakePayment)}>
                             Make Payment
                           </Button>
                         </div>
@@ -350,13 +337,11 @@ const SingleDeliveryTransactions = () => {
                               id="startDate"
                               placeholder="Start Date"
                               value={riderCashTrxStartDate}
-                              onChange={(selectedDates, dateStr, instance) =>
-                                dispatch(updateRiderCashTrxStartDate(dateStr))
-                              }
+                              onChange={(selectedDates, dateStr) => dispatch(updateRiderCashTrxStartDate(dateStr))}
                               options={{
                                 altInput: true,
-                                altFormat: "F j, Y",
-                                dateFormat: "Y-m-d",
+                                altFormat: 'F j, Y',
+                                dateFormat: 'Y-m-d',
                               }}
                             />
                           </div>
@@ -369,13 +354,11 @@ const SingleDeliveryTransactions = () => {
                               id="endDate"
                               placeholder="Select End Date"
                               value={riderCashTrxEndDate}
-                              onChange={(selectedDates, dateStr, instance) =>
-                                dispatch(updateRiderCashTrxEndDate(dateStr))
-                              }
+                              onChange={(selectedDates, dateStr) => dispatch(updateRiderCashTrxEndDate(dateStr))}
                               options={{
                                 altInput: true,
-                                altFormat: "F j, Y",
-                                dateFormat: "Y-m-d",
+                                altFormat: 'F j, Y',
+                                dateFormat: 'Y-m-d',
                               }}
                             />
                           </div>
@@ -387,7 +370,7 @@ const SingleDeliveryTransactions = () => {
                 <Card>
                   <CardBody>
                     <div className="d-flex justify-content-end pb-3 align-items-center">
-                      {account_type === "admin" && (
+                      {account_type === 'admin' && (
                         <>
                           {totalSelectedAmount > 0 && (
                             <SummaryWrapper>
@@ -401,7 +384,7 @@ const SingleDeliveryTransactions = () => {
                               onClick={receivedCashFromRider}
                               disabled={isLoading || cashOrders.length < 1 || selectedCash.length < 1}
                             >
-                              {isLoading ? "Receiving..." : "Receive Cash"}
+                              {isLoading ? 'Receiving...' : 'Receive Cash'}
                             </Button>
                           </div>
                         </>
@@ -430,14 +413,14 @@ const SingleDeliveryTransactions = () => {
                           </Th>
                         </Tr>
                       </Thead>
-                      <Tbody style={{ position: "relative" }}>
-                        {cashOrders?.map((item, index) => (
+                      <Tbody style={{ position: 'relative' }}>
+                        {cashOrders?.map((item) => (
                           <Tr
-                            key={index}
+                            key={Math.random()}
                             className="align-middle table-data cursor-pointer"
                             style={{
-                              fontSize: "15px",
-                              fontWeight: "500",
+                              fontSize: '15px',
+                              fontWeight: '500',
                             }}
                           >
                             <Th>{item?.order?.orderId}</Th>
@@ -502,7 +485,7 @@ const SingleDeliveryTransactions = () => {
         toggle={() => {
           setIsMakePayment(!isMakePayment);
         }}
-        centered={true}
+        centered
       >
         <div className="modal-header">
           <h5 className="modal-title mt-0">Make Payment</h5>
@@ -522,9 +505,9 @@ const SingleDeliveryTransactions = () => {
           <MakePayment unSettleAmount={trxs?.summary?.totalUnSettleAmount} id={trxs?.deliveryBoy?._id} type="rider" />
         </div>
       </Modal>
-    </React.Fragment>
+    </>
   );
-};
+}
 
 const SummaryWrapper = styled.div`
   padding: 10px 0px;

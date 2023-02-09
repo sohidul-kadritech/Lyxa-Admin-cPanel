@@ -1,15 +1,8 @@
-import { toast } from "react-toastify";
-import { successMsg } from "../../helpers/successMsg";
-import {
-  ADD_USER,
-  ALL_USERS,
-  EDIT_USER,
-  USER_ORDERS,
-  USER_STATUS,
-  USER_TRANSACTIONS,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
+/* eslint-disable default-param-last */
+import { successMsg } from '../../helpers/successMsg';
+import { ALL_USERS, USER_ORDERS, USER_STATUS, USER_TRANSACTIONS } from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // USERS LIST
 
@@ -60,7 +53,7 @@ export const userList =
 // TRANSACTIONS
 
 export const userTransactions =
-  (refresh = false, id, page = 1) =>
+  (id, page = 1) =>
   async (dispatch, getState) => {
     try {
       const { startDate, endDate, sortBy } = getState().usersReducer;
@@ -201,7 +194,7 @@ export const updateUserStatus = (userId, status) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(USER_STATUS, {
-      method: "POST",
+      method: 'POST',
       data: {
         id: userId,
         status,
@@ -209,7 +202,7 @@ export const updateUserStatus = (userId, status) => async (dispatch) => {
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.UPDATE_USER_STATUS_REQUEST_SUCCESS,
         payload: data.data,

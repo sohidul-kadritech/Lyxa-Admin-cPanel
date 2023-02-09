@@ -1,13 +1,14 @@
+/* eslint-disable default-param-last */
 import {
   UPDATE_TERMS_CONDITION_REQUEST_FAIL,
   UPDATE_TERMS_CONDITION_REQUEST_SEND,
   UPDATE_TERMS_CONDITION_REQUEST_SUCCESS,
-} from "../actionType";
+} from '../actionType';
 
 const initialState = {
   loading: false,
   status: false,
-  description: "",
+  description: '',
   error: null,
 };
 

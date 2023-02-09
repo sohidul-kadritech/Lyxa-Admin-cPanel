@@ -1,23 +1,24 @@
-import moment from "moment";
-import * as actionType from "../actionType";
+/* eslint-disable default-param-last */
+import moment from 'moment';
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
   orders: [],
   status: false,
-  typeKey: { label: "All", value: "all" },
-  sortByKey: { label: "Desc", value: "desc" },
-  startDate: moment().startOf("month").format("YYYY-MM-DD"),
-  endDate: moment().endOf("month").format("YYYY-MM-DD"),
+  typeKey: { label: 'All', value: 'all' },
+  sortByKey: { label: 'Desc', value: 'desc' },
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().endOf('month').format('YYYY-MM-DD'),
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  orderType: { label: "All", value: "all" },
-  orderSearchKey: "",
-  activeDelieryBoys: []
+  orderType: { label: 'All', value: 'all' },
+  orderSearchKey: '',
+  activeDelieryBoys: [],
 };
 
 const orderReducer = (state = initialState, action) => {
@@ -48,7 +49,7 @@ const orderReducer = (state = initialState, action) => {
       return {
         ...state,
         error: payload,
-        loading: false
+        loading: false,
       };
 
     // UPDATE STATUS
@@ -182,10 +183,9 @@ const orderReducer = (state = initialState, action) => {
         orderSearchKey: payload,
       };
 
+    // ACTIVE DELIVERY BOSY
 
-      // ACTIVE DELIVERY BOSY
-
-      case actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND:
+    case actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND:
       return {
         ...state,
         loading: true,

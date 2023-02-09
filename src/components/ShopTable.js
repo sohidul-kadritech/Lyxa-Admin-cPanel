@@ -1,30 +1,19 @@
-import { Tooltip } from "@mui/material";
-import React, { useState } from "react";
-import SweetAlert from "react-bootstrap-sweetalert";
-import Lightbox from "react-image-lightbox";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Carousel,
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "reactstrap";
-import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
-import ThreeDotsMenu from "./ThreeDotsMenu";
-import TableImgItem from "./TableImgItem";
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
+import React, { useState } from 'react';
+import Lightbox from 'react-image-lightbox';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Spinner } from 'reactstrap';
+import TableImgItem from './TableImgItem';
+import ThreeDotsMenu from './ThreeDotsMenu';
 
-const ShopTable = ({ shops = [] }) => {
+function ShopTable({ shops = [] }) {
   const history = useHistory();
 
   const { loading } = useSelector((state) => state.shopReducer);
 
+  // eslint-disable-next-line no-unused-vars
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
@@ -50,11 +39,11 @@ const ShopTable = ({ shops = [] }) => {
   // HANDLE ACTION MENU
 
   const handleMenu = (menu, item) => {
-    if (menu === "Edit") {
+    if (menu === 'Edit') {
       history.push(`/shops/edit/${item._id}`);
-    } else if (menu === "Products") {
+    } else if (menu === 'Products') {
       goToShopProductList(item._id);
-    } else if (menu === "Orders") {
+    } else if (menu === 'Orders') {
       goToShopOrderList(item._id);
     }
   };
@@ -68,7 +57,7 @@ const ShopTable = ({ shops = [] }) => {
       {isOpen && (
         <Lightbox
           mainSrc={selectedImg}
-          enableZoom={true}
+          enableZoom
           imageCaption="img"
           onCloseRequest={() => {
             setIsOpen(!isOpen);
@@ -76,10 +65,7 @@ const ShopTable = ({ shops = [] }) => {
         />
       )}
 
-      <Table
-        id="tech-companies-1"
-        className="table table__wrapper table-hover text-center"
-      >
+      <Table id="tech-companies-1" className="table table__wrapper table-hover text-center">
         <Thead>
           <Tr>
             <Th>Shop</Th>
@@ -92,81 +78,65 @@ const ShopTable = ({ shops = [] }) => {
             <Th>Action</Th>
           </Tr>
         </Thead>
-        <Tbody style={{ position: "relative" }}>
-          {shops.map((item, index) => {
-            return (
-              <Tr
-                key={index}
-                className="align-middle text-capitalize cursor-pointer"
-                style={{
-                  fontSize: "15px",
-                  fontWeight: "500",
-                }}
-              >
-                <Th onClick={() => goToDetails(item?._id)}>
-                  <TableImgItem
-                    img={item?.shopLogo}
-                    altImg={RoomOutlinedIcon}
-                    name={item?.shopName}
-                    subTitle={item?.seller.name}
-                    id={item?.autoGenId}
-                  />
-                </Th>
+        <Tbody style={{ position: 'relative' }}>
+          {shops.map((item) => (
+            <Tr
+              key={Math.random()}
+              className="align-middle text-capitalize cursor-pointer"
+              style={{
+                fontSize: '15px',
+                fontWeight: '500',
+              }}
+            >
+              <Th onClick={() => goToDetails(item?._id)}>
+                <TableImgItem
+                  img={item?.shopLogo}
+                  altImg={RoomOutlinedIcon}
+                  name={item?.shopName}
+                  subTitle={item?.seller.name}
+                  id={item?.autoGenId}
+                />
+              </Th>
 
-                <Td onClick={() => goToDetails(item?._id)}>{item?.shopType}</Td>
-                <Td onClick={() => goToDetails(item?._id)}>
-                  <div
-                    className={`${
-                      item?.shopStatus === "active"
-                        ? "active-status"
-                        : "inactive-status"
-                    }`}
-                  >
-                    {item?.shopStatus}
-                  </div>
-                </Td>
-                <Td onClick={() => goToDetails(item?._id)}>
-                  {item?.deals.length > 0
-                    ? item?.deals.map((item, index) => (
-                        <div key={index}>
-                          <p>{item?.name}</p>
-                        </div>
-                      ))
-                    : "--"}
-                </Td>
-                <Td onClick={() => goToDetails(item?._id)}>
-                  {item?.isFeatured ? "Yes" : "NO"}
-                </Td>
-                <Td onClick={() => goToDetails(item?._id)}>
-                  {item?.totalOrder}
-                </Td>
-                <Td onClick={() => goToDetails(item?._id)}>
-                  {item?.liveStatus}
-                </Td>
-                <Td>
-                  <ThreeDotsMenu
-                    handleMenuClick={(menu) => handleMenu(menu, item)}
-                    menuItems={[
-                      account_type !== "shop" && "Edit",
-                      "Details",
-                      account_type === "admin" &&
-                        adminType !== "customerService" &&
-                        "Products",
-                      "Orders",
-                    ]}
-                  />
-                </Td>
-              </Tr>
-            );
-          })}
+              <Td onClick={() => goToDetails(item?._id)}>{item?.shopType}</Td>
+              <Td onClick={() => goToDetails(item?._id)}>
+                <div className={`${item?.shopStatus === 'active' ? 'active-status' : 'inactive-status'}`}>
+                  {item?.shopStatus}
+                </div>
+              </Td>
+              <Td onClick={() => goToDetails(item?._id)}>
+                {item?.deals.length > 0
+                  ? item?.deals.map((item) => (
+                      <div key={Math.random()}>
+                        <p>{item?.name}</p>
+                      </div>
+                    ))
+                  : '--'}
+              </Td>
+              <Td onClick={() => goToDetails(item?._id)}>{item?.isFeatured ? 'Yes' : 'NO'}</Td>
+              <Td onClick={() => goToDetails(item?._id)}>{item?.totalOrder}</Td>
+              <Td onClick={() => goToDetails(item?._id)}>{item?.liveStatus}</Td>
+              <Td>
+                <ThreeDotsMenu
+                  handleMenuClick={(menu) => handleMenu(menu, item)}
+                  menuItems={[
+                    account_type !== 'shop' && 'Edit',
+                    'Details',
+                    account_type === 'admin' && adminType !== 'customerService' && 'Products',
+                    'Orders',
+                  ]}
+                />
+              </Td>
+            </Tr>
+          ))}
           {loading && (
             <Tr>
               <Td>
                 <Spinner
                   style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
+                    position: 'fixed',
+                    left: '50%',
+                    top: '50%',
                   }}
                   animation="border"
                   color="danger"
@@ -184,6 +154,6 @@ const ShopTable = ({ shops = [] }) => {
       )}
     </div>
   );
-};
+}
 
 export default ShopTable;

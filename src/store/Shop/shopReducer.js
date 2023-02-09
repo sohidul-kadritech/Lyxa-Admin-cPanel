@@ -1,4 +1,6 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
@@ -10,14 +12,13 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  searchKey: "",
-  statusKey: { label: "All", value: "all" },
-  typeKey: { label: "All", value: "all" },
-  sortByKey: { label: "Desc", value: "desc" },
-  liveStatus: { label: "All", value: "all" },
+  searchKey: '',
+  statusKey: { label: 'All', value: 'all' },
+  typeKey: { label: 'All', value: 'all' },
+  sortByKey: { label: 'Desc', value: 'desc' },
+  liveStatus: { label: 'All', value: 'all' },
   cuisines: [],
   tags: [],
-
 };
 
 const shopReducer = (state = initialState, action) => {
@@ -89,9 +90,7 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_SHOP_REQUEST_SUCCESS:
-      const updateData = state.shops.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const updateData = state.shops.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -116,7 +115,7 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case actionType.DELETE_SHOP_REQUEST_SUCCESS:
-      const filered = state.shops.filter((item) => item._id != payload);
+      const filered = state.shops.filter((item) => item._id !== payload);
 
       return {
         ...state,
@@ -197,9 +196,7 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS:
-      const data = state.shops.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const data = state.shops.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -267,9 +264,7 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_CUISINE_REQUEST_SUCCESS:
-      const update = state.cuisines.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const update = state.cuisines.map((item) => (item._id === payload._id ? payload : item));
       return {
         ...state,
         loading: false,
@@ -372,7 +367,7 @@ const shopReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         status: false,
-        error: null
+        error: null,
       };
 
     case actionType.ADD_TAG_REQUEST_SUCCESS:
@@ -390,14 +385,12 @@ const shopReducer = (state = initialState, action) => {
         error: payload,
       };
 
-
     case actionType.GET_TAGS_REQUEST_SEND:
       return {
         ...state,
         loading: true,
         status: false,
         error: null,
-
       };
 
     case actionType.GET_TAGS_REQUEST_SUCCESS:
@@ -425,7 +418,7 @@ const shopReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         status: false,
-        error: null
+        error: null,
       };
 
     case actionType.EDIT_TAG_REQUEST_SUCCESS:
@@ -433,7 +426,7 @@ const shopReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        tags: state.tags.map((item) => item?._id === payload?._id ? payload : item)
+        tags: state.tags.map((item) => (item?._id === payload?._id ? payload : item)),
       };
 
     case actionType.EDIT_TAG_REQUEST_FAIL:

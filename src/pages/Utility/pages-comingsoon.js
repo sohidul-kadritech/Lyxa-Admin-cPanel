@@ -1,41 +1,40 @@
-import React from "react"
+import React from 'react';
 import MetaTags from 'react-meta-tags';
-import { Link } from "react-router-dom"
-import { Container, Row, Col } from "reactstrap"
+import { Link } from 'react-router-dom';
+import { Col, Row } from 'reactstrap';
 
-//Import Countdown
-import Countdown from "react-countdown"
+// Import Countdown
+import Countdown from 'react-countdown';
 
-//Import Images
-import logoDark from "../../assets/images/logo-dark.png";
+// Import Images
+import logoDark from '../../assets/images/logo-dark.png';
 
-const PagesComingsoon = () => {
+function PagesComingsoon() {
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
-      return <span>You are good to go!</span>
-    } else {
-      return (
-        <>
-          <div className="coming-box">
-            {days} <span>Days</span>
-          </div>{" "}
-          <div className="coming-box">
-            {hours} <span>Hours</span>
-          </div>{" "}
-          <div className="coming-box">
-            {minutes} <span>Minutes</span>
-          </div>{" "}
-          <div className="coming-box">
-            {seconds} <span>Seconds</span>
-          </div>
-        </>
-      )
+      return <span>You are good to go!</span>;
     }
-  }
+    return (
+      <>
+        <div className="coming-box">
+          {days} <span>Days</span>
+        </div>{' '}
+        <div className="coming-box">
+          {hours} <span>Hours</span>
+        </div>{' '}
+        <div className="coming-box">
+          {minutes} <span>Minutes</span>
+        </div>{' '}
+        <div className="coming-box">
+          {seconds} <span>Seconds</span>
+        </div>
+      </>
+    );
+  };
 
   return (
-    <React.Fragment>
+    <>
       <MetaTags>
         <title>Coming Soon | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
       </MetaTags>
@@ -52,15 +51,12 @@ const PagesComingsoon = () => {
                 <div className="home-wrapper text-center">
                   <img src={logoDark} alt="logo" height="22" />
                   <h3 className="mt-4">Let's get started with Veltrix</h3>
-                  <p className="mb-5">
-                    It will be as simple as Occidental in fact it will be
-                    Occidental.
-                    </p>
+                  <p className="mb-5">It will be as simple as Occidental in fact it will be Occidental.</p>
 
                   <Row className="justify-content-center mt-5">
                     <Col md={8}>
-                    <div className="counter-number">
-                      <Countdown date="2021/12/31" renderer={renderer} />
+                      <div className="counter-number">
+                        <Countdown date="2021/12/31" renderer={renderer} />
                       </div>
                     </Col>
                   </Row>
@@ -70,7 +66,7 @@ const PagesComingsoon = () => {
                       <input type="text" placeholder="Enter email address" />
                       <button type="submit" className="btn btn-primary">
                         Subscribe
-                        </button>
+                      </button>
                     </form>
                   </div>
                 </div>
@@ -79,10 +75,8 @@ const PagesComingsoon = () => {
           </div>
         </div>
       </div>
-
-
-    </React.Fragment>
-  )
+    </>
+  );
 }
 
-export default PagesComingsoon
+export default PagesComingsoon;

@@ -1,39 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Container } from "reactstrap";
-import styled from "styled-components";
-import ChatMessageTable from "../../components/ChatMessageTable";
-import Breadcrumb from "../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../components/GlobalWrapper";
+import React from 'react';
+import { Container } from 'reactstrap';
+import ChatMessageTable from '../../components/ChatMessageTable';
+import Breadcrumb from '../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../components/GlobalWrapper';
 
-const DefaultChat = () => {
-  const { loading } = useSelector((state) => state.settingsReducer);
-
+function DefaultChat() {
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem="Default Chat Message"
-              // loading={loading}
-              // callList={callList}
-              isRefresh={false}
-            />
-
-            <ChatMessageTable />
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem="Default Chat Message" isRefresh={false} />
+          <ChatMessageTable />
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
-
-const Wrapper = styled.div`
-  .heading {
-    color: red;
-  }
-`;
+}
 
 export default DefaultChat;

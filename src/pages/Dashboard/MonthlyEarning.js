@@ -1,14 +1,14 @@
-import React from "react"
+import React from 'react';
 
-import { Row, Col, Card, CardBody, CardTitle } from "reactstrap"
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
+import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
 
-import ApexRadial from "./ApexRadial"
+import ApexRadial from './ApexRadial';
 
-const MonthlyEarning = () => {
+function MonthlyEarning() {
   return (
-    <React.Fragment>
-      {" "}
+    <>
+      {' '}
       <Card>
         <CardBody>
           <CardTitle className="mb-4">Monthly Earning</CardTitle>
@@ -18,16 +18,13 @@ const MonthlyEarning = () => {
               <h3>$34,252</h3>
               <p className="text-muted">
                 <span className="text-success me-2">
-                  {" "}
-                  12% <i className="mdi mdi-arrow-up"></i>{" "}
-                </span>{" "}
+                  {' '}
+                  12% <i className="mdi mdi-arrow-up"></i>{' '}
+                </span>{' '}
                 From previous period
               </p>
               <div className="mt-4">
-                <Link
-                  to=""
-                  className="btn btn-primary waves-effect waves-light btn-sm"
-                >
+                <Link to="" className="btn btn-primary waves-effect waves-light btn-sm">
                   View More <i className="mdi mdi-arrow-right ms-1"></i>
                 </Link>
               </div>
@@ -38,13 +35,11 @@ const MonthlyEarning = () => {
               </div>
             </Col>
           </Row>
-          <p className="text-muted mb-0">
-            We craft digital, graphic and dimensional thinking.
-          </p>
+          <p className="text-muted mb-0">We craft digital, graphic and dimensional thinking.</p>
         </CardBody>
       </Card>
-    </React.Fragment>
-  )
+    </>
+  );
 }
 
-export default MonthlyEarning
+export default MonthlyEarning;

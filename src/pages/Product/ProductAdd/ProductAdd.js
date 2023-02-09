@@ -1,57 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
+import { Autocomplete, Box, Paper, TextField, Tooltip } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react';
+import Dropzone from 'react-dropzone';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, CardTitle, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
 
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  Label,
-  Row,
-  Spinner,
-} from "reactstrap";
-import { Autocomplete, Box, Paper, TextField, Tooltip } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { getAllCategory, getAllSubCategory, updateCategoryShopType } from '../../../store/Category/categoryAction';
 
-import {
-  getAllCategory,
-  getAllSubCategory,
-  updateCategoryShopType,
-} from "../../../store/Category/categoryAction";
+import { foodTypeOptions2, shopTypeOptions2 } from '../../../assets/staticData';
+import formatBytes from '../../../common/imageFormatBytes';
+import AutocompletedInput from '../../../components/AutocompletedInput';
+import ProductAutocompleted from '../../../components/ProductAutocompleted';
+import SelectOption from '../../../components/SelectOption';
+import { callApi } from '../../../components/SingleApiCall';
+import { successMsg } from '../../../helpers/successMsg';
+import { IMAGE_UPLOAD, SINGLE_PRODUCT } from '../../../network/Api';
+import requestApi from '../../../network/httpRequest';
+import { addProduct, editProduct, getAllProduct, updateProductSearchKey } from '../../../store/Product/productAction';
+import { getAllShop, updateShopSearchKey, updateShopType } from '../../../store/Shop/shopAction';
+import { getAllUnitType } from '../../../store/unitType/unitTypeAction';
 
-import Dropzone from "react-dropzone";
-import {
-  addProduct,
-  editProduct,
-  getAllProduct,
-  updateProductSearchKey,
-} from "../../../store/Product/productAction";
-import {
-  getAllShop,
-  updateShopSearchKey,
-} from "../../../store/Shop/shopAction";
-import { useParams, useHistory, useLocation, Link } from "react-router-dom";
-import requestApi from "../../../network/httpRequest";
-import {
-  IMAGE_UPLOAD,
-  SINGLE_PRODUCT,
-  SINGLE_SHOP,
-} from "../../../network/Api";
-import { foodTypeOptions2, shopTypeOptions2 } from "../../../assets/staticData";
-import { updateShopType } from "./../../../store/Shop/shopAction";
-import formatBytes from "../../../common/imageFormatBytes";
-import AutocompletedInput from "../../../components/AutocompletedInput";
-import { successMsg } from "../../../helpers/successMsg";
-import SelectOption from "../../../components/SelectOption";
-import ProductAutocompleted from "../../../components/ProductAutocompleted";
-import { getAllUnitType } from "../../../store/unitType/unitTypeAction";
-import { callApi } from "../../../components/SingleApiCall";
-
-const ProductAdd = () => {
+function ProductAdd() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
@@ -59,105 +30,46 @@ const ProductAdd = () => {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { categories, subCategories } = useSelector(
-    (state) => state.categoryReducer
-  );
-  const { shops, searchKey, typeKey } = useSelector(
-    (state) => state.shopReducer
-  );
+  const { categories, subCategories } = useSelector((state) => state.categoryReducer);
+  const { shops, searchKey, typeKey } = useSelector((state) => state.shopReducer);
 
   const { unitTypes } = useSelector((state) => state.unitTypeReducer);
 
-  const {
-    loading,
-    products,
-    status,
-    searchKey: productSearchKey,
-  } = useSelector((state) => state.productReducer);
+  const { loading, products, status, searchKey: productSearchKey } = useSelector((state) => state.productReducer);
 
   const [shop, setShop] = useState(null);
   const [cuisines, setCuisines] = useState(null);
-  const [cuisineSearchKey, setCuisineSearchKey] = useState("");
+  const [cuisineSearchKey, setCuisineSearchKey] = useState('');
   const [category, setCategory] = useState(null);
-  const [searchCategoryKey, setSearchCategoryKey] = useState("");
+  const [searchCategoryKey, setSearchCategoryKey] = useState('');
   const [subCategory, setSubCategory] = useState(null);
-  const [searchSubCatKey, setSearchSubCatKey] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [name, setName] = useState("");
-  const [foodType, setFoodType] = useState("");
-  const [discount, setDiscount] = useState("");
-  const [price, setPrice] = useState("");
-  const [type, setType] = useState("");
+  const [searchSubCatKey, setSearchSubCatKey] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [name, setName] = useState('');
+  const [foodType, setFoodType] = useState('');
+  const [discount, setDiscount] = useState('');
+  const [price, setPrice] = useState('');
+  const [type, setType] = useState('');
 
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
   const [addons, setAddons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
-  const [attributeName, setAttributeName] = useState("");
+  const [attributeName, setAttributeName] = useState('');
   const [isRequiredAttribute, setIsRequiredAttribute] = useState(false);
   const [isMultipleAttribute, setIsMultipleAttribute] = useState(false);
-  const [unit, setUnit] = useState("");
+  const [unit, setUnit] = useState('');
   const [attributes, setAttributes] = useState([]);
   const [attributeItems, setAttributeItems] = useState([
     {
-      name: "",
+      name: '',
       extraPrice: 0,
     },
   ]);
 
-  const { account_type, _id: accountId } = useSelector(store => store.Login.admin);
-
-  useEffect(() => {
-    if (id) {
-      const findProduct = products.find((item) => item._id == id);
-
-      if (findProduct) {
-        setProductValue(findProduct);
-      } else {
-        (async function getProduct() {
-          const data = await callApi(id, SINGLE_PRODUCT, "product");
-          if (data) {
-            setProductValue(data);
-          } else {
-            history.push("/products/list", { replace: true });
-          }
-        })();
-      }
-    }
-  }, [id]);
-
-  useEffect(() => {
-    dispatch(getAllUnitType(true));
-  }, []);
-
-  // FIND SHOP BY SHOP ID
-
-  useEffect(() => {
-    if (searchParams.get("shopId") || account_type === "shop") {
-      const shopId = searchParams.get("shopId");
-      let shop = null;
-      shopId ? (shop = shopId) : (shop = accountId);
-      if (shop) {
-        const findShop = shops?.find((item) => item._id === shop);
-        if (findShop) {
-          setType(findShop?.shopType);
-          setShop(findShop);
-          dispatch(updateCategoryShopType(findShop?.shopType));
-        } else {
-          (async function getProduct() {
-            const data = await callApi(id, SINGLE_PRODUCT, "product");
-            if (data) {
-              setProductValue(data);
-            } else {
-              history.push("/products/list", { replace: true });
-            }
-          })();
-        }
-      }
-    }
-  }, [searchParams, account_type]);
+  const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
 
   // SET PRODUCT VALUE
   const setProductValue = (product) => {
@@ -197,6 +109,57 @@ const ProductAdd = () => {
     setQuantity(quantity);
   };
 
+  useEffect(() => {
+    if (id) {
+      const findProduct = products.find((item) => item._id === id);
+
+      if (findProduct) {
+        setProductValue(findProduct);
+      } else {
+        (async function getProduct() {
+          const data = await callApi(id, SINGLE_PRODUCT, 'product');
+          if (data) {
+            setProductValue(data);
+          } else {
+            history.push('/products/list', { replace: true });
+          }
+        })();
+      }
+    }
+  }, [id]);
+
+  useEffect(() => {
+    dispatch(getAllUnitType(true));
+  }, []);
+
+  // FIND SHOP BY SHOP ID
+
+  useEffect(() => {
+    if (searchParams.get('shopId') || account_type === 'shop') {
+      const shopId = searchParams.get('shopId');
+      let shop = null;
+      // eslint-disable-next-line no-unused-expressions
+      shopId ? (shop = shopId) : (shop = accountId);
+      if (shop) {
+        const findShop = shops?.find((item) => item._id === shop);
+        if (findShop) {
+          setType(findShop?.shopType);
+          setShop(findShop);
+          dispatch(updateCategoryShopType(findShop?.shopType));
+        } else {
+          (async function getProduct() {
+            const data = await callApi(id, SINGLE_PRODUCT, 'product');
+            if (data) {
+              setProductValue(data);
+            } else {
+              history.push('/products/list', { replace: true });
+            }
+          })();
+        }
+      }
+    }
+  }, [searchParams, account_type]);
+
   // ALL CATEGORY LIST
 
   useEffect(() => {
@@ -207,12 +170,11 @@ const ProductAdd = () => {
 
   // ALL SHOP LIST
   useEffect(() => {
-    if (account_type === "shop") {
+    if (account_type === 'shop') {
       dispatch(getAllShop(true));
     } else if ((typeKey || searchKey) && type) {
-      dispatch(getAllShop(true, account_type === "seller" ? accountId : null));
+      dispatch(getAllShop(true, account_type === 'seller' ? accountId : null));
     }
-    return;
   }, [type, typeKey, searchKey, account_type]);
 
   // ALL SUB CATEGORY LIST
@@ -222,45 +184,6 @@ const ProductAdd = () => {
       dispatch(getAllSubCategory(true, category._id));
     }
   }, [category]);
-
-  // VALIDATION
-
-  const submitProduct = (e) => {
-    e.preventDefault();
-
-    if (!image) {
-      return successMsg("Please Upload Image", "error");
-    }
-
-    uploadImage();
-  };
-
-  const uploadImage = async () => {
-    if (typeof image === "string") {
-      submitData(image);
-    } else {
-      try {
-        setIsLoading(true);
-        let formData = new FormData();
-        formData.append("image", image);
-
-        const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
-          data: formData,
-        });
-
-        setIsLoading(false);
-        if (data.status) {
-          submitData(data.data.url);
-        } else {
-          return successMsg(data.error, "error");
-        }
-      } catch (error) {
-        setIsLoading(false);
-        return successMsg(error.message, "error");
-      }
-    }
-  };
 
   // SUBMIT DATA TO SERVER
   const submitData = (url) => {
@@ -294,16 +217,56 @@ const ProductAdd = () => {
     }
   };
 
-  // ADD CHOICE ITEM SINGLE
+  // eslint-disable-next-line consistent-return
+  const uploadImage = async () => {
+    if (typeof image === 'string') {
+      submitData(image);
+    } else {
+      try {
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append('image', image);
 
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: 'POST',
+          data: formData,
+        });
+
+        setIsLoading(false);
+        if (data.status) {
+          submitData(data.data.url);
+        } else {
+          return successMsg(data.error, 'error');
+        }
+      } catch (error) {
+        setIsLoading(false);
+        return successMsg(error.message, 'error');
+      }
+    }
+  };
+
+  // VALIDATION
+  // eslint-disable-next-line consistent-return
+  const submitProduct = (e) => {
+    e.preventDefault();
+
+    if (!image) {
+      return successMsg('Please Upload Image', 'error');
+    }
+
+    uploadImage();
+  };
+
+  // ADD CHOICE ITEM SINGLE
+  // eslint-disable-next-line consistent-return
   const addAttributeItem = () => {
-    if (attributeItems[attributeItems.length - 1].name == "") {
-      return successMsg("Please Fillup Previous Input Fields", "error");
+    if (attributeItems[attributeItems.length - 1].name === '') {
+      return successMsg('Please Fillup Previous Input Fields', 'error');
     }
     setAttributeItems([
       ...attributeItems,
       {
-        name: "",
+        name: '',
         extraPrice: 0,
       },
     ]);
@@ -312,13 +275,12 @@ const ProductAdd = () => {
   // REMOVE CHOICE ITEM FROM
 
   const removeAttributeItem = (i) => {
-    let list = [...attributeItems];
+    const list = [...attributeItems];
     list.splice(i, 1);
     setAttributeItems(list);
   };
 
   // HANDLE CHOICE ITEM INPUT CHANGE
-
   const attributeItemChange = (e, index) => {
     const { name, value } = e.target;
     const list = [...attributeItems];
@@ -327,26 +289,26 @@ const ProductAdd = () => {
   };
 
   // ADD CHOICE
-
+  // eslint-disable-next-line consistent-return
   const addAttribute = () => {
     if (!attributeName) {
-      return successMsg("Please add attribure name", "error");
+      return successMsg('Please add attribure name', 'error');
     }
-    if (attributeItems[attributeItems.length - 1].name == "") {
-      return successMsg("Please at least one item", "error");
+    if (attributeItems[attributeItems.length - 1].name === '') {
+      return successMsg('Please at least one item', 'error');
     }
     const data = {
       name: attributeName,
       required: isRequiredAttribute,
-      select: isMultipleAttribute ? "multiple" : "single",
+      select: isMultipleAttribute ? 'multiple' : 'single',
       items: attributeItems,
     };
     setAttributes([...attributes, data]);
-    setAttributeName("");
+    setAttributeName('');
     setIsRequiredAttribute(false);
     setAttributeItems([
       {
-        name: "",
+        name: '',
         extraPrice: 0,
       },
     ]);
@@ -355,7 +317,7 @@ const ProductAdd = () => {
   // REMOVE ATTRIBUTE
 
   const removeAttribute = (i) => {
-    let list = [...attributes];
+    const list = [...attributes];
     list.splice(i, 1);
     setAttributes(list);
   };
@@ -364,16 +326,16 @@ const ProductAdd = () => {
   useEffect(() => {
     if (status) {
       if (id) {
-        history.push("/products/list");
+        history.push('/products/list');
       } else {
         setShop(null);
         setCategory(null);
         setSubCategory(null);
-        setName("");
-        setDiscount("");
-        setPrice("");
-        setDescription("");
-        setType("");
+        setName('');
+        setDiscount('');
+        setPrice('');
+        setDescription('');
+        setType('');
 
         setAttributes([]);
         setAddons([]);
@@ -381,7 +343,7 @@ const ProductAdd = () => {
         setIsNeedAddon(false);
         setAttributeItems([
           {
-            name: "",
+            name: '',
             extraPrice: 0,
           },
         ]);
@@ -394,7 +356,7 @@ const ProductAdd = () => {
 
   // IMAGE
 
-  const handleAcceptedFiles = (files, type) => {
+  const handleAcceptedFiles = (files) => {
     // console.log(files);
     files.map((file) =>
       Object.assign(file, {
@@ -407,13 +369,13 @@ const ProductAdd = () => {
   };
 
   // ADD ADDON
-
+  // eslint-disable-next-line consistent-return
   const addAddonProduct = (item) => {
     if (item) {
       const isExist = addons.filter((i) => i._id === item._id);
 
       if (isExist.length > 0) {
-        return successMsg("Already added.Try another");
+        return successMsg('Already added.Try another');
       }
 
       setAddons([...addons, item]);
@@ -424,7 +386,7 @@ const ProductAdd = () => {
   // REMOVE ADDON
 
   const removeAddon = (i) => {
-    let list = [...addons];
+    const list = [...addons];
     list.splice(i, 1);
     setAddons(list);
   };
@@ -438,819 +400,617 @@ const ProductAdd = () => {
   }, [productSearchKey]);
 
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Lyxa"
-              breadcrumbItem={id ? "Edit" : "Add"}
-              title="Product"
-              //   loading={loading}
-              //   callList={callShopList}
-              isRefresh={false}
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem={id ? 'Edit' : 'Add'} title="Product" isRefresh={false} />
 
-            <Card>
-              <CardBody>
-                <CardTitle>Product Informations</CardTitle>
-                <hr />
+          <Card>
+            <CardBody>
+              <CardTitle>Product Informations</CardTitle>
+              <hr />
 
-                <Form onSubmit={submitProduct}>
-                  <Row>
-                    <Col lg={6}>
+              <Form onSubmit={submitProduct}>
+                <Row>
+                  <Col lg={6}>
+                    <div className="mb-4">
+                      <TextField
+                        id="name"
+                        label="Name"
+                        variant="outlined"
+                        style={{ width: '100%' }}
+                        autoComplete="off"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <SelectOption
+                        label="Type"
+                        value={type}
+                        onChange={(event) => {
+                          setType(event.target.value);
+                          dispatch(updateShopType(event.target.value));
+                          dispatch(updateCategoryShopType(event.target.value));
+                          setShop(null);
+                          setCategory(null);
+                        }}
+                        options={shopTypeOptions2}
+                        disabled={!!(searchParams.get('shopId') !== undefined || id || account_type === 'shop')}
+                      />
+                    </div>
+
+                    <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
                       <div className="mb-4">
-                        <TextField
-                          id="name"
-                          label="Name"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          autoComplete="off"
-                          value={name}
-                          onChange={(event) => setName(event.target.value)}
-                          required
+                        <AutocompletedInput
+                          value={shop}
+                          onChange={(event, newValue) => setShop(newValue)}
+                          searchKey={searchKey}
+                          onInputChange={(event, newInputValue) => dispatch(updateShopSearchKey(newInputValue))}
+                          list={shops}
+                          disabled={!!(!type || id || searchParams.get('shopId') || account_type === 'shop')}
+                          type="shop"
+                          showImg
                         />
                       </div>
+                    </Tooltip>
 
+                    {type !== 'food' && (
+                      <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={unit}
+                          onChange={(event, newValue) => {
+                            setUnit(newValue);
+                          }}
+                          getOptionLabel={(option) => (option.name ? option.name : '')}
+                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                          inputValue={cuisineSearchKey}
+                          onInputChange={(event, newInputValue) => {
+                            setCuisineSearchKey(newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={unitTypes.length > 0 ? unitTypes : []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select a Unit" required name="cuisine" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option?._id}
+                            >
+                              {option?.name}
+                            </Box>
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
+                      <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={cuisines}
+                          onChange={(event, newValue) => {
+                            setCuisines(newValue);
+                          }}
+                          getOptionLabel={(option) => (option.name ? option.name : '')}
+                          isOptionEqualToValue={(option, value) => option._id === value._id}
+                          inputValue={cuisineSearchKey}
+                          onInputChange={(event, newInputValue) => {
+                            setCuisineSearchKey(newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={shop?.cuisineType?.length > 0 ? shop?.cuisineType : []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select a Cuisine" required name="cuisine" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option._id}
+                            >
+                              {option?.name}
+                            </Box>
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    {type === 'food' && shop?.shopType === 'food' && (
                       <div className="mb-4">
                         <SelectOption
-                          label="Type"
-                          value={type}
+                          label="Food Type"
+                          value={foodType}
                           onChange={(event) => {
-                            setType(event.target.value);
-                            dispatch(updateShopType(event.target.value));
-                            dispatch(
-                              updateCategoryShopType(event.target.value)
-                            );
-                            setShop(null);
-                            setCategory(null);
+                            setFoodType(event.target.value);
                           }}
-                          options={shopTypeOptions2}
-                          disabled={
-                            searchParams.get("shopId") != undefined ||
-                            id ||
-                            account_type === "shop"
-                              ? true
-                              : false
-                          }
+                          options={foodTypeOptions2}
                         />
                       </div>
+                    )}
 
-                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
-                        <div className="mb-4">
-                          <AutocompletedInput
-                            value={shop}
-                            onChange={(event, newValue) => setShop(newValue)}
-                            searchKey={searchKey}
-                            onInputChange={(event, newInputValue) =>
-                              dispatch(updateShopSearchKey(newInputValue))
-                            }
-                            list={shops}
-                            disabled={
-                              !type ||
-                              id ||
-                              searchParams.get("shopId") ||
-                              account_type === "shop"
-                                ? true
-                                : false
-                            }
-                            type="shop"
-                            showImg={true}
-                          />
-                        </div>
-                      </Tooltip>
-
-                      {type !== "food" && (
-                        <div className="mb-4">
-                          <Autocomplete
-                            className="cursor-pointer"
-                            value={unit}
-                            onChange={(event, newValue) => {
-                              setUnit(newValue);
-                            }}
-                            getOptionLabel={(option) =>
-                              option.name ? option.name : ""
-                            }
-                            isOptionEqualToValue={(option, value) =>
-                              option?._id == value?._id
-                            }
-                            inputValue={cuisineSearchKey}
-                            onInputChange={(event, newInputValue) => {
-                              setCuisineSearchKey(newInputValue);
-                            }}
-                            id="controllable-states-demo"
-                            options={unitTypes.length > 0 ? unitTypes : []}
-                            sx={{ width: "100%" }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Select a Unit"
-                                required
-                                name="cuisine"
-                              />
-                            )}
-                            renderOption={(props, option) => (
-                              <Box
-                                component="li"
-                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                                {...props}
-                                key={option?._id}
-                              >
-                                {option?.name}
-                              </Box>
-                            )}
-                          />
-                        </div>
-                      )}
-
-                      {shop &&
-                        shop.isCuisine &&
-                        shop.cuisineType.length > 1 && (
-                          <div className="mb-4">
-                            <Autocomplete
-                              className="cursor-pointer"
-                              value={cuisines}
-                              onChange={(event, newValue) => {
-                                setCuisines(newValue);
-                              }}
-                              getOptionLabel={(option) =>
-                                option.name ? option.name : ""
-                              }
-                              isOptionEqualToValue={(option, value) =>
-                                option._id == value._id
-                              }
-                              inputValue={cuisineSearchKey}
-                              onInputChange={(event, newInputValue) => {
-                                setCuisineSearchKey(newInputValue);
-                              }}
-                              id="controllable-states-demo"
-                              options={
-                                shop?.cuisineType?.length > 0
-                                  ? shop?.cuisineType
-                                  : []
-                              }
-                              sx={{ width: "100%" }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Select a Cuisine"
-                                  required
-                                  name="cuisine"
-                                />
-                              )}
-                              renderOption={(props, option) => (
-                                <Box
-                                  component="li"
-                                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                                  {...props}
-                                  key={option._id}
-                                >
-                                  {option?.name}
-                                </Box>
-                              )}
-                            />
-                          </div>
-                        )}
-
-                      {type === "food" && shop?.shopType === "food" && (
-                        <div className="mb-4">
-                          <SelectOption
-                            label="Food Type"
-                            value={foodType}
-                            onChange={(event) => {
-                              setFoodType(event.target.value);
-                            }}
-                            options={foodTypeOptions2}
-                          />
-                        </div>
-                      )}
-
-                      {type && type !== "food" && (
-                        <div className="mb-4">
-                          <TextField
-                            id="quantity"
-                            label="Quantity"
-                            variant="outlined"
-                            style={{ width: "100%" }}
-                            placeholder="Ender quantity"
-                            autoComplete="off"
-                            value={quantity}
-                            onChange={(event) =>
-                              setQuantity(event.target.value)
-                            }
-                            required
-                            type="number"
-                          />
-                        </div>
-                      )}
-                    </Col>
-                    <Col lg={6}>
-                      <Tooltip title={`${!type ? "Select Type First" : ""}`}>
-                        <div className="mb-4">
-                          <Autocomplete
-                            className="cursor-pointer"
-                            required
-                            value={category}
-                            disabled={!type ? true : false}
-                            onChange={(event, newValue) => {
-                              setCategory(newValue);
-                            }}
-                            getOptionLabel={(option) => option.name}
-                            isOptionEqualToValue={(option, value) =>
-                              option?._id == value?._id
-                            }
-                            inputValue={searchCategoryKey}
-                            onInputChange={(event, newInputValue) => {
-                              setSearchCategoryKey(newInputValue);
-                            }}
-                            id="controllable-states-demo"
-                            options={categories.length > 0 ? categories : []}
-                            sx={{ width: "100%" }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Select a Category"
-                                required
-                                name="category"
-                              />
-                            )}
-                            renderOption={(props, option) => (
-                              <Box
-                                component="li"
-                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                                {...props}
-                                key={option._id}
-                              >
-                                {option?.name}
-                              </Box>
-                            )}
-                          />
-                        </div>
-                      </Tooltip>
-
-                      {category && type !== "food" && (
-                        <div className="mb-4">
-                          <Autocomplete
-                            className="cursor-pointer"
-                            value={subCategory}
-                            onChange={(event, newValue) => {
-                              setSubCategory(newValue);
-                            }}
-                            getOptionLabel={(option) =>
-                              option.name ? option.name : ""
-                            }
-                            isOptionEqualToValue={(option, value) =>
-                              option?._id == value?._id
-                            }
-                            inputValue={searchSubCatKey}
-                            onInputChange={(event, newInputValue) => {
-                              setSearchSubCatKey(newInputValue);
-                            }}
-                            id="controllable-states-demo"
-                            options={
-                              subCategories.length > 0 ? subCategories : []
-                            }
-                            sx={{ width: "100%" }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Select a Sub Category"
-                              />
-                            )}
-                            renderOption={(props, option) => (
-                              <Box
-                                component="li"
-                                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                                {...props}
-                              >
-                                {option.name}
-                              </Box>
-                            )}
-                          />
-                        </div>
-                      )}
-
+                    {type && type !== 'food' && (
                       <div className="mb-4">
                         <TextField
-                          id="netPrice"
-                          label="Net Price"
+                          id="quantity"
+                          label="Quantity"
                           variant="outlined"
-                          style={{ width: "100%" }}
+                          style={{ width: '100%' }}
+                          placeholder="Ender quantity"
                           autoComplete="off"
-                          value={price}
-                          onChange={(event) => setPrice(event.target.value)}
+                          value={quantity}
+                          onChange={(event) => setQuantity(event.target.value)}
                           required
                           type="number"
                         />
                       </div>
-
-                      {/* <div className="mb-4">
-                        <TextField
-                          id="seo"
-                          label="SEO Title"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          autoComplete="off"
-                          value={seoTitle}
-                          onChange={(event) => setSeoTitle(event.target.value)}
-                          required
-                        />
-                      </div> */}
-
-                      {/* <div className="mb-4">
-                        <TextField
-                          id="seoTag"
-                          label="SEO Tags"
-                          variant="outlined"
-                          placeholder="type tag name then press enter"
-                          style={{ width: "100%" }}
-                          autoComplete="off"
-                          onKeyDown={handleTagAdd}
-                          onChange={handleTagChange}
-                          value={tags?.value}
-                          //   onChange={(event) => setName(event.target.value)}
-                        />
-                        {tags.items.length > 0 && (
-                          <Paper className="mt-4 p-3">
-                            {tags.items.map((item, index) => (
-                              <div className="tag__wrapper" key={index}>
-                                {item}
-                                <button
-                                  type="button"
-                                  className="button"
-                                  onClick={() => handleTagDelete(item)}
-                                >
-                                  &times;
-                                </button>
-                              </div>
-                            ))}
-                          </Paper>
-                        )}
-                      </div> */}
-
+                    )}
+                  </Col>
+                  <Col lg={6}>
+                    <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
                       <div className="mb-4">
-                        <TextField
-                          id="seo"
-                          label="Description"
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          autoComplete="off"
-                          value={description}
-                          onChange={(event) =>
-                            setDescription(event.target.value)
-                          }
+                        <Autocomplete
+                          className="cursor-pointer"
                           required
-                          multiline
-                          rows={2}
+                          value={category}
+                          disabled={!type}
+                          onChange={(event, newValue) => {
+                            setCategory(newValue);
+                          }}
+                          getOptionLabel={(option) => option.name}
+                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                          inputValue={searchCategoryKey}
+                          onInputChange={(event, newInputValue) => {
+                            setSearchCategoryKey(newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={categories.length > 0 ? categories : []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select a Category" required name="category" />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option._id}
+                            >
+                              {option?.name}
+                            </Box>
+                          )}
                         />
                       </div>
-                    </Col>
-                  </Row>
+                    </Tooltip>
 
-                  {type === "food" && (
-                    <>
-                      {/* ATTRIBUTE */}
-                      <Row className="mt-3">
-                        <Col lg={6}>
-                          <div className="mb-4">
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value={isNeedAttribute}
-                                  id="flexCheckDefault"
-                                  onChange={(e) =>
-                                    setIsNeedAttribute(e.target.checked)
-                                  }
-                                />
-                                <label
-                                  className="form-check-label ms-1"
-                                  style={{ fontSize: "16px" }}
-                                  htmlFor="flexCheckDefault"
-                                >
-                                  Attribute(s)
-                                </label>
-                              </div>
+                    {category && type !== 'food' && (
+                      <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={subCategory}
+                          onChange={(event, newValue) => {
+                            setSubCategory(newValue);
+                          }}
+                          getOptionLabel={(option) => (option.name ? option.name : '')}
+                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                          inputValue={searchSubCatKey}
+                          onInputChange={(event, newInputValue) => {
+                            setSearchSubCatKey(newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={subCategories.length > 0 ? subCategories : []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => <TextField {...params} label="Select a Sub Category" />}
+                          renderOption={(props, option) => (
+                            <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                              {option.name}
+                            </Box>
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <TextField
+                        id="netPrice"
+                        label="Net Price"
+                        variant="outlined"
+                        style={{ width: '100%' }}
+                        autoComplete="off"
+                        value={price}
+                        onChange={(event) => setPrice(event.target.value)}
+                        required
+                        type="number"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        id="seo"
+                        label="Description"
+                        variant="outlined"
+                        style={{ width: '100%' }}
+                        autoComplete="off"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                        required
+                        multiline
+                        rows={2}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+
+                {type === 'food' && (
+                  <>
+                    {/* ATTRIBUTE */}
+                    <Row className="mt-3">
+                      <Col lg={6}>
+                        <div className="mb-4">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value={isNeedAttribute}
+                                id="flexCheckDefault"
+                                onChange={(e) => setIsNeedAttribute(e.target.checked)}
+                              />
+                              <label
+                                className="form-check-label ms-1"
+                                style={{ fontSize: '16px' }}
+                                htmlFor="flexCheckDefault"
+                              >
+                                Attribute(s)
+                              </label>
                             </div>
+                          </div>
 
-                            {isNeedAttribute && (
-                              <div>
-                                <Row className="mt-2">
-                                  <Col sm={8}>
+                          {isNeedAttribute && (
+                            <div>
+                              <Row className="mt-2">
+                                <Col sm={8}>
+                                  <TextField
+                                    id="Attribute name"
+                                    label="Attribute Name"
+                                    variant="outlined"
+                                    style={{ width: '100%' }}
+                                    autoComplete="off"
+                                    value={attributeName}
+                                    onChange={(e) => setAttributeName(e.target.value)}
+                                    type="text"
+                                  />
+                                </Col>
+                                <Col sm={4}>
+                                  <div className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      value={isRequiredAttribute}
+                                      id="flexCheckDefault"
+                                      onChange={(e) => setIsRequiredAttribute(e.target.checked)}
+                                    />
+                                    <label
+                                      className="form-check-label ms-1"
+                                      style={{ fontSize: '16px' }}
+                                      htmlFor="flexCheckDefault"
+                                    >
+                                      Required
+                                    </label>
+                                  </div>
+
+                                  <div className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      value={isMultipleAttribute}
+                                      id="flexCheckDefault"
+                                      onChange={(e) => setIsMultipleAttribute(e.target.checked)}
+                                    />
+                                    <label
+                                      className="form-check-label ms-1"
+                                      style={{ fontSize: '16px' }}
+                                      htmlFor="flexCheckDefault"
+                                    >
+                                      Multiple
+                                    </label>
+                                  </div>
+                                </Col>
+                              </Row>
+                              {attributeItems.map((item, index) => (
+                                <Row className="mt-3" key={Math.random()}>
+                                  <Col sm={6}>
                                     <TextField
-                                      id="Attribute name"
-                                      label="Attribute Name"
+                                      id="variant name"
+                                      label="Name"
+                                      name="name"
                                       variant="outlined"
-                                      style={{ width: "100%" }}
+                                      style={{ width: '100%' }}
                                       autoComplete="off"
-                                      value={attributeName}
-                                      onChange={(e) =>
-                                        setAttributeName(e.target.value)
-                                      }
+                                      value={item?.name}
+                                      onChange={(event) => attributeItemChange(event, index)}
                                       type="text"
                                     />
                                   </Col>
-                                  <Col sm={4}>
-                                    <div className="form-check">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value={isRequiredAttribute}
-                                        id="flexCheckDefault"
-                                        onChange={(e) =>
-                                          setIsRequiredAttribute(
-                                            e.target.checked
-                                          )
-                                        }
-                                      />
-                                      <label
-                                        className="form-check-label ms-1"
-                                        style={{ fontSize: "16px" }}
-                                        htmlFor="flexCheckDefault"
-                                      >
-                                        Required
-                                      </label>
-                                    </div>
-
-                                    <div className="form-check">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value={isMultipleAttribute}
-                                        id="flexCheckDefault"
-                                        onChange={(e) =>
-                                          setIsMultipleAttribute(
-                                            e.target.checked
-                                          )
-                                        }
-                                      />
-                                      <label
-                                        className="form-check-label ms-1"
-                                        style={{ fontSize: "16px" }}
-                                        htmlFor="flexCheckDefault"
-                                      >
-                                        Multiple
-                                      </label>
-                                    </div>
-                                  </Col>
-                                </Row>
-                                {attributeItems.map((item, index) => (
-                                  <Row className="mt-3" key={index}>
-                                    <Col sm={6}>
-                                      <TextField
-                                        id="variant name"
-                                        label="Name"
-                                        name="name"
-                                        variant="outlined"
-                                        style={{ width: "100%" }}
-                                        autoComplete="off"
-                                        value={item?.name}
-                                        onChange={(event) =>
-                                          attributeItemChange(event, index)
-                                        }
-                                        type="text"
-                                      />
-                                    </Col>
-                                    <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                                      <TextField
-                                        id="variant extra price"
-                                        name="extraPrice"
-                                        label="Extra Price"
-                                        variant="outlined"
-                                        style={{ width: "100%" }}
-                                        autoComplete="off"
-                                        value={item?.extraPrice}
-                                        onChange={(event) =>
-                                          attributeItemChange(event, index)
-                                        }
-                                        type="number"
-                                      />
-                                      {attributeItems.length > 1 && (
-                                        <i
-                                          className="fas fa-trash cursor-pointer ms-1"
-                                          style={{
-                                            color: "red",
-                                            fontSize: "18px",
-                                          }}
-                                          onClick={() =>
-                                            removeAttributeItem(index)
-                                          }
-                                        ></i>
-                                      )}
-                                    </Col>
-                                    {attributeItems.length - 1 === index && (
-                                      <div>
-                                        <Button
-                                          outline={true}
-                                          color="primary"
-                                          className="mt-2"
-                                          onClick={addAttributeItem}
-                                        >
-                                          Add Item
-                                        </Button>
-                                      </div>
-                                    )}
-                                  </Row>
-                                ))}
-
-                                <div className="mt-3 text-center">
-                                  <Button
-                                    outline={true}
-                                    color="success"
-                                    size="lg"
-                                    className="px-5"
-                                    onClick={addAttribute}
-                                  >
-                                    Add
-                                  </Button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </Col>
-                        <Col lg={6}>
-                          {attributes.length > 0 && (
-                            <div className="mb-4">
-                              <Paper className="py-2">
-                                <h5 className="text-center">Attributes List</h5>
-                                <hr />
-                                {attributes.length > 0 &&
-                                  attributes.map((attribute, index) => (
-                                    <ul
-                                      key={index}
-                                      style={{ listStyleType: "square" }}
-                                    >
-                                      <li>
-                                        <div className="d-flex justify-content-between">
-                                          <span
-                                            style={{
-                                              fontSize: "15px",
-                                              fontWeight: "500",
-                                            }}
-                                          >
-                                            {`${attribute.name} ${
-                                              attribute.required
-                                                ? "(Required)"
-                                                : ""
-                                            } ${
-                                              attribute.select === "multiple"
-                                                ? "(Multiple)"
-                                                : "(Single)"
-                                            }`}
-                                            {/* {attribute.name}
-                                            {attribute.required
-                                              ? "(Required)"
-                                              : ""}
-                                              {attribute.required
-                                              ? "(Required)"
-                                              : ""} */}
-                                          </span>
-                                          <i
-                                            className="fas fa-trash cursor-pointer me-3"
-                                            style={{
-                                              color: "#BD381C",
-                                              fontSize: "15px",
-                                            }}
-                                            onClick={() =>
-                                              removeAttribute(index)
-                                            }
-                                          ></i>
-                                        </div>
-                                      </li>
-                                      {attribute.items.map((item, index) => (
-                                        <ul key={index}>
-                                          <li>
-                                            <span>{item.name}-</span>
-                                            <span className="ms-1">
-                                              {item.extraPrice}
-                                            </span>
-                                          </li>
-                                        </ul>
-                                      ))}
-                                    </ul>
-                                  ))}
-                              </Paper>
-                            </div>
-                          )}
-                        </Col>
-                      </Row>
-
-                      {/* ADDON */}
-
-                      <Row className="mt-4">
-                        <Col lg={6}>
-                          <div className="mb-4">
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value={isNeedAddon}
-                                  id="flexCheckDefault"
-                                  onChange={(e) =>
-                                    setIsNeedAddon(e.target.checked)
-                                  }
-                                />
-                                <label
-                                  className="form-check-label ms-1"
-                                  style={{ fontSize: "16px" }}
-                                  htmlFor="flexCheckDefault"
-                                >
-                                  Addon(s)
-                                </label>
-                              </div>
-                            </div>
-
-                            {isNeedAddon && (
-                              <ProductAutocompleted
-                                onChange={(event, newValue) => {
-                                  addAddonProduct(newValue);
-                                }}
-                                searchKey={productSearchKey}
-                                onInputChange={(event, newInputValue) =>
-                                  dispatch(
-                                    updateProductSearchKey(newInputValue)
-                                  )
-                                }
-                                list={products}
-                                required={false}
-                              />
-                            )}
-                          </div>
-                        </Col>
-                        <Col lg={6}>
-                          {addons.length > 0 && (
-                            <div className="mb-4">
-                              <Paper className="py-2">
-                                <h5 className="text-center">Addons List</h5>
-                                <hr />
-                                {addons.length > 0 &&
-                                  addons.map((item, index) => (
-                                    <ul
-                                      key={index}
-                                      style={{ listStyleType: "square" }}
-                                    >
-                                      <li>
-                                        <div className="d-flex justify-content-between">
-                                          <div>
-                                            <img
-                                              loading="lazy"
-                                              width="60"
-                                              src={item.images[0]}
-                                              alt=""
-                                            />
-                                            <span
-                                              style={{
-                                                fontSize: "15px",
-                                                fontWeight: "500",
-                                                marginLeft: "10px",
-                                              }}
-                                            >
-                                              {item.name}
-                                            </span>
-                                          </div>
-                                          <i
-                                            className="fas fa-trash cursor-pointer me-3"
-                                            style={{
-                                              color: "#BD381C",
-                                              fontSize: "15px",
-                                            }}
-                                            onClick={() => removeAddon(index)}
-                                          ></i>
-                                        </div>
-                                      </li>
-                                    </ul>
-                                  ))}
-                              </Paper>
-                            </div>
-                          )}
-                        </Col>
-                      </Row>
-                    </>
-                  )}
-
-                  <Row>
-                    <Col>
-                      <Label>Product Images</Label>
-                      <div className="mb-5">
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles);
-                          }}
-                          accept=".jpg, .jpeg, .png"
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
-                            </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {image && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        image.preview ? image.preview : image
-                                      }
-                                      alt=""
+                                  <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                                    <TextField
+                                      id="variant extra price"
+                                      name="extraPrice"
+                                      label="Extra Price"
+                                      variant="outlined"
+                                      style={{ width: '100%' }}
+                                      autoComplete="off"
+                                      value={item?.extraPrice}
+                                      onChange={(event) => attributeItemChange(event, index)}
+                                      type="number"
                                     />
+                                    {attributeItems.length > 1 && (
+                                      <i
+                                        className="fas fa-trash cursor-pointer ms-1"
+                                        style={{
+                                          color: 'red',
+                                          fontSize: '18px',
+                                        }}
+                                        onClick={() => removeAttributeItem(index)}
+                                      ></i>
+                                    )}
                                   </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {image.name
-                                        ? image.name
-                                        : "Product Image"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {image.formattedSize &&
-                                          image.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      onClick={() => setImage(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
+                                  {attributeItems.length - 1 === index && (
+                                    <div>
+                                      <Button outline color="primary" className="mt-2" onClick={addAttributeItem}>
+                                        Add Item
+                                      </Button>
+                                    </div>
+                                  )}
                                 </Row>
+                              ))}
+
+                              <div className="mt-3 text-center">
+                                <Button outline color="success" size="lg" className="px-5" onClick={addAttribute}>
+                                  Add
+                                </Button>
                               </div>
-                            </Card>
+                            </div>
                           )}
                         </div>
-                      </div>
-                    </Col>
-                  </Row>
+                      </Col>
+                      <Col lg={6}>
+                        {attributes.length > 0 && (
+                          <div className="mb-4">
+                            <Paper className="py-2">
+                              <h5 className="text-center">Attributes List</h5>
+                              <hr />
+                              {attributes.length > 0 &&
+                                attributes.map((attribute, index) => (
+                                  <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                                    <li>
+                                      <div className="d-flex justify-content-between">
+                                        <span
+                                          style={{
+                                            fontSize: '15px',
+                                            fontWeight: '500',
+                                          }}
+                                        >
+                                          {`${attribute.name} ${attribute.required ? '(Required)' : ''} ${
+                                            attribute.select === 'multiple' ? '(Multiple)' : '(Single)'
+                                          }`}
+                                        </span>
+                                        <i
+                                          className="fas fa-trash cursor-pointer me-3"
+                                          style={{
+                                            color: '#BD381C',
+                                            fontSize: '15px',
+                                          }}
+                                          onClick={() => removeAttribute(index)}
+                                        ></i>
+                                      </div>
+                                    </li>
+                                    {attribute.items.map((item) => (
+                                      <ul key={Math.random()}>
+                                        <li>
+                                          <span>{item.name}-</span>
+                                          <span className="ms-1">{item.extraPrice}</span>
+                                        </li>
+                                      </ul>
+                                    ))}
+                                  </ul>
+                                ))}
+                            </Paper>
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
 
-                  <div className="my-5 d-flex justify-content-center">
-                    <Button
-                      type="submit"
-                      color="primary"
-                      className="px-5"
-                      disabled={loading || isLoading}
-                    >
-                      {loading || isLoading ? (
-                        <Spinner
-                          animation="border"
-                          variant="info"
-                          size="sm"
-                        ></Spinner>
-                      ) : id ? (
-                        "Save"
-                      ) : (
-                        "Add"
-                      )}
-                    </Button>
-                  </div>
-                </Form>
-              </CardBody>
-            </Card>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+                    {/* ADDON */}
+
+                    <Row className="mt-4">
+                      <Col lg={6}>
+                        <div className="mb-4">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value={isNeedAddon}
+                                id="flexCheckDefault"
+                                onChange={(e) => setIsNeedAddon(e.target.checked)}
+                              />
+                              <label
+                                className="form-check-label ms-1"
+                                style={{ fontSize: '16px' }}
+                                htmlFor="flexCheckDefault"
+                              >
+                                Addon(s)
+                              </label>
+                            </div>
+                          </div>
+
+                          {isNeedAddon && (
+                            <ProductAutocompleted
+                              onChange={(event, newValue) => {
+                                addAddonProduct(newValue);
+                              }}
+                              searchKey={productSearchKey}
+                              onInputChange={(event, newInputValue) => dispatch(updateProductSearchKey(newInputValue))}
+                              list={products}
+                              required={false}
+                            />
+                          )}
+                        </div>
+                      </Col>
+                      <Col lg={6}>
+                        {addons.length > 0 && (
+                          <div className="mb-4">
+                            <Paper className="py-2">
+                              <h5 className="text-center">Addons List</h5>
+                              <hr />
+                              {addons.length > 0 &&
+                                addons.map((item, index) => (
+                                  <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                                    <li>
+                                      <div className="d-flex justify-content-between">
+                                        <div>
+                                          <img loading="lazy" width="60" src={item.images[0]} alt="" />
+                                          <span
+                                            style={{
+                                              fontSize: '15px',
+                                              fontWeight: '500',
+                                              marginLeft: '10px',
+                                            }}
+                                          >
+                                            {item.name}
+                                          </span>
+                                        </div>
+                                        <i
+                                          className="fas fa-trash cursor-pointer me-3"
+                                          style={{
+                                            color: '#BD381C',
+                                            fontSize: '15px',
+                                          }}
+                                          onClick={() => removeAddon(index)}
+                                        ></i>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                ))}
+                            </Paper>
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
+                  </>
+                )}
+
+                <Row>
+                  <Col>
+                    <Label>Product Images</Label>
+                    <div className="mb-5">
+                      <Dropzone
+                        onDrop={(acceptedFiles) => {
+                          handleAcceptedFiles(acceptedFiles);
+                        }}
+                        accept=".jpg, .jpeg, .png"
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div className="dropzone">
+                            <div
+                              className="dz-message needsclick"
+                              {...getRootProps()}
+                              // onClick={() => setmodal_fullscreen(true)}
+                            >
+                              <input {...getInputProps()} />
+                              <div className="mb-3">
+                                <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                              </div>
+                              <h4>Drop files here or click to upload.</h4>
+                            </div>
+                          </div>
+                        )}
+                      </Dropzone>
+                      <div className="dropzone-previews mt-3" id="file-previews">
+                        {image && (
+                          <Card
+                            className="
+                          mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
+                          "
+                          >
+                            <div className="p-2">
+                              <Row className="align-items-center position-relative">
+                                <Col className="col-auto">
+                                  <img
+                                    data-dz-thumbnail=""
+                                    // height="80"
+                                    style={{
+                                      maxWidth: '80px',
+                                    }}
+                                    className=" bg-light"
+                                    src={image.preview ? image.preview : image}
+                                    alt=""
+                                  />
+                                </Col>
+                                <Col>
+                                  <Link to="#" className="text-muted font-weight-bold">
+                                    {image.name ? image.name : 'Product Image'}
+                                  </Link>
+                                  <p className="mb-0">
+                                    <strong>{image.formattedSize && image.formattedSize}</strong>
+                                  </p>
+                                </Col>
+
+                                <div
+                                  className="position-absolute"
+                                  style={{
+                                    left: '0px',
+                                    top: '0px',
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                  }}
+                                >
+                                  <i
+                                    onClick={() => setImage(null)}
+                                    className="mdi mdi-delete text-danger "
+                                    style={{
+                                      fontSize: '25px',
+                                      cursor: 'pointer',
+                                    }}
+                                  ></i>
+                                </div>
+                              </Row>
+                            </div>
+                          </Card>
+                        )}
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+
+                <div className="my-5 d-flex justify-content-center">
+                  <Button type="submit" color="primary" className="px-5" disabled={loading || isLoading}>
+                    {loading || isLoading ? (
+                      <Spinner animation="border" variant="info" size="sm"></Spinner>
+                    ) : id ? (
+                      'Save'
+                    ) : (
+                      'Add'
+                    )}
+                  </Button>
+                </div>
+              </Form>
+            </CardBody>
+          </Card>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default ProductAdd;

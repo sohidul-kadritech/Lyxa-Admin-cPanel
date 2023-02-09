@@ -1,4 +1,6 @@
-  import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
@@ -7,7 +9,7 @@ const initialState = {
   status: false,
   type: 'all',
   tags: [],
-  tagSearchKey: ''
+  tagSearchKey: '',
 };
 
 const dealReducer = (state = initialState, action) => {
@@ -49,9 +51,7 @@ const dealReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_DEAL_REQUEST_SUCCESS:
-      const updateData = state.deals.map((item) =>
-        item._id === payload._id ? payload : item
-      );
+      const updateData = state.deals.map((item) => (item._id === payload._id ? payload : item));
       return {
         ...state,
         loading: false,
@@ -77,9 +77,7 @@ const dealReducer = (state = initialState, action) => {
       };
 
     case actionType.DELETE_DEAL_REQUEST_SUCCESS:
-      const filteredData = state.deals.filter(
-        (item) => item._id !== payload._id
-      );
+      const filteredData = state.deals.filter((item) => item._id !== payload._id);
       return {
         ...state,
         loading: false,
@@ -118,9 +116,9 @@ const dealReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // GET DEAL FOR ADD 
+    // GET DEAL FOR ADD
 
-      case actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND:
+    case actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -142,9 +140,9 @@ const dealReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // GET ALL TAG
+    // GET ALL TAG
 
-      case actionType.ALL_TAG_REQUEST_SEND:
+    case actionType.ALL_TAG_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -157,7 +155,7 @@ const dealReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         tags: payload,
-        status: false
+        status: false,
       };
 
     case actionType.ALL_TAG_REQUEST_FAIL:
@@ -167,13 +165,13 @@ const dealReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      case actionType.UPDATE_TAG_SEARCH_KEY:
+    case actionType.UPDATE_TAG_SEARCH_KEY:
       return {
         ...state,
-        tagSearchKey: payload
+        tagSearchKey: payload,
       };
 
-      case actionType.UPDATE_DEAL_TYPE_KEY:
+    case actionType.UPDATE_DEAL_TYPE_KEY:
       return {
         ...state,
         type: payload,

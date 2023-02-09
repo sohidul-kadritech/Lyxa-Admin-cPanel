@@ -1,22 +1,18 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import Breadcrumb from "../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../components/GlobalWrapper";
-import TextEditor from "../../components/TextEditor/TextEditor";
-import { Container } from "reactstrap";
+import React from 'react';
+import { Container } from 'reactstrap';
+import GlobalWrapper from '../../components/GlobalWrapper';
+import TextEditor from '../../components/TextEditor/TextEditor';
 
-const DeliveryTermsAndConditions = () => {
+function DeliveryTermsAndConditions() {
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <TextEditor title="Delivery Terms and Condtions" type="delivery" />
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <TextEditor title="Delivery Terms and Condtions" type="delivery" />
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default DeliveryTermsAndConditions;

@@ -1,22 +1,13 @@
-import { all, fork } from "redux-saga/effects"
+import { all, fork } from 'redux-saga/effects';
 
-//public
-import AccountSaga from "./auth/register/saga"
-import AuthSaga from "./auth/login/saga"
-import ForgetSaga from "./auth/forgetpwd/saga"
-import ProfileSaga from "./auth/profile/saga"
-import LayoutSaga from "./layout/saga"
-import calendarSaga from "./calendar/saga"
-
+// public
+import ForgetSaga from './auth/forgetpwd/saga';
+import AuthSaga from './auth/login/saga';
+import ProfileSaga from './auth/profile/saga';
+import AccountSaga from './auth/register/saga';
+import calendarSaga from './calendar/saga';
+import LayoutSaga from './layout/saga';
 
 export default function* rootSaga() {
-  yield all([
-    //public
-    AccountSaga(),
-    fork(AuthSaga),
-    ProfileSaga(),
-    ForgetSaga(),
-    LayoutSaga(),
-    fork(calendarSaga),
-  ])
+  yield all([AccountSaga(), fork(AuthSaga), ProfileSaga(), ForgetSaga(), LayoutSaga(), fork(calendarSaga)]);
 }

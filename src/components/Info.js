@@ -1,29 +1,23 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
-import styled from "styled-components";
-import { Tooltip } from "@mui/material";
+import { Tooltip } from '@mui/material';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
 
-const Info = ({ title, value = "", link, flagOrderRoute, valueTwo = "" }) => {
+function Info({ title, value = '', link, flagOrderRoute, valueTwo = '' }) {
   const history = useHistory();
 
   return (
     <Details link={link} flagOrder={flagOrderRoute}>
       <div className="title">
-        <Tooltip title={`${flagOrderRoute ? "Go to Order" : ""}`}>
-          <span
-            className={`${flagOrderRoute ? "cursor-pointer" : ""}  }`}
-            onClick={() => history.push(flagOrderRoute)}
-          >
+        <Tooltip title={`${flagOrderRoute ? 'Go to Order' : ''}`}>
+          <span className={`${flagOrderRoute ? 'cursor-pointer' : ''}  }`} onClick={() => history.push(flagOrderRoute)}>
             {title}
           </span>
         </Tooltip>
       </div>
       <div className="value valueOne">
-        <Tooltip title={`${link ? "See details" : ""}`}>
-          <span
-            className={`${link ? "cursor-pointer" : ""}`}
-            onClick={() => history.push(link)}
-          >
+        <Tooltip title={`${link ? 'See details' : ''}`}>
+          <span className={`${link ? 'cursor-pointer' : ''}`} onClick={() => history.push(link)}>
             {value}
           </span>
         </Tooltip>
@@ -35,7 +29,7 @@ const Info = ({ title, value = "", link, flagOrderRoute, valueTwo = "" }) => {
       )}
     </Details>
   );
-};
+}
 
 const Details = styled.div`
   display: flex;
@@ -53,10 +47,10 @@ const Details = styled.div`
     padding-left: 5px;
     span {
       &:hover {
-        color: ${({ flagOrder }) => flagOrder && "blue"};
-        font-weight: ${({ flagOrder }) => flagOrder && "bold"};
+        color: ${({ flagOrder }) => flagOrder && 'blue'};
+        font-weight: ${({ flagOrder }) => flagOrder && 'bold'};
       }
-      text-decoration: ${({ flagOrder }) => flagOrder && "underline"};
+      text-decoration: ${({ flagOrder }) => flagOrder && 'underline'};
     }
   }
 
@@ -76,9 +70,9 @@ const Details = styled.div`
       flex: 1;
       color: #02a499;
       &:hover {
-        color: ${({ link }) => link && "blue"};
-        font-weight: ${({ link }) => link && "bold"};
-        text-decoration: ${({ link }) => link && "underline"};
+        color: ${({ link }) => link && 'blue'};
+        font-weight: ${({ link }) => link && 'bold'};
+        text-decoration: ${({ link }) => link && 'underline'};
       }
     }
 

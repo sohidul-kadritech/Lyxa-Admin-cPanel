@@ -1,20 +1,21 @@
-import * as actionType from "../actionType";
-import moment from "moment";
+/* eslint-disable default-param-last */
+import moment from 'moment';
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
   credits: [],
   status: false,
-  sortByKey: { label: "DESC", value: "desc" },
-  startDate: moment().startOf("month").format("YYYY-MM-DD"),
-  endDate: moment().endOf("month").format("YYYY-MM-DD"),
+  sortByKey: { label: 'DESC', value: 'desc' },
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().endOf('month').format('YYYY-MM-DD'),
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  searchKey: ""
+  searchKey: '',
 };
 
 const dropPayReducer = (state = initialState, action) => {
@@ -49,7 +50,6 @@ const dropPayReducer = (state = initialState, action) => {
       };
 
     //   ADD AMOUNT
-
     case actionType.ADD_USER_AMOUNT_REQUEST_SEND:
       return {
         ...state,
@@ -73,7 +73,6 @@ const dropPayReducer = (state = initialState, action) => {
       };
 
     // REMOVE AMOUNT
-
     case actionType.REMOVE_USER_AMOUNT_REQUEST_SEND:
       return {
         ...state,

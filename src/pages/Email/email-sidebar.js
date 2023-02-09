@@ -1,39 +1,29 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  FormGroup,
-  Input,
-  Card,
-  Media,
-} from "reactstrap"
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Card, Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 // Import Editor
-import { Editor } from "react-draft-wysiwyg"
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-//Import images
-import avatar2 from "../../assets/images/users/user-2.jpg"
-import avatar3 from "../../assets/images/users/user-3.jpg"
-import avatar4 from "../../assets/images/users/user-4.jpg"
-import avatar6 from "../../assets/images/users/user-6.jpg"
+// Import images
+import avatar2 from '../../assets/images/users/user-2.jpg';
+import avatar3 from '../../assets/images/users/user-3.jpg';
+import avatar4 from '../../assets/images/users/user-4.jpg';
+import avatar6 from '../../assets/images/users/user-6.jpg';
 
-const EmailSideBar = () => {
-  const [modal, setmodal] = useState(false)
+function EmailSideBar() {
+  const [modal, setmodal] = useState(false);
 
   return (
-    <React.Fragment>
+    <>
       <Card className="email-leftbar">
         <Button
           type="button"
           color="danger"
           className="waves-effect waves-light"
           onClick={() => {
-            setmodal(!modal)
+            setmodal(!modal);
           }}
           block
         >
@@ -43,16 +33,11 @@ const EmailSideBar = () => {
           <Link to="email-inbox" className="active">
             Inbox <span className="ms-1">(18)</span>
           </Link>
-          <Link to="#">Starred
-          </Link>
-          <Link to="#">Important
-          </Link>
-          <Link to="#">Draft
-          </Link>
-          <Link to="#">Sent Mail
-          </Link>
-          <Link to="#">Trash
-          </Link>
+          <Link to="#">Starred</Link>
+          <Link to="#">Important</Link>
+          <Link to="#">Draft</Link>
+          <Link to="#">Sent Mail</Link>
+          <Link to="#">Trash</Link>
         </div>
 
         <h5 className="mt-4">Labels</h5>
@@ -84,12 +69,7 @@ const EmailSideBar = () => {
 
         <div className="mt-4">
           <Link to="#" className="d-flex">
-            <img
-              className="me-3 rounded-circle"
-              src={avatar2}
-              alt="veltrix"
-              height="36"
-            />
+            <img className="me-3 rounded-circle" src={avatar2} alt="veltrix" height="36" />
             <div className="flex-1 chat-user-box">
               <p className="user-title m-0">Scott Median</p>
               <p className="text-muted">Hello</p>
@@ -97,12 +77,7 @@ const EmailSideBar = () => {
           </Link>
 
           <Link to="#" className="d-flex">
-            <img
-              className="me-3 rounded-circle"
-              src={avatar3}
-              alt="veltrix"
-              height="36"
-            />
+            <img className="me-3 rounded-circle" src={avatar3} alt="veltrix" height="36" />
             <div className="flex-1 chat-user-box">
               <p className="user-title m-0">Julian Rosa</p>
               <p className="text-muted">What about our next..</p>
@@ -110,12 +85,7 @@ const EmailSideBar = () => {
           </Link>
 
           <Link to="#" className="d-flex">
-            <img
-              className="me-3 rounded-circle"
-              src={avatar4}
-              alt="veltrix"
-              height="36"
-            />
+            <img className="me-3 rounded-circle" src={avatar4} alt="veltrix" height="36" />
             <div className="flex-1 chat-user-box">
               <p className="user-title m-0">David Medina</p>
               <p className="text-muted">Yeah everything is fine</p>
@@ -123,12 +93,7 @@ const EmailSideBar = () => {
           </Link>
 
           <Link to="#" className="d-flex">
-            <img
-              className="me-3 rounded-circle"
-              src={avatar6}
-              alt="veltrix"
-              height="36"
-            />
+            <img className="me-3 rounded-circle" src={avatar6} alt="veltrix" height="36" />
             <div className="flex-1 chat-user-box">
               <p className="user-title m-0">Jay Baker</p>
               <p className="text-muted">Wow that's great</p>
@@ -140,18 +105,18 @@ const EmailSideBar = () => {
       <Modal
         isOpen={modal}
         role="dialog"
-        autoFocus={true}
-        centered={true}
+        autoFocus
+        centered
         className="exampleModal"
         tabIndex="-1"
         toggle={() => {
-          setmodal(!modal)
+          setmodal(!modal);
         }}
       >
         <div className="modal-content">
           <ModalHeader
             toggle={() => {
-              setmodal(!modal)
+              setmodal(!modal);
             }}
           >
             New Message
@@ -163,11 +128,7 @@ const EmailSideBar = () => {
               </div>
 
               <div className="mb-3">
-                <Input
-                  type="text"
-                  className="form-control"
-                  placeholder="Subject"
-                />
+                <Input type="text" className="form-control" placeholder="Subject" />
               </div>
               <Editor
                 toolbarClassName="toolbarClassName"
@@ -181,7 +142,7 @@ const EmailSideBar = () => {
               type="button"
               color="secondary"
               onClick={() => {
-                setmodal(!modal)
+                setmodal(!modal);
               }}
             >
               Close
@@ -192,8 +153,8 @@ const EmailSideBar = () => {
           </ModalFooter>
         </div>
       </Modal>
-    </React.Fragment>
-  )
+    </>
+  );
 }
 
-export default EmailSideBar
+export default EmailSideBar;

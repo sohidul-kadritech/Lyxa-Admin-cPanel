@@ -1,35 +1,27 @@
-import { LOGIN } from "../../../network/Api";
-import { LOGIN_USER, LOGIN_SUCCESS, LOGOUT_USER, LOGOUT_USER_SUCCESS, API_ERROR, SET_ADMIN } from "./actionTypes";
-import requestApi from "../../../network/httpRequest";
+import { LOGIN } from '../../../network/Api';
+import requestApi from '../../../network/httpRequest';
+import { API_ERROR, LOGIN_SUCCESS, LOGIN_USER, LOGOUT_USER, LOGOUT_USER_SUCCESS, SET_ADMIN } from './actionTypes';
 // import { successMsg } from "../../../helpers/successMsg";
 import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject';
 
-export const loginSuccess = (admin, message) => {
-  return {
-    type: LOGIN_SUCCESS,
-    payload: { admin, message },
-  };
-};
+export const loginSuccess = (admin, message) => ({
+  type: LOGIN_SUCCESS,
+  payload: { admin, message },
+});
 
-export const logoutUser = (history) => {
-  return {
-    type: LOGOUT_USER,
-    payload: { history },
-  };
-};
+export const logoutUser = (history) => ({
+  type: LOGOUT_USER,
+  payload: { history },
+});
 
-export const logoutUserSuccess = () => {
-  return {
-    type: LOGOUT_USER_SUCCESS,
-  };
-};
+export const logoutUserSuccess = () => ({
+  type: LOGOUT_USER_SUCCESS,
+});
 
-export const apiError = (error) => {
-  return {
-    type: API_ERROR,
-    payload: error,
-  };
-};
+export const apiError = (error) => ({
+  type: API_ERROR,
+  payload: error,
+});
 
 export const logoutAdmin = () => (dispatch) => {
   dispatch({
@@ -38,15 +30,13 @@ export const logoutAdmin = () => (dispatch) => {
 };
 
 export const adminAuth = (user) => async (dispatch) => {
-
-
   try {
     dispatch({ type: LOGIN_USER });
 
     const {
-      data: { status, message, error, data = null },
+      data: { status, message, data = null },
     } = await requestApi().request(LOGIN, {
-      method: "POST",
+      method: 'POST',
       data: user,
     });
 
@@ -56,16 +46,14 @@ export const adminAuth = (user) => async (dispatch) => {
         access_token: data.admin.token,
         account_type: data.admin.account_type,
         account_id: data.admin._id,
-      }
+      };
 
-      setCookiesAsObject(authCookies, 15)
+      setCookiesAsObject(authCookies, 15);
 
-      const admin = {...data.admin};
+      const admin = { ...data.admin };
       delete admin.token;
       dispatch(loginSuccess(admin, message));
-
     } else {
-      // successMsg(error, "error");
       dispatch(apiError(message));
     }
   } catch (error) {
@@ -78,5 +66,5 @@ export const setAdmin = (admin) => (dispatch) => {
   dispatch({
     type: SET_ADMIN,
     payload: admin,
-  })
-}
+  });
+};

@@ -1,25 +1,24 @@
-import { toast } from "react-toastify";
-import { successMsg } from "../../helpers/successMsg";
+/* eslint-disable radix */
+/* eslint-disable default-param-last */
+import { toast } from 'react-toastify';
+import { successMsg } from '../../helpers/successMsg';
 import {
   ALL_TRX,
   DELIVERY_TRX,
   DROP_TRX,
-  GET_DELIVERY_FEE,
   RIDER_MAKE_PAYMENT,
   RIDER_RECEIVED_PAYMENT,
   SELLERS_TRX,
   SELLER_TRX,
-  SET_DELIVERY_FEE,
   SHOP_ADD_REMOVE_CREDIT,
   SHOP_ADJUST_CASH,
   SHOP_MAKE_PAYMENT,
   SHOP_TRX,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionTypes from "../actionType";
+} from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionTypes from '../actionType';
 
 // GET SELLERS TRX
-
 export const getSellersTrx =
   (refresh = false, page) =>
   async (dispatch, getState) => {
@@ -129,16 +128,16 @@ export const getShopTrxs =
         });
 
         const { data } = await requestApi().request(SHOP_TRX, {
-          method: "POST",
+          method: 'POST',
           data: {
             page,
             pageSize: 50,
             shopId: shopId.toString(),
-            sortBy: "desc",
+            sortBy: 'desc',
             tnxFilter: {
               startDate: shopTrxStartDate,
               endDate: shopTrxEndDate,
-              type: !value ? ["adminAddBalanceShop", "adminRemoveBalanceShop", "adminSettlebalanceShop"] : [value],
+              type: !value ? ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'] : [value],
               searchKey: shopSearchKey,
               amountBy: orderBy,
               amountRange: shopTrxAmountRange,
@@ -177,18 +176,18 @@ export const shopMakePayment = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(SHOP_MAKE_PAYMENT, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionTypes.SHOP_MAKE_PAYMENT_REQUEST_SUCCESS,
         payload: data.data.transactionShop,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionTypes.SHOP_MAKE_PAYMENT_REQUEST_FAIL,
         payload: data.error,
@@ -212,18 +211,18 @@ export const shopAddRemoveCredit = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(SHOP_ADD_REMOVE_CREDIT, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionTypes.SHOP_CREDIT_UPDATE_REQUEST_SUCCESS,
         payload: data.data.transactionShop,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionTypes.SHOP_CREDIT_UPDATE_REQUEST_FAIL,
         payload: data.error,
@@ -247,20 +246,20 @@ export const adjustShopCash = (shopId) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(SHOP_ADJUST_CASH, {
-      method: "POST",
+      method: 'POST',
       data: {
         shopId,
       },
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionTypes.SHOP_ADJUST_CASH_REQUEST_SUCCESS,
         payload: data.data.transactionShop,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionTypes.SHOP_ADJUST_CASH_REQUEST_FAIL,
         payload: data.error,
@@ -284,18 +283,18 @@ export const riderMakePayment = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(RIDER_MAKE_PAYMENT, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionTypes.RIDER_MAKE_PAYMENT_REQUEST_SUCCESS,
         payload: data.data.transactionShop,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionTypes.RIDER_MAKE_PAYMENT_REQUEST_FAIL,
         payload: data.error,
@@ -319,18 +318,18 @@ export const riderReceivedPayment = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(RIDER_RECEIVED_PAYMENT, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_SUCCESS,
         payload: data.data.transactionShop,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_FAIL,
         payload: data.error,
@@ -341,7 +340,7 @@ export const riderReceivedPayment = (values) => async (dispatch) => {
       type: actionTypes.RIDER_RECEIVED_PAYMENT_REQUEST_FAIL,
       payload: error.message,
     });
-    successMsg.error(error.message, "error");
+    successMsg.error(error.message, 'error');
   }
 };
 
@@ -663,7 +662,6 @@ export const getAllTransctions =
   };
 
 // ALL TRANSACTIONS FILTER KEY
-
 export const updateAllTrxSortByKey = (value) => (dispatch) => {
   dispatch({
     type: actionTypes.UPDATE_TRX_SORT_BY,

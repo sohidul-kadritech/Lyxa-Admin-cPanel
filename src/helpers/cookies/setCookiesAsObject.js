@@ -1,8 +1,10 @@
-import setCookie from "./setCookie";
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
+import setCookie from './setCookie';
 
 function setCookiesAsObj(cookiesObject, exdays) {
-  for (var cookieName in cookiesObject) {
-    var cookieValue = cookiesObject[cookieName];
+  for (const cookieName in cookiesObject) {
+    const cookieValue = cookiesObject[cookieName];
     setCookie(cookieName, cookieValue, exdays);
   }
 }

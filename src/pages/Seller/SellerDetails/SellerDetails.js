@@ -1,38 +1,35 @@
-import React, { useEffect, useState } from "react";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import { useHistory, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row } from "reactstrap";
-import styled from "styled-components";
-import Lightbox from "react-image-lightbox";
-import AppPagination from "../../../components/AppPagination";
-import { getAllShop } from "../../../store/Shop/shopAction";
-import { MAP_URL, SINGLE_SELLER } from "../../../network/Api";
-import Info from "./../../../components/Info";
-import ShopTable from "../../../components/ShopTable";
-import DropCharge from "../../../components/DropCharge";
-import { callApi } from "../../../components/SingleApiCall";
-import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
-import InfoTwo from "../../../components/InfoTwo";
-import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
-import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
-import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
-import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
-import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
-import noPhoto from "../../../assets/images/noPhoto.jpg";
+import AlternateEmailOutlinedIcon from '@mui/icons-material/AlternateEmailOutlined';
+import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined';
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
+import StoreOutlinedIcon from '@mui/icons-material/StoreOutlined';
+import React, { useEffect, useState } from 'react';
+import Lightbox from 'react-image-lightbox';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row } from 'reactstrap';
+import styled from 'styled-components';
+import noPhoto from '../../../assets/images/noPhoto.jpg';
+import AppPagination from '../../../components/AppPagination';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import DropCharge from '../../../components/DropCharge';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+import InfoTwo from '../../../components/InfoTwo';
+import ShopTable from '../../../components/ShopTable';
+import { callApi } from '../../../components/SingleApiCall';
+import { MAP_URL, SINGLE_SELLER } from '../../../network/Api';
+import { getAllShop } from '../../../store/Shop/shopAction';
 
-const SellerDetails = () => {
+function SellerDetails() {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
   const { sellers, status } = useSelector((state) => state.sellerReducer);
 
-  const { loading, shops, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
-    (state) => state.shopReducer
-  );
+  const { paging, hasNextPage, hasPreviousPage, currentPage } = useSelector((state) => state.shopReducer);
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
@@ -43,25 +40,24 @@ const SellerDetails = () => {
 
   useEffect(async () => {
     if (id) {
-      const findSeller = sellers.find((item) => item._id == id);
+      const findSeller = sellers.find((item) => item._id === id);
       if (findSeller) {
         setSeller(findSeller);
       } else {
-        const data = await callApi(id, SINGLE_SELLER, "seller");
+        const data = await callApi(id, SINGLE_SELLER, 'seller');
         if (data) {
           setSeller(data);
         } else {
-          history.push("/seller/list", { replace: true });
+          history.push('/seller/list', { replace: true });
         }
       }
     }
   }, [id]);
 
   //   ADD PRODUCT
-
   const addNewProduct = () => {
     history.push({
-      pathname: "/shops/add",
+      pathname: '/shops/add',
       search: `?sellerId=${id}`,
     });
   };
@@ -74,16 +70,16 @@ const SellerDetails = () => {
   }, [status]);
 
   return (
-    <React.Fragment>
+    <>
       <GlobalWrapper>
         <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb maintitle="Lyxa" breadcrumbItem={"Details"} title="Seller" isRefresh={false} />
+          <Container fluid>
+            <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Seller" isRefresh={false} />
 
             {isOpen && (
               <Lightbox
                 mainSrc={selectedImg}
-                enableZoom={true}
+                enableZoom
                 imageCaption="img"
                 onCloseRequest={() => {
                   setIsOpen(!isOpen);
@@ -97,14 +93,14 @@ const SellerDetails = () => {
                   <CardTitle>Seller Informations</CardTitle>
                   <div>
                     <Button
-                      outline={true}
+                      outline
                       color="success"
                       className="me-3"
                       onClick={() => setIsOpenPercentage(!isOpenPercentage)}
                     >
                       Update Drop Charge
                     </Button>
-                    <Button color="primary" outline={true} onClick={() => history.push(`/seller/edit/${id}`)}>
+                    <Button color="primary" outline onClick={() => history.push(`/seller/edit/${id}`)}>
                       Edit
                     </Button>
                   </div>
@@ -112,28 +108,29 @@ const SellerDetails = () => {
                 <hr className="my-2" />
                 <Row className="px-3">
                   <Col lg={6}>
-                    <InfoTwo name={"Company"} value={`${seller?.company_name}`} Icon={ApartmentOutlinedIcon} />
-                    <InfoTwo name={"Manager"} value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} />
+                    <InfoTwo name="Company" value={`${seller?.company_name}`} Icon={ApartmentOutlinedIcon} />
+                    <InfoTwo name="Manager" value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} />
                     <InfoTwo
                       value={`${seller?.addressSeller?.address}`}
                       Icon={RoomOutlinedIcon}
-                      mapLink={`${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
-                      name={"Location"}
+                      mapLink={`
+                      ${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
+                      name="Location"
                     />
-                    <InfoTwo name={"Phone"} value={seller?.phone_number} Icon={LocalPhoneOutlinedIcon} />
+                    <InfoTwo name="Phone" value={seller?.phone_number} Icon={LocalPhoneOutlinedIcon} />
                     <InfoTwo
-                      name={"Email"}
+                      name="Email"
                       value={seller?.email}
                       Icon={AlternateEmailOutlinedIcon}
                       classes="text-lowercase"
                     />
-                    <InfoTwo name={"Status"} value={`${seller?.status}`} Icon={AutorenewOutlinedIcon} />
-                    <InfoTwo name={"Type"} value={`${seller?.sellerType}`} Icon={StoreOutlinedIcon} />
+                    <InfoTwo name="Status" value={`${seller?.status}`} Icon={AutorenewOutlinedIcon} />
+                    <InfoTwo name="Type" value={`${seller?.sellerType}`} Icon={StoreOutlinedIcon} />
                     {seller?.dropPercentage && (
                       <InfoTwo
                         Icon={PaidOutlinedIcon}
-                        name={"Lyxa Charge"}
-                        value={`${seller?.dropPercentage}${seller?.dropPercentageType === "amount" ? currency : "%"}`}
+                        name="Lyxa Charge"
+                        value={`${seller?.dropPercentage}${seller?.dropPercentageType === 'amount' ? currency : '%'}`}
                       />
                     )}
                   </Col>
@@ -142,9 +139,9 @@ const SellerDetails = () => {
                       <Col md={4}>
                         <ImageWrapper
                           style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
+                            width: '100%',
+                            height: '200px',
+                            padding: '10px 0px',
                           }}
                         >
                           <img
@@ -164,9 +161,9 @@ const SellerDetails = () => {
                       <Col md={4}>
                         <ImageWrapper
                           style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
+                            width: '100%',
+                            height: '200px',
+                            padding: '10px 0px',
                           }}
                         >
                           <img
@@ -186,9 +183,9 @@ const SellerDetails = () => {
                       <Col md={4}>
                         <ImageWrapper
                           style={{
-                            width: "100%",
-                            height: "200px",
-                            padding: "10px 0px",
+                            width: '100%',
+                            height: '200px',
+                            padding: '10px 0px',
                           }}
                         >
                           <img
@@ -214,7 +211,7 @@ const SellerDetails = () => {
               <CardBody>
                 <div className="d-flex justify-content-between">
                   <CardTitle className="h4"> Shop List</CardTitle>
-                  {account_type === "admin" && adminType === "admin" && (
+                  {account_type === 'admin' && adminType === 'admin' && (
                     <Button color="success" onClick={addNewProduct}>
                       Add Shop
                     </Button>
@@ -249,7 +246,7 @@ const SellerDetails = () => {
         toggle={() => {
           setIsOpenPercentage(!isOpenPercentage);
         }}
-        centered={true}
+        centered
       >
         <div className="modal-header">
           <h5 className="modal-title mt-0">Update Drop Charge</h5>
@@ -275,9 +272,9 @@ const SellerDetails = () => {
           />
         </div>
       </Modal>
-    </React.Fragment>
+    </>
   );
-};
+}
 
 const ImageWrapper = styled.div`
   text-align: center;

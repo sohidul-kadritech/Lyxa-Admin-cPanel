@@ -1,13 +1,13 @@
-import { Card, CardContent } from "@mui/material";
-import React from "react";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import styled from "styled-components";
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import { Card, CardContent } from '@mui/material';
+import React from 'react';
+import styled from 'styled-components';
 
-const TransactionsCard = ({ summary = [] }) => {
+function TransactionsCard({ summary = [] }) {
   return (
     <CardWrapper>
-      {summary.map((item, index) => (
-        <div key={index} className="card hover-shadow">
+      {summary.map((item) => (
+        <div key={Math.random()} className="card hover-shadow">
           <Card>
             <CardContent className="content__wrapper cursor-pointer">
               <div>
@@ -21,7 +21,7 @@ const TransactionsCard = ({ summary = [] }) => {
       ))}
     </CardWrapper>
   );
-};
+}
 
 const CardWrapper = styled.div`
   display: flex;

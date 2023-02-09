@@ -1,30 +1,28 @@
-import React from "react";
-import { Card, CardBody } from "reactstrap";
-import styled from "styled-components";
+import React from 'react';
+import { Card, CardBody } from 'reactstrap';
+import styled from 'styled-components';
 
-const DashboardCard = ({ title, value, icon, color }) => {
+function DashboardCard({ title, value, icon, color }) {
   return (
-    <React.Fragment>
-      <Card className="mini-stat" style={{ height: "140px" }}>
-        <CardBody>
-          <Wrapper color={color}>
-            <h5 className="font-size-14">{title}</h5>
+    <Card className="mini-stat" style={{ height: '140px' }}>
+      <CardBody>
+        <Wrapper color={color}>
+          <h5 className="font-size-14">{title}</h5>
 
-            <div className="border"></div>
+          <div className="border"></div>
 
-            <div className="d-flex mt-2">
-              <div className="img_wrapper">
-                <img src={icon} alt="" />
-              </div>
-
-              <h4 className="value">{value ?? 0}</h4>
+          <div className="d-flex mt-2">
+            <div className="img_wrapper">
+              <img src={icon} alt="" />
             </div>
-          </Wrapper>
-        </CardBody>
-      </Card>
-    </React.Fragment>
+
+            <h4 className="value">{value ?? 0}</h4>
+          </div>
+        </Wrapper>
+      </CardBody>
+    </Card>
   );
-};
+}
 
 const Wrapper = styled.div`
   .border {

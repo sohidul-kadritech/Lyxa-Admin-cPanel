@@ -1,17 +1,17 @@
-import React from "react"
-import { Row, Col, CardBody, Card, Container } from "reactstrap"
+import React from 'react';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
 
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 
 // availity-reactstrap-validation
-import { AvForm, AvField } from "availity-reactstrap-validation"
+import { AvField, AvForm } from 'availity-reactstrap-validation';
 
 // import images
-import logoSm from "../../assets/images/logo-sm.png";
+import logoSm from '../../assets/images/logo-sm.png';
 
-const ForgetPasswordPage = () => {
+function ForgetPasswordPage() {
   return (
-    <React.Fragment>
+    <>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-dark">
           <i className="fas fa-home h2"></i>
@@ -31,7 +31,7 @@ const ForgetPasswordPage = () => {
                   </div>
                 </div>
                 <CardBody className="p-4">
-                  <div className="alert alert-success mt-5" role="alert" className="mt-5">
+                  <div className="alert alert-success mt-5" role="alert">
                     Enter your Email and instructions will be sent to you!
                   </div>
 
@@ -48,30 +48,33 @@ const ForgetPasswordPage = () => {
                     </div>
                     <Row className="mb-3">
                       <Col className="text-end">
-                        <button
-                          className="btn btn-primary w-md waves-effect waves-light"
-                          type="submit"
-                        >
+                        <button className="btn btn-primary w-md waves-effect waves-light" type="submit">
                           Reset
-                          </button>
+                        </button>
                       </Col>
                     </Row>
                   </AvForm>
                 </CardBody>
               </Card>
               <div className="mt-5 text-center">
-                <p>Remember It ? <Link  to="pages-login" className="fw-medium text-primary"> Sign In here </Link> </p>
                 <p>
-                  © {new Date().getFullYear()} Veltrix. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger" /> by Themesbrand
+                  Remember It ?{' '}
+                  <Link to="pages-login" className="fw-medium text-primary">
+                    {' '}
+                    Sign In here{' '}
+                  </Link>{' '}
+                </p>
+                <p>
+                  © {new Date().getFullYear()} Veltrix. Crafted with <i className="mdi mdi-heart text-danger" /> by
+                  Themesbrand
                 </p>
               </div>
             </Col>
           </Row>
         </Container>
       </div>
-    </React.Fragment>
-  )
+    </>
+  );
 }
 
-export default ForgetPasswordPage
+export default ForgetPasswordPage;

@@ -1,121 +1,117 @@
-import firebase from "firebase/app"
+import firebase from 'firebase/app';
 
 // Add the Firebase products that you want to use
-import "firebase/auth"
-import "firebase/firestore"
+import 'firebase/auth';
+import 'firebase/firestore';
 
 class FirebaseAuthBackend {
   constructor(firebaseConfig) {
     if (firebaseConfig) {
       // Initialize Firebase
-      firebase.initializeApp(firebaseConfig)
-      firebase.auth().onAuthStateChanged(user => {
+      firebase.initializeApp(firebaseConfig);
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          localStorage.setItem("authUser", JSON.stringify(user))
+          localStorage.setItem('authUser', JSON.stringify(user));
         } else {
-          localStorage.removeItem("authUser")
+          localStorage.removeItem('authUser');
         }
-      })
+      });
     }
   }
 
   /**
    * Registers the user with given details
    */
-  registerUser = (email, password) => {
-    return new Promise((resolve, reject) => {
+  registerUser = (email, password) =>
+    new Promise((resolve, reject) => {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(
-          user => {
-            resolve(firebase.auth().currentUser)
+          // eslint-disable-next-line no-unused-vars
+          (user) => {
+            resolve(firebase.auth().currentUser);
           },
-          error => {
-            reject(this._handleError(error))
+          (error) => {
+            reject(this._handleError(error));
           }
-        )
-    })
-  }
+        );
+    });
 
   /**
    * Registers the user with given details
    */
-  editProfileAPI = (email, password) => {
-    return new Promise((resolve, reject) => {
+  editProfileAPI = (email, password) =>
+    new Promise((resolve, reject) => {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(
-          user => {
-            resolve(firebase.auth().currentUser)
+          () => {
+            resolve(firebase.auth().currentUser);
           },
-          error => {
-            reject(this._handleError(error))
+          (error) => {
+            reject(this._handleError(error));
           }
-        )
-    })
-  }
+        );
+    });
 
   /**
    * Login user with given details
    */
-  loginUser = (email, password) => {
-    return new Promise((resolve, reject) => {
+  loginUser = (email, password) =>
+    new Promise((resolve, reject) => {
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(
-          user => {
-            resolve(firebase.auth().currentUser)
+          () => {
+            resolve(firebase.auth().currentUser);
           },
-          error => {
-            reject(this._handleError(error))
+          (error) => {
+            reject(this._handleError(error));
           }
-        )
-    })
-  }
+        );
+    });
 
   /**
    * forget Password user with given details
    */
-  forgetPassword = email => {
-    return new Promise((resolve, reject) => {
+  forgetPassword = (email) =>
+    new Promise((resolve, reject) => {
       firebase
         .auth()
         .sendPasswordResetEmail(email, {
-          url:
-            window.location.protocol + "//" + window.location.host + "/login",
+          url: `${window.location.protocol}//${window.location.host}/login`,
         })
         .then(() => {
-          resolve(true)
+          resolve(true);
         })
-        .catch(error => {
-          reject(this._handleError(error))
-        })
-    })
-  }
+        .catch((error) => {
+          reject(this._handleError(error));
+        });
+    });
 
   /**
    * Logout the user
    */
-  logout = () => {
-    return new Promise((resolve, reject) => {
+  logout = () =>
+    new Promise((resolve, reject) => {
       firebase
         .auth()
         .signOut()
         .then(() => {
-          resolve(true)
+          resolve(true);
         })
-        .catch(error => {
-          reject(this._handleError(error))
-        })
-    })
-  }
+        .catch((error) => {
+          reject(this._handleError(error));
+        });
+    });
 
+  // eslint-disable-next-line class-methods-use-this
   addNewUserToFirestore = (user) => {
-    const collection = firebase.firestore().collection("users")
-    const { profile } = user.additionalUserInfo
+    const collection = firebase.firestore().collection('users');
+    const { profile } = user.additionalUserInfo;
     const details = {
       firstName: profile.given_name ? profile.given_name : profile.first_name,
       lastName: profile.family_name ? profile.family_name : profile.last_name,
@@ -123,53 +119,54 @@ class FirebaseAuthBackend {
       email: profile.email,
       picture: profile.picture,
       createdDtm: firebase.firestore.FieldValue.serverTimestamp(),
-      lastLoginTime: firebase.firestore.FieldValue.serverTimestamp()
-    }
-    collection.doc(firebase.auth().currentUser.uid).set(details)
-    return { user, details }
-  }
+      lastLoginTime: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    collection.doc(firebase.auth().currentUser.uid).set(details);
+    return { user, details };
+  };
 
-  setLoggeedInUser = user => {
-    localStorage.setItem("authUser", JSON.stringify(user))
-  }
+  // eslint-disable-next-line class-methods-use-this
+  setLoggeedInUser = (user) => {
+    localStorage.setItem('authUser', JSON.stringify(user));
+  };
 
   /**
    * Returns the authenticated user
    */
+  // eslint-disable-next-line class-methods-use-this
   getAuthenticatedUser = () => {
-    if (!localStorage.getItem("authUser")) return null
-    return JSON.parse(localStorage.getItem("authUser"))
-  }
+    if (!localStorage.getItem('authUser')) return null;
+    return JSON.parse(localStorage.getItem('authUser'));
+  };
 
   /**
    * Handle the error
    * @param {*} error
    */
+  // eslint-disable-next-line class-methods-use-this
   _handleError(error) {
     // var errorCode = error.code;
-    var errorMessage = error.message
-    return errorMessage
+    const errorMessage = error.message;
+    return errorMessage;
   }
 }
 
-let _fireBaseBackend = null
+let _fireBaseBackend = null;
 
 /**
  * Initilize the backend
  * @param {*} config
  */
-const initFirebaseBackend = config => {
+const initFirebaseBackend = (config) => {
   if (!_fireBaseBackend) {
-    _fireBaseBackend = new FirebaseAuthBackend(config)
+    _fireBaseBackend = new FirebaseAuthBackend(config);
   }
-  return _fireBaseBackend
-}
+  return _fireBaseBackend;
+};
 
 /**
  * Returns the firebase backend
  */
-const getFirebaseBackend = () => {
-  return _fireBaseBackend
-}
+const getFirebaseBackend = () => _fireBaseBackend;
 
-export { initFirebaseBackend, getFirebaseBackend }
+export { initFirebaseBackend, getFirebaseBackend };

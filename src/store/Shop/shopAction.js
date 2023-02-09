@@ -1,5 +1,4 @@
-import * as actionType from "../actionType";
-import requestApi from "../../network/httpRequest";
+import { successMsg } from '../../helpers/successMsg';
 import {
   ADD_CUISINE,
   ADD_SHOP,
@@ -15,8 +14,9 @@ import {
   SHOP_LIVE_STATUS,
   UPDATE_SHOP_STATUS,
   UPDATE_TAG,
-} from "../../network/Api";
-import { successMsg } from "../../helpers/successMsg";
+} from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // ADD
 export const addShop = (values) => async (dispatch) => {
@@ -25,19 +25,19 @@ export const addShop = (values) => async (dispatch) => {
       type: actionType.ADD_SHOP_REQUEST_SEND,
     });
     const { data } = await requestApi().request(ADD_SHOP, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       dispatch({
         type: actionType.ADD_SHOP_REQUEST_SUCCESS,
         payload: data.data.shop,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.ADD_SHOP_REQUEST_FAIL,
@@ -45,7 +45,7 @@ export const addShop = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
-    successMsg(error.message, "error");
+    successMsg(error.message, 'error');
     dispatch({
       type: actionType.ADD_SHOP_REQUEST_FAIL,
       payload: error,
@@ -58,8 +58,7 @@ export const addShop = (values) => async (dispatch) => {
 export const getAllShop =
   (refresh = false, seller = null, page = 1) =>
   async (dispatch, getState) => {
-    const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } =
-      getState().shopReducer;
+    const { shops, searchKey, statusKey, typeKey, sortByKey, liveStatus } = getState().shopReducer;
 
     if (shops.length < 1 || refresh) {
       try {
@@ -69,7 +68,7 @@ export const getAllShop =
 
         const { data } = await requestApi().request(ALL_SHOP, {
           params: {
-            page: page,
+            page,
             pageSize: 40,
             sortBy: sortByKey.value,
             searchKey,
@@ -103,21 +102,21 @@ export const getAllShop =
 // EDIT
 
 export const editShop = (values) => async (dispatch) => {
-  console.log("edit values", values);
+  console.log('edit values', values);
 
   try {
     dispatch({
       type: actionType.EDIT_SHOP_REQUEST_SEND,
     });
     const { data } = await requestApi().request(EDIT_SHOP, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
-    console.log("shop edit data", data);
+    console.log('shop edit data', data);
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       setTimeout(() => {
         dispatch({
@@ -126,7 +125,7 @@ export const editShop = (values) => async (dispatch) => {
         });
       }, 400);
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.EDIT_SHOP_REQUEST_FAIL,
         payload: data.message,
@@ -149,18 +148,18 @@ export const addShopDeal = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(ADD_SHOP_DEAL, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.ADD_SHOP_DEAL_REQUEST_SUCCESS,
         payload: data.data.shop,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.ADD_SHOP_DEAL_REQUEST_FAIL,
         payload: data.message,
@@ -181,19 +180,19 @@ export const ShopLiveStatus = (value) => async (dispatch) => {
       type: actionType.SHOP_LIVE_STATUS_REQUEST_SEND,
     });
     const { data } = await requestApi().request(SHOP_LIVE_STATUS, {
-      method: "POST",
+      method: 'POST',
       data: value,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       dispatch({
         type: actionType.SHOP_LIVE_STATUS_REQUEST_SUCCESS,
         payload: data.data.shop,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.SHOP_LIVE_STATUS_REQUEST_FAIL,
         payload: data.data.shop,
@@ -269,19 +268,19 @@ export const addCuisine = (name) => async (dispatch) => {
     const {
       data: { status, message, error, data = null },
     } = await requestApi().request(ADD_CUISINE, {
-      method: "POST",
+      method: 'POST',
       data: { name },
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       dispatch({
         type: actionType.ADD_CUISINE_REQUEST_SUCCESS,
         payload: data.cuisines,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
       dispatch({
         type: actionType.ADD_CUISINE_REQUEST_FAIL,
         paylaod: error,
@@ -306,24 +305,24 @@ export const setAsFeaturedShop = (values) => async (dispatch) => {
     const {
       data: { status, error, message },
     } = await requestApi().request(SET_AS_FEATURED, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
       dispatch({
         type: actionType.SET_FEATURED_SHOP_REQUEST_SUCCESS,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
       dispatch({
         type: actionType.SET_FEATURED_SHOP_REQUEST_FAIL,
         payload: error,
       });
     }
   } catch (error) {
-    successMsg(error, "error");
+    successMsg(error, 'error');
     dispatch({
       type: actionType.SET_FEATURED_SHOP_REQUEST_FAIL,
       payload: error,
@@ -376,18 +375,18 @@ export const editCuisine = (values) => async (dispatch) => {
     const {
       data: { status, message, error, data = null },
     } = await requestApi().request(EDIT_CUISINE, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
       dispatch({
         type: actionType.EDIT_CUISINE_REQUEST_SUCCESS,
         payload: data.cuisines,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
       dispatch({
         type: actionType.EDIT_CUISINE_REQUEST_FAIL,
         paylaod: error,
@@ -412,18 +411,18 @@ export const deleteDealOfShop = (values) => async (dispatch) => {
     const {
       data: { status, error, data = null },
     } = await requestApi().request(DELETE_SHOP_DEAL, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (status) {
-      successMsg("Successfully deleted", "success");
+      successMsg('Successfully deleted', 'success');
       dispatch({
         type: actionType.DELETE_SHOP_DEAL_REQUEST_SUCCESS,
         payload: data.shop,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
       dispatch({
         type: actionType.DELETE_SHOP_DEAL_REQUEST_FAIL,
         paylaod: error,
@@ -445,18 +444,18 @@ export const updateShopStatus = (values) => async (dispatch) => {
       type: actionType.UPDATE_SHOP_STATUS_REQUEST_SEND,
     });
     const { data } = await requestApi().request(UPDATE_SHOP_STATUS, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       dispatch({
         type: actionType.UPDATE_SHOP_STATUS_REQUEST_SUCCESS,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.UPDATE_SHOP_STATUS_REQUEST_FAIL,
         payload: data.message,
@@ -481,21 +480,21 @@ export const addTag = (values) => async (dispatch) => {
     const {
       data: { status, message, error, data = null },
     } = await requestApi().request(CREATE_TAG, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     console.log({ data });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       dispatch({
         type: actionType.ADD_TAG_REQUEST_SUCCESS,
         payload: data.tag,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
       dispatch({
         type: actionType.ADD_TAG_REQUEST_FAIL,
         paylaod: error,
@@ -512,8 +511,7 @@ export const addTag = (values) => async (dispatch) => {
 export const getAllTags =
   (refresh = false, shopType = null, page = 1) =>
   async (dispatch, getState) => {
-    const { tags, searchKey, statusKey, typeKey, sortByKey } =
-      getState().shopReducer;
+    const { tags, searchKey, statusKey, typeKey, sortByKey } = getState().shopReducer;
     if (tags.length < 1 || refresh) {
       try {
         dispatch({
@@ -562,19 +560,19 @@ export const editTag = (values) => async (dispatch) => {
     const {
       data: { status, message, error, data = null },
     } = await requestApi().request(UPDATE_TAG, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       dispatch({
         type: actionType.EDIT_TAG_REQUEST_SUCCESS,
         payload: data.tag,
       });
     } else {
-      successMsg(error, "error");
+      successMsg(error, 'error');
       dispatch({
         type: actionType.EDIT_TAG_REQUEST_FAIL,
         paylaod: error,

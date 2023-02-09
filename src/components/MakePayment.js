@@ -1,45 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { TextField } from "@mui/material";
-import { Button, Form } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { successMsg } from "../helpers/successMsg";
-import {
-  riderMakePayment,
-  riderReceivedPayment,
-  shopMakePayment,
-} from "../store/appWallet/appWalletAction";
-import styled from "styled-components";
+import { TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Form } from 'reactstrap';
+import styled from 'styled-components';
+import { riderMakePayment, shopMakePayment } from '../store/appWallet/appWalletAction';
 
-const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
+function MakePayment({ unSettleAmount = 0, id, userType }) {
   const { loading } = useSelector((state) => state.appWalletReducer);
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const dispatch = useDispatch();
 
-  const [settleAmount, setSettleAmount] = useState("");
+  const [settleAmount, setSettleAmount] = useState('');
 
   useEffect(() => {
     setSettleAmount(Math.abs(unSettleAmount));
   }, []);
 
-  const submitSettleAmount = (e) => {
-    e.preventDefault();
-    //  if (settleAmount > unSettleAmount) {
-    //   return successMsg(
-    //     "Settle amount should be less than unsettled amount",
-    //     "error"
-    //   );
-    // } else {
-
-    // }
-    submitData();
-  };
-
   const submitData = () => {
-    if (userType === "shop") {
+    if (userType === 'shop') {
       console.log({
         shopId: id,
         amount: settleAmount,
-      })
+      });
       dispatch(
         shopMakePayment({
           shopId: id,
@@ -66,11 +48,16 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
     }
   };
 
+  const submitSettleAmount = (e) => {
+    e.preventDefault();
+    submitData();
+  };
+
   return (
     <div>
       <Form className="mb-4" onSubmit={submitSettleAmount}>
         <TextField
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           id="outlined-basic"
           label="Settle Amount"
           type="number"
@@ -84,19 +71,13 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
         <SummaryWrapper>
           <div className="item">
             <span className="title">Total Unsettled Amount: </span>
-            <span
-              className="title"
-              style={{ color: unSettleAmount < 0 ? "red" : "black" }}
-            >
+            <span className="title" style={{ color: unSettleAmount < 0 ? 'red' : 'black' }}>
               {`${unSettleAmount} ${currency}`}
             </span>
           </div>
           <div className="item">
             <span className="title">Settle Amount: </span>
-            <span
-              className="title"
-              style={{ color: settleAmount < 0 ? "red" : "black" }}
-            >
+            <span className="title" style={{ color: settleAmount < 0 ? 'red' : 'black' }}>
               {`${settleAmount} ${currency}`}
             </span>
           </div>
@@ -105,28 +86,23 @@ const MakePayment = ({ unSettleAmount = 0, id, userType }) => {
             <span
               className="title"
               style={{
-                color: Math.abs(unSettleAmount) - Math.abs(settleAmount) < 0 ? "red" : "black",
+                color: Math.abs(unSettleAmount) - Math.abs(settleAmount) < 0 ? 'red' : 'black',
               }}
             >
-              {`${Math.abs(unSettleAmount) - Math.abs(settleAmount)} ${currency}`} 
+              {`${Math.abs(unSettleAmount) - Math.abs(settleAmount)} ${currency}`}
             </span>
           </div>
         </SummaryWrapper>
 
         <div className="mt-3 d-flex justify-content-end">
-          <Button
-            type="submit"
-            color="success"
-            value={settleAmount}
-            disabled={loading}
-          >
-            {loading ? "Paying.." : "Pay"}
+          <Button type="submit" color="success" value={settleAmount} disabled={loading}>
+            {loading ? 'Paying..' : 'Pay'}
           </Button>
         </div>
       </Form>
     </div>
   );
-};
+}
 
 const SummaryWrapper = styled.div`
   padding: 20px 0px 0px 0px;

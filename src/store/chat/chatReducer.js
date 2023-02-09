@@ -1,24 +1,26 @@
-import { actionTypes } from "redux-form";
-import * as actionType from "../actionType";
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable default-param-last */
+import { actionTypes } from 'redux-form';
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
   chatRequests: [],
   status: false,
-  typeKey: { label: "All", value: "all" },
-  sortByKey: { label: "Desc", value: "desc" },
+  typeKey: { label: 'All', value: 'all' },
+  sortByKey: { label: 'Desc', value: 'desc' },
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  selectedMsg: "",
+  selectedMsg: '',
   isSelected: true,
   isSendingMsg: false,
   isChatClose: false,
   isChatAccepted: false,
-  orderChatSearchKey: "",
+  orderChatSearchKey: '',
   openChats: 0,
 };
 
@@ -68,17 +70,15 @@ const chatReducer = (state = initialState, action) => {
         loading: false,
         status: true,
         isChatAccepted: true,
-        chatRequests: state.chatRequests.map((item) =>
-          item._id === payload._id ? payload : item
-        ),
+        chatRequests: state.chatRequests.map((item) => (item._id === payload._id ? payload : item)),
       };
 
-    case actionTypes.SET_CHAT_ACCEPT: 
-    return {
-      ...state,
-      isChatAccepted: payload,
-    }
-    
+    case actionTypes.SET_CHAT_ACCEPT:
+      return {
+        ...state,
+        isChatAccepted: payload,
+      };
+
     case actionType.ACCEPT_CHAT_REQUEST_FAIL:
       return {
         ...state,
@@ -101,9 +101,7 @@ const chatReducer = (state = initialState, action) => {
         status: true,
         isSendingMsg: false,
         chatRequests: state.chatRequests.map((item) =>
-          item._id === payload._id
-            ? { ...item, chats: [...item?.chats, payload] }
-            : item
+          item._id === payload._id ? { ...item, chats: [...item?.chats, payload] } : item
         ),
       };
 
@@ -199,22 +197,22 @@ const chatReducer = (state = initialState, action) => {
     case actionType.OPEN_CHATS_VALUE: {
       return {
         ...state,
-        openChats: payload
-      }
+        openChats: payload,
+      };
     }
 
     case actionType.OPEN_CHATS_INCREMENT_VALUE: {
       return {
         ...state,
-        openChats: state.openChats + 1
-      }
+        openChats: state.openChats + 1,
+      };
     }
 
     case actionType.OPEN_CHATS_DECREMENT_VALUE: {
       return {
         ...state,
-        openChats: state.openChats - 1
-      }
+        openChats: state.openChats - 1,
+      };
     }
     default:
       return state;

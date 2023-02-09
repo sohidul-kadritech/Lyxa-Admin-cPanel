@@ -1,14 +1,16 @@
-import moment from "moment";
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import moment from 'moment';
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
   deliveryMans: [],
   status: false,
-  sortByKey: { label: "Order Number(+)", value: "desc" },
-  statusKey: { label: "All", value: "all" },
-  searchKey: "",
+  sortByKey: { label: 'Order Number(+)', value: 'desc' },
+  statusKey: { label: 'All', value: 'all' },
+  searchKey: '',
   paginate: null,
   paging: [],
   hasNextPage: true,
@@ -22,9 +24,9 @@ const initialState = {
   statusHasNextPage: true,
   statusCurrentPage: 1,
   statusHasPreviousPage: false,
-  startDate: moment().startOf("month").format("YYYY-MM-DD"),
-  endDate: moment().endOf("month").format("YYYY-MM-DD"),
-  liveStatus: { label: "All", value: "all" },
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().endOf('month').format('YYYY-MM-DD'),
+  liveStatus: { label: 'All', value: 'all' },
   currentLocation: {
     lat: null,
     lng: null,
@@ -97,9 +99,7 @@ const deliveryManReducer = (state = initialState, action) => {
         status: false,
       };
     case actionType.EDIT_DELIVERY_MAN_REQUEST_SUCCESS:
-      const updateData = state.deliveryMans.map((man) =>
-        man._id === payload._id ? payload : man
-      );
+      const updateData = state.deliveryMans.map((man) => (man._id === payload._id ? payload : man));
       return {
         ...state,
         loading: false,

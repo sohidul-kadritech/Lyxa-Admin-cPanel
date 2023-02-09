@@ -1,7 +1,7 @@
-import { toast } from "react-toastify";
-import { ADD_USER_BALANCE, DROP_PAY_LIST, REMOVE_USER_BALANCE } from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
+import { toast } from 'react-toastify';
+import { ADD_USER_BALANCE, DROP_PAY_LIST, REMOVE_USER_BALANCE } from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // GET ALL DROP PAY
 export const getAllDropPay =
@@ -19,7 +19,7 @@ export const getAllDropPay =
           data: { status, error, data = null },
         } = await requestApi().request(DROP_PAY_LIST, {
           params: {
-            page: page,
+            page,
             startDate,
             endDate,
             sortBy: sortByKey.value,
@@ -58,7 +58,7 @@ export const addUserAmount = (values) => async (dispatch) => {
     const {
       data: { status, message, error, data = null },
     } = await requestApi().request(ADD_USER_BALANCE, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
@@ -116,7 +116,7 @@ export const withdrawUserAmount = (values) => async (dispatch) => {
     const {
       data: { status, message, error, data = null },
     } = await requestApi().request(REMOVE_USER_BALANCE, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 

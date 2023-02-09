@@ -1,14 +1,14 @@
-import { SOCKET_CONNECTION } from "../../network/Api";
-import * as actionType from "../actionType";
-import { io } from "socket.io-client";
-import getCookiesAsObject from "../../helpers/cookies/getCookiesAsObject";
+import { io } from 'socket.io-client';
+import getCookiesAsObject from '../../helpers/cookies/getCookiesAsObject';
+import { SOCKET_CONNECTION } from '../../network/Api';
+import * as actionType from '../actionType';
 
 export const socketConnect = () => async (dispatch, getState) => {
   const { socket: oldSocket } = getState().socketReducer;
   let accessToken;
 
-  if(document.cookie.length){
-    const {access_token} = getCookiesAsObject();
+  if (document.cookie.length) {
+    const { access_token } = getCookiesAsObject();
     accessToken = access_token || null;
   }
 
@@ -19,20 +19,20 @@ export const socketConnect = () => async (dispatch, getState) => {
       });
 
       const socket = io(SOCKET_CONNECTION, {
-        transports: ["websocket"],
+        transports: ['websocket'],
       });
 
-      socket.on("connect", () => {
-        console.log("socket connected");
+      socket.on('connect', () => {
+        console.log('socket connected');
         dispatch({
           type: actionType.SOCKET_CONNECT_SUCCESS,
           payload: socket,
         });
 
-        socket.emit("join_drop", {
+        socket.emit('join_drop', {
           token: accessToken,
-          type: "admin",
-          platform: "app",
+          type: 'admin',
+          platform: 'app',
         });
       });
     } catch (error) {

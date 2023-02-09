@@ -1,13 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { Spinner } from "reactstrap";
-import AppPagination from "./AppPagination";
-import { TrxType } from "./updateTrxsType";
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Spinner } from 'reactstrap';
+import { TrxType } from './updateTrxsType';
 
-const TransactionsTable = ({ trxs = [], loading }) => {
-  const currency = useSelector(store => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+function TransactionsTable({ trxs = [], loading }) {
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   return (
     <div>
@@ -21,14 +20,14 @@ const TransactionsTable = ({ trxs = [], loading }) => {
             <Th>Admin</Th>
           </Tr>
         </Thead>
-        <Tbody style={{ position: "relative" }}>
-          {trxs?.map((item, index) => (
+        <Tbody style={{ position: 'relative' }}>
+          {trxs?.map((item) => (
             <Tr
-              key={index}
+              key={Math.random()}
               className="align-middle table-data cursor-pointer"
               style={{
-                fontSize: "15px",
-                fontWeight: "500",
+                fontSize: '15px',
+                fontWeight: '500',
               }}
             >
               <Th>{item?.autoGenId}</Th>
@@ -53,6 +52,6 @@ const TransactionsTable = ({ trxs = [], loading }) => {
       )}
     </div>
   );
-};
+}
 
 export default TransactionsTable;

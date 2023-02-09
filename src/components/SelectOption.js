@@ -1,15 +1,7 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import React from "react";
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import React from 'react';
 
-const SelectOption = ({
-  label,
-  value,
-  onChange,
-  options,
-  disabled = false,
-  required = true,
-  name = "",
-}) => {
+function SelectOption({ label, value, onChange, options, disabled = false, required = true, name = '' }) {
   return (
     <FormControl fullWidth required={required} name="shopType">
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
@@ -22,14 +14,14 @@ const SelectOption = ({
         onChange={onChange}
         disabled={disabled}
       >
-        {options.map((item, index) => (
-          <MenuItem key={index} value={item.value}>
+        {options.map((item) => (
+          <MenuItem key={Math.random()} value={item.value}>
             {item.label}
           </MenuItem>
         ))}
       </Select>
     </FormControl>
   );
-};
+}
 
 export default SelectOption;

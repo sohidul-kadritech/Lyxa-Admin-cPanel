@@ -1,6 +1,6 @@
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { useHistory } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { Typography } from '@mui/material';
+import { useHistory } from 'react-router-dom';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 
 function ReviewTable({ reviews, isFromOrder }) {
   const history = useHistory();
@@ -13,30 +13,29 @@ function ReviewTable({ reviews, isFromOrder }) {
           <Th>Rating</Th>
         </Tr>
       </Thead>
-      <Tbody style={{ position: "relative" }}>
+      <Tbody style={{ position: 'relative' }}>
         {reviews?.length > 0 ? (
-          reviews?.map((item, index) => {
-            return (
-              <Tr
-                key={index}
-                className="align-middle text-capitalize cursor-pointer"
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "500",
+          reviews?.map((item) => (
+            <Tr
+              key={Math.random()}
+              className="align-middle text-capitalize cursor-pointer"
+              style={{
+                fontSize: '14px',
+                fontWeight: '500',
+              }}
+            >
+              <Td
+                onClick={() => {
+                  // eslint-disable-next-line no-unused-expressions
+                  !isFromOrder && history.push(`/orders/details/${item?.order?._id}`);
                 }}
               >
-                <Td
-                  onClick={() => {
-                    !isFromOrder && history.push(`/orders/details/${item?.order?._id}`);
-                  }}
-                >
-                  {item?.order?.orderId}
-                </Td>
-                <Td>{!item?.review ? "No Review" : item?.review}</Td>
-                <Td>{item?.rating}</Td>
-              </Tr>
-            );
-          })
+                {item?.order?.orderId}
+              </Td>
+              <Td>{!item?.review ? 'No Review' : item?.review}</Td>
+              <Td>{item?.rating}</Td>
+            </Tr>
+          ))
         ) : (
           <Tr>
             <Td></Td>

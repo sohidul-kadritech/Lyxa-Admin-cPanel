@@ -1,14 +1,7 @@
-import { successMsg } from "../../helpers/successMsg";
-import {
-  ADD_DEAL,
-  ALL_DEAL_FOR_ADD,
-  ALL_TAG,
-  DELETE_DEAL,
-  EDIT_DEAL,
-  GET_ALL_DEAL,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
+import { successMsg } from '../../helpers/successMsg';
+import { ADD_DEAL, ALL_DEAL_FOR_ADD, ALL_TAG, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // ADD
 
@@ -18,26 +11,26 @@ export const addDeal = (values) => async (dispatch) => {
       type: actionType.ADD_DEAL_REQUEST_SEND,
     });
     const { data } = await requestApi().request(ADD_DEAL, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       dispatch({
         type: actionType.ADD_DEAL_REQUEST_SUCCESS,
         payload: data.data.deal,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.ADD_DEAL_REQUEST_FAIL,
         payload: data.error,
       });
     }
   } catch (error) {
-    successMsg(error.message, "error");
+    successMsg(error.message, 'error');
     dispatch({
       type: actionType.ADD_DEAL_REQUEST_FAIL,
       payload: error.message,
@@ -91,12 +84,12 @@ export const editDeal = (values) => async (dispatch) => {
       type: actionType.EDIT_DEAL_REQUEST_SEND,
     });
     const { data } = await requestApi().request(EDIT_DEAL, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       setTimeout(() => {
         dispatch({
           type: actionType.EDIT_DEAL_REQUEST_SUCCESS,
@@ -104,7 +97,7 @@ export const editDeal = (values) => async (dispatch) => {
         });
       }, 450);
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.EDIT_DEAL_REQUEST_FAIL,
         payload: data.error,
@@ -126,21 +119,21 @@ export const deleteDeal = (id) => async (dispatch) => {
       type: actionType.DELETE_DEAL_REQUEST_SEND,
     });
     const { data } = await requestApi().request(DELETE_DEAL, {
-      method: "POST",
+      method: 'POST',
       data: {
         id,
       },
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
 
       dispatch({
         type: actionType.DELETE_DEAL_REQUEST_SUCCESS,
         payload: data.data.deal,
       });
     } else {
-      successMsg(data.error, "error");
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.DELETE_DEAL_REQUEST_FAIL,
         payload: data.error,
@@ -156,37 +149,36 @@ export const deleteDeal = (id) => async (dispatch) => {
 
 // GET ALL FOR SHOP AND PRODUCCT
 
-export const getAllDealForAdd =
-  (type, shopType) => async (dispatch, getState) => {
-    try {
-      dispatch({
-        type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND,
-      });
-      const { data } = await requestApi().request(ALL_DEAL_FOR_ADD, {
-        params: {
-          type,
-          shopType: shopType === "food" ? "restaurant" : shopType,
-        },
-      });
+export const getAllDealForAdd = (type, shopType) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(ALL_DEAL_FOR_ADD, {
+      params: {
+        type,
+        shopType: shopType === 'food' ? 'restaurant' : shopType,
+      },
+    });
 
-      if (data.status) {
-        dispatch({
-          type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SUCCESS,
-          payload: data.data.deals,
-        });
-      } else {
-        dispatch({
-          type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
-          payload: data.error,
-        });
-      }
-    } catch (error) {
+    if (data.status) {
+      dispatch({
+        type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SUCCESS,
+        payload: data.data.deals,
+      });
+    } else {
       dispatch({
         type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
-        payload: error.message,
+        payload: data.error,
       });
     }
-  };
+  } catch (error) {
+    dispatch({
+      type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 // FILTER UPDATE
 
@@ -198,7 +190,6 @@ export const updateShopFilter = (value) => (dispatch) => {
 };
 
 // GET ALL TAGS
-
 export const getAllTags = (typeValue) => async (dispatch, getState) => {
   const { tagSearchKey } = getState().dealReducer;
   try {

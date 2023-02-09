@@ -1,9 +1,7 @@
-export const protectRoute = () => {
-  return (next) => {
-    if (localStorage.getItem("token")) {
-      next();
-    } else {
-      next("/login");
-    }
-  };
+export const protectRoute = () => (next) => {
+  if (localStorage.getItem('token')) {
+    next();
+  } else {
+    next('/login');
+  }
 };

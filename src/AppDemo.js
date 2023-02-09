@@ -1,35 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
 import { useRef } from 'react';
+import './App.css';
+
 const axios = require('axios');
+
 function App() {
-
-  const resRef = useRef()
-
+  const resRef = useRef();
 
   const clickLisener = () => {
-    axios.get('https://jsonplaceholder.typicode.com/posts')
-      .then(function (response) {
+    axios
+      .get('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => {
         // handle success
         console.log(response);
-        resRef.current.innerHTML = JSON.stringify(response.data)
-
+        resRef.current.innerHTML = JSON.stringify(response.data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         // handle error
         console.log(error);
       })
-      .then(function () {
+      .then(() => {
         // always executed
       });
-  }
+  };
 
   return (
     <div className="App">
-
-      <button onClick={clickLisener}>Call</button>
+      <button type="button" onClick={clickLisener}>
+        Call
+      </button>
       <p ref={resRef}></p>
-
     </div>
   );
 }

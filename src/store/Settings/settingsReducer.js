@@ -1,37 +1,39 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   status: false,
   error: null,
-  googleMapKey: "",
+  googleMapKey: '',
   appSettingsOptions: {
-    nearByShopKm: "",
-    deliveryFeePerKm: "",
-    maxDiscount: "",
+    nearByShopKm: '',
+    deliveryFeePerKm: '',
+    maxDiscount: '',
     searchDeliveryBoyKm: [],
-    maxCustomerServiceValue: "",
-    vat: "",
-    currency: localStorage.getItem("currency") ? JSON.parse(localStorage.getItem("currency")) : { code: "" },
+    maxCustomerServiceValue: '',
+    vat: '',
+    currency: localStorage.getItem('currency') ? JSON.parse(localStorage.getItem('currency')) : { code: '' },
   },
 
   dropCharge: null,
   cancelReasons: [],
-  typeKey: "all",
-  activeStatus: "all",
+  typeKey: 'all',
+  activeStatus: 'all',
   sellersDropCharge: [],
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  adminLogType: { label: "All", value: "" },
-  logSortBy: { label: "Desc", value: "desc" },
+  adminLogType: { label: 'All', value: '' },
+  logSortBy: { label: 'Desc', value: 'desc' },
   adminLogs: [],
   defualtMessages: [],
-  searchKey: "",
+  searchKey: '',
   databaseCollections: [],
-  message: "",
+  message: '',
 };
 
 const settingsReducer = (state = initialState, action) => {
@@ -70,7 +72,7 @@ const settingsReducer = (state = initialState, action) => {
       };
 
     case actionType.REMOVE_SEARCH_DELIVERY_BOY_KM:
-      let list = [...state.appSettingsOptions.searchDeliveryBoyKm];
+      const list = [...state.appSettingsOptions.searchDeliveryBoyKm];
       list.splice(payload, 1);
       return {
         ...state,
@@ -571,7 +573,7 @@ const settingsReducer = (state = initialState, action) => {
         loading: true,
         status: false,
         error: null,
-        message: "",
+        message: '',
       };
 
     case actionType.DATABASE_RESTORE_LAST_COLLECTION_BACKUP_REQUEST_SUCCESS:
@@ -598,7 +600,7 @@ const settingsReducer = (state = initialState, action) => {
         loading: true,
         status: false,
         error: null,
-        message: "",
+        message: '',
       };
 
     case actionType.DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP_REQUEST_SUCCESS:
@@ -625,7 +627,7 @@ const settingsReducer = (state = initialState, action) => {
         loading: true,
         status: false,
         error: null,
-        message: "",
+        message: '',
       };
 
     case actionType.DATABASE_DELETE_COLLECTION_REQUEST_SUCCESS:
@@ -652,7 +654,7 @@ const settingsReducer = (state = initialState, action) => {
         loading: true,
         status: false,
         error: null,
-        message: "",
+        message: '',
       };
 
     case actionType.DATABASE_DELETE_ALL_COLLECTION_REQUEST_SUCCESS:

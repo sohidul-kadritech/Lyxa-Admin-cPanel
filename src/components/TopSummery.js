@@ -1,59 +1,50 @@
-import React from "react";
-import styled from "styled-components";
-import { Row, Col, Card, CardBody, Spinner } from "reactstrap";
+import React from 'react';
+import { Card, CardBody, Col, Row, Spinner } from 'reactstrap';
+import styled from 'styled-components';
 
-const TopSummery = ({ data, fromWallet = false }) => {
+function TopSummery({ data, fromWallet = false }) {
   return (
-    <React.Fragment>
-      <Card>
-        <CardBody>
-          <Row className="d-flex align-items-center">
-            {data?.length > 0 ? (
-              data?.map((item, index) => {
-                const { icon, title, subTitle, value, iconBg } = item;
-                return (
-                  <Col md={12 % data?.length !== 0 ? 2 : (12 / data?.length)} key={index} className={`${fromWallet ? 'px-3' : 'px-1'}`}>
-                    <div>
-                      <strong className="font-size-14 text-muted">
-                        {title}
-                      </strong>
+    <Card>
+      <CardBody>
+        <Row className="d-flex align-items-center">
+          {data?.length > 0 ? (
+            data?.map((item) => {
+              const { icon, title, subTitle, value, iconBg } = item;
+              return (
+                <Col
+                  // eslint-disable-next-line no-unsafe-optional-chaining
+                  md={12 % data?.length !== 0 ? 2 : 12 / data?.length}
+                  key={Math.random()}
+                  className={`${fromWallet ? 'px-3' : 'px-1'}`}
+                >
+                  <div>
+                    <strong className="font-size-14 text-muted">{title}</strong>
+                  </div>
+                  <div style={{ marginBottom: 5 }}>
+                    <strong className="font-size-11" style={{ color: '#adb5bd' }}>
+                      {subTitle}
+                    </strong>
+                  </div>
+                  <Wrapper iconBg={iconBg} fromWallet={fromWallet}>
+                    <div className="image-wrapper" style={{ textAlign: 'center' }}>
+                      <img src={icon} alt={title} style={{ height: 25, width: 25, marginTop: 2 }} />
                     </div>
-                    <div style={{ marginBottom: 5 }}>
-                      <strong
-                        className="font-size-11"
-                        style={{ color: "#adb5bd" }}
-                      >
-                        {subTitle}
-                      </strong>
-                    </div>
-                    <Wrapper iconBg={iconBg} fromWallet={fromWallet}>
-                      <div
-                        className="image-wrapper"
-                        style={{ textAlign: "center" }}
-                      >
-                        <img
-                          src={icon}
-                          alt={title}
-                          style={{ height: 25, width: 25, marginTop: 2 }}
-                        />
-                      </div>
 
-                      <h6 className="value">{value}</h6>
-                    </Wrapper>
-                  </Col>
-                );
-              })
-            ) : (
-              <div className="text-center">
-                <Spinner animation="border" color="info" />
-              </div>
-            )}
-          </Row>
-        </CardBody>
-      </Card>
-    </React.Fragment>
+                    <h6 className="value">{value}</h6>
+                  </Wrapper>
+                </Col>
+              );
+            })
+          ) : (
+            <div className="text-center">
+              <Spinner animation="border" color="info" />
+            </div>
+          )}
+        </Row>
+      </CardBody>
+    </Card>
   );
-};
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -75,7 +66,7 @@ const Wrapper = styled.div`
 
   .value {
     font-size: 18px;
-    padding-left: ${({ fromWallet }) => fromWallet && '5px'}
+    padding-left: ${({ fromWallet }) => fromWallet && '5px'};
   }
 `;
 

@@ -1,23 +1,24 @@
-import * as actionType from "../actionType";
-import moment from "moment";
+/* eslint-disable default-param-last */
+import moment from 'moment';
+import * as actionType from '../actionType';
 
 const initialState = {
   laoding: false,
   users: [],
   message: null,
   error: null,
-  sortByKey: { label: "Desc", value: "desc" },
-  searchKey: "",
-  statusKey: { label: "All", value: "all" },
+  sortByKey: { label: 'Desc', value: 'desc' },
+  searchKey: '',
+  statusKey: { label: 'All', value: 'all' },
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
   status: false,
-  sortBy: { label: "DESC", value: "desc" },
-  startDate: moment().startOf("month").format("YYYY-MM-DD"),
-  endDate: moment().endOf("month").format("YYYY-MM-DD"),
+  sortBy: { label: 'DESC', value: 'desc' },
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().endOf('month').format('YYYY-MM-DD'),
   transactionList: [],
   orders: [],
 };

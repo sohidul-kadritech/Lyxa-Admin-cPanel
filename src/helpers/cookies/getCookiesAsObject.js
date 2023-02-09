@@ -1,12 +1,12 @@
 function getCookiesAsObject() {
-  var cookieArray = document.cookie.split(";");
-  var cookies = {};
+  const cookieArray = document.cookie.split(';');
+  const cookies = {};
 
-  for (var i = 0; i < cookieArray.length; i++) {
-    var cookie = cookieArray[i];
-    var cookieParts = cookie.split("=");
-    var cookieName = cookieParts[0].trim();
-    var cookieValue = cookieParts[1].trim();
+  for (let i = 0; i < cookieArray.length; i++) {
+    const cookie = cookieArray[i];
+    const cookieParts = cookie.split('=');
+    const cookieName = cookieParts[0].trim();
+    const cookieValue = cookieParts[1].trim();
     cookies[cookieName] = cookieValue;
   }
 

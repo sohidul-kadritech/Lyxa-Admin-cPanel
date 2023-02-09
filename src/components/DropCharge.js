@@ -1,37 +1,17 @@
-import React, { useEffect, useState } from "react";
-import {
-  Autocomplete,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-  Stack,
-} from "@mui/material";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Row,
-  Form,
-  Modal,
-  CardTitle,
-} from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { successMsg } from "../helpers/successMsg";
-import { addPercentage } from "../store/Settings/settingsAction";
-import { addSellerCharge } from "../store/Seller/sellerAction";
+import { FormControl, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'reactstrap';
+import { successMsg } from '../helpers/successMsg';
+import { addSellerCharge } from '../store/Seller/sellerAction';
+import { addPercentage } from '../store/Settings/settingsAction';
 
-const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
+function DropCharge({ chargeType, chargeValue, type, seller = null }) {
   const dispatch = useDispatch();
 
   const [feeInfo, setFeeInfo] = useState({
-    dropPercentageType: "",
-    dropPercentage: "",
+    dropPercentageType: '',
+    dropPercentage: '',
   });
   const { loading } = useSelector((state) => state.settingsReducer);
 
@@ -53,21 +33,21 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
   };
 
   // VALIDATION
+  // eslint-disable-next-line consistent-return
   const deliveryFeeSubmit = () => {
     const { dropPercentageType, dropPercentage } = feeInfo;
     if (!dropPercentageType) {
-      return successMsg("Enter delivery charge type");
+      return successMsg('Enter delivery charge type');
     }
     if (!dropPercentage) {
-      return successMsg("Enter Lyxa charge");
+      return successMsg('Enter Lyxa charge');
     }
-    // setLoading(true);
+    // eslint-disable-next-line no-use-before-define
     submitData();
   };
   // SUBMTI DATA TO SERVER
-
   const submitData = () => {
-    if (type === "global") {
+    if (type === 'global') {
       dispatch(
         addPercentage({
           ...feeInfo,
@@ -79,48 +59,42 @@ const DropCharge = ({ chargeType, chargeValue, type, seller = null }) => {
   };
 
   return (
-    <>
-      <Stack spacing={2} direction="row">
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            Lyxa Charge Type
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            name="dropPercentageType"
-            value={feeInfo.dropPercentageType}
-            label="Lyxa Charge Type"
-            onChange={handleChange}
-            required
-          >
-            <MenuItem value="amount">Amount</MenuItem>
-            <MenuItem value="percentage">Percentage</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          style={{ width: "100%" }}
-          label={`Lyxa Charge (${
-            feeInfo.dropPercentageType === "amount" ? "Amount" : "Percentage"
-          })`}
-          variant="outlined"
-          placeholder="Enter Lyxa Charge"
-          name="dropPercentage"
-          value={feeInfo.dropPercentage}
+    <Stack spacing={2} direction="row">
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Lyxa Charge Type</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          name="dropPercentageType"
+          value={feeInfo.dropPercentageType}
+          label="Lyxa Charge Type"
           onChange={handleChange}
-          type="number"
           required
-        />
-        <Button
-          disabled={loading}
-          style={{ width: "20%", backgroundColor: "#313131", color: "white" }}
-          onClick={deliveryFeeSubmit}
         >
-          {loading ? "Loading..." : "Update"}
-        </Button>
-      </Stack>
-    </>
+          <MenuItem value="amount">Amount</MenuItem>
+          <MenuItem value="percentage">Percentage</MenuItem>
+        </Select>
+      </FormControl>
+      <TextField
+        style={{ width: '100%' }}
+        label={`Lyxa Charge (${feeInfo.dropPercentageType === 'amount' ? 'Amount' : 'Percentage'})`}
+        variant="outlined"
+        placeholder="Enter Lyxa Charge"
+        name="dropPercentage"
+        value={feeInfo.dropPercentage}
+        onChange={handleChange}
+        type="number"
+        required
+      />
+      <Button
+        disabled={loading}
+        style={{ width: '20%', backgroundColor: '#313131', color: 'white' }}
+        onClick={deliveryFeeSubmit}
+      >
+        {loading ? 'Loading...' : 'Update'}
+      </Button>
+    </Stack>
   );
-};
+}
 
 export default DropCharge;

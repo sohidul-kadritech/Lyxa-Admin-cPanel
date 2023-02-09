@@ -1,6 +1,6 @@
-import axios from "axios";
-import getCookiesAsObject from "../helpers/cookies/getCookiesAsObject";
-import { API_URL } from "./Api";
+import axios from 'axios';
+import getCookiesAsObject from '../helpers/cookies/getCookiesAsObject';
+import { API_URL } from './Api';
 
 export default function requestApi() {
   let accessToken = null;
@@ -9,19 +9,19 @@ export default function requestApi() {
     const { access_token } = getCookiesAsObject();
     accessToken = access_token || null;
   }
-  
+
   const request = axios.create({
     baseURL: API_URL,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-    responseType: "json",
+    responseType: 'json',
     socketPath: null,
   });
   request.interceptors.response.use(
     (response) => response,
     (error) => {
-      console.log("error ==>", error);
+      console.log('error ==>', error);
     }
   );
   return request;

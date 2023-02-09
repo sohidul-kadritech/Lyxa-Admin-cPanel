@@ -1,25 +1,24 @@
-import { Autocomplete, Box, TextField } from "@mui/material";
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Button } from "reactstrap";
-import { successMsg } from "../helpers/successMsg";
-import { addUserAmount, withdrawUserAmount } from "../store/DropPay/dropPayAction";
-import { getAllAppSettings } from "../store/Settings/settingsAction";
-import { updateSearchKey, userList } from "../store/Users/UsersAction";
+import { Autocomplete, Box, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'reactstrap';
+import { successMsg } from '../helpers/successMsg';
+import { addUserAmount, withdrawUserAmount } from '../store/DropPay/dropPayAction';
+import { getAllAppSettings } from '../store/Settings/settingsAction';
+import { updateSearchKey, userList } from '../store/Users/UsersAction';
 
-const UserCradit = ({ user = null }) => {
+function UserCradit({ user = null }) {
   const { users, searchKey } = useSelector((state) => state.usersReducer);
   const { loading, status } = useSelector((state) => state.dropPayReducer);
   const { appSettingsOptions } = useSelector((state) => state.settingsReducer);
 
-  const { account_type, adminType} = useSelector((store) => store.Login.admin);
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   const dispatch = useDispatch();
 
   const [selectedUser, setSelectedUser] = useState(null);
-  const [adminNote, setAdminNote] = useState("");
-  const [userNote, setUserNote] = useState("");
+  const [adminNote, setAdminNote] = useState('');
+  const [userNote, setUserNote] = useState('');
   const [amount, setAmount] = useState(0);
 
   useEffect(() => {
@@ -29,7 +28,7 @@ const UserCradit = ({ user = null }) => {
   }, [user]);
 
   useEffect(() => {
-    if (account_type === "admin" && adminType === "customerService") {
+    if (account_type === 'admin' && adminType === 'customerService') {
       dispatch(getAllAppSettings());
     }
   }, []);
@@ -37,32 +36,6 @@ const UserCradit = ({ user = null }) => {
   useEffect(() => {
     dispatch(userList(true));
   }, [searchKey]);
-
-  const submitBalance = (type) => {
-    if (!selectedUser) {
-      return successMsg("Please select user", "error");
-    }
-    if (!amount) {
-      return successMsg("Please enter amount", "error");
-    }
-    if (!userNote) {
-      return successMsg("Please enter user note", "error");
-    }
-    if (
-      amount > !appSettingsOptions?.maxCustomerServiceValue
-        ? 0
-        : appSettingsOptions?.maxCustomerServiceValue && account_type === "admin" && adminType === "customerService"
-    ) {
-      return successMsg(
-        `Amount can't be more than ${
-          !appSettingsOptions?.maxCustomerServiceValue ? 0 : appSettingsOptions?.maxCustomerServiceValue
-        }`,
-        "error"
-      );
-    }
-
-    submitData(type);
-  };
 
   const submitData = (type) => {
     const data = {
@@ -72,17 +45,44 @@ const UserCradit = ({ user = null }) => {
       adminNote,
     };
 
-    if (type === "add") {
+    if (type === 'add') {
       dispatch(addUserAmount(data));
     } else {
       dispatch(withdrawUserAmount(data));
     }
   };
 
+  // eslint-disable-next-line consistent-return
+  const submitBalance = (type) => {
+    if (!selectedUser) {
+      return successMsg('Please select user', 'error');
+    }
+    if (!amount) {
+      return successMsg('Please enter amount', 'error');
+    }
+    if (!userNote) {
+      return successMsg('Please enter user note', 'error');
+    }
+    if (
+      amount > !appSettingsOptions?.maxCustomerServiceValue
+        ? 0
+        : appSettingsOptions?.maxCustomerServiceValue && account_type === 'admin' && adminType === 'customerService'
+    ) {
+      return successMsg(
+        `Amount can't be more than ${
+          !appSettingsOptions?.maxCustomerServiceValue ? 0 : appSettingsOptions?.maxCustomerServiceValue
+        }`,
+        'error'
+      );
+    }
+
+    submitData(type);
+  };
+
   useEffect(() => {
     if (status) {
-      setAdminNote("");
-      setUserNote("");
+      setAdminNote('');
+      setUserNote('');
       setAmount(0);
     }
   }, [status]);
@@ -94,21 +94,20 @@ const UserCradit = ({ user = null }) => {
           className="cursor-pointer"
           value={selectedUser}
           onChange={(event, newValue) => {
-            // console.log(newValue);
             setSelectedUser(newValue);
           }}
           getOptionLabel={(option) => option.name}
-          isOptionEqualToValue={(option, value) => option._id == value._id}
+          isOptionEqualToValue={(option, value) => option._id === value._id}
           inputValue={searchKey}
           onInputChange={(event, newInputValue) => {
             dispatch(updateSearchKey(newInputValue));
           }}
           id="controllable-states-demo"
           options={users.length > 0 ? users : []}
-          sx={{ width: "100%" }}
+          sx={{ width: '100%' }}
           renderInput={(params) => <TextField {...params} label="Select a User" />}
           renderOption={(props, option) => (
-            <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props} key={option._id}>
+            <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props} key={option._id}>
               {option.name}
             </Box>
           )}
@@ -119,7 +118,7 @@ const UserCradit = ({ user = null }) => {
           id="name"
           label="Amount"
           variant="outlined"
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           autoComplete="off"
           value={amount}
           onChange={(event) => setAmount(event.target.value)}
@@ -132,7 +131,7 @@ const UserCradit = ({ user = null }) => {
           id="note"
           label="Admin Note"
           variant="outlined"
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           autoComplete="off"
           value={adminNote}
           onChange={(event) => setAdminNote(event.target.value)}
@@ -145,7 +144,7 @@ const UserCradit = ({ user = null }) => {
           id="note"
           label="user Note"
           variant="outlined"
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           autoComplete="off"
           value={userNote}
           onChange={(event) => setUserNote(event.target.value)}
@@ -154,15 +153,15 @@ const UserCradit = ({ user = null }) => {
         />
       </div>
       <div className="d-flex justify-content-center mt-3">
-        <Button color="primary" disabled={loading} className="px-4" onClick={() => submitBalance("add")}>
+        <Button color="primary" disabled={loading} className="px-4" onClick={() => submitBalance('add')}>
           Add
         </Button>
-        <Button color="primary" disabled={loading} className="px-4 ms-3" onClick={() => submitBalance("remove")}>
+        <Button color="primary" disabled={loading} className="px-4 ms-3" onClick={() => submitBalance('remove')}>
           Remove
         </Button>
       </div>
     </div>
   );
-};
+}
 
 export default UserCradit;

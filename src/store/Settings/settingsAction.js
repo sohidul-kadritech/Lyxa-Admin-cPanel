@@ -1,4 +1,5 @@
-import { successMsg } from "../../helpers/successMsg";
+/* eslint-disable no-unsafe-optional-chaining */
+import { successMsg } from '../../helpers/successMsg';
 import {
   ADD_DEFAULT_CHAT,
   ADD_ORDER_CANCEL_REASON,
@@ -6,6 +7,12 @@ import {
   ADMIN_LOGS_HISTORY,
   ALL_ORDER_CANCEL_REASON,
   APP_SETTINGS,
+  DATABASE_ALL_COLLECTIONS,
+  DATABASE_COLLECTION_BACKUP,
+  DATABASE_DELETE_ALL_COLLECTION,
+  DATABASE_DELETE_COLLECTION,
+  DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP,
+  DATABASE_RESTORE_LAST_COLLECTION_BACKUP,
   DELETE_SELLER_SPECIAL_DROP_CHARGE,
   EDIT_DEFAULT_CHAT,
   GET_DEFAULT_CHAT,
@@ -16,15 +23,9 @@ import {
   UPDATE_APP_SETTINGS,
   UPDATE_DELIVERY_CUT,
   UPDATE_ORDER_CANCEL_REASON,
-  DATABASE_ALL_COLLECTIONS,
-  DATABASE_COLLECTION_BACKUP,
-  DATABASE_RESTORE_LAST_COLLECTION_BACKUP,
-  DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP,
-  DATABASE_DELETE_COLLECTION,
-  DATABASE_DELETE_ALL_COLLECTION,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
+} from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // UPDATE GOOGLE MAP KEY
 export const updateGoogleMapApiKey = (key) => (dispatch) => {
@@ -109,7 +110,7 @@ export const updateAdminSettings = () => async (dispatch, getState) => {
     const {
       data: { status, error, message, data },
     } = await requestApi().request(UPDATE_ADMINS_SETTINGS, {
-      method: "POST",
+      method: 'POST',
       data: {
         googleApiKey: googleMapKey,
         deliveryFeePerKm,
@@ -118,13 +119,13 @@ export const updateAdminSettings = () => async (dispatch, getState) => {
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
       dispatch({
         type: actionType.UPDATE_ADMIN_SETTINGS_REQUEST_SUCCESS,
         payload: data.adminSetting,
       });
     } else {
-      successMsg(message, "error");
+      successMsg(message, 'error');
       dispatch({
         type: actionType.UPDATE_ADMIN_SETTINGS_REQUEST_FAIL,
         payload: error,
@@ -186,7 +187,7 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
     const {
       data: { status, error, message, data },
     } = await requestApi().request(UPDATE_APP_SETTINGS, {
-      method: "POST",
+      method: 'POST',
       data: {
         ...appSettingsOptions,
         type,
@@ -194,15 +195,15 @@ export const updateAppSettings = (type) => async (dispatch, getState) => {
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
       dispatch({
         type: actionType.UPDATE_APP_SETTINGS_REQUEST_SUCCESS,
         payload: data.appSetting,
       });
 
-      localStorage.setItem("currency", JSON.stringify(data?.appSetting?.currency));
+      localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency));
     } else {
-      successMsg(message, "error");
+      successMsg(message, 'error');
       dispatch({
         type: actionType.UPDATE_APP_SETTINGS_REQUEST_FAIL,
         payload: error,
@@ -228,7 +229,7 @@ export const getAllAppSettings = () => async (dispatch) => {
     } = await requestApi().request(APP_SETTINGS);
 
     // save current currency to localStorage
-    localStorage.setItem("currency", JSON.stringify(data?.appSetting?.currency));
+    localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency));
 
     if (status) {
       dispatch({
@@ -258,19 +259,19 @@ export const addPercentage = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(SET_DELIVERY_FEE, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
       const { charge } = data?.data;
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.ADD_DELIVERY_FEE_REQUEST_SUCCESS,
         payload: charge,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.ADD_DELIVERY_FEE_REQUEST_FAIL,
@@ -286,8 +287,7 @@ export const addPercentage = (values) => async (dispatch) => {
 };
 
 // GET PERCENTAGE SETTINGS
-
-export const getPercentageSetting = () => async (dispatch, getState) => {
+export const getPercentageSetting = () => async (dispatch) => {
   try {
     dispatch({
       type: actionType.GET_PERCENTAGE_REQUEST_SEND,
@@ -325,27 +325,27 @@ export const updateDeliveryCut = (deliveryRange) => async (dispatch) => {
     const {
       data: { status, error, message, data },
     } = await requestApi().request(UPDATE_DELIVERY_CUT, {
-      method: "POST",
+      method: 'POST',
       data: {
         deliveryRange,
       },
     });
 
     if (status) {
-      successMsg(message, "success");
+      successMsg(message, 'success');
       dispatch({
         type: actionType.UPDATE_DELIVERY_CUT_REQUEST_SUCCESS,
         payload: data.charge,
       });
     } else {
-      successMsg(message, "error");
+      successMsg(message, 'error');
       dispatch({
         type: actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL,
         payload: error,
       });
     }
   } catch (error) {
-    successMsg(error.message, "error");
+    successMsg(error.message, 'error');
     dispatch({
       type: actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL,
       payload: error.message,
@@ -362,19 +362,19 @@ export const addCancelReason = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(ADD_ORDER_CANCEL_REASON, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
       const { cancelReason } = data.data;
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.ADD_REASON_REQUEST_SUCCESS,
         payload: cancelReason,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.ADD_REASON_REQUEST_FAIL,
@@ -382,7 +382,7 @@ export const addCancelReason = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
-    successMsg(error.message, "error");
+    successMsg(error.message, 'error');
     dispatch({
       type: actionType.ADD_REASON_REQUEST_FAIL,
       payload: error.message,
@@ -399,19 +399,19 @@ export const updateCancelReason = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(UPDATE_ORDER_CANCEL_REASON, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
       const { cancelReason } = data.data;
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.UPDATE_REASON_REQUEST_SUCCESS,
         payload: cancelReason,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.UPDATE_REASON_REQUEST_FAIL,
@@ -488,7 +488,7 @@ export const updateReasonStatusKey = (status) => (dispatch) => {
   });
 };
 
-//GET  SELLERS WHO HAS SPECIAL DROP CHARGE
+// GET  SELLERS WHO HAS SPECIAL DROP CHARGE
 
 export const getSellerSpecialDropCharge = (page) => async (dispatch) => {
   try {
@@ -533,20 +533,20 @@ export const deleteSellerSpecialDropCharge = (sellerId) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(DELETE_SELLER_SPECIAL_DROP_CHARGE, {
-      method: "POST",
+      method: 'POST',
       data: {
         sellerId,
       },
     });
 
     if (data.status) {
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_SUCCESS,
         payload: sellerId,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.DELETE_SELLER_DROP_CHARGE_REQUEST_FAIL,
@@ -667,7 +667,7 @@ export const addDefaultMsg = (msg) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(ADD_DEFAULT_CHAT, {
-      method: "POST",
+      method: 'POST',
       data: {
         message: msg,
       },
@@ -675,13 +675,13 @@ export const addDefaultMsg = (msg) => async (dispatch) => {
 
     if (data.status) {
       const { message } = data?.data;
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.ADD_DEFAULT_CHAT_REQUEST_SUCCESS,
         payload: message,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.ADD_DEFAULT_CHAT_REQUEST_FAIL,
@@ -703,19 +703,19 @@ export const editDefaultMsg = (values) => async (dispatch) => {
     });
 
     const { data } = await requestApi().request(EDIT_DEFAULT_CHAT, {
-      method: "POST",
+      method: 'POST',
       data: values,
     });
 
     if (data.status) {
       const { message } = data?.data;
-      successMsg(data.message, "success");
+      successMsg(data.message, 'success');
       dispatch({
         type: actionType.EDIT_DEFAULT_CHAT_REQUEST_SUCCESS,
         payload: message,
       });
     } else {
-      successMsg(data.message, "error");
+      successMsg(data.message, 'error');
 
       dispatch({
         type: actionType.EDIT_DEFAULT_CHAT_REQUEST_FAIL,
@@ -723,7 +723,7 @@ export const editDefaultMsg = (values) => async (dispatch) => {
       });
     }
   } catch (error) {
-    successMsg(error.message, "error");
+    successMsg(error.message, 'error');
     dispatch({
       type: actionType.EDIT_DEFAULT_CHAT_REQUEST_FAIL,
       payload: error.message,
@@ -773,7 +773,7 @@ export const createDatabaseCollectionBackup = (collections, backupAll) => async 
       type: actionType.DATABASE_COLLECTION_BACKUP_REQUEST_SEND,
     });
 
-    let reqData = {};
+    const reqData = {};
 
     if (backupAll) {
       reqData.allBackUp = true;
@@ -781,7 +781,7 @@ export const createDatabaseCollectionBackup = (collections, backupAll) => async 
       reqData.collections = collections;
     }
 
-    const { data } = await requestApi().request(DATABASE_COLLECTION_BACKUP, { method: "POST", data: reqData });
+    const { data } = await requestApi().request(DATABASE_COLLECTION_BACKUP, { method: 'POST', data: reqData });
     const { success, message, error } = data;
 
     if (success) {
@@ -790,7 +790,7 @@ export const createDatabaseCollectionBackup = (collections, backupAll) => async 
         payload: message,
       });
 
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
@@ -800,7 +800,7 @@ export const createDatabaseCollectionBackup = (collections, backupAll) => async 
         payload: error,
       });
 
-      successMsg("Backup Failed", "failure");
+      successMsg('Backup Failed', 'failure');
     }
   } catch (error) {
     dispatch({
@@ -808,7 +808,7 @@ export const createDatabaseCollectionBackup = (collections, backupAll) => async 
       payload: error?.message,
     });
 
-    successMsg("Backup Failed", "failure");
+    successMsg('Backup Failed', 'failure');
   }
 };
 
@@ -819,7 +819,7 @@ export const restoreCollectionLastBackup = (collectionName) => async (dispatch) 
     });
 
     const { data } = await requestApi().request(DATABASE_RESTORE_LAST_COLLECTION_BACKUP, {
-      method: "POST",
+      method: 'POST',
       data: { collectionName },
     });
     const { success, message, error } = data;
@@ -830,7 +830,7 @@ export const restoreCollectionLastBackup = (collectionName) => async (dispatch) 
         payload: message,
       });
 
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
@@ -840,7 +840,7 @@ export const restoreCollectionLastBackup = (collectionName) => async (dispatch) 
         payload: error,
       });
 
-      successMsg("Backup Failed", "failure");
+      successMsg('Backup Failed', 'failure');
     }
   } catch (error) {
     dispatch({
@@ -848,7 +848,7 @@ export const restoreCollectionLastBackup = (collectionName) => async (dispatch) 
       payload: error?.message,
     });
 
-    successMsg("Backup Failed", "failure");
+    successMsg('Backup Failed', 'failure');
   }
 };
 
@@ -867,7 +867,7 @@ export const restoreAllCollectionsLastBackup = () => async (dispatch) => {
         payload: message,
       });
 
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
@@ -877,7 +877,7 @@ export const restoreAllCollectionsLastBackup = () => async (dispatch) => {
         payload: error,
       });
 
-      successMsg("Backup Failed", "failure");
+      successMsg('Backup Failed', 'failure');
     }
   } catch (error) {
     dispatch({
@@ -885,7 +885,7 @@ export const restoreAllCollectionsLastBackup = () => async (dispatch) => {
       payload: error?.message,
     });
 
-    successMsg("Backup Failed", "failure");
+    successMsg('Backup Failed', 'failure');
   }
 };
 
@@ -896,7 +896,7 @@ export const deleteDatabaseCollection = (collectionName) => async (dispatch) => 
     });
 
     const { data } = await requestApi().request(DATABASE_DELETE_COLLECTION, {
-      method: "POST",
+      method: 'POST',
       data: { collectionName },
     });
     const { success, message, error } = data;
@@ -907,7 +907,7 @@ export const deleteDatabaseCollection = (collectionName) => async (dispatch) => 
         payload: message,
       });
 
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
@@ -917,7 +917,7 @@ export const deleteDatabaseCollection = (collectionName) => async (dispatch) => 
         payload: error,
       });
 
-      successMsg("Delete Failed", "failure");
+      successMsg('Delete Failed', 'failure');
     }
   } catch (error) {
     dispatch({
@@ -926,7 +926,7 @@ export const deleteDatabaseCollection = (collectionName) => async (dispatch) => 
     });
 
     console.log(error);
-    successMsg("Delete Failed", "failure");
+    successMsg('Delete Failed', 'failure');
   }
 };
 
@@ -945,7 +945,7 @@ export const deleteDatabaseAllCollection = () => async (dispatch) => {
         payload: message,
       });
 
-      successMsg(message, "success");
+      successMsg(message, 'success');
 
       // refresh the DB collection
       dispatch(getAllDatabaseCollections());
@@ -955,7 +955,7 @@ export const deleteDatabaseAllCollection = () => async (dispatch) => {
         payload: error,
       });
 
-      successMsg("Delete Failed", "failure");
+      successMsg('Delete Failed', 'failure');
     }
   } catch (error) {
     dispatch({
@@ -964,6 +964,6 @@ export const deleteDatabaseAllCollection = () => async (dispatch) => {
     });
 
     console.log(error);
-    successMsg("Delete Failed", "failure");
+    successMsg('Delete Failed', 'failure');
   }
 };

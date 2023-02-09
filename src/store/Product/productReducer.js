@@ -1,4 +1,6 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
@@ -10,11 +12,11 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  searchKey: "",
-  statusKey: { label: "All", value: "all" },
-  typeKey: { label: "All", value: "all" },
-  sortByKey: { label: "Desc", value: "desc" },
-  category: null
+  searchKey: '',
+  statusKey: { label: 'All', value: 'all' },
+  typeKey: { label: 'All', value: 'all' },
+  sortByKey: { label: 'Desc', value: 'desc' },
+  category: null,
 };
 
 const productReducer = (state = initialState, action) => {
@@ -86,9 +88,7 @@ const productReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_PRODUCT_REQUEST_SUCCESS:
-      const updateData = state.products.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const updateData = state.products.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -138,9 +138,7 @@ const productReducer = (state = initialState, action) => {
       };
 
     case actionType.ADD_PRODUCT_DEAL_REQUEST_SUCCESS:
-      const filterd = state.products.map((item) =>
-        item._id === payload._id ? payload : item
-      );
+      const filterd = state.products.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -187,7 +185,6 @@ const productReducer = (state = initialState, action) => {
         ...state,
         category: payload,
       };
-
 
     case actionType.UPDATE_PRODUCT_SEARCH_KEY:
       return {
