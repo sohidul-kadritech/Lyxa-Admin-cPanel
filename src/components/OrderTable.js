@@ -433,8 +433,8 @@ const OrderTable = ({ orders = [], status, loading, refused }) => {
                           onClick={() => goToDetails(item?._id)}
                         >{`${item?.summary?.totalAmount} ${currency}`}</Td>
                         <Td onClick={() => goToDetails(item?._id)}>
-                          {item?.paymentMethod}
-                          {`${item?.selectPos !== "no" ? "(Pos)" : ""}`}
+                          {}
+                          {`${item?.paymentMethod} ${item?.selectPos !== "no" ? "(Pos)" : ""}`}
                         </Td>
 
                         <Td onClick={() => goToDetails(item?._id)}>
