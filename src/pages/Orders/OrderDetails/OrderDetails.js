@@ -145,7 +145,7 @@ const OrderDetails = () => {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const getProperOrderTimeline = (orderObj) => {
-    if (orderObj?.shop?.haveOwnDeliveryBoy) {
+    if (orderObj?.orderFor === "specific") {
       const timeline = orderObj?.timeline?.filter((item) => item.status !== "ready_to_pickup");
       return timeline;
     }
@@ -287,7 +287,6 @@ const OrderDetails = () => {
             ) : null}
 
             {/* ORDER INFORMATIONS */}
-
             <Card className="pb-5">
               <CardBody>
                 <Row>
@@ -385,7 +384,11 @@ const OrderDetails = () => {
                         items={[
                           {
                             title: "Delivery Boy",
-                            value: order?.deliveryBoy ? order?.deliveryBoy?.name : order?.shop?.haveOwnDeliveryBoy ? 'Self Delivered' : 'Not Assigned',
+                            value: order?.deliveryBoy
+                              ? order?.deliveryBoy?.name
+                              : order?.orderFor === "specific"
+                              ? "Self Delivered"
+                              : "Not Assigned",
                             link: order?.deliveryBoy ? `/deliveryman/details/${order?.deliveryBoy?._id}` : null,
                           },
                           {
