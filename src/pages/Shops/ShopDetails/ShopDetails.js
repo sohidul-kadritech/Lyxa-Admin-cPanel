@@ -412,10 +412,33 @@ function ShopDetails() {
                   <Typography>Shop Photos</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>
-                    {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
-                      <Row>
-                        <Col md={6}>
+                  {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
+                    <Row>
+                      <Col md={6}>
+                        <ImageWrapper
+                          style={{
+                            width: '100%',
+                            height: '200px',
+                            padding: '10px 0px',
+                          }}
+                        >
+                          <img
+                            className="img-fluid cursor-pointer cursor-pointer"
+                            alt="partner"
+                            src={shop?.shopLogo}
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(shop?.shopLogo);
+                            }}
+                            width="100%"
+                            // eslint-disable-next-line react/no-unknown-property
+                            lazy="loading"
+                          />
+                          <small>Shop Logo</small>
+                        </ImageWrapper>
+                      </Col>
+                      <Col md={6}>
+                        {shop.shopBanner ? (
                           <ImageWrapper
                             style={{
                               width: '100%',
@@ -424,73 +447,48 @@ function ShopDetails() {
                             }}
                           >
                             <img
-                              className="img-fluid cursor-pointer cursor-pointer"
-                              alt="partner"
-                              src={shop?.shopLogo}
                               onClick={() => {
                                 setIsOpen(true);
-                                setSelectedImg(shop?.shopLogo);
+                                setSelectedImg(shop?.shopBanner);
                               }}
+                              className="img-fluid cursor-pointer"
+                              alt="shop banner"
+                              src={shop?.shopBanner}
                               width="100%"
                               // eslint-disable-next-line react/no-unknown-property
                               lazy="loading"
                             />
-                            <small>Shop Logo</small>
+                            <small>Shop Banner</small>
                           </ImageWrapper>
-                        </Col>
-                        <Col md={6}>
-                          {shop.shopBanner ? (
-                            <ImageWrapper
-                              style={{
-                                width: '100%',
-                                height: '200px',
-                                padding: '10px 0px',
+                        ) : null}
+                      </Col>
+                      <Col md={4}>
+                        {shop.shopPhotos ? (
+                          <ImageWrapper
+                            style={{
+                              width: '100%',
+                              height: '200px',
+                              padding: '10px 0px',
+                            }}
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(shop?.shopPhotos[0]);
                               }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(shop?.shopBanner);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="shop banner"
-                                src={shop?.shopBanner}
-                                width="100%"
-                                // eslint-disable-next-line react/no-unknown-property
-                                lazy="loading"
-                              />
-                              <small>Shop Banner</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                        <Col md={4}>
-                          {shop.shopPhotos ? (
-                            <ImageWrapper
-                              style={{
-                                width: '100%',
-                                height: '200px',
-                                padding: '10px 0px',
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(shop?.shopPhotos[0]);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="shopPhoto"
-                                src={shop?.shopPhotos[0]}
-                                width="100%"
-                              />
-                              <small>Shop Photos</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    ) : (
-                      <h5 className="text-center">No Photos</h5>
-                    )}
-                  </Typography>
+                              className="img-fluid cursor-pointer"
+                              alt="shopPhoto"
+                              src={shop?.shopPhotos[0]}
+                              width="100%"
+                            />
+                            <small>Shop Photos</small>
+                          </ImageWrapper>
+                        ) : null}
+                      </Col>
+                    </Row>
+                  ) : (
+                    <h5 className="text-center">No Photos</h5>
+                  )}
                 </AccordionDetails>
               </Accordion>
             </Col>
@@ -501,44 +499,42 @@ function ShopDetails() {
                     <Typography>Deals</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography>
-                      {shop?.deals?.length > 0 ? (
-                        shop?.deals?.map((deal) => (
-                          <ul key={Math.random()} style={{ listStyleType: 'square' }}>
-                            <li>
-                              <div className="d-flex justify-content-between px-3">
-                                <span
-                                  style={{
-                                    fontSize: '15px',
-                                    fontWeight: '500',
-                                  }}
-                                >
-                                  {deal?.name}
-                                  {`-(${deal?.status})`}
-                                </span>
-                                <i
-                                  className="fa fa-trash cursor-pointer"
-                                  style={{ color: 'red' }}
-                                  onClick={() => deleteDeal(deal?._id)}
-                                ></i>
-                              </div>
-                            </li>
+                    {shop?.deals?.length > 0 ? (
+                      shop?.deals?.map((deal) => (
+                        <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                          <li>
+                            <div className="d-flex justify-content-between px-3">
+                              <span
+                                style={{
+                                  fontSize: '15px',
+                                  fontWeight: '500',
+                                }}
+                              >
+                                {deal?.name}
+                                {`-(${deal?.status})`}
+                              </span>
+                              <i
+                                className="fa fa-trash cursor-pointer"
+                                style={{ color: 'red' }}
+                                onClick={() => deleteDeal(deal?._id)}
+                              ></i>
+                            </div>
+                          </li>
 
-                            <ul>
-                              <li>
-                                <span>{deal?.type}-</span>
-                                <span className="ms-1">
-                                  {deal?.option}
-                                  {deal?.percentage && `(${deal?.percentage}%)`}
-                                </span>
-                              </li>
-                            </ul>
+                          <ul>
+                            <li>
+                              <span>{deal?.type}-</span>
+                              <span className="ms-1">
+                                {deal?.option}
+                                {deal?.percentage && `(${deal?.percentage}%)`}
+                              </span>
+                            </li>
                           </ul>
-                        ))
-                      ) : (
-                        <h5 className="text-center"> No Deals </h5>
-                      )}
-                    </Typography>
+                        </ul>
+                      ))
+                    ) : (
+                      <h5 className="text-center"> No Deals </h5>
+                    )}
                   </AccordionDetails>
                 </Accordion>
               </div>

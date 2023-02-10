@@ -47,6 +47,7 @@ function OrderTrackingMap({ pickup, dropoff }) {
         })
         .catch((e) => {
           console.log(e);
+          // eslint-disable-next-line no-alert
           window.alert(`Directions request failed due to ${e.message}`);
         });
     }

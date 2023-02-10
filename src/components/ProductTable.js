@@ -69,59 +69,56 @@ function ProductTable({ products, loading }) {
         </Thead>
         <Tbody style={{ position: 'relative' }}>
           {products?.length > 0 &&
-            products?.map((item) => {
-              console.log(item);
-              return (
-                <Tr
-                  key={Math.random()}
-                  className="align-middle cursor-pointer"
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: '500',
-                  }}
-                >
-                  <Th onClick={() => goToDetails(item?._id)}>
-                    <TableImgItem
-                      img={item?.images[0]}
-                      name={item?.name}
-                      subTitle={item?.category?.name}
-                      id={item?.autoGenId}
-                    />
-                  </Th>
+            products?.map((item) => (
+              <Tr
+                key={Math.random()}
+                className="align-middle cursor-pointer"
+                style={{
+                  fontSize: '15px',
+                  fontWeight: '500',
+                }}
+              >
+                <Th onClick={() => goToDetails(item?._id)}>
+                  <TableImgItem
+                    img={item?.images[0]}
+                    name={item?.name}
+                    subTitle={item?.category?.name}
+                    id={item?.autoGenId}
+                  />
+                </Th>
 
-                  <Td onClick={() => goToDetails(item?._id)}>
-                    <p>{item?.shop?.shopName}</p>
-                  </Td>
+                <Td onClick={() => goToDetails(item?._id)}>
+                  <p>{item?.shop?.shopName}</p>
+                </Td>
 
-                  <Td onClick={() => goToDetails(item?._id)}>
-                    {item?.deals.length > 0
-                      ? item?.deals.map((item) => (
-                          <div key={Math.random()}>
-                            <p>{item?.name}</p>
-                          </div>
-                        ))
-                      : '--'}
-                  </Td>
+                <Td onClick={() => goToDetails(item?._id)}>
+                  {item?.deals.length > 0
+                    ? item?.deals.map((item) => (
+                        <div key={Math.random()}>
+                          <p>{item?.name}</p>
+                        </div>
+                      ))
+                    : '--'}
+                </Td>
 
-                  <Td onClick={() => goToDetails(item?._id)}>
-                    <p>{item?.price}</p>
-                    <p>{item?.shopEndTimeText}</p>
-                  </Td>
+                <Td onClick={() => goToDetails(item?._id)}>
+                  <p>{item?.price}</p>
+                  <p>{item?.shopEndTimeText}</p>
+                </Td>
 
-                  <Td onClick={() => goToDetails(item?._id)}>
-                    <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{`${
-                      item?.status === 'active' ? 'Active' : 'Inactive'
-                    }`}</div>
-                  </Td>
-                  <Td>
-                    <ThreeDotsMenu
-                      handleMenuClick={(menu) => handleMenu(menu, item)}
-                      menuItems={['Edit', 'Update Status']}
-                    />
-                  </Td>
-                </Tr>
-              );
-            })}
+                <Td onClick={() => goToDetails(item?._id)}>
+                  <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>{`${
+                    item?.status === 'active' ? 'Active' : 'Inactive'
+                  }`}</div>
+                </Td>
+                <Td>
+                  <ThreeDotsMenu
+                    handleMenuClick={(menu) => handleMenu(menu, item)}
+                    menuItems={['Edit', 'Update Status']}
+                  />
+                </Td>
+              </Tr>
+            ))}
           {loading && (
             <Tr>
               <Td>

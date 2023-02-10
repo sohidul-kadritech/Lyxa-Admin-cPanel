@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 
@@ -40,9 +39,7 @@ function ReviewTable({ reviews, isFromOrder }) {
           <Tr>
             <Td></Td>
             <Td>
-              <Typography>
-                <h5 className="text-center">No Data!</h5>
-              </Typography>
+              <h5 className="text-center">No Data!</h5>
             </Td>
             <Td></Td>
           </Tr>
