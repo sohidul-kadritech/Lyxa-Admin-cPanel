@@ -1,8 +1,7 @@
+import 'chartist/dist/scss/chartist.scss';
 import React, { lazy, Suspense, useEffect } from 'react';
 import MetaTags from 'react-meta-tags';
 import { Card, CardBody, Col, Container, Row, Spinner } from 'reactstrap';
-
-import 'chartist/dist/scss/chartist.scss';
 
 // i18n
 import { withTranslation } from 'react-i18next';
@@ -25,6 +24,7 @@ import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import noPhoto from '../../assets/images/noPhoto.jpg';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import InfoTwo from '../../components/InfoTwo';
+import InfoTwoWrapper from '../../components/InfoTwoWrapper';
 import { MAP_URL } from '../../network/Api';
 import {
   getDashboardSummary,
@@ -68,7 +68,6 @@ function Dashboard() {
         <MetaTags>
           <title>Lyxa</title>
         </MetaTags>
-
         <Container fluid>
           <Card className="page-title-box p-0">
             <CardBody
@@ -221,16 +220,17 @@ function SellerInfo() {
             <h6 className="text-capitalize mx-3">{`Status - ${status}`}</h6>
             <h6 className="text-capitalize">{sellerType}</h6>
           </div>
-
-          <InfoTwo value={`${name}`} Icon={PersonOutlineOutlinedIcon} name="Manager" />
-          <InfoTwo
-            value={`${address}`}
-            mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
-            Icon={RoomOutlinedIcon}
-            name="Location"
-          />
-          <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} name="Phone" />
-          <InfoTwo name="Email" classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+          <InfoTwoWrapper>
+            <InfoTwo value={`${name}`} Icon={PersonOutlineOutlinedIcon} name="Manager" />
+            <InfoTwo
+              value={`${address}`}
+              mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
+              Icon={RoomOutlinedIcon}
+              name="Location"
+            />
+            <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} name="Phone" />
+            <InfoTwo name="Email" classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+          </InfoTwoWrapper>
         </Col>
       </Row>
     </InfoWrapper>
@@ -289,52 +289,57 @@ function ShopInfo() {
 
           <Row className="pt-2">
             <Col lg={4}>
-              <InfoTwo
-                mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
-                value={address}
-                Icon={RoomOutlinedIcon}
-                name="Location"
-              />
-              <InfoTwo
-                value={`Mon to Fri - ${shopStartTimeText} ${
-                  shopStartTimeText.split(':')[0] < 12 ? 'AM' : 'PM'
-                } - ${shopEndTimeText} ${shopEndTimeText.split(':')[0] < 12 ? 'AM' : 'PM'}`}
-                Icon={AccessTimeOutlinedIcon}
-                name="Open"
-              />
-              <InfoTwo name="Phone" value={phone_number} Icon={LocalPhoneOutlinedIcon} />
-              <InfoTwo name="Email" classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+              <InfoTwoWrapper>
+                <InfoTwo
+                  mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
+                  value={address}
+                  Icon={RoomOutlinedIcon}
+                  name="Location"
+                />
+                <InfoTwo
+                  value={`Mon to Fri - ${shopStartTimeText} ${
+                    shopStartTimeText.split(':')[0] < 12 ? 'AM' : 'PM'
+                  } - ${shopEndTimeText} ${shopEndTimeText.split(':')[0] < 12 ? 'AM' : 'PM'}`}
+                  Icon={AccessTimeOutlinedIcon}
+                  name="Open"
+                />
+                <InfoTwo name="Phone" value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+                <InfoTwo name="Email" classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+              </InfoTwoWrapper>
             </Col>
 
             <Col lg={4}>
-              <InfoTwo name="Min Order" value={`${minOrderAmount} ${currency}`} Icon={StorefrontOutlinedIcon} />
-              <InfoTwo
-                value={`${
-                  rating === 4
-                    ? 'Excellent'
-                    : rating === 3
-                    ? 'Very good'
-                    : rating === 2
-                    ? 'Good'
-                    : rating === 1
-                    ? 'Bad'
-                    : ''
-                }`}
-                name="Rating"
-                Icon={SentimentSatisfiedOutlinedIcon}
-              />
-              <InfoTwo
-                name="Price Range"
-                value={`${expensive === 1 ? '$' : expensive === 2 ? '$$' : expensive === '3' ? '$$$' : '$$$$'}`}
-                Icon={WorkHistoryOutlinedIcon}
-              />
+              <InfoTwoWrapper>
+                <InfoTwo name="Min Order" value={`${minOrderAmount} ${currency}`} Icon={StorefrontOutlinedIcon} />
+                <InfoTwo
+                  value={`${
+                    rating === 4
+                      ? 'Excellent'
+                      : rating === 3
+                      ? 'Very good'
+                      : rating === 2
+                      ? 'Good'
+                      : rating === 1
+                      ? 'Bad'
+                      : ''
+                  }`}
+                  name="Rating"
+                  Icon={SentimentSatisfiedOutlinedIcon}
+                />
+                <InfoTwo
+                  name="Price Range"
+                  value={`${expensive === 1 ? '$' : expensive === 2 ? '$$' : expensive === '3' ? '$$$' : '$$$$'}`}
+                  Icon={WorkHistoryOutlinedIcon}
+                />
+              </InfoTwoWrapper>
             </Col>
 
             <Col lg={4}>
-              <InfoTwo name="Delivery Type" value={`${haveOwnDeliveryBoy ? 'Self' : 'Lyxa'}`} Icon={PaymentIcon} />
-              <InfoTwo name="Delivery Fee" value={`${deliveryFee}`} Icon={MopedOutlinedIcon} />
-
-              <InfoTwo name="No Deals" value={deals.length || ''} Icon={SettingsInputSvideoIcon} />
+              <InfoTwoWrapper>
+                <InfoTwo name="Delivery Type" value={`${haveOwnDeliveryBoy ? 'Self' : 'Lyxa'}`} Icon={PaymentIcon} />
+                <InfoTwo name="Delivery Fee" value={`${deliveryFee}`} Icon={MopedOutlinedIcon} />
+                <InfoTwo name="No Deals" value={deals.length || ''} Icon={SettingsInputSvideoIcon} />
+              </InfoTwoWrapper>
             </Col>
           </Row>
         </Col>
