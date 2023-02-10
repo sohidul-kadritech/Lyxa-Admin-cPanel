@@ -1,3 +1,9 @@
+/* eslint-disable */
+// REQUIRED CSS FOR COMPONENTS
+import 'flatpickr/dist/themes/material_green.css';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+/* eslint-enable */
+
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/destructuring-assignment */
 import React, { useEffect, useState } from 'react';
@@ -6,9 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
 import { getAllAppSettings } from './store/Settings/settingsAction';
-/* eslint-disable */
-import 'flatpickr/dist/themes/material_green.css';
-/* eslint-enable */
 
 // Import Routes all
 import { customerServiceRoutes, sellerRoutes, shopRoutes, userRoutes } from './routes/allRoutes';
