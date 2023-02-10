@@ -67,7 +67,6 @@ function SingleShopTransactions() {
   const { shopName: name, _id: accountId, account_type } = useSelector((store) => store.Login.admin);
 
   const { admins } = useSelector((state) => state.adminReducer);
-  console.log({ account_type });
 
   useEffect(() => {
     if (account_type !== 'shop') {
@@ -240,8 +239,6 @@ function SingleShopTransactions() {
     }
   }, [status]);
 
-  console.log(shopTrxs?.trxs);
-
   return (
     <GlobalWrapper>
       <div className="page-content">
@@ -302,7 +299,7 @@ function SingleShopTransactions() {
                     <AdminFilter>
                       <Autocomplete
                         className="cursor-pointer"
-                        value={shopTrxBy}
+                        value={shopTrxBy || null}
                         onChange={(event, newValue) => {
                           dispatch(updateShopTrxBy(newValue));
                         }}

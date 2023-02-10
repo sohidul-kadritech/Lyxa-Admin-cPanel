@@ -164,43 +164,41 @@ function DeliverymanDetails() {
                   <Typography>Images</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>
-                    <Row>
-                      <Col md={6} className="d-flex justify-content-center">
-                        <ImageWrapper>
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(deliveryMan?.nationalIdDocument);
-                            }}
-                            className="img-fluid cursor-pointer  rounded"
-                            alt="NID"
-                            src={deliveryMan?.nationalIdDocument ?? noPhoto}
-                            width="100%"
-                            height="100%"
-                            loading="lazy"
-                          />
-                          <small>NID</small>
-                        </ImageWrapper>
-                      </Col>
-                      <Col md={6} className="d-flex justify-content-center">
-                        <ImageWrapper>
-                          <img
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(deliveryMan?.nationalIdDocument);
-                            }}
-                            className="img-fluid cursor-pointer rounded"
-                            alt="Vahicle Document"
-                            src={deliveryMan?.vehicleRegistrationDocument ?? noPhoto}
-                            width="100%"
-                            height="100%"
-                          />
-                          <small>Vahicle Document</small>
-                        </ImageWrapper>
-                      </Col>
-                    </Row>
-                  </Typography>
+                  <Row>
+                    <Col md={6} className="d-flex justify-content-center">
+                      <ImageWrapper>
+                        <img
+                          onClick={() => {
+                            setIsOpen(true);
+                            setSelectedImg(deliveryMan?.nationalIdDocument);
+                          }}
+                          className="img-fluid cursor-pointer  rounded"
+                          alt="NID"
+                          src={deliveryMan?.nationalIdDocument ?? noPhoto}
+                          width="100%"
+                          height="100%"
+                          loading="lazy"
+                        />
+                        <small>NID</small>
+                      </ImageWrapper>
+                    </Col>
+                    <Col md={6} className="d-flex justify-content-center">
+                      <ImageWrapper>
+                        <img
+                          onClick={() => {
+                            setIsOpen(true);
+                            setSelectedImg(deliveryMan?.nationalIdDocument);
+                          }}
+                          className="img-fluid cursor-pointer rounded"
+                          alt="Vahicle Document"
+                          src={deliveryMan?.vehicleRegistrationDocument ?? noPhoto}
+                          width="100%"
+                          height="100%"
+                        />
+                        <small>Vahicle Document</small>
+                      </ImageWrapper>
+                    </Col>
+                  </Row>
                 </AccordionDetails>
               </Accordion>
             </Col>
