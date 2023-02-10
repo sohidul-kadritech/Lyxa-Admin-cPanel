@@ -1,28 +1,28 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable max-len */
-import { isEmpty } from 'lodash';
-import PropTypes from 'prop-types';
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 
-import { AvField, AvForm } from 'availity-reactstrap-validation';
 import { Button, Card, CardBody, Col, Container, Modal, ModalBody, ModalHeader, Row } from 'reactstrap';
+import { AvField, AvForm } from 'availity-reactstrap-validation';
 
-import BootstrapTheme from '@fullcalendar/bootstrap';
+import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
-import FullCalendar from '@fullcalendar/react';
+import BootstrapTheme from '@fullcalendar/bootstrap';
+import Dashboard from '../Dashboard';
 
-// Import Breadcrumb
+//Import Breadcrumb
 import Breadcrumbs from '../../components/Common/Breadcrumb';
 import { addNewEvent, deleteEvent, getCategories, getEvents, updateEvent } from '../../store/actions';
 import DeleteModal from './DeleteModal';
-// css
+//css
 import '@fullcalendar/bootstrap/main.css';
-
-function Calender(props) {
+const Calender = (props) => {
   const { events, categories } = props;
+  const [updatedCategories, setUpdatedCategories] = useState(categories);
   const [modal, setModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [modalcategory, setModalcategory] = useState(false);
@@ -34,7 +34,6 @@ function Calender(props) {
     const { onGetCategories, onGetEvents } = props;
     onGetCategories();
     onGetEvents();
-    // eslint-disable-next-line no-new
     new Draggable(document.getElementById('external-events'), {
       itemSelector: '.external-event',
     });
@@ -72,7 +71,7 @@ function Calender(props) {
    * Handling click on event on calendar
    */
   const handleEventClick = (arg) => {
-    const { event } = arg;
+    const event = arg.event;
     setEvent({
       id: event.id,
       title: event.title,
@@ -95,7 +94,7 @@ function Calender(props) {
       const updateEvent = {
         id: event.id,
         title: values.title,
-        classNames: `${values.category} text-white`,
+        classNames: values.category + ' text-white',
         start: event.start,
       };
       // update event
@@ -103,9 +102,9 @@ function Calender(props) {
     } else {
       const newEvent = {
         id: Math.floor(Math.random() * 100),
-        title: values.title,
+        title: values['title'],
         start: selectedDay ? selectedDay.date : new Date(),
-        className: `${values.category} text-white`,
+        className: values.category + ' text-white',
       };
       // save new event
       onAddNewEvent(newEvent);
@@ -115,13 +114,13 @@ function Calender(props) {
   };
 
   const handleValidEventSubmitcategory = (event, values) => {
-    const { onAddNewEvent } = props;
+    const { onAddNewEvent, onUpdateEvent } = props;
 
     const newEvent = {
       id: Math.floor(Math.random() * 100),
-      title: values.title_category,
+      title: values['title_category'],
       start: selectedDay ? selectedDay.date : new Date(),
-      className: `${values.event_category} text-white`,
+      className: values.event_category + ' text-white',
     };
     // save new event
 
@@ -151,7 +150,7 @@ function Calender(props) {
    */
   const onDrop = (event) => {
     const { onAddNewEvent } = props;
-    const { draggedEl } = event;
+    const draggedEl = event.draggedEl;
     const newEvent = {
       id: Math.floor(Math.random() * 100),
       title: draggedEl.innerText,
@@ -162,13 +161,13 @@ function Calender(props) {
   };
 
   return (
-    <>
+    <React.Fragment>
       <DeleteModal show={deleteModal} onDeleteClick={handleDeleteEvent} onCloseClick={() => setDeleteModal(false)} />
       <div className="page-content">
         <MetaTags>
           <title>Calender | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
         </MetaTags>
-        <Container fluid>
+        <Container fluid={true}>
           {/* Render Breadcrumb */}
           <Breadcrumbs title="Veltrix" breadcrumbItem="Calendar" />
           <Row>
@@ -186,10 +185,10 @@ function Calender(props) {
                         <br />
                         <p className="text-muted">Drag and drop your event or click in the calendar</p>
                         {categories &&
-                          categories.map((category) => (
+                          categories.map((category, i) => (
                             <div
                               className={`external-event ${category.type} fc-event text-white`}
-                              key={`cat-${category.id}`}
+                              key={'cat-' + category.id}
                               draggable
                               onDrag={(event) => onDrag(event, category)}
                             >
@@ -225,8 +224,8 @@ function Calender(props) {
                     <div className="card-body">
                       <FullCalendar
                         plugins={[BootstrapTheme, dayGridPlugin, interactionPlugin]}
-                        slotDuration="00:15:00"
-                        handleWindowResize
+                        slotDuration={'00:15:00'}
+                        handleWindowResize={true}
                         themeSystem="bootstrap"
                         headerToolbar={{
                           left: 'prev,next today',
@@ -234,9 +233,9 @@ function Calender(props) {
                           right: 'dayGridMonth,dayGridWeek,dayGridDay',
                         }}
                         events={events}
-                        editable
-                        droppable
-                        selectable
+                        editable={true}
+                        droppable={true}
+                        selectable={true}
                         dateClick={handleDateClick}
                         eventClick={handleEventClick}
                         drop={onDrop}
@@ -245,7 +244,7 @@ function Calender(props) {
                       {/* New/Edit event modal */}
                       <Modal isOpen={modal} className={props.className}>
                         <ModalHeader toggle={toggle} tag="h4">
-                          {isEdit ? 'Edit Event' : 'Add Event'}
+                          {!!isEdit ? 'Edit Event' : 'Add Event'}
                         </ModalHeader>
                         <ModalBody>
                           <AvForm onValidSubmit={handleValidEventSubmit}>
@@ -364,9 +363,9 @@ function Calender(props) {
           </Row>
         </Container>
       </div>
-    </>
+    </React.Fragment>
   );
-}
+};
 
 Calender.propTypes = {
   events: PropTypes.array,

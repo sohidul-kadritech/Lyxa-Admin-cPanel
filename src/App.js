@@ -1,11 +1,14 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/destructuring-assignment */
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
 import { getAllAppSettings } from './store/Settings/settingsAction';
+/* eslint-disable */
+import 'flatpickr/dist/themes/material_green.css';
+/* eslint-enable */
 
 // Import Routes all
 import { customerServiceRoutes, sellerRoutes, shopRoutes, userRoutes } from './routes/allRoutes';
@@ -14,7 +17,6 @@ import { customerServiceRoutes, sellerRoutes, shopRoutes, userRoutes } from './r
 import Authmiddleware from './routes/middleware/Authmiddleware';
 
 // layouts Format
-import HorizontalLayout from './components/HorizontalLayout';
 import NonAuthLayout from './components/NonAuthLayout';
 import VerticalLayout from './components/VerticalLayout';
 
@@ -31,7 +33,7 @@ import { SINGLE_ADMIN, SINGLE_SELLER, SINGLE_SHOP } from './network/Api';
 import requestApi from './network/httpRequest';
 import Login from './pages/Authentication/Login';
 
-function App(props) {
+export default function App() {
   const dispatch = useDispatch();
   const [routeList, setRouteList] = useState([]);
   const { socket } = useSelector((state) => state.socketReducer);
@@ -144,21 +146,21 @@ function App(props) {
     };
   }, [socket]);
 
-  function getLayout() {
-    // default Vertical
-    let layoutCls = VerticalLayout;
-    switch (props.layout.layoutType) {
-      case 'horizontal':
-        layoutCls = HorizontalLayout;
-        break;
-      default:
-        layoutCls = VerticalLayout;
-        break;
-    }
-    return layoutCls;
-  }
+  // function getLayout() {
+  //   // default Vertical
+  //   let layoutCls = VerticalLayout;
+  //   switch (props.layout.layoutType) {
+  //     case 'horizontal':
+  //       layoutCls = HorizontalLayout;
+  //       break;
+  //     default:
+  //       layoutCls = VerticalLayout;
+  //       break;
+  //   }
+  //   return layoutCls;
+  // }
 
-  const Layout = getLayout();
+  // const Layout = getLayout();
 
   return (
     <Router>
@@ -188,7 +190,7 @@ function App(props) {
           routeList?.map((route) => (
             <Authmiddleware
               path={route.path}
-              layout={Layout}
+              layout={VerticalLayout}
               component={route.component}
               key={Math.random()}
               isAuthProtected
@@ -200,12 +202,14 @@ function App(props) {
   );
 }
 
-App.propTypes = {
-  layout: PropTypes.any,
-};
+// App.propTypes = {
+//   layout: PropTypes.any,
+// };
 
-const mapStateToProps = (state) => ({
-  layout: state.Layout,
-});
+// const mapStateToProps = () => ({
+//   layout: {
+//     layoutType: 'vertical',
+//   },
+// });
 
-export default connect(mapStateToProps, null)(App);
+// export default connect(mapStateToProps, null)(App);

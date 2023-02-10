@@ -1,12 +1,11 @@
-/* eslint-disable */
-/* prettier-ignore */
-import React from "react";
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 // Authentication related pages
 import ForgetPwd from '../pages/Authentication/ForgetPassword';
 import Login from '../pages/Authentication/Login';
 import Register from '../pages/Authentication/Register';
+import Calendar from '../pages/Calendar';
 
 //  // Inner Authentication
 
@@ -16,7 +15,7 @@ import Dashboard from '../pages/Dashboard/index';
 // Forms
 import FormUpload from '../pages/Forms/FormUpload';
 
-//Pages
+// Pages
 import Pages404 from '../pages/Utility/pages-404';
 import Pages500 from '../pages/Utility/pages-500';
 import PagesComingsoon from '../pages/Utility/pages-comingsoon';
@@ -35,49 +34,49 @@ import UsersList from '../pages/Users/UsersList/UsersList';
 import AdminList from '../pages/AdminControl/Admins/AdminList.js/AdminList';
 import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
 import Role from '../pages/AdminControl/Role/Role';
+import AdminLogHistory from '../pages/AppWallet/AdminLogHistory/AdminLogHistory';
+import DeliveryTransactions from '../pages/AppWallet/DeliveryTransactions/DeliveryTransactions';
+import PaymentHistory from '../pages/AppWallet/PaymentHistory/PaymentHistory';
+import PercentageSetting from '../pages/AppWallet/PercentageSetting/PercentageSetting';
+import SellerTransactions from '../pages/AppWallet/SellerTransactions/SellerTransactions';
 import DatabaseSettings from '../pages/DatabaseSettings/DatabaseSettings';
 import DealsAdd from '../pages/Deals/DealsAdd/DealsAdd';
 import DealsList from '../pages/Deals/DealsList/DealsList';
+import DeliverymanAdd from '../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
+import DeliverymanList from '../pages/Deliveryman/DeliverymanList/DeliverymanList';
 import DropPayList from '../pages/DropPay/DropPayList/DropPayList';
+import OrdersList from '../pages/Orders/OrdersList/OrdersList';
+import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
+import SellerList from '../pages/Seller/SellerList/SellerList';
+import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
+import ShopList from '../pages/Shops/ShopList/ShopList';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
-import AdminLogHistory from './../pages/AppWallet/AdminLogHistory/AdminLogHistory';
-import DeliveryTransactions from './../pages/AppWallet/DeliveryTransactions/DeliveryTransactions';
-import PaymentHistory from './../pages/AppWallet/PaymentHistory/PaymentHistory';
-import PercentageSetting from './../pages/AppWallet/PercentageSetting/PercentageSetting';
-import SellerTransactions from './../pages/AppWallet/SellerTransactions/SellerTransactions';
-import DeliverymanAdd from './../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
-import DeliverymanList from './../pages/Deliveryman/DeliverymanList/DeliverymanList';
-import OrdersList from './../pages/Orders/OrdersList/OrdersList';
-import SellerAdd from './../pages/Seller/SellerAdd/SellerAdd';
-import SellerList from './../pages/Seller/SellerList/SellerList';
-import ShopAdd from './../pages/Shops/ShopAdd/ShopAdd';
-import ShopList from './../pages/Shops/ShopList/ShopList';
 
 import AdminSettings from '../pages/AdminSettings/AdminSettings';
 import AppSettings from '../pages/AppSettings/AppSettings';
 import SingleDeliveryTransactions from '../pages/AppWallet/DeliveryTransactions/SingleDeliveryTransactions';
 import DropTransactions from '../pages/AppWallet/DropsTansactions/DropTransactions';
 import DropTransactionsDetails from '../pages/AppWallet/DropsTansactions/dropTransactionsDetails';
+import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
 import CancelReason from '../pages/CancelReason/CancelReason';
+import CategoryAdd from '../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
 import CategoryDetails from '../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails';
+import CategoryList from '../pages/Categories&Tags/Category/CategoryList/CategoryList';
+import TagAdd from '../pages/Categories&Tags/Tags/TagAdd/TagAdd';
+import TagsList from '../pages/Categories&Tags/Tags/TagsList/TagsList';
 import ChatDetails from '../pages/Chat/ChatDetails/ChatDetails';
-import DeliverymanDetails from '../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails.js';
+import DeliverymanDetails from '../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import RefusedOrders from '../pages/Orders/RefusedOrders/RefusedOrders';
 import ProductAdd from '../pages/Product/ProductAdd/ProductAdd';
 import ProductDetails from '../pages/Product/ProductDetails/ProductDetails';
 import ProductList from '../pages/Product/ProductList/ProductList';
 import UnitTypes from '../pages/Product/UnitTypes/UnitTypes';
+import SellerDetails from '../pages/Seller/SellerDetails/SellerDetails';
 import Cuisine from '../pages/Shops/Cuisine';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import UserTransaction from '../pages/Users/UserTransaction/UserTransaction';
-import ShopsTransactions from './../pages/AppWallet/SellerTransactions/ShopsTransactions';
-import CategoryAdd from './../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
-import CategoryList from './../pages/Categories&Tags/Category/CategoryList/CategoryList';
-import TagAdd from './../pages/Categories&Tags/Tags/TagAdd/TagAdd';
-import TagsList from './../pages/Categories&Tags/Tags/TagsList/TagsList';
-import SellerDetails from './../pages/Seller/SellerDetails/SellerDetails';
 
 import AdminLog from '../pages/AppWallet/PercentageSetting/AdminLog';
 import Chats from '../pages/Chat/Chats';
@@ -253,6 +252,7 @@ const customerServiceRoutes = [
   { path: '/deliveryman/add', component: DeliverymanAdd },
   { path: '/drop-pay', component: DropPayList },
   { path: '/customer-support', component: Chats },
+  { path: '/calender', component: Calendar },
   {
     path: '/customer-support/chats-by-single-order/:id',
     component: ChatsListByOrder,
