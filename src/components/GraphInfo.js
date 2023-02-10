@@ -52,32 +52,43 @@ function GraphInfo({ graphType }) {
     }
   };
 
-  useEffect(async () => {
-    if ((filterType && year) || startDate || endDate || month) {
-      setIsLoading(true);
-      try {
-        const { data } = await requestApi().request(getApi(graphType), {
-          params: {
-            startDate,
-            endDate,
-            type: filterType.value === 'month' ? 'normal' : filterType.value,
-            year,
-          },
-        });
+  useEffect(() => {
+    let isMounted = true;
 
-        if (data) {
-          setIsLoading(false);
-          if (data.status) {
-            const { info } = data.data;
-            setData(info);
+    const getData = async () => {
+      if ((filterType && year) || startDate || endDate || month) {
+        setIsLoading(true);
+        try {
+          const { data } = await requestApi().request(getApi(graphType), {
+            params: {
+              startDate,
+              endDate,
+              type: filterType.value === 'month' ? 'normal' : filterType.value,
+              year,
+            },
+          });
+
+          if (data && isMounted) {
+            setIsLoading(false);
+            if (data.status) {
+              const { info } = data.data;
+              setData(info);
+            }
+          }
+        } catch (e) {
+          console.log(e.message);
+          if (isMounted) {
+            setIsLoading(false);
+            setIsLoading(false);
           }
         }
-      } catch (e) {
-        console.log(e.message);
-        setIsLoading(false);
-        setIsLoading(false);
       }
-    }
+    };
+    getData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [filterType, year, startDate, endDate]);
 
   useEffect(() => {
