@@ -18,6 +18,7 @@ import Breadcrumb from '../../../components/Common/Breadcrumb';
 import DropCharge from '../../../components/DropCharge';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import InfoTwo from '../../../components/InfoTwo';
+import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
 import ShopTable from '../../../components/ShopTable';
 import { callApi } from '../../../components/SingleApiCall';
 import { MAP_URL, SINGLE_SELLER } from '../../../network/Api';
@@ -108,31 +109,33 @@ function SellerDetails() {
                 <hr className="my-2" />
                 <Row className="px-3">
                   <Col lg={6}>
-                    <InfoTwo name="Company" value={`${seller?.company_name}`} Icon={ApartmentOutlinedIcon} />
-                    <InfoTwo name="Manager" value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} />
-                    <InfoTwo
-                      value={`${seller?.addressSeller?.address}`}
-                      Icon={RoomOutlinedIcon}
-                      mapLink={`
-                      ${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
-                      name="Location"
-                    />
-                    <InfoTwo name="Phone" value={seller?.phone_number} Icon={LocalPhoneOutlinedIcon} />
-                    <InfoTwo
-                      name="Email"
-                      value={seller?.email}
-                      Icon={AlternateEmailOutlinedIcon}
-                      classes="text-lowercase"
-                    />
-                    <InfoTwo name="Status" value={`${seller?.status}`} Icon={AutorenewOutlinedIcon} />
-                    <InfoTwo name="Type" value={`${seller?.sellerType}`} Icon={StoreOutlinedIcon} />
-                    {seller?.dropPercentage && (
+                    <InfoTwoWrapper>
+                      <InfoTwo name="Company" value={`${seller?.company_name}`} Icon={ApartmentOutlinedIcon} />
+                      <InfoTwo name="Manager" value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} />
                       <InfoTwo
-                        Icon={PaidOutlinedIcon}
-                        name="Lyxa Charge"
-                        value={`${seller?.dropPercentage}${seller?.dropPercentageType === 'amount' ? currency : '%'}`}
+                        value={`${seller?.addressSeller?.address}`}
+                        Icon={RoomOutlinedIcon}
+                        mapLink={`
+                      ${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
+                        name="Location"
                       />
-                    )}
+                      <InfoTwo name="Phone" value={seller?.phone_number} Icon={LocalPhoneOutlinedIcon} />
+                      <InfoTwo
+                        name="Email"
+                        value={seller?.email}
+                        Icon={AlternateEmailOutlinedIcon}
+                        classes="text-lowercase"
+                      />
+                      <InfoTwo name="Status" value={`${seller?.status}`} Icon={AutorenewOutlinedIcon} />
+                      <InfoTwo name="Type" value={`${seller?.sellerType}`} Icon={StoreOutlinedIcon} />
+                      {seller?.dropPercentage && (
+                        <InfoTwo
+                          Icon={PaidOutlinedIcon}
+                          name="Lyxa Charge"
+                          value={`${seller?.dropPercentage}${seller?.dropPercentageType === 'amount' ? currency : '%'}`}
+                        />
+                      )}
+                    </InfoTwoWrapper>
                   </Col>
                   <Col lg={6}>
                     <Row>
