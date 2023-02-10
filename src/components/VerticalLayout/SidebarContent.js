@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
@@ -92,10 +93,9 @@ function SidebarContent({ location, list, t }) {
   return (
     <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
       <div id="sidebar-menu">
-        {/* ADMIN MENU */}
         <ul className="metismenu list-unstyled" id="side-menu">
-          {list?.map((item) => (
-            <li key={Math.random()}>
+          {list?.map((item, index) => (
+            <li key={index}>
               <Link to={item.link} className={`waves-effect ${item.isSubmenu && 'has-arrow'}`}>
                 <i className={item.icon} />
                 <p className="d-inline">
@@ -113,8 +113,8 @@ function SidebarContent({ location, list, t }) {
               </Link>
               {item.isSubmenu && (
                 <ul className="sub-menu">
-                  {item?.submenu?.map((sub) => (
-                    <li key={Math.random()}>
+                  {item?.submenu?.map((sub, index) => (
+                    <li key={index}>
                       <Link to={sub.link}>
                         <i className={sub.icon} />
                         <span>{t(sub.name)} </span>
