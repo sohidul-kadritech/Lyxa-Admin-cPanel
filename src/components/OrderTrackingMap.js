@@ -15,6 +15,9 @@ function OrderTrackingMap({ pickup, dropoff }) {
   const floatingPanel = useRef();
 
   useEffect(() => {
+    // mounted/unmounted flag
+    let isMounted = true;
+
     const directionsRenderer_ = new google.maps.DirectionsRenderer();
     const directionsService_ = new google.maps.DirectionsService();
     setdirectionsRenderer(directionsRenderer_);
@@ -35,11 +38,12 @@ function OrderTrackingMap({ pickup, dropoff }) {
         })
         .then((response) => {
           const route = response.routes[0];
-          console.log(response);
           directionsRenderer.setDirections(response);
 
-          setDistance(route.legs[0].distance.value.toString());
-          setDuration(route.legs[0].duration.value.toString());
+          if (isMounted) {
+            setDistance(route.legs[0].distance.value.toString());
+            setDuration(route.legs[0].duration.value.toString());
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -53,6 +57,10 @@ function OrderTrackingMap({ pickup, dropoff }) {
     const control = floatingPanel.current;
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
     calculateAndDisplayRoute(directionsService_, directionsRenderer_);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return <div ref={mapRef} className="map" style={{ width: '100%', height: '400px' }}></div>;

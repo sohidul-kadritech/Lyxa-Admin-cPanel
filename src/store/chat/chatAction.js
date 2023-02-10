@@ -29,8 +29,6 @@ export const getAllChat =
           },
         });
 
-        console.log('order chat data', data);
-
         if (status) {
           let openChats = 0;
 

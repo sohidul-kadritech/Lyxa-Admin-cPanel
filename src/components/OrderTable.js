@@ -329,7 +329,6 @@ function OrderTable({ orders = [], status, loading }) {
       updateIsFlaged(item?.flag);
     }
   };
-  console.log(orderCancel);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const goToDetails = (id) => {

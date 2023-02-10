@@ -72,7 +72,6 @@ export default function App() {
 
     try {
       const { data: respData } = await requestApi().request(ENDPOINT, requestOptions);
-      console.log(respData);
 
       if (respData?.status) {
         ADMIN_DATA = respData?.data?.[accountType];
@@ -174,7 +173,7 @@ export default function App() {
         {/* admin data is loading */}
         {adminDataIsLoading && (
           <Route
-            path="/dashboard"
+            path="*"
             exact
             render={() => (
               <div

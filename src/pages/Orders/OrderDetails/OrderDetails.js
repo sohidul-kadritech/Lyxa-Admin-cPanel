@@ -137,7 +137,6 @@ function OrderDetails() {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   const getProperOrderTimeline = (orderObj) => {
-    console.log(orderObj?.timeline);
     if (orderObj?.orderFor === 'specific') {
       const timeline = orderObj?.timeline?.filter(
         (item) => item.status !== 'ready_to_pickup' && item.status !== 'accepted_delivery_boy'

@@ -10,7 +10,6 @@ export const callApi = async (sId, api, type) => {
     });
 
     if (data.status) {
-      console.log('single order dta', data);
       return data.data[type];
     }
   } catch (e) {
