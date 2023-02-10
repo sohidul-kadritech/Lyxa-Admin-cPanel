@@ -76,52 +76,50 @@ function Riders({ list = [], heading }) {
         <Typography>{heading}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Typography>
-          <Table id="tech-companies-1" className="table table__wrapper table-hover cursor-pointer">
-            <Thead>
-              <Tr style={{ color: 'black' }}>
-                <Th>SL.</Th>
-                <Th>Name</Th>
-                <Th>Phone</Th>
-              </Tr>
-            </Thead>
-            <Tbody style={{ position: 'relative', borderTop: 'none' }}>
-              {list?.length > 0
-                ? list?.map((rider, index) => (
-                    <Tr
-                      className="align-middle"
+        <Table id="tech-companies-1" className="table table__wrapper table-hover cursor-pointer">
+          <Thead>
+            <Tr style={{ color: 'black' }}>
+              <Th>SL.</Th>
+              <Th>Name</Th>
+              <Th>Phone</Th>
+            </Tr>
+          </Thead>
+          <Tbody style={{ position: 'relative', borderTop: 'none' }}>
+            {list?.length > 0
+              ? list?.map((rider, index) => (
+                  <Tr
+                    className="align-middle"
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: 'black',
+                    }}
+                    onClick={() => history.push(`/deliveryman/details/${rider._id}`)}
+                    key={Math.random()}
+                    title="Click to see details"
+                  >
+                    <Th
                       style={{
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        color: 'black',
+                        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                       }}
-                      onClick={() => history.push(`/deliveryman/details/${rider._id}`)}
-                      key={Math.random()}
-                      title="Click to see details"
                     >
-                      <Th
-                        style={{
-                          color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-                        }}
-                      >
-                        #{index + 1}
-                      </Th>
+                      #{index + 1}
+                    </Th>
 
-                      <Td>{rider?.name}</Td>
+                    <Td>{rider?.name}</Td>
 
-                      <Td>{rider?.number}</Td>
-                    </Tr>
-                  ))
-                : null}
-            </Tbody>
-          </Table>
+                    <Td>{rider?.number}</Td>
+                  </Tr>
+                ))
+              : null}
+          </Tbody>
+        </Table>
 
-          {list?.length === 0 ? (
-            <div className="text-center w-100">
-              <h5>No Delivery Boy</h5>
-            </div>
-          ) : null}
-        </Typography>
+        {list?.length === 0 ? (
+          <div className="text-center w-100">
+            <h5>No Delivery Boy</h5>
+          </div>
+        ) : null}
       </AccordionDetails>
     </Accordion>
   );
@@ -542,74 +540,68 @@ function OrderDetails() {
                     <Typography>Chat (User & Rider)</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography>
-                      <div className="chat-conversation">
-                        <SimpleBar
-                        // style={{ height: "300px", overflow: "hidden scroll" }}
+                    <div className="chat-conversation">
+                      <SimpleBar>
+                        <ul
+                          className="conversation-list"
+                          data-simplebar
+                          style={{
+                            maxHeight: '300px',
+                            width: '100%',
+                          }}
                         >
-                          <ul
-                            className="conversation-list"
-                            data-simplebar
-                            style={{
-                              maxHeight: '300px',
-                              width: '100%',
-                            }}
-                          >
-                            {order?.chats?.length > 0 ? (
-                              order?.chats?.map((chat) => (
-                                <div key={Math.random()}>
-                                  {chat?.sender === 'user' && (
-                                    <li className="clearfix">
-                                      <div className="chat-avatar">
-                                        <Tooltip title="See user details">
-                                          <img
-                                            src={chat?.user?.profile_photo}
-                                            className="avatar-xs rounded-circle cursor-pointer"
-                                            alt="User"
-                                            onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
-                                          />
-                                        </Tooltip>
+                          {order?.chats?.length > 0 ? (
+                            order?.chats?.map((chat) => (
+                              <div key={Math.random()}>
+                                {chat?.sender === 'user' && (
+                                  <li className="clearfix">
+                                    <div className="chat-avatar">
+                                      <Tooltip title="See user details">
+                                        <img
+                                          src={chat?.user?.profile_photo}
+                                          className="avatar-xs rounded-circle cursor-pointer"
+                                          alt="User"
+                                          onClick={() => history.push(`/users/details/${chat?.user?._id}`)}
+                                        />
+                                      </Tooltip>
+                                    </div>
+                                    <div className="conversation-text color-primary">
+                                      <div className="ctext-wrap">
+                                        <strong>{chat?.message}.</strong>
+                                        <div style={{ color: 'grey' }}>{parseTime(chat?.createdAt)}</div>
                                       </div>
-                                      <div className="conversation-text color-primary">
-                                        <div className="ctext-wrap">
-                                          <strong>{chat?.message}.</strong>
-                                          <div style={{ color: 'grey' }}>{parseTime(chat?.createdAt)}</div>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  )}
+                                    </div>
+                                  </li>
+                                )}
 
-                                  {chat?.sender === 'deliveryBoy' && (
-                                    <li className="clearfix odd">
-                                      <div className="chat-avatar">
-                                        <Tooltip title="See delivery boy details">
-                                          <img
-                                            src={chat?.deliveryBoy?.image}
-                                            className="avatar-xs rounded-circle cursor-pointer"
-                                            alt="Delivery Boy"
-                                            onClick={() =>
-                                              history.push(`/deliveryman/details/${chat?.deliveryBoy?._id}`)
-                                            }
-                                          />
-                                        </Tooltip>
+                                {chat?.sender === 'deliveryBoy' && (
+                                  <li className="clearfix odd">
+                                    <div className="chat-avatar">
+                                      <Tooltip title="See delivery boy details">
+                                        <img
+                                          src={chat?.deliveryBoy?.image}
+                                          className="avatar-xs rounded-circle cursor-pointer"
+                                          alt="Delivery Boy"
+                                          onClick={() => history.push(`/deliveryman/details/${chat?.deliveryBoy?._id}`)}
+                                        />
+                                      </Tooltip>
+                                    </div>
+                                    <div className="conversation-text color-primary">
+                                      <div className="ctext-wrap">
+                                        <strong>{chat?.message}.</strong>
+                                        <div style={{ color: 'grey' }}>{parseTime(chat?.createdAt)}</div>
                                       </div>
-                                      <div className="conversation-text color-primary">
-                                        <div className="ctext-wrap">
-                                          <strong>{chat?.message}.</strong>
-                                          <div style={{ color: 'grey' }}>{parseTime(chat?.createdAt)}</div>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  )}
-                                </div>
-                              ))
-                            ) : (
-                              <h5 className="text-center">No Conversions!</h5>
-                            )}
-                          </ul>
-                        </SimpleBar>
-                      </div>
-                    </Typography>
+                                    </div>
+                                  </li>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <h5 className="text-center">No Conversions!</h5>
+                          )}
+                        </ul>
+                      </SimpleBar>
+                    </div>
                   </AccordionDetails>
                 </Accordion>
 
