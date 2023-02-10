@@ -3,13 +3,14 @@
 import 'flatpickr/dist/themes/material_green.css';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 /* eslint-enable */
+/* eslint-disable */
 
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/destructuring-assignment */
 import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
 import { getAllAppSettings } from './store/Settings/settingsAction';
 
@@ -172,21 +173,26 @@ export default function App() {
         <Authmiddleware path="/login" layout={NonAuthLayout} component={Login} isAuthProtected={false} />
         {/* admin data is loading */}
         {adminDataIsLoading && (
-          <div
-            style={{
-              width: '100%',
-              height: '100vh',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Spinner color="primary" />
-          </div>
+          <Route
+            path="/dashboard"
+            exact
+            render={() => (
+              <div
+                style={{
+                  width: '100%',
+                  height: '100vh',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Spinner color="primary" />
+              </div>
+            )}
+          />
         )}
         {/* admin data not found */}
         {!adminDataIsLoading && !account_type && <Redirect to="/login" replace />}
-
         {/* admin data is fetched */}
         {!adminDataIsLoading &&
           account_type &&
