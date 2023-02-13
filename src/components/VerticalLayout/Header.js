@@ -4,7 +4,6 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // Import menuDropdown
-import { withTranslation } from 'react-i18next';
 import ProfileMenu from '../CommonForBoth/TopbarDropdown/ProfileMenu';
 
 // eslint-disable-next-line import/no-named-default
@@ -123,4 +122,4 @@ export default connect(mapStatetoProps, {
   showRightSidebarAction,
   toggleLeftmenu,
   changeSidebarType,
-})(withTranslation()(Header));
+})(Header);

@@ -9,11 +9,8 @@ import SimpleBar from 'simplebar-react';
 // MetisMenu
 import MetisMenu from 'metismenujs';
 import { Link, withRouter } from 'react-router-dom';
-// sdlf
-// i18n
-import { withTranslation } from 'react-i18next';
 
-function SidebarContent({ location, list, t }) {
+function SidebarContent({ location, list }) {
   const ref = useRef();
   const { account_type, shopType } = useSelector((store) => store.Login.admin);
 
@@ -101,13 +98,11 @@ function SidebarContent({ location, list, t }) {
                 <p className="d-inline">
                   {item?.badgeId && <span className="cs-badge" id={item.badgeId}></span>}
                   <span>
-                    {t(
-                      item.name === 'Products' &&
-                        (account_type === 'shop' || account_type === 'seller') &&
-                        shopType === 'food'
-                        ? 'Menu'
-                        : item.name
-                    )}
+                    {item.name === 'Products' &&
+                    (account_type === 'shop' || account_type === 'seller') &&
+                    shopType === 'food'
+                      ? 'Menu'
+                      : item.name}
                   </span>
                 </p>
               </Link>
@@ -117,7 +112,7 @@ function SidebarContent({ location, list, t }) {
                     <li key={index}>
                       <Link to={sub.link}>
                         <i className={sub.icon} />
-                        <span>{t(sub.name)} </span>
+                        <span>{sub.name} </span>
                       </Link>
                     </li>
                   ))}
@@ -133,7 +128,6 @@ function SidebarContent({ location, list, t }) {
 
 SidebarContent.propTypes = {
   location: PropTypes.object,
-  t: PropTypes.any,
 };
 
-export default withRouter(withTranslation()(SidebarContent));
+export default withRouter(SidebarContent);

@@ -4,7 +4,6 @@ import MetaTags from 'react-meta-tags';
 import { Card, CardBody, Col, Container, Row, Spinner } from 'reactstrap';
 
 // i18n
-import { withTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TextField } from '@mui/material';
@@ -348,4 +347,4 @@ function ShopInfo() {
   );
 }
 
-export default withTranslation()(Dashboard);
+export default Dashboard;

@@ -6,13 +6,12 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // Redux Store
-import { withTranslation } from 'react-i18next';
 import { showRightSidebarAction, toggleLeftmenu } from '../../store/actions';
 // reactstrap
 
 // Import menuDropdown
 import NotificationDropdown from '../CommonForBoth/TopbarDropdown/NotificationDropdown';
-import ProfileMenu from '../CommonForBoth/TopbarDropdown/ProfileMenu';
+// import ProfileMenu from '../CommonForBoth/TopbarDropdown/ProfileMenu';
 
 // i18n
 
@@ -84,7 +83,7 @@ function Header({ toggleLeftmenu, leftMenu }) {
         </div>
         <div className="d-flex">
           <NotificationDropdown />
-          <ProfileMenu />
+          {/* <ProfileMenu /> */}
         </div>
       </div>
     </header>
@@ -104,4 +103,4 @@ const mapStatetoProps = (state) => {
 export default connect(mapStatetoProps, {
   showRightSidebarAction,
   toggleLeftmenu,
-})(withTranslation()(Header));
+})(Header);

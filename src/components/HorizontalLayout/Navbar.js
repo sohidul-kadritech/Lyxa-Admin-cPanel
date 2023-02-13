@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import classname from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
@@ -5,11 +7,10 @@ import { Link, withRouter } from 'react-router-dom';
 import { Col, Collapse, Row } from 'reactstrap';
 
 // i18n
-import { withTranslation } from 'react-i18next';
 
 import { connect } from 'react-redux';
 
-function Navbar({ location, leftMenu, t, menuOpen }) {
+function Navbar({ location, leftMenu, menuOpen }) {
   const [ui, setui] = useState(false);
 
   const [email, setemail] = useState(false);
@@ -74,7 +75,7 @@ function Navbar({ location, leftMenu, t, menuOpen }) {
               <li className="nav-item">
                 <Link className="nav-link" to="dashboard">
                   <i className="ti-home me-2" />
-                  {t('Dashboard')} {menuOpen}
+                  Dashboard {menuOpen}
                 </Link>
               </li>
 
@@ -88,7 +89,7 @@ function Navbar({ location, leftMenu, t, menuOpen }) {
                   className="nav-link dropdown-toggle arrow-none"
                 >
                   <i className="ti-package me-2"></i>
-                  {t('UI Elements')}
+                  UI Elements
                 </Link>
                 <div
                   className={classname(
@@ -101,69 +102,69 @@ function Navbar({ location, leftMenu, t, menuOpen }) {
                     <Col lg={4}>
                       <div>
                         <Link to="ui-alerts" className="dropdown-item">
-                          {t('Alerts')}
+                          Alerts
                         </Link>
                         <Link to="ui-buttons" className="dropdown-item">
-                          {t('Buttons')}
+                          Buttons
                         </Link>
                         <Link to="ui-cards" className="dropdown-item">
-                          {t('Cards')}
+                          Cards
                         </Link>
                         <Link to="ui-carousel" className="dropdown-item">
-                          {t('Carousel')}
+                          Carousel
                         </Link>
                         <Link to="ui-dropdowns" className="dropdown-item">
-                          {t('Dropdowns')}
+                          Dropdowns
                         </Link>
                         <Link to="ui-grid" className="dropdown-item">
-                          {t('Grid')}
+                          Grid
                         </Link>
                         <Link to="ui-images" className="dropdown-item">
-                          {t('Images')}
+                          Images
                         </Link>
                       </div>
                     </Col>
                     <Col lg={4}>
                       <div>
                         <Link to="ui-lightbox" className="dropdown-item">
-                          {t('Lightbox')}
+                          Lightbox
                         </Link>
                         <Link to="ui-modals" className="dropdown-item">
-                          {t('Modals')}
+                          Modals
                         </Link>
                         <Link to="ui-rangeslider" className="dropdown-item">
-                          {t('Range Slider')}
+                          Range Slider
                         </Link>
                         <Link to="ui-session-timeout" className="dropdown-item">
-                          {t('Session Timeout')}
+                          Session Timeout
                         </Link>
                         <Link to="ui-progressbars" className="dropdown-item">
-                          {t('Progress Bars')}
+                          Progress Bars
                         </Link>
                         <Link to="ui-sweet-alert" className="dropdown-item">
-                          {t('Sweet-Alert')}
+                          Sweet-Alert
                         </Link>
                         <Link to="ui-tabs-accordions" className="dropdown-item">
-                          {t('Tabs & Accordions')}
+                          Tabs & Accordions
                         </Link>
                       </div>
                     </Col>
                     <Col lg={4}>
                       <div>
                         <Link to="ui-typography" className="dropdown-item">
-                          {t('Typography')}
+                          Typography
                         </Link>
                         <Link to="ui-video" className="dropdown-item">
-                          {t('Video')}
+                          Video
                         </Link>
                         <Link to="ui-general" className="dropdown-item">
-                          {t('General')}
+                          General
                         </Link>
                         <Link to="ui-colors" className="dropdown-item">
-                          {t('Colors')}
+                          Colors
                         </Link>
                         <Link to="ui-rating" className="dropdown-item">
-                          {t('Rating')}
+                          Rating
                         </Link>
                       </div>
                     </Col>
@@ -197,7 +198,7 @@ function Navbar({ location, leftMenu, t, menuOpen }) {
                     </Link>
                     <div className={classname('dropdown-menu', { show: email })}>
                       <Link to="email-inbox" className="dropdown-item">
-                        {t('Inbox')}
+                        {t('')}
                       </Link>
                       <Link to="email-read" className="dropdown-item">
                         {t('Read Email')}
@@ -542,4 +543,4 @@ const mapStatetoProps = (state) => {
   return { leftMenu };
 };
 
-export default withRouter(connect(mapStatetoProps, {})(withTranslation()(Navbar)));
+export default withRouter(connect(mapStatetoProps, {})(Navbar));

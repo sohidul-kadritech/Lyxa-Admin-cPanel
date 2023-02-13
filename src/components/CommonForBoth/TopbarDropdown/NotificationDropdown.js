@@ -1,13 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Dropdown, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
-// i18n
-import { withTranslation } from 'react-i18next';
-
-function NotificationDropdown({ t }) {
+function NotificationDropdown() {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false);
 
@@ -26,7 +22,7 @@ function NotificationDropdown({ t }) {
         <div className="p-3">
           <Row className="align-items-center">
             <Col>
-              <h6 className="m-0 font-size-16"> {t('Notifications')} (258)</h6>
+              <h6 className="m-0 font-size-16">Notifications</h6>
             </Col>
           </Row>
         </div>
@@ -110,7 +106,7 @@ function NotificationDropdown({ t }) {
         </SimpleBar>
         <div className="p-2 border-top d-grid">
           <Link className="btn btn-sm btn-link font-size-14 btn-block text-center" to="#">
-            <i className="mdi mdi-arrow-right-circle me-1"></i> {t('View all')}{' '}
+            <i className="mdi mdi-arrow-right-circle me-1"></i> View all
           </Link>
         </div>
       </DropdownMenu>
@@ -118,8 +114,4 @@ function NotificationDropdown({ t }) {
   );
 }
 
-export default withTranslation()(NotificationDropdown);
-
-NotificationDropdown.propTypes = {
-  t: PropTypes.any,
-};
+export default NotificationDropdown;

@@ -1,6 +1,5 @@
 import { get, map } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { withTranslation } from 'react-i18next';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 
 // i18n
@@ -50,4 +49,4 @@ function LanguageDropdown() {
   );
 }
 
-export default withTranslation()(LanguageDropdown);
+export default LanguageDropdown;

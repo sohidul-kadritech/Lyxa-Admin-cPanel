@@ -1,10 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal } from 'reactstrap';
 
 // i18n
-import { withTranslation } from 'react-i18next';
 // Redux
 import { withRouter } from 'react-router-dom';
 import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
@@ -14,7 +12,7 @@ import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject';
 
 import ChangePassword from '../ChangePassword';
 
-function ProfileMenu({ t }) {
+function ProfileMenu() {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false);
 
@@ -52,7 +50,7 @@ function ProfileMenu({ t }) {
           <DropdownMenu className="dropdown-menu-end">
             <DropdownItem tag="a" onClick={() => setIsChangePass(!isChangePass)}>
               <i className="fa fa-lock font-size-16 align-baseline me-2" />
-              {t('Change Password')}
+              Change Password
             </DropdownItem>
             <div className="dropdown-divider" />
             <p className="dropdown-item cursor-pointer" onClick={logout}>
@@ -93,13 +91,9 @@ function ProfileMenu({ t }) {
   );
 }
 
-ProfileMenu.propTypes = {
-  t: PropTypes.any,
-};
-
 const mapStatetoProps = (state) => {
   const { error, success } = state.Profile;
   return { error, success };
 };
 
-export default withRouter(connect(mapStatetoProps, {})(withTranslation()(ProfileMenu)));
+export default withRouter(connect(mapStatetoProps, {})(ProfileMenu));

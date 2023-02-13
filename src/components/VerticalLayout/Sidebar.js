@@ -3,7 +3,6 @@ import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 // i18n
-import { withTranslation } from 'react-i18next';
 import { adminMenuItem, customerServiceMenuItem, sellerMenuItem, shopMenuItem } from '../../assets/SideMenuItem';
 import SidebarContent from './SidebarContent';
 
@@ -32,4 +31,4 @@ function Sidebar() {
 const mapStatetoProps = (state) => ({
   layout: state.Layout,
 });
-export default connect(mapStatetoProps, {})(withRouter(withTranslation()(Sidebar)));
+export default connect(mapStatetoProps, {})(withRouter(Sidebar));
