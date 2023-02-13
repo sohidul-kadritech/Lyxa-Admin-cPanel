@@ -8,8 +8,8 @@ import Login from '../pages/Authentication/Login';
 import Dashboard from '../pages/Dashboard/index';
 
 // Gallery
-import AddBanner from '../pages/banner/AddBanner';
-import BannerPage from '../pages/banner/BannerPage';
+import AddBanner from '../pages/Banner/AddBanner';
+import BannerPage from '../pages/Banner/BannerPage';
 
 // User List
 import AdminList from '../pages/AdminControl/Admins/AdminList.js/AdminList';
