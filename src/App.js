@@ -4,9 +4,8 @@ import 'flatpickr/dist/themes/material_green.css';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 /* eslint-enable */
 /* eslint-disable */
-
-/* eslint-disable prettier/prettier */
 /* eslint-disable react/destructuring-assignment */
+
 import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +21,7 @@ import Authmiddleware from './routes/middleware/Authmiddleware';
 
 // layouts Format
 import NonAuthLayout from './components/NonAuthLayout';
-import VerticalLayout from './components/VerticalLayout';
+import VeritcalLayout from './components/VerticalLayout';
 
 // Import scss
 import './assets/scss/theme.scss';
@@ -182,7 +181,7 @@ export default function App() {
           routeList?.map((route) => (
             <Authmiddleware
               path={route.path}
-              layout={VerticalLayout}
+              layout={VeritcalLayout}
               component={route.component}
               key={route.path}
               isAuthProtected

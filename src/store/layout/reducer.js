@@ -1,5 +1,4 @@
 /* eslint-disable default-param-last */
-// @flow
 import {
   CHANGE_LAYOUT,
   CHANGE_LAYOUT_WIDTH,
@@ -13,9 +12,7 @@ import {
 
 const INIT_STATE = {
   layoutType: 'vertical',
-  // layoutType: "horizontal",
   layoutWidth: 'fluid',
-  // leftSideBarTheme: "dark",
   leftSideBarTheme: 'colored',
   leftSideBarType: 'default',
   topbarTheme: 'light',
