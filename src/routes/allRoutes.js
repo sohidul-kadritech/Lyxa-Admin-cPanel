@@ -1,36 +1,25 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-// Authentication related pages
+// Authentication
 import ForgetPwd from '../pages/Authentication/ForgetPassword';
 import Login from '../pages/Authentication/Login';
 import Register from '../pages/Authentication/Register';
-import Calendar from '../pages/Calendar';
-
-//  // Inner Authentication
 
 // Dashboard
 import Dashboard from '../pages/Dashboard/index';
-
-// Forms
-import FormUpload from '../pages/Forms/FormUpload';
 
 // Pages
 import Pages404 from '../pages/Utility/pages-404';
 import Pages500 from '../pages/Utility/pages-500';
 import PagesComingsoon from '../pages/Utility/pages-comingsoon';
 import PagesMaintenance from '../pages/Utility/pages-maintenance';
-import PagesGallery from '../pages/Utility/PagesGallery';
 
 // Gallery
 import AddBanner from '../pages/banner/AddBanner';
 import BannerPage from '../pages/banner/BannerPage';
-import ImageFolder from '../pages/gallery/ImageFolder';
 
 // User List
-
-import UsersList from '../pages/Users/UsersList/UsersList';
-
 import AdminList from '../pages/AdminControl/Admins/AdminList.js/AdminList';
 import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
 import Role from '../pages/AdminControl/Role/Role';
@@ -51,6 +40,7 @@ import SellerList from '../pages/Seller/SellerList/SellerList';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
+import UsersList from '../pages/Users/UsersList/UsersList';
 
 import AdminSettings from '../pages/AdminSettings/AdminSettings';
 import AppSettings from '../pages/AppSettings/AppSettings';
@@ -92,18 +82,14 @@ import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndCondi
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
 import Transactions from '../pages/Transactions/Transactions';
 
+// testing imports
+
 const userRoutes = [
   { path: '/dashboard', component: Dashboard },
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
   { path: '/orders/refused', component: RefusedOrders },
-  // { path: "/ui/cards", component: UiCards },
-  // { path: "/ui/data-tables", component: DatatableTables },
-  // { path: "/ui/tables", component: BasicTables },
-
-  { path: '/image-gallery', component: PagesGallery },
-  { path: '/image-folder', component: ImageFolder },
-  { path: '/image-upload', component: FormUpload },
+  // { path: '/test', component: LightData },
 
   // Banner
   { path: '/banner', component: BannerPage },
@@ -111,20 +97,17 @@ const userRoutes = [
   { path: '/banner/edit/:id', component: AddBanner },
 
   // Users
-
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
 
   // SELLER
-
   { path: '/seller/list', component: SellerList },
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },
   { path: '/seller/details/:id', component: SellerDetails },
 
   // SHOPS
-
   { path: '/shops/list', component: ShopList },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
@@ -133,7 +116,6 @@ const userRoutes = [
   { path: '/shops/tags', component: Tags },
 
   // PRODUCT
-
   { path: '/products/list', component: ProductList },
   { path: '/products/add', component: ProductAdd },
   { path: '/products/edit/:id', component: ProductAdd },
@@ -141,14 +123,12 @@ const userRoutes = [
   { path: '/products/unit-types', component: UnitTypes },
 
   // DELIVERY MAN
-
   { path: '/deliveryman/list', component: DeliverymanList },
   { path: '/deliveryman/add', component: DeliverymanAdd },
   { path: '/deliveryman/edit/:id', component: DeliverymanAdd },
   { path: '/deliveryman/details/:id', component: DeliverymanDetails },
 
   // DEALS
-
   { path: '/deals/list', component: DealsList },
   { path: '/deals/add', component: DealsAdd },
   { path: '/deals/edit/:id', component: DealsAdd },
@@ -157,7 +137,6 @@ const userRoutes = [
   { path: '/lyxa-pay', component: DropPayList },
 
   // APP WALLET
-
   { path: '/add-wallet/admin-log-history', component: AdminLogHistory },
   { path: '/add-wallet/seller-transactions', component: SellerTransactions },
   {
@@ -186,7 +165,6 @@ const userRoutes = [
   { path: '/admin/transactions', component: Transactions },
 
   // CHAT
-
   { path: '/customer-support', component: Chats },
   {
     path: '/customer-support/chats-by-single-order/:id',
@@ -195,7 +173,6 @@ const userRoutes = [
   { path: '/customer-support/details/:id', component: ChatDetails },
 
   // CATEGORIES AND TAGS
-
   { path: '/categories/list', component: CategoryList },
   // { path: "/categories/add", component: CategoryAdd },
   { path: '/categories/edit/:id', component: CategoryAdd },
@@ -205,14 +182,12 @@ const userRoutes = [
   { path: '/tags/add', component: TagAdd },
 
   // ADMIN CONTROL
-
   { path: '/admin/list', component: AdminList },
   { path: '/admin/create', component: CreateAdmin },
   { path: '/admin/edit/:id', component: CreateAdmin },
   { path: '/admin/role', component: Role },
 
   //  SETTINGS
-
   { path: '/admin/settings', component: AdminSettings },
   { path: '/app/settings', component: AppSettings },
   { path: '/percentage-setting', component: PercentageSetting },
@@ -222,7 +197,6 @@ const userRoutes = [
   { path: '/admin/database/collections', component: DatabaseSettings },
 
   // TERMS AND CONDTIONS
-
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
   { path: '/terms-and-conditions/shop-app', component: ShopTermsAndConditions },
   {
@@ -231,7 +205,6 @@ const userRoutes = [
   },
 
   // NOTIFICATIONS
-
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },
 
@@ -252,7 +225,6 @@ const customerServiceRoutes = [
   { path: '/deliveryman/add', component: DeliverymanAdd },
   { path: '/drop-pay', component: DropPayList },
   { path: '/customer-support', component: Chats },
-  { path: '/calender', component: Calendar },
   {
     path: '/customer-support/chats-by-single-order/:id',
     component: ChatsListByOrder,
