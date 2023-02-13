@@ -9,12 +9,6 @@ import Register from '../pages/Authentication/Register';
 // Dashboard
 import Dashboard from '../pages/Dashboard/index';
 
-// Pages
-import Pages404 from '../pages/Utility/pages-404';
-import Pages500 from '../pages/Utility/pages-500';
-import PagesComingsoon from '../pages/Utility/pages-comingsoon';
-import PagesMaintenance from '../pages/Utility/pages-maintenance';
-
 // Gallery
 import AddBanner from '../pages/banner/AddBanner';
 import BannerPage from '../pages/banner/BannerPage';
@@ -82,14 +76,13 @@ import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndCondi
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
 import Transactions from '../pages/Transactions/Transactions';
 
-// testing imports
+// testing routes
 
 const userRoutes = [
   { path: '/dashboard', component: Dashboard },
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
   { path: '/orders/refused', component: RefusedOrders },
-  // { path: '/test', component: LightData },
 
   // Banner
   { path: '/banner', component: BannerPage },
@@ -300,13 +293,6 @@ const authRoutes = [
   { path: '/login', component: Login },
   { path: '/forgot-password', component: ForgetPwd },
   { path: '/register', component: Register },
-
-  { path: '/pages-maintenance', component: PagesMaintenance },
-  { path: '/pages-comingsoon', component: PagesComingsoon },
-  { path: '/pages-404', component: Pages404 },
-  { path: '/pages-500', component: Pages500 },
-
-  // this route should be at the end of all other routes
   // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
 ];
 
