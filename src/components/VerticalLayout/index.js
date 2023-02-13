@@ -14,7 +14,6 @@ import {
 } from '../../store/actions';
 
 // Layout Related Components
-import Rightbar from '../CommonForBoth/Rightbar';
 import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -64,20 +63,13 @@ class Layout extends Component {
 
   render() {
     return (
-      <>
-        <div id="layout-wrapper">
-          <Header toggleMenuCallback={this.toggleMenuCallback} />
-          <Sidebar
-            theme={this.props.leftSideBarTheme}
-            type={this.props.leftSideBarType}
-            isMobile={this.state.isMobile}
-          />
-          <div className="main-content">{this.props.children}</div>
-          <ToastContainer />
-          <Footer />
-        </div>
-        {this.props.showRightSidebar ? <Rightbar /> : null}
-      </>
+      <div id="layout-wrapper">
+        <Header toggleMenuCallback={this.toggleMenuCallback} />
+        <Sidebar theme={this.props.leftSideBarTheme} type={this.props.leftSideBarType} isMobile={this.state.isMobile} />
+        <div className="main-content">{this.props.children}</div>
+        <ToastContainer />
+        <Footer />
+      </div>
     );
   }
 }
@@ -91,7 +83,6 @@ Layout.propTypes = {
   layoutWidth: PropTypes.any,
   leftSideBarTheme: PropTypes.any,
   leftSideBarType: PropTypes.any,
-  showRightSidebar: PropTypes.any,
   topbarTheme: PropTypes.any,
 };
 

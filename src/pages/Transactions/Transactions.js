@@ -53,6 +53,19 @@ function Transactions() {
   }, [trxSortByKey, trxSearchKey, trxAccountType]);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
+  const updateTrxType = (trx) => {
+    let newType = null;
+    const orderRoute = trx?.order ? `/orders/details/${trx?.order}` : null;
+
+    if (trx?.order) {
+      newType = <TypeInfo type="Order" linkItem={trx?.order.autoGenId} route={orderRoute} />;
+    } else {
+      newType = 'on going';
+    }
+
+    return newType;
+  };
+
   // GENERATE PDF
   const downloadPdf = () => {
     const unit = 'pt';
@@ -67,19 +80,6 @@ function Transactions() {
     const title = `Transactions`;
     const headers = [['ID', 'Amount', 'Type', 'Payment Method', 'Date']];
     const marginLeft = 40;
-
-    const updateTrxType = (trx) => {
-      let newType = null;
-      const orderRoute = trx?.order ? `/orders/details/${trx?.order}` : null;
-
-      if (trx?.order) {
-        newType = <TypeInfo type="Order" linkItem={trx?.order.autoGenId} route={orderRoute} />;
-      } else {
-        newType = 'on going';
-      }
-
-      return newType;
-    };
 
     const data = allTrxs.map((trx) => [
       trx._id,
