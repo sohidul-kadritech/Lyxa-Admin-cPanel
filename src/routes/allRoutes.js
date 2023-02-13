@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 
 // Authentication
 import Login from '../pages/Authentication/Login';
-import Register from '../pages/Authentication/Register';
 
 // Dashboard
 import Dashboard from '../pages/Dashboard/index';
@@ -286,9 +285,6 @@ const shopRoutes = [
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
-const authRoutes = [
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
-];
+const authRoutes = [{ path: '/login', component: Login }];
 
 export { userRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };
