@@ -2,7 +2,6 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 // Authentication
-import ForgetPwd from '../pages/Authentication/ForgetPassword';
 import Login from '../pages/Authentication/Login';
 import Register from '../pages/Authentication/Register';
 
@@ -77,13 +76,11 @@ import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndCondi
 import Transactions from '../pages/Transactions/Transactions';
 
 // testing routes
-
 const userRoutes = [
   { path: '/dashboard', component: Dashboard },
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
   { path: '/orders/refused', component: RefusedOrders },
-
   // Banner
   { path: '/banner', component: BannerPage },
   { path: '/banner/add', component: AddBanner },
@@ -204,6 +201,7 @@ const userRoutes = [
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
+
 const customerServiceRoutes = [
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
@@ -289,11 +287,8 @@ const shopRoutes = [
 ];
 
 const authRoutes = [
-  // { path: "/logout", component: Logout },
   { path: '/login', component: Login },
-  { path: '/forgot-password', component: ForgetPwd },
   { path: '/register', component: Register },
-  // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
 ];
 
 export { userRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };

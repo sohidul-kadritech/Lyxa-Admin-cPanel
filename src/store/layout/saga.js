@@ -111,8 +111,6 @@ function* changeLeftSidebarType({ payload: { sidebarType, isMobile } }) {
         yield call(manageBodyClass, 'vertical-collpsed', 'add');
         break;
       case 'condensed':
-        // yield call(manageBodyClass, "sidebar-enable", "add")
-        // if (!isMobile) yield call(manageBodyClass, "vertical-collpsed", "add")
         yield call(manageBodyClass, 'sidebar-enable', 'add');
         if (window.screen.width >= 992) {
           yield call(manageBodyClass, 'vertical-collpsed', 'remove');
