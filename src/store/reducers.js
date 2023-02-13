@@ -14,7 +14,6 @@ import adminReducer from './AdminControl/Admin/adminReducer';
 import { roleReducer } from './AdminControl/Role/roleReducer';
 import appWalletReducer from './appWallet/appWalletReducer';
 import bannerReducer from './banner/bannerReducer';
-import calendar from './calendar/reducer';
 import categoryReducer from './Category/categoryReducer';
 import chatReducer from './chat/chatReducer';
 import dashboardReducer from './Dashboard/dashboardReducer';
@@ -43,7 +42,6 @@ const rootReducer = combineReducers({
   appWalletReducer,
   adminReducer,
   bannerReducer,
-  calendar,
   chatReducer,
   categoryReducer,
   createFolder: folderCreateReducer,
