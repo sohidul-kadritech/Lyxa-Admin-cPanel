@@ -149,22 +149,6 @@ export default function App() {
     };
   }, [socket]);
 
-  // function getLayout() {
-  //   // default Vertical
-  //   let layoutCls = VerticalLayout;
-  //   switch (props.layout.layoutType) {
-  //     case 'horizontal':
-  //       layoutCls = HorizontalLayout;
-  //       break;
-  //     default:
-  //       layoutCls = VerticalLayout;
-  //       break;
-  //   }
-  //   return layoutCls;
-  // }
-
-  // const Layout = getLayout();
-
   return (
     <Router>
       <Switch>
@@ -200,7 +184,7 @@ export default function App() {
               path={route.path}
               layout={VerticalLayout}
               component={route.component}
-              key={Math.random()}
+              key={route.path}
               isAuthProtected
               exact
             />
@@ -209,15 +193,3 @@ export default function App() {
     </Router>
   );
 }
-
-// App.propTypes = {
-//   layout: PropTypes.any,
-// };
-
-// const mapStateToProps = () => ({
-//   layout: {
-//     layoutType: 'vertical',
-//   },
-// });
-
-// export default connect(mapStateToProps, null)(App);
