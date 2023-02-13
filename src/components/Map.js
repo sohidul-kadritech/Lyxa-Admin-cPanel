@@ -3,6 +3,11 @@ import GoogleMapReact from 'google-map-react';
 import React from 'react';
 import { GOOGLE_API_KEY } from '../assets/staticData';
 
+// use wrapper to avoid console errors
+function PointerWrapper() {
+  return <LocationOnIcon />;
+}
+
 function Map({ lat = 0, lng = 0 }) {
   const defaultProps = {
     center: {
@@ -21,10 +26,11 @@ function Map({ lat = 0, lng = 0 }) {
           region: 'US',
           libraries: ['places'],
         }}
+        yesIWantToUseGoogleMapApiInternals
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
-        <LocationOnIcon className="text-danger fs-2" />
+        <PointerWrapper lat={lat} lng={lng} />
       </GoogleMapReact>
     </div>
   );
