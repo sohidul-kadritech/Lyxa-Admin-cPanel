@@ -471,7 +471,7 @@ function ShopAdd() {
                       <Autocomplete
                         className="cursor-pointer"
                         disabled={!!(id || searchParams.get('sellerId') || account_type === 'seller')}
-                        value={seller}
+                        value={seller || null}
                         onChange={(event, newValue) => {
                           setSeller(newValue);
                         }}
@@ -747,7 +747,7 @@ function ShopAdd() {
                       <div>
                         <Autocomplete
                           className="cursor-pointer"
-                          value={tags.value}
+                          value={tags.value || null}
                           onChange={(event, newValue) => {
                             handleTagChange(newValue);
                           }}

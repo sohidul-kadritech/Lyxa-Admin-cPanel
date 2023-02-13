@@ -168,7 +168,6 @@ function OrdersList() {
               </Row>
             </CardBody>
           </Card>
-
           <div>
             <OrderTable orders={orders} status={status} loading={loading} />
           </div>

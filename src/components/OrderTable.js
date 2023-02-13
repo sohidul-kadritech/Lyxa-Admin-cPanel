@@ -56,6 +56,7 @@ function OrderTable({ orders = [], status, loading }) {
   const [isOtherReason, setIsOtherReason] = useState(false);
   const [orderFor, setOrderFor] = useState(null);
   const { socket } = useSelector((state) => state.socketReducer);
+  const [properOrderStatusOptions, setProperOrderStatusOptions] = useState(orderStatusOptions);
   const [orderCancel, setOrderCancel] = useState({
     cancelReason: '',
     orderId: null,
@@ -89,8 +90,12 @@ function OrderTable({ orders = [], status, loading }) {
   const { account_type } = useSelector((store) => store.Login.admin);
 
   // UPDATE ORDER STATUS
-
-  const updateOrderStatus = (oId, shopId, orderStatus, shopDeliveryMethod) => {
+  const updateOrderStatus = (oId, shopId, orderStatus, shopDeliveryMethod, isSelfDelivery) => {
+    console.log({ isSelfDelivery });
+    if (isSelfDelivery) {
+      const options = orderStatusOptions.filter((item) => item.value !== 'ready_to_pickup');
+      setProperOrderStatusOptions(options);
+    }
     setIsUpdateStatus(!isUpdateStatus);
     setOrderId(oId);
     setShop(shopId);
@@ -137,7 +142,6 @@ function OrderTable({ orders = [], status, loading }) {
   }, [status]);
 
   // GET ALL DELIVERY BOY
-
   useEffect(() => {
     if (orderStatus === 'accepted_delivery_boy') {
       dispatch(getAllActiveDeliveryMan(orderId));
@@ -145,7 +149,6 @@ function OrderTable({ orders = [], status, loading }) {
   }, [orderStatus]);
 
   // UPDATE IS FLAGED  OR NOT
-
   const updateIsFlaged = (flags) => {
     const isUser = flags.find((item) => item?.user);
     const isShop = flags.find((item) => item?.shop);
@@ -165,14 +168,12 @@ function OrderTable({ orders = [], status, loading }) {
   };
 
   // FLAG ACCOUNT CHANGE
-
   const FlagAccountChange = (e) => {
     const { name, checked } = e.target;
     setAccountType({ ...accountType, [name]: checked });
   };
 
   // SUBMIT ORDER FLAG
-
   // eslint-disable-next-line consistent-return
   const submitOrderFlag = (e) => {
     e.preventDefault();
@@ -195,7 +196,6 @@ function OrderTable({ orders = [], status, loading }) {
   };
 
   // GET ALL CANCEL REASON
-
   useEffect(() => {
     if (openCancelModal) {
       dispatch(getAllCancelReasons(true, 'admin'));
@@ -203,7 +203,6 @@ function OrderTable({ orders = [], status, loading }) {
   }, [openCancelModal]);
 
   // MODIFIED ORDER STATUS NAME
-
   const modifiedOrderStatus = (statusName) => {
     let newStatusName = '';
 
@@ -228,7 +227,6 @@ function OrderTable({ orders = [], status, loading }) {
   };
 
   //  UPDATE CANCEL ORDER REFUND TYPE
-
   const updateRefundType = (type) => {
     setOrderCancel({
       ...orderCancel,
@@ -267,7 +265,6 @@ function OrderTable({ orders = [], status, loading }) {
   };
 
   // CANCEL ORDER
-
   const submitOrderCancel = (e) => {
     e.preventDefault();
 
@@ -288,19 +285,20 @@ function OrderTable({ orders = [], status, loading }) {
   };
 
   // HANDLE THREE DOT MENU
-
   const handleMenu = (menu, item) => {
     if (menu === 'Update Status') {
+      setOrderFor(item?.orderFor);
+      if (item?.deliveryBoy) {
+        setDeliveryBoy(item?.deliveryBoy);
+      }
       updateOrderStatus(
         item?._id,
         item?.shop?._id,
         item?.orderStatus,
         item?.shopDeliveryMethod,
-        setOrderFor(item?.orderFor),
-        item?.deliveryBoy ? setDeliveryBoy(item?.deliveryBoy) : null
+        item?.orderFor === 'specific'
       );
     } else if (menu === 'Cancel Order') {
-      console.log(item);
       setOpenCancelModal(!openCancelModal);
       setOrderCancel({
         ...orderCancel,
@@ -454,7 +452,6 @@ function OrderTable({ orders = [], status, loading }) {
       </div>
 
       {/* UPDATE ORDER STATUS */}
-
       <Modal
         isOpen={isUpdateStatus}
         toggle={() => {
@@ -483,13 +480,13 @@ function OrderTable({ orders = [], status, loading }) {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={orderStatus}
+                value={orderStatus || null}
                 label="Food Type"
                 onChange={(event) => {
                   setOrderStatus(event.target.value);
                 }}
               >
-                {orderStatusOptions.map((item) => (
+                {properOrderStatusOptions.map((item) => (
                   <MenuItem key={Math.random()} value={item.value}>
                     {orderFor === 'specific' && item.value === 'accepted_delivery_boy' ? '' : item.label}
                   </MenuItem>
