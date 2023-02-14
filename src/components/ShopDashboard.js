@@ -17,8 +17,10 @@ const GraphInfo = lazy(() => import('./GraphInfo'));
 
 function ShopDashboard({ summary }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const { haveOwnDeliveryBoy } = useSelector((store) => store.Login.admin);
+  console.log(haveOwnDeliveryBoy);
 
-  const topSummaryData = [
+  let topSummaryData = [
     {
       id: 1,
       title: 'Earnings',
@@ -35,22 +37,7 @@ function ShopDashboard({ summary }) {
       icon: profitFlowIcon,
       iconBg: '#56ca00',
     },
-    {
-      id: 3,
-      title: 'Delivery Profit',
-      subTitle: '(Only from own riders)',
-      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || 0} ${currency}`,
-      icon: profitUpArrowIcon,
-      iconBg: '#1A4D2E',
-    },
-    // {
-    //   id: 4,
-    //   title: "Delivery Fee's",
-    //   subTitle: "(Total delivery fees)",
-    //   value: `${summary?.orderValue?.deliveryFee || 0} NGN`,
-    //   icon: deliveryIcon,
-    //   iconBg: "#00dcff",
-    // },
+
     {
       id: 5,
       title: 'Order Amount',
@@ -68,6 +55,22 @@ function ShopDashboard({ summary }) {
       iconBg: '#0c9da4',
     },
   ];
+
+  const selfDeliveryOnlySummary = [
+    {
+      id: 3,
+      title: 'Delivery Profit',
+      subTitle: '(Only from own riders)',
+      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || 0} ${currency}`,
+      icon: profitUpArrowIcon,
+      iconBg: '#1A4D2E',
+    },
+  ];
+
+  if (haveOwnDeliveryBoy) {
+    topSummaryData = [...topSummaryData, ...selfDeliveryOnlySummary];
+  }
+
   return (
     <GlobalWrapper>
       {topSummaryData.length > 0 && <TopSummery data={topSummaryData} />}

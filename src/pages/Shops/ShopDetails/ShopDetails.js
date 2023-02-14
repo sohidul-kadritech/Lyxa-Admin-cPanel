@@ -58,6 +58,17 @@ function ShopDetails() {
   const { account_type } = useSelector((store) => store.Login.admin);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
+  const getShop = async () => {
+    const data = await callApi(id, SINGLE_SHOP, 'shop');
+    if (data) {
+      const activeStatus = data?.liveStatus === 'online';
+      setLiveStatus(activeStatus);
+      setShop(data);
+    } else {
+      history.push('/shops/list', { replace: true });
+    }
+  };
+
   useEffect(() => {
     if (id) {
       const findShop = shops.find((item) => item._id === id);
@@ -66,23 +77,14 @@ function ShopDetails() {
         setLiveStatus(activeStatus);
         setShop(findShop);
       } else {
-        // callApi(id);
-        (async function getShop() {
-          const data = await callApi(id, SINGLE_SHOP, 'shop');
-          if (data) {
-            const activeStatus = data?.liveStatus === 'online';
-            setLiveStatus(activeStatus);
-            setShop(data);
-          } else {
-            history.push('/shops/list', { replace: true });
-          }
-        })();
+        getShop();
       }
+
+      // get shop summary
     }
   }, [id]);
 
   // CHANGE LIVE STATUS
-
   const changeLiveStatus = (e) => {
     setLiveStatus(e.target.checked);
     const status = e.target.checked;
@@ -146,7 +148,6 @@ function ShopDetails() {
   const updatePriceRange = (value) => (value === 1 ? '$' : value === 2 ? '$$' : value === '3' ? '$$$' : '$$$$');
 
   // DOWNLOAD PRODUCT TEMPLATE
-
   const downloadProductTemplate = async () => {
     try {
       // eslint-disable-next-line no-unused-vars
@@ -205,7 +206,6 @@ function ShopDetails() {
       <div className="page-content">
         <Container fluid>
           <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Shop" isRefresh={false} />
-
           {isOpen && (
             <Lightbox
               mainSrc={selectedImg}
@@ -294,7 +294,6 @@ function ShopDetails() {
                       mapLink={`${MAP_URL}?z=10&t=m&q=loc:${shop?.address?.latitude}+${shop?.address?.longitude}`}
                       name="Location"
                     />
-
                     <InfoTwo
                       value={`Mon to Fri - ${shop?.shopStartTimeText} ${
                         shop?.shopStartTimeText.split(':')[0] < 12 ? 'AM' : 'PM'
@@ -386,9 +385,7 @@ function ShopDetails() {
               </Row>
             </CardBody>
           </Card>
-
           {/* SHOP FLAGS AND REVIEWS */}
-
           <Row className="mb-3">
             <Col xl={6}>
               <Accordion>
@@ -543,7 +540,6 @@ function ShopDetails() {
         </Container>
       </div>
       {/* DEAL */}
-
       <Modal
         isOpen={modalCenter}
         toggle={() => {
