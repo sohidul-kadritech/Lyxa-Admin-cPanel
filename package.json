@@ -51,7 +51,6 @@
     "node-sass": "^8.0.0",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
-    "react-apexcharts": "^1.3.9",
     "react-auth-code-input": "1.2.1",
     "react-bootstrap-editable": "^0.8.2",
     "react-bootstrap-sweetalert": "^5.2.0",
