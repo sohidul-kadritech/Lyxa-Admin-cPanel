@@ -1,4 +1,4 @@
-import 'chartist/dist/scss/chartist.scss';
+// import 'chartist/dist/scss/chartist.scss';
 import React, { lazy, Suspense, useEffect } from 'react';
 import MetaTags from 'react-meta-tags';
 import { Card, CardBody, Col, Container, Row, Spinner } from 'reactstrap';
