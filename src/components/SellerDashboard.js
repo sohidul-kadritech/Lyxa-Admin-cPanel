@@ -18,8 +18,9 @@ const GraphInfo = lazy(() => import('./GraphInfo'));
 
 function SellerDashboard({ summary }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const shops = useSelector((store) => store.Login.admin.shops);
 
-  const topSummaryData = [
+  let topSummaryData = [
     {
       id: 1,
       title: 'Earnings',
@@ -37,22 +38,6 @@ function SellerDashboard({ summary }) {
       iconBg: '#56ca00',
     },
     {
-      id: 3,
-      title: 'Delivery Profit',
-      subTitle: '(Only from delivery fees)',
-      value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || 0?.toFixed(2)} ${currency}`,
-      icon: profitUpArrowIcon,
-      iconBg: '#4C0033',
-    },
-    // {
-    //   id: 4,
-    //   title: "Delivery Fee's",
-    //   subTitle: "(Total delivery fees)",
-    //   value: `${summary?.orderValue?.deliveryFee ?? 0} NGN`,
-    //   icon: deliveryIcon,
-    //   iconBg: "#00dcff",
-    // },
-    {
       id: 5,
       title: 'Order Amount',
       subTitle: '(Ex delivery fees)',
@@ -69,6 +54,26 @@ function SellerDashboard({ summary }) {
       iconBg: '#0c9da4',
     },
   ];
+
+  if (shops?.length > 0) {
+    console.log(shops);
+    const selfDeliveredShop = shops.find((item) => item.haveOwnDeliveryBoy);
+    const selfDeliveryOnlySummary = [
+      {
+        id: 3,
+        title: 'Delivery Profit',
+        subTitle: '(Only from delivery fees)',
+        value: `${summary?.orderValue?.deliveryFee?.toFixed(2) || 0?.toFixed(2)} ${currency}`,
+        icon: profitUpArrowIcon,
+        iconBg: '#4C0033',
+      },
+    ];
+
+    if (selfDeliveredShop) {
+      topSummaryData = [...topSummaryData, ...selfDeliveryOnlySummary];
+    }
+  }
+
   return (
     <GlobalWrapper>
       {topSummaryData.length > 0 && <TopSummery data={topSummaryData} />}
