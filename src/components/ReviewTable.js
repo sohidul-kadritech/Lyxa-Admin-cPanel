@@ -31,7 +31,7 @@ function ReviewTable({ reviews, isFromOrder }) {
               >
                 {item?.order?.orderId}
               </Td>
-              <Td>{!item?.review ? 'No Review' : item?.review}</Td>
+              <Td>{!item?.review ? 'No Comment' : item?.review}</Td>
               <Td>{item?.rating}</Td>
             </Tr>
           ))
