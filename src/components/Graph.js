@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import Flatpickr from 'react-flatpickr';
 import Select from 'react-select';
 import { Card, CardBody, Col, Row, Spinner } from 'reactstrap';
@@ -25,11 +25,11 @@ function Graph({
     datasets: [
       {
         label: 'Analytics',
-        backgroundColor: '#02a499',
-        borderColor: '#02a499',
+        backgroundColor: '#ffeded',
+        borderColor: '#df1e32',
         borderWidth: 1,
-        hoverBackgroundColor: '#02a499',
-        hoverBorderColor: '#02a499',
+        hoverBackgroundColor: '#df1e32',
+        hoverBorderColor: '#df1e32',
         data: chartData?.series ?? [],
       },
     ],
@@ -171,7 +171,7 @@ function Graph({
               {isLoading ? (
                 <Spinner animation="border" color="success" />
               ) : (
-                <Bar width={600} height={245} data={data} options={option} />
+                <Line width={600} height={245} data={data} options={option} />
               )}
             </div>
           </Col>
