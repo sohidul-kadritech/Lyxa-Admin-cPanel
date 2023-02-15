@@ -92,7 +92,6 @@ function ChatDetails() {
     if (id) {
       setIsLoading(true);
       const status = searchParams.get('status');
-
       dispatch(setChatStatusFalse(status === 'closed'));
       dispatch(setAcceptChat(status === 'accepted'));
       setChatStatus(status);
@@ -136,7 +135,7 @@ function ChatDetails() {
   //  JOIN TO THE CHAT ROOM
   useEffect(() => {
     if (chatStatus === 'accepted' && socket) {
-      socket.emit('join_user_and_admin_chat', { room: id, data: { access_token } });
+      socket.emit('join_user_and_admin_chat', { room: requestId, data: { access_token } });
     }
   }, [chatStatus, socket]);
 
@@ -162,7 +161,6 @@ function ChatDetails() {
 
   // CLOSE CONVERSATION ACTION
   const handleClosedConversation = () => {
-    const requestId = request?.at(-1)?.adminChatRequest?._id;
     dispatch(closeConversation(requestId));
     setconfirm_alert(false);
     setsuccess_dlg(true);
@@ -172,7 +170,6 @@ function ChatDetails() {
 
   // accept conversation
   const handleAcceptConversation = () => {
-    const requestId = request?.at(-1)?.adminChatRequest?._id;
     dispatch(acceptChatReq(requestId));
     setconfirm_alert(false);
     setsuccess_dlg(true);

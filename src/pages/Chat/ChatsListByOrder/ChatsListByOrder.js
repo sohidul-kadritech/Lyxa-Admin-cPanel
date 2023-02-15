@@ -21,6 +21,8 @@ function ChatsListByOrder() {
   const [list, setList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log(list);
+
   const callApi = async (refresh, orderId) => {
     if (refresh) {
       setIsLoading(true);
