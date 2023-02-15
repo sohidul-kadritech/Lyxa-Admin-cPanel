@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
@@ -54,7 +55,9 @@ function ChatDetails() {
 
   // Scroll to Bottom
   const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    }, 5);
   };
 
   const callApi = async (orderId) => {
@@ -65,11 +68,6 @@ function ChatDetails() {
         },
       });
 
-      const response = await requestApi().request(LAST_FIVE_ORDER + userId);
-      if (data?.status) {
-        setLastFiveOrder(response?.data?.data);
-      }
-
       if (data.status) {
         setIsLoading(false);
         const chats = data?.data?.chats;
@@ -77,6 +75,13 @@ function ChatDetails() {
         setRequestId(chats[length - 1]?.adminChatRequest?._id);
         setRequest(data?.data?.chats);
         scrollToBottom();
+      }
+
+      // last five order
+      const response = await requestApi().request(LAST_FIVE_ORDER + userId);
+
+      if (data?.status) {
+        setLastFiveOrder(response?.data?.data);
       }
     } catch (e) {
       console.log(e.message);
@@ -143,14 +148,15 @@ function ChatDetails() {
 
   useEffect(() => {
     if (status) {
-      (async function getSingleChat() {
-        const data = await callApi(id, SINGLE_CHAT, 'chatRequest');
-        if (data) {
-          setRequest(data);
-        }
-      })();
+      const newMessage = {
+        message,
+        type: 'admin',
+        createdAt: new Date(),
+      };
 
+      setRequest((prev) => [...prev, newMessage]);
       setMessage('');
+      scrollToBottom();
     }
   }, [status]);
 
@@ -293,8 +299,8 @@ function ChatDetails() {
                     >
                       {request?.length > 0 && (
                         <ul className="conversation-list" data-simplebar>
-                          {request?.map((chat) => (
-                            <div key={Math.random()}>
+                          {request?.map((chat, index) => (
+                            <div key={index}>
                               {chat?.type === 'system' && (
                                 <div className="mb-4 ">
                                   <p className="text-center">{new Date(chat.createdAt).toLocaleString()}</p>

@@ -97,12 +97,11 @@ const chatReducer = (state = initialState, action) => {
     case actionType.SEND_MSG_TO_USER_REQUEST_SUCCESS:
       return {
         ...state,
-        // loading: false,
         status: true,
         isSendingMsg: false,
-        chatRequests: state.chatRequests.map((item) =>
-          item._id === payload._id ? { ...item, chats: [...item?.chats, payload] } : item
-        ),
+        // chatRequests: state.chatRequests.map((item) =>
+        //   item._id === payload._id ? { ...item, chats: [...item?.chats, payload] } : item
+        // ),
       };
 
     case actionType.SEND_MSG_TO_USER_REQUEST_FAIL:
