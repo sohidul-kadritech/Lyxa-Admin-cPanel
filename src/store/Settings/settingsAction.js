@@ -59,6 +59,14 @@ export const updateSearchDeliveryBoyKm = (km) => (dispatch) => {
   });
 };
 
+// SEARCH DELIVERY BOY DISTANCE KM
+export const updateSearchButlerKm = (km) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_SEARCH_BUTLER_KM,
+    payload: km,
+  });
+};
+
 export const removeSearchDeliveryBoyKm = (index) => (dispatch) => {
   dispatch({
     type: actionType.REMOVE_SEARCH_DELIVERY_BOY_KM,
@@ -66,6 +74,12 @@ export const removeSearchDeliveryBoyKm = (index) => (dispatch) => {
   });
 };
 
+export const removeSearchButlerKm = (index) => (dispatch) => {
+  dispatch({
+    type: actionType.REMOVE_SEARCH_BUTLER_KM,
+    payload: index,
+  });
+};
 // GET ALL ADMIN SETTINGS VALUE
 
 export const getAllAdminSettings = () => async (dispatch) => {
@@ -140,7 +154,6 @@ export const updateAdminSettings = () => async (dispatch, getState) => {
 };
 
 // UPDATE NEAR SHOP DISTANCE KEY
-
 export const updateNearByShopKey = (distance) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_NEAR_BY_SHOP,
@@ -148,8 +161,14 @@ export const updateNearByShopKey = (distance) => (dispatch) => {
   });
 };
 
+// UPDATE MAX BUTLER DISTANCE
+export const updateMaxDistanceForButler = (distance) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_MAX_BUTLER_DISTANCE,
+    payload: distance,
+  });
+};
 // MAX DISCOUNT AMOUTN UPDATE
-
 export const updateMaxDiscount = (amount) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_MAX_DISCOUNT,
@@ -158,7 +177,6 @@ export const updateMaxDiscount = (amount) => (dispatch) => {
 };
 
 // UPDATE DROP  CREDIT
-
 export const updateDropCreditLimit = (amount) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_DROP_CREDIT_LIMIT,

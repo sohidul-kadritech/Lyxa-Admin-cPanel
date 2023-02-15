@@ -8,12 +8,15 @@ import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
   getAllAppSettings,
+  removeSearchButlerKm,
   removeSearchDeliveryBoyKm,
   updateAppSettings,
   updateCurrency,
   updateDropCreditLimit,
   updateMaxDiscount,
+  updateMaxDistanceForButler,
   updateNearByShopKey,
+  updateSearchButlerKm,
   updateSearchDeliveryBoyKm,
   updateVat,
 } from '../../store/Settings/settingsAction';
@@ -35,12 +38,15 @@ const dataLoadingIntitial = {
   maxCustomerServiceValue: false,
   maxCustomerButlerServiceValue: false,
   searchDeliveryBoyKm: false,
+  maxDistanceForButler: false,
+  searchDeliveryBoyKmForButler: false,
 };
 
 function AppSettings() {
   const dispatch = useDispatch();
   const { loading, appSettingsOptions } = useSelector((state) => state.settingsReducer);
   const [areaChangeKey, setAreaChangeKey] = useState('');
+  const [areaChangeKeyButler, setAreaChangeKeyButler] = useState('');
   const [dataIsLoading, setDataIsLoading] = useState(dataLoadingIntitial);
 
   // get all settings
@@ -64,7 +70,6 @@ function AppSettings() {
   const handleKmAdd = (evt) => {
     if (['Enter', 'Tab', ','].includes(evt.key)) {
       evt.preventDefault();
-
       const value = areaChangeKey.trim();
 
       if (appSettingsOptions.searchDeliveryBoyKm.length === 3) {
@@ -85,58 +90,42 @@ function AppSettings() {
       }
     }
   };
+  // eslint-disable-next-line consistent-return
+  const handleButlerKmAdd = (evt) => {
+    if (['Enter', 'Tab', ','].includes(evt.key)) {
+      evt.preventDefault();
+      const value = areaChangeKeyButler.trim();
 
-  console.log(appSettingsOptions);
+      if (appSettingsOptions.searchDeliveryBoyKmForButler.length === 3) {
+        return toast.warn('Maximum 3 items can add', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+
+      if (value) {
+        setAreaChangeKeyButler('');
+        dispatch(updateSearchButlerKm(value));
+      }
+    }
+  };
 
   return (
     <GlobalWrapper>
       <div className="page-content">
         <Container fluid>
           <Breadcrumb maintitle="Lyxa" breadcrumbItem="App Settings" isRefresh={false} />
-          <Grid container spacing={3}>
-            {/* max discount */}
-            <Grid item md={12}>
-              <Card style={{ marginBottom: '10px' }}>
-                <CardBody>
+          <Card style={{ marginBottom: '10px' }}>
+            <CardBody>
+              <Grid spacing={3} container>
+                {/* Lyxa Pay Limit */}
+                <Grid item md={6}>
                   <Stack spacing={2} direction="row">
-                    <TextField
-                      style={{ width: '100%' }}
-                      id="outlined-basic"
-                      label="Near Shop Distance (KM)"
-                      variant="outlined"
-                      placeholder="Enter near shop Distance"
-                      value={appSettingsOptions?.nearByShopKm ?? 0}
-                      onChange={(e) => {
-                        dispatch(updateNearByShopKey(e.target.value));
-                      }}
-                      type="number"
-                      name="nearByShopKm"
-                    />
-                    <Button
-                      color="success"
-                      onClick={() => {
-                        updateSettings(['nearByShopKm']);
-                        setDataIsLoading((prev) => ({
-                          ...prev,
-                          nearByShopKm: true,
-                        }));
-                      }}
-                      disabled={dataIsLoading.nearByShopKm}
-                      className="d-block"
-                      style={{
-                        width: '20%',
-                        padding: '10px 0',
-                        backgroundColor: '#313131',
-                        marginLeft: '5px',
-                        border: 0,
-                      }}
-                    >
-                      {dataIsLoading.nearByShopKm ? (
-                        <Spinner animation="border" variant="success" size="sm"></Spinner>
-                      ) : (
-                        'Update'
-                      )}
-                    </Button>
                     <TextField
                       style={{ width: '100%' }}
                       id="outlined-basic"
@@ -180,8 +169,53 @@ function AppSettings() {
                       )}
                     </Button>
                   </Stack>
-
-                  <Stack spacing={2} direction="row" style={{ marginTop: '25px' }}>
+                </Grid>
+                {/* near by shop km */}
+                <Grid item md={6}>
+                  <Stack spacing={2} direction="row">
+                    <TextField
+                      style={{ width: '100%' }}
+                      id="outlined-basic"
+                      label="Near Shop Distance (KM)"
+                      variant="outlined"
+                      placeholder="Enter near shop Distance"
+                      value={appSettingsOptions?.nearByShopKm ?? 0}
+                      onChange={(e) => {
+                        dispatch(updateNearByShopKey(e.target.value));
+                      }}
+                      type="number"
+                      name="nearByShopKm"
+                    />
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        updateSettings(['nearByShopKm']);
+                        setDataIsLoading((prev) => ({
+                          ...prev,
+                          nearByShopKm: true,
+                        }));
+                      }}
+                      disabled={dataIsLoading.nearByShopKm}
+                      className="d-block"
+                      style={{
+                        width: '20%',
+                        padding: '10px 0',
+                        backgroundColor: '#313131',
+                        marginLeft: '5px',
+                        border: 0,
+                      }}
+                    >
+                      {dataIsLoading.nearByShopKm ? (
+                        <Spinner animation="border" variant="success" size="sm"></Spinner>
+                      ) : (
+                        'Update'
+                      )}
+                    </Button>
+                  </Stack>
+                </Grid>
+                {/* max discount */}
+                <Grid item md={6}>
+                  <Stack spacing={2} direction="row">
                     <TextField
                       style={{ width: '100%' }}
                       id="outlined-basic"
@@ -220,6 +254,11 @@ function AppSettings() {
                         'Update'
                       )}
                     </Button>
+                  </Stack>
+                </Grid>
+                {/* Max Item Price */}
+                <Grid item md={6}>
+                  <Stack spacing={2} direction="row">
                     <TextField
                       style={{ width: '100%' }}
                       id="outlined-basic"
@@ -260,8 +299,10 @@ function AppSettings() {
                       )}
                     </Button>
                   </Stack>
-                  <Stack spacing={2} direction="row"></Stack>
-                  <Stack spacing={2} direction="row" style={{ marginTop: '25px' }}>
+                </Grid>
+                {/* VAT */}
+                <Grid item md={6}>
+                  <Stack spacing={2} direction="row">
                     <TextField
                       style={{ width: '100%' }}
                       id="outlined-basic"
@@ -297,7 +338,11 @@ function AppSettings() {
                         'Update'
                       )}
                     </Button>
-
+                  </Stack>
+                </Grid>
+                {/* Currency */}
+                <Grid item md={6}>
+                  <Stack spacing={2} direction="row">
                     <FormControl sx={{ width: '100%' }}>
                       <InputLabel>Currency</InputLabel>
                       <Select
@@ -343,8 +388,53 @@ function AppSettings() {
                       )}
                     </Button>
                   </Stack>
-
-                  <Stack spacing={2} direction="row" mb={2} style={{ marginTop: '25px' }}>
+                </Grid>
+                {/* max butler distance */}
+                <Grid item md={6}>
+                  <Stack spacing={2} direction="row">
+                    <TextField
+                      style={{ width: '100%' }}
+                      id="outlined-basic"
+                      label="Max Butler Distance (KM)"
+                      variant="outlined"
+                      placeholder="Enter max butler distance"
+                      value={appSettingsOptions?.maxDistanceForButler ?? 0}
+                      onChange={(e) => {
+                        dispatch(updateMaxDistanceForButler(e.target.value));
+                      }}
+                      type="number"
+                      name="maxDistanceForButler"
+                    />
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        updateSettings(['maxDistanceForButler']);
+                        setDataIsLoading((prev) => ({
+                          ...prev,
+                          maxDistanceForButler: true,
+                        }));
+                      }}
+                      disabled={dataIsLoading.maxDistanceForButler}
+                      className="d-block"
+                      style={{
+                        width: '20%',
+                        padding: '10px 0',
+                        backgroundColor: '#313131',
+                        marginLeft: '5px',
+                        border: 0,
+                      }}
+                    >
+                      {dataIsLoading.maxDistanceForButler ? (
+                        <Spinner animation="border" variant="success" size="sm"></Spinner>
+                      ) : (
+                        'Update'
+                      )}
+                    </Button>
+                  </Stack>
+                </Grid>
+                {/* Delivery Boy Search Area */}
+                <Grid item xs={12}>
+                  <Stack spacing={2} direction="row" mb={2}>
                     <TextField
                       style={{ width: '100%' }}
                       id="outlined-basic"
@@ -399,10 +489,68 @@ function AppSettings() {
                       ))}
                     </Paper>
                   )}
-                </CardBody>
-              </Card>
-            </Grid>
-          </Grid>
+                </Grid>
+                {/* Butler Boy Search Area */}
+                <Grid item xs={12}>
+                  <Stack spacing={2} direction="row" mb={2}>
+                    <TextField
+                      style={{ width: '100%' }}
+                      id="outlined-basic"
+                      label="Butler Search Area"
+                      variant="outlined"
+                      placeholder="Type search area then press Enter"
+                      value={areaChangeKeyButler}
+                      type="number"
+                      onKeyDown={handleButlerKmAdd}
+                      onChange={(e) => setAreaChangeKeyButler(e.target.value)}
+                      name="searchDeliveryBoyKmForButler"
+                    />
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        updateSettings(['searchDeliveryBoyKmForButler']);
+                        setDataIsLoading((prev) => ({
+                          ...prev,
+                          searchDeliveryBoyKmForButler: true,
+                        }));
+                      }}
+                      disabled={dataIsLoading.searchDeliveryBoyKmForButler}
+                      className="d-block"
+                      style={{
+                        width: '20%',
+                        padding: '10px 0',
+                        backgroundColor: '#313131',
+                        marginLeft: '5px',
+                        border: 0,
+                      }}
+                    >
+                      {dataIsLoading.searchDeliveryBoyKmForButler ? (
+                        <Spinner animation="border" variant="success" size="sm"></Spinner>
+                      ) : (
+                        'Update'
+                      )}
+                    </Button>
+                  </Stack>
+                  {appSettingsOptions?.searchDeliveryBoyKmForButler?.length > 0 && (
+                    <Paper className=" p-3">
+                      {appSettingsOptions?.searchDeliveryBoyKmForButler?.map((item, index) => (
+                        <div className="tag__wrapper" key={Math.random()}>
+                          {item}
+                          <button
+                            type="button"
+                            className="button"
+                            onClick={() => dispatch(removeSearchButlerKm(index))}
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      ))}
+                    </Paper>
+                  )}
+                </Grid>
+              </Grid>
+            </CardBody>
+          </Card>
         </Container>
       </div>
     </GlobalWrapper>
