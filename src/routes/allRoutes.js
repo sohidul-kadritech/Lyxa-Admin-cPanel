@@ -262,7 +262,6 @@ const sellerRoutes = [
 
 const shopRoutes = [
   { path: '/dashboard', component: Dashboard },
-  { path: '/vat', component: Vat },
 
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },

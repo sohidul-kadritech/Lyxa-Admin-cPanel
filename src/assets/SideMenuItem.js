@@ -288,7 +288,7 @@ export const adminMenuItem = [
   },
   {
     id: 122,
-    name: 'Vat',
+    name: 'VAT',
     icon: 'fas fa-clipboard-list',
     link: '/vat',
     isSubmenu: false,
@@ -748,12 +748,5 @@ export const shopMenuItem = [
         isSubmenu: false,
       },
     ],
-  },
-  {
-    id: 122,
-    name: 'Vat',
-    icon: 'fas fa-clipboard-list',
-    link: '/vat',
-    isSubmenu: false,
   },
 ];

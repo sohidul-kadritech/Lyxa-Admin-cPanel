@@ -9,8 +9,6 @@ export const getAllVatInfo = (reqBody, accountType, shopId) => async (dispatch, 
   reqBody.pageSize = pageSize;
   reqBody.pagingRange = 5;
 
-  console.log(accountType);
-
   let API = GET_ALL_ADMIN_VAT;
 
   if (accountType !== 'admin') {
@@ -26,7 +24,9 @@ export const getAllVatInfo = (reqBody, accountType, shopId) => async (dispatch, 
       data: reqBody,
       method: 'POST',
     });
+
     console.log(data);
+
     // status true
     if (data?.status) {
       dispatch({
@@ -60,22 +60,22 @@ export const settleVat = (reqBody, accountType) => async (dispatch) => {
   });
 
   try {
-    const { data } = await requestApi().request(API, {
+    const resp = await requestApi().request(API, {
       method: 'POST',
       data: reqBody,
     });
+    console.log(resp);
 
-    if (data?.status) {
+    if (resp?.data?.status) {
       dispatch({
         type: actionType.SETTLE_VAT_REQUEST_SUCCESS,
       });
     } else {
-      successMsg(data?.message);
+      successMsg(resp?.data?.message);
       dispatch({
         type: actionType.SETTLE_VAT_REQUEST_FAIL,
       });
     }
-    console.log(data);
   } catch (error) {
     successMsg(error?.message);
 

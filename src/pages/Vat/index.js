@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import Flatpickr from 'react-flatpickr';
@@ -50,10 +51,16 @@ function SingleShopTransactions() {
       title: 'Unpaid VAT',
       value: `${(summary?.totalUnsettleVat || 0).toFixed(2)} ${currency}`,
       icon: earningFlowIcon,
-      iconBg: '#0008C1',
+      iconBg: 'red',
     },
     {
       title: 'Paid VAT',
+      value: `${(summary?.totalVat - summary?.totalUnsettleVat || 0).toFixed(2)} ${currency}`,
+      icon: moneyExchangeIcon,
+      iconBg: '#56ca00',
+    },
+    {
+      title: 'Target VAT',
       value: `${(summary?.totalVat || 0).toFixed(2)} ${currency}`,
       icon: moneyExchangeIcon,
       iconBg: '#0c9da4',
@@ -74,23 +81,30 @@ function SingleShopTransactions() {
       endDate,
     };
 
+    if (account_type === 'shop') {
+      reqBody.tnxFilter.type = ['VatAmountSettleByShop'];
+    }
+
     dispatch(getAllVatInfo(reqBody, account_type, accountId));
   };
 
   // open modal
   const openModal = () => {
     setIsModalOpen(true);
-    setSettleAmount(summary?.totalUnsettleVat);
   };
 
   // pay vat
   const payVat = () => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
+      successMsg('Start date cannot be greater than end date', 'error');
+      return;
+    }
     if (settleAmount < 1) {
       successMsg('Please enter valid amount', 'error');
       return;
     }
     if (settleAmount > summary.totalUnsettleVat) {
-      successMsg('Can not pay more than unsettled amount', 'error');
+      successMsg('Can not pay more than unpaid amount', 'error');
       return;
     }
 
@@ -112,8 +126,10 @@ function SingleShopTransactions() {
   useEffect(() => {
     if (account_type === 'shop') {
       setSummary({ totalUnsettleVat: vatSummary?.totalUnsettleVatForShop, totalVat: vatSummary?.totalVatForShop });
+      setSettleAmount(vatSummary?.totalUnsettleVatForShop);
     } else {
       setSummary(vatSummary);
+      setSettleAmount(vatSummary?.totalUnsettleVat);
     }
   }, [vatSummary]);
 
@@ -252,7 +268,7 @@ function SingleShopTransactions() {
                 <Col md={3} className="text-end" />
               </Row>
               <div className="d-flex justify-content-between pb-3">
-                <CardTitle className="h4"> Shop Transactions List</CardTitle>
+                <CardTitle className="h4">VAT Transactions List</CardTitle>
                 <div>
                   <Button className="btn btn-info ms-4" onClick={() => openModal()}>
                     Pay VAT
@@ -265,7 +281,7 @@ function SingleShopTransactions() {
                     <Th>ID</Th>
                     <Th>Amount ({currency})</Th>
                     <Th>Date</Th>
-                    <Th>Author</Th>
+                    <Th className={`${account_type === 'shop' ? 'd-none' : ''}`}>Author</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -273,8 +289,11 @@ function SingleShopTransactions() {
                     <Tr key={item?.autoGenId}>
                       <Td>{item?.autoGenId}</Td>
                       <Td>{item?.amount}</Td>
-                      <Td>{moment(item?.date).format('YYYY-MM-DD')}</Td>
-                      <Td>{item?.adminBy.name}</Td>
+                      <Td>
+                        <span className="d-block">{new Date(item?.createdAt).toLocaleDateString()}</span>
+                        <span className="d-block">{new Date(item?.createdAt).toLocaleTimeString()}</span>
+                      </Td>
+                      <Td className={`${account_type === 'shop' ? 'd-none' : ''}`}>{item?.adminBy?.name}</Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -330,16 +349,58 @@ function SingleShopTransactions() {
         </div>
         <div className="modal-body">
           <Row>
+            <Col lg={6} className="mb-3">
+              <div>
+                <label>Start Date</label>
+                <div className="form-group mb-0 w-100">
+                  <Flatpickr
+                    className="form-control d-block"
+                    id="startDate"
+                    placeholder="Select Start Date"
+                    value={startDate}
+                    onChange={(selectedDates, dateStr) => setStartDate(dateStr)}
+                    options={{
+                      altInput: true,
+                      altFormat: 'F j, Y',
+                      dateFormat: 'Y-m-d',
+                    }}
+                  />
+                </div>
+              </div>
+            </Col>
+            <Col lg={6} className="mb-3">
+              <div>
+                <label>End Date</label>
+                <div className="form-group mb-0">
+                  <Flatpickr
+                    className="form-control w-100"
+                    id="endDate"
+                    placeholder="Select End Date"
+                    value={endDate}
+                    onChange={(selectedDates, dateStr) => setEndDate(dateStr)}
+                    options={{
+                      altInput: true,
+                      altFormat: 'F j, Y',
+                      dateFormat: 'Y-m-d',
+                    }}
+                  />
+                </div>
+              </div>
+            </Col>
             <Col lg={12}>
-              <input
-                placeholder="Amount to settle"
-                className="form-control"
-                type="number"
-                value={settleAmount}
-                onChange={(e) => setSettleAmount(e.target.value)}
-                min={0}
-                max={summary.totalUnsettleVat}
-              />
+              <div>
+                <label>Amount</label>
+                <input
+                  placeholder="Amount to settle"
+                  className="form-control"
+                  type="number"
+                  value={settleAmount}
+                  disabled={loading || undefined}
+                  onChange={(e) => setSettleAmount(e.target.value)}
+                  min={0}
+                  max={summary.totalUnsettleVat}
+                />
+              </div>
             </Col>
             <Col lg={12}>
               <p className="d-flex items-center justify-content-between mt-4 mb-1">
@@ -365,7 +426,7 @@ function SingleShopTransactions() {
           </Row>
           <div className="mt-3 d-flex justify-content-end">
             <Button type="submit" color="success" disabled={loading} onClick={payVat}>
-              {loading ? 'Paying..' : 'Pay'}
+              Pay
             </Button>
           </div>
         </div>
