@@ -73,6 +73,7 @@ import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTerms
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
 import Transactions from '../pages/Transactions/Transactions';
+import Vat from '../pages/Vat';
 
 // testing routes
 const userRoutes = [
@@ -80,6 +81,9 @@ const userRoutes = [
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
   { path: '/orders/refused', component: RefusedOrders },
+  // vat
+  { path: '/vat', component: Vat },
+
   // Banner
   { path: '/banner', component: BannerPage },
   { path: '/banner/add', component: AddBanner },
@@ -258,6 +262,7 @@ const sellerRoutes = [
 
 const shopRoutes = [
   { path: '/dashboard', component: Dashboard },
+  { path: '/vat', component: Vat },
 
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },

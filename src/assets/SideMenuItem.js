@@ -287,6 +287,13 @@ export const adminMenuItem = [
     badgeId: 'sidebar-item-chat-badges',
   },
   {
+    id: 122,
+    name: 'Vat',
+    icon: 'fas fa-clipboard-list',
+    link: '/vat',
+    isSubmenu: false,
+  },
+  {
     id: 13,
     name: 'Admins',
     icon: 'fas fa-user-friends',
@@ -323,13 +330,6 @@ export const adminMenuItem = [
         link: '/categories/list',
         isSubmenu: false,
       },
-      // {
-      //   id: 141,
-      //   name: "Add",
-      //   icon: "fas fa-plus-circle",
-      //   link: "/categories/add",
-      //   isSubmenu: false,
-      // },
     ],
   },
   {
@@ -748,5 +748,12 @@ export const shopMenuItem = [
         isSubmenu: false,
       },
     ],
+  },
+  {
+    id: 122,
+    name: 'Vat',
+    icon: 'fas fa-clipboard-list',
+    link: '/vat',
+    isSubmenu: false,
   },
 ];

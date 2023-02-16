@@ -50,11 +50,15 @@ export const EDIT_ADMIN = `${ADMIN_ENDPOINT}/admins/update`;
 export const SINGLE_ADMIN = `${ADMIN_ENDPOINT}/admins/get-single-admin-details`;
 
 // CHANGE PASSWORD
-
 export const CHANGE_PASSWORD = `${ADMIN_ENDPOINT}/admins/change-password`;
 
-// ROLE
+// VAT
+export const GET_ALL_ADMIN_VAT = `${ADMIN_ENDPOINT}/drop-wallet/admin-vat-details`;
+export const GET_SINGLE_SHOP_VAT = `${ADMIN_ENDPOINT}/drop-wallet/shop-vat-details`;
+export const SETTLE_ADMIN_VAT = `${ADMIN_ENDPOINT}/drop-wallet/settle-admin-vat`;
+export const SETTLE_SHOP_VAT = `${ADMIN_ENDPOINT}/drop-wallet/settle-shop-vat`;
 
+// ROLE
 export const ADD_ADMIN_ROLE = `${ADMIN_ENDPOINT}/role/add`;
 export const GET_ALL_ADMIN_ROLE = `${ADMIN_ENDPOINT}/role`;
 export const EDIT_ADMIN_ROLE = `${ADMIN_ENDPOINT}/role/edit`;
@@ -62,7 +66,6 @@ export const DELETE_ADMIN_ROLE = `${ADMIN_ENDPOINT}/role/delete`;
 export const RESTORE_ADMIN_ROLE = `${ADMIN_ENDPOINT}/role/restore`;
 
 // USERS
-
 export const ALL_USERS = `${ADMIN_ENDPOINT}/user`;
 export const SINGLE_USER = `${ADMIN_ENDPOINT}/user/get-user-details`;
 export const USER_TRANSACTIONS = `${ADMIN_ENDPOINT}/user/get-user-transaction`;
@@ -93,7 +96,6 @@ export const GET_SELLER_CREDENTIALS = `${ADMIN_ENDPOINT}/seller/credential`;
 export const REMOVE_SELLER_CREDENTIAL = `${ADMIN_ENDPOINT}/seller/delete-credential`;
 
 // SHOP
-
 export const ADD_SHOP_DEAL = `${ADMIN_ENDPOINT}/shop/add-deal`;
 export const ADD_SHOP = `${ADMIN_ENDPOINT}/shop/add`;
 export const EDIT_SHOP = `${ADMIN_ENDPOINT}/shop/update`;
@@ -112,7 +114,6 @@ export const GET_SHOP_CREDENTIALS = `${ADMIN_ENDPOINT}/shop/credential`;
 export const REMOVE_SHOP_CREDENTIAL = `${ADMIN_ENDPOINT}/shop/delete-credential`;
 
 // PRODUCT
-
 export const ADD_PRODUCT = `${ADMIN_ENDPOINT}/product/add`;
 export const ALL_PRODUCT = `${ADMIN_ENDPOINT}/product`;
 export const EDIT_PRODUCT = `${ADMIN_ENDPOINT}/product/update`;
@@ -131,7 +132,6 @@ export const DOWNLOAD_PRODUCT_TEMPLATE = `${ADMIN_ENDPOINT}/product/download-tem
 export const UPLOAD_PRODUCT_FILE = `${ADMIN_ENDPOINT}/product/import`;
 
 // DELIVERY MAN
-
 export const ADD_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/add`;
 export const ALL_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy`;
 export const SINGLE_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/get-single-delivery-boy`;
@@ -141,7 +141,6 @@ export const DELIVERY_BOY_ORDERS = `${ADMIN_ENDPOINT}/order/delivery`;
 export const DELIVERY_BOY_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/get-current-location`;
 
 //  SETTINGS
-
 export const ADMINS_SETTINGS = '/admin/setting/admin-setting';
 export const UPDATE_ADMINS_SETTINGS = '/admin/setting/admin-setting/edit';
 

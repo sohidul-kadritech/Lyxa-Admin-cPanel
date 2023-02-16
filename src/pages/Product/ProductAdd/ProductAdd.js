@@ -726,7 +726,7 @@ function ProductAdd() {
                                 </Col>
                               </Row>
                               {attributeItems.map((item, index) => (
-                                <Row className="mt-3" key={Math.random()}>
+                                <Row className="mt-3" key={index}>
                                   <Col sm={6}>
                                     <TextField
                                       id="variant name"
@@ -790,7 +790,7 @@ function ProductAdd() {
                               <hr />
                               {attributes.length > 0 &&
                                 attributes.map((attribute, index) => (
-                                  <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                                  <ul key={index} style={{ listStyleType: 'square' }}>
                                     <li>
                                       <div className="d-flex justify-content-between">
                                         <span
@@ -814,7 +814,7 @@ function ProductAdd() {
                                       </div>
                                     </li>
                                     {attribute.items.map((item) => (
-                                      <ul key={Math.random()}>
+                                      <ul key={item.name}>
                                         <li>
                                           <span>{item.name}-</span>
                                           <span className="ms-1">{item.extraPrice}</span>

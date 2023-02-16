@@ -34,6 +34,7 @@ import socketReducer from './socket/socketReducer';
 import termsAndConditonReducer from './termsAndConditions/termsAndConditionReducer';
 import unitTypeReducer from './unitType/unitTypeReducer';
 import usersReducer from './Users/UsersReducer';
+import vatReducer from './vat/vatReducer';
 
 const rootReducer = combineReducers({
   // public
@@ -66,6 +67,7 @@ const rootReducer = combineReducers({
   uploadImage: uploadImageReducer,
   usersReducer,
   unitTypeReducer,
+  vatReducer,
 });
 
 export default rootReducer;
