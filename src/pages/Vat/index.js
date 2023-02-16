@@ -47,13 +47,13 @@ function SingleShopTransactions() {
   // summary list
   const summaryList = [
     {
-      title: 'Unsettled VAT',
+      title: 'Unpaid VAT',
       value: `${(summary?.totalUnsettleVat || 0).toFixed(2)} ${currency}`,
       icon: earningFlowIcon,
       iconBg: '#0008C1',
     },
     {
-      title: 'Total VAT',
+      title: 'Paid VAT',
       value: `${(summary?.totalVat || 0).toFixed(2)} ${currency}`,
       icon: moneyExchangeIcon,
       iconBg: '#0c9da4',
@@ -192,7 +192,7 @@ function SingleShopTransactions() {
                     />
                   </div>
                 </Col>
-                <Col lg={4} className="mt-3 mt-lg-0">
+                <Col lg={4} className="mt-3">
                   <div>
                     <label className="control-label">Amount Order By</label>
                     <Select
@@ -265,14 +265,16 @@ function SingleShopTransactions() {
                     <Th>ID</Th>
                     <Th>Amount ({currency})</Th>
                     <Th>Date</Th>
+                    <Th>Author</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {transactions?.map((item) => (
-                    <Tr key={item?._id}>
-                      <Td>{item?._id}</Td>
+                    <Tr key={item?.autoGenId}>
+                      <Td>{item?.autoGenId}</Td>
                       <Td>{item?.amount}</Td>
                       <Td>{moment(item?.date).format('YYYY-MM-DD')}</Td>
+                      <Td>{item?.adminBy.name}</Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -341,20 +343,20 @@ function SingleShopTransactions() {
             </Col>
             <Col lg={12}>
               <p className="d-flex items-center justify-content-between mt-4 mb-1">
-                <span>Total Unsettled Amount</span>
+                <span>Unpaid VAT</span>
                 <span>
-                  {summary.totalVat} {currency}
+                  {summary.totalUnsettleVat} {currency}
                 </span>
               </p>
               <p className="d-flex items-center justify-content-between mb-1">
-                <span>Vat to settle</span>
+                <span>Amount to pay</span>
                 <span>
                   - {settleAmount || 0} {currency}
                 </span>
               </p>
               <hr />
               <p className="d-flex items-center justify-content-between mb-1">
-                <span>Unsettled amount left</span>
+                <span>Unpaid VAT left</span>
                 <span>
                   {summary.totalUnsettleVat - settleAmount} {currency}
                 </span>
