@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import moment from 'moment';
 import { useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
@@ -27,6 +28,8 @@ export default function VatInfo() {
     dispatch(getAllVatInfo(reqBody, account_type, accountId));
   };
 
+  const vatData = [vatSummary?.totalUnsettleVat, vatSummary?.totalVat - vatSummary?.totalUnsettleVat];
+
   useEffect(() => {
     callApi();
   }, []);
@@ -35,7 +38,7 @@ export default function VatInfo() {
     labels: ['Unpaid', 'Paid'],
     datasets: [
       {
-        data: Object.values(vatSummary || {}),
+        data: vatData,
         backgroundColor: ['rgba(255, 0, 0, .8)', 'rgba(86, 202, 0, 0.8)'],
         borderColor: ['rgba(236, 236, 241, 1)', 'rgba(236, 236, 241, 1)'],
         borderWidth: 2,
