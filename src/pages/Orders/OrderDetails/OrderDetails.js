@@ -254,6 +254,8 @@ function OrderDetails() {
     return m;
   };
 
+  console.log(order);
+
   return (
     <GlobalWrapper>
       <div className="page-content">
@@ -482,6 +484,8 @@ function OrderDetails() {
                 <SummaryInfo title="Rider Profit" value={order?.deliveryBoyFee} />
                 <SummaryInfo title="Lyxa Delivery Profit" value={order?.dropCharge?.dropChargeFromDelivery} />
                 <SummaryInfo title="Lyxa Order Profit" value={order?.dropCharge?.dropChargeFromOrder} />
+                <SummaryInfo title="Shop VAT" value={order?.vatAmount?.vatForAdmin} />
+                <SummaryInfo title="Lyxa VAT" value={order?.vatAmount?.vatForShop} />
                 <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge?.totalDropAmount} />
               </Summery>
             </CardBody>
