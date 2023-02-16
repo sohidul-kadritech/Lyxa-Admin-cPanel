@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable consistent-return */
 import {
   Autocomplete,
@@ -381,7 +382,9 @@ function OrderTable({ orders = [], status, loading }) {
                         <span>{new Date(item?.createdAt).toLocaleTimeString()}</span>
                       </Td>
 
-                      <Td onClick={() => goToDetails(item?._id)}>{`${item?.summary?.totalAmount} ${currency}`}</Td>
+                      <Td onClick={() => goToDetails(item?._id)}>{`${
+                        item?.summary?.totalAmount + item?.summary?.vat
+                      } ${currency}`}</Td>
                       <Td onClick={() => goToDetails(item?._id)}>
                         {}
                         {`${item?.paymentMethod} ${item?.selectPos !== 'no' ? '(Pos)' : ''}`}
