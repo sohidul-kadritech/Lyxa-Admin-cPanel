@@ -36,7 +36,7 @@ function Graph({
   };
 
   const option = {
-    tootlbar: {
+    toolbar: {
       show: false,
     },
     low: 0,
@@ -164,7 +164,6 @@ function Graph({
             </Col>
           </Row>
         </div>
-
         <Row>
           <Col>
             <div>
