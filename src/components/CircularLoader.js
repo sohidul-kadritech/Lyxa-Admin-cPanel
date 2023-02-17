@@ -11,7 +11,7 @@ export default function CircularLoader() {
         alignItems: 'center',
       }}
     >
-      <img src={LoadingGif} alt="" />
+      <img style={{ width: '80px', height: 'auto' }} src={LoadingGif} alt="" />
     </div>
   );
 }
