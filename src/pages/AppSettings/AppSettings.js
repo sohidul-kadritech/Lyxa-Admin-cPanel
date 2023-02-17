@@ -8,7 +8,7 @@ import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
   getAllAppSettings,
-  removeSearchButlerKm,
+  // removeSearchButlerKm,
   removeSearchDeliveryBoyKm,
   updateAppSettings,
   updateCurrency,
@@ -16,7 +16,7 @@ import {
   updateMaxDiscount,
   updateMaxDistanceForButler,
   updateNearByShopKey,
-  updateSearchButlerKm,
+  // updateSearchButlerKm,
   updateSearchDeliveryBoyKm,
   updateVat,
 } from '../../store/Settings/settingsAction';
@@ -46,7 +46,7 @@ function AppSettings() {
   const dispatch = useDispatch();
   const { loading, appSettingsOptions } = useSelector((state) => state.settingsReducer);
   const [areaChangeKey, setAreaChangeKey] = useState('');
-  const [areaChangeKeyButler, setAreaChangeKeyButler] = useState('');
+  // const [areaChangeKeyButler, setAreaChangeKeyButler] = useState('');
   const [dataIsLoading, setDataIsLoading] = useState(dataLoadingIntitial);
 
   // get all settings
@@ -91,29 +91,29 @@ function AppSettings() {
     }
   };
   // eslint-disable-next-line consistent-return
-  const handleButlerKmAdd = (evt) => {
-    if (['Enter', 'Tab', ','].includes(evt.key)) {
-      evt.preventDefault();
-      const value = areaChangeKeyButler.trim();
+  // const handleButlerKmAdd = (evt) => {
+  //   if (['Enter', 'Tab', ','].includes(evt.key)) {
+  //     evt.preventDefault();
+  //     const value = areaChangeKeyButler.trim();
 
-      if (appSettingsOptions.searchDeliveryBoyKmForButler.length === 3) {
-        return toast.warn('Maximum 3 items can add', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
+  //     if (appSettingsOptions.searchDeliveryBoyKmForButler.length === 3) {
+  //       return toast.warn('Maximum 3 items can add', {
+  //         position: toast.POSITION.TOP_RIGHT,
+  //         autoClose: 3000,
+  //         hideProgressBar: true,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //       });
+  //     }
 
-      if (value) {
-        setAreaChangeKeyButler('');
-        dispatch(updateSearchButlerKm(value));
-      }
-    }
-  };
+  //     if (value) {
+  //       setAreaChangeKeyButler('');
+  //       dispatch(updateSearchButlerKm(value));
+  //     }
+  //   }
+  // };
 
   return (
     <GlobalWrapper>
@@ -491,7 +491,7 @@ function AppSettings() {
                   )}
                 </Grid>
                 {/* Butler Boy Search Area */}
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <Stack spacing={2} direction="row" mb={2}>
                     <TextField
                       style={{ width: '100%' }}
@@ -547,7 +547,7 @@ function AppSettings() {
                       ))}
                     </Paper>
                   )}
-                </Grid>
+                </Grid> */}
               </Grid>
             </CardBody>
           </Card>
