@@ -7,7 +7,6 @@ function Portals() {
   const { pathname } = useLocation();
   const newUnseenChatRequestBadge = useRef();
   const openChats = useSelector((store) => store.chatReducer.openChats);
-  console.log(openChats);
 
   useEffect(() => {
     newUnseenChatRequestBadge.current = document.getElementById('sidebar-item-chat-badges');

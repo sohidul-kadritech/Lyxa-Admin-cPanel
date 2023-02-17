@@ -54,6 +54,8 @@ function CategoryList() {
     }
   };
 
+  console.log(categories);
+
   return (
     <GlobalWrapper>
       <div className="page-content">
