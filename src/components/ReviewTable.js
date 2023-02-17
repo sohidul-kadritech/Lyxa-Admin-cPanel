@@ -1,3 +1,4 @@
+import { Rating } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 
@@ -32,7 +33,9 @@ function ReviewTable({ reviews, isFromOrder }) {
                 {item?.order?.orderId}
               </Td>
               <Td>{!item?.review ? 'No Comment' : item?.review}</Td>
-              <Td>{item?.rating}</Td>
+              <Td>
+                <Rating value={item?.rating} readOnly />
+              </Td>
             </Tr>
           ))
         ) : (
