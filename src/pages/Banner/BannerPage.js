@@ -13,6 +13,7 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import Lightbox from 'react-image-lightbox';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import CircularLoader from '../../components/CircularLoader';
 import TableImgItem from '../../components/TableImgItem';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import { deleteBanner, filterSelect, getBannerListAction } from '../../store/banner/bannerAction';
@@ -146,24 +147,9 @@ function BannerPage() {
                       </Td>
                     </Tr>
                   ))}
-                  {loading && (
-                    <Tr>
-                      <Td>
-                        <Spinner
-                          style={{
-                            position: 'fixed',
-                            left: '50%',
-                            top: '50%',
-                          }}
-                          animation="border"
-                          color="success"
-                        />
-                      </Td>
-                    </Tr>
-                  )}
                 </Tbody>
               </Table>
-
+              {loading && <CircularLoader />}
               {!loading && list.length < 1 && (
                 <div className="text-center">
                   <h5>No Data</h5>

@@ -1,19 +1,22 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Card, CardBody, Col, Container, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
 import noPhoto from '../../../assets/images/noPhoto.jpg';
 import { sortByOptions, statusOptions } from '../../../assets/staticData';
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumbs from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
 import { updateOrderChatSearchKey } from '../../../store/chat/chatAction';
+
 import { updateSearchKey, updateSortKey, updateStatusKey, userList } from '../../../store/Users/UsersAction';
 
 function UsersList() {
@@ -149,24 +152,9 @@ function UsersList() {
                         </Td>
                       </Tr>
                     ))}
-                  {loading && (
-                    <Tr>
-                      <Td>
-                        <Spinner
-                          style={{
-                            position: 'fixed',
-                            left: '50%',
-                            top: '50%',
-                          }}
-                          animation="border"
-                          color="success"
-                        />
-                      </Td>
-                    </Tr>
-                  )}
                 </Tbody>
               </Table>
-
+              {loading && <CircularLoader />}
               {users.length < 1 && !loading && (
                 <div className="text-center">
                   <h3>No Data Found!</h3>

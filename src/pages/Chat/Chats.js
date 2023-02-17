@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 import noPhoto from '../../assets/images/noPhoto.jpg';
 import AppPagination from '../../components/AppPagination';
 import AutocompletedInput from '../../components/AutocompletedInput';
+import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import Search from '../../components/Search';
@@ -170,7 +171,7 @@ function Chats() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" variant="success" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && chatRequests?.length < 1 && (

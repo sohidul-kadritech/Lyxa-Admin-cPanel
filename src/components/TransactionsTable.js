@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useSelector } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Spinner } from 'reactstrap';
+import CircularLoader from './CircularLoader';
 import { TrxType } from './updateTrxsType';
 
 function TransactionsTable({ trxs = [], loading }) {
@@ -42,7 +42,7 @@ function TransactionsTable({ trxs = [], loading }) {
       </Table>
       {loading && (
         <div className="text-center">
-          <Spinner animation="border" variant="success" />
+          <CircularLoader />
         </div>
       )}
       {!loading && trxs.length < 1 && (

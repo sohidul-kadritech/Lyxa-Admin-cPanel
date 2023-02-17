@@ -158,7 +158,6 @@ function ShopList() {
           <Card>
             <CardBody>
               <CardTitle className="h4"> {account_type !== 'shop' ? 'Shop List' : 'My Shop'}</CardTitle>
-
               <ShopTable shops={account_type === 'shop' ? myShop : shops} />
             </CardBody>
           </Card>

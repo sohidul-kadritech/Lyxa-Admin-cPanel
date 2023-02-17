@@ -5,11 +5,12 @@ import Flatpickr from 'react-flatpickr';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Button, Card, CardBody, CardTitle, Col, Container, Label, Modal, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Label, Modal, Row } from 'reactstrap';
 import earningFlowIcon from '../../assets/images/dashboard/earning-flow.png';
 import moneyExchangeIcon from '../../assets/images/dashboard/money-exchange.png';
 import { shopTrxsAmountFilterOptions, sortByOptions } from '../../assets/staticData';
 import AppPagination from '../../components/AppPagination';
+import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import TopSummery from '../../components/TopSummery';
@@ -300,7 +301,7 @@ function SingleShopTransactions() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" color="success" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && !transactions.length && (

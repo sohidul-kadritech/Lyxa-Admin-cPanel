@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, CardBody, Col, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, Col, Row } from 'reactstrap';
 import styled from 'styled-components';
+import CircularLoader from './CircularLoader';
 
 function TopSummery({ data, fromWallet = false }) {
   return (
@@ -37,7 +38,7 @@ function TopSummery({ data, fromWallet = false }) {
             })
           ) : (
             <div className="text-center">
-              <Spinner animation="border" color="info" />
+              <CircularLoader />
             </div>
           )}
         </Row>

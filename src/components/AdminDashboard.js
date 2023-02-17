@@ -1,8 +1,10 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Card, CardBody, Col, Row } from 'reactstrap';
 import GlobalWrapper from './GlobalWrapper';
+import GraphInfo from './GraphInfo';
+import TopSummery from './TopSummery';
 
 import deliveryIcon from '../assets/images/dashboard/delivery.png';
 import earningFlowIcon from '../assets/images/dashboard/earning-flow.png';
@@ -26,8 +28,8 @@ import riderIcon from '../assets/images/dashboard/rider.png';
 import timerIcon from '../assets/images/dashboard/timer.png';
 import vatIcon from '../assets/images/dashboard/vat.png';
 
-const GraphInfo = lazy(() => import('./GraphInfo'));
-const TopSummery = lazy(() => import('./TopSummery'));
+// const GraphInfo = lazy(() => import('./GraphInfo'));
+// const TopSummery = lazy(() => import('./TopSummery'));
 
 function AdminDashboard({ summary, topActivity }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);

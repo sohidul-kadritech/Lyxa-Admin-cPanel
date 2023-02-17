@@ -6,7 +6,7 @@ import Flatpickr from 'react-flatpickr';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row } from 'reactstrap';
 import styled from 'styled-components';
 import deliveryIcon from '../../../assets/images/dashboard/delivery.png';
 import earningFlowIcon from '../../../assets/images/dashboard/earning-flow.png';
@@ -14,6 +14,7 @@ import moneyExchangeIcon from '../../../assets/images/dashboard/money-exchange.p
 import orderAmountIcon from '../../../assets/images/dashboard/order-amount.png';
 import profitFlowIcon from '../../../assets/images/dashboard/profit-flow.png';
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import MakePayment from '../../../components/MakePayment';
@@ -310,7 +311,6 @@ function SingleDeliveryTransactions() {
                   <CardBody>
                     <div className="d-flex justify-content-between align-items-center pb-3">
                       <CardTitle className="h4"> Transactions List</CardTitle>
-
                       {account_type === 'admin' && (
                         <div className="d-flex justify-content-end">
                           <Button className="btn btn-info ms-4" onClick={() => setIsMakePayment(!isMakePayment)}>
@@ -319,7 +319,6 @@ function SingleDeliveryTransactions() {
                         </div>
                       )}
                     </div>
-
                     <TransactionsTable trxs={trxs?.transections} loading={loading} />
                   </CardBody>
                 </Card>
@@ -448,7 +447,7 @@ function SingleDeliveryTransactions() {
                     </Table>
                     {loading && (
                       <div className="text-center">
-                        <Spinner animation="border" variant="success" />
+                        <CircularLoader />
                       </div>
                     )}
                     {!loading && trxs?.cashOrderList.length < 1 && (

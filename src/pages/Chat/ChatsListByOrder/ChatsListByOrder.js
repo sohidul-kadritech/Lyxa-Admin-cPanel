@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
@@ -158,7 +159,7 @@ function ChatsListByOrder() {
               </Table>
               {isLoading && (
                 <div className="text-center">
-                  <Spinner animation="border" variant="success" />
+                  <CircularLoader />
                 </div>
               )}
               {!isLoading && list?.length < 1 && (

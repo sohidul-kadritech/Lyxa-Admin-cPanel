@@ -3,8 +3,8 @@ import moment from 'moment';
 import { useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
-import { Spinner } from 'reactstrap';
 import { getAllVatInfo } from '../store/vat/vatActions';
+import CircularLoader from './CircularLoader';
 
 export default function VatInfo() {
   const { summary: vatSummary, loading } = useSelector((store) => store.vatReducer);
@@ -50,7 +50,7 @@ export default function VatInfo() {
       {!loading && <Doughnut data={data} />}
       {loading && (
         <div className="text-center">
-          <Spinner />
+          <CircularLoader />
         </div>
       )}
     </div>

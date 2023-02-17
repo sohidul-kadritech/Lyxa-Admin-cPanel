@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Card, CardBody, Col, Container, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
 
 import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import Lightbox from 'react-image-lightbox';
@@ -10,6 +10,7 @@ import Select from 'react-select';
 import noPhoto from '../../../assets/images/noPhoto.jpg';
 import { shopTypeOptions, sortByOptions, statusOptions } from '../../../assets/staticData';
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import Search from '../../../components/Search';
@@ -195,24 +196,9 @@ function SellerList() {
                       </Td>
                     </Tr>
                   ))}
-                  {loading && (
-                    <Tr>
-                      <Td>
-                        <Spinner
-                          style={{
-                            position: 'fixed',
-                            left: '50%',
-                            top: '50%',
-                          }}
-                          animation="border"
-                          color="success"
-                        />
-                      </Td>
-                    </Tr>
-                  )}
                 </Tbody>
               </Table>
-
+              {loading && <CircularLoader />}
               {!loading && sellers.length < 1 && (
                 <div className="text-center">
                   <h4>No Data!</h4>

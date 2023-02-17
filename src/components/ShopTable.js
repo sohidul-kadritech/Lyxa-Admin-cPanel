@@ -4,7 +4,7 @@ import Lightbox from 'react-image-lightbox';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Spinner } from 'reactstrap';
+import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
@@ -129,24 +129,9 @@ function ShopTable({ shops = [] }) {
               </Td>
             </Tr>
           ))}
-          {loading && (
-            <Tr>
-              <Td>
-                <Spinner
-                  style={{
-                    position: 'fixed',
-                    left: '50%',
-                    top: '50%',
-                  }}
-                  animation="border"
-                  color="danger"
-                />
-              </Td>
-            </Tr>
-          )}
         </Tbody>
       </Table>
-
+      {loading && <CircularLoader />}
       {!loading && shops.length < 1 && (
         <div className="text-center">
           <h4>No Shop!</h4>

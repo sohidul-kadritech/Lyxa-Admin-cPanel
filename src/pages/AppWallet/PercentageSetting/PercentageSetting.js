@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Button, Card, CardBody, CardTitle, Col, Container, Form, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Form, Row } from 'reactstrap';
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import DropCharge from '../../../components/DropCharge';
 import GlobalWrapper from '../../../components/GlobalWrapper';
@@ -207,7 +208,7 @@ function PercentageSetting() {
                   </Table>
                   {loading && (
                     <div className="text-center">
-                      <Spinner animation="border" variant="info" />
+                      <CircularLoader animation="border" variant="info" />
                     </div>
                   )}
                   {!loading && sellersDropCharge.length < 1 && (

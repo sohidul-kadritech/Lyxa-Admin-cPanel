@@ -5,9 +5,10 @@ import Lightbox from 'react-image-lightbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Card, CardBody, Col, Container, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
 import noPhoto from '../../../assets/images/noPhoto.jpg';
 import { DealsFilterOptions } from '../../../assets/staticData';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import TableImgItem from '../../../components/TableImgItem';
@@ -185,7 +186,7 @@ function DealsList() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" variant="info" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && deals.length < 1 && (

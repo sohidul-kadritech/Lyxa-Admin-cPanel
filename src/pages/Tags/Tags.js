@@ -12,6 +12,7 @@ import {
   sortByOptions,
 } from '../../assets/staticData';
 import AppPagination from '../../components/AppPagination';
+import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import Search from '../../components/Search';
@@ -241,7 +242,7 @@ function Tags() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" variant="info" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && tags.length < 1 && (

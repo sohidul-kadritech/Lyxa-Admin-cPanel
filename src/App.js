@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
-import { Spinner } from 'reactstrap';
+import CircularLoader from './components/CircularLoader';
 import { getAllAppSettings } from './store/Settings/settingsAction';
 
 // Import Routes all
@@ -161,14 +161,10 @@ export default function App() {
             render={() => (
               <div
                 style={{
-                  width: '100%',
                   height: '100vh',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
                 }}
               >
-                <Spinner color="primary" />
+                <CircularLoader />
               </div>
             )}
           />

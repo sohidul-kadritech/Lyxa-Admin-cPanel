@@ -2,8 +2,9 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 import Flatpickr from 'react-flatpickr';
 import Select from 'react-select';
-import { Card, CardBody, Col, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, Col, Row } from 'reactstrap';
 import { graphFilterOptions, monthOptions } from '../assets/staticData';
+import CircularLoader from './CircularLoader';
 
 function Graph({
   filterType,
@@ -168,7 +169,8 @@ function Graph({
           <Col>
             <div>
               {isLoading ? (
-                <Spinner animation="border" color="success" />
+                // <Spinner animation="border" color="success" />
+                <CircularLoader />
               ) : (
                 <Line width={600} height={245} data={data} options={option} />
               )}
