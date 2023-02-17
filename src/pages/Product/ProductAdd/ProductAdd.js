@@ -438,7 +438,7 @@ function ProductAdd() {
                           setCategory(null);
                         }}
                         options={shopTypeOptions2}
-                        disabled={!!(searchParams.get('shopId') !== undefined || id || account_type === 'shop')}
+                        disabled={!!(searchParams.get('shopId') || id || account_type === 'shop')}
                       />
                     </div>
 
@@ -562,7 +562,7 @@ function ProductAdd() {
                           className="cursor-pointer"
                           required
                           value={category}
-                          disabled={!type}
+                          disabled={!type || !shop}
                           onChange={(event, newValue) => {
                             setCategory(newValue);
                           }}
@@ -840,13 +840,13 @@ function ProductAdd() {
                                 className="form-check-input"
                                 type="checkbox"
                                 value={isNeedAddon}
-                                id="flexCheckDefault"
+                                id="flexCheckDefault3"
                                 onChange={(e) => setIsNeedAddon(e.target.checked)}
                               />
                               <label
                                 className="form-check-label ms-1"
                                 style={{ fontSize: '16px' }}
-                                htmlFor="flexCheckDefault"
+                                htmlFor="flexCheckDefault3"
                               >
                                 Addon(s)
                               </label>
