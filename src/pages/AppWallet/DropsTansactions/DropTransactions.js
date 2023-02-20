@@ -118,7 +118,7 @@ function DropTransactions() {
                 <Tbody style={{ position: 'relative' }}>
                   {dropTrxs.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item._id}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

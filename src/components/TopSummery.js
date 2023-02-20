@@ -14,7 +14,7 @@ function TopSummery({ data, fromWallet = false }) {
                 <Col
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   md={12 % data?.length !== 0 ? 2 : 12 / data?.length}
-                  key={Math.random()}
+                  key={`${title}_${subTitle}`}
                   className={`${fromWallet ? 'px-3' : 'px-1'}`}
                 >
                   <div>

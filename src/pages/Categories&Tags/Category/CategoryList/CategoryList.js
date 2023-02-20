@@ -95,7 +95,7 @@ function CategoryList() {
                       }}
                     >
                       {shopTypeOptions.map((option) => (
-                        <MenuItem key={Math.random()} value={option.value}>
+                        <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
                       ))}
@@ -120,9 +120,9 @@ function CategoryList() {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: 'relative' }}>
-                  {categories.map((item) => (
+                  {categories.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

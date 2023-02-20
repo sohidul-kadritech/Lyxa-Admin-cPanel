@@ -87,7 +87,7 @@ function AdminList() {
                   admins.length > 0 &&
                   admins.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item._id}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

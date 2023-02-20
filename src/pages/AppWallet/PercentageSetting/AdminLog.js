@@ -53,7 +53,7 @@ function AdminLog() {
     } else if (type === 'maxDiscount' || type === 'maxCustomerServiceValue' || type === 'nearByShopKm') {
       newValue = value;
     } else if (type === 'searchDeliveryBoyKm') {
-      newValue = value.map((item) => <p key={Math.random()}>{item}</p>);
+      newValue = value.map((item) => <p key={item}>{item}</p>);
     } else if (type === 'globalDropCharge' || type === 'specificSellerDropCharge' || type === 'sellerDropChargeReset') {
       newValue = (
         <span>{`${value?.dropPercentage ?? 0} ${value?.dropPercentageType === 'parcentage' ? '%' : currency}`}</span>
@@ -61,7 +61,7 @@ function AdminLog() {
     } else if (type === 'globalDeliveryCut' || type === 'specificSellerDeliveryCut') {
       newValue = value.map((item) => (
         <p
-          key={Math.random()}
+          key={`${item?.from}_${item?.to}`}
         >{`(${item?.from} - ${item?.to} km)- charge:${item?.charge} rider:${item?.deliveryPersonCut}`}</p>
       ));
     } else {
@@ -124,9 +124,9 @@ function AdminLog() {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: 'relative' }}>
-                  {adminLogs?.map((item) => (
+                  {adminLogs?.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

@@ -81,7 +81,7 @@ function ShopTable({ shops = [] }) {
         <Tbody style={{ position: 'relative' }}>
           {shops.map((item) => (
             <Tr
-              key={Math.random()}
+              key={item?._id}
               className="align-middle text-capitalize cursor-pointer"
               style={{
                 fontSize: '15px',
@@ -107,7 +107,7 @@ function ShopTable({ shops = [] }) {
               <Td onClick={() => goToDetails(item?._id)}>
                 {item?.deals.length > 0
                   ? item?.deals.map((item) => (
-                      <div key={Math.random()}>
+                      <div key={item?.name}>
                         <p>{item?.name}</p>
                       </div>
                     ))

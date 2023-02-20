@@ -36,8 +36,8 @@ function OrderInfo({ items = [] }) {
   return (
     <InfoWrapper>
       <Row className="">
-        {items?.map((item) => (
-          <Col xl={4} key={Math.random()} className="info cursor-pointer">
+        {items?.map((item, index) => (
+          <Col xl={4} key={index} className="info cursor-pointer">
             <span className="title">{item?.title}</span>
             <div className={`${item?.valueTwo ? 'd-flex justify-content-center  align-items-center' : ''}`}>
               <h6
@@ -95,7 +95,7 @@ function Riders({ list = [], heading }) {
                       color: 'black',
                     }}
                     onClick={() => history.push(`/deliveryman/details/${rider._id}`)}
-                    key={Math.random()}
+                    key={rider._id}
                     title="Click to see details"
                   >
                     <Th
@@ -496,7 +496,7 @@ function OrderDetails() {
                   <hr />
                   <Timeline>
                     {orderTimeline.map((item, index) => (
-                      <TimelineItem key={Math.random()}>
+                      <TimelineItem key={index}>
                         <TimelineOppositeContent color="text.secondary">
                           {item.active && (
                             <Box>
@@ -550,8 +550,8 @@ function OrderDetails() {
                           }}
                         >
                           {order?.chats?.length > 0 ? (
-                            order?.chats?.map((chat) => (
-                              <div key={Math.random()}>
+                            order?.chats?.map((chat, index) => (
+                              <div key={index}>
                                 {chat?.sender === 'user' && (
                                   <li className="clearfix">
                                     <div className="chat-avatar">
@@ -635,7 +635,7 @@ function OrderDetails() {
                 <Tbody style={{ position: 'relative' }} id="table-data">
                   {order?.productsDetails?.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item?.autoGenId}
                       className="align-middle"
                       style={{
                         fontSize: '15px',
@@ -648,11 +648,11 @@ function OrderDetails() {
                       </Td>
                       <Td>
                         {item?.selectedAttributes.length > 0
-                          ? item?.selectedAttributes.map((att) => (
-                              <div key={Math.random()}>
+                          ? item?.selectedAttributes.map((att, index) => (
+                              <div key={index}>
                                 <span style={{ fontSize: '12px' }}>{att?.name}</span>
-                                {att?.selectedItems?.map((item) => (
-                                  <p key={Math.random()} style={{ fontSize: '12px' }}>
+                                {att?.selectedItems?.map((item, index) => (
+                                  <p key={index} style={{ fontSize: '12px' }}>
                                     {item?.name}
                                   </p>
                                 ))}

@@ -203,9 +203,9 @@ function Tags() {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: 'relative' }}>
-                  {tags?.map((item) => (
+                  {tags?.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

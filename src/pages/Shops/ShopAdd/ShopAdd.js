@@ -546,8 +546,8 @@ function ShopAdd() {
                           onChange={(e) => setShopStatus(e.target.value)}
                           label="Status"
                         >
-                          {statusOptions2.map((item) => (
-                            <MenuItem key={Math.random()} value={item.value}>
+                          {statusOptions2.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
                               {item.label}
                             </MenuItem>
                           ))}
@@ -777,8 +777,8 @@ function ShopAdd() {
 
                       {tags.items.length > 0 && (
                         <Paper className="mt-4 p-3">
-                          {tags.items.map((item) => (
-                            <div className="tag__wrapper" key={Math.random()}>
+                          {tags.items.map((item, index) => (
+                            <div className="tag__wrapper" key={index}>
                               {item}
                               <button type="button" className="button" onClick={() => handleTagDelete(item)}>
                                 &times;
@@ -800,8 +800,8 @@ function ShopAdd() {
                           onChange={(e) => setLiveStatus(e.target.value)}
                           label="Live Status"
                         >
-                          {liveStatusOptions.map((item) => (
-                            <MenuItem key={Math.random()} value={item.value}>
+                          {liveStatusOptions.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
                               {item.label}
                             </MenuItem>
                           ))}
@@ -820,8 +820,8 @@ function ShopAdd() {
                           onChange={(e) => setExpensive(e.target.value)}
                           label="Price range"
                         >
-                          {priceRangeOptions.map((item) => (
-                            <MenuItem key={Math.random()} value={item.value}>
+                          {priceRangeOptions.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
                               {item.label}
                             </MenuItem>
                           ))}
@@ -872,7 +872,7 @@ function ShopAdd() {
                         {selectedCuisines.length > 0 && (
                           <Paper className="mt-4 p-3">
                             {selectedCuisines.map((item, index) => (
-                              <div className="tag__wrapper" key={Math.random()}>
+                              <div className="tag__wrapper" key={index}>
                                 {item?.name}
                                 <button type="button" className="button" onClick={() => handleCuisineDelete(index)}>
                                   &times;

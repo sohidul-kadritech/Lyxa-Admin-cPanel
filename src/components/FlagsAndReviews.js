@@ -27,7 +27,7 @@ function FlagsAndReviews({ flags = [], isFromOrder = false, isReview = false, re
                 {!isReview
                   ? flags.length > 0 &&
                     flags.map((item) => (
-                      <div key={Math.random()} className="d-flex">
+                      <div key={item?.orderId?._id} className="d-flex">
                         <div className="info_wrapper">
                           <Info
                             title={
@@ -51,7 +51,7 @@ function FlagsAndReviews({ flags = [], isFromOrder = false, isReview = false, re
                       </div>
                     ))
                   : reviews.map((item) => (
-                      <div key={Math.random()} className="d-flex">
+                      <div key={item?.order?._id} className="d-flex">
                         <div className="info_wrapper">
                           <Info
                             title={item?.order?.orderId}

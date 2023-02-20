@@ -104,7 +104,7 @@ function DealsList() {
                       onChange={(event) => dispatch(updateShopFilter(event.target.value))}
                     >
                       {DealsFilterOptions.map((item) => (
-                        <MenuItem key={Math.random()} value={item.value}>
+                        <MenuItem key={item.value} value={item.value}>
                           {item.label}
                         </MenuItem>
                       ))}
@@ -130,7 +130,7 @@ function DealsList() {
                 <Tbody style={{ position: 'relative' }}>
                   {deals?.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item?.autoGenId}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

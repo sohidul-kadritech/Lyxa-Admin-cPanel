@@ -358,7 +358,7 @@ function OrderTable({ orders = [], status, loading }) {
                 {orders?.length > 0 &&
                   orders?.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item?._id}
                       className="align-middle text-capitalize cursor-pointer"
                       style={{
                         fontSize: '14px',
@@ -486,8 +486,8 @@ function OrderTable({ orders = [], status, loading }) {
                   setOrderStatus(event.target.value);
                 }}
               >
-                {properOrderStatusOptions.map((item) => (
-                  <MenuItem key={Math.random()} value={item.value}>
+                {properOrderStatusOptions.map((item, index) => (
+                  <MenuItem key={index} value={item.value}>
                     {orderFor === 'specific' && item.value === 'accepted_delivery_boy' ? '' : item.label}
                   </MenuItem>
                 ))}

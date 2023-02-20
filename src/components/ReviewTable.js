@@ -16,7 +16,7 @@ function ReviewTable({ reviews, isFromOrder }) {
         {reviews?.length > 0 ? (
           reviews?.map((item) => (
             <Tr
-              key={Math.random()}
+              key={item?.order?.orderId}
               className="align-middle text-capitalize cursor-pointer"
               style={{
                 fontSize: '14px',

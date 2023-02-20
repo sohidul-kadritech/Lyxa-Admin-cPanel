@@ -126,7 +126,7 @@ function SendNotifications() {
                           label="Account Type"
                         >
                           {accountTypeOptions.map((item) => (
-                            <MenuItem key={Math.random()} value={item.value}>
+                            <MenuItem key={item.value} value={item.value}>
                               {item.label}
                             </MenuItem>
                           ))}

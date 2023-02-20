@@ -22,8 +22,8 @@ function AppPagination({ paging = [], lisener, currentPage, hasNextPage, hasPrev
             </PaginationLink>
           </PaginationItem>
 
-          {paging.map((item) => (
-            <PaginationItem key={Math.random()} active={item.active}>
+          {paging.map((item, index) => (
+            <PaginationItem key={index} active={item.active}>
               <PaginationLink onClick={() => lisener(item.page)}>{item.page}</PaginationLink>
             </PaginationItem>
           ))}

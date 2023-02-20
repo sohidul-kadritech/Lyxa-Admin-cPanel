@@ -105,9 +105,9 @@ function UnitTypes() {
                       </Tr>
                     </Thead>
                     <Tbody style={{ position: 'relative' }}>
-                      {unitTypes.map((item) => (
+                      {unitTypes.map((item, index) => (
                         <Tr
-                          key={Math.random()}
+                          key={index}
                           className="align-middle"
                           style={{
                             fontSize: '15px',

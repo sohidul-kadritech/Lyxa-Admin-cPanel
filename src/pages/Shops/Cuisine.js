@@ -147,9 +147,9 @@ function Cuisine() {
                       </Tr>
                     </Thead>
                     <Tbody style={{ position: 'relative' }}>
-                      {cuisines.map((item) => (
+                      {cuisines.map((item, index) => (
                         <Tr
-                          key={Math.random()}
+                          key={index}
                           className="align-middle"
                           style={{
                             fontSize: '15px',

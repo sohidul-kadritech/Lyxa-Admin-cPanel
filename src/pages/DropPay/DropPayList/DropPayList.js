@@ -166,7 +166,7 @@ function DropPayList() {
                 <Tbody style={{ position: 'relative' }}>
                   {credits.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item?.autoGenId}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

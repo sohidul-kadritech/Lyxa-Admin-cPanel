@@ -366,7 +366,7 @@ function CategoryDetails() {
                       <Tbody style={{ position: 'relative' }}>
                         {subCategories.map((item, index) => (
                           <Tr
-                            key={Math.random()}
+                            key={item._id}
                             className="align-middle"
                             style={{
                               fontSize: '15px',

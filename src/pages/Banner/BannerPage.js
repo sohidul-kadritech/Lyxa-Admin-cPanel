@@ -105,8 +105,8 @@ function BannerPage() {
                 </Thead>
 
                 <Tbody style={{ verticalAlign: 'middle' }}>
-                  {list.map((item) => (
-                    <Tr key={Math.random()} className="text-capitalize">
+                  {list.map((item, index) => (
+                    <Tr key={index} className="text-capitalize">
                       <Th>
                         <TableImgItem img={item.image} name={item?.title} />
                       </Th>
@@ -191,7 +191,7 @@ function BannerPage() {
               )}
               <Row>
                 {list.map((item) => (
-                  <Col key={Math.random()} xl={4} md={6} sm={12}>
+                  <Col key={item._id} xl={4} md={6} sm={12}>
                     <Card className="align-items-center">
                       <ImageView>
                         <>

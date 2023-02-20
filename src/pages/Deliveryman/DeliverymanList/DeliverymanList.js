@@ -161,7 +161,7 @@ function DeliverymanList() {
                 <Tbody style={{ position: 'relative' }}>
                   {deliveryMans.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item?._id}
                       className="align-middle cursor-pointer"
                       style={{
                         fontSize: '15px',

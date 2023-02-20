@@ -173,9 +173,9 @@ function DatabaseSettings() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {databaseCollections?.map((item) => (
+                  {databaseCollections?.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

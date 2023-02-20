@@ -386,7 +386,7 @@ function AppSettings() {
                   {appSettingsOptions?.searchDeliveryBoyKm?.length > 0 && (
                     <Paper className=" p-3">
                       {appSettingsOptions?.searchDeliveryBoyKm?.map((item, index) => (
-                        <div className="tag__wrapper" key={Math.random()}>
+                        <div className="tag__wrapper" key={index}>
                           {item}
                           <button
                             type="button"

@@ -45,7 +45,7 @@ function CredentialsTable({ data = [], loading, type }) {
                     data.length > 0 &&
                     data.map((item) => (
                       <Tr
-                        key={Math.random()}
+                        key={item?._id}
                         className="align-middle"
                         style={{
                           fontSize: '15px',

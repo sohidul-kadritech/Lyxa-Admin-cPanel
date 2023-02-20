@@ -100,9 +100,9 @@ function TrackingDeliveryBoy({ riderId }) {
               </Tr>
             </Thead>
             <Tbody style={{ position: 'relative' }}>
-              {riderAllActivity?.map((item) => (
+              {riderAllActivity?.map((item, index) => (
                 <Tr
-                  key={Math.random()}
+                  key={index}
                   className="align-middle"
                   style={{
                     fontSize: '15px',

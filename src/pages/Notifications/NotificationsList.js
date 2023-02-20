@@ -137,9 +137,9 @@ function NotificationsList() {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: 'relative' }}>
-                  {notifications.map((item) => (
+                  {notifications.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

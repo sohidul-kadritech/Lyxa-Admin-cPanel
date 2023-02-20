@@ -233,8 +233,8 @@ function ProductDetails() {
                   </AccordionSummary>
                   <AccordionDetails>
                     {product?.attributes?.length > 0 ? (
-                      product?.attributes?.map((attribute) => (
-                        <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                      product?.attributes?.map((attribute, index) => (
+                        <ul key={index} style={{ listStyleType: 'square' }}>
                           <li>
                             <div className="d-flex justify-content-between">
                               <span
@@ -248,8 +248,8 @@ function ProductDetails() {
                               </span>
                             </div>
                           </li>
-                          {attribute.items.map((item) => (
-                            <ul key={Math.random()}>
+                          {attribute.items.map((item, index) => (
+                            <ul key={index}>
                               <li>
                                 <span>{item.name}-</span>
                                 <span className="ms-1">{item.extraPrice}</span>
@@ -273,8 +273,8 @@ function ProductDetails() {
                   </AccordionSummary>
                   <AccordionDetails>
                     {product?.addons?.length > 0 ? (
-                      product?.addons?.map((item) => (
-                        <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                      product?.addons?.map((item, index) => (
+                        <ul key={index} style={{ listStyleType: 'square' }}>
                           <li>
                             <div className="d-flex justify-content-between">
                               <div>
@@ -309,8 +309,8 @@ function ProductDetails() {
                   </AccordionSummary>
                   <AccordionDetails>
                     {product?.deals?.length > 0 ? (
-                      product?.deals?.map((deal) => (
-                        <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                      product?.deals?.map((deal, index) => (
+                        <ul key={index} style={{ listStyleType: 'square' }}>
                           <li>
                             <div className="d-flex justify-content-between px-3">
                               <span

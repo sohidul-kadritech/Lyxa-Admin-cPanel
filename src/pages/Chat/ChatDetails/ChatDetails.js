@@ -293,8 +293,8 @@ function ChatDetails() {
                     >
                       {request?.length > 0 && (
                         <ul className="conversation-list" data-simplebar>
-                          {request?.map((chat) => (
-                            <div key={Math.random()}>
+                          {request?.map((chat, index) => (
+                            <div key={index}>
                               {chat?.type === 'system' && (
                                 <div className="mb-4 ">
                                   <p className="text-center">{new Date(chat.createdAt).toLocaleString()}</p>
@@ -420,7 +420,7 @@ function ChatDetails() {
                 <Tbody style={{ position: 'relative' }}>
                   {lastFiveOrder?.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item._id}
                       className="align-middle"
                       style={{
                         fontSize: '15px',
