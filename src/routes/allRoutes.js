@@ -27,6 +27,7 @@ import DeliverymanAdd from '../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
 import DeliverymanList from '../pages/Deliveryman/DeliverymanList/DeliverymanList';
 import DropPayList from '../pages/DropPay/DropPayList/DropPayList';
 import Faq from '../pages/Faq';
+import Marketing from '../pages/Marketing';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import SellerList from '../pages/Seller/SellerList/SellerList';
@@ -76,9 +77,10 @@ import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndCondi
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
 
-// testing routes
 const userRoutes = [
+  // dashboard
   { path: '/dashboard', component: Dashboard },
+  // orders
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
   { path: '/orders/refused', component: RefusedOrders },
@@ -89,54 +91,47 @@ const userRoutes = [
   { path: '/banner', component: BannerPage },
   { path: '/banner/add', component: AddBanner },
   { path: '/banner/edit/:id', component: AddBanner },
-
-  // Users
+  // users
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
-
-  // SELLER
+  // sellers
   { path: '/seller/list', component: SellerList },
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },
   { path: '/seller/details/:id', component: SellerDetails },
-
-  // SHOPS
+  // shops
   { path: '/shops/list', component: ShopList },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/cuisines', component: Cuisine },
   { path: '/shops/tags', component: Tags },
-
-  // PRODUCT
+  // product
   { path: '/products/list', component: ProductList },
   { path: '/products/add', component: ProductAdd },
   { path: '/products/edit/:id', component: ProductAdd },
   { path: '/products/details/:id', component: ProductDetails },
   { path: '/products/unit-types', component: UnitTypes },
-
-  // DELIVERY MAN
+  // delivery man
   { path: '/deliveryman/list', component: DeliverymanList },
   { path: '/deliveryman/add', component: DeliverymanAdd },
   { path: '/deliveryman/edit/:id', component: DeliverymanAdd },
   { path: '/deliveryman/details/:id', component: DeliverymanDetails },
-
-  // DEALS
+  // deals
   { path: '/deals/list', component: DealsList },
   { path: '/deals/add', component: DealsAdd },
   { path: '/deals/edit/:id', component: DealsAdd },
-
-  // DROP PAY
+  // drop pay
   { path: '/lyxa-pay', component: DropPayList },
-
-  // APP WALLET
+  // app wallet
   { path: '/add-wallet/admin-log-history', component: AdminLogHistory },
   { path: '/add-wallet/seller-transactions', component: SellerTransactions },
   {
     path: '/app-wallet/seller/shops-transactions',
     component: ShopsTransactions,
   },
+  // transations
   {
     path: '/add-wallet/shop-transactions',
     component: SingleShopTransactions,
@@ -155,33 +150,27 @@ const userRoutes = [
     path: '/add-wallet/drop-transactions/details/:id',
     component: DropTransactionsDetails,
   },
-
   { path: '/admin/transactions', component: Transactions },
 
-  // CHAT
+  // chat
   { path: '/customer-support', component: Chats },
   {
     path: '/customer-support/chats-by-single-order/:id',
     component: ChatsListByOrder,
   },
   { path: '/customer-support/details/:id', component: ChatDetails },
-
-  // CATEGORIES AND TAGS
+  // catagories and tags
   { path: '/categories/list', component: CategoryList },
-  // { path: "/categories/add", component: CategoryAdd },
   { path: '/categories/edit/:id', component: CategoryAdd },
   { path: '/category/details/:id', component: CategoryDetails },
-
   { path: '/tags/list', component: TagsList },
   { path: '/tags/add', component: TagAdd },
-
-  // ADMIN CONTROL
+  // admin control
   { path: '/admin/list', component: AdminList },
   { path: '/admin/create', component: CreateAdmin },
   { path: '/admin/edit/:id', component: CreateAdmin },
   { path: '/admin/role', component: Role },
-
-  //  SETTINGS
+  //  settings
   { path: '/admin/settings', component: AdminSettings },
   { path: '/app/settings', component: AppSettings },
   { path: '/percentage-setting', component: PercentageSetting },
@@ -189,8 +178,7 @@ const userRoutes = [
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/admin/default-chat-message', component: DefaultChat },
   { path: '/admin/database/collections', component: DatabaseSettings },
-
-  // TERMS AND CONDTIONS
+  // terms and conditions
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
   { path: '/terms-and-conditions/shop-app', component: ShopTermsAndConditions },
   {
@@ -202,14 +190,18 @@ const userRoutes = [
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },
+  // marketing
+  { path: '/marketing', component: Marketing },
 
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
 const customerServiceRoutes = [
+  // orders
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
+  // users
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/seller/list', component: SellerList },
@@ -231,17 +223,22 @@ const customerServiceRoutes = [
 ];
 
 const sellerRoutes = [
+  // dashboard
   { path: '/dashboard', component: Dashboard },
+  // orders
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
+  // products
   { path: '/products/list', component: ProductList },
   { path: '/products/add', component: ProductAdd },
   { path: '/products/edit/:id', component: ProductAdd },
   { path: '/products/details/:id', component: ProductDetails },
+  // shop
   { path: '/shops/list', component: ShopList },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
+  // app walltet
   {
     path: '/app-wallet/seller/shops-transactions',
     component: ShopsTransactions,
@@ -250,43 +247,48 @@ const sellerRoutes = [
     path: '/add-wallet/shop-transactions',
     component: SingleShopTransactions,
   },
+  // credentials
   { path: '/seller/credentials/list', component: SellerCredentialsList },
   { path: '/admin/create', component: CreateAdmin },
 
   { path: '/categories/list', component: CategoryList },
-  // { path: "/categories/add", component: CategoryAdd },
   { path: '/categories/edit/:id', component: CategoryAdd },
   { path: '/category/details/:id', component: CategoryDetails },
-
+  // marketing
+  { path: '/marketing', component: Marketing },
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
 const shopRoutes = [
+  // dashboard
   { path: '/dashboard', component: Dashboard },
-
+  // orders
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
-
+  // shop
   { path: '/shops/list', component: ShopList },
   { path: '/shops/details/:id', component: ShopDetails },
-
+  // products
   { path: '/products/list', component: ProductList },
   { path: '/products/add', component: ProductAdd },
   { path: '/products/edit/:id', component: ProductAdd },
   { path: '/products/details/:id', component: ProductDetails },
+  // app wallet
   {
     path: '/add-wallet/shop-transactions',
     component: SingleShopTransactions,
   },
+  // credentials
   { path: '/shop/credentials/list', component: ShopCredentialsList },
   { path: '/admin/create', component: CreateAdmin },
-
+  // catagories
   { path: '/categories/list', component: CategoryList },
   { path: '/categories/add', component: CategoryAdd },
   { path: '/categories/edit/:id', component: CategoryAdd },
   { path: '/category/details/:id', component: CategoryDetails },
-
+  // marketing
+  { path: '/marketing', component: Marketing },
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];

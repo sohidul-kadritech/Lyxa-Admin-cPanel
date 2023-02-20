@@ -205,7 +205,6 @@ export const RIDER_MAKE_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/settle-amount-d
 export const RIDER_RECEIVED_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/cash-received-from-delivery-boy`;
 
 // ORDERS
-
 export const ORDER_LIST = `${ADMIN_ENDPOINT}/order`;
 export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
 export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`;
@@ -216,7 +215,6 @@ export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
 export const ACTIVE_DEIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-nearby-delivery-boy-order`;
 
 // CHAT
-
 export const CHAT_LIST = `${ADMIN_ENDPOINT}/user-chat-request`;
 export const ACCEPT_CHAT = `${ADMIN_ENDPOINT}/user-chat-request/accept`;
 export const SEND_MESSAGE = `${ADMIN_ENDPOINT}/user-chat-request/send-message`;
