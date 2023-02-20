@@ -735,6 +735,7 @@ function ProductAdd() {
                               </Row>
                               {attributeItems.map((item, index) => (
                                 <Row className="mt-3" key={index}>
+                                <Row className="mt-3" key={index}>
                                   <Col sm={6}>
                                     <TextField
                                       id="variant name"
@@ -823,6 +824,8 @@ function ProductAdd() {
                                     </li>
                                     {attribute.items.map((item) => (
                                       <ul key={item.name}>
+                                    {attribute.items.map((item, index) => (
+                                      <ul key={index}>
                                         <li>
                                           <span>{item.name}-</span>
                                           <span className="ms-1">{item.extraPrice}</span>
