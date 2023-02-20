@@ -1,5 +1,16 @@
 /* eslint-disable radix */
-import { Autocomplete, Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
+} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import React, { useEffect, useMemo, useState } from 'react';
 import Dropzone from 'react-dropzone';
@@ -7,7 +18,7 @@ import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } fro
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
-import { liveStatusOptions, priceRangeOptions, statusOptions2 } from '../../../assets/staticData';
+import { liveStatusOptions, priceRangeOptions, shopDietaryOptions, statusOptions2 } from '../../../assets/staticData';
 import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
@@ -64,6 +75,7 @@ function ShopAdd() {
   const [bankName, setBankName] = useState('');
   const [accountName, setAccountName] = useState('');
   const [accountNum, setAccountNum] = useState('');
+  const [dietaryType, setdietaryType] = useState([]);
 
   const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
 
@@ -89,7 +101,6 @@ function ShopAdd() {
 
   // UPDATE DATA
   const updateData = (values) => {
-    console.log(values);
     const {
       seller,
       minOrderAmount,
@@ -105,6 +116,7 @@ function ShopAdd() {
       email,
       phone_number,
       cuisineType,
+      dietaryType,
       expensive,
       deliveryFee,
       haveOwnDeliveryBoy,
@@ -136,6 +148,7 @@ function ShopAdd() {
     setBankName(bank_name);
     setAccountName(account_name);
     setAccountNum(account_number);
+    setdietaryType(dietaryType || []);
   };
 
   useEffect(async () => {
@@ -185,6 +198,17 @@ function ShopAdd() {
       dispatch(getAllTags(true, seller?.sellerType));
     }
   }, [seller, searchKey]);
+
+  // handle dietry change
+  const handleDietryChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setdietaryType(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    );
+  };
 
   // TAGS ADD
   const handleTagChange = (item) => {
@@ -248,6 +272,7 @@ function ShopAdd() {
       tags: tags.items,
       liveStatus,
       cuisineType: cuisinesList,
+      dietaryType,
       expensive,
       deliveryType,
       deliveryFee: deliveryType === 'self' ? parseInt(deliveryFee) : 0,
@@ -349,13 +374,11 @@ function ShopAdd() {
   };
 
   // ADDRESS CHANGE
-
   const handleAddressChange = (address) => {
     setSelectedAddress(address);
   };
 
   // GET LAT LNG
-
   useEffect(() => {
     if (address) {
       const { address_components, formatted_address } = address;
@@ -375,7 +398,6 @@ function ShopAdd() {
   }, [address]);
 
   // SUCCESS
-
   useEffect(() => {
     if (status) {
       if (id) {
@@ -410,7 +432,6 @@ function ShopAdd() {
   }, [status]);
 
   // IMAGE
-
   const handleAcceptedFiles = (files, type) => {
     files.map((file) =>
       Object.assign(file, {
@@ -426,8 +447,6 @@ function ShopAdd() {
     }
   };
 
-  // CUISINES ADD
-
   // eslint-disable-next-line consistent-return
   const addNewCuisine = (item) => {
     if (item) {
@@ -440,7 +459,6 @@ function ShopAdd() {
   };
 
   // CUISINE REMOVE
-
   const handleCuisineDelete = (index) => {
     const list = [...selectedCuisines];
     list.splice(index, 1);
@@ -882,6 +900,32 @@ function ShopAdd() {
                           </Paper>
                         )}
                       </div>
+                    )}
+
+                    {seller?.sellerType === 'food' && (
+                      <FormControl sx={{ width: '100%' }}>
+                        <InputLabel>Select Dietary Type</InputLabel>
+                        <Select
+                          multiple
+                          value={dietaryType}
+                          onChange={handleDietryChange}
+                          input={<OutlinedInput label="Select Dietary Type" />}
+                          renderValue={(selected) => {
+                            const showValue = [];
+                            selected.forEach((seletedItem) => {
+                              showValue.push(shopDietaryOptions.find((item) => item.value === seletedItem).label);
+                            });
+                            return showValue.join(', ');
+                          }}
+                        >
+                          {shopDietaryOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              <Checkbox checked={dietaryType.indexOf(option.value) > -1} />
+                              <ListItemText primary={option.label} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     )}
                   </Col>
                 </Row>
