@@ -10,6 +10,12 @@ export const shopDietaryOptions = [
   { label: 'Vegan', value: 'vegan' },
 ];
 
+export const faqType = [
+  { label: 'User', value: 'user' },
+  { label: 'Shop', value: 'shop' },
+  { label: 'DeliveryBoy', value: 'deliveryBoy' },
+];
+
 export const riderSortByOptions = [
   { label: 'Order Number(+)', value: 'asc' },
   { label: 'Order Number(-)', value: 'desc' },

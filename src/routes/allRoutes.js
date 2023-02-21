@@ -26,6 +26,7 @@ import DealsList from '../pages/Deals/DealsList/DealsList';
 import DeliverymanAdd from '../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
 import DeliverymanList from '../pages/Deliveryman/DeliverymanList/DeliverymanList';
 import DropPayList from '../pages/DropPay/DropPayList/DropPayList';
+import Faq from '../pages/Faq';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import SellerList from '../pages/Seller/SellerList/SellerList';
@@ -196,7 +197,8 @@ const userRoutes = [
     path: '/terms-and-conditions/delivery-app',
     component: DeliveryTermsAndConditions,
   },
-
+  // FAQ
+  { path: '/faq', component: Faq },
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },

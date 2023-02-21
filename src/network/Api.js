@@ -254,3 +254,9 @@ export const UPDATE_TAG = `${ADMIN_ENDPOINT}/tags/update`;
 export const IMAGE_UPLOAD = 'image/single-image-upload';
 
 // END ADMIN API
+
+// FAQ
+export const GET_FAQ = `${ADMIN_ENDPOINT}/faq`;
+export const ADD_FAQ = `${ADMIN_ENDPOINT}/faq/add`;
+export const UPDATE_FAQ = `${ADMIN_ENDPOINT}/faq/update`;
+export const DELETE_FAQ = `${ADMIN_ENDPOINT}/faq/delete`;

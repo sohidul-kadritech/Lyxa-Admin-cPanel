@@ -20,6 +20,7 @@ import dashboardReducer from './Dashboard/dashboardReducer';
 import dealReducer from './Deal/dealReducer';
 import deliveryManReducer from './DeliveryMan/DeliveryManReducer';
 import dropPayReducer from './DropPay/dropPayReducer';
+import faqReducer from './faq/faqReducer';
 import imageUploadReducer from './ImageUpload/imageUploadReducer';
 import notificationReducer from './Notification/notificationReducer';
 import orderReducer from './order/orderReducer';
@@ -68,6 +69,7 @@ const rootReducer = combineReducers({
   usersReducer,
   unitTypeReducer,
   vatReducer,
+  faqReducer,
 });
 
 export default rootReducer;
