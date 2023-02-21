@@ -205,7 +205,7 @@ function DeliveryTransactions() {
                   {deliveryTrxs.length > 0 &&
                     deliveryTrxs.map((item) => (
                       <Tr
-                        key={Math.random()}
+                        key={item?.autoGenId}
                         className="align-middle cursor-pointer"
                         style={{
                           fontSize: '15px',

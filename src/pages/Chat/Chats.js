@@ -108,7 +108,7 @@ function Chats() {
                 <Tbody style={{ position: 'relative' }}>
                   {chatRequests?.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item?._id}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

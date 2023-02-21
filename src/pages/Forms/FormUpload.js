@@ -185,7 +185,7 @@ function FormUpload({ lisener }) {
                       {selectedFiles.map((f, i) => (
                         <Card
                           className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                          key={`${Math.random()}-file`}
+                          key={`${i}-file`}
                         >
                           <div className="p-2">
                             <Row className="align-items-center position-relative">

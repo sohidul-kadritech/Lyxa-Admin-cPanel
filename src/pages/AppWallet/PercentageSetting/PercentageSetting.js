@@ -155,7 +155,7 @@ function PercentageSetting() {
                     >
                       {sellersDropCharge.map((seller) => (
                         <Tr
-                          key={Math.random()}
+                          key={seller?._id}
                           className="align-middle"
                           style={{
                             fontSize: '15px',
@@ -315,7 +315,7 @@ function PercentageSetting() {
                               <hr />
                               {deliveryCut?.length > 0 &&
                                 deliveryCut?.map((item, index) => (
-                                  <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                                  <ul key={index} style={{ listStyleType: 'square' }}>
                                     <li>
                                       <div className="d-flex justify-content-between">
                                         <span
@@ -453,7 +453,7 @@ function PercentageSetting() {
                               <hr />
                               {deliveryCut?.length > 0 &&
                                 deliveryCut?.map((item, index) => (
-                                  <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                                  <ul key={index} style={{ listStyleType: 'square' }}>
                                     <li>
                                       <div className="d-flex justify-content-between">
                                         <span

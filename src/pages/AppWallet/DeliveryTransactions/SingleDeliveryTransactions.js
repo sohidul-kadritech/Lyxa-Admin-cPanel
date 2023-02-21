@@ -415,7 +415,7 @@ function SingleDeliveryTransactions() {
                       <Tbody style={{ position: 'relative' }}>
                         {cashOrders?.map((item) => (
                           <Tr
-                            key={Math.random()}
+                            key={item?.order?.orderId}
                             className="align-middle table-data cursor-pointer"
                             style={{
                               fontSize: '15px',

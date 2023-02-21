@@ -109,9 +109,9 @@ function ChatsListByOrder() {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: 'relative' }}>
-                  {list?.map((item) => (
+                  {list?.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle cursor-pointer text-capitalize"
                       style={{
                         fontSize: '15px',

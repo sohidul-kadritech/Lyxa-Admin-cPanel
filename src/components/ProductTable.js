@@ -72,7 +72,7 @@ function ProductTable({ products, loading }) {
           {products?.length > 0 &&
             products?.map((item) => (
               <Tr
-                key={Math.random()}
+                key={item?._id}
                 className="align-middle cursor-pointer"
                 style={{
                   fontSize: '15px',
@@ -87,15 +87,13 @@ function ProductTable({ products, loading }) {
                     id={item?.autoGenId}
                   />
                 </Th>
-
                 <Td onClick={() => goToDetails(item?._id)}>
                   <p>{item?.shop?.shopName}</p>
                 </Td>
-
                 <Td onClick={() => goToDetails(item?._id)}>
                   {item?.deals.length > 0
                     ? item?.deals.map((item) => (
-                        <div key={Math.random()}>
+                        <div key={item?.name}>
                           <p>{item?.name}</p>
                         </div>
                       ))

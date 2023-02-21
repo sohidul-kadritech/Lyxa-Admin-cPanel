@@ -15,7 +15,7 @@ function SelectOption({ label, value, onChange, options, disabled = false, requi
         disabled={disabled}
       >
         {options.map((item) => (
-          <MenuItem key={Math.random()} value={item.value}>
+          <MenuItem key={item.label} value={item.value}>
             {item.label}
           </MenuItem>
         ))}

@@ -79,7 +79,7 @@ function ChatMessageTable({ isFromChat = false }) {
             <Tbody style={{ position: 'relative' }}>
               {defualtMessages.map((item, index) => (
                 <Tr
-                  key={Math.random()}
+                  key={item?._id}
                   className="align-middle"
                   style={{
                     fontSize: '15px',

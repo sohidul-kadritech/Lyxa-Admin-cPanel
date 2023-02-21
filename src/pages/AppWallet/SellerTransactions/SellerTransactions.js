@@ -175,7 +175,7 @@ function SellerTransactions() {
                   {sellersTrxs.length > 0 &&
                     sellersTrxs.map((trx) => (
                       <Tr
-                        key={Math.random()}
+                        key={trx._id}
                         className="align-middle cursor-pointer"
                         style={{
                           fontSize: '15px',

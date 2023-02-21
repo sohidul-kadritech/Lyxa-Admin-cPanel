@@ -20,7 +20,7 @@ function TableForList({ values }) {
           values.length > 0 &&
           values.map((item) => (
             <Tr
-              key={Math.random()}
+              key={`${item?.shopEndTimeText}${item?.shop?.shopName}`}
               className="align-middle"
               style={{
                 fontSize: '15px',

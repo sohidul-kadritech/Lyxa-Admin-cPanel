@@ -122,7 +122,7 @@ function UsersList() {
                   {users.length > 0 &&
                     users.map((user) => (
                       <Tr
-                        key={Math.random()}
+                        key={user?._id}
                         className="align-middle cursor-pointer"
                         style={{
                           fontSize: '15px',

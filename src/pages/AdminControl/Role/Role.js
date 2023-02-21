@@ -140,7 +140,7 @@ function Role() {
                           onChange={(event) => setActiveStatus(event.target.value)}
                         >
                           {options.map((option) => (
-                            <option value={option.value} key={Math.random()}>
+                            <option value={option.value} key={option.value}>
                               {option.label}
                             </option>
                           ))}
@@ -177,7 +177,7 @@ function Role() {
                         <Tbody>
                           {roles.map((role, index) => (
                             <Tr
-                              key={Math.random()}
+                              key={role.id}
                               className="align-middle"
                               style={{
                                 fontSize: '15px',

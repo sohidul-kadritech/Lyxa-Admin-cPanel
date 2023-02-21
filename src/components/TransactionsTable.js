@@ -23,7 +23,7 @@ function TransactionsTable({ trxs = [], loading }) {
         <Tbody style={{ position: 'relative' }}>
           {trxs?.map((item) => (
             <Tr
-              key={Math.random()}
+              key={item?.autoGenId}
               className="align-middle table-data cursor-pointer"
               style={{
                 fontSize: '15px',

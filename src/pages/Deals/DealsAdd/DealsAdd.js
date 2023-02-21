@@ -244,12 +244,12 @@ function DealsAdd() {
                           >
                             {shopType === 'restaurant'
                               ? resturantDeals.map((item) => (
-                                  <MenuItem key={Math.random()} value={item.value}>
+                                  <MenuItem key={item.value} value={item.value}>
                                     {item.label}
                                   </MenuItem>
                                 ))
                               : pharmacyAndGroceryDeals.map((item) => (
-                                  <MenuItem key={Math.random()} value={item.value}>
+                                  <MenuItem key={item.value} value={item.value}>
                                     {item.label}
                                   </MenuItem>
                                 ))}

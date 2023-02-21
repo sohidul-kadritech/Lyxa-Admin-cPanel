@@ -153,7 +153,7 @@ function CancelReason() {
                 <Tbody style={{ position: 'relative' }}>
                   {cancelReasons.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

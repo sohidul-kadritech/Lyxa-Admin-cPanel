@@ -423,7 +423,7 @@ function ChatDetails() {
                 <Tbody style={{ position: 'relative' }}>
                   {lastFiveOrder?.map((item) => (
                     <Tr
-                      key={Math.random()}
+                      key={item._id}
                       className="align-middle"
                       style={{
                         fontSize: '15px',

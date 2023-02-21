@@ -238,7 +238,7 @@ function TopLists({ list, type }) {
             {list?.length > 0 &&
               list?.map((item, index) => (
                 <Tr
-                  key={Math.random()}
+                  key={item._id}
                   className="align-middle"
                   style={{
                     fontSize: '12px',

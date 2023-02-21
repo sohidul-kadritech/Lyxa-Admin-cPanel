@@ -166,9 +166,9 @@ function Transactions() {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: 'relative' }}>
-                  {allTrxs?.map((item) => (
+                  {allTrxs?.map((item, index) => (
                     <Tr
-                      key={Math.random()}
+                      key={index}
                       className="align-middle cursor-pointer"
                       style={{
                         fontSize: '15px',

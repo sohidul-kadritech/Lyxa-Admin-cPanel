@@ -497,8 +497,8 @@ function ShopDetails() {
                   </AccordionSummary>
                   <AccordionDetails>
                     {shop?.deals?.length > 0 ? (
-                      shop?.deals?.map((deal) => (
-                        <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                      shop?.deals?.map((deal, index) => (
+                        <ul key={index} style={{ listStyleType: 'square' }}>
                           <li>
                             <div className="d-flex justify-content-between px-3">
                               <span

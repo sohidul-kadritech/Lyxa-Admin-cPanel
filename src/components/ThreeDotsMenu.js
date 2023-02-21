@@ -24,7 +24,7 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
           (menu) =>
             menu && (
               <MenuItem
-                key={Math.random()}
+                key={menu}
                 value={menu}
                 onClick={() => {
                   handleMenuClick(menu);

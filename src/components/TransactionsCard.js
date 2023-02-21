@@ -7,7 +7,7 @@ function TransactionsCard({ summary = [] }) {
   return (
     <CardWrapper>
       {summary.map((item) => (
-        <div key={Math.random()} className="card hover-shadow">
+        <div key={`${item?.title}_${item?.value}`} className="card hover-shadow">
           <Card>
             <CardContent className="content__wrapper cursor-pointer">
               <div>
