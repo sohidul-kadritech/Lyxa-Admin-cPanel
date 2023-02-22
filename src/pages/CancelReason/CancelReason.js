@@ -2,8 +2,9 @@ import { TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Button, Card, CardBody, CardTitle, Col, Container, Form, Modal, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Form, Modal, Row } from 'reactstrap';
 import { cancelReasonOptions, cancelReasonOptions2, statusOptions, statusOptions2 } from '../../assets/staticData';
+import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import SelectOption from '../../components/SelectOption';
@@ -191,7 +192,7 @@ function CancelReason() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" variant="info" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && cancelReasons.length < 1 && (

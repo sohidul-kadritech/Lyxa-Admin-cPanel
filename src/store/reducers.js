@@ -20,6 +20,7 @@ import dashboardReducer from './Dashboard/dashboardReducer';
 import dealReducer from './Deal/dealReducer';
 import deliveryManReducer from './DeliveryMan/DeliveryManReducer';
 import dropPayReducer from './DropPay/dropPayReducer';
+import faqReducer from './faq/faqReducer';
 import imageUploadReducer from './ImageUpload/imageUploadReducer';
 import notificationReducer from './Notification/notificationReducer';
 import orderReducer from './order/orderReducer';
@@ -34,6 +35,7 @@ import socketReducer from './socket/socketReducer';
 import termsAndConditonReducer from './termsAndConditions/termsAndConditionReducer';
 import unitTypeReducer from './unitType/unitTypeReducer';
 import usersReducer from './Users/UsersReducer';
+import vatReducer from './vat/vatReducer';
 
 const rootReducer = combineReducers({
   // public
@@ -66,6 +68,8 @@ const rootReducer = combineReducers({
   uploadImage: uploadImageReducer,
   usersReducer,
   unitTypeReducer,
+  vatReducer,
+  faqReducer,
 });
 
 export default rootReducer;

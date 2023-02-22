@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 import { sortByOptions } from '../../../assets/staticData';
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import Search from '../../../components/Search';
@@ -229,7 +230,7 @@ function DeliveryTransactions() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" variant="success" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && deliveryTrxs.length < 1 && (

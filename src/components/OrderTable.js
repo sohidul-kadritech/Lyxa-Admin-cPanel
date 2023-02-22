@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable consistent-return */
 import {
   Autocomplete,
@@ -32,6 +33,7 @@ import { getAllCancelReasons } from '../store/Settings/settingsAction';
 
 import userIcon from '../assets/images/dashboard/user.png';
 import noPhoto from '../assets/images/noPhoto.jpg';
+import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
@@ -381,7 +383,9 @@ function OrderTable({ orders = [], status, loading }) {
                         <span>{new Date(item?.createdAt).toLocaleTimeString()}</span>
                       </Td>
 
-                      <Td onClick={() => goToDetails(item?._id)}>{`${item?.summary?.totalAmount} ${currency}`}</Td>
+                      <Td onClick={() => goToDetails(item?._id)}>{`${
+                        item?.summary?.totalAmount + item?.summary?.vat
+                      } ${currency}`}</Td>
                       <Td onClick={() => goToDetails(item?._id)}>
                         {}
                         {`${item?.paymentMethod} ${item?.selectPos !== 'no' ? '(Pos)' : ''}`}
@@ -424,24 +428,9 @@ function OrderTable({ orders = [], status, loading }) {
                       )}
                     </Tr>
                   ))}
-                {loading && (
-                  <Tr>
-                    <Td>
-                      <Spinner
-                        style={{
-                          position: 'fixed',
-                          left: '50%',
-                          top: '50%',
-                        }}
-                        animation="border"
-                        color="success"
-                      />
-                    </Td>
-                  </Tr>
-                )}
               </Tbody>
             </Table>
-
+            {loading && <CircularLoader />}
             {!loading && orders?.length < 1 && (
               <div className="text-center">
                 <h4>No Order!</h4>

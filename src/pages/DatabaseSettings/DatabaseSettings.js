@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row } from 'reactstrap';
+import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
@@ -236,7 +237,7 @@ function DatabaseSettings() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" variant="success" />
+                  <CircularLoader />
                 </div>
               )}
               {error && <div className="text-center">{error?.message || 'Someting went wrong'}</div>}

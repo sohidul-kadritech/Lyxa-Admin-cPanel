@@ -21,6 +21,7 @@ import {
   SET_DELIVERY_FEE,
   UPDATE_ADMINS_SETTINGS,
   UPDATE_APP_SETTINGS,
+  UPDATE_BULTER_DELIVERY_CUT,
   UPDATE_DELIVERY_CUT,
   UPDATE_ORDER_CANCEL_REASON,
 } from '../../network/Api';
@@ -59,6 +60,14 @@ export const updateSearchDeliveryBoyKm = (km) => (dispatch) => {
   });
 };
 
+// SEARCH DELIVERY BOY DISTANCE KM
+export const updateSearchButlerKm = (km) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_SEARCH_BUTLER_KM,
+    payload: km,
+  });
+};
+
 export const removeSearchDeliveryBoyKm = (index) => (dispatch) => {
   dispatch({
     type: actionType.REMOVE_SEARCH_DELIVERY_BOY_KM,
@@ -66,6 +75,12 @@ export const removeSearchDeliveryBoyKm = (index) => (dispatch) => {
   });
 };
 
+export const removeSearchButlerKm = (index) => (dispatch) => {
+  dispatch({
+    type: actionType.REMOVE_SEARCH_BUTLER_KM,
+    payload: index,
+  });
+};
 // GET ALL ADMIN SETTINGS VALUE
 
 export const getAllAdminSettings = () => async (dispatch) => {
@@ -140,7 +155,6 @@ export const updateAdminSettings = () => async (dispatch, getState) => {
 };
 
 // UPDATE NEAR SHOP DISTANCE KEY
-
 export const updateNearByShopKey = (distance) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_NEAR_BY_SHOP,
@@ -148,8 +162,14 @@ export const updateNearByShopKey = (distance) => (dispatch) => {
   });
 };
 
+// UPDATE MAX BUTLER DISTANCE
+export const updateMaxDistanceForButler = (distance) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_MAX_BUTLER_DISTANCE,
+    payload: distance,
+  });
+};
 // MAX DISCOUNT AMOUTN UPDATE
-
 export const updateMaxDiscount = (amount) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_MAX_DISCOUNT,
@@ -158,7 +178,6 @@ export const updateMaxDiscount = (amount) => (dispatch) => {
 };
 
 // UPDATE DROP  CREDIT
-
 export const updateDropCreditLimit = (amount) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_DROP_CREDIT_LIMIT,
@@ -297,6 +316,8 @@ export const getPercentageSetting = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(GET_DELIVERY_FEE);
 
+    console.log(data);
+
     if (status) {
       dispatch({
         type: actionType.GET_PERCENTAGE_REQUEST_SUCCESS,
@@ -348,6 +369,47 @@ export const updateDeliveryCut = (deliveryRange) => async (dispatch) => {
     successMsg(error.message, 'error');
     dispatch({
       type: actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+export const updateButlerDeliveryCut = (deliveryRangeButler) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SEND,
+    });
+
+    console.log(deliveryRangeButler);
+
+    const {
+      data: { status, error, message, data },
+    } = await requestApi().request(UPDATE_BULTER_DELIVERY_CUT, {
+      method: 'POST',
+      data: {
+        deliveryRangeButler,
+      },
+    });
+
+    console.log(data);
+
+    if (status) {
+      successMsg(message, 'success');
+      dispatch({
+        type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SUCCESS,
+        payload: data.charge,
+      });
+    } else {
+      successMsg(message, 'error');
+      dispatch({
+        type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_FAIL,
+        payload: error,
+      });
+    }
+  } catch (error) {
+    successMsg(error.message, 'error');
+    dispatch({
+      type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_FAIL,
       payload: error.message,
     });
   }

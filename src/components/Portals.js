@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
-function Portals({ openChats }) {
+function Portals() {
   const { pathname } = useLocation();
   const newUnseenChatRequestBadge = useRef();
+  const openChats = useSelector((store) => store.chatReducer.openChats);
 
   useEffect(() => {
     newUnseenChatRequestBadge.current = document.getElementById('sidebar-item-chat-badges');
@@ -14,7 +15,7 @@ function Portals({ openChats }) {
   return (
     <>
       {/* chat notification badge */}
-      {newUnseenChatRequestBadge.current && openChats && createPortal({ openChats }, newUnseenChatRequestBadge.current)}
+      {newUnseenChatRequestBadge.current && openChats && createPortal(openChats, newUnseenChatRequestBadge.current)}
     </>
   );
 }

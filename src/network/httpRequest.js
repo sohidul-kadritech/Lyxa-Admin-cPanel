@@ -18,6 +18,7 @@ export default function requestApi() {
     responseType: 'json',
     socketPath: null,
   });
+
   request.interceptors.response.use(
     (response) => response,
     (error) => {

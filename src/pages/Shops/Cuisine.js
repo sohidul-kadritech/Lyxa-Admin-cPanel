@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { toast } from 'react-toastify';
-import { Button, Card, CardBody, CardTitle, Col, Container, Label, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Label, Row } from 'reactstrap';
 import { activeOptions } from '../../assets/staticData';
+import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import { addCuisine, editCuisine, getAllCuisine } from '../../store/Shop/shopAction';
@@ -185,7 +186,7 @@ function Cuisine() {
                   </Table>
                   {loading && (
                     <div className="text-center">
-                      <Spinner animation="border" variant="info" />
+                      <CircularLoader />
                     </div>
                   )}
                   {!loading && cuisines.length < 1 && (

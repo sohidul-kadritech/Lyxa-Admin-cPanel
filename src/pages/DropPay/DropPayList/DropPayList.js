@@ -4,7 +4,7 @@ import Flatpickr from 'react-flatpickr';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Button, Card, CardBody, Col, Container, Modal, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, Col, Container, Modal, Row } from 'reactstrap';
 import { sortByOptions } from '../../../assets/staticData';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
@@ -17,6 +17,7 @@ import {
 } from '../../../store/DropPay/dropPayAction';
 
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import UserCradit from '../../../components/UserCradit';
@@ -200,7 +201,7 @@ function DropPayList() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" color="info" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && credits?.length < 1 && (

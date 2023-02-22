@@ -11,7 +11,9 @@ const initialState = {
     nearByShopKm: '',
     deliveryFeePerKm: '',
     maxDiscount: '',
+    maxDistanceForButler: '',
     searchDeliveryBoyKm: [],
+    searchDeliveryBoyKmForButler: [],
     maxCustomerServiceValue: '',
     vat: '',
     currency: localStorage.getItem('currency') ? JSON.parse(localStorage.getItem('currency')) : { code: '' },
@@ -62,6 +64,15 @@ const settingsReducer = (state = initialState, action) => {
         },
       };
 
+    case actionType.UPDATE_SEARCH_BUTLER_KM:
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          searchDeliveryBoyKmForButler: [...state.appSettingsOptions.searchDeliveryBoyKmForButler, payload],
+        },
+      };
+
     case actionType.UPDATE_VAT:
       return {
         ...state,
@@ -79,6 +90,17 @@ const settingsReducer = (state = initialState, action) => {
         appSettingsOptions: {
           ...state.appSettingsOptions,
           searchDeliveryBoyKm: list,
+        },
+      };
+
+    case actionType.REMOVE_SEARCH_BUTLER_KM:
+      const list2 = [...state.appSettingsOptions.searchDeliveryBoyKmForButler];
+      list2.splice(payload, 1);
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          searchDeliveryBoyKmForButler: list2,
         },
       };
 
@@ -126,13 +148,21 @@ const settingsReducer = (state = initialState, action) => {
       };
 
     // APP
-
     case actionType.UPDATE_NEAR_BY_SHOP:
       return {
         ...state,
         appSettingsOptions: {
           ...state.appSettingsOptions,
           nearByShopKm: payload,
+        },
+      };
+
+    case actionType.UPDATE_MAX_BUTLER_DISTANCE:
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          maxDistanceForButler: payload,
         },
       };
 
@@ -250,6 +280,7 @@ const settingsReducer = (state = initialState, action) => {
         ...state,
         loading: true,
       };
+
     case actionType.UPDATE_DELIVERY_CUT_REQUEST_SUCCESS:
       return {
         ...state,
@@ -257,7 +288,29 @@ const settingsReducer = (state = initialState, action) => {
         loading: false,
         status: true,
       };
+
     case actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        dropCharge: payload,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

@@ -12,9 +12,10 @@ import TransgenderIcon from '@mui/icons-material/Transgender';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { Button, Card, CardBody, Col, Container, Modal, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, Col, Container, Modal, Row } from 'reactstrap';
 import noPhoto from '../../../assets/images/noPhoto.jpg';
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumbs from '../../../components/Common/Breadcrumb';
 import FlagsAndReviews from '../../../components/FlagsAndReviews';
 import GlobalWrapper from '../../../components/GlobalWrapper';
@@ -167,7 +168,8 @@ function UserDetails() {
                           />
                         </InfoTwoWrapper>
                       ) : (
-                        <Spinner color="danger" size="lg"></Spinner>
+                        // <Spinner color="danger" size="lg"></Spinner>
+                        <CircularLoader />
                       )}
                     </Col>
                   </Row>

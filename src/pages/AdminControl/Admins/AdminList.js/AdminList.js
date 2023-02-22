@@ -3,7 +3,8 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Card, CardBody, CardTitle, Col, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
+import CircularLoader from '../../../../components/CircularLoader';
 import Breadcrumb from '../../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../../components/GlobalWrapper';
 import ThreeDotsMenu from '../../../../components/ThreeDotsMenu';
@@ -134,9 +135,7 @@ function AdminList() {
                   ))}
               </Tbody>
             </Table>
-            {loading && (
-              <Spinner style={{ position: 'fixed', left: '50%', top: '50%' }} animation="border" color="info" />
-            )}
+            {loading && <CircularLoader />}
             {!loading && admins?.length < 1 && (
               <div className="text-center">
                 <h4>No Data</h4>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Spinner } from 'reactstrap';
+// import { Spinner } from 'reactstrap';
 
 import Lightbox from 'react-image-lightbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { updateProductStatus } from '../store/Product/productAction';
+import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
@@ -117,24 +118,9 @@ function ProductTable({ products, loading }) {
                 </Td>
               </Tr>
             ))}
-          {loading && (
-            <Tr>
-              <Td>
-                <Spinner
-                  style={{
-                    position: 'fixed',
-                    left: '50%',
-                    top: '50%',
-                  }}
-                  animation="border"
-                  color="danger"
-                />
-              </Td>
-            </Tr>
-          )}
         </Tbody>
       </Table>
-
+      {loading && <CircularLoader />}
       {!loading && products?.length < 1 && (
         <div className="text-center">
           <h4>No Product!</h4>

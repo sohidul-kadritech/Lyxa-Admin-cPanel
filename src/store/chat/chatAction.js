@@ -105,7 +105,6 @@ export const acceptChatReq = (id) => async (dispatch, getState) => {
 };
 
 // REJECT CHAT REQUEST
-
 export const rejectChatReq = (id) => async (dispatch) => {
   try {
     dispatch({
@@ -139,7 +138,6 @@ export const rejectChatReq = (id) => async (dispatch) => {
 };
 
 // SEND MESSEGE TO USER
-
 export const sendMsgToUser = (values) => async (dispatch, getState) => {
   const { socket } = getState().socketReducer;
   try {

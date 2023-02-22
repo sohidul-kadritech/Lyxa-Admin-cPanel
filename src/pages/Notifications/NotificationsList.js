@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 import { globalTypesOptions, productStatusOptions, userTypesOptions } from '../../assets/staticData';
 import AppPagination from '../../components/AppPagination';
+import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
@@ -204,7 +205,7 @@ function NotificationsList() {
               </Table>
               {loading && (
                 <div className="text-center">
-                  <Spinner animation="border" color="info" />
+                  <CircularLoader />
                 </div>
               )}
               {!loading && notifications.length < 1 && (

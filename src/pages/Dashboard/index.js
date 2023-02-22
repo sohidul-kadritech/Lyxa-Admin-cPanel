@@ -1,13 +1,3 @@
-import React, { lazy, Suspense, useEffect } from 'react';
-import MetaTags from 'react-meta-tags';
-import { Card, CardBody, Col, Container, Row, Spinner } from 'reactstrap';
-
-// i18n
-import { useDispatch, useSelector } from 'react-redux';
-
-import { TextField } from '@mui/material';
-import styled from 'styled-components';
-
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AlternateEmailOutlinedIcon from '@mui/icons-material/AlternateEmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
@@ -19,6 +9,12 @@ import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfi
 import SettingsInputSvideoIcon from '@mui/icons-material/SettingsInputSvideo';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
+import { TextField } from '@mui/material';
+import React, { lazy, Suspense, useEffect } from 'react';
+import MetaTags from 'react-meta-tags';
+import { useDispatch, useSelector } from 'react-redux';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
+import styled from 'styled-components';
 import noPhoto from '../../assets/images/noPhoto.jpg';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import InfoTwo from '../../components/InfoTwo';
@@ -127,11 +123,7 @@ function Dashboard() {
             </CardBody>
           </Card>
 
-          {loading && (
-            <div className="text-center">
-              <Spinner animation="border" color="success" />
-            </div>
-          )}
+          {loading && <div className="text-center">{/* <Spinner animation="border" color="success" /> */}</div>}
 
           <div>
             {account_type === 'admin' ? (

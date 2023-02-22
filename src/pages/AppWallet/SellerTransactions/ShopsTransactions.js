@@ -7,8 +7,9 @@ import Flatpickr from 'react-flatpickr';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import Select from 'react-select';
-import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 import { shopsTrxsFilterOptions } from '../../../assets/staticData';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import store from '../../../store';
@@ -313,11 +314,6 @@ function ShopsTransactions() {
                 </Button>
               </div>
               <hr />
-              {loading && (
-                <div className="text-center">
-                  <Spinner animation="border" variant="success" />
-                </div>
-              )}
               <MDBDataTable
                 className="cursor-pointer"
                 hover
@@ -328,6 +324,11 @@ function ShopsTransactions() {
                 searching={false}
                 noBottomColumns
               />
+              {loading && (
+                <div className="text-center">
+                  <CircularLoader />
+                </div>
+              )}
             </CardBody>
           </Card>
         </Container>

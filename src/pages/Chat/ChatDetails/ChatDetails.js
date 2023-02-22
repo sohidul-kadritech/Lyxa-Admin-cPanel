@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Button, Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
@@ -54,7 +55,9 @@ function ChatDetails() {
 
   // Scroll to Bottom
   const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    }, 5);
   };
 
   const callApi = async (orderId) => {
@@ -65,11 +68,6 @@ function ChatDetails() {
         },
       });
 
-      const response = await requestApi().request(LAST_FIVE_ORDER + userId);
-      if (data?.status) {
-        setLastFiveOrder(response?.data?.data);
-      }
-
       if (data.status) {
         setIsLoading(false);
         const chats = data?.data?.chats;
@@ -77,6 +75,13 @@ function ChatDetails() {
         setRequestId(chats[length - 1]?.adminChatRequest?._id);
         setRequest(data?.data?.chats);
         scrollToBottom();
+      }
+
+      // last five order
+      const response = await requestApi().request(LAST_FIVE_ORDER + userId);
+
+      if (data?.status) {
+        setLastFiveOrder(response?.data?.data);
       }
     } catch (e) {
       console.log(e.message);
@@ -87,7 +92,6 @@ function ChatDetails() {
     if (id) {
       setIsLoading(true);
       const status = searchParams.get('status');
-
       dispatch(setChatStatusFalse(status === 'closed'));
       dispatch(setAcceptChat(status === 'accepted'));
       setChatStatus(status);
@@ -131,7 +135,7 @@ function ChatDetails() {
   //  JOIN TO THE CHAT ROOM
   useEffect(() => {
     if (chatStatus === 'accepted' && socket) {
-      socket.emit('join_user_and_admin_chat', { room: id, data: { access_token } });
+      socket.emit('join_user_and_admin_chat', { room: requestId, data: { access_token } });
     }
   }, [chatStatus, socket]);
 
@@ -143,20 +147,20 @@ function ChatDetails() {
 
   useEffect(() => {
     if (status) {
-      (async function getSingleChat() {
-        const data = await callApi(id, SINGLE_CHAT, 'chatRequest');
-        if (data) {
-          setRequest(data);
-        }
-      })();
+      const newMessage = {
+        message,
+        type: 'admin',
+        createdAt: new Date(),
+      };
 
+      setRequest((prev) => [...prev, newMessage]);
       setMessage('');
+      scrollToBottom();
     }
   }, [status]);
 
   // CLOSE CONVERSATION ACTION
   const handleClosedConversation = () => {
-    const requestId = request?.at(-1)?.adminChatRequest?._id;
     dispatch(closeConversation(requestId));
     setconfirm_alert(false);
     setsuccess_dlg(true);
@@ -166,7 +170,6 @@ function ChatDetails() {
 
   // accept conversation
   const handleAcceptConversation = () => {
-    const requestId = request?.at(-1)?.adminChatRequest?._id;
     dispatch(acceptChatReq(requestId));
     setconfirm_alert(false);
     setsuccess_dlg(true);

@@ -30,7 +30,7 @@ function ProductAdd() {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { categories, subCategories } = useSelector((state) => state.categoryReducer);
+  const { categories: allCategories, subCategories } = useSelector((state) => state.categoryReducer);
   const { shops, searchKey, typeKey } = useSelector((state) => state.shopReducer);
 
   const { unitTypes } = useSelector((state) => state.unitTypeReducer);
@@ -38,6 +38,7 @@ function ProductAdd() {
   const { loading, products, status, searchKey: productSearchKey } = useSelector((state) => state.productReducer);
 
   const [shop, setShop] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [cuisines, setCuisines] = useState(null);
   const [cuisineSearchKey, setCuisineSearchKey] = useState('');
   const [category, setCategory] = useState(null);
@@ -130,6 +131,7 @@ function ProductAdd() {
 
   useEffect(() => {
     dispatch(getAllUnitType(true));
+    dispatch(getAllCategory(true, account_type));
   }, []);
 
   // FIND SHOP BY SHOP ID
@@ -161,12 +163,18 @@ function ProductAdd() {
   }, [searchParams, account_type]);
 
   // ALL CATEGORY LIST
+  // useEffect(() => {
+  //   if (type) {
+  //     dispatch(getAllCategory(true));
+  //   }
+  // }, [type]);
 
   useEffect(() => {
-    if (type) {
-      dispatch(getAllCategory(true));
+    if (shop && allCategories?.length) {
+      const shopCatagories = allCategories.filter((item) => item?.shop?._id === shop?._id);
+      setCategories(shopCatagories);
     }
-  }, [type]);
+  }, [shop]);
 
   // ALL SHOP LIST
   useEffect(() => {
@@ -438,14 +446,14 @@ function ProductAdd() {
                           setCategory(null);
                         }}
                         options={shopTypeOptions2}
-                        disabled={!!(searchParams.get('shopId') !== undefined || id || account_type === 'shop')}
+                        disabled={!!(searchParams.get('shopId') || id || account_type === 'shop')}
                       />
                     </div>
 
                     <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
                       <div className="mb-4">
                         <AutocompletedInput
-                          value={shop}
+                          value={shop || null}
                           onChange={(event, newValue) => setShop(newValue)}
                           searchKey={searchKey}
                           onInputChange={(event, newInputValue) => dispatch(updateShopSearchKey(newInputValue))}
@@ -461,7 +469,7 @@ function ProductAdd() {
                       <div className="mb-4">
                         <Autocomplete
                           className="cursor-pointer"
-                          value={unit}
+                          value={unit || null}
                           onChange={(event, newValue) => {
                             setUnit(newValue);
                           }}
@@ -495,7 +503,7 @@ function ProductAdd() {
                       <div className="mb-4">
                         <Autocomplete
                           className="cursor-pointer"
-                          value={cuisines}
+                          value={cuisines || null}
                           onChange={(event, newValue) => {
                             setCuisines(newValue);
                           }}
@@ -561,12 +569,12 @@ function ProductAdd() {
                         <Autocomplete
                           className="cursor-pointer"
                           required
-                          value={category}
-                          disabled={!type}
+                          value={category || null}
+                          disabled={!type || !shop}
                           onChange={(event, newValue) => {
                             setCategory(newValue);
                           }}
-                          getOptionLabel={(option) => option.name}
+                          getOptionLabel={(option) => (option?.category?.name ? option?.category?.name : '')}
                           isOptionEqualToValue={(option, value) => option?._id === value?._id}
                           inputValue={searchCategoryKey}
                           onInputChange={(event, newInputValue) => {
@@ -576,7 +584,7 @@ function ProductAdd() {
                           options={categories.length > 0 ? categories : []}
                           sx={{ width: '100%' }}
                           renderInput={(params) => (
-                            <TextField {...params} label="Select a Category" required name="category" />
+                            <TextField {...params} label="Select a category" required name="category" />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -585,7 +593,7 @@ function ProductAdd() {
                               {...props}
                               key={option._id}
                             >
-                              {option?.name}
+                              {option?.category?.name}
                             </Box>
                           )}
                         />
@@ -596,7 +604,7 @@ function ProductAdd() {
                       <div className="mb-4">
                         <Autocomplete
                           className="cursor-pointer"
-                          value={subCategory}
+                          value={subCategory || null}
                           onChange={(event, newValue) => {
                             setSubCategory(newValue);
                           }}
@@ -813,8 +821,8 @@ function ProductAdd() {
                                         ></i>
                                       </div>
                                     </li>
-                                    {attribute.items.map((item, index) => (
-                                      <ul key={index}>
+                                    {attribute.items.map((item) => (
+                                      <ul key={item.name}>
                                         <li>
                                           <span>{item.name}-</span>
                                           <span className="ms-1">{item.extraPrice}</span>
@@ -840,13 +848,13 @@ function ProductAdd() {
                                 className="form-check-input"
                                 type="checkbox"
                                 value={isNeedAddon}
-                                id="flexCheckDefault"
+                                id="flexCheckDefault3"
                                 onChange={(e) => setIsNeedAddon(e.target.checked)}
                               />
                               <label
                                 className="form-check-label ms-1"
                                 style={{ fontSize: '16px' }}
-                                htmlFor="flexCheckDefault"
+                                htmlFor="flexCheckDefault3"
                               >
                                 Addon(s)
                               </label>

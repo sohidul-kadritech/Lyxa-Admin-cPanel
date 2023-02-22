@@ -8,6 +8,7 @@ import { Card, CardBody, Col, Container, Modal, Row, Spinner } from 'reactstrap'
 import noPhoto from '../../../assets/images/noPhoto.jpg';
 import { liveStatusOptionsOfRider, productStatusOptions, riderSortByOptions } from '../../../assets/staticData';
 import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import Info from '../../../components/Info';
@@ -198,24 +199,9 @@ function DeliverymanList() {
                       </Td>
                     </Tr>
                   ))}
-
-                  {loading && (
-                    <Tr>
-                      <Td>
-                        <Spinner
-                          style={{
-                            position: 'fixed',
-                            left: '50%',
-                            top: '50%',
-                          }}
-                          color="success"
-                        />
-                      </Td>
-                    </Tr>
-                  )}
                 </Tbody>
               </Table>
-
+              {loading && <CircularLoader />}
               {!loading && deliveryMans.length < 1 && (
                 <div className="text-center">
                   <h4>No Data!</h4>

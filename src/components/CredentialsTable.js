@@ -3,8 +3,9 @@ import moment from 'moment';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { Card, CardBody, CardTitle, Col, Container, Row, Spinner } from 'reactstrap';
+import { Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 import { removeSellerCredential, removeShopCredential } from '../store/AdminControl/Admin/adminAction';
+import CircularLoader from './CircularLoader';
 import GlobalWrapper from './GlobalWrapper';
 
 function CredentialsTable({ data = [], loading, type }) {
@@ -77,9 +78,7 @@ function CredentialsTable({ data = [], loading, type }) {
                     ))}
                 </Tbody>
               </Table>
-              {loading && (
-                <Spinner style={{ position: 'fixed', left: '50%', top: '50%' }} animation="border" variant="info" />
-              )}
+              {loading && <CircularLoader />}
               {!loading && data?.length < 1 && (
                 <div className="text-center">
                   <h4>No Credentials!</h4>

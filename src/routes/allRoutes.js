@@ -26,6 +26,7 @@ import DealsList from '../pages/Deals/DealsList/DealsList';
 import DeliverymanAdd from '../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
 import DeliverymanList from '../pages/Deliveryman/DeliverymanList/DeliverymanList';
 import DropPayList from '../pages/DropPay/DropPayList/DropPayList';
+import Faq from '../pages/Faq';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import SellerList from '../pages/Seller/SellerList/SellerList';
@@ -73,6 +74,7 @@ import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTerms
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
 import Transactions from '../pages/Transactions/Transactions';
+import Vat from '../pages/Vat';
 
 // testing routes
 const userRoutes = [
@@ -80,6 +82,9 @@ const userRoutes = [
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
   { path: '/orders/refused', component: RefusedOrders },
+  // vat
+  { path: '/vat', component: Vat },
+
   // Banner
   { path: '/banner', component: BannerPage },
   { path: '/banner/add', component: AddBanner },
@@ -192,7 +197,8 @@ const userRoutes = [
     path: '/terms-and-conditions/delivery-app',
     component: DeliveryTermsAndConditions,
   },
-
+  // FAQ
+  { path: '/faq', component: Faq },
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },

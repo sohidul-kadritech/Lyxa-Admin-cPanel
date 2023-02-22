@@ -9,6 +9,7 @@ import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Button, Card, CardBody, CardTitle, Col, Container, Label, Row, Spinner } from 'reactstrap';
 import { statusOptions, statusOptions2 } from '../../../../assets/staticData';
 import AppPagination from '../../../../components/AppPagination';
+import CircularLoader from '../../../../components/CircularLoader';
 import Breadcrumb from '../../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../../components/GlobalWrapper';
 import Info from '../../../../components/Info';
@@ -414,7 +415,7 @@ function CategoryDetails() {
                     )}
                     {loading && (
                       <div className="text-center">
-                        <Spinner animation="border" color="info" />
+                        <CircularLoader />
                       </div>
                     )}
                   </CardBody>

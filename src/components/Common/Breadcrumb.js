@@ -12,6 +12,7 @@ function Breadcrumb({
   isRefresh = true,
   isAddNew = false,
   addNewRoute = '',
+  addNewHandler,
   params = '',
 }) {
   const history = useHistory();
@@ -54,7 +55,7 @@ function Breadcrumb({
 
       <Col sm={6} className="d-flex justify-content-end cursor-pointer">
         {isAddNew && (
-          <Button className="me-3" onClick={gotoAddNew}>
+          <Button className="me-3" onClick={addNewHandler || gotoAddNew}>
             Add New
           </Button>
         )}

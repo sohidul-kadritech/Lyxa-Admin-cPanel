@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-restricted-globals */
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
@@ -254,6 +255,8 @@ function OrderDetails() {
     return m;
   };
 
+  console.log(order);
+
   return (
     <GlobalWrapper>
       <div className="page-content">
@@ -423,7 +426,8 @@ function OrderDetails() {
                       title="Discount"
                       value={order?.summary?.deliveryFee === 0 ? 'Free Delivery' : order?.products[0]?.totalDiscount}
                     />
-                    <SummaryInfo title="Total Amount" value={order?.summary?.totalAmount} />
+                    <SummaryInfo title="VAT" value={order?.summary?.vat} />
+                    <SummaryInfo title="Total Amount" value={order?.summary?.totalAmount + order?.summary?.vat} />
                   </Summery>
 
                   <Summery
@@ -482,6 +486,8 @@ function OrderDetails() {
                 <SummaryInfo title="Rider Profit" value={order?.deliveryBoyFee} />
                 <SummaryInfo title="Lyxa Delivery Profit" value={order?.dropCharge?.dropChargeFromDelivery} />
                 <SummaryInfo title="Lyxa Order Profit" value={order?.dropCharge?.dropChargeFromOrder} />
+                <SummaryInfo title="Shop VAT" value={order?.vatAmount?.vatForShop} />
+                <SummaryInfo title="Lyxa VAT" value={order?.vatAmount?.vatForAdmin} />
                 <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge?.totalDropAmount} />
               </Summery>
             </CardBody>

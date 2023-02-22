@@ -3,6 +3,19 @@ export const sortByOptions = [
   { label: 'Desc', value: 'desc' },
 ];
 
+export const shopDietaryOptions = [
+  { label: 'Gluten Free', value: 'gluten-free' },
+  { label: 'Low Cal', value: 'low-cal' },
+  { label: 'Vegetarian', value: 'vegetarian' },
+  { label: 'Vegan', value: 'vegan' },
+];
+
+export const faqType = [
+  { label: 'User', value: 'user' },
+  { label: 'Shop', value: 'shop' },
+  { label: 'DeliveryBoy', value: 'deliveryBoy' },
+];
+
 export const riderSortByOptions = [
   { label: 'Order Number(+)', value: 'asc' },
   { label: 'Order Number(-)', value: 'desc' },

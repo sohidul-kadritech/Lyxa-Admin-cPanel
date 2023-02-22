@@ -1,8 +1,10 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Card, CardBody, Col, Row } from 'reactstrap';
 import GlobalWrapper from './GlobalWrapper';
+import GraphInfo from './GraphInfo';
+import TopSummery from './TopSummery';
 
 import deliveryIcon from '../assets/images/dashboard/delivery.png';
 import earningFlowIcon from '../assets/images/dashboard/earning-flow.png';
@@ -11,6 +13,7 @@ import orderAmountIcon from '../assets/images/dashboard/order-amount.png';
 import profitFlowIcon from '../assets/images/dashboard/profit-flow.png';
 import profitUpArrowIcon from '../assets/images/dashboard/profit-up-arrow.png';
 import DashboardCard from './DashboardCard';
+import VatInfo from './VatInfo';
 
 import bagIcon from '../assets/images/dashboard/bag.png';
 import cancelBagIcon from '../assets/images/dashboard/cancel-bag.png';
@@ -23,9 +26,10 @@ import availableRiderIcon from '../assets/images/dashboard/available-rider.png';
 import cashInHandIcon from '../assets/images/dashboard/cash-in-hand.png';
 import riderIcon from '../assets/images/dashboard/rider.png';
 import timerIcon from '../assets/images/dashboard/timer.png';
+import vatIcon from '../assets/images/dashboard/vat.png';
 
-const GraphInfo = lazy(() => import('./GraphInfo'));
-const TopSummery = lazy(() => import('./TopSummery'));
+// const GraphInfo = lazy(() => import('./GraphInfo'));
+// const TopSummery = lazy(() => import('./TopSummery'));
 
 function AdminDashboard({ summary, topActivity }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
@@ -84,7 +88,6 @@ function AdminDashboard({ summary, topActivity }) {
   return (
     <GlobalWrapper>
       {topSummaryData.length > 0 && <TopSummery data={topSummaryData} />}
-
       <Row>
         <Col xl={3} md={6}>
           <DashboardCard title="Users" value={summary?.totalUser} icon={userIcon} border="#f05179" color="#8c54ff" />
@@ -95,7 +98,6 @@ function AdminDashboard({ summary, topActivity }) {
         <Col xl={3} md={6}>
           <DashboardCard title="Orders" value={summary?.totalOrder} icon={bagIcon} color="#459ed8" />
         </Col>
-
         <Col xl={3} md={6}>
           <DashboardCard
             title="Cancel Orders"
@@ -106,7 +108,6 @@ function AdminDashboard({ summary, topActivity }) {
           />
         </Col>
       </Row>
-
       <Row>
         <Col md={9}>
           <Suspense fallback={<div>Loading...</div>}>
@@ -114,10 +115,20 @@ function AdminDashboard({ summary, topActivity }) {
           </Suspense>
         </Col>
         <Col md={3}>
+          <Card>
+            <CardBody>
+              <div className="d-flex mb-2">
+                <img src={vatIcon} alt="icon" style={{ height: '30px', padding: '5px' }} />
+                <h5 className="ms-2 text-dark" style={{ marginTop: 2 }}>
+                  VAT Info
+                </h5>
+              </div>
+              <VatInfo />
+            </CardBody>
+          </Card>
           <TopLists list={topActivity?.topUser} type="user" />
         </Col>
       </Row>
-
       <Row>
         <Col md={3}>
           <TopLists list={topActivity?.topDeliveryBoy} type="deliveryBoy" />
@@ -177,7 +188,6 @@ function AdminDashboard({ summary, topActivity }) {
           </Row>
         </Col>
       </Row>
-
       <Row>
         <Col md={9}>
           <Suspense fallback={<div>Loading...</div>}>
@@ -189,7 +199,6 @@ function AdminDashboard({ summary, topActivity }) {
           <TopLists list={topActivity?.topShop} type="shop" />
         </Col>
       </Row>
-
       <Row>
         <Col>
           <Suspense fallback={<div>Loading...</div>}>
