@@ -69,6 +69,8 @@ export default function Faq() {
       headerName: 'Q&A',
       field: 'question',
       flex: 1,
+      disableColumnFilter: true,
+      sortable: false,
       renderCell: (params) => (
         <Stack spacing={1}>
           <span>{params?.value}</span>
@@ -80,6 +82,7 @@ export default function Faq() {
       id: 2,
       headerName: 'Type',
       field: 'type',
+      sortable: false,
       minWidth: 200,
       renderCell: (params) => <span className="text-capitalize">{params?.value}</span>,
     },
@@ -88,8 +91,8 @@ export default function Faq() {
       field: 'createdAt',
       headerName: 'Created',
       minWidth: 200,
+      sortable: false,
       valueFormatter: (params) => {
-        console.log(params.value);
         if (!params?.value) {
           return '';
         }
@@ -103,6 +106,7 @@ export default function Faq() {
       minWidth: 200,
       headerAlign: 'right',
       align: 'right',
+      sortable: false,
       renderCell: (params) => (
         <ThreeDotsMenu
           menuItems={['Edit', 'Delete']}
@@ -185,6 +189,11 @@ export default function Faq() {
                     <DataGrid
                       columns={columns}
                       rows={faq}
+                      density="comfortable"
+                      disableColumnMenu
+                      paginationMode="server"
+                      disableSelectionOnClick
+                      hideFooterPagination
                       getRowId={(params) => params?._id}
                       components={{
                         NoRowsOverlay: () => (
@@ -193,7 +202,6 @@ export default function Faq() {
                           </Stack>
                         ),
                       }}
-                      disableSelectionOnClick
                     />
                     {/* loading */}
                     {loading ? (
