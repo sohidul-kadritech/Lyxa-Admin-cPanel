@@ -1,21 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 // mui
-import {
-  Box,
-  Button,
-  Modal,
-  Paper,
-  Stack,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tabs,
-  Typography,
-  Unstable_Grid2 as Grid,
-} from '@mui/material';
+import { Box, Button, Modal, Paper, Stack, Tab, Tabs, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+
+import { DataGrid } from '@mui/x-data-grid';
 
 // third party
 import { useEffect, useState } from 'react';
@@ -74,6 +61,58 @@ export default function Faq() {
       setDeleteFaqId(item?._id);
     }
   };
+
+  // columns
+  const columns = [
+    {
+      id: 1,
+      headerName: 'Q&A',
+      field: 'question',
+      flex: 1,
+      renderCell: (params) => (
+        <Stack spacing={1}>
+          <span>{params?.value}</span>
+          <span>{params?.row?.ans}</span>
+        </Stack>
+      ),
+    },
+    {
+      id: 2,
+      headerName: 'Type',
+      field: 'type',
+      minWidth: 200,
+      renderCell: (params) => <span className="text-capitalize">{params?.value}</span>,
+    },
+    {
+      id: 3,
+      field: 'createdAt',
+      headerName: 'Created',
+      minWidth: 200,
+      valueFormatter: (params) => {
+        console.log(params.value);
+        if (!params?.value) {
+          return '';
+        }
+        return new Date(params?.value).toLocaleDateString();
+      },
+    },
+    {
+      id: 4,
+      field: 'action',
+      headerName: 'Action',
+      minWidth: 200,
+      headerAlign: 'right',
+      align: 'right',
+      renderCell: (params) => (
+        <ThreeDotsMenu
+          menuItems={['Edit', 'Delete']}
+          handleMenuClick={(menu) => {
+            threeDotHandler(menu, params?.row);
+          }}
+        />
+      ),
+    },
+  ];
 
   useEffect(() => {
     if (!currentFaq?._id) {
@@ -141,57 +180,42 @@ export default function Faq() {
           <Grid md={isRightBarOpen ? 6 : 12} container>
             <Grid md={12}>
               <Paper>
-                <TableContainer component={Box}>
-                  <Table sx={{ width: '100%' }}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Q&A</TableCell>
-                        <TableCell>Type</TableCell>
-                        <TableCell>Created</TableCell>
-                        <TableCell align="right">Action</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody sx={{ position: 'relative' }}>
-                      {/* data found */}
-                      {!loading && faq?.length
-                        ? faq.map((item) => (
-                            <TableRow key={item?._id}>
-                              <TableCell>
-                                <Stack spacing={1}>
-                                  <span>{item?.question}</span>
-                                  <span>{item?.ans}</span>
-                                </Stack>
-                              </TableCell>
-                              <TableCell>
-                                <span className="text-capitalize">{item?.type}</span>
-                              </TableCell>
-                              <TableCell>
-                                <Stack spacing={1}>
-                                  <span>{new Date(item?.createdAt).toLocaleDateString()}</span>
-                                </Stack>
-                              </TableCell>
-                              <TableCell align="right">
-                                <ThreeDotsMenu
-                                  menuItems={['Edit', 'Delete']}
-                                  handleMenuClick={(menu) => {
-                                    threeDotHandler(menu, item);
-                                  }}
-                                />
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        : null}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                {/* loading */}
-                {loading ? <CircularLoader /> : null}
-                {/* not found */}
-                {!loading && !faq?.length && (
-                  <Box padding={3} textAlign="center">
-                    <Typography>No Item found!</Typography>
+                <Stack sx={{ height: '300px', width: '100%', position: 'relative' }}>
+                  <Box sx={{ flexGrow: 1, height: '100%', width: '100%' }}>
+                    <DataGrid
+                      columns={columns}
+                      rows={faq}
+                      getRowId={(params) => params?._id}
+                      components={{
+                        NoRowsOverlay: () => (
+                          <Stack height="100%" alignItems="center" justifyContent="center">
+                            {loading ? '' : 'No Q&A found'}
+                          </Stack>
+                        ),
+                      }}
+                      disableSelectionOnClick
+                    />
+                    {/* loading */}
+                    {loading ? (
+                      <Box
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          position: 'absolute',
+                          background: 'rgba(255, 255, 255, 0.7)',
+                          left: '0',
+                          top: '0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: 9,
+                        }}
+                      >
+                        <CircularLoader />
+                      </Box>
+                    ) : null}
                   </Box>
-                )}
+                </Stack>
               </Paper>
             </Grid>
           </Grid>
@@ -199,18 +223,30 @@ export default function Faq() {
           <Grid container md={6} className={`${isRightBarOpen ? '' : 'd-none'}`}>
             <Grid xs={12}>
               <Paper>
-                <Box>
-                  {/* tab headers */}
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, value) => {
-                      setCurrentTab(value);
-                    }}
-                  >
-                    <Tab label="Edit FAQ"></Tab>
-                    <Tab label="Add New"></Tab>
-                  </Tabs>
-                </Box>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" pr={1}>
+                  <Box>
+                    {/* tab headers */}
+                    <Tabs
+                      value={currentTab}
+                      onChange={(event, value) => {
+                        setCurrentTab(value);
+                      }}
+                    >
+                      <Tab label="Edit FAQ"></Tab>
+                      <Tab label="Add New"></Tab>
+                    </Tabs>
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        setIsRightBarOpen(false);
+                      }}
+                    >
+                      Close
+                    </Button>
+                  </Box>
+                </Stack>
                 {/* tab bodies */}
                 <Box>
                   <TabPanel
