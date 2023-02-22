@@ -1,11 +1,9 @@
+// will be used as global font for the whole app
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap');
+
 .cursor-pointer {
   cursor: pointer;
 }
-
-// .ril-close{
-//     background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIj48cGF0aCBkPSJtIDEsMyAxLjI1LC0xLjI1IDcuNSw3LjUgNy41LC03LjUgMS4yNSwxLjI1IC03LjUsNy41IDcuNSw3LjUgLTEuMjUsMS4yNSAtNy41LC03LjUgLTcuNSw3LjUgLTEuMjUsLTEuMjUgNy41LC03LjUgLTcuNSwtNy41IHoiIGZpbGw9IiNGRkYiLz48L3N2Zz4=")
-//         no-repeat center !important;
-// }
 
 .button {
   width: 30px;
@@ -78,11 +76,11 @@
   }
 }
 
-input[type="date"]:required:invalid::-webkit-datetime-edit {
+input[type='date']:required:invalid::-webkit-datetime-edit {
   color: transparent;
 }
 
-input[type="date"]:focus::-webkit-datetime-edit {
+input[type='date']:focus::-webkit-datetime-edit {
   color: #000000 !important;
 }
 
@@ -115,14 +113,14 @@ input[type="date"]:focus::-webkit-datetime-edit {
   padding: 1px 2px;
 }
 
-.refused-inactive-status{
-  background-color:#ececec ;
-  color:#1c1c1c;
+.refused-inactive-status {
+  background-color: #ececec;
+  color: #1c1c1c;
   border-radius: 6px;
   padding: 1px 2px;
 }
 
-.img-tag{
+.img-tag {
   position: absolute;
   width: 100%;
   bottom: 0px;
@@ -134,11 +132,11 @@ input[type="date"]:focus::-webkit-datetime-edit {
   font-size: 12px;
 }
 
-.img-tag-active{
+.img-tag-active {
   color: #56ca00;
 }
 
-.img-tag-inactive{
+.img-tag-inactive {
   background: #ffcfce;
   color: #ff0000;
 }
@@ -181,7 +179,7 @@ table > thead {
   }
 }
 
-.header-logo-text{
+.header-logo-text {
   font-size: 12px;
   font-weight: 400;
   color: #df1e32;
@@ -194,7 +192,7 @@ table > thead {
   > li p {
     position: relative;
 
-    > .cs-badge{
+    > .cs-badge {
       font-size: 9px;
       width: 15px;
       height: 15px;
@@ -208,7 +206,7 @@ table > thead {
       color: #000000;
     }
 
-    .cs-badge:empty{
+    .cs-badge:empty {
       display: none;
     }
   }
@@ -231,4 +229,10 @@ table > thead {
 
 .PhoneInputInput {
   border: 0;
+}
+
+// =================== overriding styles for designing the app ** will remove later
+body {
+  background: #fff;
+  font-family: 'Open Sans', sans-serif;
 }

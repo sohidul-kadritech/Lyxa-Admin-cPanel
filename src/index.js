@@ -5,15 +5,16 @@ import { BrowserRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
 import store from './store';
+import ThemeProvider from './theme';
 
 ReactDOM.render(
-  // <React.StrictMode>
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </Provider>,
-  // </React.StrictMode>,
   document.getElementById('root')
 );
 
