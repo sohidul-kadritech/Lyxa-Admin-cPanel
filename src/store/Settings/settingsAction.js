@@ -21,6 +21,7 @@ import {
   SET_DELIVERY_FEE,
   UPDATE_ADMINS_SETTINGS,
   UPDATE_APP_SETTINGS,
+  UPDATE_BULTER_DELIVERY_CUT,
   UPDATE_DELIVERY_CUT,
   UPDATE_ORDER_CANCEL_REASON,
 } from '../../network/Api';
@@ -315,6 +316,8 @@ export const getPercentageSetting = () => async (dispatch) => {
       data: { status, error, data },
     } = await requestApi().request(GET_DELIVERY_FEE);
 
+    console.log(data);
+
     if (status) {
       dispatch({
         type: actionType.GET_PERCENTAGE_REQUEST_SUCCESS,
@@ -366,6 +369,47 @@ export const updateDeliveryCut = (deliveryRange) => async (dispatch) => {
     successMsg(error.message, 'error');
     dispatch({
       type: actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+export const updateButlerDeliveryCut = (deliveryRangeButler) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SEND,
+    });
+
+    console.log(deliveryRangeButler);
+
+    const {
+      data: { status, error, message, data },
+    } = await requestApi().request(UPDATE_BULTER_DELIVERY_CUT, {
+      method: 'POST',
+      data: {
+        deliveryRangeButler,
+      },
+    });
+
+    console.log(data);
+
+    if (status) {
+      successMsg(message, 'success');
+      dispatch({
+        type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SUCCESS,
+        payload: data.charge,
+      });
+    } else {
+      successMsg(message, 'error');
+      dispatch({
+        type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_FAIL,
+        payload: error,
+      });
+    }
+  } catch (error) {
+    successMsg(error.message, 'error');
+    dispatch({
+      type: actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_FAIL,
       payload: error.message,
     });
   }

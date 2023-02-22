@@ -154,6 +154,7 @@ export const SET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge/add-global-drop-c
 export const GET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge`;
 
 export const UPDATE_DELIVERY_CUT = `${ADMIN_ENDPOINT}/drop-charge/add-global-delivery-cut`;
+export const UPDATE_BULTER_DELIVERY_CUT = `${ADMIN_ENDPOINT}/drop-charge/add-global-delivery-cut-for-butler`;
 
 export const GET_SPECIAL_DROP_CHARGE = `${ADMIN_ENDPOINT}/drop-charge/get-related-seller`;
 

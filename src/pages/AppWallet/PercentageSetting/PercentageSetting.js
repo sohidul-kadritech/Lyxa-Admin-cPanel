@@ -15,6 +15,7 @@ import {
   deleteSellerSpecialDropCharge,
   getPercentageSetting,
   getSellerSpecialDropCharge,
+  updateButlerDeliveryCut,
   updateDeliveryCut,
 } from '../../../store/Settings/settingsAction';
 
@@ -25,7 +26,15 @@ function PercentageSetting() {
     (state) => state.settingsReducer
   );
   const [deliveryCut, setDeliveryCut] = useState([]);
+  const [butlerDeliveryCut, setButlerDeliveryCut] = useState([]);
   const [rangeWiseDeliveryCharge, setRangeWiseDeliveryCharge] = useState({
+    from: 0,
+    to: 0,
+    charge: 0,
+    deliveryPersonCut: 0,
+  });
+
+  const [butlerRangeWiseDeliveryCharge, setButlerRangeWiseDeliveryCharge] = useState({
     from: 0,
     to: 0,
     charge: 0,
@@ -43,48 +52,63 @@ function PercentageSetting() {
   useEffect(() => {
     if (dropCharge) {
       setDeliveryCut(dropCharge?.deliveryRange);
+      setButlerDeliveryCut(dropCharge?.deliveryRangeButler);
     }
   }, [dropCharge]);
 
   // CHANGE RANGE WISE CHARGE EVENT
-  const changeRangeWiseCharge = (e) => {
+  const changeRangeWiseCharge = (e, forType) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    setRangeWiseDeliveryCharge({
-      ...rangeWiseDeliveryCharge,
-      [name]: Number(value),
-    });
+
+    if (forType === 'butler') {
+      setButlerRangeWiseDeliveryCharge({
+        ...butlerRangeWiseDeliveryCharge,
+        [name]: Number(value),
+      });
+    } else {
+      setRangeWiseDeliveryCharge({
+        ...rangeWiseDeliveryCharge,
+        [name]: Number(value),
+      });
+    }
   };
 
   // SUBMIT CHARGE RANGE WISE
   // eslint-disable-next-line consistent-return
-  const submitChargeRangeWise = (e) => {
+  const submitChargeRangeWise = (e, forType) => {
     e.preventDefault();
+    let values = rangeWiseDeliveryCharge;
+    let list = deliveryCut;
 
-    if (!rangeWiseDeliveryCharge.from) {
+    if (forType === 'butler') {
+      values = butlerRangeWiseDeliveryCharge;
+      list = butlerDeliveryCut;
+    }
+
+    if (!values.from) {
       return successMsg('Enter From Range', 'error');
     }
-    if (!rangeWiseDeliveryCharge.to) {
+    if (!values.to) {
       return successMsg('Enter To Range', 'error');
     }
-    if (!rangeWiseDeliveryCharge.charge) {
+    if (!values.charge) {
       return successMsg('Enter Charge', 'error');
     }
 
-    if (rangeWiseDeliveryCharge.from > rangeWiseDeliveryCharge.to) {
+    if (values.from > values.to) {
       return successMsg('From Range should be less than To Range', 'error');
     }
 
-    if (rangeWiseDeliveryCharge.charge < rangeWiseDeliveryCharge.deliveryPersonCut) {
+    if (values.charge < values.deliveryPersonCut) {
       return successMsg("Delivery person cut can't be getter than charge", 'error');
     }
     // eslint-disable-next-line array-callback-return, consistent-return
-    const isExistCharge = deliveryCut?.filter((item) => {
-      if (rangeWiseDeliveryCharge.from >= item.from && rangeWiseDeliveryCharge.from <= item?.to) {
+    const isExistCharge = list?.filter((item) => {
+      if (values.from >= item.from && values.from <= item?.to) {
         return item;
       }
 
-      if (rangeWiseDeliveryCharge.to >= item.from && rangeWiseDeliveryCharge.to <= item?.to) {
+      if (values.to >= item.from && values.to <= item?.to) {
         return item;
       }
     });
@@ -93,26 +117,48 @@ function PercentageSetting() {
       return successMsg('Range already exist', 'error');
     }
 
-    setDeliveryCut([...deliveryCut, rangeWiseDeliveryCharge]);
-    setRangeWiseDeliveryCharge({
-      from: 0,
-      to: 0,
-      charge: 0,
-      deliveryPersonCut: 0,
-    });
+    if (forType === 'butler') {
+      setButlerDeliveryCut([...butlerDeliveryCut, butlerRangeWiseDeliveryCharge]);
+      setButlerRangeWiseDeliveryCharge({
+        from: 0,
+        to: 0,
+        charge: 0,
+        deliveryPersonCut: 0,
+      });
+    } else {
+      setDeliveryCut([...deliveryCut, rangeWiseDeliveryCharge]);
+      setRangeWiseDeliveryCharge({
+        from: 0,
+        to: 0,
+        charge: 0,
+        deliveryPersonCut: 0,
+      });
+    }
   };
 
   // DELETE DELIVERY CHARGE
-  const deleteDeliveryCharge = (index) => {
-    const newDeliveryCharge = [...deliveryCut];
-    newDeliveryCharge.splice(index, 1);
-    setDeliveryCut([...newDeliveryCharge]);
+  const deleteDeliveryCharge = (index, forType) => {
+    if (forType === 'butler') {
+      const newDeliveryCharge = [...butlerDeliveryCut];
+      newDeliveryCharge.splice(index, 1);
+      setButlerDeliveryCut([...newDeliveryCharge]);
+    } else {
+      const newDeliveryCharge = [...deliveryCut];
+      newDeliveryCharge.splice(index, 1);
+      setDeliveryCut([...newDeliveryCharge]);
+    }
   };
 
   // UPDATE DELIVERY CUT
-  const submitDeliveryCut = () => {
-    dispatch(updateDeliveryCut(deliveryCut));
+  const submitDeliveryCut = (forType) => {
+    // eslint-disable-next-line no-empty
+    if (forType === 'butler') {
+      dispatch(updateButlerDeliveryCut(butlerDeliveryCut));
+    } else {
+      dispatch(updateDeliveryCut(deliveryCut));
+    }
   };
+
   const deleteSellerDropCharge = () => {
     dispatch(deleteSellerSpecialDropCharge(sellerId));
   };
@@ -229,14 +275,17 @@ function PercentageSetting() {
               </Card>
             </Grid>
           </Grid>
-
           <Grid container spacing={3}>
             <Grid item md={6}>
               <Card>
                 <CardBody>
                   <CardTitle>Delivery Charge</CardTitle>
                   <hr />
-                  <Form onSubmit={submitChargeRangeWise}>
+                  <Form
+                    onSubmit={(e) => {
+                      submitChargeRangeWise(e, 'deliveryBoy');
+                    }}
+                  >
                     <Row className="mt-3">
                       <Stack spacing={2} direction="row">
                         <TextField
@@ -332,7 +381,7 @@ function PercentageSetting() {
                                             color: '#BD381C',
                                             fontSize: '15px',
                                           }}
-                                          onClick={() => deleteDeliveryCharge(index)}
+                                          onClick={() => deleteDeliveryCharge(index, 'deliveryBoy')}
                                         ></i>
                                       </div>
                                       <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
@@ -357,7 +406,9 @@ function PercentageSetting() {
                           border: 0,
                         }}
                         color="success"
-                        onClick={submitDeliveryCut}
+                        onClick={() => {
+                          submitDeliveryCut('deliveryBoy');
+                        }}
                         disabled={loading}
                       >
                         {loading ? 'Loading...' : 'Update'}
@@ -372,7 +423,11 @@ function PercentageSetting() {
                 <CardBody>
                   <CardTitle>Butler Delivery Charge</CardTitle>
                   <hr />
-                  <Form onSubmit={submitChargeRangeWise}>
+                  <Form
+                    onSubmit={(e) => {
+                      submitChargeRangeWise(e, 'butler');
+                    }}
+                  >
                     <Row className="mt-3">
                       <Stack spacing={2} direction="row">
                         {' '}
@@ -383,8 +438,10 @@ function PercentageSetting() {
                           variant="outlined"
                           style={{ width: '100%' }}
                           autoComplete="off"
-                          value={rangeWiseDeliveryCharge?.from}
-                          onChange={(event) => changeRangeWiseCharge(event)}
+                          value={butlerRangeWiseDeliveryCharge?.from}
+                          onChange={(event) => {
+                            changeRangeWiseCharge(event, 'butler');
+                          }}
                           type="number"
                           required
                         />
@@ -394,8 +451,8 @@ function PercentageSetting() {
                           variant="outlined"
                           style={{ width: '100%' }}
                           autoComplete="off"
-                          value={rangeWiseDeliveryCharge?.to}
-                          onChange={(event) => changeRangeWiseCharge(event)}
+                          value={butlerRangeWiseDeliveryCharge?.to}
+                          onChange={(event) => changeRangeWiseCharge(event, 'butler')}
                           type="number"
                           required
                         />
@@ -408,8 +465,8 @@ function PercentageSetting() {
                           variant="outlined"
                           style={{ width: '144%' }}
                           autoComplete="off"
-                          value={rangeWiseDeliveryCharge?.charge}
-                          onChange={(event) => changeRangeWiseCharge(event)}
+                          value={butlerRangeWiseDeliveryCharge?.charge}
+                          onChange={(event) => changeRangeWiseCharge(event, 'butler')}
                           type="number"
                           required
                         />
@@ -419,8 +476,8 @@ function PercentageSetting() {
                           variant="outlined"
                           style={{ width: '100%' }}
                           autoComplete="off"
-                          value={rangeWiseDeliveryCharge?.deliveryPersonCut}
-                          onChange={(event) => changeRangeWiseCharge(event)}
+                          value={butlerRangeWiseDeliveryCharge?.deliveryPersonCut}
+                          onChange={(event) => changeRangeWiseCharge(event, 'butler')}
                           type="number"
                           required
                         />
@@ -439,20 +496,20 @@ function PercentageSetting() {
                         </Button>
                       </Stack>
                     </Row>
-
                     <div style={{ textAlign: 'center' }}></div>
                   </Form>
                   <hr />
+                  {/* butler */}
                   <Row className="mt-4">
                     <Col lg={12}>
                       <div>
-                        {deliveryCut?.length > 0 && (
+                        {butlerDeliveryCut?.length > 0 && (
                           <div className="mb-4">
                             <Paper className="py-2">
-                              <h5 className="text-center">Charge List</h5>
+                              <h5 className="text-center">Charge List Butler</h5>
                               <hr />
-                              {deliveryCut?.length > 0 &&
-                                deliveryCut?.map((item, index) => (
+                              {butlerDeliveryCut?.length > 0 &&
+                                butlerDeliveryCut?.map((item, index) => (
                                   <ul key={index} style={{ listStyleType: 'square' }}>
                                     <li>
                                       <div className="d-flex justify-content-between">
@@ -470,7 +527,7 @@ function PercentageSetting() {
                                             color: '#BD381C',
                                             fontSize: '15px',
                                           }}
-                                          onClick={() => deleteDeliveryCharge(index)}
+                                          onClick={() => deleteDeliveryCharge(index, 'butler')}
                                         ></i>
                                       </div>
                                       <p className="mb-0">{`Charge: ${item.charge} ${currency}`}</p>
@@ -484,7 +541,7 @@ function PercentageSetting() {
                       </div>
                     </Col>
                   </Row>
-                  {deliveryCut?.length > 0 && (
+                  {butlerDeliveryCut?.length > 0 && (
                     <div className="text-center">
                       <Button
                         style={{
@@ -497,7 +554,9 @@ function PercentageSetting() {
                         color="success"
                         size="md"
                         className="px-4"
-                        onClick={submitDeliveryCut}
+                        onClick={() => {
+                          submitDeliveryCut('butler');
+                        }}
                         disabled={loading}
                       >
                         {loading ? 'Loading...' : 'Update'}

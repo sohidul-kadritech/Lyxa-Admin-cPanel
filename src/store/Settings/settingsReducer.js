@@ -280,6 +280,7 @@ const settingsReducer = (state = initialState, action) => {
         ...state,
         loading: true,
       };
+
     case actionType.UPDATE_DELIVERY_CUT_REQUEST_SUCCESS:
       return {
         ...state,
@@ -287,7 +288,29 @@ const settingsReducer = (state = initialState, action) => {
         loading: false,
         status: true,
       };
+
     case actionType.UPDATE_DELIVERY_CUT_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        dropCharge: payload,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.UPDATE_BUTLER_DELIVERY_CUT_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
