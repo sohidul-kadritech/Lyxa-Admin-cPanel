@@ -66,6 +66,9 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     fontSize: '17px',
     // borderBottom: `2px solid ${theme.palette.grey[500]}`,
     borderBottom: `0px`,
+    '&:focus': {
+      outline: 'none',
+    },
   },
   ...customCheckbox(theme),
 }));
@@ -76,6 +79,7 @@ export default function StyledGrid({ ...props }) {
       density="comfortable"
       autoHeight
       disableColumnMenu
+      isCellEditable={false}
       disableSelectionOnClick
       hideFooterPagination
       {...props}

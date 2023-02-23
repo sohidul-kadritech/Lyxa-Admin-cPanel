@@ -1,18 +1,21 @@
 // mui
-import { Box, Breadcrumbs, Chip, Typography } from '@mui/material';
-import { useHistory } from 'react-router-dom';
+import { Box, Breadcrumbs, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const contianerSx = {
-  pt: 5,
+  pt: 7.5,
   pb: 5,
 };
 
-const chipSx = {
-  height: '26px',
+const linkStyle = {
+  fontSize: '14px',
+  fontWeight: '500',
+  color: '#000',
+  display: 'inline-block',
+  borderBottom: '2px solid #15BFCA',
 };
 
 export default function BreadCrumbs({ items, sx }) {
-  const history = useHistory();
   const { length } = items;
 
   return (
@@ -22,14 +25,9 @@ export default function BreadCrumbs({ items, sx }) {
       </Typography>
       <Breadcrumbs separator=">">
         {items.map((item) => (
-          <Chip
-            key={item.to}
-            label={item.label}
-            sx={chipSx}
-            onClick={() => {
-              history.push(item.to);
-            }}
-          />
+          <Link key={item.to} to={item.to} style={linkStyle}>
+            {item.label}
+          </Link>
         ))}
       </Breadcrumbs>
     </Box>
