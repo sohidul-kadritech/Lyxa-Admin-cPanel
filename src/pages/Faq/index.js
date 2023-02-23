@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 // mui
-import { Box, Button, Modal, Paper, Stack, Tab, Tabs, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Button, Modal, Paper, Stack, Tab, Tabs, Unstable_Grid2 as Grid } from '@mui/material';
 
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // project import
+import BreadCrumbs from '../../components/BreadCrumb2';
 import CircularLoader from '../../components/CircularLoader';
-import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import TabPanel from '../../components/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
@@ -27,6 +27,18 @@ export default function Faq() {
   const [currentTab, setCurrentTab] = useState(0);
   const [currentFaq, setCurrentFaq] = useState({});
   const [deleteFaqId, setDeleteFaqId] = useState('');
+
+  // breadcrumb items
+  const breadcrumbItems = [
+    {
+      to: '/',
+      label: 'Lyxa',
+    },
+    {
+      to: '/faq',
+      label: 'Faq',
+    },
+  ];
 
   // get all faqs
   const callGetAllFaq = () => {
@@ -131,7 +143,7 @@ export default function Faq() {
   return (
     <GlobalWrapper>
       <Box className="page-content">
-        <Breadcrumb
+        {/* <Breadcrumb
           maintitle="Lyxa"
           breadcrumbItem="Faq"
           loading={loading}
@@ -141,44 +153,8 @@ export default function Faq() {
             setIsRightBarOpen(true);
             setCurrentTab(1);
           }}
-        />
-        {/* modal */}
-        <Modal
-          open={isConfirmModalOpen}
-          onClose={() => {
-            setIsConfirmModalOpen(false);
-          }}
-          sx={{
-            display: 'inline-flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Paper>
-            <Box padding={2}>
-              <Typography variant="h6">Are sure about deleting this Q&A ?</Typography>
-              <Stack direction="row" spacing={2} mt={3}>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    setIsConfirmModalOpen(false);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    callDeleteFaq();
-                    setIsConfirmModalOpen(false);
-                  }}
-                >
-                  Delete
-                </Button>
-              </Stack>
-            </Box>
-          </Paper>
-        </Modal>
+        /> */}
+        <BreadCrumbs items={breadcrumbItems} />
         <Grid container spacing={3}>
           {/* left */}
           <Grid md={isRightBarOpen ? 6 : 12} container>
@@ -280,6 +256,42 @@ export default function Faq() {
             </Grid>
           </Grid>
         </Grid>
+        {/* modal */}
+        <Modal
+          open={isConfirmModalOpen}
+          onClose={() => {
+            setIsConfirmModalOpen(false);
+          }}
+          sx={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Paper>
+            <Box padding={2}>
+              <Stack direction="row" spacing={2} mt={3}>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    setIsConfirmModalOpen(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    callDeleteFaq();
+                    setIsConfirmModalOpen(false);
+                  }}
+                >
+                  Delete
+                </Button>
+              </Stack>
+            </Box>
+          </Paper>
+        </Modal>
       </Box>
     </GlobalWrapper>
   );

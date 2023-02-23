@@ -8,6 +8,7 @@ export default function Provider({ children }) {
     () => ({
       palette: GetPallete(),
       typography: GetTypography(),
+      spacing: 4,
     }),
     []
   );
