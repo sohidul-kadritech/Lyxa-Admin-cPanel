@@ -1,7 +1,22 @@
-import { Button, Menu, MenuItem } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Button, Menu, MenuItem, styled } from '@mui/material';
 import React from 'react';
 
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+const DropDown = styled(Menu)(({ theme }) => ({
+  '& .MuiPopover-paper': {
+    padding: '0px',
+    boxShadow: theme.shadows[3],
+    minWidth: '100px',
+    borderRadius: '8px',
+  },
+  '& .MuiMenu-list': {
+    padding: '0px',
+  },
+  '& .MuiMenuItem-root': {
+    fontSize: '15px',
+  },
+}));
 
 function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -19,7 +34,7 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
       <Button onClick={handleClick}>
         <MoreVertIcon />
       </Button>
-      <Menu id="card-actions-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <DropDown anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {menuItems?.map(
           (menu) =>
             menu && (
@@ -35,7 +50,7 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
               </MenuItem>
             )
         )}
-      </Menu>
+      </DropDown>
     </>
   );
 }
