@@ -78,12 +78,16 @@ function CancelReason() {
       modifiedType = 'User';
     } else if (type === 'userRefund') {
       modifiedType = 'User Refund';
+    } else if (type === 'butler') {
+      modifiedType = 'Butler';
     } else {
       modifiedType = 'Admin';
     }
 
     return modifiedType;
   };
+
+  console.log(cancelReasons);
 
   return (
     <GlobalWrapper>

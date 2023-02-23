@@ -47,6 +47,8 @@ function AdminLog() {
     const state = store.getState();
     const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
 
+    console.log(type);
+
     let newValue = null;
     if (!value || value.length <= 0) {
       newValue = 0;
@@ -58,7 +60,11 @@ function AdminLog() {
       newValue = (
         <span>{`${value?.dropPercentage ?? 0} ${value?.dropPercentageType === 'parcentage' ? '%' : currency}`}</span>
       );
-    } else if (type === 'globalDeliveryCut' || type === 'specificSellerDeliveryCut') {
+    } else if (
+      type === 'globalDeliveryCut' ||
+      type === 'specificSellerDeliveryCut' ||
+      type === 'globalDeliveryCutForButler'
+    ) {
       newValue = value.map((item) => (
         <p
           key={`${item?.from}_${item?.to}`}
@@ -75,7 +81,6 @@ function AdminLog() {
       <div className="page-content">
         <Container fluid>
           <Breadcrumb maintitle="Lyxa" breadcrumbItem="Admin Log" loading={loading} callList={callLogList} />
-
           <Card>
             <CardBody>
               <Row>
