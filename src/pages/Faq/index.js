@@ -1,19 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 // mui
-import CloseIcon from '@mui/icons-material/Close';
-import {
-  Box,
-  Button,
-  IconButton,
-  Modal,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-  Unstable_Grid2 as Grid,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, Paper, Stack, Tab, Tabs, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 
 // third party
 import { useEffect, useState } from 'react';
@@ -21,15 +8,29 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // project import
 import { faqType } from '../../assets/staticData';
-import BreadCrumbs from '../../components/BreadCrumb2';
-import CircularLoader from '../../components/CircularLoader';
-import FilterSelect from '../../components/filterSelect';
+import BreadCrumbs from '../../components/Common/BreadCrumb2';
+import CloseButton from '../../components/Common/CloseButton';
+import ConfirmModal from '../../components/Common/ConfirmModal';
+import TableLoader from '../../components/Common/TableLoader';
+import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
-import StyledGrid from '../../components/StyledGrid';
+import StyledTable from '../../components/StyledTable';
 import TabPanel from '../../components/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import { addFaq, deleteFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
 import AddFaq from './addFaq';
+
+// breadcrumb items
+const breadcrumbItems = [
+  {
+    to: '/',
+    label: 'Lyxa',
+  },
+  {
+    to: '/faq',
+    label: 'FAQ',
+  },
+];
 
 export default function Faq() {
   const theme = useTheme();
@@ -53,18 +54,6 @@ export default function Faq() {
     const filteredFaqs = faqData.filter((item) => item?.type === e.target.value);
     setFaq(filteredFaqs);
   };
-
-  // breadcrumb items
-  const breadcrumbItems = [
-    {
-      to: '/',
-      label: 'Lyxa',
-    },
-    {
-      to: '/faq',
-      label: 'FAQ',
-    },
-  ];
 
   // get all faqs
   const callGetAllFaq = () => {
@@ -175,11 +164,20 @@ export default function Faq() {
   }, []);
 
   return (
-    <GlobalWrapper>
+    <GlobalWrapper padding>
       <Box className="page-content">
-        <Grid container sx={{ height: 'calc(100vh - 140px)' }}>
+        <Grid container sx={{ height: 'calc(100vh - 130px)', overflowY: 'hidden' }}>
           {/* left */}
-          <Grid md={isRightBarOpen ? 8 : 12} pr={isRightBarOpen ? 3 : 0} container>
+          <Grid
+            container
+            md={isRightBarOpen ? 8 : 12}
+            pr={isRightBarOpen ? 10 : 0}
+            sx={{
+              height: '100%',
+              overflowY: 'scroll',
+              pb: 9,
+            }}
+          >
             <Grid md={12}>
               <BreadCrumbs
                 items={breadcrumbItems}
@@ -187,13 +185,8 @@ export default function Faq() {
                   pb: 0,
                 }}
               />
-              <Paper
-                sx={{
-                  paddingLeft: '12px',
-                  paddingRight: '12px',
-                }}
-              >
-                <Stack direction="row" spacing={3} pt={8} pb={4} justifyContent="space-between">
+              <Paper>
+                <Stack direction="row" spacing={3} pt={10} pb={3} justifyContent="space-between">
                   <FilterSelect items={faqType} placeholder="Type" value={type} onChange={filterType} />
                   <Button
                     variant="contained"
@@ -207,7 +200,7 @@ export default function Faq() {
                   </Button>
                 </Stack>
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
-                  <StyledGrid
+                  <StyledTable
                     columns={columns}
                     rows={faq}
                     getRowId={(params) => params?._id}
@@ -220,24 +213,7 @@ export default function Faq() {
                     }}
                   />
                   {/* loading */}
-                  {loading ? (
-                    <Box
-                      sx={{
-                        width: '100%',
-                        height: '100%',
-                        position: 'absolute',
-                        background: 'rgba(255, 255, 255, 0.7)',
-                        left: '0',
-                        top: '0',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 9,
-                      }}
-                    >
-                      <CircularLoader />
-                    </Box>
-                  ) : null}
+                  {loading ? <TableLoader /> : null}
                 </Box>
               </Paper>
             </Grid>
@@ -246,15 +222,18 @@ export default function Faq() {
           <Grid
             container
             md={4}
-            className={`${isRightBarOpen ? '' : 'd-none'}`}
-            pl={3}
+            pl={10}
             sx={{
-              borderLeft: `1px solid ${theme.palette.grey[500]}`,
+              borderLeft: `2px solid ${theme.palette.grey[500]}`,
+              height: '100%',
+              overflowY: 'scroll',
+              pb: 4,
             }}
+            className={`${isRightBarOpen ? '' : 'd-none'}`}
           >
             <Grid xs={12}>
               <Paper>
-                <Typography variant="h1" pt={5} pb={2}>
+                <Typography variant="h2" pt={9} pb={2}>
                   {rightBarTitle(currentTab)}
                 </Typography>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" pr={1}>
@@ -271,17 +250,11 @@ export default function Faq() {
                     </Tabs>
                   </Box>
                   <Box>
-                    <IconButton
-                      color="primary"
-                      sx={{
-                        color: '#000',
-                      }}
+                    <CloseButton
                       onClick={() => {
                         setIsRightBarOpen(false);
                       }}
-                    >
-                      <CloseIcon />
-                    </IconButton>
+                    />
                   </Box>
                 </Stack>
                 {/* tab bodies */}
@@ -298,41 +271,18 @@ export default function Faq() {
           </Grid>
         </Grid>
         {/* modal */}
-        <Modal
-          open={isConfirmModalOpen}
-          onClose={() => {
+        <ConfirmModal
+          message="Do you want to delete this Q&A ?"
+          isOpen={isConfirmModalOpen}
+          blurClose
+          onCancel={() => {
             setIsConfirmModalOpen(false);
           }}
-          sx={{
-            display: 'inline-flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+          onConfirm={() => {
+            callDeleteFaq();
+            setIsConfirmModalOpen(false);
           }}
-        >
-          <Paper>
-            <Box padding={2}>
-              <Stack direction="row" spacing={2} mt={3}>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    setIsConfirmModalOpen(false);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    callDeleteFaq();
-                    setIsConfirmModalOpen(false);
-                  }}
-                >
-                  Delete
-                </Button>
-              </Stack>
-            </Box>
-          </Paper>
-        </Modal>
+        />
       </Box>
     </GlobalWrapper>
   );

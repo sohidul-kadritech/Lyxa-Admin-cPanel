@@ -1,11 +1,12 @@
 // mui
-import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
+import { Button, Stack, TextField, Typography } from '@mui/material';
 
 // thrid party
 import { useEffect, useState } from 'react';
 
 // project import
 import { faqType } from '../../assets/staticData';
+import OptionsSelect from '../../components/Form/OptionsSelect';
 
 export default function AddFaq({ submitHandler, isEdit, faq }) {
   const [currentFaq, setCurrentFaq] = useState(faq || {});
@@ -20,24 +21,18 @@ export default function AddFaq({ submitHandler, isEdit, faq }) {
   }, [faq]);
 
   return (
-    <Stack spacing={3}>
-      <FormControl fullWidth>
-        <InputLabel>Type</InputLabel>
-        <Select
-          value={currentFaq?.type || ''}
-          label="Type"
-          name="type"
-          inputProps={{ defaultValue: currentFaq?.type }}
-          onChange={changeHandler}
-          disabled={isEdit || undefined}
-        >
-          {faqType.map((item) => (
-            <MenuItem key={item.value} value={item.value}>
-              {item.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+    <Stack spacing={6}>
+      <Stack direction="row" alignItems="center" spacing={5}>
+        <Typography variant="h5">Choose Type</Typography>
+        <OptionsSelect
+          items={faqType}
+          value={currentFaq?.type}
+          disabled={isEdit}
+          onChange={(value) => {
+            setCurrentFaq((prev) => ({ ...prev, type: value }));
+          }}
+        />
+      </Stack>
       <TextField
         label="Question"
         name="question"
