@@ -8,7 +8,7 @@ const StyledChip = styled(Chip)(() => ({
     background: 'rgb(63,63,63)',
     color: '#fff',
     '&:hover': {
-      background: 'rgb(154, 63, 69)',
+      background: 'rgb(78,78,78)',
     },
   },
 }));
