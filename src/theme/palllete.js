@@ -12,9 +12,10 @@ export default function GetPallete() {
     },
     text: {
       primary: 'rgba(0, 0, 0, 1)',
+      secondary: '#646464',
     },
     grey: {
-      500: 'rgba(0, 0, 0, 0.08)',
+      200: 'rgba(0, 0, 0, 0.08)',
     },
     custom: {
       tableLoader: 'rgba(255, 255, 255, 0.7)',
