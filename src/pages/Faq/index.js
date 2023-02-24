@@ -130,9 +130,9 @@ export default function Faq() {
       disableColumnFilter: true,
       sortable: false,
       renderCell: (params) => (
-        <Stack spacing={1}>
-          <span>{params?.value}</span>
-          <span>{params?.row?.ans}</span>
+        <Stack width="100%" spacing={1}>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{params?.value}</span>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{params?.row?.ans}</span>
         </Stack>
       ),
     },

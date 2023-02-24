@@ -90,7 +90,11 @@ export const addFaq = (faq) => async (dispatch, getState) => {
   try {
     const { data } = await requestApi().request(ADD_FAQ, {
       method: 'POST',
-      data: faq,
+      data: {
+        type: faq.type,
+        question: faq.question.trim(),
+        ans: faq.ans.trim(),
+      },
     });
 
     console.log(data);
