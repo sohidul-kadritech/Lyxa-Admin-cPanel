@@ -5,14 +5,30 @@ import { Button, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 // project import
+import { useSelector } from 'react-redux';
 import { faqType } from '../../assets/staticData';
 import OptionsSelect from '../../components/Form/OptionsSelect';
 
+const initialFaq = {
+  type: 'user',
+  question: '',
+  ans: '',
+};
+
 export default function AddFaq({ submitHandler, isEdit, faq }) {
-  const [currentFaq, setCurrentFaq] = useState(faq || {});
+  const { newFaq, loading } = useSelector((store) => store.faqReducer);
+
+  console.log(loading);
+
+  const [currentFaq, setCurrentFaq] = useState(faq || initialFaq);
+
   const changeHandler = (event) => {
     setCurrentFaq((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
+
+  useEffect(() => {
+    setCurrentFaq(initialFaq);
+  }, [newFaq]);
 
   useEffect(() => {
     if (isEdit) {
@@ -58,7 +74,7 @@ export default function AddFaq({ submitHandler, isEdit, faq }) {
       <Button
         disableElevation
         variant="contained"
-        disabled={isEdit && !currentFaq?._id}
+        disabled={(isEdit && !currentFaq?._id) || loading}
         onClick={() => {
           submitHandler(currentFaq);
         }}

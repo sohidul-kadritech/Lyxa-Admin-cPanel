@@ -93,6 +93,8 @@ export const addFaq = (faq) => async (dispatch, getState) => {
       data: faq,
     });
 
+    console.log(data);
+
     if (data?.status) {
       dispatch({
         type: actionTypes.ADD_FAQ_REQUEST_SUCCESS,
@@ -128,7 +130,10 @@ export const deleteFaq = (id) => async (dispatch, getState) => {
       data: { id },
     });
 
+    console.log(data);
+
     if (data?.status) {
+      console.log(storedList, id);
       const updatedList = storedList.filter((item) => item._id !== id);
 
       dispatch({

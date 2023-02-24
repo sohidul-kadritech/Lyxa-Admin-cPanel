@@ -17,6 +17,7 @@ import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/StyledTable';
 import TabPanel from '../../components/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
+import { successMsg } from '../../helpers/successMsg';
 import { addFaq, deleteFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
 import AddFaq from './addFaq';
 
@@ -40,7 +41,6 @@ export default function Faq() {
 
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [faq, setFaq] = useState([]);
 
   const [currentTab, setCurrentTab] = useState(0);
   const [currentFaq, setCurrentFaq] = useState({});
@@ -51,8 +51,27 @@ export default function Faq() {
 
   const filterType = (e) => {
     setType(e.target.value);
-    const filteredFaqs = faqData.filter((item) => item?.type === e.target.value);
-    setFaq(filteredFaqs);
+  };
+
+  // faq validation
+  const faqValidation = (item) => {
+    console.log(item);
+    switch (false) {
+      case Boolean(item?.type):
+        successMsg('Q&A type cannot be empty');
+        return false;
+
+      case Boolean(item?.ans?.trim()):
+        successMsg('Q&A answer cannot be empty');
+        return false;
+
+      case Boolean(item?.question?.trim()):
+        successMsg('Q&A question cannot be empty');
+        return false;
+
+      default:
+        return true;
+    }
   };
 
   // get all faqs
@@ -62,12 +81,16 @@ export default function Faq() {
 
   // update faq
   const callUpdateFaq = (item) => {
-    dispatch(updateFaq(item));
+    if (faqValidation(item)) {
+      dispatch(updateFaq(item));
+    }
   };
 
   // add faq
   const callAddFaq = (item) => {
-    dispatch(addFaq(item));
+    if (faqValidation(item)) {
+      dispatch(addFaq(item));
+    }
   };
 
   // delete faq
@@ -154,13 +177,9 @@ export default function Faq() {
   ];
 
   useEffect(() => {
-    if (faqData?.length > 0) {
-      setFaq(faqData);
+    if (faqData?.length === 0) {
+      callGetAllFaq();
     }
-  }, [faqData]);
-
-  useEffect(() => {
-    callGetAllFaq();
   }, []);
 
   return (
@@ -202,7 +221,7 @@ export default function Faq() {
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
                   <StyledTable
                     columns={columns}
-                    rows={faq}
+                    rows={faqData.filter((item) => item.type === type || type === '')}
                     getRowId={(params) => params?._id}
                     components={{
                       NoRowsOverlay: () => (

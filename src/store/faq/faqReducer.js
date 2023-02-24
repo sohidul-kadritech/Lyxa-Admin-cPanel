@@ -5,6 +5,7 @@ const initialState = {
   loading: false,
   faq: [],
   errorMessage: '',
+  newFaq: '',
   pagination: {
     page: 1,
     pagesize: 50,
@@ -69,6 +70,7 @@ export default function faqReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
+        newFaq: payload?._id,
         faq: [...state.faq, payload],
       };
 
@@ -87,6 +89,7 @@ export default function faqReducer(state = initialState, action) {
       };
 
     case actionType.DELETE_FAQ_REQUEST_SUCCESS:
+      console.log(payload);
       return {
         ...state,
         loading: false,
