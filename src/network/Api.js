@@ -214,6 +214,10 @@ export const DELETE_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag/delete`;
 export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
 export const ACTIVE_DEIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-nearby-delivery-boy-order`;
 
+// BUTLER
+export const BUTLER_ORDER_LIST = `${ADMIN_ENDPOINT}/butler`;
+export const BUTLER_SINGLE_ORDER = `${ADMIN_ENDPOINT}/butler/single-details`;
+
 // CHAT
 export const CHAT_LIST = `${ADMIN_ENDPOINT}/user-chat-request`;
 export const ACCEPT_CHAT = `${ADMIN_ENDPOINT}/user-chat-request/accept`;

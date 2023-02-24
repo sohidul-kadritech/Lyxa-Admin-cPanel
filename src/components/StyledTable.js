@@ -50,7 +50,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   WebkitFontSmoothing: 'auto',
   letterSpacing: 'normal',
   '& .MuiDataGrid-columnHeaders': {
-    borderBottom: `2px solid ${theme.palette.grey[500]}`,
+    borderBottom: `2px solid ${theme.palette.grey[200]}`,
   },
   '& .MuiDataGrid-iconSeparator': {
     display: 'none',

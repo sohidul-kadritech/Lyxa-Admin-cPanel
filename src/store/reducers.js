@@ -7,6 +7,7 @@ import Layout from './layout/reducer';
 import ForgetPassword from './auth/forgetpwd/reducer';
 import Login from './auth/login/reducer';
 import Profile from './auth/profile/reducer';
+import butlerReducer from './Butler/butlerReducer';
 import uploadImageReducer from './reducer/uploadImage.reducer';
 
 // Calendar
@@ -70,6 +71,7 @@ const rootReducer = combineReducers({
   unitTypeReducer,
   vatReducer,
   faqReducer,
+  butlerReducer,
 });
 
 export default rootReducer;

@@ -27,5 +27,28 @@ export default function GetTypography() {
       lineHeight: 1.1,
       letterSpacing: '0px',
     },
+    body1: {
+      fontWeight: 400,
+      fontSize: `${pxToRem(17)}rem`,
+      lineHeight: 1.1,
+      letterSpacing: '0px',
+    },
+    body2: {
+      fontWeight: 400,
+      fontSize: `${pxToRem(16)}rem`,
+      lineHeight: 1.1,
+      letterSpacing: '0px',
+    },
+    body3: {
+      fontWeight: 400,
+      fontSize: `${pxToRem(15)}rem`,
+      lineHeight: 1.1,
+      letterSpacing: '0px',
+    },
+    display1: undefined,
+    display2: undefined,
+    h4: undefined,
+    body4: undefined,
+    body5: undefined,
   };
 }

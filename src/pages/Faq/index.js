@@ -12,6 +12,7 @@ import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import CloseButton from '../../components/Common/CloseButton';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import TableLoader from '../../components/Common/TableLoader';
+import FilterButton from '../../components/Filter/FilterButton';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/StyledTable';
@@ -48,10 +49,6 @@ export default function Faq() {
 
   // filters
   const [type, setType] = useState('');
-
-  const filterType = (e) => {
-    setType(e.target.value);
-  };
 
   // faq validation
   const faqValidation = (item) => {
@@ -130,9 +127,11 @@ export default function Faq() {
       disableColumnFilter: true,
       sortable: false,
       renderCell: (params) => (
-        <Stack width="100%" spacing={1}>
+        <Stack width="100%" spacing={2}>
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{params?.value}</span>
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{params?.row?.ans}</span>
+          <Typography variant="body3" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
+            {params?.row?.ans}
+          </Typography>
         </Stack>
       ),
     },
@@ -205,8 +204,23 @@ export default function Faq() {
                 }}
               />
               <Paper>
-                <Stack direction="row" spacing={3} pt={10} pb={3} justifyContent="space-between">
-                  <FilterSelect items={faqType} placeholder="Type" value={type} onChange={filterType} />
+                <Stack direction="row" pt={10} pb={3} justifyContent="space-between">
+                  <Stack direction="row" spacing={3}>
+                    <FilterSelect
+                      items={faqType}
+                      placeholder="Type"
+                      value={type}
+                      onChange={(e) => {
+                        setType(e.target.value);
+                      }}
+                    />
+                    <FilterButton
+                      label="Clear"
+                      onClick={() => {
+                        setType('');
+                      }}
+                    />
+                  </Stack>
                   <Button
                     variant="contained"
                     color="primary"
@@ -223,6 +237,7 @@ export default function Faq() {
                     columns={columns}
                     rows={faqData.filter((item) => item.type === type || type === '')}
                     getRowId={(params) => params?._id}
+                    rowHeight={60}
                     components={{
                       NoRowsOverlay: () => (
                         <Stack height="100%" alignItems="center" justifyContent="center">
@@ -243,7 +258,7 @@ export default function Faq() {
             md={4}
             pl={10}
             sx={{
-              borderLeft: `2px solid ${theme.palette.grey[500]}`,
+              borderLeft: `2px solid ${theme.palette.grey[200]}`,
               height: '100%',
               overflowY: 'scroll',
               pb: 4,

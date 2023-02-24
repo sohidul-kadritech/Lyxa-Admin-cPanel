@@ -34,7 +34,7 @@ export const adminMenuItem = [
       {
         icon: 'fas fa-cart-plus',
         name: 'All Orders',
-        link: '/orders/list',
+        link: '/butler/list',
         isSubmenu: false,
       },
       {

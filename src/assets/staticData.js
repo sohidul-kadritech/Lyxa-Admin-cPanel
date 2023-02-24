@@ -13,7 +13,7 @@ export const shopDietaryOptions = [
 export const faqType = [
   { label: 'User', value: 'user' },
   { label: 'Shop', value: 'shop' },
-  { label: 'DeliveryBoy', value: 'deliveryBoy' },
+  { label: 'Rider', value: 'deliveryBoy' },
 ];
 
 export const riderSortByOptions = [

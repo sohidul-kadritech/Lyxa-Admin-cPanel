@@ -43,6 +43,7 @@ import DropTransactions from '../pages/AppWallet/DropsTansactions/DropTransactio
 import DropTransactionsDetails from '../pages/AppWallet/DropsTansactions/dropTransactionsDetails';
 import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
+import ButlerOrderList from '../pages/Butler';
 import CancelReason from '../pages/CancelReason/CancelReason';
 import CategoryAdd from '../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
 import CategoryDetails from '../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails';
@@ -84,9 +85,10 @@ const userRoutes = [
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
   { path: '/orders/refused', component: RefusedOrders },
+  // butler
+  { path: '/butler/list', component: ButlerOrderList },
   // vat
   { path: '/vat', component: Vat },
-
   // Banner
   { path: '/banner', component: BannerPage },
   { path: '/banner/add', component: AddBanner },

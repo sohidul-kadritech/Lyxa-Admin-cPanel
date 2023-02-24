@@ -5,8 +5,11 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   minHeight: 'auto',
   fontSize: `${pxToRem(14)}rem`,
   fontWeight: 400,
-  background: theme.palette.grey[500],
+  background: theme.palette.grey[200],
   borderRadius: '50px',
+  '&:hover': {
+    background: theme.palette.grey[300],
+  },
   '& .MuiSelect-select': {
     paddingTop: '10px',
     paddingBottom: '10px',
@@ -24,6 +27,11 @@ const StyledSelect = styled(Select)(({ theme }) => ({
 export default function FilterSelect({ items, placeholder, sx, ...props }) {
   return (
     <StyledSelect
+      MenuProps={{
+        sx: {
+          marginTop: '5px',
+        },
+      }}
       sx={sx || {}}
       displayEmpty
       input={<OutlinedInput />}
