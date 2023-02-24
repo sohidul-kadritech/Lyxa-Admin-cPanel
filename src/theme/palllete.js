@@ -3,12 +3,15 @@ export default function GetPallete() {
     mode: 'light',
     primary: {
       main: '#DD5B63',
+      contrastText: '#ffffff',
     },
     secondary: {
       main: '#15BFCA',
+      contrastText: '#ffffff',
     },
     info: {
       main: '#636363',
+      contrastText: '#ffffff',
     },
     text: {
       primary: 'rgba(0, 0, 0, 1)',
@@ -19,6 +22,7 @@ export default function GetPallete() {
     },
     custom: {
       tableLoader: 'rgba(255, 255, 255, 0.7)',
+      contrastText: '#ffffff',
     },
   };
 }

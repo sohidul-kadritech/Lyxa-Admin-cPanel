@@ -19,6 +19,7 @@
     "no-param-reassign": ["error", { "props": false }],
     "no-plusplus": 0,
     "no-shadow": 0,
+    "react/no-unstable-nested-components": 0,
     "import/prefer-default-export": 0,
     "react-hooks/exhaustive-deps": 0,
     "import/no-dynamic-require": 0,
