@@ -5,17 +5,17 @@ import GetPallete from './palllete';
 import GetTypography from './typography';
 
 export default function Provider({ children }) {
-  const themeOptions = useMemo(
-    () => ({
+  const customTheme = useMemo(() => {
+    const theme = createTheme({
       palette: GetPallete(),
       typography: GetTypography(),
-      components: Components(),
       spacing: 4,
-    }),
-    []
-  );
+    });
 
-  const customTheme = createTheme(themeOptions);
+    theme.components = Components(theme);
+
+    return theme;
+  }, []);
 
   return <ThemeProvider theme={customTheme}>{children}</ThemeProvider>;
 }
