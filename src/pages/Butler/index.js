@@ -1,61 +1,91 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useMemo } from 'react';
+
+// third pary
+import { Box, Stack, Unstable_Grid2 as Grid } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { Container } from 'reactstrap';
-import Breadcrumb from '../../components/Common/Breadcrumb';
-import GlobalWrapper from '../../components/GlobalWrapper';
-import { getAllOrder } from '../../store/Butler/butlerActions';
+
+// prodject import
 import ButlerOrderTable from '../../components/ButlerOrderTable';
+import AppPagination from '../../components/Common/AppPagination2';
+import BreadCrumbs from '../../components/Common/BreadCrumb2';
+import GlobalWrapper from '../../components/GlobalWrapper';
+import { getAllOrder, updateButlerOrderPage } from '../../store/Butler/butlerActions';
+
+// breadcrumb items
+const breadcrumbItems = [
+  {
+    to: '/',
+    label: 'Lyxa',
+  },
+  {
+    to: '/butler/list',
+    label: 'Butler Orders',
+  },
+];
 
 export default function ButlerOrderList() {
   const dispatch = useDispatch();
-  const { search } = useLocation();
-  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderType, orderSearchKey, status } = useSelector(
-    (state) => state.butlerReducer
-  );
 
-  const { account_type, _id: Id } = useSelector((store) => store.Login.admin);
-  const callOrderList = (refresh = false) => {
-    dispatch(
-      getAllOrder(
-        refresh,
-        searchParams.get('shopId') ? searchParams.get('shopId') : account_type === 'shop' ? Id : null,
-        account_type === 'seller' ? Id : null
-      )
-    );
-  };
-  useEffect(() => {
-    if (sortByKey || startDate || endDate || typeKey || orderType || orderSearchKey || searchParams.get('shopId')) {
-      callOrderList(true);
+  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderType, orderSearchKey, status, page, paging } =
+    useSelector((state) => state.butlerReducer);
+
+  // eslint-disable-next-line no-unused-vars
+  const [isRightBarOpen, setIsRightBarOpen] = useState(false);
+
+  // update page
+  const updatePage = (newPage) => {
+    if (newPage !== page) {
+      dispatch(updateButlerOrderPage(newPage));
     }
-  }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey, searchParams.get('shopId')]);
+  };
+
+  // get order list
+  const getOrderLIst = (refresh = false) => {
+    dispatch(getAllOrder(refresh));
+  };
+
+  useEffect(() => {
+    if (sortByKey || startDate || endDate || typeKey || orderType || orderSearchKey) {
+      getOrderLIst(true);
+    }
+  }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey]);
 
   useEffect(() => {
     if (status) {
-      callOrderList(true);
+      getOrderLIst(true);
     }
   }, [status]);
 
   return (
     <GlobalWrapper padding>
-      <div className="page-content">
-        <Container fluid>
-          <Breadcrumb
-            maintitle="Lyxa"
-            breadcrumbItem="List"
-            title="Orders"
-            loading={loading}
-            callList={callOrderList}
-          />
-          <div>
-            <ButlerOrderTable orders={orders} loading={loading} />
-          </div>
-        </Container>
-      </div>
+      <Box className="page-content" sx={{ height: '100vh' }}>
+        <Grid container sx={{ height: '100%' }}>
+          {/* left */}
+          <Grid md={isRightBarOpen ? 8 : 12} sx={{ height: '100%', overflowY: 'scroll' }}>
+            <BreadCrumbs items={breadcrumbItems} />
+            {/* filters */}
+            <Stack direction="row" spacing={3}></Stack>
+            <Box sx={{ minHeight: 'calc(100% - 220px)' }}>
+              <ButlerOrderTable orders={orders} loading={loading} />
+            </Box>
+            <Box
+              sx={{
+                pt: 7.5,
+                pb: 7.5,
+              }}
+            >
+              <AppPagination currentPage={page} lisener={updatePage} paging={paging} />
+            </Box>
+          </Grid>
+          {/* right */}
+          <Grid className={`${isRightBarOpen ? '' : 'd-none'}`} md={4}>
+            This is rightBar
+          </Grid>
+        </Grid>
+      </Box>
     </GlobalWrapper>
   );
 }

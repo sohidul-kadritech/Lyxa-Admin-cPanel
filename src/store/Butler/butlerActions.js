@@ -5,10 +5,10 @@ import * as actionType from '../actionType';
 
 // GET ALL ORDER
 export const getAllOrder =
-  (refresh = false, shop, seller, page = 1) =>
+  (refresh = false) =>
   async (dispatch, getState) => {
     const store = getState();
-    const { orders, typeKey, startDate, endDate, sortByKey, orderSearchKey, orderType } = store.butlerReducer;
+    const { orders, typeKey, startDate, endDate, sortByKey, orderSearchKey, orderType, page } = store.butlerReducer;
 
     if (orders.length < 1 || refresh) {
       try {
@@ -27,11 +27,8 @@ export const getAllOrder =
             sortBy: sortByKey.value,
             type: typeKey.value,
             searchKey: orderSearchKey,
-            shop,
-            seller,
           },
         });
-        console.log(data);
         if (status) {
           dispatch({
             type: actionType.ALL_BUTLER_ORDERS_REQUEST_SUCCESS,
@@ -202,49 +199,49 @@ export const getAllOrder =
 
 // // FITLERS
 
-// export const updateOrderSortByKey = (type) => (dispatch) => {
-//   dispatch({
-//     type: actionType.UPDATE_ORDER_SORT_BY_FILTER,
-//     payload: type,
-//   });
-// };
+export const updateButlerOrderPage = (page) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_PAGE,
+    payload: page,
+  });
+};
 
-// export const updateOrderStartDate = (startDate) => (dispatch) => {
-//   dispatch({
-//     type: actionType.UPDATE_ORDER_START_DATE_FILTER,
-//     payload: startDate,
-//   });
-// };
+export const updateButlerOrderSortByKey = (type) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_SORT_BY_FILTER,
+    payload: type,
+  });
+};
 
-// export const updateOrderEndDate = (date) => (dispatch) => {
-//   dispatch({
-//     type: actionType.UPDATE_ORDER_END_DATE_FILTER,
-//     payload: date,
-//   });
-// };
+export const updateButlerOrderStartDate = (startDate) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_START_DATE_FILTER,
+    payload: startDate,
+  });
+};
 
-// export const updateOrderType = (data) => (dispatch) => {
-//   dispatch({
-//     type: actionType.UPDATE_ORDER_TYPE_FILTER,
-//     payload: data,
-//   });
-// };
+export const updateButlerOrderEndDate = (date) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_END_DATE_FILTER,
+    payload: date,
+  });
+};
 
-// export const updateOrderSearchKey = (search) => (dispatch) => {
-//   dispatch({
-//     type: actionType.UPDATE_ORDER_SEARCH_KEY,
-//     payload: search,
-//   });
-// };
+export const updateButlerOrderType = (data) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_TYPE_FILTER,
+    payload: data,
+  });
+};
 
-// export const updateOrderByShopType = (type) => (dispatch) => {
-//   dispatch({
-//     type: actionType.UPDATE_ORDER_BY_SHOP_TYPE,
-//     payload: type,
-//   });
-// };
+export const updateButlerOrderSearchKey = (search) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_SEARCH_KEY,
+    payload: search,
+  });
+};
 
-// // GET ACTIVE DELIVERY BOY
+// GET ACTIVE DELIVERY BOY
 // export const getAllActiveDeliveryMan = (orderId) => async (dispatch) => {
 //   try {
 //     dispatch({
