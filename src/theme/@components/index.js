@@ -1,5 +1,6 @@
 import Button from './Button';
 import Menu from './Menu';
+import PaginationItem from './PaginationItem';
 import Paper from './Paper';
 import Popover from './Popover';
 import Tabs from './Tabs';
@@ -13,5 +14,6 @@ export default function Components(theme) {
     MuiMenu: Menu(theme),
     MuiPopover: Popover(),
     MuiTypography: Typography(theme),
+    MuiPaginationItem: PaginationItem(theme),
   };
 }
