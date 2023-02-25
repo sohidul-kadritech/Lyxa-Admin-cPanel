@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+import TableLoader from './Common/TableLoader';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
@@ -155,18 +156,22 @@ export default function ButlerOrderTable({ orders, loading }) {
   ];
 
   return (
-    <StyledTable
-      columns={columns}
-      rows={orders || []}
-      getRowId={(row) => row?._id}
-      rowHeight={71}
-      components={{
-        NoRowsOverlay: () => (
-          <Stack height="100%" alignItems="center" justifyContent="center">
-            {loading ? '' : 'No Q&A found'}
-          </Stack>
-        ),
-      }}
-    />
+    <Box sx={{ position: 'relative' }}>
+      <StyledTable
+        columns={columns}
+        rows={orders || []}
+        getRowId={(row) => row?._id}
+        rowHeight={71}
+        components={{
+          NoRowsOverlay: () => (
+            <Stack height="100%" alignItems="center" justifyContent="center">
+              {loading ? '' : 'No Q&A found'}
+            </Stack>
+          ),
+        }}
+      />
+      {/* loading */}
+      {loading && <TableLoader />}
+    </Box>
   );
 }
