@@ -80,6 +80,13 @@ export const shopTypeOptions = [
   { label: 'Pharmacy', value: 'pharmacy' },
 ];
 
+export const deliveryItemTypes = [
+  { label: 'All', value: 'all' },
+  { label: 'Food', value: 'food' },
+  { label: 'Grocery', value: 'grocery' },
+  { label: 'Pharmacy', value: 'pharmacy' },
+];
+
 export const sellerTypeOptions = [
   { label: 'All', value: 'all' },
   { label: 'Food', value: 'food' },
@@ -207,7 +214,7 @@ export const userStatusOptions = [
   { label: 'Blocked', value: 'blocked' },
 ];
 
-export const orderTypesOptions = [
+export const orderStatusOptionsAll = [
   { label: 'All', value: 'all' },
   { label: 'Placed', value: 'placed' },
   { label: 'Accepted by delivery boy', value: 'accepted_delivery_boy' },

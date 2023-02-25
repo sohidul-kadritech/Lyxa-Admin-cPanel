@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import Select from 'react-select';
 import { Card, CardBody, Col, Container, Row } from 'reactstrap';
-import { orderTypesOptions, shopTypeOptions, sortByOptions } from '../../../assets/staticData';
+import { orderStatusOptionsAll, shopTypeOptions, sortByOptions } from '../../../assets/staticData';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 
@@ -140,7 +140,7 @@ function OrdersList() {
                     <label className="control-label">Order Status</label>
                     <Select
                       palceholder="Select Status"
-                      options={orderTypesOptions}
+                      options={orderStatusOptionsAll}
                       classNamePrefix="select2-selection"
                       value={typeKey}
                       onChange={(e) => dispatch(updateOrderType(e))}

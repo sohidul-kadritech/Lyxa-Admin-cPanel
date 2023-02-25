@@ -3,16 +3,23 @@
 // eslint-disable-next-line no-unused-vars
 
 // third pary
-import { Box, Stack, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Stack, Tooltip, Unstable_Grid2 as Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // prodject import
+import { orderStatusOptionsAll, sortByOptions } from '../../assets/staticData';
 import ButlerOrderTable from '../../components/ButlerOrderTable';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
+import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
-import { getAllOrder, updateButlerOrderPage } from '../../store/Butler/butlerActions';
+import {
+  getAllOrder,
+  updateButlerOrderPage,
+  updateButlerOrderSortByKey,
+  updateButlerOrderType,
+} from '../../store/Butler/butlerActions';
 
 // breadcrumb items
 const breadcrumbItems = [
@@ -29,7 +36,8 @@ const breadcrumbItems = [
 export default function ButlerOrderList() {
   const dispatch = useDispatch();
 
-  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderType, orderSearchKey, status, page, paging } =
+  // eslint-disable-next-line no-unused-vars
+  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderType, orderSearchKey, page, paging } =
     useSelector((state) => state.butlerReducer);
 
   // eslint-disable-next-line no-unused-vars
@@ -47,17 +55,33 @@ export default function ButlerOrderList() {
     dispatch(getAllOrder(refresh));
   };
 
-  useEffect(() => {
-    if (sortByKey || startDate || endDate || typeKey || orderType || orderSearchKey) {
-      getOrderLIst(true);
+  // update orderlist
+  const updateOrderList = (type, payload) => {
+    switch (type) {
+      case 'sortByKey':
+        dispatch(updateButlerOrderSortByKey(payload));
+        getOrderLIst(true);
+        break;
+
+      case 'typeKey':
+        dispatch(updateButlerOrderType(payload));
+        getOrderLIst(true);
+        break;
+      default:
     }
-  }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey]);
+  };
+
+  // useEffect(() => {
+  //   if (sortByKey || startDate || endDate || typeKey || orderType || orderSearchKey) {
+  //     getOrderLIst(true);
+  //   }
+  // }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey]);
 
   useEffect(() => {
-    if (status) {
-      getOrderLIst(true);
+    if (orders?.length === 0) {
+      getOrderLIst();
     }
-  }, [status]);
+  }, []);
 
   return (
     <GlobalWrapper padding>
@@ -67,7 +91,38 @@ export default function ButlerOrderList() {
           <Grid md={isRightBarOpen ? 8 : 12} sx={{ height: '100%', overflowY: 'scroll' }}>
             <BreadCrumbs items={breadcrumbItems} />
             {/* filters */}
-            <Stack direction="row" spacing={3}></Stack>
+            <Stack direction="row" spacing={3}>
+              {/* sort */}
+              <Tooltip disableFocusListener disableTouchListener title="Sort By">
+                <Box>
+                  <FilterSelect
+                    items={sortByOptions}
+                    value={sortByKey.value}
+                    placeholder="Sort by"
+                    onChange={(e, v) => {
+                      updateOrderList('sortByKey', { value: v.props.value, label: v.props.children });
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order type options */}
+              <Tooltip title="Order Status">
+                <Box>
+                  <FilterSelect
+                    items={orderStatusOptionsAll}
+                    value={typeKey.value}
+                    placeholder="Order Status"
+                    onChange={(e, v) => {
+                      updateOrderList('typeKey', { value: v.props.value, label: v.props.children });
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order type options */}
+              <Tooltip title="Delivery Item Type">
+                <Box></Box>
+              </Tooltip>
+            </Stack>
             <Box sx={{ minHeight: 'calc(100% - 220px)' }}>
               <ButlerOrderTable orders={orders} loading={loading} />
             </Box>
