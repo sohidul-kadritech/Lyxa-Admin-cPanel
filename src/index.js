@@ -1,3 +1,5 @@
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -10,9 +12,11 @@ import ThemeProvider from './theme';
 ReactDOM.render(
   <Provider store={store}>
     <ThemeProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </LocalizationProvider>
     </ThemeProvider>
   </Provider>,
   document.getElementById('root')

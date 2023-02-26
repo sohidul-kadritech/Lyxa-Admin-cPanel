@@ -12,12 +12,15 @@ import { orderStatusOptionsAll, sortByOptions } from '../../assets/staticData';
 import ButlerOrderTable from '../../components/ButlerOrderTable';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
+import FilterDate from '../../components/Filter/FilterDate';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
   getAllOrder,
+  updateButlerOrderEndDate,
   updateButlerOrderPage,
   updateButlerOrderSortByKey,
+  updateButlerOrderStartDate,
   updateButlerOrderType,
 } from '../../store/Butler/butlerActions';
 
@@ -67,15 +70,20 @@ export default function ButlerOrderList() {
         dispatch(updateButlerOrderType(payload));
         getOrderLIst(true);
         break;
+
+      case 'startDate':
+        dispatch(updateButlerOrderStartDate(payload));
+        getOrderLIst(true);
+        break;
+
+      case 'endDate':
+        dispatch(updateButlerOrderEndDate(payload));
+        getOrderLIst(true);
+        break;
+
       default:
     }
   };
-
-  // useEffect(() => {
-  //   if (sortByKey || startDate || endDate || typeKey || orderType || orderSearchKey) {
-  //     getOrderLIst(true);
-  //   }
-  // }, [sortByKey, startDate, endDate, typeKey, orderType, orderSearchKey]);
 
   useEffect(() => {
     if (orders?.length === 0) {
@@ -118,9 +126,27 @@ export default function ButlerOrderList() {
                   />
                 </Box>
               </Tooltip>
-              {/* order type options */}
-              <Tooltip title="Delivery Item Type">
-                <Box></Box>
+              {/* order start date */}
+              <Tooltip title="Start Date">
+                <Box>
+                  <FilterDate
+                    value={startDate}
+                    onChange={(e) => {
+                      updateOrderList('startDate', e._d);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order end date */}
+              <Tooltip title="End Date">
+                <Box>
+                  <FilterDate
+                    value={endDate}
+                    onChange={(e) => {
+                      updateOrderList('endDate', e._d);
+                    }}
+                  />
+                </Box>
               </Tooltip>
             </Stack>
             <Box sx={{ minHeight: 'calc(100% - 220px)' }}>
