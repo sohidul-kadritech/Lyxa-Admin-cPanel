@@ -20,6 +20,7 @@ import DeliveryTransactions from '../pages/AppWallet/DeliveryTransactions/Delive
 import PaymentHistory from '../pages/AppWallet/PaymentHistory/PaymentHistory';
 import PercentageSetting from '../pages/AppWallet/PercentageSetting/PercentageSetting';
 import SellerTransactions from '../pages/AppWallet/SellerTransactions/SellerTransactions';
+import ButlerOrderDetails from '../pages/Butler/butlerOrderDetails';
 import DatabaseSettings from '../pages/DatabaseSettings/DatabaseSettings';
 import DealsAdd from '../pages/Deals/DealsAdd/DealsAdd';
 import DealsList from '../pages/Deals/DealsList/DealsList';
@@ -87,6 +88,7 @@ const userRoutes = [
   { path: '/orders/refused', component: RefusedOrders },
   // butler
   { path: '/butler/list', component: ButlerOrderList },
+  { path: '/butler/list/order-details/:id', component: ButlerOrderDetails },
   // vat
   { path: '/vat', component: Vat },
   // Banner

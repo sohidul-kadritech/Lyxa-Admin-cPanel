@@ -126,41 +126,30 @@ function Riders({ list = [], heading }) {
   );
 }
 
-function OrderDetails() {
+function ButlerOrderDetails() {
   const { account_type } = useSelector((store) => store.Login.admin);
   const { id } = useParams();
-  const { orders, status } = useSelector((state) => state.orderReducer);
+  const { orders, status } = useSelector((state) => state.butlerReducer);
   const history = useHistory();
   const [order, setOrder] = useState(null);
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg] = useState(null);
-  const [orderTimeline, setOrderTimeline] = useState([]);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
-  const getProperOrderTimeline = (orderObj) => {
-    if (orderObj?.orderFor === 'specific') {
-      const timeline = orderObj?.timeline?.filter(
-        (item) => item.status !== 'ready_to_pickup' && item.status !== 'accepted_delivery_boy'
-      );
-      return timeline;
-    }
-    return orderObj?.timeline;
-  };
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   useEffect(() => {
     if (id) {
       const findOrder = orders.find((order) => order._id === id);
+
       if (findOrder) {
         setOrder(findOrder);
-        setOrderTimeline(getProperOrderTimeline(findOrder));
       } else {
         (async function getOrder() {
           const data = await callApi(id, SINGLE_ORDER, 'order');
           if (data) {
             setOrder(data);
-            setOrderTimeline(getProperOrderTimeline(data));
           } else {
-            history.push('/orders/list', { replace: true });
+            // history.push('/orders/list', { replace: true });
           }
         })();
       }
@@ -255,21 +244,11 @@ function OrderDetails() {
     return m;
   };
 
-  console.log(order);
-
   return (
     <GlobalWrapper>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumb
-            maintitle="Lyxa"
-            breadcrumbItem="Details"
-            title="Order"
-            // loading={loading}
-            // callList={callShopList}
-            isRefresh={false}
-          />
-
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Order" isRefresh={false} />
           {isZoom ? (
             <Lightbox
               mainSrc={selectedImg}
@@ -279,7 +258,6 @@ function OrderDetails() {
               }}
             />
           ) : null}
-
           {/* ORDER INFORMATIONS */}
           <Card className="pb-5">
             <CardBody>
@@ -292,25 +270,6 @@ function OrderDetails() {
                   <hr />
                   {/* SELLER AND USER IMAGE */}
                   <div className="d-flex align-items-center justify-content-between">
-                    <div className="d-flex align-items-center">
-                      <img
-                        className="rounded-circle avatar-lg cursor-pointer me-1"
-                        alt="Seller"
-                        loading="lazy"
-                        src={order?.seller?.profile_photo ? order?.seller?.profile_photo : noPhoto}
-                        style={{
-                          border: '1px solid lightgray',
-                          objectFit: 'cover',
-                        }}
-                        onClick={() => history.push(`/seller/details/${order?.seller?._id}`)}
-                      />
-                      <h6
-                        onClick={() => history.push(`/seller/details/${order?.seller?._id}`)}
-                        className="cursor-pointer link"
-                      >
-                        {order?.seller?.company_name}
-                      </h6>
-                    </div>
                     <div className="d-flex align-items-center">
                       <img
                         className="rounded-circle avatar-lg cursor-pointer me-1"
@@ -345,16 +304,14 @@ function OrderDetails() {
                           valueTwo: order?.paymentStatus,
                           class: 'orderStatus',
                         },
-                        { title: 'Order Type', value: order?.orderType },
+                        {
+                          title: 'Order Type',
+                          value: `${order?.orderType === 'delivery_only' ? 'Delivery Only' : 'Purchase Delivery'}`,
+                        },
                       ]}
                     />
                     <OrderInfo
                       items={[
-                        {
-                          title: 'Shop',
-                          value: order?.shop?.shopName,
-                          link: `/shops/details/${order?.shop?._id}`,
-                        },
                         {
                           title: 'Order Status',
                           value: order?.orderStatus.split('_').join(' '),
@@ -371,6 +328,10 @@ function OrderDetails() {
                               : order?.review === 1
                               ? 'Bad'
                               : 'No Rating',
+                        },
+                        {
+                          title: '',
+                          value: '',
                         },
                       ]}
                     />
@@ -401,7 +362,6 @@ function OrderDetails() {
                     />
                   </div>
                 </Col>
-
                 <Col xl={6}>
                   <div className="d-flex justify-content-between align-items-center" style={{ height: '37px' }}>
                     <h5 className="text-dark">Delivery Address</h5>
@@ -420,16 +380,17 @@ function OrderDetails() {
                     Summary
                   </h5>
                   <Summery>
-                    <SummaryInfo title="Products Amount" value={order?.summary?.productAmount} />
                     <SummaryInfo title="Delivery Charge" value={order?.summary?.deliveryFee} />
-                    <SummaryInfo
+                    {order?.orderType === 'delivery_purchase' && (
+                      <SummaryInfo title="Estimated Product Amount" value={order?.summary?.productAmount} />
+                    )}
+                    {/* <SummaryInfo
                       title="Discount"
                       value={order?.summary?.deliveryFee === 0 ? 'Free Delivery' : order?.products[0]?.totalDiscount}
-                    />
+                    /> */}
                     <SummaryInfo title="VAT" value={order?.summary?.vat} />
                     <SummaryInfo title="Total Amount" value={order?.summary?.totalAmount + order?.summary?.vat} />
                   </Summery>
-
                   <Summery
                     className="mt-3 text-capitalize"
                     style={{
@@ -477,18 +438,17 @@ function OrderDetails() {
                   </Summery>
                 </Col>
               </Row>
-
               <h5 className="text-dark" style={{ marginBottom: '30px' }}>
                 Order Amount Details
               </h5>
               <Summery>
-                <SummaryInfo title="Shop Profit" value={order?.sellerEarnings} />
+                {/* <SummaryInfo title="Shop Profit" value={order?.sellerEarnings} /> */}
                 <SummaryInfo title="Rider Profit" value={order?.deliveryBoyFee} />
-                <SummaryInfo title="Lyxa Delivery Profit" value={order?.dropCharge?.dropChargeFromDelivery} />
-                <SummaryInfo title="Lyxa Order Profit" value={order?.dropCharge?.dropChargeFromOrder} />
-                <SummaryInfo title="Shop VAT" value={order?.vatAmount?.vatForShop} />
-                <SummaryInfo title="Lyxa VAT" value={order?.vatAmount?.vatForAdmin} />
-                <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge?.totalDropAmount} />
+                {/* <SummaryInfo title="Lyxa Delivery Profit" value={order?.dropCharge?.dropChargeFromDelivery} /> */}
+                {/* <SummaryInfo title="Lyxa Order Profit" value={order?.dropCharge?.dropChargeFromOrder} /> */}
+                {/* <SummaryInfo title="Shop VAT" value={order?.vatAmount?.vatForShop} /> */}
+                {/* <SummaryInfo title="Lyxa VAT" value={order?.vatAmount?.vatForAdmin} /> */}
+                <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge} />
               </Summery>
             </CardBody>
           </Card>
@@ -501,7 +461,7 @@ function OrderDetails() {
                   <CardTitle>Order Timeline</CardTitle>
                   <hr />
                   <Timeline>
-                    {orderTimeline.map((item, index) => (
+                    {order?.timeline.map((item, index) => (
                       <TimelineItem key={index}>
                         <TimelineOppositeContent color="text.secondary">
                           {item.active && (
@@ -516,7 +476,7 @@ function OrderDetails() {
                           <TimelineConnector
                             style={{
                               backgroundColor: item?.active ? '#2e7d32' : 'grey',
-                              display: index === orderTimeline.length - 1 && 'none',
+                              display: index === order?.timeline?.length - 1 && 'none',
                             }}
                           />
                         </TimelineSeparator>
@@ -529,7 +489,6 @@ function OrderDetails() {
                 </CardBody>
               </Card>
             </Col>
-
             <Col lg={6} className="card-height">
               {order?.pickUpLocation && order?.dropOffLocation && (
                 <OrderTrackingMap pickup={order?.pickUpLocation} dropoff={order?.dropOffLocation} />
@@ -609,7 +568,6 @@ function OrderDetails() {
                     </div>
                   </AccordionDetails>
                 </Accordion>
-
                 <FlagsAndReviews flags={order?.flag} isFromOrder />
               </Col>
               {/* Riders */}
@@ -619,63 +577,71 @@ function OrderDetails() {
               </Col>
             </Row>
           )}
-
           {/* PRODUCT TABLE */}
-          <Card>
-            <CardBody>
-              <Row className="mb-3">
-                <Col md={3} className="text-end" />
-              </Row>
-              <CardTitle className="h4"> Product List</CardTitle>
-              <Table id="tech-companies-1" className="table  table-hover text-center">
-                <Thead>
-                  <Tr>
-                    <Th>Product</Th>
-                    <Th>Attributes</Th>
-                    <Th>Type</Th>
-                    <Th>Quantity</Th>
-                    <Th>{`Discount (${currency})`}</Th>
-                    <Th>{`Total Price (${currency})`}</Th>
-                  </Tr>
-                </Thead>
-                <Tbody style={{ position: 'relative' }} id="table-data">
-                  {order?.productsDetails?.map((item) => (
-                    <Tr
-                      key={item?.autoGenId}
-                      className="align-middle"
-                      style={{
-                        fontSize: '15px',
-                        fontWeight: '500',
-                      }}
-                      id="table-content"
-                    >
-                      <Td>
-                        <TableImgItem img={item?.product?.images[0]} name={item?.productName} id={item?.autoGenId} />
-                      </Td>
-                      <Td>
-                        {item?.selectedAttributes.length > 0
-                          ? item?.selectedAttributes.map((att, index) => (
-                              <div key={index}>
-                                <span style={{ fontSize: '12px' }}>{att?.name}</span>
-                                {att?.selectedItems?.map((item, index) => (
-                                  <p key={index} style={{ fontSize: '12px' }}>
-                                    {item?.name}
-                                  </p>
-                                ))}
-                              </div>
-                            ))
-                          : 'N/A'}
-                      </Td>
-                      <Td>{item?.product?.type}</Td>
-                      <Td>{item?.productQuantity}</Td>
-                      <Td>{item?.discount ?? 0}</Td>
-                      <Td>{calProductAmount(item)}</Td>
+          {order?.orderType === 'delivery_purchase' ? (
+            <Card>
+              <CardBody>
+                <Row className="mb-3">
+                  <Col md={3} className="text-end" />
+                </Row>
+                <CardTitle className="h4"> Product List</CardTitle>
+                <Table id="tech-companies-1" className="table  table-hover text-center">
+                  <Thead>
+                    <Tr>
+                      <Th>Product</Th>
+                      <Th>Attributes</Th>
+                      <Th>Type</Th>
+                      <Th>Quantity</Th>
+                      <Th>{`Discount (${currency})`}</Th>
+                      <Th>{`Total Price (${currency})`}</Th>
                     </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </CardBody>
-          </Card>
+                  </Thead>
+                  <Tbody style={{ position: 'relative' }} id="table-data">
+                    {order?.productsDetails?.map((item) => (
+                      <Tr
+                        key={item?.autoGenId}
+                        className="align-middle"
+                        style={{
+                          fontSize: '15px',
+                          fontWeight: '500',
+                        }}
+                        id="table-content"
+                      >
+                        <Td>
+                          <TableImgItem img={item?.product?.images[0]} name={item?.productName} id={item?.autoGenId} />
+                        </Td>
+                        <Td>
+                          {item?.selectedAttributes.length > 0
+                            ? item?.selectedAttributes.map((att, index) => (
+                                <div key={index}>
+                                  <span style={{ fontSize: '12px' }}>{att?.name}</span>
+                                  {att?.selectedItems?.map((item, index) => (
+                                    <p key={index} style={{ fontSize: '12px' }}>
+                                      {item?.name}
+                                    </p>
+                                  ))}
+                                </div>
+                              ))
+                            : 'N/A'}
+                        </Td>
+                        <Td>{item?.product?.type}</Td>
+                        <Td>{item?.productQuantity}</Td>
+                        <Td>{item?.discount ?? 0}</Td>
+                        <Td>{calProductAmount(item)}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </CardBody>
+            </Card>
+          ) : (
+            <Card>
+              <CardBody>
+                <CardTitle className="h4">Product Description</CardTitle>
+                <p>{order?.itemDescription}</p>
+              </CardBody>
+            </Card>
+          )}
         </Container>
       </div>
     </GlobalWrapper>
@@ -739,4 +705,4 @@ const Summery = styled.div`
   }
 `;
 
-export default OrderDetails;
+export default ButlerOrderDetails;

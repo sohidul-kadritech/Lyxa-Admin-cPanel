@@ -59,7 +59,7 @@ export default function ButlerOrderTable({ orders, loading }) {
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'Details') {
-      history.push(`/order-details/${order?._id}`);
+      history.push(`/butler/list/order-details/${order?._id}`);
     }
   };
 
