@@ -30,7 +30,7 @@ import noPhoto from '../../assets/images/noPhoto.jpg';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import { callApi } from '../../components/SingleApiCall';
 import TableImgItem from '../../components/TableImgItem';
-import { SINGLE_ORDER } from '../../network/Api';
+import { BUTLER_SINGLE_ORDER } from '../../network/Api';
 
 function OrderInfo({ items = [] }) {
   const history = useHistory();
@@ -134,6 +134,7 @@ function ButlerOrderDetails() {
   const [order, setOrder] = useState(null);
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg] = useState(null);
+  console.log(order);
 
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
@@ -145,7 +146,7 @@ function ButlerOrderDetails() {
         setOrder(findOrder);
       } else {
         (async function getOrder() {
-          const data = await callApi(id, SINGLE_ORDER, 'order');
+          const data = await callApi(id, BUTLER_SINGLE_ORDER, 'order');
           if (data) {
             setOrder(data);
           } else {
@@ -193,7 +194,7 @@ function ButlerOrderDetails() {
     doc.setFontSize(14);
 
     const title = 'Order Informations';
-    const shopName = `Shop Name : ${order?.shop?.shopName}. `;
+    const username = `Shop Name : ${order?.shop?.shopName}. `;
     const price = `Price : ${order?.summary?.totalAmount} ${currency}.`;
     const address = `Address : ${order?.dropOffLocation?.address}.`;
     const paymentMethod = `Payment Method : ${order?.paymentMethod} ${order?.selectPos !== 'no' ? '(Pos)' : ''}`;
@@ -219,7 +220,7 @@ function ButlerOrderDetails() {
     };
 
     doc.text(title, 220, 30);
-    doc.text(shopName, marginLeft, 60);
+    doc.text(username, marginLeft, 60);
     doc.text(price, marginLeft, 80);
     doc.text(address, marginLeft, 100);
     doc.text(paymentMethod, marginLeft, 120);
@@ -231,7 +232,7 @@ function ButlerOrderDetails() {
   useEffect(() => {
     if (status) {
       (async function getOrder() {
-        const data = await callApi(id, SINGLE_ORDER, 'order');
+        const data = await callApi(id, BUTLER_SINGLE_ORDER, 'order');
         if (data) {
           setOrder(data);
         }
@@ -381,7 +382,7 @@ function ButlerOrderDetails() {
                   </h5>
                   <Summery>
                     <SummaryInfo title="Delivery Charge" value={order?.summary?.deliveryFee} />
-                    {order?.orderType === 'delivery_purchase' && (
+                    {order?.orderType === 'purchase_delivery' && (
                       <SummaryInfo title="Estimated Product Amount" value={order?.summary?.productAmount} />
                     )}
                     {/* <SummaryInfo
@@ -578,7 +579,7 @@ function ButlerOrderDetails() {
             </Row>
           )}
           {/* PRODUCT TABLE */}
-          {order?.orderType === 'delivery_purchase' ? (
+          {order?.orderType === 'purchase_delivery' ? (
             <Card>
               <CardBody>
                 <Row className="mb-3">
@@ -589,15 +590,13 @@ function ButlerOrderDetails() {
                   <Thead>
                     <Tr>
                       <Th>Product</Th>
-                      <Th>Attributes</Th>
-                      <Th>Type</Th>
+                      <Th>Price</Th>
                       <Th>Quantity</Th>
-                      <Th>{`Discount (${currency})`}</Th>
-                      <Th>{`Total Price (${currency})`}</Th>
+                      <Th>Total</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: 'relative' }} id="table-data">
-                    {order?.productsDetails?.map((item) => (
+                    {order?.products?.map((item) => (
                       <Tr
                         key={item?.autoGenId}
                         className="align-middle"
@@ -608,26 +607,11 @@ function ButlerOrderDetails() {
                         id="table-content"
                       >
                         <Td>
-                          <TableImgItem img={item?.product?.images[0]} name={item?.productName} id={item?.autoGenId} />
+                          <TableImgItem img={item.productImage} name={item?.productName} id={item?._id} />
                         </Td>
-                        <Td>
-                          {item?.selectedAttributes.length > 0
-                            ? item?.selectedAttributes.map((att, index) => (
-                                <div key={index}>
-                                  <span style={{ fontSize: '12px' }}>{att?.name}</span>
-                                  {att?.selectedItems?.map((item, index) => (
-                                    <p key={index} style={{ fontSize: '12px' }}>
-                                      {item?.name}
-                                    </p>
-                                  ))}
-                                </div>
-                              ))
-                            : 'N/A'}
-                        </Td>
-                        <Td>{item?.product?.type}</Td>
-                        <Td>{item?.productQuantity}</Td>
-                        <Td>{item?.discount ?? 0}</Td>
-                        <Td>{calProductAmount(item)}</Td>
+                        <Td>{item?.perProductPrice}</Td>
+                        <Td>{item?.quantity}</Td>
+                        <Td>{item?.totalProductAmount}</Td>
                       </Tr>
                     ))}
                   </Tbody>
