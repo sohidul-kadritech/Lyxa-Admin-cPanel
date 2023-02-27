@@ -1,7 +1,7 @@
 import { styled, TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 
-const StyledInput = styled(TextField)(() => ({
+const StyledInput = styled(TextField)(({ theme }) => ({
   '.MuiOutlinedInput-input': {
     fontSize: '14px',
     paddingTop: '10px',
@@ -10,7 +10,10 @@ const StyledInput = styled(TextField)(() => ({
   },
   '.MuiOutlinedInput-root': {
     borderRadius: '45px',
-    background: 'rgba(0, 0, 0, 0.08)!important',
+    background: theme.palette.grey[200],
+    '&:hover': {
+      background: theme.palette.grey[300],
+    },
   },
   fieldSet: {
     border: '0',
