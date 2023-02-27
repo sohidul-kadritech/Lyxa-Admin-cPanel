@@ -248,6 +248,12 @@ export const updateBulterOrderDeliveryBoy = (deliveryBoyId) => (dispatch) => {
   });
 };
 
+export const clearButlerSearchFilter = () => (dispatch) => {
+  dispatch({
+    type: actionType.CLEAR_BUTLER_SEARCH_FILTER,
+  });
+};
+
 // GET ACTIVE DELIVERY BOY
 // export const getAllActiveDeliveryMan = (orderId) => async (dispatch) => {
 //   try {

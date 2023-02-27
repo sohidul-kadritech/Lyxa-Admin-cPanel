@@ -189,6 +189,17 @@ const butlerReducer = (state = initialState, action) => {
         deliveryBoy: payload,
       };
 
+    case actionType.CLEAR_BUTLER_SEARCH_FILTER:
+      return {
+        ...state,
+        sortByKey: initialState.sortByKey,
+        startDate: initialState.startDate,
+        endDate: initialState.endDate,
+        typeKey: initialState.typeKey,
+        orderSearchKey: initialState.orderSearchKey,
+        deliveryBoy: initialState.deliveryBoy,
+      };
+
     default:
       return state;
   }

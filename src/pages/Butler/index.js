@@ -10,11 +10,13 @@ import { orderStatusOptionsAll, sortByOptions } from '../../assets/staticData';
 import ButlerOrderTable from '../../components/ButlerOrderTable';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
+import FilterButton from '../../components/Filter/FilterButton';
 import FilterDate from '../../components/Filter/FilterDate';
 import FilterSearch from '../../components/Filter/FilterSearch';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
+  clearButlerSearchFilter,
   getAllOrder,
   updateBulterOrderDeliveryBoy,
   updateButlerOrderEndDate,
@@ -96,6 +98,11 @@ export default function ButlerOrderList() {
         getOrderLIst(true);
         break;
 
+      case 'clearFilter':
+        dispatch(clearButlerSearchFilter());
+        getOrderLIst(true);
+        break;
+
       default:
     }
   };
@@ -116,7 +123,7 @@ export default function ButlerOrderList() {
             {/* filters */}
             <Stack direction="row" spacing={3} pt={6.5} pb={4.5}>
               {/* sort */}
-              <Tooltip disableFocusListener disableTouchListener title="Sort By">
+              <Tooltip title="Sort By">
                 <Box>
                   <FilterSelect
                     items={sortByOptions}
@@ -202,6 +209,15 @@ export default function ButlerOrderList() {
                     }}
                   />
                 </Box>
+              </Tooltip>
+              {/* clear filter */}
+              <Tooltip title="Clear Filter">
+                <FilterButton
+                  label="Clear"
+                  onClick={() => {
+                    updateOrderList('clearFilter');
+                  }}
+                />
               </Tooltip>
             </Stack>
             <Box sx={{ minHeight: 'calc(100% - 308px)' }}>
