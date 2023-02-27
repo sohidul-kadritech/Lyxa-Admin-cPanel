@@ -6,7 +6,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // prodject import
-import { orderStatusOptionsAll, sortByOptions } from '../../assets/staticData';
+import ReplayIcon from '@mui/icons-material/Replay';
+import { butlerOrderStatusOptionsAll, sortByOptions } from '../../assets/staticData';
 import ButlerOrderTable from '../../components/ButlerOrderTable';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
@@ -97,6 +98,10 @@ export default function ButlerOrderList() {
         getOrderLIst(true);
         break;
 
+      case 'refresh':
+        getOrderLIst(true);
+        break;
+
       default:
     }
   };
@@ -133,7 +138,7 @@ export default function ButlerOrderList() {
               <Tooltip title="Order Status">
                 <Box>
                   <FilterSelect
-                    items={orderStatusOptionsAll}
+                    items={butlerOrderStatusOptionsAll}
                     value={typeKey.value}
                     placeholder="Order Status"
                     onChange={(e, v) => {
@@ -178,32 +183,9 @@ export default function ButlerOrderList() {
                         }, delay);
                       }
                     }}
-                    onSearch={(value) => {
-                      updateOrderList('orderSearchKey', value);
-                    }}
                   />
                 </Box>
               </Tooltip>
-              {/* order deliveryboy */}
-              {/* <Tooltip title="Search Delivery Boy">
-                <Box>
-                  <FilterSearch
-                    value={deliveryBoy}
-                    onChange={(value) => {
-                      if (delaying === false) {
-                        delaying = true;
-                        updateOrderList('deliveryBoy', value);
-                        setTimeout(() => {
-                          delaying = false;
-                        }, delay);
-                      }
-                    }}
-                    onSearch={(value) => {
-                      updateOrderList('deliveryBoy', value);
-                    }}
-                  />
-                </Box>
-              </Tooltip> */}
               {/* clear filter */}
               <Tooltip title="Clear Filter">
                 <Box>
@@ -211,6 +193,18 @@ export default function ButlerOrderList() {
                     label="Clear"
                     onClick={() => {
                       updateOrderList('clearFilter');
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* refresh */}
+              <Tooltip title="Refresh">
+                <Box>
+                  <FilterButton
+                    label="Refresh"
+                    endIcon={<ReplayIcon />}
+                    onClick={() => {
+                      updateOrderList('refresh');
                     }}
                   />
                 </Box>

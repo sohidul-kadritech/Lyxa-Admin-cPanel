@@ -81,7 +81,9 @@ export default function FilterSearch({ value, onChange, onSearch, ...props }) {
       endAdornment={
         <SearchIcon
           onClick={(event) => {
-            onSearch(event);
+            if (onSearch) {
+              onSearch(event);
+            }
           }}
         />
       }
