@@ -97,6 +97,7 @@ export const allDeliveryMan =
 //   EDIT
 
 export const editDeliveryMan = (values) => async (dispatch) => {
+  console.log(values);
   try {
     dispatch({
       type: actionType.EDIT_DELIVERY_MAN_REQUEST_SEND,

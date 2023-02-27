@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import PhoneInput, { getCountryCallingCode, isValidPhoneNumber } from 'react-phone-number-input';
@@ -33,6 +34,7 @@ function DeliverymanAdd() {
     number: '',
   });
   const [pin, setPin] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
   const [activeStatus, setActiveStatus] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [vehicleNum, setVehicleNum] = useState('');
@@ -42,6 +44,7 @@ function DeliverymanAdd() {
   const [contractPaper, setContractPaper] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isValidPhone, setIsValidPhone] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handlePhoneChange = (value) => {
     setPhone((prev) => ({ ...prev, number: value }));
@@ -49,6 +52,7 @@ function DeliverymanAdd() {
 
   // UPDATE DATA
   const updateData = (data) => {
+    console.log(data);
     const {
       name,
       email,
@@ -61,12 +65,14 @@ function DeliverymanAdd() {
       contractImage,
       image,
       countryCode,
+      isLogin,
     } = data;
 
     const findStatus = activeOptions.find((option) => option.value === status);
     // const findVahicleType = DeliveryBoyVehicleOPtions.find(
     //   (option) => option.value === vehicleType
     // );
+    setIsEditMode(true);
     setName(name);
     setEmail(email);
     setPhone({
@@ -80,6 +86,7 @@ function DeliverymanAdd() {
     setVehicleType(vehicleType);
     setVehicleNum(vehicleNumber);
     setContractPaper(contractImage);
+    setIsLoggedIn(isLogin);
   };
 
   // ID FROM PARAMSnumber
@@ -129,9 +136,9 @@ function DeliverymanAdd() {
     return { countryCode, number };
   };
 
-  const submitData = (nidUrl, docUrl, contractUrl, profileUrl) => {
+  const submitData = (nidUrl, docUrl, contractUrl, profileUrl, isLoggedIn) => {
+    console.log(isLoggedIn);
     const { number, countryCode } = formatNumber(phone);
-
     const data = {
       name,
       email,
@@ -146,12 +153,11 @@ function DeliverymanAdd() {
       image: profileUrl,
     };
 
-    console.log(data);
-
     if (id) {
       dispatch(
         editDeliveryMan({
           ...data,
+          isLogin: isLoggedIn,
           id,
           status: activeStatus?.value,
         })
@@ -166,7 +172,7 @@ function DeliverymanAdd() {
     }
   };
 
-  const uploadImages = async () => {
+  const uploadImages = async (isLoggedIn) => {
     let nidUrl = null;
     let docUrl = null;
     let contractUrl = null;
@@ -204,13 +210,13 @@ function DeliverymanAdd() {
 
     if (nidUrl && docUrl && contractUrl && profileUrl) {
       setIsLoading(false);
-      submitData(nidUrl, docUrl, contractUrl, profileUrl);
+      submitData(nidUrl, docUrl, contractUrl, profileUrl, isLoggedIn);
     }
   };
 
   // VALIDATIONS
   // eslint-disable-next-line consistent-return
-  const submitDeliveryman = (e) => {
+  const submitDeliveryman = (e, isLoggedIn) => {
     e.preventDefault();
     if (!vehicleType) {
       return successMsg('select Vahicle Type');
@@ -232,11 +238,10 @@ function DeliverymanAdd() {
       return successMsg('Invalid Phone');
     }
 
-    uploadImages();
+    uploadImages(isLoggedIn);
   };
 
   // SUCCESS
-
   useEffect(() => {
     if (status) {
       if (id) {
@@ -414,7 +419,6 @@ function DeliverymanAdd() {
                           />
                         </div>
                       )}
-
                       {!id && (
                         <div className="mb-4">
                           <Label>Address</Label>
@@ -762,6 +766,21 @@ function DeliverymanAdd() {
                       )}
                     </Button>
                   </div>
+                  {isEditMode && (
+                    <div className="my-5 d-flex justify-content-center">
+                      <Button
+                        color="primary"
+                        className="px-5"
+                        type="submit"
+                        disabled={isLoading || loading || !isLoggedIn}
+                        onClick={(e) => {
+                          submitDeliveryman(e, false);
+                        }}
+                      >
+                        {isLoggedIn ? 'Force Logout' : 'Not Logged In'}
+                      </Button>
+                    </div>
+                  )}
                 </CardBody>
               </Card>
             </Form>
