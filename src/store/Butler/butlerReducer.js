@@ -12,6 +12,7 @@ const initialState = {
   startDate: moment().startOf('month').format('YYYY-MM-DD'),
   endDate: moment().endOf('month').format('YYYY-MM-DD'),
   paginate: null,
+  deliveryBoy: '',
   page: 1,
   paging: [],
   hasNextPage: true,
@@ -20,7 +21,6 @@ const initialState = {
   orderType: { label: 'All', value: 'all' },
   orderSearchKey: '',
   activeDelieryBoys: [],
-  deliveryBoy: '',
 };
 
 const butlerReducer = (state = initialState, action) => {
@@ -153,7 +153,6 @@ const butlerReducer = (state = initialState, action) => {
         page: payload,
       };
     }
-
     case actionType.UPDATE_BUTLER_ORDER_SORT_BY_FILTER:
       return {
         ...state,
@@ -182,6 +181,12 @@ const butlerReducer = (state = initialState, action) => {
       return {
         ...state,
         orderSearchKey: payload,
+      };
+
+    case actionType.UPDATE_BUTLER_ORDER_DELIVERY_BOY:
+      return {
+        ...state,
+        deliveryBoy: payload,
       };
 
     default:

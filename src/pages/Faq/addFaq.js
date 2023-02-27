@@ -17,9 +17,6 @@ const initialFaq = {
 
 export default function AddFaq({ submitHandler, isEdit, faq }) {
   const { newFaq, loading } = useSelector((store) => store.faqReducer);
-
-  console.log(loading);
-
   const [currentFaq, setCurrentFaq] = useState(faq || initialFaq);
 
   const changeHandler = (event) => {

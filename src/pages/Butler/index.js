@@ -1,7 +1,5 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
-// eslint-disable-next-line no-unused-vars
-
 // third pary
 import { Box, Stack, Tooltip, Unstable_Grid2 as Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -13,12 +11,15 @@ import ButlerOrderTable from '../../components/ButlerOrderTable';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import FilterDate from '../../components/Filter/FilterDate';
+import FilterSearch from '../../components/Filter/FilterSearch';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
   getAllOrder,
+  updateBulterOrderDeliveryBoy,
   updateButlerOrderEndDate,
   updateButlerOrderPage,
+  updateButlerOrderSearchKey,
   updateButlerOrderSortByKey,
   updateButlerOrderStartDate,
   updateButlerOrderType,
@@ -36,11 +37,15 @@ const breadcrumbItems = [
   },
 ];
 
+// throttle params
+let delaying = false;
+const delay = 200;
+
 export default function ButlerOrderList() {
   const dispatch = useDispatch();
 
   // eslint-disable-next-line no-unused-vars
-  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderType, orderSearchKey, page, paging } =
+  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderSearchKey, page, paging, deliveryBoy } =
     useSelector((state) => state.butlerReducer);
 
   // eslint-disable-next-line no-unused-vars
@@ -81,6 +86,16 @@ export default function ButlerOrderList() {
         getOrderLIst(true);
         break;
 
+      case 'orderSearchKey':
+        dispatch(updateButlerOrderSearchKey(payload));
+        getOrderLIst(true);
+        break;
+
+      case 'deliveryBoy':
+        dispatch(updateBulterOrderDeliveryBoy(payload));
+        getOrderLIst(true);
+        break;
+
       default:
     }
   };
@@ -99,7 +114,7 @@ export default function ButlerOrderList() {
           <Grid md={isRightBarOpen ? 8 : 12} sx={{ height: '100%', overflowY: 'scroll' }}>
             <BreadCrumbs items={breadcrumbItems} />
             {/* filters */}
-            <Stack direction="row" spacing={3}>
+            <Stack direction="row" spacing={3} pt={6.5} pb={4.5}>
               {/* sort */}
               <Tooltip disableFocusListener disableTouchListener title="Sort By">
                 <Box>
@@ -148,8 +163,48 @@ export default function ButlerOrderList() {
                   />
                 </Box>
               </Tooltip>
+              {/* order note / id */}
+              <Tooltip title="Search Order">
+                <Box>
+                  <FilterSearch
+                    value={orderSearchKey}
+                    onChange={(value) => {
+                      if (delaying === false) {
+                        delaying = true;
+                        updateOrderList('orderSearchKey', value);
+                        setTimeout(() => {
+                          delaying = false;
+                        }, delay);
+                      }
+                    }}
+                    onSearch={(value) => {
+                      updateOrderList('orderSearchKey', value);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order deliveryboy */}
+              <Tooltip title="Search Delivery Boy">
+                <Box>
+                  <FilterSearch
+                    value={deliveryBoy}
+                    onChange={(value) => {
+                      if (delaying === false) {
+                        delaying = true;
+                        updateOrderList('deliveryBoy', value);
+                        setTimeout(() => {
+                          delaying = false;
+                        }, delay);
+                      }
+                    }}
+                    onSearch={(value) => {
+                      updateOrderList('deliveryBoy', value);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
             </Stack>
-            <Box sx={{ minHeight: 'calc(100% - 220px)' }}>
+            <Box sx={{ minHeight: 'calc(100% - 308px)' }}>
               <ButlerOrderTable orders={orders} loading={loading} />
             </Box>
             <Box

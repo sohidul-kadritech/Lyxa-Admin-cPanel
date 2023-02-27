@@ -241,6 +241,13 @@ export const updateButlerOrderSearchKey = (search) => (dispatch) => {
   });
 };
 
+export const updateBulterOrderDeliveryBoy = (deliveryBoyId) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_DELIVERY_BOY,
+    payload: deliveryBoyId,
+  });
+};
+
 // GET ACTIVE DELIVERY BOY
 // export const getAllActiveDeliveryMan = (orderId) => async (dispatch) => {
 //   try {
