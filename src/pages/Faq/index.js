@@ -1,6 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
 // mui
-import { Box, Button, Paper, Stack, Tab, Tabs, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
+import ReplayIcon from '@mui/icons-material/Replay';
+import {
+  Box,
+  Button,
+  Paper,
+  Stack,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+  Unstable_Grid2 as Grid,
+  useTheme,
+} from '@mui/material';
 
 // third party
 import { useEffect, useState } from 'react';
@@ -206,20 +218,39 @@ export default function Faq() {
               <Paper>
                 <Stack direction="row" pt={10} pb={3} justifyContent="space-between">
                   <Stack direction="row" spacing={3}>
-                    <FilterSelect
-                      items={faqType}
-                      placeholder="Type"
-                      value={type}
-                      onChange={(e) => {
-                        setType(e.target.value);
-                      }}
-                    />
-                    <FilterButton
-                      label="Clear"
-                      onClick={() => {
-                        setType('');
-                      }}
-                    />
+                    <Tooltip title="Select Type">
+                      <Box>
+                        <FilterSelect
+                          items={faqType}
+                          placeholder="Type"
+                          value={type}
+                          onChange={(e) => {
+                            setType(e.target.value);
+                          }}
+                        />
+                      </Box>
+                    </Tooltip>
+                    <Tooltip title="Clear Filter">
+                      <Box>
+                        <FilterButton
+                          label="Clear"
+                          onClick={() => {
+                            setType('');
+                          }}
+                        />
+                      </Box>
+                    </Tooltip>
+                    <Tooltip title="Refresh">
+                      <Box>
+                        <FilterButton
+                          label="Refresh"
+                          endIcon={<ReplayIcon />}
+                          onClick={() => {
+                            callGetAllFaq();
+                          }}
+                        />
+                      </Box>
+                    </Tooltip>
                   </Stack>
                   <Button
                     variant="contained"

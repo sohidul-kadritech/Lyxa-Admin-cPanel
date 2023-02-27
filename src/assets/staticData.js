@@ -11,6 +11,7 @@ export const shopDietaryOptions = [
 ];
 
 export const faqType = [
+  { label: 'All', value: 'all' },
   { label: 'User', value: 'user' },
   { label: 'Shop', value: 'shop' },
   { label: 'Rider', value: 'deliveryBoy' },
