@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -58,8 +59,11 @@ function ShopDetails() {
   const { account_type } = useSelector((store) => store.Login.admin);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
+  console.log(shop);
+
   const getShop = async () => {
     const data = await callApi(id, SINGLE_SHOP, 'shop');
+    console.log(data);
     if (data) {
       const activeStatus = data?.liveStatus === 'online';
       setLiveStatus(activeStatus);
@@ -352,6 +356,11 @@ function ShopDetails() {
                     {shop?.foodType && (
                       <InfoTwo Icon={FoodBankOutlinedIcon} value={`${shop?.foodType}`} name="Food Type" />
                     )}
+                    <InfoTwo
+                      Icon={FeaturedPlayListOutlinedIcon}
+                      value={`${shop?.orderValue?.productAmount / shop?.orderValue?.count || 0}`}
+                      name="Average Order Value"
+                    />
 
                     <InfoTwo
                       Icon={PaidOutlinedIcon}
