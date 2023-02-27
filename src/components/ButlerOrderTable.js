@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import TableLoader from './Common/TableLoader';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
@@ -35,11 +36,13 @@ const getOrderStatus = (statusName) => {
 };
 
 export default function ButlerOrderTable({ orders, loading }) {
+  const history = useHistory();
+
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const { account_type } = useSelector((store) => store.Login.admin);
 
   const getThreedotMenuOptions = (orderStatus) => {
-    const options = [];
+    const options = ['Details'];
     const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
 
     if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
@@ -52,6 +55,12 @@ export default function ButlerOrderTable({ orders, loading }) {
     }
 
     return options;
+  };
+
+  const threeDotHandler = (menu, order) => {
+    if (menu === 'Details') {
+      history.push(`/order-details/${order?._id}`);
+    }
   };
 
   // columns
@@ -150,7 +159,12 @@ export default function ButlerOrderTable({ orders, loading }) {
       align: 'right',
       headerAlign: 'right',
       renderCell: (params) => (
-        <ThreeDotsMenu handleMenuClick={() => {}} menuItems={getThreedotMenuOptions(params?.row?.orderStatus)} />
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            threeDotHandler(menu, params.row);
+          }}
+          menuItems={getThreedotMenuOptions(params?.row?.orderStatus)}
+        />
       ),
     },
   ];
