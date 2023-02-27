@@ -18,7 +18,6 @@ import GlobalWrapper from '../../components/GlobalWrapper';
 import {
   clearButlerSearchFilter,
   getAllOrder,
-  updateBulterOrderDeliveryBoy,
   updateButlerOrderEndDate,
   updateButlerOrderPage,
   updateButlerOrderSearchKey,
@@ -90,11 +89,6 @@ export default function ButlerOrderList() {
 
       case 'orderSearchKey':
         dispatch(updateButlerOrderSearchKey(payload));
-        getOrderLIst(true);
-        break;
-
-      case 'deliveryBoy':
-        dispatch(updateBulterOrderDeliveryBoy(payload));
         getOrderLIst(true);
         break;
 
@@ -191,7 +185,7 @@ export default function ButlerOrderList() {
                 </Box>
               </Tooltip>
               {/* order deliveryboy */}
-              <Tooltip title="Search Delivery Boy">
+              {/* <Tooltip title="Search Delivery Boy">
                 <Box>
                   <FilterSearch
                     value={deliveryBoy}
@@ -209,19 +203,27 @@ export default function ButlerOrderList() {
                     }}
                   />
                 </Box>
-              </Tooltip>
+              </Tooltip> */}
               {/* clear filter */}
               <Tooltip title="Clear Filter">
-                <FilterButton
-                  label="Clear"
-                  onClick={() => {
-                    updateOrderList('clearFilter');
-                  }}
-                />
+                <Box>
+                  <FilterButton
+                    label="Clear"
+                    onClick={() => {
+                      updateOrderList('clearFilter');
+                    }}
+                  />
+                </Box>
               </Tooltip>
             </Stack>
             <Box sx={{ minHeight: 'calc(100% - 308px)' }}>
-              <ButlerOrderTable orders={orders} loading={loading} />
+              <ButlerOrderTable
+                orders={orders}
+                loading={loading}
+                onRowClick={() => {
+                  console.log('triggerd');
+                }}
+              />
             </Box>
             <Box
               sx={{
