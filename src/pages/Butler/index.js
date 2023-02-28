@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
 // third pary
-import { Box, Stack, Tooltip, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Stack, Tooltip, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -50,8 +50,12 @@ export default function ButlerOrderList() {
   const { sortByKey, orders, loading, startDate, endDate, typeKey, orderSearchKey, page, paging, deliveryBoy } =
     useSelector((state) => state.butlerReducer);
 
+  // theme
+  const theme = useTheme();
+
   // eslint-disable-next-line no-unused-vars
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   // update page
   const updatePage = (newPage) => {
@@ -71,31 +75,37 @@ export default function ButlerOrderList() {
       case 'sortByKey':
         dispatch(updateButlerOrderSortByKey(payload));
         getOrderLIst(true);
+        setIsFilterApplied(true);
         break;
 
       case 'typeKey':
         dispatch(updateButlerOrderType(payload));
         getOrderLIst(true);
+        setIsFilterApplied(true);
         break;
 
       case 'startDate':
         dispatch(updateButlerOrderStartDate(payload));
         getOrderLIst(true);
+        setIsFilterApplied(true);
         break;
 
       case 'endDate':
         dispatch(updateButlerOrderEndDate(payload));
         getOrderLIst(true);
+        setIsFilterApplied(true);
         break;
 
       case 'orderSearchKey':
         dispatch(updateButlerOrderSearchKey(payload));
         getOrderLIst(true);
+        setIsFilterApplied(true);
         break;
 
       case 'clearFilter':
         dispatch(clearButlerSearchFilter());
         getOrderLIst(true);
+        setIsFilterApplied(false);
         break;
 
       case 'refresh':
@@ -193,6 +203,9 @@ export default function ButlerOrderList() {
                     label="Clear"
                     onClick={() => {
                       updateOrderList('clearFilter');
+                    }}
+                    sx={{
+                      background: `${isFilterApplied ? theme.palette.grey[400] : theme.palette.grey[200]}`,
                     }}
                   />
                 </Box>

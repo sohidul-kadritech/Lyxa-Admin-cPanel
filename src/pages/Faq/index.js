@@ -61,6 +61,7 @@ export default function Faq() {
 
   // filters
   const [type, setType] = useState('');
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   // faq validation
   const faqValidation = (item) => {
@@ -226,6 +227,7 @@ export default function Faq() {
                           value={type}
                           onChange={(e) => {
                             setType(e.target.value);
+                            setIsFilterApplied(true);
                           }}
                         />
                       </Box>
@@ -234,8 +236,12 @@ export default function Faq() {
                       <Box>
                         <FilterButton
                           label="Clear"
+                          sx={{
+                            background: `${isFilterApplied ? theme.palette.grey[400] : theme.palette.grey[200]}`,
+                          }}
                           onClick={() => {
                             setType('');
+                            setIsFilterApplied(false);
                           }}
                         />
                       </Box>
