@@ -157,32 +157,6 @@ function ButlerOrderDetails() {
     }
   }, [id]);
 
-  const calProductAmount = (product) => {
-    if (product.selectedAttributes.length > 0) {
-      let totalPrice = 0;
-      // eslint-disable-next-line array-callback-return
-      product.selectedAttributes.map((arr) => {
-        // eslint-disable-next-line no-return-assign, no-param-reassign, no-unsafe-optional-chaining
-        const itemPrice = arr?.selectedItems.reduce((arr, item) => (arr += item?.extraPrice), 0);
-
-        totalPrice += itemPrice;
-      });
-
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      return totalPrice + product?.productPrice;
-    }
-    return product?.productPrice;
-  };
-
-  // GET ATTRIBUTE
-  // eslint-disable-next-line consistent-return
-  const getProductAttribute = (attributes) => {
-    if (attributes.length > 0) {
-      const attributeName = attributes.map((att) => att?.name);
-      return attributeName;
-    }
-  };
-
   // GENEREATE ORDER PDF
   const downloadPdf = () => {
     const unit = 'pt';
@@ -194,38 +168,43 @@ function ButlerOrderDetails() {
     doc.setFontSize(14);
 
     const title = 'Order Informations';
-    const username = `Shop Name : ${order?.shop?.shopName}. `;
-    const price = `Price : ${order?.summary?.totalAmount} ${currency}.`;
-    const address = `Address : ${order?.dropOffLocation?.address}.`;
-    const paymentMethod = `Payment Method : ${order?.paymentMethod} ${order?.selectPos !== 'no' ? '(Pos)' : ''}`;
 
+    const orderCharge = `Order Charge: ${order?.summary?.totalAmount} ${currency}.`;
+    const vat = `Order Vat: ${order?.summary?.vat}`;
+    const orderType = `Order Type: ${order.orderType === 'purchase_delivery' ? 'Purchase Delivery' : 'Only Delivery'}`;
+    const address = `Address: ${order?.dropOffLocation?.address}.`;
     const orderTime = `Order Time : ${new Date(order?.createdAt).toLocaleString()}`;
 
-    const headers = [['Product', 'Attribute', 'Type', 'Quantity', `Discount(${currency})`, `Total Price(${currency})`]];
     const marginLeft = 40;
+    const headers = [['Product', 'Price', 'Quantity', 'Total']];
 
-    const productData = order?.productsDetails.map((item) => [
+    const productData = order?.products?.map((item) => [
       item?.productName,
-      getProductAttribute(item?.selectedAttributes) ?? '',
-      item?.product?.type,
-      item?.productQuantity,
-      item?.discount ?? 0,
-      calProductAmount(item),
+      item?.perProductPrice,
+      item?.quantity,
+      item?.totalProductAmount,
     ]);
 
     const content = {
-      startY: 170,
+      startY: 190,
       head: headers,
       body: productData,
     };
 
     doc.text(title, 220, 30);
-    doc.text(username, marginLeft, 60);
-    doc.text(price, marginLeft, 80);
-    doc.text(address, marginLeft, 100);
-    doc.text(paymentMethod, marginLeft, 120);
+    doc.text(orderCharge, marginLeft, 80);
+    doc.text(vat, marginLeft, 100);
+    doc.text(orderType, marginLeft, 120);
     doc.text(orderTime, marginLeft, 140);
-    doc.autoTable(content);
+    doc.text(address, marginLeft, 160);
+
+    if (order?.orderType === 'purchase_delivery') {
+      doc.autoTable(content);
+    } else {
+      const itemDescription = `Product Description: ${order?.itemDescription}`;
+      doc.text(itemDescription, marginLeft, 180);
+    }
+
     doc.save(`${order.orderId}.pdf`);
   };
 
@@ -385,10 +364,6 @@ function ButlerOrderDetails() {
                     {order?.orderType === 'purchase_delivery' && (
                       <SummaryInfo title="Estimated Product Amount" value={order?.summary?.productAmount} />
                     )}
-                    {/* <SummaryInfo
-                      title="Discount"
-                      value={order?.summary?.deliveryFee === 0 ? 'Free Delivery' : order?.products[0]?.totalDiscount}
-                    /> */}
                     <SummaryInfo title="VAT" value={order?.summary?.vat} />
                     <SummaryInfo title="Total Amount" value={order?.summary?.totalAmount + order?.summary?.vat} />
                   </Summery>
@@ -443,12 +418,7 @@ function ButlerOrderDetails() {
                 Order Amount Details
               </h5>
               <Summery>
-                {/* <SummaryInfo title="Shop Profit" value={order?.sellerEarnings} /> */}
                 <SummaryInfo title="Rider Profit" value={order?.deliveryBoyFee} />
-                {/* <SummaryInfo title="Lyxa Delivery Profit" value={order?.dropCharge?.dropChargeFromDelivery} /> */}
-                {/* <SummaryInfo title="Lyxa Order Profit" value={order?.dropCharge?.dropChargeFromOrder} /> */}
-                {/* <SummaryInfo title="Shop VAT" value={order?.vatAmount?.vatForShop} /> */}
-                {/* <SummaryInfo title="Lyxa VAT" value={order?.vatAmount?.vatForAdmin} /> */}
                 <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge} />
               </Summery>
             </CardBody>
@@ -589,7 +559,7 @@ function ButlerOrderDetails() {
                 <Table id="tech-companies-1" className="table  table-hover text-center">
                   <Thead>
                     <Tr>
-                      <Th>Product</Th>
+                      <Th class="text-start">Product</Th>
                       <Th>Price</Th>
                       <Th>Quantity</Th>
                       <Th>Total</Th>
