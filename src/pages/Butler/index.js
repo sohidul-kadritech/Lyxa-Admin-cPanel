@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // prodject import
 import ReplayIcon from '@mui/icons-material/Replay';
+import { useHistory } from 'react-router-dom';
 import { butlerOrderStatusOptionsAll, sortByOptions } from '../../assets/staticData';
 import ButlerOrderTable from '../../components/ButlerOrderTable';
 import AppPagination from '../../components/Common/AppPagination2';
@@ -45,6 +46,7 @@ const delay = 200;
 
 export default function ButlerOrderList() {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   // eslint-disable-next-line no-unused-vars
   const { sortByKey, orders, loading, startDate, endDate, typeKey, orderSearchKey, page, paging, deliveryBoy } =
@@ -227,8 +229,8 @@ export default function ButlerOrderList() {
               <ButlerOrderTable
                 orders={orders}
                 loading={loading}
-                onRowClick={() => {
-                  console.log('triggerd');
+                onRowClick={(params) => {
+                  history.push(`list/order-details/${params?.row?._id}`);
                 }}
               />
             </Box>

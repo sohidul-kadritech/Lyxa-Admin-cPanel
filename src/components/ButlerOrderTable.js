@@ -3,7 +3,6 @@
 // third party
 import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 // project import
 import TableLoader from './Common/TableLoader';
 import StyledTable from './StyledTable';
@@ -37,9 +36,7 @@ const getOrderStatus = (statusName) => {
   }
 };
 
-export default function ButlerOrderTable({ orders, loading }) {
-  const history = useHistory();
-
+export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const { account_type } = useSelector((store) => store.Login.admin);
 
@@ -183,7 +180,9 @@ export default function ButlerOrderTable({ orders, loading }) {
         getRowId={(row) => row?._id}
         rowHeight={71}
         onRowClick={(params) => {
-          history.push(`list/order-details/${params?.row?._id}`);
+          if (onRowClick) {
+            onRowClick(params);
+          }
         }}
         components={{
           NoRowsOverlay: () => (

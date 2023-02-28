@@ -40,7 +40,7 @@ export const adminMenuItem = [
       {
         icon: 'fas fa-cart-plus',
         name: 'Cancelled Orders',
-        link: '/orders/refused',
+        link: '/butler/list/canceled',
         isSubmenu: false,
       },
     ],
