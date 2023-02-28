@@ -22,6 +22,7 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (e) => {
+    e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
 
@@ -41,7 +42,9 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
               <MenuItem
                 key={menu}
                 value={menu}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log('dslfaksdj;');
                   handleMenuClick(menu);
                   handleClose();
                 }}

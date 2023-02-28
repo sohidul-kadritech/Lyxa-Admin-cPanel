@@ -1,8 +1,10 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
+// third party
 import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+// project import
 import TableLoader from './Common/TableLoader';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
@@ -42,7 +44,7 @@ export default function ButlerOrderTable({ orders, loading }) {
   const { account_type } = useSelector((store) => store.Login.admin);
 
   const getThreedotMenuOptions = (orderStatus) => {
-    const options = ['Details'];
+    const options = [];
     const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
 
     if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
@@ -58,8 +60,8 @@ export default function ButlerOrderTable({ orders, loading }) {
   };
 
   const threeDotHandler = (menu, order) => {
-    if (menu === 'Details') {
-      history.push(`/butler/list/order-details/${order?._id}`);
+    if (menu === 'Flag') {
+      console.log(order);
     }
   };
 
@@ -69,8 +71,7 @@ export default function ButlerOrderTable({ orders, loading }) {
       id: 1,
       headerName: 'Customer',
       field: 'user',
-      minWidth: 300,
-      flex: 1,
+      flex: 2,
       sortable: false,
       renderCell: (params) => (
         <Stack direction="row" spacing={3} alignItems="center">
@@ -95,7 +96,7 @@ export default function ButlerOrderTable({ orders, loading }) {
       headerName: 'Order Date',
       field: 'createdAt',
       sortable: false,
-      minWidth: 250,
+      flex: 1,
       align: 'center',
       headerAlign: 'center',
       renderCell: (params) => (
@@ -110,7 +111,7 @@ export default function ButlerOrderTable({ orders, loading }) {
       headerName: `Amount (${currency})`,
       sortable: false,
       field: 'summary',
-      minWidth: 250,
+      flex: 1,
       align: 'center',
       headerAlign: 'center',
       renderCell: (params) => (
@@ -121,7 +122,7 @@ export default function ButlerOrderTable({ orders, loading }) {
       id: 4,
       headerName: 'Payment method',
       sortable: false,
-      minWidth: 250,
+      flex: 1,
       field: 'paymentMethod',
       align: 'center',
       headerAlign: 'center',
@@ -136,7 +137,7 @@ export default function ButlerOrderTable({ orders, loading }) {
       headerName: 'Order Status',
       sortable: false,
       field: 'orderStatus',
-      minWidth: 250,
+      flex: 1,
       align: 'center',
       headerAlign: 'center',
       renderCell: (params) => {
@@ -154,7 +155,7 @@ export default function ButlerOrderTable({ orders, loading }) {
       id: 6,
       headerName: 'Action',
       sortable: false,
-      minWidth: 200,
+      flex: 1,
       field: 'action',
       align: 'right',
       headerAlign: 'right',
@@ -174,12 +175,20 @@ export default function ButlerOrderTable({ orders, loading }) {
       <StyledTable
         columns={columns}
         rows={orders || []}
+        sx={{
+          '& .MuiDataGrid-cell': {
+            cursor: 'pointer',
+          },
+        }}
         getRowId={(row) => row?._id}
         rowHeight={71}
+        onRowClick={(params) => {
+          history.push(`list/order-details/${params?.row?._id}`);
+        }}
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? '' : 'No Q&A found'}
+              {loading ? '' : 'No Order found'}
             </Stack>
           ),
         }}
