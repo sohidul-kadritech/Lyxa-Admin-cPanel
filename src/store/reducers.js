@@ -17,6 +17,7 @@ import appWalletReducer from './appWallet/appWalletReducer';
 import bannerReducer from './banner/bannerReducer';
 import categoryReducer from './Category/categoryReducer';
 import chatReducer from './chat/chatReducer';
+import chatReasonReducer from './ChatReason/chatResonReducer';
 import dashboardReducer from './Dashboard/dashboardReducer';
 import dealReducer from './Deal/dealReducer';
 import deliveryManReducer from './DeliveryMan/DeliveryManReducer';
@@ -72,6 +73,7 @@ const rootReducer = combineReducers({
   vatReducer,
   faqReducer,
   butlerReducer,
+  chatReasonReducer,
 });
 
 export default rootReducer;

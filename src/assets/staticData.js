@@ -16,6 +16,11 @@ export const faqType = [
   { label: 'Rider', value: 'deliveryBoy' },
 ];
 
+export const chatReasonType = [
+  { label: 'Account Support', value: 'accountSupport' },
+  { label: 'Order Support', value: 'orderSupport' },
+];
+
 export const riderSortByOptions = [
   { label: 'Order Number(+)', value: 'asc' },
   { label: 'Order Number(-)', value: 'desc' },

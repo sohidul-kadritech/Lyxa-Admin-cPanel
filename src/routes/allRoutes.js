@@ -22,6 +22,7 @@ import PercentageSetting from '../pages/AppWallet/PercentageSetting/PercentageSe
 import SellerTransactions from '../pages/AppWallet/SellerTransactions/SellerTransactions';
 import ButlerCancelOrders from '../pages/Butler/ButlerCanceledOrders';
 import ButlerOrderDetails from '../pages/Butler/ButlerOrderDetails';
+import ChatReasons from '../pages/ChatReasons';
 import DatabaseSettings from '../pages/DatabaseSettings/DatabaseSettings';
 import DealsAdd from '../pages/Deals/DealsAdd/DealsAdd';
 import DealsList from '../pages/Deals/DealsList/DealsList';
@@ -193,6 +194,8 @@ const userRoutes = [
   },
   // FAQ
   { path: '/faq', component: Faq },
+  // Chat Reason
+  { path: '/chat-reasons', component: ChatReasons },
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },

@@ -45,6 +45,9 @@ export const updateFaq = (faq) => async (dispatch, getState) => {
   const state = getState();
   const { faq: storedList } = state.faqReducer;
 
+  // faq id
+  faq.id = faq?._id;
+
   dispatch({
     type: actionTypes.UPDATE_FAQ_REQUEST_SEND,
   });
@@ -57,7 +60,7 @@ export const updateFaq = (faq) => async (dispatch, getState) => {
     if (data?.status) {
       // update list locally
       const updatedList = storedList.filter((item) => item._id !== faq._id);
-      updatedList.push(faq);
+      updatedList.push(data?.data);
 
       dispatch({
         type: actionTypes.UPDATE_FAQ_REQUEST_SUCCESS,

@@ -289,6 +289,12 @@ export const adminMenuItem = [
     ],
   },
   {
+    name: 'Chat Reasons',
+    icon: 'fas fa-comment-dollar',
+    link: '/chat-reasons',
+    isSubmenu: false,
+  },
+  {
     name: 'Marketing',
     icon: 'fas fa-cart-plus',
     link: '/marketing',

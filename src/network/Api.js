@@ -263,3 +263,9 @@ export const GET_FAQ = `${ADMIN_ENDPOINT}/faq`;
 export const ADD_FAQ = `${ADMIN_ENDPOINT}/faq/add`;
 export const UPDATE_FAQ = `${ADMIN_ENDPOINT}/faq/update`;
 export const DELETE_FAQ = `${ADMIN_ENDPOINT}/faq/delete`;
+
+// CHAT REASON
+export const GET_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason`;
+export const ADD_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/add`;
+export const UPDATE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/edit`;
+export const DELETE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/delete`;
