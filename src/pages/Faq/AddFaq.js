@@ -1,5 +1,5 @@
 // mui
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 
 // thrid party
 import { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ const initialFaq = {
   type: 'user',
   question: '',
   ans: '',
+  status: 'active',
 };
 
 export default function AddFaq({ submitHandler, isEdit, faq }) {
@@ -33,6 +34,8 @@ export default function AddFaq({ submitHandler, isEdit, faq }) {
     }
   }, [faq]);
 
+  console.log(currentFaq.status);
+
   return (
     <Stack spacing={6}>
       <Stack direction="row" alignItems="center" spacing={5}>
@@ -46,6 +49,13 @@ export default function AddFaq({ submitHandler, isEdit, faq }) {
           }}
         />
       </Stack>
+      <FormControl className={`${isEdit ? '' : 'd-none'}`}>
+        <InputLabel>Status</InputLabel>
+        <Select label="Status" value={currentFaq.status || ''} name="status" onChange={changeHandler}>
+          <MenuItem value="active">Active</MenuItem>
+          <MenuItem value="inactive">Inactive</MenuItem>
+        </Select>
+      </FormControl>
       <TextField
         label="Question"
         name="question"

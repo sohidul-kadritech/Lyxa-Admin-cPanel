@@ -4,6 +4,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import {
   Box,
   Button,
+  Chip,
   Paper,
   Stack,
   Tab,
@@ -32,7 +33,7 @@ import TabPanel from '../../components/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import { successMsg } from '../../helpers/successMsg';
 import { addFaq, deleteFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
-import AddFaq from './addFaq';
+import AddFaq from './AddFaq';
 
 // breadcrumb items
 const breadcrumbItems = [
@@ -44,6 +45,12 @@ const breadcrumbItems = [
     to: '/faq',
     label: 'FAQ',
   },
+];
+
+// select status
+const statusOptions = [
+  { label: 'Active', value: 'active' },
+  { label: 'Inactive', value: 'inactive' },
 ];
 
 export default function Faq() {
@@ -61,6 +68,7 @@ export default function Faq() {
 
   // filters
   const [type, setType] = useState('');
+  const [status, setStatus] = useState('');
   const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   // faq validation
@@ -158,6 +166,20 @@ export default function Faq() {
     },
     {
       id: 3,
+      headerName: 'Status',
+      field: 'status',
+      sortable: false,
+      minWidth: 200,
+      renderCell: ({ value }) => (
+        <Chip
+          label={value === 'active' ? 'Active' : 'Inactive'}
+          color={value === 'active' ? 'success' : 'primary'}
+          variant="contained"
+        />
+      ),
+    },
+    {
+      id: 4,
       field: 'createdAt',
       headerName: 'Created',
       minWidth: 200,
@@ -170,7 +192,7 @@ export default function Faq() {
       },
     },
     {
-      id: 4,
+      id: 5,
       field: 'action',
       headerName: 'Action',
       minWidth: 200,
@@ -232,6 +254,19 @@ export default function Faq() {
                         />
                       </Box>
                     </Tooltip>
+                    <Tooltip title="Select Type">
+                      <Box>
+                        <FilterSelect
+                          items={statusOptions}
+                          placeholder="Status"
+                          value={status}
+                          onChange={(e) => {
+                            setStatus(e.target.value);
+                            setIsFilterApplied(true);
+                          }}
+                        />
+                      </Box>
+                    </Tooltip>
                     <Tooltip title="Clear Filter">
                       <Box>
                         <FilterButton
@@ -241,6 +276,7 @@ export default function Faq() {
                           }}
                           onClick={() => {
                             setType('');
+                            setStatus('');
                             setIsFilterApplied(false);
                           }}
                         />
@@ -272,7 +308,9 @@ export default function Faq() {
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
                   <StyledTable
                     columns={columns}
-                    rows={faqData.filter((item) => item.type === type || type === '')}
+                    rows={faqData
+                      .filter((item) => item.type === type || type === '')
+                      .filter((item) => item?.status === status || status === '')}
                     getRowId={(params) => params?._id}
                     rowHeight={60}
                     components={{
