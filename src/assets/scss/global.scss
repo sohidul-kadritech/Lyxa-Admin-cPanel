@@ -237,3 +237,16 @@ body {
   font-family: 'Open Sans', sans-serif;
   color: #000;
 }
+
+@keyframes refreshIconSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.refresh-animate .MuiButton-endIcon {
+  animation: refreshIconSpin 500ms linear infinite forwards;
+}

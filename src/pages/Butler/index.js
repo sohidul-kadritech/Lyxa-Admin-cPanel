@@ -216,10 +216,17 @@ export default function ButlerOrderList() {
               <Tooltip title="Refresh">
                 <Box>
                   <FilterButton
+                    className={`${loading === true ? 'refresh-animate' : ''}`}
                     label="Refresh"
                     endIcon={<ReplayIcon />}
                     onClick={() => {
                       updateOrderList('refresh');
+                    }}
+                    sx={{
+                      gap: '8px',
+                      '& .MuiButton-endIcon': {
+                        marginLeft: '0px',
+                      },
                     }}
                   />
                 </Box>

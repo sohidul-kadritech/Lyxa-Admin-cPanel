@@ -290,9 +290,16 @@ export default function Faq() {
                       <Box>
                         <FilterButton
                           label="Refresh"
+                          className={`${loading === true ? 'refresh-animate' : ''}`}
                           endIcon={<ReplayIcon />}
                           onClick={() => {
                             callGetAllFaq();
+                          }}
+                          sx={{
+                            gap: '8px',
+                            '& .MuiButton-endIcon': {
+                              marginLeft: '0px',
+                            },
                           }}
                         />
                       </Box>
