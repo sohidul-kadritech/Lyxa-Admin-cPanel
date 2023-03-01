@@ -217,6 +217,11 @@ export const ACTIVE_DEIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-nearby-delivery-
 // BUTLER
 export const BUTLER_ORDER_LIST = `${ADMIN_ENDPOINT}/butler`;
 export const BUTLER_SINGLE_ORDER = `${ADMIN_ENDPOINT}/butler/single-details`;
+export const BUTLER_ORDER_UPDATE_STATUS = `${ADMIN_ENDPOINT}/butler/update-order-status`;
+export const BUTLER_ORDER_ADD_FLAG = `${ADMIN_ENDPOINT}/butler/flag`;
+export const BUTLER_ORDER_EDIT_FLAG = `${ADMIN_ENDPOINT}/butler/flag/edit`;
+export const BUTLER_ORDER_DELETE_FLAG = `${ADMIN_ENDPOINT}/butler/flag/delete`;
+export const NEAR_BY_BUTLERS_FOR_ORDER = `${ADMIN_ENDPOINT}/butler/get-nearby-delivery-boy-order`;
 
 // CHAT
 export const CHAT_LIST = `${ADMIN_ENDPOINT}/user-chat-request`;

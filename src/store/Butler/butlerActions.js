@@ -1,5 +1,6 @@
 /* eslint-disable default-param-last */
-import { BUTLER_ORDER_LIST } from '../../network/Api';
+import { successMsg } from '../../helpers/successMsg';
+import { BUTLER_ORDER_ADD_FLAG, BUTLER_ORDER_LIST, BUTLER_ORDER_UPDATE_STATUS } from '../../network/Api';
 import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType';
 
@@ -51,79 +52,71 @@ export const getAllOrder =
 
 // ORDER UPDATE STATUS
 
-// export const orderUpdateStatus = (values, socket) => async (dispatch) => {
-//   try {
-//     dispatch({
-//       type: actionType.ORDER_UPDATE_STATUS_REQUEST_SEND,
-//     });
+export const updateButlerOrderStatus = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_SEND,
+    });
 
-//     const { data } = await requestApi().request(ORDRE_UPDATE_STATUS, {
-//       method: 'POST',
-//       data: values,
-//     });
+    const { data } = await requestApi().request(BUTLER_ORDER_UPDATE_STATUS, {
+      method: 'POST',
+      data: values,
+    });
 
-//     if (data.status) {
-//       successMsg(data.message, 'success');
-//       dispatch({
-//         type: actionType.ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
-//         payload: data,
-//       });
-
-//       if (values?.orderStatus === 'accepted_delivery_boy') {
-//         socket.emit('adminAcceptedOrder', { orderId: values?.orderId });
-//       } else {
-//         socket.emit('updateOrder', {
-//           orderId: values?.orderId,
-//         });
-//       }
-//     } else {
-//       successMsg(data.error, 'error');
-//       dispatch({
-//         type: actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL,
-//         payload: data.error,
-//       });
-//     }
-//   } catch (error) {
-//     dispatch({
-//       type: actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL,
-//       payload: error.message,
-//     });
-//   }
-// };
+    if (data.status) {
+      successMsg(data.message, 'success');
+      dispatch({
+        type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
+        payload: data,
+      });
+    } else {
+      successMsg(data.error, 'error');
+      dispatch({
+        type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 // // ORDER FLAG
 
-// export const sentOrderFlag = (values) => async (dispatch) => {
-//   try {
-//     dispatch({
-//       type: actionType.SEND_ORDER_FLAG_REQUEST_SEND,
-//     });
+export const sentOrderFlag = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.SEND_ORDER_FLAG_REQUEST_SEND,
+    });
 
-//     const { data } = await requestApi().request(SEND_ORDER_FLAG, {
-//       method: 'POST',
-//       data: values,
-//     });
+    const { data } = await requestApi().request(BUTLER_ORDER_ADD_FLAG, {
+      method: 'POST',
+      data: values,
+    });
 
-//     if (data.status) {
-//       successMsg(data.message, 'success');
-//       dispatch({
-//         type: actionType.SEND_ORDER_FLAG_REQUEST_SUCCESS,
-//         payload: data,
-//       });
-//     } else {
-//       successMsg(data.error, 'error');
-//       dispatch({
-//         type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
-//         payload: data.error,
-//       });
-//     }
-//   } catch (error) {
-//     dispatch({
-//       type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
-//       payload: error.message,
-//     });
-//   }
-// };
+    if (data.status) {
+      successMsg(data.message, 'success');
+      dispatch({
+        type: actionType.SEND_ORDER_FLAG_REQUEST_SUCCESS,
+        payload: data,
+      });
+    } else {
+      successMsg(data.error, 'error');
+      dispatch({
+        type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
 // // DELETE ORDER FLAG
 

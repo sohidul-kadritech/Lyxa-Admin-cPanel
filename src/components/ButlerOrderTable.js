@@ -1,9 +1,31 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
 // third party
-import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import {
+  Autocomplete,
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { butlerOrderStatusOptionsForAdminUpdate } from '../assets/staticData';
+import { successMsg } from '../helpers/successMsg';
+
 // project import
+import { NEAR_BY_BUTLERS_FOR_ORDER } from '../network/Api';
+import requestApi from '../network/httpRequest';
+import { updateButlerOrderStatus } from '../store/Butler/butlerActions';
 import TableLoader from './Common/TableLoader';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
@@ -36,29 +58,89 @@ const getOrderStatus = (statusName) => {
   }
 };
 
+// fetch nearby deliveryboys
+const fetchNearByButlers = async (orderId) => {
+  try {
+    const { data } = await requestApi().request(NEAR_BY_BUTLERS_FOR_ORDER, {
+      method: 'GET',
+      params: {
+        orderId,
+      },
+    });
+
+    if (data?.status) {
+      return data?.data?.nearByDeliveryBoys;
+    }
+    successMsg(data?.message || 'No butlers found');
+    return [];
+  } catch (error) {
+    console.log(error);
+    successMsg(error?.message || 'No butlers found');
+    return [];
+  }
+};
+
 export default function ButlerOrderTable({ orders, loading, onRowClick }) {
+  const dispatch = useDispatch();
+
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  // eslint-disable-next-line no-unused-vars
   const { account_type } = useSelector((store) => store.Login.admin);
 
-  const getThreedotMenuOptions = (orderStatus) => {
-    const options = [];
-    const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+  // update order status
+  const [updateStatusModal, setUpdateStatusModal] = useState(false);
+  const [newOrderStatus, setOrderStatus] = useState('');
+  const [currentOrder, setCurrentOrder] = useState({});
+  const [nearByBulters, setNearByBulters] = useState([]);
+  const [nearByButlersIsLoading, setNearByButlersIsLoading] = useState(false);
+  const [currentButler, setCurrentButler] = useState({});
+  const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
 
-    if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
-      options.push('Update Status');
-      options.push('Cancel Order');
+  const handleOrderStatusChange = async (newStatus) => {
+    setOrderStatus(newStatus);
+    if (newStatus === 'accepted_delivery_boy') {
+      try {
+        setNearByButlersIsLoading(true);
+        const data = await fetchNearByButlers(currentOrder?._id);
+        setNearByBulters(data);
+        setNearByButlersIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
-
-    if (account_type === 'admin') {
-      options.push('Flag');
-    }
-
-    return options;
   };
 
+  const updateStatus = () => {
+    if (newOrderStatus === '') {
+      successMsg('Please select status');
+      return;
+    }
+
+    dispatch(updateButlerOrderStatus({}));
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const getThreedotMenuOptions = (orderStatus) =>
+    // const options = [];
+    // const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+
+    // if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+    //   options.push('Update Status');
+    //   options.push('Cancel Order');
+    // }
+
+    // if (account_type === 'admin') {
+    //   options.push('Flag');
+    // }
+
+    ['Update Status'];
   const threeDotHandler = (menu, order) => {
     if (menu === 'Flag') {
-      console.log(order);
+      setCurrentOrder(order);
+    }
+    if (menu === 'Update Status') {
+      setCurrentOrder(order);
+      setUpdateStatusModal(true);
     }
   };
 
@@ -199,6 +281,83 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       />
       {/* loading */}
       {loading && <TableLoader />}
+      {/* update order status modal */}
+      <Modal
+        open={updateStatusModal}
+        sx={{
+          display: 'inline-flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onClose={() => {
+          setUpdateStatusModal(false);
+          setOrderStatus('');
+        }}
+      >
+        <Paper
+          sx={{
+            minWidth: 'max(35vw, 450px)',
+          }}
+        >
+          <Box padding={5}>
+            <Typography variant="h3" mb={8}>
+              Update Order Status
+            </Typography>
+            <Stack spacing={6}>
+              <FormControl>
+                <InputLabel>Select Status</InputLabel>
+                <Select
+                  value={newOrderStatus}
+                  label="Select Status"
+                  onChange={(e) => {
+                    handleOrderStatusChange(e.target.value);
+                  }}
+                >
+                  {butlerOrderStatusOptionsForAdminUpdate.map((item) => (
+                    <MenuItem key={item.value} value={item.value}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* near by delivery boys */}
+              <Autocomplete
+                className={`${newOrderStatus === 'accepted_delivery_boy' ? '' : 'd-none'}`}
+                value={currentButler._id ? currentButler : null}
+                disabled={nearByButlersIsLoading}
+                onChange={(event, newValue) => {
+                  console.log(newValue);
+                  setCurrentButler(newValue);
+                }}
+                getOptionLabel={(option) => option.name || ''}
+                isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                inputValue={currentButlerSearchKey}
+                onInputChange={(event, newInputValue) => {
+                  setCurrentButlerSearchKey(newInputValue);
+                }}
+                options={nearByBulters}
+                sx={{ width: '100%' }}
+                renderInput={(params) => <TextField {...params} label="Select " />}
+                renderOption={(props, option) => (
+                  <Box component="li" {...props} key={option._id}>
+                    {option.name}
+                  </Box>
+                )}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                onClick={() => {
+                  updateStatus();
+                }}
+              >
+                Update
+              </Button>
+            </Stack>
+          </Box>
+        </Paper>
+      </Modal>
     </Box>
   );
 }

@@ -241,6 +241,12 @@ export const butlerOrderStatusOptionsAll = [
   { label: 'Cancelled', value: 'cancelled' },
 ];
 
+export const butlerOrderStatusOptionsForAdminUpdate = [
+  { label: 'Accepted by delivery boy', value: 'accepted_delivery_boy' },
+  { label: 'On the way', value: 'order_on_the_way' },
+  { label: 'Delivered', value: 'delivered' },
+];
+
 export const DeliveryBoyVehicleOPtions = [
   { label: 'Bike', value: 'bike' },
   { label: 'Car', value: 'car' },
