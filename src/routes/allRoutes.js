@@ -195,7 +195,7 @@ const userRoutes = [
   // FAQ
   { path: '/faq', component: Faq },
   // Chat Reason
-  { path: '/chat-reasons', component: ChatReasons },
+  { path: '/settings/support-reasons', component: ChatReasons },
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },
