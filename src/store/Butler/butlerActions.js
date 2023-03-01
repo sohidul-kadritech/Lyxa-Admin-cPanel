@@ -52,7 +52,10 @@ export const getAllOrder =
 
 // ORDER UPDATE STATUS
 
-export const updateButlerOrderStatus = (values) => async (dispatch) => {
+export const updateButlerOrderStatus = (values) => async (dispatch, getState) => {
+  const store = getState();
+  const { orders: oldList } = store.butlerReducer;
+
   try {
     dispatch({
       type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_SEND,
@@ -65,9 +68,14 @@ export const updateButlerOrderStatus = (values) => async (dispatch) => {
 
     if (data.status) {
       successMsg(data.message, 'success');
+      const updatedOrder = oldList.find((item) => item?._id === values.orderId);
+
       dispatch({
         type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
-        payload: data,
+        payload: [
+          ...oldList.filter((item) => item?._id !== values?.orderId),
+          { ...updatedOrder, orderStatus: values.orderStatus },
+        ],
       });
     } else {
       successMsg(data.error, 'error');
@@ -82,6 +90,13 @@ export const updateButlerOrderStatus = (values) => async (dispatch) => {
       payload: error.message,
     });
   }
+};
+
+export const updateButlerOrderIsUpdated = (status) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_IS_UPDATED,
+    payload: status,
+  });
 };
 
 // // ORDER FLAG

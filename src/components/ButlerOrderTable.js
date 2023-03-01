@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { butlerOrderStatusOptionsForAdminUpdate } from '../assets/staticData';
 import { successMsg } from '../helpers/successMsg';
@@ -25,7 +25,7 @@ import { successMsg } from '../helpers/successMsg';
 // project import
 import { NEAR_BY_BUTLERS_FOR_ORDER } from '../network/Api';
 import requestApi from '../network/httpRequest';
-import { updateButlerOrderStatus } from '../store/Butler/butlerActions';
+import { updateButlerOrderIsUpdated, updateButlerOrderStatus } from '../store/Butler/butlerActions';
 import TableLoader from './Common/TableLoader';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
@@ -82,6 +82,7 @@ const fetchNearByButlers = async (orderId) => {
 
 export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const dispatch = useDispatch();
+  const { isUpdated } = useSelector((store) => store.butlerReducer);
 
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   // eslint-disable-next-line no-unused-vars
@@ -115,8 +116,16 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       successMsg('Please select status');
       return;
     }
+    const data = {};
+    data.orderId = currentOrder?._id;
+    data.orderStatus = newOrderStatus;
+    data.deliveryBoy = '';
 
-    dispatch(updateButlerOrderStatus({}));
+    if (newOrderStatus === 'accepted_delivery_boy') {
+      data.deliveryBoy = currentButler?._id;
+    }
+
+    dispatch(updateButlerOrderStatus(data));
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -253,6 +262,13 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       ),
     },
   ];
+
+  useEffect(() => {
+    if (isUpdated) {
+      setUpdateStatusModal(false);
+      dispatch(updateButlerOrderIsUpdated(false));
+    }
+  }, [isUpdated]);
 
   return (
     <Box sx={{ position: 'relative' }}>

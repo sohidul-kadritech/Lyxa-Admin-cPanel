@@ -6,6 +6,7 @@ const initialState = {
   loading: false,
   error: null,
   orders: [],
+  isUpdated: false,
   status: false,
   typeKey: { label: 'All', value: 'all' },
   sortByKey: { label: 'Desc', value: 'desc' },
@@ -55,6 +56,12 @@ const butlerReducer = (state = initialState, action) => {
       };
 
     // UPDATE STATUS
+    case actionType.UPDATE_BUTLER_ORDER_IS_UPDATED:
+      return {
+        ...state,
+        isUpdated: payload,
+      };
+
     case actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_SEND:
       return {
         ...state,
@@ -68,6 +75,8 @@ const butlerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
+        orders: payload,
+        isUpdated: true,
       };
 
     case actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_FAIL:
