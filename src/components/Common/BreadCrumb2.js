@@ -12,6 +12,7 @@ const linkStyle = {
   fontWeight: '500',
   color: '#000',
   display: 'inline-block',
+  paddingBottom: '2px',
   borderBottom: '2px solid #15BFCA',
 };
 
