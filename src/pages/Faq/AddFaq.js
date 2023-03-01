@@ -5,9 +5,10 @@ import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Ty
 import { useEffect, useState } from 'react';
 
 // project import
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { faqType } from '../../assets/staticData';
 import OptionsSelect from '../../components/Form/OptionsSelect';
+import { updateFaqIsAdded, updateFaqIsUpdated } from '../../store/faq/faqActions';
 
 const initialFaq = {
   type: 'user',
@@ -16,8 +17,10 @@ const initialFaq = {
   status: 'active',
 };
 
-export default function AddFaq({ submitHandler, isEdit, faq }) {
-  const { newFaq, loading } = useSelector((store) => store.faqReducer);
+export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
+  const dispatch = useDispatch();
+
+  const { isUpdated, isAdded, loading } = useSelector((store) => store.faqReducer);
   const [currentFaq, setCurrentFaq] = useState(faq || initialFaq);
 
   const changeHandler = (event) => {
@@ -25,8 +28,16 @@ export default function AddFaq({ submitHandler, isEdit, faq }) {
   };
 
   useEffect(() => {
-    setCurrentFaq(initialFaq);
-  }, [newFaq]);
+    if (isUpdated) {
+      closeHandler();
+      dispatch(updateFaqIsUpdated(false));
+    }
+
+    if (isAdded) {
+      setCurrentFaq(initialFaq);
+      dispatch(updateFaqIsAdded(false));
+    }
+  }, [isAdded, isUpdated]);
 
   useEffect(() => {
     if (isEdit) {

@@ -369,7 +369,14 @@ export default function Faq() {
                 {/* tab bodies */}
                 <Box>
                   <TabPanel index={0} value={currentTab}>
-                    <AddFaq isEdit faq={currentFaq} submitHandler={callUpdateFaq} />
+                    <AddFaq
+                      isEdit
+                      faq={currentFaq}
+                      submitHandler={callUpdateFaq}
+                      closeHandler={() => {
+                        setIsRightBarOpen(false);
+                      }}
+                    />
                   </TabPanel>
                   <TabPanel index={1} value={currentTab}>
                     <AddFaq submitHandler={callAddFaq} />

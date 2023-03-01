@@ -161,3 +161,17 @@ export const deleteFaq = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+export const updateFaqIsUpdated = (status) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_FAQ_IS_UPDATED,
+    payload: status,
+  });
+};
+
+export const updateFaqIsAdded = (status) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_FAQ_IS_ADDED,
+    payload: status,
+  });
+};

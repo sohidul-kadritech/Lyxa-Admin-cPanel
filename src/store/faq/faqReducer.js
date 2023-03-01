@@ -5,7 +5,8 @@ const initialState = {
   loading: false,
   faq: [],
   errorMessage: '',
-  newFaq: '',
+  isAdded: false,
+  isUpdated: false,
   pagination: {
     page: 1,
     pagesize: 50,
@@ -48,6 +49,7 @@ export default function faqReducer(state = initialState, action) {
     case actionType.UPDATE_FAQ_REQUEST_SUCCESS:
       return {
         ...state,
+        isUpdated: true,
         loading: false,
         faq: payload,
       };
@@ -57,6 +59,12 @@ export default function faqReducer(state = initialState, action) {
         ...state,
         loading: false,
         errorMessage: '',
+      };
+
+    case actionType.UPDATE_FAQ_IS_UPDATED:
+      return {
+        ...state,
+        isUpdated: payload,
       };
 
     case actionType.ADD_FAQ_REQUEST_SEND:
@@ -72,6 +80,7 @@ export default function faqReducer(state = initialState, action) {
         loading: false,
         newFaq: payload?._id,
         faq: [...state.faq, payload],
+        isAdded: true,
       };
 
     case actionType.ADD_FAQ_REQUEST_FAIL:
@@ -79,6 +88,12 @@ export default function faqReducer(state = initialState, action) {
         ...state,
         loading: false,
         errorMessage: payload,
+      };
+
+    case actionType.UPDATE_FAQ_IS_ADDED:
+      return {
+        ...state,
+        isAdded: payload,
       };
 
     case actionType.DELETE_FAQ_REQUEST_SEND:
