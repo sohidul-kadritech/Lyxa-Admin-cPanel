@@ -199,7 +199,7 @@ export default function ButlerOrderList() {
                 </Box>
               </Tooltip>
               {/* clear filter */}
-              <Tooltip title="Clear Filter">
+              <Tooltip className={`${isFilterApplied ? '' : 'd-none'}`} title="Clear Filter">
                 <Box>
                   <FilterButton
                     label="Clear"

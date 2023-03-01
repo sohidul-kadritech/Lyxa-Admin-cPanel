@@ -271,7 +271,7 @@ export default function Faq() {
                         />
                       </Box>
                     </Tooltip>
-                    <Tooltip title="Clear Filter">
+                    <Tooltip className={`${isFilterApplied ? '' : 'd-none'}`} title="Clear Filter">
                       <Box>
                         <FilterButton
                           label="Clear"

@@ -277,6 +277,7 @@ export default function ChatReasons() {
                     <Tooltip title="Clear Filter">
                       <Box>
                         <FilterButton
+                          className={`${isFilterApplied ? '' : 'd-none'}`}
                           label="Clear"
                           sx={{
                             background: `${isFilterApplied ? theme.palette.grey[400] : theme.palette.grey[200]}`,
