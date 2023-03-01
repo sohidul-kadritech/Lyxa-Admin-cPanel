@@ -173,7 +173,11 @@ export default function Faq() {
       renderCell: ({ value }) => (
         <Chip
           label={value === 'active' ? 'Active' : 'Inactive'}
-          color={value === 'active' ? 'success' : 'primary'}
+          sx={
+            value === 'active'
+              ? { background: '#e1f4d0', color: '#56ca00' }
+              : { background: '#ffcfce', color: '#ff0000' }
+          }
           variant="contained"
         />
       ),

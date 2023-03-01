@@ -47,8 +47,8 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/chat-reasons',
-    label: 'Chat Reasons',
+    to: '/support-reasons',
+    label: 'Support Reasons',
   },
 ];
 
@@ -176,7 +176,11 @@ export default function ChatReasons() {
       renderCell: ({ value }) => (
         <Chip
           label={value === 'active' ? 'Active' : 'Inactive'}
-          color={value === 'active' ? 'success' : 'primary'}
+          sx={
+            value === 'active'
+              ? { background: '#e1f4d0', color: '#56ca00' }
+              : { background: '#ffcfce', color: '#ff0000' }
+          }
           variant="contained"
         />
       ),

@@ -143,6 +143,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
           <Chip
             label={status}
             color={status === 'Cancelled' || status === 'Refused' ? 'primary' : 'success'}
+            sx={
+              status === 'Cancelled' || status === 'Refused'
+                ? { background: '#ffcfce', color: '#ff0000' }
+                : { background: '#e1f4d0', color: '#56ca00' }
+            }
             variant="contained"
           />
         );
