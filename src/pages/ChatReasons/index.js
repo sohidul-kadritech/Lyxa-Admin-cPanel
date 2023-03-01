@@ -165,7 +165,7 @@ export default function ChatReasons() {
       field: 'type',
       sortable: false,
       minWidth: 200,
-      renderCell: (params) => <span className="text-capitalize">{params?.value}</span>,
+      renderCell: ({ value }) => <span>{value === 'accountSupport' ? 'Account Support' : 'Order Support'}</span>,
     },
     {
       id: 3,
@@ -372,10 +372,22 @@ export default function ChatReasons() {
                 {/* tab bodies */}
                 <Box>
                   <TabPanel index={0} value={currentTab}>
-                    <AddFaq isEdit chatReason={currentChatReason} submitHandler={callUpdateFaq} />
+                    <AddFaq
+                      isEdit
+                      chatReason={currentChatReason}
+                      submitHandler={callUpdateFaq}
+                      closeHandler={() => {
+                        setIsRightBarOpen(false);
+                      }}
+                    />
                   </TabPanel>
                   <TabPanel index={1} value={currentTab}>
-                    <AddFaq submitHandler={callAddFaq} />
+                    <AddFaq
+                      submitHandler={callAddFaq}
+                      closeHandler={() => {
+                        setIsRightBarOpen(false);
+                      }}
+                    />
                   </TabPanel>
                 </Box>
               </Paper>

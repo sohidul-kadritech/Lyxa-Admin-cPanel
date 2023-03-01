@@ -5,7 +5,8 @@ const initialState = {
   loading: false,
   chatReasons: [],
   errorMessage: '',
-  newFaq: '',
+  isAdded: false,
+  isUpdated: false,
   pagination: {
     page: 1,
     pagesize: 50,
@@ -48,6 +49,7 @@ export default function chatReasonReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
+        isUpdated: true,
         chatReasons: payload,
       };
 
@@ -69,7 +71,7 @@ export default function chatReasonReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        newFaq: payload?._id,
+        isAdded: true,
         chatReasons: [...state.chatReasons, payload],
       };
 
@@ -100,6 +102,18 @@ export default function chatReasonReducer(state = initialState, action) {
         ...state,
         loading: false,
         errorMessage: payload,
+      };
+
+    case actionType.UPDATE_CHAT_REASON_IS_ADDED:
+      return {
+        ...state,
+        isAdded: payload,
+      };
+
+    case actionType.UPDATE_CHAT_REASON_IS_UPDATED:
+      return {
+        ...state,
+        isUpdated: payload,
       };
 
     default:

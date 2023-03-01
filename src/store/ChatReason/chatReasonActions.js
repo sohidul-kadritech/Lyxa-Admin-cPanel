@@ -153,3 +153,19 @@ export const deleteChatReason = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+// update is added
+export const updateChatReasonIsUpdated = (status) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_CHAT_REASON_IS_UPDATED,
+    payload: status,
+  });
+};
+
+// update is added
+export const updateChatReasonIsAdded = (status) => (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_CHAT_REASON_IS_ADDED,
+    payload: status,
+  });
+};

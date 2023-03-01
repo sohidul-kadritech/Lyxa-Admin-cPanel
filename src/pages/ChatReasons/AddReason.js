@@ -5,9 +5,10 @@ import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Ty
 import { useEffect, useState } from 'react';
 
 // project import
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { chatReasonType } from '../../assets/staticData';
 import OptionsSelect from '../../components/Form/OptionsSelect';
+import { updateChatReasonIsAdded, updateChatReasonIsUpdated } from '../../store/ChatReason/chatReasonActions';
 
 const initialChatReasons = {
   type: 'accountSupport',
@@ -15,8 +16,10 @@ const initialChatReasons = {
   answer: '',
 };
 
-export default function AddChatReason({ submitHandler, isEdit, chatReason }) {
-  const { newFaq, loading } = useSelector((store) => store.chatReasonReducer);
+export default function AddChatReason({ submitHandler, isEdit, chatReason, closeHandler }) {
+  const dispatch = useDispatch();
+
+  const { isAdded, isUpdated, loading } = useSelector((store) => store.chatReasonReducer);
   const [currentChatReason, setCurrentChatReason] = useState(chatReason || initialChatReasons);
 
   const changeHandler = (event) => {
@@ -24,8 +27,16 @@ export default function AddChatReason({ submitHandler, isEdit, chatReason }) {
   };
 
   useEffect(() => {
-    setCurrentChatReason(initialChatReasons);
-  }, [newFaq]);
+    if (isAdded) {
+      setCurrentChatReason(initialChatReasons);
+      dispatch(updateChatReasonIsAdded(false));
+    }
+
+    if (isUpdated) {
+      dispatch(updateChatReasonIsUpdated(false));
+      closeHandler();
+    }
+  }, [isAdded, isUpdated]);
 
   useEffect(() => {
     if (isEdit) {
