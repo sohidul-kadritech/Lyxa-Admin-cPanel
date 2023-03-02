@@ -10,6 +10,11 @@ const CardBottom = styled(Stack)(() => ({
     borderTop: `1px solid rgba(221, 91, 99, 0.2)`,
     padding: '12px 15px',
 
+    '&:hover': {
+      border: '0px',
+      borderTop: `1px solid rgba(221, 91, 99, 0.2)`,
+    },
+
     '&:first-child': {
       borderTop: '0px',
     },
@@ -22,7 +27,7 @@ const cardIconSx = {
   width: 'auto',
 };
 
-export default function MarketingTypeCard({ title, Icon, onVeiwDetails, addNew, onAddnew }) {
+export default function MarketingCard({ title, Icon, onVeiwDetails, addNew, onAddnew }) {
   return (
     <Paper
       variant="outlined"
