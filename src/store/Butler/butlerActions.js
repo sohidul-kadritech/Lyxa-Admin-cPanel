@@ -5,7 +5,7 @@ import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType';
 
 // GET ALL ORDER
-export const getAllOrder =
+export const getAllButlerOrders =
   (refresh = false) =>
   async (dispatch, getState) => {
     const store = getState();
@@ -100,11 +100,17 @@ export const updateButlerOrderIsUpdated = (status) => (dispatch) => {
 };
 
 // // ORDER FLAG
+export const updateButlerOrderIsFlagged = (status) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_IS_FLAGGED,
+    payload: status,
+  });
+};
 
-export const sentOrderFlag = (values) => async (dispatch) => {
+export const addButlerOrderFlag = (values) => async (dispatch) => {
   try {
     dispatch({
-      type: actionType.SEND_ORDER_FLAG_REQUEST_SEND,
+      type: actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_SEND,
     });
 
     const { data } = await requestApi().request(BUTLER_ORDER_ADD_FLAG, {
@@ -115,19 +121,18 @@ export const sentOrderFlag = (values) => async (dispatch) => {
     if (data.status) {
       successMsg(data.message, 'success');
       dispatch({
-        type: actionType.SEND_ORDER_FLAG_REQUEST_SUCCESS,
-        payload: data,
+        type: actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_SUCCESS,
       });
     } else {
       successMsg(data.error, 'error');
       dispatch({
-        type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
+        type: actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_FAIL,
         payload: data.error,
       });
     }
   } catch (error) {
     dispatch({
-      type: actionType.SEND_ORDER_FLAG_REQUEST_FAIL,
+      type: actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_FAIL,
       payload: error.message,
     });
   }

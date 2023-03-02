@@ -25,8 +25,14 @@ import { successMsg } from '../helpers/successMsg';
 // project import
 import { NEAR_BY_BUTLERS_FOR_ORDER } from '../network/Api';
 import requestApi from '../network/httpRequest';
-import { updateButlerOrderIsUpdated, updateButlerOrderStatus } from '../store/Butler/butlerActions';
+import {
+  addButlerOrderFlag,
+  updateButlerOrderIsFlagged,
+  updateButlerOrderIsUpdated,
+  updateButlerOrderStatus,
+} from '../store/Butler/butlerActions';
 import TableLoader from './Common/TableLoader';
+import OptionsSelect from './Form/OptionsSelect';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
@@ -80,12 +86,17 @@ const fetchNearByButlers = async (orderId) => {
   }
 };
 
+// flag type options
+const flagTypeOptions = [
+  { label: 'User', value: 'user' },
+  { label: 'Butler', value: 'delivery' },
+];
+
 export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const dispatch = useDispatch();
-  const { isUpdated } = useSelector((store) => store.butlerReducer);
 
+  const { isUpdated, isFlagged } = useSelector((store) => store.butlerReducer);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-  // eslint-disable-next-line no-unused-vars
   const { account_type } = useSelector((store) => store.Login.admin);
 
   // update order status
@@ -96,6 +107,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const [nearByButlersIsLoading, setNearByButlersIsLoading] = useState(false);
   const [currentButler, setCurrentButler] = useState({});
   const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
+
+  // flag order
+  const [flagModal, setFlagModal] = useState(false);
+  const [flagType, setFlagType] = useState('user');
+  const [flagComment, setFlagComment] = useState('');
 
   const handleOrderStatusChange = async (newStatus) => {
     setOrderStatus(newStatus);
@@ -128,27 +144,51 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     dispatch(updateButlerOrderStatus(data));
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const getThreedotMenuOptions = (orderStatus) =>
-    // const options = [];
-    // const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+  const addOrderFlag = () => {
+    if (flagComment.trim() === '') {
+      successMsg('Comment cannot be empty');
+      return;
+    }
 
-    // if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
-    //   options.push('Update Status');
-    //   options.push('Cancel Order');
-    // }
+    const data = {};
 
-    // if (account_type === 'admin') {
-    //   options.push('Flag');
-    // }
+    data.orderId = currentOrder?._id;
+    data.comment = flagComment;
 
-    ['Update Status'];
+    if (flagType === 'user') {
+      data.user = currentOrder?.user?._id;
+    }
+
+    if (flagType === 'delivery') {
+      data.delivery = currentOrder?.user?._id;
+    }
+
+    dispatch(addButlerOrderFlag(data));
+  };
+
+  const getThreedotMenuOptions = (orderStatus) => {
+    const options = [];
+    const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+
+    if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+      options.push('Update Status');
+      // options.push('Cancel Order');
+    }
+
+    if (account_type === 'admin') {
+      options.push('Flag');
+    }
+
+    return options;
+  };
+
   const threeDotHandler = (menu, order) => {
+    setCurrentOrder(order);
+
     if (menu === 'Flag') {
-      setCurrentOrder(order);
+      setFlagModal(true);
     }
     if (menu === 'Update Status') {
-      setCurrentOrder(order);
       setUpdateStatusModal(true);
     }
   };
@@ -268,7 +308,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       setUpdateStatusModal(false);
       dispatch(updateButlerOrderIsUpdated(false));
     }
-  }, [isUpdated]);
+    if (isFlagged) {
+      setFlagModal(false);
+      dispatch(updateButlerOrderIsFlagged(false));
+    }
+  }, [isUpdated, isFlagged]);
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -366,6 +410,60 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                 disabled={loading}
                 onClick={() => {
                   updateStatus();
+                }}
+              >
+                Update
+              </Button>
+            </Stack>
+          </Box>
+        </Paper>
+      </Modal>
+      {/* flag order modal */}
+      <Modal
+        open={flagModal}
+        onClose={() => {
+          setFlagModal(false);
+        }}
+        sx={{
+          display: 'inline-flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Paper
+          sx={{
+            minWidth: 'max(35vw, 450px)',
+          }}
+        >
+          <Box padding={5}>
+            <Typography variant="h3" mb={8}>
+              Add Flag
+            </Typography>
+            <Stack spacing={6}>
+              <Stack direction="row" spacing={5}>
+                <Typography variant="h5">Choose Type</Typography>
+                <OptionsSelect
+                  value={flagType}
+                  items={flagTypeOptions.filter((item) => currentOrder?.deliveryBoy?._id || item.value !== 'delivery')}
+                  onChange={setFlagType}
+                />
+              </Stack>
+              <TextField
+                label="Comment"
+                variant="outlined"
+                fullWidth
+                value={flagComment}
+                onChange={(e) => {
+                  setFlagComment(e.target.value);
+                }}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                fullWidth
+                onClick={() => {
+                  addOrderFlag();
                 }}
               >
                 Update

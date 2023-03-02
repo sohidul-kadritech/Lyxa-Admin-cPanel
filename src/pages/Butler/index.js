@@ -19,7 +19,7 @@ import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import {
   clearButlerSearchFilter,
-  getAllOrder,
+  getAllButlerOrders,
   updateButlerOrderEndDate,
   updateButlerOrderPage,
   updateButlerOrderSearchKey,
@@ -68,7 +68,7 @@ export default function ButlerOrderList() {
 
   // get order list
   const getOrderLIst = (refresh = false) => {
-    dispatch(getAllOrder(refresh));
+    dispatch(getAllButlerOrders(refresh));
   };
 
   // update orderlist

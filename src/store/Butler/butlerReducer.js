@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   orders: [],
   isUpdated: false,
+  isFlagged: false,
   status: false,
   typeKey: { label: 'All', value: 'all' },
   sortByKey: { label: 'Desc', value: 'desc' },
@@ -87,6 +88,12 @@ const butlerReducer = (state = initialState, action) => {
       };
 
     // SEND FLAG
+    case actionType.UPDATE_BUTLER_ORDER_IS_FLAGGED:
+      return {
+        ...state,
+        isFlagged: payload,
+      };
+
     case actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_SEND:
       return {
         ...state,
@@ -99,6 +106,7 @@ const butlerReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        isFlagged: true,
         status: true,
       };
 

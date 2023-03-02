@@ -13,7 +13,7 @@ import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import FilterButton from '../../components/Filter/FilterButton';
 import GlobalWrapper from '../../components/GlobalWrapper';
-import { getAllOrder, updateButlerOrderPage } from '../../store/Butler/butlerActions';
+import { getAllButlerOrders, updateButlerOrderPage } from '../../store/Butler/butlerActions';
 
 // breadcrumb items
 const breadcrumbItems = [
@@ -38,7 +38,7 @@ export default function ButlerCancelOrders() {
 
   // get order list
   const getOrderLIst = (refresh = false) => {
-    dispatch(getAllOrder(refresh));
+    dispatch(getAllButlerOrders(refresh));
   };
 
   // update page
