@@ -3,6 +3,7 @@ import {
   ADD_CUISINE,
   ADD_SHOP,
   ADD_SHOP_DEAL,
+  ADD_SHOP_MAX_DISCOUNT,
   ALL_CUISINE,
   ALL_SHOP,
   ALL_TAGS,
@@ -100,6 +101,50 @@ export const getAllShop =
   };
 
 // EDIT
+
+export const updateShopIsUpdated = (status) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_SHOP_IS_UPDATED,
+    payload: status,
+  });
+};
+
+export const addShopMaxDiscont = (values) => async (dispatch, getState) => {
+  const store = getState();
+
+  const { shops: shopList } = store.shopReducer;
+
+  dispatch({
+    type: actionType.ADD_SHOP_MAX_DISCOUNT_REQUEST_SEND,
+  });
+
+  try {
+    const { data } = await requestApi().request(ADD_SHOP_MAX_DISCOUNT, {
+      method: 'POST',
+      data: values,
+    });
+
+    if (data.status) {
+      const updatedList = shopList.filter((item) => item?._id !== data?.data?.shop?._id);
+
+      dispatch({
+        type: actionType.ADD_SHOP_MAX_DISCOUNT_REQUEST_SUCCESS,
+        payload: [...updatedList, data?.data?.shop],
+      });
+    } else {
+      dispatch({
+        type: actionType.ADD_SHOP_CREDENTIAL_REQUEST_FAIL,
+        payload: data?.message,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: actionType.ADD_SHOP_CREDENTIAL_REQUEST_FAIL,
+      payload: error?.message,
+    });
+  }
+};
 
 export const editShop = (values) => async (dispatch) => {
   console.log('edit values', values);

@@ -10,7 +10,7 @@ const initialState = {
   appSettingsOptions: {
     nearByShopKm: '',
     deliveryFeePerKm: '',
-    maxDiscount: '',
+    maxDiscount: [],
     maxDistanceForButler: '',
     searchDeliveryBoyKm: [],
     searchDeliveryBoyKmForButler: [],
@@ -64,6 +64,15 @@ const settingsReducer = (state = initialState, action) => {
         },
       };
 
+    case actionType.UPDATE_SHOP_MAX_DISCOUNT:
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          maxDiscount: [...state.appSettingsOptions.maxDiscount, payload],
+        },
+      };
+
     case actionType.UPDATE_SEARCH_BUTLER_KM:
       return {
         ...state,
@@ -101,6 +110,17 @@ const settingsReducer = (state = initialState, action) => {
         appSettingsOptions: {
           ...state.appSettingsOptions,
           searchDeliveryBoyKmForButler: list2,
+        },
+      };
+
+    case actionType.REMOVE_SHOP_MAX_DISCOUNT:
+      const list3 = [...state.appSettingsOptions.maxDiscount];
+      list3.splice(payload, 1);
+      return {
+        ...state,
+        appSettingsOptions: {
+          ...state.appSettingsOptions,
+          maxDiscount: list3,
         },
       };
 

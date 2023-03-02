@@ -5,6 +5,7 @@ import * as actionType from '../actionType';
 const initialState = {
   loading: false,
   shops: [],
+  isUpdated: false,
   error: null,
   status: false,
   paginate: null,
@@ -81,12 +82,38 @@ const shopReducer = (state = initialState, action) => {
       };
 
     // EDIT
+    case actionType.UPDATE_SHOP_IS_UPDATED:
+      return {
+        ...state,
+        isUpdated: payload,
+      };
+
+    case actionType.ADD_SHOP_MAX_DISCOUNT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case actionType.ADD_SHOP_MAX_DISCOUNT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        isUpdated: true,
+        shops: payload,
+      };
+
+    case actionType.ADD_SHOP_MAX_DISCOUNT_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+      };
 
     case actionType.EDIT_SHOP_REQUEST_SEND:
       return {
         ...state,
         loading: true,
         status: false,
+        isUpdated: true,
       };
 
     case actionType.EDIT_SHOP_REQUEST_SUCCESS:

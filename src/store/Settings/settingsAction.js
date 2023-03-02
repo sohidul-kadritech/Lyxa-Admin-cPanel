@@ -60,6 +60,14 @@ export const updateSearchDeliveryBoyKm = (km) => (dispatch) => {
   });
 };
 
+// SHOP MAX DISCOUNT
+export const updateShopMaxDiscount = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_SHOP_MAX_DISCOUNT,
+    payload: value,
+  });
+};
+
 // SEARCH DELIVERY BOY DISTANCE KM
 export const updateSearchButlerKm = (km) => (dispatch) => {
   dispatch({
@@ -71,6 +79,13 @@ export const updateSearchButlerKm = (km) => (dispatch) => {
 export const removeSearchDeliveryBoyKm = (index) => (dispatch) => {
   dispatch({
     type: actionType.REMOVE_SEARCH_DELIVERY_BOY_KM,
+    payload: index,
+  });
+};
+
+export const removeShopMaxDiscount = (index) => (dispatch) => {
+  dispatch({
+    type: actionType.REMOVE_SHOP_MAX_DISCOUNT,
     payload: index,
   });
 };

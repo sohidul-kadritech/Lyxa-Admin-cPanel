@@ -5,7 +5,18 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, Col, Container, Label, Modal, Row } from 'reactstrap';
 import styled from 'styled-components';
 
-import { Accordion, AccordionDetails, AccordionSummary, Switch, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Switch,
+  Typography,
+} from '@mui/material';
 
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
@@ -39,15 +50,24 @@ import { callApi } from '../../../components/SingleApiCall';
 import { successMsg } from '../../../helpers/successMsg';
 import { API_URL, DOWNLOAD_PRODUCT_TEMPLATE, MAP_URL, SINGLE_SHOP, UPLOAD_PRODUCT_FILE } from '../../../network/Api';
 import requestApi from '../../../network/httpRequest';
-import { deleteDealOfShop, setAsFeaturedShop, ShopLiveStatus, updateShopStatus } from '../../../store/Shop/shopAction';
+import {
+  addShopMaxDiscont,
+  deleteDealOfShop,
+  setAsFeaturedShop,
+  ShopLiveStatus,
+  updateShopIsUpdated,
+  updateShopStatus,
+} from '../../../store/Shop/shopAction';
 // eslint-disable-next-line import/extensions
 import ReviewTable from '../../../components/ReviewTable.js';
+import { getAllAppSettings } from '../../../store/Settings/settingsAction';
 
 function ShopDetails() {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { shops, status } = useSelector((state) => state.shopReducer);
+  const { appSettingsOptions } = useSelector((state) => state.settingsReducer);
+  const { shops, status, isUpdated, loading } = useSelector((state) => state.shopReducer);
   const [shop, setShop] = useState(null);
   const [liveStatus, setLiveStatus] = useState(false);
   const [modalCenter, setModalCenter] = useState(false);
@@ -58,8 +78,6 @@ function ShopDetails() {
   const [isLoading, setIsLoading] = useState(false);
   const { account_type } = useSelector((store) => store.Login.admin);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-
-  console.log(shop);
 
   const getShop = async () => {
     const data = await callApi(id, SINGLE_SHOP, 'shop');
@@ -83,10 +101,8 @@ function ShopDetails() {
       } else {
         getShop();
       }
-
-      // get shop summary
     }
-  }, [id]);
+  }, [id, isUpdated]);
 
   // CHANGE LIVE STATUS
   const changeLiveStatus = (e) => {
@@ -114,6 +130,26 @@ function ShopDetails() {
       })();
     }
   }, [status]);
+
+  const [maxDiscountModal, setMaxDiscountModal] = useState(false);
+  const [newMaxDiscount, setNewMaxDiscount] = useState('');
+
+  const updateShopMaxDiscount = () => {
+    dispatch(addShopMaxDiscont({ shopId: shop._id, maxDiscount: newMaxDiscount }));
+  };
+
+  useEffect(() => {
+    if (appSettingsOptions.maxDiscount.length === 0) {
+      dispatch(getAllAppSettings());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isUpdated) {
+      setMaxDiscountModal(false);
+      dispatch(updateShopIsUpdated(false));
+    }
+  }, [isUpdated]);
 
   // SET AS FEATURED
   const setAsFeatured = () => {
@@ -243,6 +279,9 @@ function ShopDetails() {
                     Import Products
                   </Button>
 
+                  <Button outline color="success" onClick={() => setMaxDiscountModal(true)} className="me-3">
+                    Add Max Discount
+                  </Button>
                   <Button
                     outline
                     color="success"
@@ -348,6 +387,11 @@ function ShopDetails() {
                       Icon={DeliveryDiningOutlinedIcon}
                       value={`${shop?.freeDelivery ? 'Yes' : 'No'}`}
                       name="Free Delivery"
+                    />
+                    <InfoTwo
+                      Icon={PaidOutlinedIcon}
+                      value={`${shop?.maxDiscount ? shop?.maxDiscount : 0}`}
+                      name={`Max Discount (${currency})`}
                     />
                   </InfoTwoWrapper>
                 </Col>
@@ -610,6 +654,58 @@ function ShopDetails() {
           <Button onClick={submitProductFile} className="mt-3 px-4" color="success" disabled={isLoading}>
             {isLoading ? 'Importing...' : 'Import'}
           </Button>
+        </div>
+      </Modal>
+      {/* Max discoutn */}
+      <Modal
+        isOpen={maxDiscountModal}
+        toggle={() => {
+          setMaxDiscountModal(false);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Add Max Discount</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setMaxDiscountModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <Stack spacing={6}>
+            <FormControl fullWidth>
+              <InputLabel>Max Discount</InputLabel>
+              <Select
+                fullWidth
+                label="Max Discount"
+                value={newMaxDiscount}
+                onChange={(e) => {
+                  setNewMaxDiscount(e.target.value);
+                }}
+              >
+                {appSettingsOptions.maxDiscount.map((item) => (
+                  <MenuItem value={item}>{item}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              onClick={() => {
+                updateShopMaxDiscount();
+              }}
+            >
+              Update
+            </Button>
+          </Stack>
         </div>
       </Modal>
     </GlobalWrapper>

@@ -10,14 +10,15 @@ import {
   getAllAppSettings,
   // removeSearchButlerKm,
   removeSearchDeliveryBoyKm,
+  removeShopMaxDiscount,
   updateAppSettings,
   updateCurrency,
   updateDropCreditLimit,
-  updateMaxDiscount,
   updateMaxDistanceForButler,
   updateNearByShopKey,
   // updateSearchButlerKm,
   updateSearchDeliveryBoyKm,
+  updateShopMaxDiscount,
   updateVat,
 } from '../../store/Settings/settingsAction';
 
@@ -46,6 +47,7 @@ function AppSettings() {
   const dispatch = useDispatch();
   const { loading, appSettingsOptions } = useSelector((state) => state.settingsReducer);
   const [areaChangeKey, setAreaChangeKey] = useState('');
+  const [shopDiscount, setShopDiscount] = useState('');
   // const [areaChangeKeyButler, setAreaChangeKeyButler] = useState('');
   const [dataIsLoading, setDataIsLoading] = useState(dataLoadingIntitial);
 
@@ -90,6 +92,21 @@ function AppSettings() {
       }
     }
   };
+
+  // dispatch area search key
+  // eslint-disable-next-line consistent-return
+  const handleDiscountAdd = (evt) => {
+    if (['Enter', 'Tab', ','].includes(evt.key)) {
+      evt.preventDefault();
+      const value = shopDiscount.trim();
+
+      if (value) {
+        setShopDiscount('');
+        dispatch(updateShopMaxDiscount(value));
+      }
+    }
+  };
+
   // eslint-disable-next-line consistent-return
   // const handleButlerKmAdd = (evt) => {
   //   if (['Enter', 'Tab', ','].includes(evt.key)) {
@@ -214,7 +231,7 @@ function AppSettings() {
                   </Stack>
                 </Grid>
                 {/* max discount */}
-                <Grid item md={6}>
+                {/* <Grid item md={6}>
                   <Stack spacing={2} direction="row">
                     <TextField
                       style={{ width: '100%' }}
@@ -255,7 +272,7 @@ function AppSettings() {
                       )}
                     </Button>
                   </Stack>
-                </Grid>
+                </Grid> */}
                 {/* Max Item Price */}
                 <Grid item md={6}>
                   <Stack spacing={2} direction="row">
@@ -266,10 +283,7 @@ function AppSettings() {
                       variant="outlined"
                       placeholder="Enter max amount"
                       value={0}
-                      onChange={() => {
-                        // dispatch(updateMaxDiscount(e.target.value));
-                        // checkIsUpdates(e);
-                      }}
+                      onChange={() => {}}
                       type="number"
                       name="maxCustomerButlerServiceValue"
                     />
@@ -482,6 +496,64 @@ function AppSettings() {
                             type="button"
                             className="button"
                             onClick={() => dispatch(removeSearchDeliveryBoyKm(index))}
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      ))}
+                    </Paper>
+                  )}
+                </Grid>
+                {/* Shop details */}
+                <Grid item xs={12}>
+                  <Stack spacing={2} direction="row" mb={2}>
+                    <TextField
+                      style={{ width: '100%' }}
+                      id="outlined-basic"
+                      label="Max Discount for shops"
+                      variant="outlined"
+                      placeholder="Type amount and press Enter"
+                      value={shopDiscount}
+                      type="number"
+                      onKeyDown={handleDiscountAdd}
+                      onChange={(e) => setShopDiscount(e.target.value)}
+                      name="searchDeliveryBoyKm"
+                    />
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        updateSettings(['maxDiscount']);
+                        setDataIsLoading((prev) => ({
+                          ...prev,
+                          maxDiscount: true,
+                        }));
+                      }}
+                      disabled={dataIsLoading.maxDiscount}
+                      className="d-block"
+                      style={{
+                        width: '20%',
+                        padding: '10px 0',
+                        backgroundColor: '#313131',
+                        marginLeft: '5px',
+                        border: 0,
+                      }}
+                    >
+                      {dataIsLoading.maxDiscount ? (
+                        <Spinner animation="border" variant="success" size="sm"></Spinner>
+                      ) : (
+                        'Update'
+                      )}
+                    </Button>
+                  </Stack>
+                  {appSettingsOptions?.maxDiscount?.length > 0 && (
+                    <Paper className="p-3">
+                      {appSettingsOptions?.maxDiscount?.map((item, index) => (
+                        <div className="tag__wrapper" key={index}>
+                          {item}
+                          <button
+                            type="button"
+                            className="button"
+                            onClick={() => dispatch(removeShopMaxDiscount(index))}
                           >
                             &times;
                           </button>
