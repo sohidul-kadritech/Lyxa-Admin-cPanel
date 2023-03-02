@@ -375,7 +375,11 @@ export default function Faq() {
                         <FilterButton
                           label="Clear"
                           sx={{
-                            background: `${isFilterApplied ? theme.palette.grey[400] : theme.palette.grey[200]}`,
+                            background: 'rgb(63,63,63)',
+                            color: '#fff',
+                            '&:hover': {
+                              background: 'rgb(78,78,78)',
+                            },
                           }}
                           onClick={() => {
                             setType('');
@@ -420,7 +424,15 @@ export default function Faq() {
                   <StyledTable
                     columns={columns}
                     rows={query
-                      .filter((item) => item.type === type || type === '' || type === 'faq')
+                      .filter(
+                        (item) =>
+                          item.type === type ||
+                          type === '' ||
+                          (type === 'faq' &&
+                            item.type !== 'accountSupport' &&
+                            type === 'faq' &&
+                            item.type !== 'orderSupport')
+                      )
                       .filter((item) => item.type === childType || childType === '')
                       .filter((item) => item?.status === status || status === '')}
                     getRowId={(params) => params?._id}

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // third party
-import { Box, Button, Paper, Stack, Tab, Tabs, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Button, Paper, Stack, Tab, Tabs, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 import { useState } from 'react';
 
 // icons
@@ -10,9 +10,10 @@ import StarIcon from '@mui/icons-material/Star';
 
 // project import
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
+import CloseButton from '../../components/Common/CloseButton';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import TabPanel from '../../components/TabPanel';
-import MarketingTypeCard from './marketingTypeCard';
+import MarketingCard from './MarketingCard';
 
 const cardIconSx = {
   height: '100px',
@@ -35,16 +36,27 @@ const breadcrumbItems = [
   },
 ];
 
+// dynamic sidebar ttitle
+const getRightBarTitle = (currentTab) => {
+  if (currentTab === 0) {
+    return 'Deals';
+  }
+
+  return '';
+};
+
 export default function Marketing() {
+  const theme = useTheme();
+
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
 
   return (
     <GlobalWrapper padding>
       <div className="page-content">
-        <Grid container spacing={0}>
+        <Grid container spacing={0} sx={{ height: 'calc(100vh - 130px)', overflowY: 'hidden' }}>
           {/* left */}
-          <Grid md={isRightBarOpen ? 6 : 12}>
+          <Grid md={isRightBarOpen ? 6 : 12} pr={isRightBarOpen ? 10 : 0}>
             <Box>
               <Grid container spacing={6}>
                 <Grid xs={12}>
@@ -56,7 +68,7 @@ export default function Marketing() {
                   />
                 </Grid>
                 <Grid md={isRightBarOpen ? 6 : 4}>
-                  <MarketingTypeCard
+                  <MarketingCard
                     title="Deals"
                     Icon={LocalOfferIcon}
                     onVeiwDetails={() => {
@@ -68,7 +80,7 @@ export default function Marketing() {
                   />
                 </Grid>
                 <Grid md={isRightBarOpen ? 6 : 4}>
-                  <MarketingTypeCard
+                  <MarketingCard
                     title="Featured"
                     Icon={StarIcon}
                     onVeiwDetails={() => {
@@ -80,7 +92,7 @@ export default function Marketing() {
                   />
                 </Grid>
                 <Grid md={isRightBarOpen ? 6 : 4}>
-                  <MarketingTypeCard
+                  <MarketingCard
                     title="Loyalty"
                     Icon={MilitaryTechIcon}
                     onVeiwDetails={() => {
@@ -95,8 +107,24 @@ export default function Marketing() {
             </Box>
           </Grid>
           {/* right */}
-          <Grid className={`${isRightBarOpen ? '' : 'd-none'}`} xs={isRightBarOpen ? 6 : 12} spacing={3}>
+          <Grid
+            md={isRightBarOpen ? 6 : 12}
+            spacing={3}
+            className={`${isRightBarOpen ? '' : 'd-none'}`}
+            pl={10}
+            sx={{
+              borderLeft: `1px solid ${theme.palette.grey[200]}`,
+            }}
+          >
             <Grid md={12}>
+              <Stack direction="row" pt={9} pb={2}>
+                <Typography variant="h2">{getRightBarTitle(currentTab)}</Typography>
+                <CloseButton
+                  onClick={() => {
+                    setIsRightBarOpen(false);
+                  }}
+                />
+              </Stack>
               <Paper>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" pr={2}>
                   <Tabs
