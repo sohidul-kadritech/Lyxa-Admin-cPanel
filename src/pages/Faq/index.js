@@ -32,7 +32,13 @@ import StyledTable from '../../components/StyledTable';
 import TabPanel from '../../components/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import { successMsg } from '../../helpers/successMsg';
-import { addFaq, deleteFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
+import {
+  addChatReason,
+  deleteChatReason,
+  getAllChatReason,
+  updateChatReason,
+} from '../../store/ChatReason/chatReasonActions';
+import { addFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
 import AddFaq from './AddFaq';
 
 // breadcrumb items
@@ -47,6 +53,29 @@ const breadcrumbItems = [
   },
 ];
 
+// type value
+const getTypeValue = (type) => {
+  switch (type) {
+    case 'user':
+      return 'User';
+
+    case 'shop':
+      return 'Shop';
+
+    case 'deliveryBoy':
+      return 'Delivery Boy';
+
+    case 'accountSupport':
+      return 'Account Support';
+
+    case 'orderSupport':
+      return 'Order Support';
+
+    default:
+      return '';
+  }
+};
+
 // select status
 const statusOptions = [
   { label: 'Active', value: 'active' },
@@ -57,14 +86,18 @@ export default function Faq() {
   const theme = useTheme();
 
   const dispatch = useDispatch();
-  const { faq: faqData, loading } = useSelector((store) => store.faqReducer);
+  const { faq: faqQueries, loading: faqLoading } = useSelector((store) => store.faqReducer);
+  const { chatReasons: chatReasonQueries, loading: chatReasonLoading } = useSelector(
+    (store) => store.chatReasonReducer
+  );
 
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [query, setQuery] = useState([]);
 
   const [currentTab, setCurrentTab] = useState(0);
   const [currentFaq, setCurrentFaq] = useState({});
-  const [deleteFaqId, setDeleteFaqId] = useState('');
+  const [deleteFaq, setDeleteFaq] = useState({});
 
   // filters
   const [type, setType] = useState('');
@@ -72,8 +105,7 @@ export default function Faq() {
   const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   // faq validation
-  const faqValidation = (item) => {
-    console.log(item);
+  const queryValidation = (item) => {
     switch (false) {
       case Boolean(item?.type):
         successMsg('Q&A type cannot be empty');
@@ -97,23 +129,47 @@ export default function Faq() {
     dispatch(getAllFaq());
   };
 
+  // get all chatReason
+  const callGetAllChatReason = () => {
+    dispatch(getAllChatReason());
+  };
+
   // update faq
   const callUpdateFaq = (item) => {
-    if (faqValidation(item)) {
-      dispatch(updateFaq(item));
+    if (!queryValidation(item)) {
+      return;
     }
+
+    if (item.type === 'orderSupport' || item.type === 'accountSupport') {
+      dispatch(updateChatReason({ ...item, answer: item.ans }));
+      return;
+    }
+
+    dispatch(updateFaq(item));
   };
 
   // add faq
   const callAddFaq = (item) => {
-    if (faqValidation(item)) {
-      dispatch(addFaq(item));
+    if (!queryValidation(item)) {
+      return;
     }
+
+    if (item.type === 'orderSupport' || item.type === 'accountSupport') {
+      dispatch(addChatReason({ ...item, answer: item.ans }));
+      return;
+    }
+
+    dispatch(addFaq(item));
   };
 
   // delete faq
   const callDeleteFaq = () => {
-    dispatch(deleteFaq(deleteFaqId));
+    if (deleteFaq.type === 'orderSupport' || deleteFaq.type === 'accountSupport') {
+      dispatch(deleteChatReason(deleteFaq?._id));
+      return;
+    }
+
+    dispatch(deleteFaq(deleteFaq?._id));
   };
 
   // dynamic titile
@@ -134,7 +190,7 @@ export default function Faq() {
 
     if (menu === 'Delete') {
       setIsConfirmModalOpen(true);
-      setDeleteFaqId(item?._id);
+      setDeleteFaq(item);
     }
   };
 
@@ -162,7 +218,7 @@ export default function Faq() {
       field: 'type',
       sortable: false,
       minWidth: 200,
-      renderCell: (params) => <span className="text-capitalize">{params?.value}</span>,
+      renderCell: (params) => <span className="text-capitalize">{getTypeValue(params?.value)}</span>,
     },
     {
       id: 3,
@@ -215,10 +271,17 @@ export default function Faq() {
   ];
 
   useEffect(() => {
-    if (faqData?.length === 0) {
+    if (faqQueries?.length === 0) {
       callGetAllFaq();
     }
-  }, []);
+    if (chatReasonQueries?.length === 0) {
+      callGetAllChatReason();
+    }
+
+    const convertedChatReasons = chatReasonQueries.map((item) => ({ ...item, ans: item.answer }));
+
+    setQuery([...faqQueries, ...convertedChatReasons]);
+  }, [faqQueries, chatReasonQueries]);
 
   return (
     <GlobalWrapper padding>
@@ -290,7 +353,7 @@ export default function Faq() {
                       <Box>
                         <FilterButton
                           label="Refresh"
-                          className={`${loading === true ? 'refresh-animate' : ''}`}
+                          className={`${faqLoading || chatReasonLoading ? 'refresh-animate' : ''}`}
                           endIcon={<ReplayIcon />}
                           onClick={() => {
                             callGetAllFaq();
@@ -319,7 +382,7 @@ export default function Faq() {
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
                   <StyledTable
                     columns={columns}
-                    rows={faqData
+                    rows={query
                       .filter((item) => item.type === type || type === '')
                       .filter((item) => item?.status === status || status === '')}
                     getRowId={(params) => params?._id}
@@ -327,13 +390,13 @@ export default function Faq() {
                     components={{
                       NoRowsOverlay: () => (
                         <Stack height="100%" alignItems="center" justifyContent="center">
-                          {loading ? '' : 'No Q&A found'}
+                          {faqLoading || chatReasonLoading ? '' : 'No Q&A found'}
                         </Stack>
                       ),
                     }}
                   />
                   {/* loading */}
-                  {loading ? <TableLoader /> : null}
+                  {faqLoading || chatReasonLoading ? <TableLoader /> : null}
                 </Box>
               </Paper>
             </Grid>

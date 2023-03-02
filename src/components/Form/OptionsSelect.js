@@ -15,7 +15,7 @@ const StyledChip = styled(Chip)(() => ({
 
 export default function OptionsSelect({ items, value, onChange, sx, disabled }) {
   return (
-    <Stack direction="row" spacing={3}>
+    <Stack direction="row" flexWrap="wrap" spacing={3}>
       {items.map((item) => (
         <StyledChip
           disabled={disabled || undefined}

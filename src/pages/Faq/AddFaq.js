@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { faqType } from '../../assets/staticData';
 import OptionsSelect from '../../components/Form/OptionsSelect';
+import { updateChatReasonIsAdded, updateChatReasonIsUpdated } from '../../store/ChatReason/chatReasonActions';
 import { updateFaqIsAdded, updateFaqIsUpdated } from '../../store/faq/faqActions';
 
 const initialFaq = {
@@ -20,7 +21,16 @@ const initialFaq = {
 export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
   const dispatch = useDispatch();
 
-  const { isUpdated, isAdded, loading } = useSelector((store) => store.faqReducer);
+  const {
+    isUpdated: isFaqUpdated,
+    isAdded: isFaqAdded,
+    loading: isFaqLoading,
+  } = useSelector((store) => store.faqReducer);
+  const {
+    isUpdated: isChatReasonUpdated,
+    isAdded: isChatReasonAdded,
+    loading: isChatReasonLoading,
+  } = useSelector((store) => store.chatReasonReducer);
   const [currentFaq, setCurrentFaq] = useState(faq || initialFaq);
 
   const changeHandler = (event) => {
@@ -28,16 +38,18 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
   };
 
   useEffect(() => {
-    if (isUpdated) {
+    if (isFaqUpdated || isChatReasonUpdated) {
       closeHandler();
       dispatch(updateFaqIsUpdated(false));
+      dispatch(updateChatReasonIsUpdated(false));
     }
 
-    if (isAdded) {
+    if (isFaqAdded || isChatReasonAdded) {
       setCurrentFaq(initialFaq);
       dispatch(updateFaqIsAdded(false));
+      dispatch(updateChatReasonIsAdded(false));
     }
-  }, [isAdded, isUpdated]);
+  }, [isFaqAdded, isFaqUpdated, isChatReasonUpdated, isChatReasonAdded]);
 
   useEffect(() => {
     if (isEdit) {
@@ -49,9 +61,19 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
 
   return (
     <Stack spacing={6}>
-      <Stack direction="row" alignItems="center" spacing={5}>
-        <Typography variant="h5">Choose Type</Typography>
+      <Stack direction="row" alignItems="center" spacing={5} mb={-3}>
+        <Typography
+          variant="h5"
+          sx={{
+            flexShrink: 0,
+          }}
+        >
+          Choose Type
+        </Typography>
         <OptionsSelect
+          sx={{
+            marginBottom: '12px',
+          }}
           items={faqType}
           value={currentFaq?.type}
           disabled={isEdit}
@@ -92,7 +114,7 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
       <Button
         disableElevation
         variant="contained"
-        disabled={(isEdit && !currentFaq?._id) || loading}
+        disabled={(isEdit && !currentFaq?._id) || isFaqLoading || isChatReasonLoading}
         onClick={() => {
           submitHandler(currentFaq);
         }}
