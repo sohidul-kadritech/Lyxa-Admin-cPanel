@@ -18,9 +18,9 @@ import {
 // third party
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { faqType } from '../../assets/staticData';
 
 // project import
-import { faqType } from '../../assets/staticData';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import CloseButton from '../../components/Common/CloseButton';
 import ConfirmModal from '../../components/Common/ConfirmModal';
@@ -41,6 +41,22 @@ import {
 import { addFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
 import AddFaq from './AddFaq';
 
+// const
+const supportTypeOptions = [
+  {
+    value: 'accountSupport',
+    label: 'Account Support',
+  },
+  {
+    value: 'orderSupport',
+    label: 'Order Support',
+  },
+  {
+    value: 'faq',
+    label: 'Faq Support',
+  },
+];
+
 // breadcrumb items
 const breadcrumbItems = [
   {
@@ -48,8 +64,8 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/faq',
-    label: 'FAQ',
+    to: '/settings/support-reasons',
+    label: 'Support Reasons',
   },
 ];
 
@@ -57,13 +73,13 @@ const breadcrumbItems = [
 const getTypeValue = (type) => {
   switch (type) {
     case 'user':
-      return 'User';
+      return 'User Faq';
 
     case 'shop':
-      return 'Shop';
+      return 'Shop FaQ';
 
     case 'deliveryBoy':
-      return 'Delivery Boy';
+      return 'Delivery Boy Faq';
 
     case 'accountSupport':
       return 'Account Support';
@@ -103,6 +119,7 @@ export default function Faq() {
   const [type, setType] = useState('');
   const [status, setStatus] = useState('');
   const [isFilterApplied, setIsFilterApplied] = useState(false);
+  const [childType, setChildType] = useState('');
 
   // faq validation
   const queryValidation = (item) => {
@@ -308,20 +325,39 @@ export default function Faq() {
               <Paper>
                 <Stack direction="row" pt={10} pb={3} justifyContent="space-between">
                   <Stack direction="row" spacing={3}>
-                    <Tooltip title="Select Type">
+                    <Tooltip title="Support Type">
                       <Box>
                         <FilterSelect
-                          items={faqType}
+                          items={supportTypeOptions}
                           placeholder="Type"
                           value={type}
                           onChange={(e) => {
                             setType(e.target.value);
                             setIsFilterApplied(true);
+
+                            if (e.target.value !== 'faq') {
+                              setChildType('');
+                            }
                           }}
                         />
                       </Box>
                     </Tooltip>
-                    <Tooltip title="Select Type">
+                    {type === 'faq' && (
+                      <Tooltip title="Faq Type">
+                        <Box>
+                          <FilterSelect
+                            items={faqType}
+                            placeholder="Type"
+                            value={childType}
+                            onChange={(e) => {
+                              setChildType(e.target.value);
+                              setIsFilterApplied(true);
+                            }}
+                          />
+                        </Box>
+                      </Tooltip>
+                    )}
+                    <Tooltip title="Status Type">
                       <Box>
                         <FilterSelect
                           items={statusOptions}
@@ -343,6 +379,7 @@ export default function Faq() {
                           }}
                           onClick={() => {
                             setType('');
+                            setChildType('');
                             setStatus('');
                             setIsFilterApplied(false);
                           }}
@@ -383,7 +420,8 @@ export default function Faq() {
                   <StyledTable
                     columns={columns}
                     rows={query
-                      .filter((item) => item.type === type || type === '')
+                      .filter((item) => item.type === type || type === '' || type === 'faq')
+                      .filter((item) => item.type === childType || childType === '')
                       .filter((item) => item?.status === status || status === '')}
                     getRowId={(params) => params?._id}
                     rowHeight={60}

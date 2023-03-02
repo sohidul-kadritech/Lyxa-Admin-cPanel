@@ -295,13 +295,6 @@ export const adminMenuItem = [
     isSubmenu: false,
   },
   {
-    id: 14,
-    name: 'FAQ',
-    icon: 'fas fa-list',
-    link: '/faq',
-    isSubmenu: false,
-  },
-  {
     id: 17,
     name: 'Terms and Conditions',
     icon: 'ti-settings',

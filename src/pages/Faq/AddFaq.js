@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // mui
 import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 
@@ -6,17 +7,23 @@ import { useEffect, useState } from 'react';
 
 // project import
 import { useDispatch, useSelector } from 'react-redux';
-import { faqType } from '../../assets/staticData';
+import { faqType as faqTypeOptions } from '../../assets/staticData';
 import OptionsSelect from '../../components/Form/OptionsSelect';
 import { updateChatReasonIsAdded, updateChatReasonIsUpdated } from '../../store/ChatReason/chatReasonActions';
 import { updateFaqIsAdded, updateFaqIsUpdated } from '../../store/faq/faqActions';
 
 const initialFaq = {
-  type: 'user',
+  type: 'accountSupport',
   question: '',
   ans: '',
   status: 'active',
 };
+
+const faqUpperOptions = [
+  { label: 'Faq', value: 'faq' },
+  { label: 'Account Support', value: 'accountSupport' },
+  { label: 'Order Support', value: 'orderSupport' },
+];
 
 export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
   const dispatch = useDispatch();
@@ -26,15 +33,27 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
     isAdded: isFaqAdded,
     loading: isFaqLoading,
   } = useSelector((store) => store.faqReducer);
+
   const {
     isUpdated: isChatReasonUpdated,
     isAdded: isChatReasonAdded,
     loading: isChatReasonLoading,
   } = useSelector((store) => store.chatReasonReducer);
+
   const [currentFaq, setCurrentFaq] = useState(faq || initialFaq);
+  const [faqType, setFaqType] = useState('');
+  const [childFaqType, setChildFaqType] = useState('user');
 
   const changeHandler = (event) => {
     setCurrentFaq((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  };
+
+  const checkFaqType = () => {
+    if (currentFaq.type === 'faq') {
+      submitHandler({ ...currentFaq, type: childFaqType });
+    } else {
+      submitHandler(currentFaq);
+    }
   };
 
   useEffect(() => {
@@ -53,15 +72,18 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
 
   useEffect(() => {
     if (isEdit) {
-      setCurrentFaq(faq);
+      if (faq.type !== 'orderSupport' && faq.type !== 'accountSupport') {
+        setChildFaqType(faq.type);
+        setCurrentFaq({ ...faq, type: 'faq' });
+      } else {
+        setCurrentFaq(faq);
+      }
     }
   }, [faq]);
 
-  console.log(currentFaq.status);
-
   return (
     <Stack spacing={6}>
-      <Stack direction="row" alignItems="center" spacing={5} mb={-3}>
+      <Stack direction="row" alignItems="center" spacing={5}>
         <Typography
           variant="h5"
           sx={{
@@ -71,10 +93,7 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
           Choose Type
         </Typography>
         <OptionsSelect
-          sx={{
-            marginBottom: '12px',
-          }}
-          items={faqType}
+          items={faqUpperOptions}
           value={currentFaq?.type}
           disabled={isEdit}
           onChange={(value) => {
@@ -82,6 +101,26 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
           }}
         />
       </Stack>
+      {currentFaq.type === 'faq' && (
+        <Stack direction="row" alignItems="center" spacing={5}>
+          <Typography
+            variant="h5"
+            sx={{
+              flexShrink: 0,
+            }}
+          >
+            Chosse Faq Type
+          </Typography>
+          <OptionsSelect
+            items={faqTypeOptions}
+            value={childFaqType}
+            disabled={isEdit}
+            onChange={(value) => {
+              setChildFaqType(value);
+            }}
+          />
+        </Stack>
+      )}
       <FormControl className={`${isEdit ? '' : 'd-none'}`}>
         <InputLabel>Status</InputLabel>
         <Select label="Status" value={currentFaq.status || ''} name="status" onChange={changeHandler}>
@@ -116,7 +155,7 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
         variant="contained"
         disabled={(isEdit && !currentFaq?._id) || isFaqLoading || isChatReasonLoading}
         onClick={() => {
-          submitHandler(currentFaq);
+          checkFaqType();
         }}
       >
         {isEdit ? 'Save' : 'Add New'}

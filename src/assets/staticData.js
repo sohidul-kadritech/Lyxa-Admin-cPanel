@@ -14,11 +14,9 @@ export const faqType = [
   { label: 'User', value: 'user' },
   { label: 'Shop', value: 'shop' },
   { label: 'Rider', value: 'deliveryBoy' },
-  { label: 'Account Support', value: 'accountSupport' },
-  { label: 'Order Support', value: 'orderSupport' },
 ];
 
-export const chatReasonType = [
+export const supportReasonType = [
   { label: 'Account Support', value: 'accountSupport' },
   { label: 'Order Support', value: 'orderSupport' },
 ];
