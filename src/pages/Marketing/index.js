@@ -4,13 +4,12 @@ import { Box, Button, Paper, Stack, Tab, Tabs, Unstable_Grid2 as Grid } from '@m
 import { useState } from 'react';
 
 // icons
-import AltRouteIcon from '@mui/icons-material/AltRoute';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
-import PercentIcon from '@mui/icons-material/Percent';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import StarIcon from '@mui/icons-material/Star';
 
 // project import
-import Breadcrumb from '../../components/Common/Breadcrumb';
+import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import TabPanel from '../../components/TabPanel';
 import MarketingTypeCard from './marketingTypeCard';
@@ -24,69 +23,80 @@ const tabPanelSx = {
   padding: '24px 16px',
 };
 
+// breadcrumb items
+const breadcrumbItems = [
+  {
+    to: '/',
+    label: 'Lyxa',
+  },
+  {
+    to: '/marketing',
+    label: 'Marketing',
+  },
+];
+
 export default function Marketing() {
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
 
   return (
-    <GlobalWrapper>
+    <GlobalWrapper padding>
       <div className="page-content">
-        <Breadcrumb
-          maintitle="Lyxa"
-          breadcrumbItem="Marketing"
-          isAddNew
-          loading={false}
-          addNewHandler={() => {
-            setCurrentTab(4);
-            isRightBarOpen(true);
-          }}
-          callList={() => {}}
-        />
-        <Grid container spacing={3}>
-          <Grid container xs={isRightBarOpen ? 6 : 12} spacing={3}>
-            <Grid md={isRightBarOpen ? 6 : 3}>
-              <MarketingTypeCard
-                title="Double deals"
-                Icon={AnalyticsIcon}
-                onVeiwDetails={() => {
-                  setIsRightBarOpen(true);
-                  setCurrentTab(0);
-                }}
-              />
-            </Grid>
-            <Grid md={isRightBarOpen ? 6 : 3}>
-              <MarketingTypeCard
-                title="Percentage deals"
-                Icon={PercentIcon}
-                onVeiwDetails={() => {
-                  setIsRightBarOpen(true);
-                  setCurrentTab(1);
-                }}
-              />
-            </Grid>
-            <Grid md={isRightBarOpen ? 6 : 3}>
-              <MarketingTypeCard
-                title="Free delivery"
-                Icon={DeliveryDiningIcon}
-                onVeiwDetails={() => {
-                  setIsRightBarOpen(true);
-                  setCurrentTab(2);
-                }}
-              />
-            </Grid>
-            <Grid md={isRightBarOpen ? 6 : 3}>
-              <MarketingTypeCard
-                title="Others"
-                Icon={AltRouteIcon}
-                onVeiwDetails={() => {
-                  setIsRightBarOpen(true);
-                  setCurrentTab(3);
-                }}
-              />
-            </Grid>
+        <Grid container spacing={0}>
+          {/* left */}
+          <Grid md={isRightBarOpen ? 6 : 12}>
+            <Box>
+              <Grid container spacing={6}>
+                <Grid xs={12}>
+                  <BreadCrumbs
+                    items={breadcrumbItems}
+                    sx={{
+                      pb: 10,
+                    }}
+                  />
+                </Grid>
+                <Grid md={isRightBarOpen ? 6 : 4}>
+                  <MarketingTypeCard
+                    title="Deals"
+                    Icon={LocalOfferIcon}
+                    onVeiwDetails={() => {
+                      setIsRightBarOpen(true);
+                      setCurrentTab(0);
+                    }}
+                    addNew
+                    onAddnew={() => {}}
+                  />
+                </Grid>
+                <Grid md={isRightBarOpen ? 6 : 4}>
+                  <MarketingTypeCard
+                    title="Featured"
+                    Icon={StarIcon}
+                    onVeiwDetails={() => {
+                      setIsRightBarOpen(true);
+                      setCurrentTab(1);
+                    }}
+                    addNew
+                    onAddnew={() => {}}
+                  />
+                </Grid>
+                <Grid md={isRightBarOpen ? 6 : 4}>
+                  <MarketingTypeCard
+                    title="Loyalty"
+                    Icon={MilitaryTechIcon}
+                    onVeiwDetails={() => {
+                      setIsRightBarOpen(true);
+                      setCurrentTab(2);
+                    }}
+                    addNew
+                    onAddnew={() => {}}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
           </Grid>
-          <Grid className={`${isRightBarOpen ? '' : 'd-none'}`} container xs={isRightBarOpen ? 6 : 12} spacing={3}>
-            <Grid xs={12}>
+          {/* right */}
+          <Grid className={`${isRightBarOpen ? '' : 'd-none'}`} xs={isRightBarOpen ? 6 : 12} spacing={3}>
+            <Grid md={12}>
               <Paper>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" pr={2}>
                   <Tabs

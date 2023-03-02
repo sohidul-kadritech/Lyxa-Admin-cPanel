@@ -1,8 +1,20 @@
 // third party
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import { Button, Paper, Stack, styled, Typography } from '@mui/material';
 
 // icons
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
+const CardBottom = styled(Stack)(() => ({
+  '& .MuiButton-root': {
+    border: '0px',
+    borderTop: `1px solid rgba(221, 91, 99, 0.2)`,
+    padding: '12px 15px',
+
+    '&:first-child': {
+      borderTop: '0px',
+    },
+  },
+}));
 
 // styles
 const cardIconSx = {
@@ -10,33 +22,31 @@ const cardIconSx = {
   width: 'auto',
 };
 
-export default function MarketingTypeCard({ title, Icon, onVeiwDetails }) {
+export default function MarketingTypeCard({ title, Icon, onVeiwDetails, addNew, onAddnew }) {
   return (
-    <Card variant="outlined">
-      <CardContent sx={{ textAlign: 'center' }}>
-        <Icon sx={cardIconSx} />
-        <Typography variant="h6" mt={1} mb={2}>
-          {title}
-        </Typography>
-        <Button
-          disableElevation
-          variant="outlined"
-          onClick={onVeiwDetails}
-          sx={{
-            dispaly: 'inline-flex',
-            justifyContent: 'space-between',
-            color: 'rgba(0, 0, 0, 0.87)',
-            border: '1px solid rgba(0, 0, 0, 0.87)',
-            '&:hover': {
-              backgroundColor: 'white',
-              border: '1px solid rgba(0, 0, 0, 0.87)',
-            },
-          }}
-          endIcon={<ChevronRightIcon />}
-        >
+    <Paper
+      variant="outlined"
+      sx={{
+        borderRadius: '12px',
+        textAlign: 'center',
+        padding: 3,
+        paddingBottom: '0px',
+      }}
+    >
+      <Icon sx={cardIconSx} color="primary" />
+      <Typography variant="h3" mt={5} mb={8}>
+        {title}
+      </Typography>
+      <CardBottom mt={3}>
+        {addNew && (
+          <Button disableElevation variant="outlined" onClick={onAddnew} endIcon={<ChevronRightIcon />}>
+            Add New
+          </Button>
+        )}
+        <Button disableElevation variant="outlined" onClick={onVeiwDetails} endIcon={<ChevronRightIcon />}>
           View Detatils
         </Button>
-      </CardContent>
-    </Card>
+      </CardBottom>
+    </Paper>
   );
 }
