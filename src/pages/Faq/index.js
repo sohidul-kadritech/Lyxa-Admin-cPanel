@@ -234,7 +234,6 @@ export default function Faq() {
       headerName: 'Type',
       field: 'type',
       sortable: false,
-      minWidth: 200,
       renderCell: (params) => <span className="text-capitalize">{getTypeValue(params?.value)}</span>,
     },
     {
@@ -242,7 +241,6 @@ export default function Faq() {
       headerName: 'Status',
       field: 'status',
       sortable: false,
-      minWidth: 200,
       renderCell: ({ value }) => (
         <Chip
           label={value === 'active' ? 'Active' : 'Inactive'}
@@ -259,7 +257,6 @@ export default function Faq() {
       id: 4,
       field: 'createdAt',
       headerName: 'Created',
-      minWidth: 200,
       sortable: false,
       valueFormatter: (params) => {
         if (!params?.value) {
@@ -272,10 +269,10 @@ export default function Faq() {
       id: 5,
       field: 'action',
       headerName: 'Action',
-      minWidth: 200,
       headerAlign: 'right',
       align: 'right',
       sortable: false,
+      minWidth: 150,
       renderCell: (params) => (
         <ThreeDotsMenu
           menuItems={['Edit', 'Delete']}
