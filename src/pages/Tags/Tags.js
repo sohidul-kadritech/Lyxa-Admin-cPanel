@@ -83,7 +83,9 @@ function Tags() {
     }
 
     const duplicate = tags.find(
-      (item) => item.name.replace(/\s/g, '') === name.replace(/\s/g, '') && item.type === type.value
+      (item) =>
+        item?.name?.toLowerCase().replace(/\s/g, '') === name.toLowerCase().replace(/\s/g, '') &&
+        item.type === type.value
     );
 
     if (duplicate !== undefined) {

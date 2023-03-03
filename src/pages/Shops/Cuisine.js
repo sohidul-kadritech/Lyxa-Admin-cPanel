@@ -47,7 +47,9 @@ function Cuisine() {
   // SUBMIT DATA
   // eslint-disable-next-line consistent-return
   const submitCuisine = () => {
-    const duplicate = cuisines.find((item) => item.name.replace(/\s/g, '') === name.replace(/\s/g, ''));
+    const duplicate = cuisines.find(
+      (item) => item?.name?.toLowerCase().replace(/\s/g, '') === name.toLowerCase().replace(/\s/g, '')
+    );
 
     if (duplicate !== undefined) {
       toast.warn('Cuisine Name Already Exists', {

@@ -169,7 +169,9 @@ function DealsAdd() {
 
     // check for existing deals
     const dupicate = deals.find(
-      (item) => item?.name.replace(/\s/g, '') === name.replace(/\s/g, '') && item?.type === shopType
+      (item) =>
+        item?.name?.toLowerCase().replace(/\s/g, '') === name?.toLowerCase().replace(/\s/g, '') &&
+        item?.type === shopType
     );
 
     if (dupicate !== undefined) {
