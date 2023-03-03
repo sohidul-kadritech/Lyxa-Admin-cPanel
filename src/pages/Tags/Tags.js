@@ -70,13 +70,25 @@ function Tags() {
   // eslint-disable-next-line consistent-return
   const submitTag = () => {
     if (!name) {
-      return successMsg('Please Enter  Name', 'error');
+      successMsg('Please Enter  Name', 'error');
+      return;
     }
     if (!type.value) {
-      return successMsg('Please Select  Type', 'error');
+      successMsg('Please Select  Type', 'error');
+      return;
     }
     if (id && !activeStatus.value) {
-      return successMsg('Please Select  Type', 'error');
+      successMsg('Please Select  Type', 'error');
+      return;
+    }
+
+    const duplicate = tags.find(
+      (item) => item.name.replace(/\s/g, '') === name.replace(/\s/g, '') && item.type === type.value
+    );
+
+    if (duplicate !== undefined) {
+      successMsg('Tag name already exists for this type');
+      return;
     }
 
     const data = {

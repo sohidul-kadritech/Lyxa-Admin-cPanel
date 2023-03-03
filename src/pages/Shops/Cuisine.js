@@ -47,8 +47,10 @@ function Cuisine() {
   // SUBMIT DATA
   // eslint-disable-next-line consistent-return
   const submitCuisine = () => {
-    if (!name) {
-      return toast.warn('Please Add Cuisine Name', {
+    const duplicate = cuisines.find((item) => item.name.replace(/\s/g, '') === name.replace(/\s/g, ''));
+
+    if (duplicate !== undefined) {
+      toast.warn('Cuisine Name Already Exists', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
         hideProgressBar: true,
@@ -57,6 +59,20 @@ function Cuisine() {
         draggable: true,
         progress: undefined,
       });
+      return;
+    }
+
+    if (!name) {
+      toast.warn('Please Add Cuisine Name', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
     }
 
     submitDataToServer();
