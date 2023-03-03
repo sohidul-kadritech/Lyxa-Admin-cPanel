@@ -10,10 +10,11 @@ import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import { successMsg } from '../../../helpers/successMsg';
-import { IMAGE_UPLOAD, SINGLE_DEAL } from '../../../network/Api';
+// eslint-disable-next-line no-unused-vars
+import { IMAGE_UPLOAD } from '../../../network/Api';
 import requestApi from '../../../network/httpRequest';
 import { removeAllSelectedGalleryImage } from '../../../store/action/galleryAction';
-import { addDeal, editDeal, getAllTags, updateTagsSearchKey } from '../../../store/Deal/dealAction';
+import { addDeal, editDeal, getAllDeal, getAllTags, updateTagsSearchKey } from '../../../store/Deal/dealAction';
 import ImageSelectionDialog from '../../Utility/ImageSelectionDialog';
 
 function DealsAdd() {
@@ -47,35 +48,38 @@ function DealsAdd() {
   };
 
   // CALL API
-  const callApi = async (dealId) => {
-    if (dealId) {
-      try {
-        const {
-          data: { status, error, data = null },
-        } = await requestApi().request(SINGLE_DEAL + dealId);
-        if (status) {
-          updateData(data.deal);
-        } else {
-          successMsg(error, 'error');
-        }
-      } catch (error) {
-        successMsg(error, 'error');
-      }
-    } else {
-      history.push('/deals/list', { replace: true });
-    }
-  };
+  // const callApi = async (dealId) => {
+  //   if (dealId) {
+  //     try {
+  //       const {
+  //         data: { status, error, data = null },
+  //       } = await requestApi().request(SINGLE_DEAL + dealId);
+  //       if (status) {
+  //         updateData(data.deal);
+  //       } else {
+  //         successMsg(error, 'error');
+  //       }
+  //     } catch (error) {
+  //       successMsg(error, 'error');
+  //     }
+  //   } else {
+  //     history.push('/deals/list', { replace: true });
+  //   }
+  // };
 
   useEffect(() => {
     if (id) {
       const findDeal = deals.find((item) => item._id === id);
+
       if (findDeal) {
         updateData(findDeal);
-      } else {
-        callApi(id);
       }
     }
-  }, [id]);
+
+    if (deals?.length === 0) {
+      dispatch(getAllDeal());
+    }
+  }, [id, deals]);
 
   // GET ALL TAGS
   useEffect(() => {
@@ -106,7 +110,6 @@ function DealsAdd() {
       image,
       tag: tag?._id,
     };
-    console.log(data);
     if (id) {
       dispatch(
         editDeal({
@@ -160,7 +163,18 @@ function DealsAdd() {
     e.preventDefault();
 
     if (requiredImage && !image) {
-      return successMsg('Choose a image');
+      successMsg('Choose a image');
+      return;
+    }
+
+    // check for existing deals
+    const dupicate = deals.find(
+      (item) => item?.name.replace(/\s/g, '') === name.replace(/\s/g, '') && item?.type === shopType
+    );
+
+    if (dupicate !== undefined) {
+      successMsg('Deal name already used for this shop type');
+      return;
     }
 
     if (shopType === 'restaurant' && image) {
