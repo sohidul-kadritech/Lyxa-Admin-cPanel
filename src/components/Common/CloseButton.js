@@ -4,7 +4,7 @@ import { IconButton, styled } from '@mui/material';
 const Button = styled(IconButton)(({ theme }) => ({
   color: '#000',
   '&:hover': {
-    background: theme.palette.grey[500],
+    background: theme.palette.grey[300],
   },
 }));
 

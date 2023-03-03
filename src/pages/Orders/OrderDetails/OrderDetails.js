@@ -394,7 +394,6 @@ function OrderDetails() {
                     />
                   </div>
                 </Col>
-
                 <Col xl={6}>
                   <div className="d-flex justify-content-between align-items-center" style={{ height: '37px' }}>
                     <h5 className="text-dark">Delivery Address</h5>
@@ -484,22 +483,27 @@ function OrderDetails() {
                 <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge?.totalDropAmount} />
               </Summery>
               {/* order cancel details */}
-              {order?.userCancelTnx !== null && (
-                <>
-                  <h5 className="text-dark" style={{ marginBottom: '30px', marginTop: '30px' }}>
-                    Order Cancel Amount Details
-                  </h5>
-                  <Summery>
-                    <SummaryInfo
-                      title="Refund Type"
-                      value={order?.userCancelTnx?.isRefund ? 'Full Refund' : 'Partial Refund'}
-                    />
-                    <SummaryInfo title="Admin Cut" value={order?.userCancelTnx?.adminCut} />
-                    <SummaryInfo title="Rider Cut" value={order?.userCancelTnx?.deliveryBoyCut} />
-                    <SummaryInfo title="Shop Cut" value={order?.userCancelTnx?.shopCut} />
-                    <SummaryInfo title="Total Refund" value={order?.userCancelTnx?.amount} />
-                  </Summery>
-                </>
+              {order?.orderStatus === 'cancelled' && (
+                <h5 className="text-dark" style={{ marginBottom: '30px', marginTop: '30px' }}>
+                  Order Cancel Amount Details
+                </h5>
+              )}
+              {order?.userCancelTnx && (
+                <Summery>
+                  <SummaryInfo
+                    title="Refund Type"
+                    value={order?.userCancelTnx?.isRefund ? 'Full Refund' : 'Partial Refund'}
+                  />
+                  <SummaryInfo title="Admin Cut" value={order?.userCancelTnx?.adminCut} />
+                  <SummaryInfo title="Rider Cut" value={order?.userCancelTnx?.deliveryBoyCut} />
+                  <SummaryInfo title="Shop Cut" value={order?.userCancelTnx?.shopCut} />
+                  <SummaryInfo title="Total Refund" value={order?.userCancelTnx?.amount} />
+                </Summery>
+              )}
+              {order?.orderStatus === 'cancelled' && !order?.userCancelTnx && (
+                <Summery>
+                  <SummaryInfo title="Refund Type" value="No Refund" />
+                </Summery>
               )}
             </CardBody>
           </Card>

@@ -97,6 +97,10 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
           variant="h5"
           sx={{
             flexShrink: 0,
+            marginTop: {
+              xl: '0px',
+              lg: '6px',
+            },
           }}
         >
           Type
@@ -118,7 +122,7 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
               flexShrink: 0,
             }}
           >
-            Faq Type
+            FAQ Type
           </Typography>
           <OptionsSelect
             items={faqTypeOptions}
