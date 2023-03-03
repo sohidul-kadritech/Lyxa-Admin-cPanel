@@ -53,7 +53,7 @@ const supportTypeOptions = [
   },
   {
     value: 'faq',
-    label: 'Faq Support',
+    label: 'FAQ',
   },
 ];
 
@@ -73,13 +73,13 @@ const breadcrumbItems = [
 const getTypeValue = (type) => {
   switch (type) {
     case 'user':
-      return 'User Faq';
+      return 'User FAQ';
 
     case 'shop':
-      return 'Shop FaQ';
+      return 'Shop FAQ';
 
     case 'deliveryBoy':
-      return 'Delivery Boy Faq';
+      return 'Delivery Boy FAQ';
 
     case 'accountSupport':
       return 'Account Support';
@@ -217,12 +217,14 @@ export default function Faq() {
       id: 1,
       headerName: 'Q&A',
       field: 'question',
-      flex: 1,
+      flex: 4,
       disableColumnFilter: true,
       sortable: false,
       renderCell: (params) => (
         <Stack width="100%" spacing={2}>
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{params?.value}</span>
+          <Typography variant="body1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
+            {params?.value}
+          </Typography>
           <Typography variant="body3" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
             {params?.row?.ans}
           </Typography>
@@ -233,14 +235,26 @@ export default function Faq() {
       id: 2,
       headerName: 'Type',
       field: 'type',
+      headerAlign: 'center',
+      align: 'center',
       sortable: false,
-      renderCell: (params) => <span className="text-capitalize">{getTypeValue(params?.value)}</span>,
+      flex: 1,
+      minWidth: 200,
+      renderCell: (params) => (
+        <Typography variant="body1" className="text-capitalize">
+          {getTypeValue(params?.value)}
+        </Typography>
+      ),
     },
     {
       id: 3,
       headerName: 'Status',
       field: 'status',
       sortable: false,
+      flex: 1,
+      minWidth: 100,
+      headerAlign: 'center',
+      align: 'center',
       renderCell: ({ value }) => (
         <Chip
           label={value === 'active' ? 'Active' : 'Inactive'}
@@ -258,12 +272,13 @@ export default function Faq() {
       field: 'createdAt',
       headerName: 'Created',
       sortable: false,
-      valueFormatter: (params) => {
-        if (!params?.value) {
-          return '';
-        }
-        return new Date(params?.value).toLocaleDateString();
-      },
+      flex: 1,
+      minWidth: 100,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => (
+        <Typography variant="body1">{new Date(params?.value || undefined).toLocaleDateString()}</Typography>
+      ),
     },
     {
       id: 5,
@@ -272,7 +287,8 @@ export default function Faq() {
       headerAlign: 'right',
       align: 'right',
       sortable: false,
-      minWidth: 150,
+      flex: 1,
+      minWidth: 100,
       renderCell: (params) => (
         <ThreeDotsMenu
           menuItems={['Edit', 'Delete']}
@@ -299,13 +315,16 @@ export default function Faq() {
 
   return (
     <GlobalWrapper padding>
-      <Box className="page-content">
+      <Box className="page-content2">
         <Grid container sx={{ height: 'calc(100vh - 130px)', overflowY: 'hidden' }}>
           {/* left */}
           <Grid
             container
             md={isRightBarOpen ? 8 : 12}
-            pr={isRightBarOpen ? 10 : 0}
+            pr={{
+              xl: isRightBarOpen ? 10 : 0,
+              lg: isRightBarOpen ? 5 : 0,
+            }}
             sx={{
               height: '100%',
               overflowY: 'scroll',
@@ -452,7 +471,10 @@ export default function Faq() {
           <Grid
             container
             md={4}
-            pl={10}
+            pl={{
+              xl: 10,
+              lg: 5,
+            }}
             sx={{
               borderLeft: `2px solid ${theme.palette.grey[200]}`,
               height: '100%',
@@ -463,9 +485,16 @@ export default function Faq() {
           >
             <Grid xs={12}>
               <Paper>
-                <Typography variant="h2" pt={9} pb={2}>
-                  {rightBarTitle(currentTab)}
-                </Typography>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" pt={9} pb={2}>
+                  <Typography variant="h2">{rightBarTitle(currentTab)}</Typography>
+                  <Box>
+                    <CloseButton
+                      onClick={() => {
+                        setIsRightBarOpen(false);
+                      }}
+                    />
+                  </Box>
+                </Stack>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" pr={1}>
                   <Box>
                     {/* tab headers */}
@@ -478,13 +507,6 @@ export default function Faq() {
                       <Tab label="Edit FAQ" className={`${currentFaq?._id ? '' : 'd-none'}`} />
                       <Tab label="Add New" />
                     </Tabs>
-                  </Box>
-                  <Box>
-                    <CloseButton
-                      onClick={() => {
-                        setIsRightBarOpen(false);
-                      }}
-                    />
                   </Box>
                 </Stack>
                 {/* tab bodies */}

@@ -56,8 +56,14 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     display: 'none',
   },
   '& .MuiDataGrid-columnHeaderTitle': {
-    fontSize: '18px',
-    fontWeight: 600,
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '18px',
+      fontWeight: 600,
+    },
+    [theme.breakpoints.up('lg')]: {
+      fontSize: '16px',
+      fontWeight: 600,
+    },
   },
   '& .MuiDataGrid-footerContainer': {
     display: 'none',

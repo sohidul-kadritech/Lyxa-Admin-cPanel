@@ -102,9 +102,12 @@
   padding: $header-height calc(#{$grid-gutter-width} / 2) $footer-height calc(#{$grid-gutter-width} / 2);
 }
 
+.page-content2 {
+  padding: $header-height 0 $footer-height 0;
+}
+
 .header-item {
   height: $header-height;
-  box-shadow: none !important;
   color: $header-item-color;
   border: 0;
   border-radius: 0px;

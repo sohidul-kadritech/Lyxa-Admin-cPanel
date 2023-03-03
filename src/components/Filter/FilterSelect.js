@@ -1,12 +1,15 @@
-import { MenuItem, OutlinedInput, Select, styled } from '@mui/material';
+import { MenuItem, OutlinedInput, Select, styled, useTheme } from '@mui/material';
 import pxToRem from '../../helpers/pxToRem';
 
 const StyledSelect = styled(Select)(({ theme }) => ({
   minHeight: 'auto',
-  fontSize: `${pxToRem(14)}rem`,
+  fontSize: `${pxToRem(12)}rem!important`,
   fontWeight: 400,
   background: theme.palette.grey[200],
   borderRadius: '50px',
+  [theme.breakpoints.up('xl')]: {
+    fontSize: `${pxToRem(14)}rem!important`,
+  },
   '&:hover': {
     background: theme.palette.grey[300],
   },
@@ -25,6 +28,8 @@ const StyledSelect = styled(Select)(({ theme }) => ({
 }));
 
 export default function FilterSelect({ items, placeholder, sx, ...props }) {
+  const theme = useTheme();
+
   return (
     <StyledSelect
       MenuProps={{
@@ -44,7 +49,18 @@ export default function FilterSelect({ items, placeholder, sx, ...props }) {
       {...props}
     >
       {items.map((item) => (
-        <MenuItem key={item.value} value={item.value}>
+        <MenuItem
+          key={item.value}
+          value={item.value}
+          sx={{
+            [theme.breakpoints.up('lg')]: {
+              fontSize: '12px',
+            },
+            [theme.breakpoints.up('xl')]: {
+              fontSize: '14px',
+            },
+          }}
+        >
           {item.label}
         </MenuItem>
       ))}

@@ -3,5 +3,8 @@ export default function Button() {
     defaultProps: {
       disableElevation: true,
     },
+    styleOverrides: {
+      root: {},
+    },
   };
 }

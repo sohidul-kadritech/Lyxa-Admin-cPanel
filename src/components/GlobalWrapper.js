@@ -1,7 +1,20 @@
 import { Box } from '@mui/material';
 
 function GlobalWrapper({ children, padding }) {
-  return <Box sx={padding ? { paddingLeft: '40px', paddingRight: '40px', height: '100%' } : {}}>{children}</Box>;
+  return (
+    <Box
+      pr={{
+        xl: padding ? 10 : 0,
+        lg: padding ? 5 : 0,
+      }}
+      pl={{
+        xl: padding ? 10 : 0,
+        lg: padding ? 5 : 0,
+      }}
+    >
+      {children}
+    </Box>
+  );
 }
 
 export default GlobalWrapper;

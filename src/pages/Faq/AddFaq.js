@@ -20,7 +20,7 @@ const initialFaq = {
 };
 
 const faqUpperOptions = [
-  { label: 'Faq', value: 'faq' },
+  { label: 'FAQ', value: 'faq' },
   { label: 'Account Support', value: 'accountSupport' },
   { label: 'Order Support', value: 'orderSupport' },
 ];
@@ -83,14 +83,23 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
 
   return (
     <Stack spacing={6}>
-      <Stack direction="row" alignItems="center" spacing={5}>
+      <Stack
+        direction="row"
+        spacing={5}
+        sx={{
+          alignItems: {
+            xl: 'center',
+            lg: 'start',
+          },
+        }}
+      >
         <Typography
           variant="h5"
           sx={{
             flexShrink: 0,
           }}
         >
-          Choose Type
+          Type
         </Typography>
         <OptionsSelect
           items={faqUpperOptions}
@@ -109,7 +118,7 @@ export default function AddFaq({ submitHandler, isEdit, faq, closeHandler }) {
               flexShrink: 0,
             }}
           >
-            Chosse Faq Type
+            Faq Type
           </Typography>
           <OptionsSelect
             items={faqTypeOptions}
