@@ -261,14 +261,7 @@ function OrderDetails() {
     <GlobalWrapper>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumb
-            maintitle="Lyxa"
-            breadcrumbItem="Details"
-            title="Order"
-            // loading={loading}
-            // callList={callShopList}
-            isRefresh={false}
-          />
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Order" isRefresh={false} />
 
           {isZoom ? (
             <Lightbox
@@ -477,7 +470,7 @@ function OrderDetails() {
                   </Summery>
                 </Col>
               </Row>
-
+              {/* order amount details */}
               <h5 className="text-dark" style={{ marginBottom: '30px' }}>
                 Order Amount Details
               </h5>
@@ -490,6 +483,24 @@ function OrderDetails() {
                 <SummaryInfo title="Lyxa VAT" value={order?.vatAmount?.vatForAdmin} />
                 <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge?.totalDropAmount} />
               </Summery>
+              {/* order cancel details */}
+              {order?.userCancelTnx !== null && (
+                <>
+                  <h5 className="text-dark" style={{ marginBottom: '30px', marginTop: '30px' }}>
+                    Order Cancel Amount Details
+                  </h5>
+                  <Summery>
+                    <SummaryInfo
+                      title="Refund Type"
+                      value={order?.userCancelTnx?.isRefund ? 'Full Refund' : 'Partial Refund'}
+                    />
+                    <SummaryInfo title="Admin Cut" value={order?.userCancelTnx?.adminCut} />
+                    <SummaryInfo title="Rider Cut" value={order?.userCancelTnx?.deliveryBoyCut} />
+                    <SummaryInfo title="Shop Cut" value={order?.userCancelTnx?.shopCut} />
+                    <SummaryInfo title="Total Refund" value={order?.userCancelTnx?.amount} />
+                  </Summery>
+                </>
+              )}
             </CardBody>
           </Card>
 
