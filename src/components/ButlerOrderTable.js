@@ -31,6 +31,7 @@ import {
   updateButlerOrderIsUpdated,
   updateButlerOrderStatus,
 } from '../store/Butler/butlerActions';
+import CloseButton from './Common/CloseButton';
 import TableLoader from './Common/TableLoader';
 import OptionsSelect from './Form/OptionsSelect';
 import StyledTable from './StyledTable';
@@ -360,9 +361,15 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
           }}
         >
           <Box padding={5}>
-            <Typography variant="h3" mb={8}>
-              Update Order Status
-            </Typography>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={8}>
+              <Typography variant="h3">Update Order Status</Typography>
+              <CloseButton
+                onClick={() => {
+                  setUpdateStatusModal(false);
+                  setOrderStatus('');
+                }}
+              />
+            </Stack>
             <Stack spacing={6}>
               <FormControl>
                 <InputLabel>Select Status</InputLabel>
@@ -436,11 +443,16 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
           }}
         >
           <Box padding={5}>
-            <Typography variant="h3" mb={8}>
-              Add Flag
-            </Typography>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={6}>
+              <Typography variant="h3">Add Flag</Typography>
+              <CloseButton
+                onClick={() => {
+                  setFlagModal(false);
+                }}
+              />
+            </Stack>
             <Stack spacing={6}>
-              <Stack direction="row" spacing={5}>
+              <Stack direction="row" spacing={5} alignItems="center">
                 <Typography variant="h5">Choose Type</Typography>
                 <OptionsSelect
                   value={flagType}
