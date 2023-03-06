@@ -68,14 +68,17 @@ export const updateButlerOrderStatus = (values) => async (dispatch, getState) =>
 
     if (data.status) {
       successMsg(data.message, 'success');
-      const updatedOrder = oldList.find((item) => item?._id === values.orderId);
+
+      const newOrderList = oldList.map((item) => {
+        if (item?._id === values.orderId) {
+          return { ...item, orderStatus: values.orderStatus };
+        }
+        return item;
+      });
 
       dispatch({
         type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_SUCCESS,
-        payload: [
-          ...oldList.filter((item) => item?._id !== values?.orderId),
-          { ...updatedOrder, orderStatus: values.orderStatus },
-        ],
+        payload: newOrderList,
       });
     } else {
       successMsg(data.error, 'error');
