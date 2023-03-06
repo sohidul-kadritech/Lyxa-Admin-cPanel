@@ -14,6 +14,7 @@ export const getAllRatings = () => async (dispatch) => {
 
     if (data?.status) {
       const list = data?.data?.ratingSetting?.filter((item) => item?.tags?.length > 0);
+      // const newList = list.map((item) => item);
       dispatch({
         type: actionTypes.GET_ALL_RATINGS_REQUEST_SUCCESS,
         payload: list,
@@ -50,12 +51,19 @@ export const addNewRating = (ratings) => async (dispatch, getState) => {
     console.log({ storedList });
 
     if (data?.status) {
+      let isFound = false;
+
       const newList = storedList.map((item) => {
         if (item?.rating === Number(ratings?.rating)) {
+          isFound = true;
           return data?.data?.ratingSetting;
         }
         return item;
       });
+
+      if (isFound === false) {
+        newList.push(data?.data?.ratingSetting);
+      }
 
       dispatch({
         type: actionTypes.ADD_NEW_RATING_REQUEST_SUCCESS,

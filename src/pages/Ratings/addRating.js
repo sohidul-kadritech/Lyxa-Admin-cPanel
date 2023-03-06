@@ -65,13 +65,12 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
     if (isUpdated) {
       console.log('triggered');
       closeHandler();
-      updateRatingIsUpdated(false);
+      dispatch(updateRatingIsUpdated(false));
     }
   }, [isAdded, isUpdated]);
 
   useEffect(() => {
     if (rating?.tags) {
-      console.log(rating);
       setAlltags([...rating.tags]);
     }
   }, [rating]);
@@ -116,6 +115,20 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
               }}
             />
           </Stack>
+          <TextField
+            label="Tag"
+            placeholder="Press 'Enter' to add"
+            name="tag"
+            variant="outlined"
+            value={tag}
+            onChange={(e) => {
+              setTag(e.target.value);
+            }}
+            onKeyUp={handleAddTag}
+            sx={{
+              width: '100%',
+            }}
+          />
           <Stack spacing={3}>
             <Typography
               variant="h5"
@@ -168,20 +181,6 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
               ))}
             </Box>
           </Stack>
-          <TextField
-            label="Tag"
-            placeholder="Press 'Enter' to add"
-            name="tag"
-            variant="outlined"
-            value={tag}
-            onChange={(e) => {
-              setTag(e.target.value);
-            }}
-            onKeyUp={handleAddTag}
-            sx={{
-              width: '100%',
-            }}
-          />
         </>
       )}
       {isEdit && (

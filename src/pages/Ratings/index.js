@@ -1,5 +1,7 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
 // mui
+import ReplayIcon from '@mui/icons-material/Replay';
 import {
   Box,
   Button,
@@ -8,11 +10,11 @@ import {
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
   Unstable_Grid2 as Grid,
   useTheme,
 } from '@mui/material';
-
 // third party
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +24,7 @@ import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import CloseButton from '../../components/Common/CloseButton';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import TableLoader from '../../components/Common/TableLoader';
+import FilterButton from '../../components/Filter/FilterButton';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/StyledTable';
 import TabPanel from '../../components/TabPanel';
@@ -60,6 +63,8 @@ export default function RatingSettings() {
   const callGetAllRating = () => {
     dispatch(getAllRatings());
   };
+
+  console.log(ratings.map((items) => items).sort((a, b) => a?.rating - b?.rating));
 
   // add faq
   const callAddRating = (tags) => {
@@ -104,13 +109,23 @@ export default function RatingSettings() {
     }
   };
 
+  // get stars
+  const getStars = (stars) => {
+    let str = '';
+
+    for (let i = 0; i < stars; i++) {
+      str += '★';
+    }
+    return str;
+  };
+
   // columns
   const columns = [
     {
       id: 1,
       headerName: 'Comments',
       field: 'tags',
-      flex: 6,
+      flex: 4,
       disableColumnFilter: true,
       sortable: false,
       renderCell: ({ value }) => (
@@ -131,16 +146,16 @@ export default function RatingSettings() {
     },
     {
       id: 2,
-      headerName: 'Star',
+      headerName: 'Rating',
       field: 'rating',
-      headerAlign: 'center',
-      align: 'center',
+      headerAlign: 'left',
+      align: 'left',
       sortable: false,
       flex: 1,
-      minWidth: 200,
+      minWidth: 100,
       renderCell: ({ value }) => (
         <Typography variant="body1" className="text-capitalize">
-          {value}
+          {getStars(value)}
         </Typography>
       ),
     },
@@ -168,7 +183,7 @@ export default function RatingSettings() {
       minWidth: 100,
       renderCell: (params) => (
         <ThreeDotsMenu
-          menuItems={['Edit', 'Delete']}
+          menuItems={['Edit']}
           handleMenuClick={(menu) => {
             threeDotHandler(menu, params?.row);
           }}
@@ -209,7 +224,25 @@ export default function RatingSettings() {
                 }}
               />
               <Paper>
-                <Stack direction="row" pt={10} pb={3} justifyContent="flex-end">
+                <Stack direction="row" pt={10} pb={3} justifyContent="space-between">
+                  <Tooltip title="Refresh">
+                    <Box>
+                      <FilterButton
+                        label="Refresh"
+                        className={`${loading ? 'refresh-animate' : ''}`}
+                        endIcon={<ReplayIcon />}
+                        onClick={() => {
+                          callGetAllRating();
+                        }}
+                        sx={{
+                          gap: '8px',
+                          '& .MuiButton-endIcon': {
+                            marginLeft: '0px',
+                          },
+                        }}
+                      />
+                    </Box>
+                  </Tooltip>
                   <Button
                     variant="contained"
                     color="primary"
@@ -224,7 +257,7 @@ export default function RatingSettings() {
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
                   <StyledTable
                     columns={columns}
-                    rows={ratings}
+                    rows={ratings.map((items) => items).sort((a, b) => a?.rating - b?.rating)}
                     getRowId={(params) => params?._id}
                     rowHeight={60}
                     getRowHeight={() => 'auto'}
@@ -297,7 +330,7 @@ export default function RatingSettings() {
                     />
                   </TabPanel>
                   <TabPanel index={1} value={currentTab}>
-                    <AddRatings submitHandler={callAddRating} />
+                    <AddRatings submitHandler={callAddRating} closeHandler={() => {}} />
                   </TabPanel>
                 </Box>
               </Paper>
