@@ -121,7 +121,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
   // update order status
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
-  const [newOrderStatus, setOrderStatus] = useState('');
+  const [newOrderStatus, setNewOrderStatus] = useState('');
   const [currentOrder, setCurrentOrder] = useState({});
   const [nearByBulters, setNearByBulters] = useState([]);
   const [nearByButlersIsLoading, setNearByButlersIsLoading] = useState(false);
@@ -133,8 +133,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const [flagType, setFlagType] = useState([]);
   const [flagComment, setFlagComment] = useState('');
 
-  console.log(currentOrder);
-
   // handle flag type change
   const handleFlagTypeChange = (value) => {
     if (flagType.includes(value)) {
@@ -145,7 +143,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   };
 
   const handleOrderStatusChange = async (newStatus) => {
-    setOrderStatus(newStatus);
+    setNewOrderStatus(newStatus);
     if (newStatus === 'accepted_delivery_boy') {
       try {
         setNearByButlersIsLoading(true);
@@ -339,13 +337,26 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     },
   ];
 
+  const resetUpdateStatusModal = () => {
+    setUpdateStatusModal(false);
+    setNewOrderStatus('');
+    setCurrentButlerSearchKey('');
+    setCurrentButler({});
+  };
+
+  const resetFlagModal = () => {
+    setFlagModal(false);
+    setFlagType([]);
+    setFlagComment('');
+  };
+
   useEffect(() => {
     if (isUpdated) {
-      setUpdateStatusModal(false);
+      resetUpdateStatusModal();
       dispatch(updateButlerOrderIsUpdated(false));
     }
     if (isFlagged) {
-      setFlagModal(false);
+      resetFlagModal();
       dispatch(updateButlerOrderIsFlagged(false));
     }
   }, [isUpdated, isFlagged]);
@@ -386,8 +397,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
           alignItems: 'center',
         }}
         onClose={() => {
-          setUpdateStatusModal(false);
-          setOrderStatus('');
+          resetUpdateStatusModal();
         }}
       >
         <Paper
@@ -400,8 +410,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
               <Typography variant="h3">Update Order Status</Typography>
               <CloseButton
                 onClick={() => {
-                  setUpdateStatusModal(false);
-                  setOrderStatus('');
+                  resetUpdateStatusModal();
                 }}
               />
             </Stack>
@@ -415,11 +424,13 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     handleOrderStatusChange(e.target.value);
                   }}
                 >
-                  {butlerOrderStatusOptionsForAdminUpdate.map((item) => (
-                    <MenuItem key={item.value} value={item.value}>
-                      {item.label}
-                    </MenuItem>
-                  ))}
+                  {butlerOrderStatusOptionsForAdminUpdate
+                    .filter((item) => item.value !== currentOrder?.orderStatus)
+                    .map((item) => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
               {/* near by delivery boys */}
@@ -464,7 +475,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       <Modal
         open={flagModal}
         onClose={() => {
-          setFlagModal(false);
+          resetFlagModal();
         }}
         sx={{
           display: 'inline-flex',
@@ -482,7 +493,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
               <Typography variant="h3">Add Flag</Typography>
               <CloseButton
                 onClick={() => {
-                  setFlagModal(false);
+                  resetFlagModal();
                 }}
               />
             </Stack>
@@ -501,7 +512,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
             ) : (
               <Stack spacing={6}>
                 <Stack direction="row" spacing={5} alignItems="center">
-                  <Typography variant="h6">Choose Type</Typography>
+                  <Typography variant="h5">Choose Type</Typography>
                   <OptionsSelect
                     value={flagType}
                     items={flagTypeOptions.filter(

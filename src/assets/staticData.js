@@ -242,7 +242,7 @@ export const butlerOrderStatusOptionsAll = [
 ];
 
 export const butlerOrderStatusOptionsForAdminUpdate = [
-  { label: 'Accepted by delivery boy', value: 'accepted_delivery_boy' },
+  { label: 'Accepted by rider', value: 'accepted_delivery_boy' },
   { label: 'On the way', value: 'order_on_the_way' },
   { label: 'Delivered', value: 'delivered' },
 ];
