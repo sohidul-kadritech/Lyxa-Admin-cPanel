@@ -17,7 +17,22 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   },
 }));
 
-export default function OptionsSelect({ items, value, onChange, sx, disabled, hideOnDisabled }) {
+export default function OptionsSelect({
+  items,
+  value,
+  multiple,
+  onChange,
+  sx,
+  disabled,
+  hideOnDisabled,
+  disableMultiple,
+}) {
+  const disabledSx = {
+    opacity: '.7',
+  };
+
+  let defaultSx = {};
+
   return (
     <Box
       sx={{
@@ -29,21 +44,31 @@ export default function OptionsSelect({ items, value, onChange, sx, disabled, hi
         },
       }}
     >
-      {items.map((item) => (
-        <StyledChip
-          disabled={disabled || undefined}
-          key={item.value}
-          label={item.label}
-          variant="contained"
-          className={`${item.value === value ? 'active' : ''} ${
-            hideOnDisabled && disabled && item.value !== value ? 'd-none' : ''
-          }`}
-          sx={{ ...(sx || {}) }}
-          onClick={() => {
-            onChange(item.value);
-          }}
-        />
-      ))}
+      {items.map((item) => {
+        const hide = !(hideOnDisabled && disabled)
+          ? false
+          : multiple
+          ? !value.includes(item.value)
+          : item.value !== value;
+        const active = multiple ? value.includes(item.value) : item.value === value;
+        const isDisabled = disabled ? true : disableMultiple ? disableMultiple.includes(item.value) : undefined;
+
+        defaultSx = disabled ? { ...defaultSx, ...disabledSx } : defaultSx;
+
+        return (
+          <StyledChip
+            disabled={isDisabled}
+            key={item.value}
+            label={item.label}
+            variant="contained"
+            className={`${active ? 'active' : ''} ${hide ? 'd-none' : ''}`}
+            sx={{ ...(sx || defaultSx) }}
+            onClick={() => {
+              onChange(item.value);
+            }}
+          />
+        );
+      })}
     </Box>
   );
 }
