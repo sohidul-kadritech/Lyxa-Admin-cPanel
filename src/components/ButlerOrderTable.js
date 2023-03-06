@@ -93,6 +93,25 @@ const flagTypeOptions = [
   { label: 'Butler', value: 'delivery' },
 ];
 
+// disabled flag options
+const getDisabledFlagOptions = (flags) => {
+  const list = [];
+
+  flags.forEach((item) => {
+    if (item.user) {
+      list.push('user');
+    }
+    if (item.delivery) {
+      list.push('delivery');
+    }
+  });
+
+  console.log({ flags });
+  console.log({ list });
+
+  return list;
+};
+
 export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const dispatch = useDispatch();
 
@@ -111,8 +130,19 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
   // flag order
   const [flagModal, setFlagModal] = useState(false);
-  const [flagType, setFlagType] = useState('user');
+  const [flagType, setFlagType] = useState([]);
   const [flagComment, setFlagComment] = useState('');
+
+  console.log(currentOrder);
+
+  // handle flag type change
+  const handleFlagTypeChange = (value) => {
+    if (flagType.includes(value)) {
+      setFlagType((prev) => prev.filter((val) => val !== value));
+    } else {
+      setFlagType((prev) => [...prev, value]);
+    }
+  };
 
   const handleOrderStatusChange = async (newStatus) => {
     setOrderStatus(newStatus);
@@ -151,16 +181,21 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       return;
     }
 
+    if (flagType.length === 0) {
+      successMsg('User type cannot be empty');
+      return;
+    }
+
     const data = {};
 
     data.orderId = currentOrder?._id;
     data.comment = flagComment;
 
-    if (flagType === 'user') {
+    if (flagType.includes('user')) {
       data.user = currentOrder?.user?._id;
     }
 
-    if (flagType === 'delivery') {
+    if (flagType.includes('delivery')) {
       data.delivery = currentOrder?.user?._id;
     }
 
@@ -451,36 +486,54 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                 }}
               />
             </Stack>
-            <Stack spacing={6}>
-              <Stack direction="row" spacing={5} alignItems="center">
-                <Typography variant="h5">Choose Type</Typography>
-                <OptionsSelect
-                  value={flagType}
-                  items={flagTypeOptions.filter((item) => currentOrder?.deliveryBoy?._id || item.value !== 'delivery')}
-                  onChange={setFlagType}
-                />
+            {currentOrder?.flag?.length === 2 ? (
+              <Stack spacing={3} mb={4}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  Everyone is already flagged!
+                </Typography>
+                <Typography variant="body2">Please check order details</Typography>
               </Stack>
-              <TextField
-                label="Comment"
-                variant="outlined"
-                fullWidth
-                value={flagComment}
-                onChange={(e) => {
-                  setFlagComment(e.target.value);
-                }}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={loading}
-                fullWidth
-                onClick={() => {
-                  addOrderFlag();
-                }}
-              >
-                Update
-              </Button>
-            </Stack>
+            ) : (
+              <Stack spacing={6}>
+                <Stack direction="row" spacing={5} alignItems="center">
+                  <Typography variant="h6">Choose Type</Typography>
+                  <OptionsSelect
+                    value={flagType}
+                    items={flagTypeOptions.filter(
+                      (item) => currentOrder?.deliveryBoy?._id || item.value !== 'delivery'
+                    )}
+                    onChange={handleFlagTypeChange}
+                    disableMultiple={getDisabledFlagOptions(currentOrder?.flag || [])}
+                    multiple
+                  />
+                </Stack>
+                <TextField
+                  label="Comment"
+                  variant="outlined"
+                  fullWidth
+                  value={flagComment}
+                  onChange={(e) => {
+                    setFlagComment(e.target.value);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={loading}
+                  fullWidth
+                  onClick={() => {
+                    addOrderFlag();
+                  }}
+                >
+                  Update
+                </Button>
+              </Stack>
+            )}
           </Box>
         </Paper>
       </Modal>
