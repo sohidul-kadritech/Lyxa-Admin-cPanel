@@ -277,4 +277,7 @@ export const UPDATE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/edit`;
 export const DELETE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/delete`;
 
 // RATING
-export const GET_ALL_RATINGS = `${ADMIN_ENDPOINT}/rating`;
+export const GET_ALL_RATINGS = `${ADMIN_ENDPOINT}/setting/rating`;
+export const ADD_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/add`;
+export const EDIT_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/edit`;
+export const DELETE_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/delete`;

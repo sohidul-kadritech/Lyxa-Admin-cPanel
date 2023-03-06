@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
 // mui
-import ReplayIcon from '@mui/icons-material/Replay';
 import {
   Box,
   Button,
@@ -9,7 +8,6 @@ import {
   Stack,
   Tab,
   Tabs,
-  Tooltip,
   Typography,
   Unstable_Grid2 as Grid,
   useTheme,
@@ -18,44 +16,19 @@ import {
 // third party
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { faqType } from '../../assets/staticData';
 
 // project import
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import CloseButton from '../../components/Common/CloseButton';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import TableLoader from '../../components/Common/TableLoader';
-import FilterButton from '../../components/Filter/FilterButton';
-import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/StyledTable';
 import TabPanel from '../../components/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
-import { successMsg } from '../../helpers/successMsg';
-import {
-  addChatReason,
-  deleteChatReason,
-  getAllChatReason,
-  updateChatReason,
-} from '../../store/ChatReason/chatReasonActions';
-import { addFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
-import AddFaq from './addRating';
-
-// const
-const supportTypeOptions = [
-  {
-    value: 'accountSupport',
-    label: 'Account Support',
-  },
-  {
-    value: 'orderSupport',
-    label: 'Order Support',
-  },
-  {
-    value: 'faq',
-    label: 'FAQ',
-  },
-];
+import { deleteChatReason } from '../../store/ChatReason/chatReasonActions';
+import { addNewRating, getAllRatings, updateRatings } from '../../store/ratings/ratingActions';
+import AddRatings from './addRating';
 
 // breadcrumb items
 const breadcrumbItems = [
@@ -64,119 +37,39 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/settings/support-reasons',
-    label: 'Support Reasons',
+    to: '/settings/ratings',
+    label: 'Ratings',
   },
-];
-
-// type value
-const getTypeValue = (type) => {
-  switch (type) {
-    case 'user':
-      return 'User FAQ';
-
-    case 'shop':
-      return 'Shop FAQ';
-
-    case 'deliveryBoy':
-      return 'Delivery Boy FAQ';
-
-    case 'accountSupport':
-      return 'Account Support';
-
-    case 'orderSupport':
-      return 'Order Support';
-
-    default:
-      return '';
-  }
-};
-
-// select status
-const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' },
 ];
 
 export default function RatingSettings() {
   const theme = useTheme();
-
   const dispatch = useDispatch();
-  const { faq: faqQueries, loading: faqLoading } = useSelector((store) => store.faqReducer);
-  const { chatReasons: chatReasonQueries, loading: chatReasonLoading } = useSelector(
-    (store) => store.chatReasonReducer
-  );
+
+  const { ratings, loading } = useSelector((store) => store.ratingReducer);
 
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [query, setQuery] = useState([]);
+  // const [query, setQuery] = useState([]);
 
   const [currentTab, setCurrentTab] = useState(0);
   const [currentFaq, setCurrentFaq] = useState({});
   const [deleteFaq, setDeleteFaq] = useState({});
 
-  // filters
-  const [type, setType] = useState('');
-  const [status, setStatus] = useState('');
-  const [isFilterApplied, setIsFilterApplied] = useState(false);
-  const [childType, setChildType] = useState('');
-
-  // faq validation
-  const queryValidation = (item) => {
-    switch (false) {
-      case Boolean(item?.type):
-        successMsg('Q&A type cannot be empty');
-        return false;
-
-      case Boolean(item?.ans?.trim()):
-        successMsg('Q&A answer cannot be empty');
-        return false;
-
-      case Boolean(item?.question?.trim()):
-        successMsg('Q&A question cannot be empty');
-        return false;
-
-      default:
-        return true;
-    }
+  // get all ratings
+  const callGetAllRating = () => {
+    dispatch(getAllRatings());
   };
 
-  // get all faqs
-  const callGetAllFaq = () => {
-    dispatch(getAllFaq());
-  };
-
-  // get all chatReason
-  const callGetAllChatReason = () => {
-    dispatch(getAllChatReason());
+  // add faq
+  const callAddRating = (tags) => {
+    dispatch(addNewRating(tags));
   };
 
   // update faq
   const callUpdateFaq = (item) => {
-    if (!queryValidation(item)) {
-      return;
-    }
-
-    if (item.type === 'orderSupport' || item.type === 'accountSupport') {
-      dispatch(updateChatReason({ ...item, answer: item.ans }));
-      return;
-    }
-
-    dispatch(updateFaq(item));
-  };
-
-  // add faq
-  const callAddFaq = (item) => {
-    if (!queryValidation(item)) {
-      return;
-    }
-
-    if (item.type === 'orderSupport' || item.type === 'accountSupport') {
-      dispatch(addChatReason({ ...item, answer: item.ans }));
-      return;
-    }
-
-    dispatch(addFaq(item));
+    console.log(item);
+    dispatch(updateRatings(item));
   };
 
   // delete faq
@@ -215,60 +108,44 @@ export default function RatingSettings() {
   const columns = [
     {
       id: 1,
-      headerName: 'Q&A',
-      field: 'question',
-      flex: 4,
+      headerName: 'Comments',
+      field: 'tags',
+      flex: 6,
       disableColumnFilter: true,
       sortable: false,
-      renderCell: (params) => (
-        <Stack width="100%" spacing={2}>
-          <Typography variant="body1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-            {params?.value}
-          </Typography>
-          <Typography variant="body3" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-            {params?.row?.ans}
-          </Typography>
-        </Stack>
+      renderCell: ({ value }) => (
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 2,
+            pt: 3,
+            pb: 3,
+          }}
+        >
+          {value.map((item, index) => (
+            <Chip key={index} label={item} color="info" variant="contained" />
+          ))}
+        </Box>
       ),
     },
     {
       id: 2,
-      headerName: 'Type',
-      field: 'type',
+      headerName: 'Star',
+      field: 'rating',
       headerAlign: 'center',
       align: 'center',
       sortable: false,
       flex: 1,
       minWidth: 200,
-      renderCell: (params) => (
+      renderCell: ({ value }) => (
         <Typography variant="body1" className="text-capitalize">
-          {getTypeValue(params?.value)}
+          {value}
         </Typography>
       ),
     },
     {
       id: 3,
-      headerName: 'Status',
-      field: 'status',
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: ({ value }) => (
-        <Chip
-          label={value === 'active' ? 'Active' : 'Inactive'}
-          sx={
-            value === 'active'
-              ? { background: '#e1f4d0', color: '#56ca00' }
-              : { background: '#ffcfce', color: '#ff0000' }
-          }
-          variant="contained"
-        />
-      ),
-    },
-    {
-      id: 4,
       field: 'createdAt',
       headerName: 'Created',
       sortable: false,
@@ -281,7 +158,7 @@ export default function RatingSettings() {
       ),
     },
     {
-      id: 5,
+      id: 4,
       field: 'action',
       headerName: 'Action',
       headerAlign: 'right',
@@ -301,17 +178,10 @@ export default function RatingSettings() {
   ];
 
   useEffect(() => {
-    if (faqQueries?.length === 0) {
-      callGetAllFaq();
+    if (ratings?.length === 0) {
+      callGetAllRating();
     }
-    if (chatReasonQueries?.length === 0) {
-      callGetAllChatReason();
-    }
-
-    const convertedChatReasons = chatReasonQueries.map((item) => ({ ...item, ans: item.answer }));
-
-    setQuery([...faqQueries, ...convertedChatReasons]);
-  }, [faqQueries, chatReasonQueries]);
+  }, [ratings]);
 
   return (
     <GlobalWrapper padding>
@@ -339,92 +209,7 @@ export default function RatingSettings() {
                 }}
               />
               <Paper>
-                <Stack direction="row" pt={10} pb={3} justifyContent="space-between">
-                  <Stack direction="row" spacing={3}>
-                    <Tooltip title="Support Type">
-                      <Box>
-                        <FilterSelect
-                          items={supportTypeOptions}
-                          placeholder="Type"
-                          value={type}
-                          onChange={(e) => {
-                            setType(e.target.value);
-                            setIsFilterApplied(true);
-
-                            if (e.target.value !== 'faq') {
-                              setChildType('');
-                            }
-                          }}
-                        />
-                      </Box>
-                    </Tooltip>
-                    {type === 'faq' && (
-                      <Tooltip title="Faq Type">
-                        <Box>
-                          <FilterSelect
-                            items={faqType}
-                            placeholder="Type"
-                            value={childType}
-                            onChange={(e) => {
-                              setChildType(e.target.value);
-                              setIsFilterApplied(true);
-                            }}
-                          />
-                        </Box>
-                      </Tooltip>
-                    )}
-                    <Tooltip title="Status Type">
-                      <Box>
-                        <FilterSelect
-                          items={statusOptions}
-                          placeholder="Status"
-                          value={status}
-                          onChange={(e) => {
-                            setStatus(e.target.value);
-                            setIsFilterApplied(true);
-                          }}
-                        />
-                      </Box>
-                    </Tooltip>
-                    <Tooltip className={`${isFilterApplied ? '' : 'd-none'}`} title="Clear Filter">
-                      <Box>
-                        <FilterButton
-                          label="Clear"
-                          sx={{
-                            background: 'rgb(63,63,63)',
-                            color: '#fff',
-                            '&:hover': {
-                              background: 'rgb(78,78,78)',
-                            },
-                          }}
-                          onClick={() => {
-                            setType('');
-                            setChildType('');
-                            setStatus('');
-                            setIsFilterApplied(false);
-                          }}
-                        />
-                      </Box>
-                    </Tooltip>
-                    <Tooltip title="Refresh">
-                      <Box>
-                        <FilterButton
-                          label="Refresh"
-                          className={`${faqLoading || chatReasonLoading ? 'refresh-animate' : ''}`}
-                          endIcon={<ReplayIcon />}
-                          onClick={() => {
-                            callGetAllFaq();
-                          }}
-                          sx={{
-                            gap: '8px',
-                            '& .MuiButton-endIcon': {
-                              marginLeft: '0px',
-                            },
-                          }}
-                        />
-                      </Box>
-                    </Tooltip>
-                  </Stack>
+                <Stack direction="row" pt={10} pb={3} justifyContent="flex-end">
                   <Button
                     variant="contained"
                     color="primary"
@@ -439,30 +224,20 @@ export default function RatingSettings() {
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
                   <StyledTable
                     columns={columns}
-                    rows={query
-                      .filter(
-                        (item) =>
-                          item.type === type ||
-                          type === '' ||
-                          (type === 'faq' &&
-                            item.type !== 'accountSupport' &&
-                            type === 'faq' &&
-                            item.type !== 'orderSupport')
-                      )
-                      .filter((item) => item.type === childType || childType === '')
-                      .filter((item) => item?.status === status || status === '')}
+                    rows={ratings}
                     getRowId={(params) => params?._id}
                     rowHeight={60}
+                    getRowHeight={() => 'auto'}
                     components={{
                       NoRowsOverlay: () => (
                         <Stack height="100%" alignItems="center" justifyContent="center">
-                          {faqLoading || chatReasonLoading ? '' : 'No Q&A found'}
+                          {loading ? '' : 'No Q&A found'}
                         </Stack>
                       ),
                     }}
                   />
                   {/* loading */}
-                  {faqLoading || chatReasonLoading ? <TableLoader /> : null}
+                  {loading ? <TableLoader /> : null}
                 </Box>
               </Paper>
             </Grid>
@@ -504,7 +279,7 @@ export default function RatingSettings() {
                         setCurrentTab(value);
                       }}
                     >
-                      <Tab label="Edit FAQ" className={`${currentFaq?._id ? '' : 'd-none'}`} />
+                      <Tab label="Edit" className={`${currentFaq?._id ? '' : 'd-none'}`} />
                       <Tab label="Add New" />
                     </Tabs>
                   </Box>
@@ -512,9 +287,9 @@ export default function RatingSettings() {
                 {/* tab bodies */}
                 <Box>
                   <TabPanel index={0} value={currentTab}>
-                    <AddFaq
+                    <AddRatings
                       isEdit
-                      faq={currentFaq}
+                      rating={currentFaq}
                       submitHandler={callUpdateFaq}
                       closeHandler={() => {
                         setIsRightBarOpen(false);
@@ -522,7 +297,7 @@ export default function RatingSettings() {
                     />
                   </TabPanel>
                   <TabPanel index={1} value={currentTab}>
-                    <AddFaq submitHandler={callAddFaq} />
+                    <AddRatings submitHandler={callAddRating} />
                   </TabPanel>
                 </Box>
               </Paper>
