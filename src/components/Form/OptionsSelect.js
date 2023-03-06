@@ -17,7 +17,7 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   },
 }));
 
-export default function OptionsSelect({ items, value, onChange, sx, disabled }) {
+export default function OptionsSelect({ items, value, onChange, sx, disabled, hideOnDisabled }) {
   return (
     <Box
       sx={{
@@ -35,7 +35,9 @@ export default function OptionsSelect({ items, value, onChange, sx, disabled }) 
           key={item.value}
           label={item.label}
           variant="contained"
-          className={`${item.value === value ? 'active' : ''}`}
+          className={`${item.value === value ? 'active' : ''} ${
+            hideOnDisabled && disabled && item.value !== value ? 'd-none' : ''
+          }`}
           sx={{ ...(sx || {}) }}
           onClick={() => {
             onChange(item.value);

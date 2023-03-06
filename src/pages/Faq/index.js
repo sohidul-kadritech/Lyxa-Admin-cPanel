@@ -79,7 +79,7 @@ const getTypeValue = (type) => {
       return 'Shop FAQ';
 
     case 'deliveryBoy':
-      return 'Delivery Boy FAQ';
+      return 'Rider FAQ';
 
     case 'accountSupport':
       return 'Account Support';
@@ -225,7 +225,10 @@ export default function Faq() {
           <Typography variant="body1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
             {params?.value}
           </Typography>
-          <Typography variant="body3" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
+          <Typography
+            variant="body3"
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', lineHeight: '1.5' }}
+          >
             {params?.row?.ans}
           </Typography>
         </Stack>

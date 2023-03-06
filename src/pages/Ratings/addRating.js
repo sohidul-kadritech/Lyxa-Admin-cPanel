@@ -18,26 +18,26 @@ const faqUpperOptions = [
   { label: '★★★★★', value: '5' },
 ];
 
+const initialCurrentRating = {
+  rating: '3',
+  tags: [],
+};
+
 export default function AddRatings({ submitHandler, isEdit, rating, closeHandler }) {
   const dispatch = useDispatch();
   const { loading, isAdded, isUpdated } = useSelector((store) => store.ratingReducer);
+
+  const [currentRating, setCurrentRating] = useState(initialCurrentRating);
 
   const [ratingType, setRatingType] = useState('3');
   const [tag, setTag] = useState('');
   const [alltags, setAlltags] = useState([]);
 
+  console.log(currentRating);
+  console.log(rating);
+
   const callSubmitHandler = () => {
-    if (isEdit) {
-      submitHandler({
-        ...rating,
-        tags: [...alltags],
-      });
-    } else {
-      submitHandler({
-        rating: ratingType,
-        tags: alltags,
-      });
-    }
+    submitHandler(currentRating);
   };
 
   const handleAddTag = (e) => {
@@ -45,21 +45,20 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
       if (tag.trim() === '') {
         return;
       }
-      setAlltags((prev) => [...prev, tag]);
+      setCurrentRating((prev) => ({ ...prev, tags: [tag, ...prev.tags] }));
       setTag('');
     }
   };
 
   const deleteTag = (index) => {
-    const newTags = alltags.filter((item, i) => i !== index);
-    setAlltags(newTags);
+    const newTags = currentRating?.tags?.filter((item, i) => i !== index);
+    setCurrentRating((prev) => ({ ...prev, tags: newTags }));
   };
 
   useEffect(() => {
     if (isAdded) {
-      setRatingType('3');
       setTag('');
-      setAlltags([]);
+      setCurrentRating(initialCurrentRating);
       dispatch(updateRatingIsAdded(false));
     }
     if (isUpdated) {
@@ -70,26 +69,93 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
 
   useEffect(() => {
     if (rating?.tags) {
-      setAlltags([...rating.tags]);
+      setCurrentRating({ ...rating });
     }
   }, [rating]);
 
+  console.log(currentRating?.rating);
+
   return (
     <Stack spacing={6}>
-      {!isEdit && (
-        <>
-          <Stack
-            direction="row"
-            spacing={5}
-            sx={{
-              alignItems: {
-                xl: 'center',
-                lg: 'start',
-              },
-            }}
-          >
+      <Stack
+        direction="row"
+        spacing={5}
+        sx={{
+          alignItems: {
+            xl: 'center',
+            lg: 'start',
+          },
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            flexShrink: 0,
+            marginTop: {
+              xl: '0px',
+              lg: '6px',
+            },
+          }}
+        >
+          Type
+        </Typography>
+        <OptionsSelect
+          items={faqUpperOptions}
+          value={`${currentRating?.rating}`}
+          hideOnDisabled
+          disabled={isEdit}
+          onChange={(value) => {
+            setCurrentRating((prev) => ({ ...prev, rating: value }));
+          }}
+          sx={{
+            '& .MuiChip-label': {
+              fontSize: '15px',
+            },
+          }}
+        />
+      </Stack>
+      <TextField
+        label="Tag"
+        placeholder="Press 'Enter' to add"
+        name="tag"
+        variant="outlined"
+        value={tag}
+        onChange={(e) => {
+          setTag(e.target.value);
+        }}
+        onKeyUp={handleAddTag}
+        sx={{
+          width: '100%',
+        }}
+      />
+      <Stack spacing={3}>
+        <Typography
+          variant="h5"
+          sx={{
+            flexShrink: 0,
+            marginTop: {
+              xl: '0px',
+              lg: '6px',
+            },
+          }}
+        >
+          New Tags
+        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 2,
+            background: 'rgba(0, 0, 0, 0.08)',
+            minHeight: '80px',
+            padding: 2,
+            borderRadius: 2,
+          }}
+        >
+          {currentRating?.tags?.length === 0 && (
             <Typography
-              variant="h5"
+              textAlign="center"
+              variant="body3"
               sx={{
                 flexShrink: 0,
                 marginTop: {
@@ -98,144 +164,22 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
                 },
               }}
             >
-              Type
+              Empty
             </Typography>
-            <OptionsSelect
-              items={faqUpperOptions}
-              value={ratingType}
-              disabled={isEdit}
-              onChange={(value) => {
-                setRatingType(value);
-              }}
-              sx={{
-                '& .MuiChip-label': {
-                  fontSize: '15px',
-                },
+          )}
+          {currentRating?.tags?.map((item, index) => (
+            <Chip
+              key={index}
+              label={item}
+              color="info"
+              variant="contained"
+              onDelete={() => {
+                deleteTag(index);
               }}
             />
-          </Stack>
-          <TextField
-            label="Tag"
-            placeholder="Press 'Enter' to add"
-            name="tag"
-            variant="outlined"
-            value={tag}
-            onChange={(e) => {
-              setTag(e.target.value);
-            }}
-            onKeyUp={handleAddTag}
-            sx={{
-              width: '100%',
-            }}
-          />
-          <Stack spacing={3}>
-            <Typography
-              variant="h5"
-              sx={{
-                flexShrink: 0,
-                marginTop: {
-                  xl: '0px',
-                  lg: '6px',
-                },
-              }}
-            >
-              New Tags
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 2,
-                background: 'rgba(0, 0, 0, 0.08)',
-                minHeight: '80px',
-                padding: 2,
-                borderRadius: 2,
-              }}
-            >
-              {alltags.length === 0 && (
-                <Typography
-                  textAlign="center"
-                  variant="body3"
-                  sx={{
-                    flexShrink: 0,
-                    marginTop: {
-                      xl: '0px',
-                      lg: '6px',
-                    },
-                  }}
-                >
-                  Empty
-                </Typography>
-              )}
-              {alltags.map((item, index) => (
-                <Chip
-                  key={index}
-                  label={item}
-                  color="info"
-                  variant="contained"
-                  onDelete={() => {
-                    deleteTag(index);
-                  }}
-                />
-              ))}
-            </Box>
-          </Stack>
-        </>
-      )}
-      {isEdit && (
-        <Stack spacing={3}>
-          <Typography
-            variant="h5"
-            sx={{
-              flexShrink: 0,
-              marginTop: {
-                xl: '0px',
-                lg: '6px',
-              },
-            }}
-          >
-            Tags
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 2,
-              background: 'rgba(0, 0, 0, 0.08)',
-              minHeight: '80px',
-              padding: 2,
-              borderRadius: 2,
-            }}
-          >
-            {alltags.length === 0 && (
-              <Typography
-                textAlign="center"
-                variant="body3"
-                sx={{
-                  flexShrink: 0,
-                  marginTop: {
-                    xl: '0px',
-                    lg: '6px',
-                  },
-                }}
-              >
-                Empty
-              </Typography>
-            )}
-            {alltags.map((item, index) => (
-              <Chip
-                key={index}
-                label={item}
-                color="info"
-                variant="contained"
-                onDelete={() => {
-                  deleteTag(index);
-                }}
-              />
-            ))}
-          </Box>
-        </Stack>
-      )}
+          ))}
+        </Box>
+      </Stack>
       <Button disableElevation variant="contained" disabled={loading} onClick={callSubmitHandler}>
         {isEdit ? 'Save' : 'Add New'}
       </Button>

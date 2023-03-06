@@ -2,19 +2,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 // mui
 import ReplayIcon from '@mui/icons-material/Replay';
-import {
-  Box,
-  Button,
-  Chip,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  Tooltip,
-  Typography,
-  Unstable_Grid2 as Grid,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, Chip, Paper, Stack, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 // third party
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,7 +15,6 @@ import TableLoader from '../../components/Common/TableLoader';
 import FilterButton from '../../components/Filter/FilterButton';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/StyledTable';
-import TabPanel from '../../components/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import { deleteChatReason } from '../../store/ChatReason/chatReasonActions';
 import { addNewRating, getAllRatings, updateRatings } from '../../store/ratings/ratingActions';
@@ -292,7 +279,7 @@ export default function RatingSettings() {
           >
             <Grid xs={12}>
               <Paper>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" pt={9} pb={2}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" pt={9} pb={10}>
                   <Typography variant="h2">{rightBarTitle(currentTab)}</Typography>
                   <Box>
                     <CloseButton
@@ -305,7 +292,7 @@ export default function RatingSettings() {
                 <Stack direction="row" justifyContent="space-between" alignItems="center" pr={1}>
                   <Box>
                     {/* tab headers */}
-                    <Tabs
+                    {/* <Tabs
                       value={currentTab}
                       onChange={(event, value) => {
                         setCurrentTab(value);
@@ -313,12 +300,12 @@ export default function RatingSettings() {
                     >
                       <Tab label="Edit" className={`${currentFaq?._id ? '' : 'd-none'}`} />
                       <Tab label="Add New" />
-                    </Tabs>
+                    </Tabs> */}
                   </Box>
                 </Stack>
                 {/* tab bodies */}
                 <Box>
-                  <TabPanel index={0} value={currentTab}>
+                  {currentTab === 0 && (
                     <AddRatings
                       isEdit
                       rating={currentFaq}
@@ -327,10 +314,8 @@ export default function RatingSettings() {
                         setIsRightBarOpen(false);
                       }}
                     />
-                  </TabPanel>
-                  <TabPanel index={1} value={currentTab}>
-                    <AddRatings submitHandler={callAddRating} closeHandler={() => {}} />
-                  </TabPanel>
+                  )}
+                  {currentTab === 1 && <AddRatings submitHandler={callAddRating} closeHandler={() => {}} />}
                 </Box>
               </Paper>
             </Grid>
