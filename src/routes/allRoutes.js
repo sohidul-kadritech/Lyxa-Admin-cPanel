@@ -60,6 +60,7 @@ import ProductAdd from '../pages/Product/ProductAdd/ProductAdd';
 import ProductDetails from '../pages/Product/ProductDetails/ProductDetails';
 import ProductList from '../pages/Product/ProductList/ProductList';
 import UnitTypes from '../pages/Product/UnitTypes/UnitTypes';
+import RatingSettings from '../pages/Ratings';
 import SellerDetails from '../pages/Seller/SellerDetails/SellerDetails';
 import Cuisine from '../pages/Shops/Cuisine';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
@@ -193,6 +194,7 @@ const userRoutes = [
   },
   // Chat Reason
   { path: '/settings/support-reasons', component: Faq },
+  { path: '/settings/ratings', component: RatingSettings },
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },

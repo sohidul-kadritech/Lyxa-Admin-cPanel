@@ -27,6 +27,7 @@ import imageUploadReducer from './ImageUpload/imageUploadReducer';
 import notificationReducer from './Notification/notificationReducer';
 import orderReducer from './order/orderReducer';
 import productReducer from './Product/productReducer';
+import ratingReducer from './ratings/ratingReducer';
 import folderCreateReducer from './reducer/image/folderCreate.reducer';
 import imageReducer from './reducer/image/imageFolder.reducer';
 import galleryReducer from './reducer/imageGallery.reducer';
@@ -74,6 +75,7 @@ const rootReducer = combineReducers({
   faqReducer,
   butlerReducer,
   chatReasonReducer,
+  ratingReducer,
 });
 
 export default rootReducer;

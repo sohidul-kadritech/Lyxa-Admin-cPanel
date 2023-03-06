@@ -364,6 +364,12 @@ export const adminMenuItem = [
         isSubmenu: false,
       },
       {
+        name: 'Ratings',
+        icon: 'fas fa-star',
+        link: '/settings/ratings',
+        isSubmenu: false,
+      },
+      {
         icon: 'fas fa-times',
         name: 'Cancel Reason',
         link: '/admin/cancel-reason',
