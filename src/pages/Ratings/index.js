@@ -64,8 +64,6 @@ export default function RatingSettings() {
     dispatch(getAllRatings());
   };
 
-  console.log(ratings.map((items) => items).sort((a, b) => a?.rating - b?.rating));
-
   // add faq
   const callAddRating = (tags) => {
     dispatch(addNewRating(tags));
@@ -195,8 +193,9 @@ export default function RatingSettings() {
   useEffect(() => {
     if (ratings?.length === 0) {
       callGetAllRating();
+      console.log('trrigereding');
     }
-  }, [ratings]);
+  }, []);
 
   return (
     <GlobalWrapper padding>
@@ -264,7 +263,7 @@ export default function RatingSettings() {
                     components={{
                       NoRowsOverlay: () => (
                         <Stack height="100%" alignItems="center" justifyContent="center">
-                          {loading ? '' : 'No Q&A found'}
+                          {loading ? '' : 'No Rating found'}
                         </Stack>
                       ),
                     }}

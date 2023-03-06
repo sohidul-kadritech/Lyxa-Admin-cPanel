@@ -63,7 +63,6 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
       dispatch(updateRatingIsAdded(false));
     }
     if (isUpdated) {
-      console.log('triggered');
       closeHandler();
       dispatch(updateRatingIsUpdated(false));
     }
