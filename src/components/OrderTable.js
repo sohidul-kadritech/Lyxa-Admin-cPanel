@@ -418,9 +418,11 @@ function OrderTable({ orders = [], status, loading }) {
                                 'Update Status',
                               account_type === 'admin' && 'Flag',
                               account_type === 'admin' &&
-                                item?.orderStatus !== 'cancelled' &&
-                                item?.orderStatus !== 'delivered' &&
-                                item?.orderStatus !== 'refused' &&
+                                !(
+                                  item?.orderStatus !== 'cancelled' &&
+                                  item?.orderStatus !== 'delivered' &&
+                                  item?.orderStatus !== 'refused'
+                                ) &&
                                 'Cancel Order',
                             ]}
                           />

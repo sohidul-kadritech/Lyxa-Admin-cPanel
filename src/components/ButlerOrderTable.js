@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Modal as Modal2, Spinner } from 'reactstrap';
+import { Form } from 'reactstrap';
 import styled from 'styled-components';
 import { butlerOrderStatusOptionsForAdminUpdate } from '../assets/staticData';
 import { successMsg } from '../helpers/successMsg';
@@ -116,19 +116,16 @@ const getDisabledFlagOptions = (flags) => {
     }
   });
 
-  console.log({ flags });
-  console.log({ list });
-
   return list;
 };
 
 const cancelOrderInit = {
-  cancelReason: '',
+  cancelReasonId: '',
   orderId: null,
   otherReason: '',
   refundType: 'none',
+  deliveryBoy: {},
   partialPayment: {
-    shop: '',
     deliveryBoy: '',
     admin: '',
   },
@@ -177,10 +174,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const [isOtherReason, setIsOtherReason] = useState(false);
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
   const [orderPayment, setOrderPayment] = useState({
-    shop: 0,
     deliveryBoy: 0,
     admin: 0,
   });
+
+  console.log(orderCancel);
 
   // handle flag type change
   const handleFlagTypeChange = (value) => {
@@ -277,27 +275,26 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       setFlagModal(true);
     }
     if (menu === 'Cancel Order') {
+      console.log(order);
+
       setOpenCancelModal(!openCancelModal);
       setOrderCancel({
         ...orderCancel,
-        cancelReason: '',
+        cancelReasonId: '',
         otherReason: '',
-        orderFor: order.orderFor,
-        orderActivity: order?.orderActivity,
+        deliveryBoy: order?.deliveryBoy,
         paymentMethod: order?.paymentMethod,
         orderId: order?._id,
         refundType: 'none',
         partialPayment: {
-          shop: '',
           deliveryBoy: '',
           admin: '',
         },
       });
 
       setOrderPayment({
-        shop: order?.sellerEarnings,
         deliveryBoy: order?.deliveryBoyFee,
-        admin: order?.dropCharge?.totalDropAmount,
+        admin: order?.dropCharge,
       });
     }
     if (menu === 'Update Status') {
@@ -434,17 +431,19 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     e.preventDefault();
 
     const {
-      partialPayment: { shop, deliveryBoy, admin },
+      partialPayment: { deliveryBoy, admin },
     } = orderCancel;
 
-    if (orderCancel.refundType === 'partial' && !shop && !deliveryBoy && !admin) {
+    if (orderCancel.refundType === 'partial' && !deliveryBoy && !admin) {
       return successMsg('Enter Minimum One Partial Amount');
     }
+
+    console.log('order cancel before dispatch', orderCancel);
 
     dispatch(
       cancelButlerOrderByAdmin({
         ...orderCancel,
-        cancelReason: orderCancel?.cancelReason?._id ?? '',
+        cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
       })
     );
   };
@@ -466,11 +465,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
-    const { shop, admin, deliveryBoy } = orderPayment;
+    const { admin, deliveryBoy } = orderPayment;
 
-    if (name === 'shop' && Number(value) > shop) {
-      return successMsg('Invalid Shop Amount');
-    }
     if (name === 'admin' && Number(value) > admin) {
       return successMsg('Invalid Lyxa Amount');
     }
@@ -514,6 +510,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       dispatch(getAllCancelReasons(true));
     }
   }, [isCanceled]);
+
+  console.log(orderCancel);
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -703,39 +701,40 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
         </Paper>
       </Modal>
       {/* cancel order modal */}
-      <Modal2
-        isOpen={openCancelModal}
-        toggle={() => {
+      <Modal
+        open={openCancelModal}
+        onClose={() => {
           setOpenCancelModal(!openCancelModal);
         }}
-        centered
-        style={{ height: '470px' }}
+        sx={{
+          display: 'inline-flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
       >
-        <div>
-          <div className="modal-header">
-            <h5 className="modal-title mt-0">Cancel Order</h5>
-            <button
-              type="button"
-              onClick={() => {
-                setOpenCancelModal(false);
-              }}
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
+        <Paper
+          sx={{
+            minWidth: 'max(35vw, 450px)',
+          }}
+        >
+          <Box padding={5}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={8}>
+              <Typography variant="h3">Cancel Order</Typography>
+              <CloseButton
+                onClick={() => {
+                  setOpenCancelModal(false);
+                }}
+              />
+            </Stack>
             <Form onSubmit={submitOrderCancel}>
               <Autocomplete
                 className="cursor-pointer mt-3"
                 disabled={isOtherReason}
-                value={orderCancel.cancelReason}
+                value={orderCancel.cancelReasonId}
                 onChange={(event, newValue) => {
                   setOrderCancel({
                     ...orderCancel,
-                    cancelReason: newValue,
+                    cancelReasonId: newValue,
                     otherReason: '',
                   });
                 }}
@@ -752,7 +751,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   <TextField
                     {...params}
                     label="Select a cancel reason"
-                    value={orderCancel.cancelReason}
+                    value={orderCancel.cancelReasonId}
                     required={!isOtherReason}
                   />
                 )}
@@ -791,7 +790,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                       setOrderCancel({
                         ...orderCancel,
                         otherReason: e.target.value,
-                        cancelReason: null,
+                        cancelReasonId: null,
                       })
                     }
                   />
@@ -810,8 +809,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   {orderCancel?.paymentMethod !== 'cash' && (
                     <>
                       <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
-                      {((orderCancel?.orderFor === 'specific' && orderCancel?.orderActivity?.length > 1) ||
-                        (orderCancel?.orderFor === 'global' && orderCancel?.orderActivity?.length > 2)) && (
+                      {!orderCancel?.deliveryBoy?._id && (
                         <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
                       )}
                     </>
@@ -819,22 +817,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   <FormControlLabel value="none" control={<Radio />} label="No Refund" />
                 </RadioGroup>
               </FormControl>
-
               {orderCancel?.refundType === 'partial' && (
                 <CancelOrderRefunds>
-                  <div className="refund_item_wrapper">
-                    <input
-                      className="form-control refund_input"
-                      placeholder="Enter Shop Amount"
-                      type="number"
-                      min={0}
-                      max={orderPayment?.shop}
-                      name="shop"
-                      onChange={updateRefundAmount}
-                      value={orderCancel?.partialPayment?.shop}
-                    />
-                    <span>Shop Earning: {orderPayment?.shop}</span>
-                  </div>
                   <div className="refund_item_wrapper">
                     <input
                       type="number"
@@ -848,7 +832,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     />
                     <span>Lyxa Earning: {orderPayment?.admin}</span>
                   </div>
-                  {orderCancel?.orderFor === 'global' && (
+                  {!orderCancel?.deliveryBoy?._id && (
                     <div className="refund_item_wrapper">
                       <input
                         type="number"
@@ -865,7 +849,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   )}
                 </CancelOrderRefunds>
               )}
-
               <h5>
                 Total Refund Amount:{' '}
                 {Number(orderCancel?.partialPayment?.admin) + Number(orderCancel?.partialPayment?.deliveryBoy)}
@@ -873,13 +856,33 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
               <div className="d-flex justify-content-center my-3 pt-3">
                 <Button fullWidth variant="contained" className="px-4" type="submit" disabled={loading}>
-                  {loading ? <Spinner color="danger" size="sm"></Spinner> : 'Confirm cancel order'}
+                  Confirm
                 </Button>
               </div>
             </Form>
-          </div>
+          </Box>
+        </Paper>
+      </Modal>
+      {/* <Modal2
+        isOpen={openCancelModal}
+        toggle={() => {
+          setOpenCancelModal(!openCancelModal);
+        }}
+        centered
+        style={{ height: '470px' }}
+      >
+        <div>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={6}>
+            <Typography variant="h3">Add Flag</Typography>
+            <CloseButton
+              onClick={() => {
+                setOpenCancelModal(false);
+              }}
+            />
+          </Stack>
+          <div className="modal-body"></div>
         </div>
-      </Modal2>
+      </Modal2> */}
     </Box>
   );
 }
