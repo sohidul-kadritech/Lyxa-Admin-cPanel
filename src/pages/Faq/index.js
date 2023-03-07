@@ -310,7 +310,9 @@ export default function Faq() {
     if (chatReasonQueries?.length === 0) {
       callGetAllChatReason();
     }
+  }, []);
 
+  useEffect(() => {
     const convertedChatReasons = chatReasonQueries.map((item) => ({ ...item, ans: item.answer }));
 
     setQuery([...faqQueries, ...convertedChatReasons]);
