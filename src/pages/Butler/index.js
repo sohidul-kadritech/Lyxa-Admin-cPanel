@@ -119,9 +119,7 @@ export default function ButlerOrderList() {
   };
 
   useEffect(() => {
-    if (orders?.length === 0) {
-      getOrderLIst();
-    }
+    getOrderLIst();
   }, []);
 
   return (

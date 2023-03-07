@@ -1,6 +1,11 @@
 /* eslint-disable default-param-last */
 import { successMsg } from '../../helpers/successMsg';
-import { BUTLER_ORDER_ADD_FLAG, BUTLER_ORDER_LIST, BUTLER_ORDER_UPDATE_STATUS } from '../../network/Api';
+import {
+  BUTLER_CANCEL_ORDER,
+  BUTLER_ORDER_ADD_FLAG,
+  BUTLER_ORDER_LIST,
+  BUTLER_ORDER_UPDATE_STATUS,
+} from '../../network/Api';
 import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType';
 
@@ -55,11 +60,19 @@ export const getAllButlerOrders =
 export const updateButlerOrderStatus = (values) => async (dispatch, getState) => {
   const store = getState();
   const { orders: oldList } = store.butlerReducer;
+  let deliveryBoy;
+
+  if (values.orderStatus === 'accepted_delivery_boy') {
+    deliveryBoy = values.deliveryBoy;
+    values.deliveryBoy = deliveryBoy._id;
+  }
 
   try {
     dispatch({
       type: actionType.BUTLER_ORDER_UPDATE_STATUS_REQUEST_SEND,
     });
+
+    console.log(deliveryBoy);
 
     const { data } = await requestApi().request(BUTLER_ORDER_UPDATE_STATUS, {
       method: 'POST',
@@ -71,6 +84,11 @@ export const updateButlerOrderStatus = (values) => async (dispatch, getState) =>
 
       const newOrderList = oldList.map((item) => {
         if (item?._id === values.orderId) {
+          // update delivery boy
+          if (values.orderStatus === 'accepted_delivery_boy') {
+            return { ...item, orderStatus: values.orderStatus, deliveryBoy };
+          }
+
           return { ...item, orderStatus: values.orderStatus };
         }
         return item;
@@ -110,7 +128,10 @@ export const updateButlerOrderIsFlagged = (status) => (dispatch) => {
   });
 };
 
-export const addButlerOrderFlag = (values) => async (dispatch) => {
+export const addButlerOrderFlag = (values) => async (dispatch, getState) => {
+  const store = getState();
+  const { orders: oldList } = store.butlerReducer;
+
   try {
     dispatch({
       type: actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_SEND,
@@ -123,8 +144,17 @@ export const addButlerOrderFlag = (values) => async (dispatch) => {
 
     if (data.status) {
       successMsg(data.message, 'success');
+
+      const newList = oldList.map((item) => {
+        if (item?._id === values.orderId) {
+          return { ...item, flag: data?.data?.flags };
+        }
+        return item;
+      });
+
       dispatch({
         type: actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_SUCCESS,
+        payload: newList,
       });
     } else {
       successMsg(data.error, 'error');
@@ -139,6 +169,47 @@ export const addButlerOrderFlag = (values) => async (dispatch) => {
       payload: error.message,
     });
   }
+};
+
+export const cancelButlerOrderByAdmin = (values) => async (dispatch) => {
+  // const { socket } = getState().socketReducer;
+  try {
+    dispatch({
+      type: actionType.CANCEL_BUTLER_ORDER_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(BUTLER_CANCEL_ORDER, {
+      method: 'POST',
+      data: values,
+    });
+
+    if (data.success) {
+      successMsg(data.message, 'success');
+      dispatch({
+        type: actionType.CANCEL_BUTLER_ORDER_REQUEST_SUCCESS,
+        payload: data,
+      });
+    } else {
+      successMsg(data.error, 'error');
+      dispatch({
+        type: actionType.CANCEL_BUTLER_ORDER_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.CANCEL_BUTLER_ORDER_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// // ORDER FLAG
+export const updateButlerOrderIsCancelled = (status) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_BUTLER_ORDER_IS_CANCELLED,
+    payload: status,
+  });
 };
 
 // // DELETE ORDER FLAG

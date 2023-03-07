@@ -223,6 +223,7 @@ export const BUTLER_ORDER_ADD_FLAG = `${ADMIN_ENDPOINT}/butler/flag`;
 export const BUTLER_ORDER_EDIT_FLAG = `${ADMIN_ENDPOINT}/butler/flag/edit`;
 export const BUTLER_ORDER_DELETE_FLAG = `${ADMIN_ENDPOINT}/butler/flag/delete`;
 export const NEAR_BY_BUTLERS_FOR_ORDER = `${ADMIN_ENDPOINT}/butler/get-nearby-delivery-boy-order`;
+export const BUTLER_CANCEL_ORDER = `${ADMIN_ENDPOINT}/butler/cancel-order`;
 
 // CHAT
 export const CHAT_LIST = `${ADMIN_ENDPOINT}/user-chat-request`;

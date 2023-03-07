@@ -75,11 +75,13 @@ function DealsAdd() {
         updateData(findDeal);
       }
     }
+  }, [id, deals]);
 
+  useEffect(() => {
     if (deals?.length === 0) {
       dispatch(getAllDeal());
     }
-  }, [id, deals]);
+  }, []);
 
   // GET ALL TAGS
   useEffect(() => {
@@ -187,6 +189,8 @@ function DealsAdd() {
   };
 
   // SUCCESS
+
+  console.log({ status });
 
   useEffect(() => {
     if (status) {

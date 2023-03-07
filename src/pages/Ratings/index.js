@@ -180,7 +180,6 @@ export default function RatingSettings() {
   useEffect(() => {
     if (ratings?.length === 0) {
       callGetAllRating();
-      console.log('trrigereding');
     }
   }, []);
 

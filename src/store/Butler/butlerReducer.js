@@ -8,6 +8,7 @@ const initialState = {
   orders: [],
   isUpdated: false,
   isFlagged: false,
+  isCanceled: false,
   status: false,
   typeKey: { label: 'All', value: 'all' },
   sortByKey: { label: 'Desc', value: 'desc' },
@@ -108,6 +109,7 @@ const butlerReducer = (state = initialState, action) => {
         loading: false,
         isFlagged: true,
         status: true,
+        orders: payload,
       };
 
     case actionType.SEND_BUTLER_ORDER_FLAG_REQUEST_FAIL:
@@ -153,6 +155,7 @@ const butlerReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        isCanceled: true,
         status: true,
       };
 
@@ -163,6 +166,11 @@ const butlerReducer = (state = initialState, action) => {
         error: payload,
       };
 
+    case actionType.UPDATE_BUTLER_ORDER_IS_CANCELLED:
+      return {
+        ...state,
+        isCanceled: payload,
+      };
     // FILTERS
     case actionType.UPDATE_BUTLER_ORDER_PAGE: {
       return {
