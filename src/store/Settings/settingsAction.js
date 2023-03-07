@@ -263,7 +263,7 @@ export const getAllAppSettings = () => async (dispatch) => {
     } = await requestApi().request(APP_SETTINGS);
 
     // save current currency to localStorage
-    localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency));
+    localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency || { code: '' }));
 
     if (status) {
       dispatch({
