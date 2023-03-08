@@ -211,6 +211,27 @@ export default function Faq() {
     }
   };
 
+  const filterReasons = () => {
+    let data = query;
+
+    if (type !== '') {
+      data = data.filter(
+        (item) =>
+          (type === 'faq' && item.type !== 'accountSupport' && item.type !== 'orderSupport') || item.type === type
+      );
+    }
+
+    if (childType !== '') {
+      data = data.filter((item) => item.type === childType);
+    }
+
+    if (status !== '') {
+      data = data.filter((item) => item.status === status);
+    }
+
+    return data;
+  };
+
   // columns
   const columns = [
     {
@@ -444,18 +465,7 @@ export default function Faq() {
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
                   <StyledTable
                     columns={columns}
-                    rows={query
-                      .filter(
-                        (item) =>
-                          item.type === type ||
-                          type === '' ||
-                          (type === 'faq' &&
-                            item.type !== 'accountSupport' &&
-                            type === 'faq' &&
-                            item.type !== 'orderSupport')
-                      )
-                      .filter((item) => item.type === childType || childType === '')
-                      .filter((item) => item?.status === status || status === '')}
+                    rows={filterReasons()}
                     getRowId={(params) => params?._id}
                     rowHeight={60}
                     components={{

@@ -178,8 +178,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     admin: 0,
   });
 
-  console.log(orderCancel);
-
   // handle flag type change
   const handleFlagTypeChange = (value) => {
     if (flagType.includes(value)) {
@@ -258,10 +256,10 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
     if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
       options.push('Update Status');
-      options.push('Cancel Order');
     }
 
     if (account_type === 'admin') {
+      options.push('Cancel Order');
       options.push('Flag');
     }
 
@@ -863,26 +861,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
           </Box>
         </Paper>
       </Modal>
-      {/* <Modal2
-        isOpen={openCancelModal}
-        toggle={() => {
-          setOpenCancelModal(!openCancelModal);
-        }}
-        centered
-        style={{ height: '470px' }}
-      >
-        <div>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={6}>
-            <Typography variant="h3">Add Flag</Typography>
-            <CloseButton
-              onClick={() => {
-                setOpenCancelModal(false);
-              }}
-            />
-          </Stack>
-          <div className="modal-body"></div>
-        </div>
-      </Modal2> */}
     </Box>
   );
 }
