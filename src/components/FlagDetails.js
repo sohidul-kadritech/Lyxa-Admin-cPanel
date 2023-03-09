@@ -51,7 +51,11 @@ export default function FlagDetails({ flag, closeSideBar }) {
     {
       label: 'Order Staus',
       value: flag?.orderId?.orderStatus,
-      classes: 'text-capitalize',
+      itemSx: {
+        '& .value': {
+          textTransform: 'capitalize',
+        },
+      },
     },
     {
       label: 'Rider Id',
@@ -95,6 +99,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
       value: flag?.comment,
     },
   ];
+
   const flagResolve = useMutation(
     () =>
       Axios.post(Api.RESOLVE_FLAG, {

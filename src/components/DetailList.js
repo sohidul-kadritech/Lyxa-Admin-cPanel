@@ -2,40 +2,37 @@
 import { Stack, styled, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const ListContainer = styled(Stack)(({ theme }) => ({
+const ListItem = styled(Stack)(({ theme }) => ({
   justifyContent: 'space-between',
+  gap: theme.spacing(5),
 
   '& a': {
     color: 'rgba(0, 0, 0, 1)',
     textDecoration: 'underline!important',
   },
+  '& .label': {
+    fontWeight: 500,
+    flexShrink: '0',
+  },
 }));
 
-export default function DetailList({ list, itemSx }) {
+export default function DetailList({ list, sx }) {
   return (
     <Stack direction="column" gap={4}>
       {list.map((item, index, array) => (
-        <ListContainer
+        <ListItem
           key={item.label}
-          gap={5}
           direction="row"
-          sx={itemSx}
+          sx={{ ...(sx || {}), ...(item?.itemSx || {}) }}
           className={`${index === array.length - 1 ? 'last-item' : ''} `}
         >
-          <Typography
-            className="label"
-            variant="body1"
-            sx={{
-              fontWeight: 500,
-              flexShrink: 0,
-            }}
-          >
+          <Typography className="label" variant="body1">
             {item.label}
           </Typography>
-          <Typography className={`value ${item?.classes}`} variant="body1">
+          <Typography className="value" variant="body1">
             {item.link ? <Link to={item.to}>{item.value}</Link> : item.value}
           </Typography>
-        </ListContainer>
+        </ListItem>
       ))}
     </Stack>
   );

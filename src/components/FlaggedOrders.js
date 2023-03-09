@@ -4,11 +4,12 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import { Box, Chip, Paper, Stack, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import Axios from '../network/axios';
 
 // project import
 import { successMsg } from '../helpers/successMsg';
 import * as Api from '../network/Api';
+import Axios from '../network/axios';
+import AppPagination from './Common/AppPagination2';
 import BreadCrumbs from './Common/BreadCrumb2';
 import CloseButton from './Common/CloseButton';
 import ConfirmModal from './Common/ConfirmModal';
@@ -31,6 +32,7 @@ const breadcrumbItems = [
     label: 'Butler Flags',
   },
 ];
+
 // filter options
 const sortByOptions = [
   {
@@ -103,13 +105,15 @@ const getFlagTypes = (flag, model) => {
 };
 
 // api
-const fetchFlags = async (model, flagTypeKey, resolveType, sortBy) => {
+const fetchFlags = async (model, sortBy, flagTypeKey, resolveType, currentPage) => {
   const { data, status } = await Axios.get(Api.GET_ALL_FLAGS, {
     params: {
       model,
       type: flagTypeKey,
       resolved: resolveType,
       sortBy,
+      page: currentPage,
+      pageSize: 50,
     },
   });
 
@@ -120,7 +124,6 @@ export default function FlaggedOrders({ model }) {
   const theme = useTheme();
 
   // rightbar
-  // eslint-disable-next-line no-unused-vars
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
 
   // filtering
@@ -128,15 +131,18 @@ export default function FlaggedOrders({ model }) {
   const [flagTypeKey, setFlagTypeKey] = useState('');
   const [resolveType, setResolveType] = useState('');
   const [filterIsApplied, setFilterIsApplied] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   // resolve modal
   const [resolveModal, setResolveModal] = useState(false);
   const [currentFlag, setCurrentFlag] = useState({});
 
   // flags query
-  const flagsQuery = useQuery(['flags', { sortBy, flagTypeKey, resolveType }], () =>
-    fetchFlags(model, sortBy, flagTypeKey, resolveType)
+  const flagsQuery = useQuery(['flags', { sortBy, flagTypeKey, resolveType, currentPage }], () =>
+    fetchFlags(model, sortBy, flagTypeKey, resolveType, currentPage)
   );
+
+  console.log(flagsQuery.data);
 
   // flags resolve
   const flagResolve = useMutation(
@@ -184,6 +190,10 @@ export default function FlaggedOrders({ model }) {
         setSortBy('');
         setFlagTypeKey('');
         setResolveType('');
+        break;
+
+      case 'page':
+        setCurrentPage(payload);
         break;
 
       case 'refresh':
@@ -294,14 +304,21 @@ export default function FlaggedOrders({ model }) {
       minWidth: 100,
       headerAlign: 'right',
       align: 'right',
-      renderCell: (params) => (
-        <ThreeDotsMenu
-          handleMenuClick={(menu) => {
-            threeDotHandler(menu, params.row);
-          }}
-          menuItems={['Details', 'Resolve']}
-        />
-      ),
+      renderCell: (params) => {
+        const menuItem = ['Details'];
+        if (!params.row?.isResolved) {
+          menuItem.push('Resolve');
+        }
+
+        return (
+          <ThreeDotsMenu
+            handleMenuClick={(menu) => {
+              threeDotHandler(menu, params.row);
+            }}
+            menuItems={menuItem}
+          />
+        );
+      },
     },
   ];
 
@@ -422,6 +439,20 @@ export default function FlaggedOrders({ model }) {
                 />
                 {/* loading */}
                 {flagsQuery.isLoading || flagsQuery.isFetching ? <TableLoader /> : null}
+              </Box>
+              <Box
+                sx={{
+                  pt: 7.5,
+                  pb: 7.5,
+                }}
+              >
+                <AppPagination
+                  currentPage={currentPage}
+                  lisener={(page) => {
+                    updateFilter('page', page);
+                  }}
+                  paging={flagsQuery?.data?.paginate?.metadata?.page?.totalPage}
+                />
               </Box>
             </Grid>
           </Grid>
