@@ -67,6 +67,7 @@ import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import UserTransaction from '../pages/Users/UserTransaction/UserTransaction';
 
 import AdminLog from '../pages/AppWallet/PercentageSetting/AdminLog';
+import ButlerFlaggedOrder from '../pages/Butler/ButlerFlaggedOrders';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import DefaultChat from '../pages/DefaultChat/DefaultChat';
@@ -92,6 +93,7 @@ const userRoutes = [
   { path: '/butler/list', component: ButlerOrderList },
   { path: '/butler/list/order-details/:id', component: ButlerOrderDetails },
   { path: '/butler/list/canceled', component: ButlerCancelOrders },
+  { path: '/butler/list/flagged', component: ButlerFlaggedOrder },
   // vat
   { path: '/vat', component: Vat },
   // Banner

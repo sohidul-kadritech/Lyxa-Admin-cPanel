@@ -1,16 +1,8 @@
-// export const API_URL = "http://localhost:5001";
-// export const FTP_URL = "http://localhost:1000";
-
 export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
 export const SOCKET_CONNECTION = 'https://apiv2.drop-deliveryapp.com';
-// export const SOCKET_CONNECTION = "http://localhost:5001";
 export const MAP_URL = 'http://maps.google.com/maps';
 
 const ADMIN_ENDPOINT = 'admin';
-
-// ADMIN API
-
-// LOGIN API
 
 export const LOGIN = `${ADMIN_ENDPOINT}/auth/login`;
 export const FORGET_PASS = `${API_URL}forget`;
@@ -282,3 +274,7 @@ export const GET_ALL_RATINGS = `${ADMIN_ENDPOINT}/setting/rating`;
 export const ADD_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/add`;
 export const EDIT_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/edit`;
 export const DELETE_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/delete`;
+
+// FLAGS
+export const GET_ALL_FLAGS = `${ADMIN_ENDPOINT}/flag`;
+export const RESOLVE_FLAG = `${ADMIN_ENDPOINT}/flag/resolved-flag`;

@@ -10,17 +10,23 @@ import App from './App';
 import store from './store';
 import ThemeProvider from './theme';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 ReactDOM.render(
   <Provider store={store}>
     <ThemeProvider>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
             <App />
-          </BrowserRouter>
-        </QueryClientProvider>
+          </QueryClientProvider>
+        </BrowserRouter>
       </LocalizationProvider>
     </ThemeProvider>
   </Provider>,

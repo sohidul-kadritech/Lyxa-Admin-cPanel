@@ -1,5 +1,5 @@
 export default function Typography(theme) {
-  console.log(theme.palette.text.secondary);
+  console.log('text secondary', theme.palette?.text?.secondary);
   return {
     styleOverrides: {
       body3: {

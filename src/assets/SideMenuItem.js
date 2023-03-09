@@ -43,6 +43,12 @@ export const adminMenuItem = [
         link: '/butler/list/canceled',
         isSubmenu: false,
       },
+      {
+        icon: 'fas fa-flag',
+        name: 'Flaged Orders',
+        link: '/butler/list/flagged',
+        isSubmenu: false,
+      },
     ],
   },
   {

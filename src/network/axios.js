@@ -33,7 +33,7 @@ AXIOS.interceptors.request.use(
     /**
      * Add your error handlers here
      */
-    console.log('error:', error);
+    console.log('api error:', error);
     return Promise.reject(error);
   }
 );
@@ -50,7 +50,7 @@ AXIOS.interceptors.response.use(
     /**
      * Add logic for any error from backend
      */
-    console.log('backend error:', error);
+    console.log('api error:', error);
     return Promise.reject(error);
   }
 );
