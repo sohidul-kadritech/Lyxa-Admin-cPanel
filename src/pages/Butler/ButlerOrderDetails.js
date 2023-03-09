@@ -224,6 +224,8 @@ function ButlerOrderDetails() {
     return m;
   };
 
+  console.log(order);
+
   return (
     <GlobalWrapper>
       <div className="page-content">
@@ -421,6 +423,28 @@ function ButlerOrderDetails() {
                 <SummaryInfo title="Rider Profit" value={order?.deliveryBoyFee} />
                 <SummaryInfo title="Total Lyxa Profit" value={order?.dropCharge} />
               </Summery>
+              {/* order cancel details */}
+              {order?.orderStatus === 'cancelled' && (
+                <h5 className="text-dark" style={{ marginBottom: '30px', marginTop: '30px' }}>
+                  Order Cancel Amount Details
+                </h5>
+              )}
+              {order?.userCancelTnx && (
+                <Summery>
+                  <SummaryInfo
+                    title="Refund Type"
+                    value={order?.userCancelTnx?.isRefund ? 'Full Refund' : 'Partial Refund'}
+                  />
+                  <SummaryInfo title="Admin Cut" value={order?.userCancelTnx?.adminCut} />
+                  <SummaryInfo title="Rider Cut" value={order?.userCancelTnx?.deliveryBoyCut} />
+                  <SummaryInfo title="Total Refund" value={order?.userCancelTnx?.amount} />
+                </Summery>
+              )}
+              {order?.orderStatus === 'cancelled' && !order?.userCancelTnx && (
+                <Summery>
+                  <SummaryInfo title="Refund Type" value="No Refund" />
+                </Summery>
+              )}
             </CardBody>
           </Card>
 

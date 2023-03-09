@@ -256,11 +256,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
     if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
       options.push('Update Status');
-      options.push('Cancel Order');
     }
 
     if (account_type === 'admin') {
       options.push('Flag');
+      options.push('Cancel Order');
     }
 
     return options;
@@ -507,7 +507,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   useEffect(() => {
     if (isCanceled) {
       dispatch(updateButlerOrderIsCancelled(false));
-      dispatch(getAllCancelReasons(true));
+      // dispatch(getAllButlerOrders(true));
     }
   }, [isCanceled]);
 

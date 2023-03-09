@@ -189,7 +189,7 @@ export const cancelButlerOrderByAdmin = (values) => async (dispatch, getState) =
       successMsg(data.message, 'success');
 
       const newList = oldList.map((item) => {
-        if (item?._id === oldList?._id) {
+        if (item?._id === data?.data?.order?._id) {
           return data?.data?.order;
         }
         return item;
