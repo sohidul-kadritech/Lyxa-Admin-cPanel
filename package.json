@@ -77,6 +77,7 @@
     "react-modal-video": "^1.2.7",
     "react-phone-number-input": "^3.2.17",
     "react-places-autocomplete": "^7.3.0",
+    "react-query": "^3.39.3",
     "react-rating": "^2.0.5",
     "react-rating-tooltip": "^1.2.0",
     "react-redux": "^7.2.4",
