@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
 // third pary
-import { Box, Stack, Tooltip, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
+import { Box, Stack, Tooltip, Unstable_Grid2 as Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -53,7 +53,6 @@ export default function ButlerOrderList() {
     useSelector((state) => state.butlerReducer);
 
   // theme
-  const theme = useTheme();
 
   // eslint-disable-next-line no-unused-vars
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
@@ -201,11 +200,15 @@ export default function ButlerOrderList() {
                 <Box>
                   <FilterButton
                     label="Clear"
+                    sx={{
+                      background: 'rgb(63,63,63)',
+                      color: '#fff',
+                      '&:hover': {
+                        background: 'rgb(78,78,78)',
+                      },
+                    }}
                     onClick={() => {
                       updateOrderList('clearFilter');
-                    }}
-                    sx={{
-                      background: `${isFilterApplied ? theme.palette.grey[400] : theme.palette.grey[200]}`,
                     }}
                   />
                 </Box>

@@ -157,6 +157,7 @@ const butlerReducer = (state = initialState, action) => {
         loading: false,
         isCanceled: true,
         status: true,
+        orders: payload,
       };
 
     case actionType.CANCEL_BUTLER_ORDER_REQUEST_FAIL:

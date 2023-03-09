@@ -256,10 +256,10 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
     if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
       options.push('Update Status');
+      options.push('Cancel Order');
     }
 
     if (account_type === 'admin') {
-      options.push('Cancel Order');
       options.push('Flag');
     }
 
@@ -438,12 +438,14 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
     console.log('order cancel before dispatch', orderCancel);
 
-    dispatch(
-      cancelButlerOrderByAdmin({
-        ...orderCancel,
-        cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
-      })
-    );
+    const data = {
+      ...orderCancel,
+      cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
+    };
+
+    delete data.deliveryBoy;
+
+    dispatch(cancelButlerOrderByAdmin(data));
   };
 
   const updateRefundType = (type) => {
@@ -807,7 +809,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   {orderCancel?.paymentMethod !== 'cash' && (
                     <>
                       <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
-                      {!orderCancel?.deliveryBoy?._id && (
+                      {orderCancel?.deliveryBoy?._id && (
                         <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
                       )}
                     </>
@@ -830,7 +832,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     />
                     <span>Lyxa Earning: {orderPayment?.admin}</span>
                   </div>
-                  {!orderCancel?.deliveryBoy?._id && (
+                  {orderCancel?.deliveryBoy?._id && (
                     <div className="refund_item_wrapper">
                       <input
                         type="number"

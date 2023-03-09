@@ -171,8 +171,10 @@ export const addButlerOrderFlag = (values) => async (dispatch, getState) => {
   }
 };
 
-export const cancelButlerOrderByAdmin = (values) => async (dispatch) => {
-  // const { socket } = getState().socketReducer;
+export const cancelButlerOrderByAdmin = (values) => async (dispatch, getState) => {
+  const store = getState();
+  const { orders: oldList } = store.butlerReducer;
+
   try {
     dispatch({
       type: actionType.CANCEL_BUTLER_ORDER_REQUEST_SEND,
@@ -185,9 +187,17 @@ export const cancelButlerOrderByAdmin = (values) => async (dispatch) => {
 
     if (data.success) {
       successMsg(data.message, 'success');
+
+      const newList = oldList.map((item) => {
+        if (item?._id === oldList?._id) {
+          return data?.data?.order;
+        }
+        return item;
+      });
+
       dispatch({
         type: actionType.CANCEL_BUTLER_ORDER_REQUEST_SUCCESS,
-        payload: data,
+        payload: newList,
       });
     } else {
       successMsg(data.error, 'error');
