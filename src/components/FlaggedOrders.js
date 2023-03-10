@@ -423,7 +423,7 @@ export default function FlaggedOrders({ model }) {
                   </Box>
                 </Tooltip>
               </Stack>
-              <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
+              <Box sx={{ flexGrow: 1, minHeight: 'calc(100vh - 422px)', width: '100%', position: 'relative' }}>
                 <StyledTable
                   columns={columns}
                   rows={flagsQuery?.data?.list || []}

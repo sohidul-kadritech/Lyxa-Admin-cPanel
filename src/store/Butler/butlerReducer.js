@@ -17,6 +17,7 @@ const initialState = {
   paginate: null,
   deliveryBoy: '',
   page: 1,
+  totalPage: 1,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
@@ -40,6 +41,7 @@ const butlerReducer = (state = initialState, action) => {
     case actionType.ALL_BUTLER_ORDERS_REQUEST_SUCCESS:
       return {
         ...state,
+        totalPage: payload.paginate.metadata.page.totalPage,
         loading: false,
         orders: payload.orders,
         paginate: payload.paginate,

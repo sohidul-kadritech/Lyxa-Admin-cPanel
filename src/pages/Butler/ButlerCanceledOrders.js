@@ -31,7 +31,7 @@ export default function ButlerCancelOrders() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { orders, loading, page, paging } = useSelector((state) => state.butlerReducer);
+  const { orders, loading, page, totalPage } = useSelector((state) => state.butlerReducer);
 
   // eslint-disable-next-line no-unused-vars
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
@@ -103,7 +103,7 @@ export default function ButlerCancelOrders() {
                 pb: 7.5,
               }}
             >
-              <AppPagination currentPage={page} lisener={updatePage} paging={paging} />
+              <AppPagination currentPage={page} lisener={updatePage} totalPage={totalPage} />
             </Box>
           </Grid>
           {/* right */}

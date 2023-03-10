@@ -49,8 +49,9 @@ export default function ButlerOrderList() {
   const history = useHistory();
 
   // eslint-disable-next-line no-unused-vars
-  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderSearchKey, page, paging, deliveryBoy } =
-    useSelector((state) => state.butlerReducer);
+  const { sortByKey, orders, loading, startDate, endDate, typeKey, orderSearchKey, page, totalPage } = useSelector(
+    (state) => state.butlerReducer
+  );
 
   // theme
 
@@ -248,7 +249,7 @@ export default function ButlerOrderList() {
                 pb: 7.5,
               }}
             >
-              <AppPagination currentPage={page} lisener={updatePage} paging={paging} />
+              <AppPagination currentPage={page} lisener={updatePage} totalPage={totalPage} />
             </Box>
           </Grid>
           {/* right */}
