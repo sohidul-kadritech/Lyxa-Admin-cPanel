@@ -346,9 +346,15 @@ export const adminMenuItem = [
         isSubmenu: false,
       },
       {
-        name: 'Percentage Setting',
+        name: 'Percentage Settings',
         icon: 'ti-settings',
         link: '/percentage-setting',
+        isSubmenu: false,
+      },
+      {
+        name: 'Reward Settings',
+        icon: 'ti-settings',
+        link: '/admin/settings/reward-settings',
         isSubmenu: false,
       },
       {

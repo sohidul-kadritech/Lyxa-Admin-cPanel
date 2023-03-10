@@ -73,6 +73,7 @@ import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import DefaultChat from '../pages/DefaultChat/DefaultChat';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
+import RewardSettings from '../pages/RewardSettings';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
 import Tags from '../pages/Tags/Tags';
@@ -187,6 +188,8 @@ const userRoutes = [
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/admin/default-chat-message', component: DefaultChat },
   { path: '/admin/database/collections', component: DatabaseSettings },
+  { path: '/admin/settings/reward-settings', component: RewardSettings },
+
   // terms and conditions
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
   { path: '/terms-and-conditions/shop-app', component: ShopTermsAndConditions },

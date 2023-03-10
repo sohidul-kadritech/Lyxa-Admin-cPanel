@@ -148,12 +148,11 @@ export const GET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge`;
 
 export const UPDATE_DELIVERY_CUT = `${ADMIN_ENDPOINT}/drop-charge/add-global-delivery-cut`;
 export const UPDATE_BULTER_DELIVERY_CUT = `${ADMIN_ENDPOINT}/drop-charge/add-global-delivery-cut-for-butler`;
-
 export const GET_SPECIAL_DROP_CHARGE = `${ADMIN_ENDPOINT}/drop-charge/get-related-seller`;
-
 export const DELETE_SELLER_SPECIAL_DROP_CHARGE = `${ADMIN_ENDPOINT}/drop-charge/seller-drop-charge-reset`;
-
 export const ADMIN_LOGS_HISTORY = `${ADMIN_ENDPOINT}/setting/admin-logs`;
+export const GET_ADMIN_REWARD_SETTINGS = `${ADMIN_ENDPOINT}/setting/reward-setting`;
+export const EDIT_ADMIN_REWARD_SETTINGS = `${ADMIN_ENDPOINT}/setting/reward-setting/edit`;
 
 export const DATABASE_ALL_COLLECTIONS = `${ADMIN_ENDPOINT}/database/collections`;
 export const DATABASE_COLLECTION_BACKUP = `${ADMIN_ENDPOINT}/database/back-up`;
