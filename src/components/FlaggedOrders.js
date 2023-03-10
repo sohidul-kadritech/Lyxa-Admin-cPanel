@@ -19,7 +19,6 @@ import FilterSelect from './Filter/FilterSelect';
 import FlagDetails from './FlagDetails';
 import GlobalWrapper from './GlobalWrapper';
 import StyledTable from './StyledTable';
-import ThreeDotsMenu from './ThreeDotsMenu';
 
 // breadcrumb items
 const breadcrumbItems = [
@@ -77,31 +76,31 @@ const resolveTypeOptions = [
 
 // get flag types
 const getFlagTypes = (flag, model) => {
-  const types = [];
-
   if (flag?.isAutomatic) {
-    types.push('Auto');
-    return types;
+    return 'Auto';
   }
 
   if (flag?.isRefused) {
-    types.push('Refused');
-    return types;
+    return 'Refused';
   }
 
   if (flag?.user) {
-    types.push('User');
+    return 'User';
   }
 
   if (model === 'butler' && flag?.butlerId) {
-    types.push('Butler');
+    return 'Butler';
   }
 
-  if (model === 'order' && flag?.deliveryId) {
-    types.push('Rider');
+  if (model === 'order' && flag?.delivery) {
+    return 'Rider';
   }
 
-  return types;
+  if (model === 'order' && flag?.shop) {
+    return 'Shop';
+  }
+
+  return '';
 };
 
 // api
@@ -141,8 +140,6 @@ export default function FlaggedOrders({ model }) {
   const flagsQuery = useQuery(['flags', { sortBy, flagTypeKey, resolveType, currentPage }], () =>
     fetchFlags(model, sortBy, flagTypeKey, resolveType, currentPage)
   );
-
-  console.log(flagsQuery.data);
 
   // flags resolve
   const flagResolve = useMutation(
@@ -204,19 +201,6 @@ export default function FlaggedOrders({ model }) {
     }
   };
 
-  const threeDotHandler = (menu, flag) => {
-    console.log(flag);
-    if (menu === 'Details') {
-      setCurrentFlag(flag);
-      setIsRightBarOpen(true);
-    }
-
-    if (menu === 'Resolve') {
-      setCurrentFlag(flag);
-      setResolveModal(true);
-    }
-  };
-
   // columns
   const columns = [
     {
@@ -260,22 +244,17 @@ export default function FlaggedOrders({ model }) {
       headerAlign: 'center',
       align: 'center',
       renderCell: ({ row }) => (
-        <Stack direction="row" flexWrap="wrap" gap={2}>
-          {getFlagTypes(row, model).map((item, index) => (
-            <Chip
-              sx={{
-                background: 'rgb(63,63,63)',
-                color: '#fff',
-                '&:hover': {
-                  background: 'rgb(78,78,78)',
-                },
-              }}
-              key={index}
-              label={item}
-              variant="contained"
-            />
-          ))}
-        </Stack>
+        <Chip
+          sx={{
+            background: 'rgb(63,63,63)',
+            color: '#fff',
+            '&:hover': {
+              background: 'rgb(78,78,78)',
+            },
+          }}
+          label={getFlagTypes(row, model)}
+          variant="contained"
+        />
       ),
     },
     {
@@ -294,31 +273,6 @@ export default function FlaggedOrders({ model }) {
           variant="contained"
         />
       ),
-    },
-    {
-      id: 5,
-      headerName: 'Actions',
-      field: 'action',
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      headerAlign: 'right',
-      align: 'right',
-      renderCell: (params) => {
-        const menuItem = ['Details'];
-        if (!params.row?.isResolved) {
-          menuItem.push('Resolve');
-        }
-
-        return (
-          <ThreeDotsMenu
-            handleMenuClick={(menu) => {
-              threeDotHandler(menu, params.row);
-            }}
-            menuItems={menuItem}
-          />
-        );
-      },
     },
   ];
 
@@ -428,13 +382,22 @@ export default function FlaggedOrders({ model }) {
                   columns={columns}
                   rows={flagsQuery?.data?.list || []}
                   getRowId={(params) => params?._id}
+                  sx={{
+                    '& .MuiDataGrid-cell': {
+                      cursor: 'pointer',
+                    },
+                  }}
                   rowHeight={60}
                   components={{
                     NoRowsOverlay: () => (
                       <Stack height="100%" alignItems="center" justifyContent="center">
-                        {flagsQuery.isLoading || flagsQuery.isFetching ? '' : 'No Q&A found'}
+                        {flagsQuery.isLoading || flagsQuery.isFetching ? '' : 'No Flags found'}
                       </Stack>
                     ),
+                  }}
+                  onRowClick={({ row }) => {
+                    setCurrentFlag(row);
+                    setIsRightBarOpen(true);
                   }}
                 />
                 {/* loading */}

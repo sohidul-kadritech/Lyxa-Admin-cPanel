@@ -9,34 +9,33 @@ import Axios from '../network/axios';
 import DetailList from './DetailList';
 
 // get flag types
-const getFlagTypes = (flag, model) => {
-  const types = [];
-
+const getFlagTypes = (flag, model = 'order') => {
   if (flag?.isAutomatic) {
-    types.push('Auto');
-    return types;
+    return 'Auto';
   }
 
   if (flag?.isRefused) {
-    types.push('Refused');
-    return types;
+    return 'Refused';
   }
 
   if (flag?.user) {
-    types.push('User');
+    return 'User';
   }
 
   if (model === 'butler' && flag?.butlerId) {
-    types.push('Butler');
+    return 'Butler';
   }
 
-  if (model === 'order' && flag?.deliveryId) {
-    types.push('Rider');
+  if (model === 'order' && flag?.delivery) {
+    return 'Rider';
   }
 
-  return types;
+  if (model === 'order' && flag?.shop) {
+    return 'Shop';
+  }
+
+  return '';
 };
-
 export default function FlagDetails({ flag, closeSideBar }) {
   const theme = useTheme();
   const history = useHistory();
@@ -59,7 +58,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
     },
     {
       label: 'Rider Id',
-      value: flag?.orderId?.deliveryBoy ? flag?.orderId?.deliveryBoy : 'Not Assigned',
+      value: flag?.orderId?.deliveryBoy?.autoGenId ? flag?.orderId?.deliveryBoy?.autoGenId : 'Not Assigned',
       link: !!flag?.orderId?.deliveryBoy,
       to: `/deliveryman/details/${flag?.orderId?.deliveryBoy}`,
     },
@@ -92,7 +91,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
   const flagDetailOptions = [
     {
       label: 'Flag Type',
-      value: getFlagTypes(flag).join(','),
+      value: getFlagTypes(flag),
     },
     {
       label: 'Flag Comment',
