@@ -12,9 +12,19 @@ import Person3Icon from '@mui/icons-material/Person3';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import ShopIcon from '@mui/icons-material/Shop';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Lightbox from 'react-image-lightbox';
+import { useMutation, useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardTitle, Col, Container, Modal, Row } from 'reactstrap';
@@ -24,7 +34,10 @@ import DealForAdd from '../../../components/DealForAdd';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import InfoTwo from '../../../components/InfoTwo';
 import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
 import { SINGLE_PRODUCT } from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import requestApi from '../../../network/httpRequest';
 import { deleteDealOfProduct } from '../../../store/Product/productAction';
 
@@ -41,6 +54,31 @@ function ProductDetails() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [modalCenter, setModalCenter] = useState(false);
+
+  console.log(product);
+
+  // reward
+  const [rewardModal, setRewardModal] = useState(false);
+  const [rewardCategory, setRewardCategory] = useState('');
+
+  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS));
+
+  const updateRewardCategory = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_REWARD_CATEGORY, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        setRewardModal(false);
+        setProduct(data?.data?.product);
+        successMsg(data?.message, 'success');
+      } else {
+        successMsg(data?.message);
+      }
+    },
+    onError: (error) => {
+      console.log('api error: ', error);
+    },
+  });
+
+  console.log(rewardSettingsQuery.data);
 
   //   CALL TO SERVER
   const callApi = async (pId) => {
@@ -122,7 +160,33 @@ function ProductDetails() {
             <CardBody>
               <div className="d-flex justify-content-between">
                 <CardTitle>Product Details</CardTitle>
-                <div>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '8px',
+                  }}
+                >
+                  <Button
+                    outline
+                    color="success"
+                    onClick={() => {
+                      setRewardModal(true);
+                      setRewardCategory(product?.rewardCategory || '');
+                      document.body.classList.add('no_padding');
+                    }}
+                  >
+                    Add Reward Category
+                  </Button>
+                  <Button
+                    outline
+                    color="success"
+                    onClick={() => {
+                      setModalCenter(!modalCenter);
+                      document.body.classList.add('no_padding');
+                    }}
+                  >
+                    Add Reward Bundle
+                  </Button>
                   <Button
                     outline
                     color="success"
@@ -133,7 +197,7 @@ function ProductDetails() {
                   >
                     Add Deal
                   </Button>
-                  <Button className="ms-3" outline color="success" onClick={() => history.push(`/products/edit/${id}`)}>
+                  <Button outline color="success" onClick={() => history.push(`/products/edit/${id}`)}>
                     Edit
                   </Button>
                 </div>
@@ -185,13 +249,18 @@ function ProductDetails() {
                     <InfoTwo name="Unit" Icon={AcUnitIcon} value={`${product?.unit ?? 'Unknown'}`} />
 
                     <InfoTwo
-                      Icon={product?.status === 'active' ? CheckBoxIcon : BlockIcon}
-                      value={`${product?.status === 'active' ? 'available' : 'unavailable'}`}
-                      name="Status"
+                      name="Reward Category"
+                      Icon={DiscountIcon}
+                      value={`${product?.rewardCategory || 'None'}`}
                     />
                   </InfoTwoWrapper>
                 </Col>
                 <Col xl={3}>
+                  <InfoTwo
+                    Icon={product?.status === 'active' ? CheckBoxIcon : BlockIcon}
+                    value={`${product?.status === 'active' ? 'available' : 'unavailable'}`}
+                    name="Status"
+                  />
                   <InfoTwoWrapper>
                     <InfoTwo
                       Icon={CategoryIcon}
@@ -353,7 +422,6 @@ function ProductDetails() {
       </div>
 
       {/* DEAL */}
-
       <Modal
         isOpen={modalCenter}
         toggle={() => {
@@ -377,6 +445,88 @@ function ProductDetails() {
         </div>
         <div className="modal-body">
           <DealForAdd type="product" item={product} shopType={product?.type} />
+        </div>
+      </Modal>
+      {/* Reward Category */}
+      <Modal
+        isOpen={rewardModal}
+        toggle={() => {
+          setRewardModal(false);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Add Reward Bundle</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setRewardModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <FormControl fullWidth>
+            <InputLabel>Categories</InputLabel>
+            <Select
+              label="Categories"
+              value={rewardCategory}
+              onChange={(e) => {
+                setRewardCategory(e.target.value);
+              }}
+            >
+              {rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory?.map((item) => (
+                <MenuItem key={item?._id} value={item.name}>
+                  {item?.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+            }}
+          >
+            <Button
+              outline
+              color="success"
+              className="mt-3"
+              disabled={updateRewardCategory.loading}
+              onClick={() => {
+                if (rewardCategory === '') {
+                  return;
+                }
+                updateRewardCategory.mutate({
+                  productId: product?._id,
+                  rewardCategory,
+                });
+              }}
+            >
+              Add Category
+            </Button>
+            <Button
+              outline
+              color="success"
+              className="mt-3"
+              disabled={updateRewardCategory.loading}
+              onClick={() => {
+                if (rewardCategory === '') {
+                  return;
+                }
+                updateRewardCategory.mutate({
+                  productId: product?._id,
+                  rewardCategory: null,
+                });
+              }}
+            >
+              Remove Category
+            </Button>
+          </div>
         </div>
       </Modal>
     </GlobalWrapper>
