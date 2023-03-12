@@ -58,15 +58,33 @@ function ProductDetails() {
   console.log(product);
 
   // reward
+  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS));
+
   const [rewardModal, setRewardModal] = useState(false);
   const [rewardCategory, setRewardCategory] = useState('');
-
-  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS));
 
   const updateRewardCategory = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_REWARD_CATEGORY, data), {
     onSuccess: (data) => {
       if (data?.status) {
         setRewardModal(false);
+        setProduct(data?.data?.product);
+        successMsg(data?.message, 'success');
+      } else {
+        successMsg(data?.message);
+      }
+    },
+    onError: (error) => {
+      console.log('api error: ', error);
+    },
+  });
+
+  const [rewardBundleModal, setRewardBundleModal] = useState(false);
+  const [rewardBundle, setRewardBundle] = useState('');
+
+  const updateRewardBundle = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_REWARD_BUNDLE, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        setRewardBundleModal(false);
         setProduct(data?.data?.product);
         successMsg(data?.message, 'success');
       } else {
@@ -181,7 +199,13 @@ function ProductDetails() {
                     outline
                     color="success"
                     onClick={() => {
-                      setModalCenter(!modalCenter);
+                      setRewardBundleModal(true);
+                      const rewardBundle = !product?.rewardBundle
+                        ? ''
+                        : product?.rewardBundle !== '0'
+                        ? product?.rewardBundle
+                        : '';
+                      setRewardBundle(rewardBundle);
                       document.body.classList.add('no_padding');
                     }}
                   >
@@ -247,12 +271,12 @@ function ProductDetails() {
                     <InfoTwo name="Quantity" Icon={ShoppingCartIcon} value={`${product?.quantity ?? 1}`} />
                     <InfoTwo name="Discount" Icon={DiscountIcon} value={`${product?.discountPrice} ${currency}`} />
                     <InfoTwo name="Unit" Icon={AcUnitIcon} value={`${product?.unit ?? 'Unknown'}`} />
-
                     <InfoTwo
                       name="Reward Category"
                       Icon={DiscountIcon}
                       value={`${product?.rewardCategory || 'None'}`}
                     />
+                    <InfoTwo name="Reward Bundle" Icon={CategoryIcon} value={`${product?.rewardBundle || '0'}`} />
                   </InfoTwoWrapper>
                 </Col>
                 <Col xl={3}>
@@ -456,7 +480,7 @@ function ProductDetails() {
         centered
       >
         <div className="modal-header">
-          <h5 className="modal-title mt-0">Add Reward Bundle</h5>
+          <h5 className="modal-title mt-0">Add Reward Category</h5>
           <button
             type="button"
             onClick={() => {
@@ -525,6 +549,91 @@ function ProductDetails() {
               }}
             >
               Remove Category
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      {/* Reward Bundle */}
+      <Modal
+        isOpen={rewardBundleModal}
+        toggle={() => {
+          setRewardBundleModal(false);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Add Reward Bundle</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setRewardBundleModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <FormControl fullWidth>
+            <InputLabel>Bundles</InputLabel>
+            <Select
+              label="Categories"
+              value={rewardBundle}
+              onChange={(e) => {
+                setRewardBundle(e.target.value);
+              }}
+            >
+              <MenuItem key="full" value="full">
+                Full
+              </MenuItem>
+              {rewardSettingsQuery?.data?.data?.rewardSetting?.rewardBundle?.map((item) => (
+                <MenuItem key={`${item}`} value={`${item}`}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+            }}
+          >
+            <Button
+              outline
+              color="success"
+              className="mt-3"
+              disabled={updateRewardBundle.loading}
+              onClick={() => {
+                if (rewardBundle === '') {
+                  return;
+                }
+                updateRewardBundle.mutate({
+                  productId: product?._id,
+                  rewardBundle,
+                });
+              }}
+            >
+              Add Bundle
+            </Button>
+            <Button
+              outline
+              color="success"
+              className="mt-3"
+              disabled={updateRewardBundle.loading}
+              onClick={() => {
+                if (rewardBundle === '') {
+                  return;
+                }
+                updateRewardBundle.mutate({
+                  productId: product?._id,
+                  rewardBundle: 0,
+                });
+              }}
+            >
+              Remove Bundle
             </Button>
           </div>
         </div>
