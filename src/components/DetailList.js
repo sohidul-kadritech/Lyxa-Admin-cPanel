@@ -19,21 +19,23 @@ const ListItem = styled(Stack)(({ theme }) => ({
 export default function DetailList({ list, sx }) {
   return (
     <Stack direction="column" gap={4}>
-      {list.map((item, index, array) => (
-        <ListItem
-          key={item.label}
-          direction="row"
-          sx={{ ...(sx || {}), ...(item?.itemSx || {}) }}
-          className={`${index === array.length - 1 ? 'last-item' : ''} `}
-        >
-          <Typography className="label" variant="body1">
-            {item.label}
-          </Typography>
-          <Typography className="value" variant="body1">
-            {item.link ? <Link to={item.to}>{item.value}</Link> : item.value}
-          </Typography>
-        </ListItem>
-      ))}
+      {list
+        .filter((item) => !item.hide)
+        .map((item, index, array) => (
+          <ListItem
+            key={item.label}
+            direction="row"
+            sx={{ ...(sx || {}), ...(item?.itemSx || {}) }}
+            className={`${index === array.length - 1 ? 'last-item' : ''} `}
+          >
+            <Typography className="label" variant="body1">
+              {item.label}
+            </Typography>
+            <Typography className="value" variant="body1">
+              {item.link ? <Link to={item.to}>{item.value}</Link> : item.value}
+            </Typography>
+          </ListItem>
+        ))}
     </Stack>
   );
 }

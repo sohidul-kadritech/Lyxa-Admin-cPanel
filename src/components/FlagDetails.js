@@ -1,15 +1,14 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unsafe-optional-chaining */
 // mui
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import { successMsg } from '../helpers/successMsg';
 import * as Api from '../network/Api';
 import Axios from '../network/axios';
 import DetailList from './DetailList';
 
 // get flag types
-const getFlagTypes = (flag, model = 'order') => {
+const getFlagTypes = (flag) => {
   if (flag?.isAutomatic) {
     return 'Auto';
   }
@@ -22,25 +21,28 @@ const getFlagTypes = (flag, model = 'order') => {
     return 'User';
   }
 
-  if (model === 'butler' && flag?.butlerId) {
-    return 'Butler';
-  }
-
-  if (model === 'order' && flag?.delivery) {
+  if (flag?.delivery) {
     return 'Rider';
   }
 
-  if (model === 'order' && flag?.shop) {
+  if (flag?.shop) {
     return 'Shop';
   }
 
   return '';
 };
-export default function FlagDetails({ flag, closeSideBar }) {
+export default function FlagDetails({ flag, closeSideBar, refetchFlags }) {
   const theme = useTheme();
-  const history = useHistory();
-
   const orderDetailsList = [
+    {
+      label: 'Order Type',
+      value: flag?.orderType,
+      itemSx: {
+        '& .value': {
+          textTransform: 'capitalize',
+        },
+      },
+    },
     {
       label: 'Order Id',
       value: flag?.orderId.orderId,
@@ -73,6 +75,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
     {
       label: 'Product Amount',
       value: flag?.orderId?.summary?.productAmount,
+      hide: flag?.orderType === 'butler',
     },
     {
       label: 'Product Delivery Fee',
@@ -84,7 +87,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
     },
     {
       label: 'Total Amount',
-      value: flag?.orderId?.summary?.totalAmount,
+      value: flag?.orderId?.summary?.totalAmount + flag?.orderId?.summary?.vat,
     },
   ];
 
@@ -115,6 +118,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
         if (data?.status) {
           successMsg(data?.message, 'success');
           closeSideBar();
+          refetchFlags();
         } else {
           successMsg(data?.message, 'warn');
         }
