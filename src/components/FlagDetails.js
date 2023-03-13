@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 // mui
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { successMsg } from '../helpers/successMsg';
 import * as Api from '../network/Api';
 import Axios from '../network/axios';
@@ -31,8 +31,10 @@ const getFlagTypes = (flag) => {
 
   return '';
 };
-export default function FlagDetails({ flag, closeSideBar, refetchFlags }) {
+export default function FlagDetails({ flag, closeSideBar }) {
   const theme = useTheme();
+  const queryClient = useQueryClient();
+
   const orderDetailsList = [
     {
       label: 'Order Type',
@@ -118,7 +120,7 @@ export default function FlagDetails({ flag, closeSideBar, refetchFlags }) {
         if (data?.status) {
           successMsg(data?.message, 'success');
           closeSideBar();
-          refetchFlags();
+          queryClient.invalidateQueries({ queryKey: ['flagged_orders'] });
         } else {
           successMsg(data?.message, 'warn');
         }

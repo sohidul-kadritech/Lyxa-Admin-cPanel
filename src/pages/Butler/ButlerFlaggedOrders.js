@@ -3,20 +3,18 @@
 import ReplayIcon from '@mui/icons-material/Replay';
 import { Box, Paper, Stack, Tab, Tabs, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 // project import
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import CloseButton from '../../components/Common/CloseButton';
-import ConfirmModal from '../../components/Common/ConfirmModal';
 import FilterButton from '../../components/Filter/FilterButton';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import FlagDetails from '../../components/FlagDetails';
 import FlaggedOrdersTable from '../../components/FlaggedOrdersTable';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import minInMiliSec from '../../helpers/minInMiliSec';
-import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import Axios from '../../network/axios';
 
@@ -117,41 +115,13 @@ export default function FlaggedOrders() {
   const [currentTab, setCurrentTab] = useState(0);
 
   // resolve modal
-  const [resolveModal, setResolveModal] = useState(false);
   const [currentFlag, setCurrentFlag] = useState({});
 
-  console.log(['flags', { sortBy, flagTypeKey, resolveType, currentPage }]);
-
-  // flags query
   const flagsQuery = useQuery(
-    ['flags', { sortBy, flagTypeKey, resolveType, currentPage }],
+    ['flagged_orders', { sortBy, flagTypeKey, resolveType, currentPage }],
     () => fetchFlags(sortBy, flagTypeKey, resolveType, currentPage),
     {
       staleTime: minInMiliSec(3),
-    }
-  );
-
-  // flags resolve
-  const flagResolve = useMutation(
-    () =>
-      Axios.post(Api.RESOLVE_FLAG, {
-        id: currentFlag?._id,
-        resolved: true,
-      }),
-    {
-      onError: (error) => {
-        console.log(error);
-        successMsg(error, 'error');
-      },
-
-      onSuccess: (data) => {
-        setResolveModal(false);
-        if (data?.status) {
-          successMsg(data?.message, 'success');
-        } else {
-          successMsg(data?.message, 'warn');
-        }
-      },
     }
   );
 
@@ -348,9 +318,6 @@ export default function FlaggedOrders() {
                   </Stack>
                   <FlagDetails
                     flag={currentFlag}
-                    refetchFlags={() => {
-                      flagsQuery.refetch();
-                    }}
                     closeSideBar={() => {
                       setIsRightBarOpen(false);
                     }}
@@ -361,18 +328,6 @@ export default function FlaggedOrders() {
           </Grid>
         </Grid>
       </Box>
-      {/* resolve flag */}
-      <ConfirmModal
-        isOpen={resolveModal}
-        blurClose
-        loading={flagResolve.isLoading}
-        message="Are you sure to resolve this flag?"
-        sx={{ minWidth: 'max(300px, 25vw)' }}
-        onCancel={() => {
-          setResolveModal(false);
-        }}
-        onConfirm={() => flagResolve.mutate()}
-      />
     </GlobalWrapper>
   );
 }

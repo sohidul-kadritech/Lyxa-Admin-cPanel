@@ -3,10 +3,11 @@ import { Box, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 
 // thrid party
 import { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 // project import
 import OptionsSelect from '../../components/Form/OptionsSelect';
+import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
@@ -29,16 +30,21 @@ const initRating = {
   type: 'shop',
 };
 
-export default function AddRatings({ isEdit, rating, closeHandler, refetchFlags }) {
+export default function AddRatings({ isEdit, rating, closeHandler }) {
+  const queryClient = useQueryClient();
+
   const [currentRating, setCurrentRating] = useState({ ...initRating });
   const [tag, setTag] = useState('');
 
   // add new rating
   const addNewRating = useMutation((ratings) => AXIOS.post(Api.ADD_NEW_RATING, ratings), {
     onSuccess: (data) => {
-      closeHandler();
-      refetchFlags();
-      console.log(data);
+      if (data?.status) {
+        closeHandler();
+        queryClient.invalidateQueries({ queryKey: ['ratting_settings'] });
+      } else {
+        successMsg(data?.message, 'warn');
+      }
     },
     onError: (error) => {
       console.log(error);
@@ -47,8 +53,12 @@ export default function AddRatings({ isEdit, rating, closeHandler, refetchFlags 
 
   const updateRatings = useMutation((ratings) => AXIOS.post(Api.UPDATE_RATING, ratings), {
     onSuccess: (data) => {
-      closeHandler();
-      refetchFlags();
+      if (data?.status) {
+        closeHandler();
+        queryClient.invalidateQueries({ queryKey: ['ratting_settings'] });
+      } else {
+        successMsg(data?.message, 'warn');
+      }
       console.log(data);
     },
     onError: (error) => {

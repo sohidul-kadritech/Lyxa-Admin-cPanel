@@ -56,7 +56,7 @@ export default function RatingSettings() {
 
   // ratings query
   const ratingsQuery = useQuery(
-    ['ratings', { type: ratingType }],
+    ['ratting_settings', { type: ratingType }],
     () =>
       AXIOS.get(Api.GET_ALL_RATINGS, {
         params: {
