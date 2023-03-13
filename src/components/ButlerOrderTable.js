@@ -244,7 +244,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     }
 
     if (flagType.includes('delivery')) {
-      data.delivery = currentOrder?.user?._id;
+      data.delivery = currentOrder?.deliveryBoy?._id;
     }
 
     dispatch(addButlerOrderFlag(data));
