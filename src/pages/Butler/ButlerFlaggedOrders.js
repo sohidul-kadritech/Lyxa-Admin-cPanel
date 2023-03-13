@@ -15,6 +15,7 @@ import FilterSelect from '../../components/Filter/FilterSelect';
 import FlagDetails from '../../components/FlagDetails';
 import FlaggedOrdersTable from '../../components/FlaggedOrdersTable';
 import GlobalWrapper from '../../components/GlobalWrapper';
+import minInMiliSec from '../../helpers/minInMiliSec';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import Axios from '../../network/axios';
@@ -82,9 +83,25 @@ const fetchFlags = async (sortBy, flagTypeKey, resolveType, currentPage) => {
   return status ? data : {};
 };
 
+const createdModifiedFlagList = (flagList) => {
+  if (flagList?.length > 0) {
+    return flagList.map((item) => {
+      if (item?.orderId) {
+        item.orderType = 'regular';
+        return item;
+      }
+
+      item.orderType = 'butler';
+      item.orderId = item?.butlerId;
+      return item;
+    });
+  }
+
+  return [];
+};
+
 export default function FlaggedOrders() {
   const theme = useTheme();
-  const [flagList, setFlagList] = useState([]);
 
   // rightbar
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
@@ -103,25 +120,14 @@ export default function FlaggedOrders() {
   const [resolveModal, setResolveModal] = useState(false);
   const [currentFlag, setCurrentFlag] = useState({});
 
+  console.log(['flags', { sortBy, flagTypeKey, resolveType, currentPage }]);
+
   // flags query
   const flagsQuery = useQuery(
     ['flags', { sortBy, flagTypeKey, resolveType, currentPage }],
     () => fetchFlags(sortBy, flagTypeKey, resolveType, currentPage),
     {
-      onSuccess: (data) => {
-        setFlagList(
-          data?.list?.map((item) => {
-            if (item?.orderId) {
-              item.orderType = 'regular';
-              return item;
-            }
-
-            item.orderType = 'butler';
-            item.orderId = item?.butlerId;
-            return item;
-          })
-        );
-      },
+      staleTime: minInMiliSec(3),
     }
   );
 
@@ -288,7 +294,7 @@ export default function FlaggedOrders() {
                   </Stack>
                   <Box sx={{ flexGrow: 1, minHeight: 'calc(100vh - 422px)', width: '100%', position: 'relative' }}>
                     <FlaggedOrdersTable
-                      flagsList={flagList || []}
+                      flagsList={createdModifiedFlagList(flagsQuery?.data?.list)}
                       flagsLoading={flagsQuery.isLoading || flagsQuery.isFetching}
                       onRowClick={({ row }) => {
                         setCurrentFlag(row);

@@ -25,6 +25,7 @@ import TableLoader from '../../components/Common/TableLoader';
 import FilterButton from '../../components/Filter/FilterButton';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/StyledTable';
+import minInMiliSec from '../../helpers/minInMiliSec';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddRatings from './addRating';
@@ -54,12 +55,17 @@ export default function RatingSettings() {
   const [ratingType, setRatingType] = useState('shop');
 
   // ratings query
-  const ratingsQuery = useQuery(['ratings', { type: ratingType }], () =>
-    AXIOS.get(Api.GET_ALL_RATINGS, {
-      params: {
-        type: ratingType,
-      },
-    })
+  const ratingsQuery = useQuery(
+    ['ratings', { type: ratingType }],
+    () =>
+      AXIOS.get(Api.GET_ALL_RATINGS, {
+        params: {
+          type: ratingType,
+        },
+      }),
+    {
+      staleTime: minInMiliSec(3),
+    }
   );
 
   // get stars
