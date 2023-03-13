@@ -1,16 +1,16 @@
-/* eslint-disable no-unused-vars */
 // mui
 import { Box, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 
 // thrid party
 import { useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 
 // project import
-import { useDispatch, useSelector } from 'react-redux';
 import OptionsSelect from '../../components/Form/OptionsSelect';
-import { updateRatingIsAdded, updateRatingIsUpdated } from '../../store/ratings/ratingActions';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 
-const faqUpperOptions = [
+const ratingOptions = [
   { label: '★', value: '1' },
   { label: '★★', value: '2' },
   { label: '★★★', value: '3' },
@@ -18,26 +18,50 @@ const faqUpperOptions = [
   { label: '★★★★★', value: '5' },
 ];
 
-const initialCurrentRating = {
-  rating: '3',
+const ratingTypes = [
+  { label: 'Shop', value: 'shop' },
+  { label: 'Rider', value: 'deliveryBoy' },
+];
+
+const initRating = {
+  rating: '4',
   tags: [],
+  type: 'shop',
 };
 
-export default function AddRatings({ submitHandler, isEdit, rating, closeHandler }) {
-  const dispatch = useDispatch();
-  const { loading, isAdded, isUpdated } = useSelector((store) => store.ratingReducer);
-
-  const [currentRating, setCurrentRating] = useState(initialCurrentRating);
-
-  const [ratingType, setRatingType] = useState('3');
+export default function AddRatings({ isEdit, rating, closeHandler, refetchFlags }) {
+  const [currentRating, setCurrentRating] = useState({ ...initRating });
   const [tag, setTag] = useState('');
-  const [alltags, setAlltags] = useState([]);
 
-  console.log(currentRating);
-  console.log(rating);
+  // add new rating
+  const addNewRating = useMutation((ratings) => AXIOS.post(Api.ADD_NEW_RATING, ratings), {
+    onSuccess: (data) => {
+      closeHandler();
+      refetchFlags();
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
-  const callSubmitHandler = () => {
-    submitHandler(currentRating);
+  const updateRatings = useMutation((ratings) => AXIOS.post(Api.UPDATE_RATING, ratings), {
+    onSuccess: (data) => {
+      closeHandler();
+      refetchFlags();
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const submitRatings = () => {
+    if (isEdit) {
+      updateRatings.mutate({ ...currentRating, id: currentRating?._id });
+    } else {
+      addNewRating.mutate(currentRating);
+    }
   };
 
   const handleAddTag = (e) => {
@@ -45,7 +69,7 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
       if (tag.trim() === '') {
         return;
       }
-      setCurrentRating((prev) => ({ ...prev, tags: [tag, ...prev.tags] }));
+      setCurrentRating((prev) => ({ ...prev, tags: [tag.trim(), ...prev.tags] }));
       setTag('');
     }
   };
@@ -56,24 +80,10 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
   };
 
   useEffect(() => {
-    if (isAdded) {
-      setTag('');
-      setCurrentRating(initialCurrentRating);
-      dispatch(updateRatingIsAdded(false));
-    }
-    if (isUpdated) {
-      closeHandler();
-      dispatch(updateRatingIsUpdated(false));
-    }
-  }, [isAdded, isUpdated]);
-
-  useEffect(() => {
-    if (rating?.tags) {
+    if (rating?._id) {
       setCurrentRating({ ...rating });
     }
   }, [rating]);
-
-  console.log(currentRating?.rating);
 
   return (
     <Stack spacing={6}>
@@ -100,12 +110,12 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
           Type
         </Typography>
         <OptionsSelect
-          items={faqUpperOptions}
-          value={`${currentRating?.rating}`}
+          items={ratingTypes}
+          value={`${currentRating?.type}`}
           hideOnDisabled
           disabled={isEdit}
           onChange={(value) => {
-            setCurrentRating((prev) => ({ ...prev, rating: value }));
+            setCurrentRating((prev) => ({ ...prev, type: value }));
           }}
           sx={{
             '& .MuiChip-label': {
@@ -114,6 +124,20 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
           }}
         />
       </Stack>
+      <OptionsSelect
+        items={ratingOptions}
+        value={`${currentRating?.rating}`}
+        hideOnDisabled
+        disabled={isEdit}
+        onChange={(value) => {
+          setCurrentRating((prev) => ({ ...prev, rating: value }));
+        }}
+        sx={{
+          '& .MuiChip-label': {
+            fontSize: '15px',
+          },
+        }}
+      />
       <TextField
         label="Tag"
         placeholder="Press 'Enter' to add"
@@ -180,7 +204,7 @@ export default function AddRatings({ submitHandler, isEdit, rating, closeHandler
           ))}
         </Box>
       </Stack>
-      <Button disableElevation variant="contained" disabled={loading} onClick={callSubmitHandler}>
+      <Button disableElevation variant="contained" disabled={addNewRating.isLoading} onClick={submitRatings}>
         {isEdit ? 'Save' : 'Add New'}
       </Button>
     </Stack>

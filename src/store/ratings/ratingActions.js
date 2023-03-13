@@ -1,4 +1,4 @@
-import { ADD_NEW_RATING, EDIT_NEW_RATING, GET_ALL_RATINGS } from '../../network/Api';
+import { ADD_NEW_RATING, GET_ALL_RATINGS, UPDATE_RATING } from '../../network/Api';
 import requestApi from '../../network/httpRequest';
 import * as actionTypes from '../actionType';
 
@@ -93,7 +93,7 @@ export const updateRatings = (rating) => async (dispatch, getState) => {
   });
 
   try {
-    const { data } = await requestApi().request(EDIT_NEW_RATING, {
+    const { data } = await requestApi().request(UPDATE_RATING, {
       method: 'POST',
       data: {
         ...rating,

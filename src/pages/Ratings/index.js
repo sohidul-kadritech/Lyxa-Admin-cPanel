@@ -1,23 +1,32 @@
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable react/no-unstable-nested-components */
 // mui
 import ReplayIcon from '@mui/icons-material/Replay';
-import { Box, Button, Chip, Paper, Stack, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Paper,
+  Stack,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+  Unstable_Grid2 as Grid,
+  useTheme,
+} from '@mui/material';
 // third party
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 
 // project import
+import { useQuery } from 'react-query';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import CloseButton from '../../components/Common/CloseButton';
-import ConfirmModal from '../../components/Common/ConfirmModal';
 import TableLoader from '../../components/Common/TableLoader';
 import FilterButton from '../../components/Filter/FilterButton';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/StyledTable';
-import ThreeDotsMenu from '../../components/ThreeDotsMenu';
-import { deleteChatReason } from '../../store/ChatReason/chatReasonActions';
-import { addNewRating, getAllRatings, updateRatings } from '../../store/ratings/ratingActions';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import AddRatings from './addRating';
 
 // breadcrumb items
@@ -34,65 +43,24 @@ const breadcrumbItems = [
 
 export default function RatingSettings() {
   const theme = useTheme();
-  const dispatch = useDispatch();
-
-  const { ratings, loading } = useSelector((store) => store.ratingReducer);
-
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  // const [query, setQuery] = useState([]);
 
   const [currentTab, setCurrentTab] = useState(0);
-  const [currentFaq, setCurrentFaq] = useState({});
-  const [deleteFaq, setDeleteFaq] = useState({});
+  const [currentRightTab, setCurrentRightTab] = useState('');
+  const [currentRating, setCurrentRating] = useState({});
 
-  // get all ratings
-  const callGetAllRating = () => {
-    dispatch(getAllRatings());
-  };
+  // type
+  // eslint-disable-next-line no-unused-vars
+  const [ratingType, setRatingType] = useState('shop');
 
-  // add faq
-  const callAddRating = (tags) => {
-    dispatch(addNewRating(tags));
-  };
-
-  // update faq
-  const callUpdateFaq = (item) => {
-    console.log(item);
-    dispatch(updateRatings(item));
-  };
-
-  // delete faq
-  const callDeleteFaq = () => {
-    if (deleteFaq.type === 'orderSupport' || deleteFaq.type === 'accountSupport') {
-      dispatch(deleteChatReason(deleteFaq?._id));
-      return;
-    }
-
-    dispatch(deleteFaq(deleteFaq?._id));
-  };
-
-  // dynamic titile
-  const rightBarTitle = (curTab) => {
-    if (curTab === 0) {
-      return 'Edit';
-    }
-    return 'Add New';
-  };
-
-  // three dot handler
-  const threeDotHandler = (menu, item) => {
-    if (menu === 'Edit') {
-      setIsRightBarOpen(true);
-      setCurrentTab(0);
-      setCurrentFaq(item);
-    }
-
-    if (menu === 'Delete') {
-      setIsConfirmModalOpen(true);
-      setDeleteFaq(item);
-    }
-  };
+  // ratings query
+  const ratingsQuery = useQuery(['ratings', { type: ratingType }], () =>
+    AXIOS.get(Api.GET_ALL_RATINGS, {
+      params: {
+        type: ratingType,
+      },
+    })
+  );
 
   // get stars
   const getStars = (stars) => {
@@ -157,31 +125,7 @@ export default function RatingSettings() {
         <Typography variant="body1">{new Date(params?.value || undefined).toLocaleDateString()}</Typography>
       ),
     },
-    {
-      id: 4,
-      field: 'action',
-      headerName: 'Action',
-      headerAlign: 'right',
-      align: 'right',
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params) => (
-        <ThreeDotsMenu
-          menuItems={['Edit']}
-          handleMenuClick={(menu) => {
-            threeDotHandler(menu, params?.row);
-          }}
-        />
-      ),
-    },
   ];
-
-  useEffect(() => {
-    if (ratings?.length === 0) {
-      callGetAllRating();
-    }
-  }, []);
 
   return (
     <GlobalWrapper padding>
@@ -209,15 +153,28 @@ export default function RatingSettings() {
                 }}
               />
               <Paper>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', pt: 6 }}>
+                  <Tabs
+                    value={currentTab}
+                    onChange={(event, value) => {
+                      setCurrentTab(value);
+                      setRatingType(value === 0 ? 'shop' : 'deliveryBoy');
+                    }}
+                    aria-label="basic tabs example"
+                  >
+                    <Tab label="Shop" />
+                    <Tab label="Rider" />
+                  </Tabs>
+                </Box>
                 <Stack direction="row" pt={10} pb={3} justifyContent="space-between">
                   <Tooltip title="Refresh">
                     <Box>
                       <FilterButton
                         label="Refresh"
-                        className={`${loading ? 'refresh-animate' : ''}`}
+                        className={`${ratingsQuery.isLoading || ratingsQuery.isFetching ? 'refresh-animate' : ''}`}
                         endIcon={<ReplayIcon />}
                         onClick={() => {
-                          callGetAllRating();
+                          ratingsQuery.refetch();
                         }}
                         sx={{
                           gap: '8px',
@@ -233,7 +190,7 @@ export default function RatingSettings() {
                     color="primary"
                     onClick={() => {
                       setIsRightBarOpen(true);
-                      setCurrentTab(1);
+                      setCurrentRightTab('add');
                     }}
                   >
                     Add New
@@ -242,97 +199,102 @@ export default function RatingSettings() {
                 <Box sx={{ flexGrow: 1, height: '100%', width: '100%', position: 'relative' }}>
                   <StyledTable
                     columns={columns}
-                    rows={ratings.map((items) => items).sort((a, b) => a?.rating - b?.rating)}
+                    rows={
+                      ratingsQuery?.data?.data?.ratingSetting
+                        ?.filter((item) => item?.tags?.length)
+                        .sort((a, b) => a?.rating - b?.rating) || []
+                    }
                     getRowId={(params) => params?._id}
                     rowHeight={60}
                     getRowHeight={() => 'auto'}
                     components={{
                       NoRowsOverlay: () => (
                         <Stack height="100%" alignItems="center" justifyContent="center">
-                          {loading ? '' : 'No Rating found'}
+                          {ratingsQuery.isLoading || ratingsQuery.isFetching ? '' : 'No Rating found'}
                         </Stack>
                       ),
                     }}
+                    sx={{
+                      '& .MuiDataGrid-cell': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onRowClick={({ row }) => {
+                      setCurrentRating(row);
+                      setCurrentRightTab('edit');
+                      setIsRightBarOpen(true);
+                    }}
                   />
                   {/* loading */}
-                  {loading ? <TableLoader /> : null}
+                  {ratingsQuery.isLoading || ratingsQuery.isFetching ? <TableLoader /> : null}
                 </Box>
               </Paper>
             </Grid>
           </Grid>
           {/* right */}
-          <Grid
-            container
-            md={4}
-            pl={{
-              xl: 10,
-              lg: 5,
-            }}
-            sx={{
-              borderLeft: `2px solid ${theme.palette.grey[200]}`,
-              height: '100%',
-              overflowY: 'scroll',
-              pb: 4,
-            }}
-            className={`${isRightBarOpen ? '' : 'd-none'}`}
-          >
-            <Grid xs={12}>
-              <Paper>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" pt={9} pb={10}>
-                  <Typography variant="h2">{rightBarTitle(currentTab)}</Typography>
+          {isRightBarOpen && (
+            <Grid
+              container
+              md={4}
+              pl={{
+                xl: 10,
+                lg: 5,
+              }}
+              sx={{
+                borderLeft: `2px solid ${theme.palette.grey[200]}`,
+                height: '100%',
+                overflowY: 'scroll',
+                pb: 4,
+              }}
+            >
+              <Grid xs={12}>
+                <Paper>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center" pt={9} pb={9}>
+                    <Typography variant="h2">{currentRightTab === 'edit' ? 'Edit' : 'Add New'}</Typography>
+                    <Box>
+                      <CloseButton
+                        onClick={() => {
+                          setIsRightBarOpen(false);
+                        }}
+                      />
+                    </Box>
+                    {console.log(currentRightTab)}
+                  </Stack>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center" pr={1}></Stack>
+                  {/* tab bodies */}
                   <Box>
-                    <CloseButton
-                      onClick={() => {
-                        setIsRightBarOpen(false);
-                      }}
-                    />
+                    {currentRightTab === 'edit' ? (
+                      <AddRatings
+                        isEdit
+                        rating={currentRating}
+                        refetchFlags={() => {
+                          ratingsQuery.refetch();
+                        }}
+                        closeHandler={() => {
+                          setIsRightBarOpen(false);
+                        }}
+                      />
+                    ) : (
+                      <>
+                        {/* do not remove span !library bug: does not unmount component */}
+                        <span></span>
+                        <AddRatings
+                          isEdit={false}
+                          closeHandler={() => {
+                            setIsRightBarOpen(false);
+                          }}
+                          refetchFlags={() => {
+                            ratingsQuery.refetch();
+                          }}
+                        />
+                      </>
+                    )}
                   </Box>
-                </Stack>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" pr={1}>
-                  <Box>
-                    {/* tab headers */}
-                    {/* <Tabs
-                      value={currentTab}
-                      onChange={(event, value) => {
-                        setCurrentTab(value);
-                      }}
-                    >
-                      <Tab label="Edit" className={`${currentFaq?._id ? '' : 'd-none'}`} />
-                      <Tab label="Add New" />
-                    </Tabs> */}
-                  </Box>
-                </Stack>
-                {/* tab bodies */}
-                <Box>
-                  {currentTab === 0 && (
-                    <AddRatings
-                      isEdit
-                      rating={currentFaq}
-                      submitHandler={callUpdateFaq}
-                      closeHandler={() => {
-                        setIsRightBarOpen(false);
-                      }}
-                    />
-                  )}
-                  {currentTab === 1 && <AddRatings submitHandler={callAddRating} closeHandler={() => {}} />}
-                </Box>
-              </Paper>
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </Grid>
-        {/* modal */}
-        <ConfirmModal
-          message="Do you want to delete this Q&A ?"
-          isOpen={isConfirmModalOpen}
-          blurClose
-          onCancel={() => {
-            setIsConfirmModalOpen(false);
-          }}
-          onConfirm={() => {
-            callDeleteFaq();
-            setIsConfirmModalOpen(false);
-          }}
-        />
       </Box>
     </GlobalWrapper>
   );
