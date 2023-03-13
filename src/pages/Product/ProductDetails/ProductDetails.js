@@ -61,29 +61,14 @@ function ProductDetails() {
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS));
 
   const [rewardModal, setRewardModal] = useState(false);
+  const [rewardBundleModal, setRewardBundleModal] = useState(false);
+  const [rewardBundle, setRewardBundle] = useState('');
   const [rewardCategory, setRewardCategory] = useState('');
 
-  const updateRewardCategory = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_REWARD_CATEGORY, data), {
+  const updateRewardSettings = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_REWARD_SETTINGS, data), {
     onSuccess: (data) => {
       if (data?.status) {
         setRewardModal(false);
-        setProduct(data?.data?.product);
-        successMsg(data?.message, 'success');
-      } else {
-        successMsg(data?.message);
-      }
-    },
-    onError: (error) => {
-      console.log('api error: ', error);
-    },
-  });
-
-  const [rewardBundleModal, setRewardBundleModal] = useState(false);
-  const [rewardBundle, setRewardBundle] = useState('');
-
-  const updateRewardBundle = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_REWARD_BUNDLE, data), {
-    onSuccess: (data) => {
-      if (data?.status) {
         setRewardBundleModal(false);
         setProduct(data?.data?.product);
         successMsg(data?.message, 'success');
@@ -96,7 +81,22 @@ function ProductDetails() {
     },
   });
 
-  console.log(rewardSettingsQuery.data);
+  // const updateRewardBundle = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_REWARD_BUNDLE, data), {
+  //   onSuccess: (data) => {
+  //     if (data?.status) {
+  //       setRewardBundleModal(false);
+  //       setProduct(data?.data?.product);
+  //       successMsg(data?.message, 'success');
+  //     } else {
+  //       successMsg(data?.message);
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.log('api error: ', error);
+  //   },
+  // });
+
+  // console.log(rewardSettingsQuery.data);
 
   //   CALL TO SERVER
   const callApi = async (pId) => {
@@ -520,35 +520,18 @@ function ProductDetails() {
               outline
               color="success"
               className="mt-3"
-              disabled={updateRewardCategory.loading}
+              disabled={updateRewardSettings.loading}
               onClick={() => {
                 if (rewardCategory === '') {
                   return;
                 }
-                updateRewardCategory.mutate({
+                updateRewardSettings.mutate({
                   productId: product?._id,
                   rewardCategory,
                 });
               }}
             >
               Add Category
-            </Button>
-            <Button
-              outline
-              color="success"
-              className="mt-3"
-              disabled={updateRewardCategory.loading}
-              onClick={() => {
-                if (rewardCategory === '') {
-                  return;
-                }
-                updateRewardCategory.mutate({
-                  productId: product?._id,
-                  rewardCategory: null,
-                });
-              }}
-            >
-              Remove Category
             </Button>
           </div>
         </div>
@@ -585,9 +568,7 @@ function ProductDetails() {
                 setRewardBundle(e.target.value);
               }}
             >
-              <MenuItem key="full" value="full">
-                Full
-              </MenuItem>
+              {/*  */}
               {rewardSettingsQuery?.data?.data?.rewardSetting?.rewardBundle?.map((item) => (
                 <MenuItem key={`${item}`} value={`${item}`}>
                   {item}
@@ -605,35 +586,18 @@ function ProductDetails() {
               outline
               color="success"
               className="mt-3"
-              disabled={updateRewardBundle.loading}
+              disabled={updateRewardSettings.loading}
               onClick={() => {
                 if (rewardBundle === '') {
                   return;
                 }
-                updateRewardBundle.mutate({
+                updateRewardSettings.mutate({
                   productId: product?._id,
                   rewardBundle,
                 });
               }}
             >
               Add Bundle
-            </Button>
-            <Button
-              outline
-              color="success"
-              className="mt-3"
-              disabled={updateRewardBundle.loading}
-              onClick={() => {
-                if (rewardBundle === '') {
-                  return;
-                }
-                updateRewardBundle.mutate({
-                  productId: product?._id,
-                  rewardBundle: 0,
-                });
-              }}
-            >
-              Remove Bundle
             </Button>
           </div>
         </div>

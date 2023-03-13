@@ -116,7 +116,7 @@ export const ADD_PRODUCT_DEAL = `${ADMIN_ENDPOINT}/product/add-deal`;
 export const UPDATE_PRODUCT_STATUS = `${ADMIN_ENDPOINT}/product/status`;
 
 export const DELETE_PRODUCT_DEAL = `${ADMIN_ENDPOINT}/product/delete-deal`;
-export const UPDATE_PRODUCT_REWARD_CATEGORY = `${ADMIN_ENDPOINT}/product/add-reward-category`;
+export const UPDATE_PRODUCT_REWARD_SETTINGS = `${ADMIN_ENDPOINT}/product/add-reward`;
 export const UPDATE_PRODUCT_REWARD_BUNDLE = `${ADMIN_ENDPOINT}/product/add-reward-bundle`;
 
 export const ADD_UNIT = `${ADMIN_ENDPOINT}/unit/add`;
