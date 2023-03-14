@@ -15,6 +15,8 @@ export default function Provider({ children }) {
     theme.components = Components(theme);
 
     // typography
+    // theme.typography.fontFamily = ['Inter', 'sans-serif', 'Poppins', 'sans-serif'].join(',');
+
     theme.typography.h1 = {
       [theme.breakpoints.up('xs')]: {
         fontWeight: 600,
@@ -56,25 +58,41 @@ export default function Provider({ children }) {
       letterSpacing: '0px',
     };
 
-    theme.typography.h5 = {
-      fontWeight: 500,
-      fontSize: `${pxToRem(16)}rem`,
-      lineHeight: 1.1,
+    theme.typography.h4 = {
+      fontWeight: 600,
+      fontSize: `${pxToRem(20)}rem`,
+      lineHeight: `${pxToRem(24)}rem`,
       letterSpacing: '0px',
     };
 
+    theme.typography.h5 = {
+      fontWeight: 500,
+      fontSize: `${pxToRem(18)}rem`,
+      lineHeight: `${pxToRem(28)}rem`,
+      letterSpacing: '-2%',
+    };
+
+    theme.typography.h6 = {
+      fontWeight: 500,
+      fontSize: `${pxToRem(16)}rem`,
+      lineHeight: `${pxToRem(28)}rem`,
+      letterSpacing: '-2%',
+    };
+
     theme.typography.body1 = {
-      lineHeight: 1.1,
+      lineHeight: `${pxToRem(24)}rem`,
+      fontSize: `${pxToRem(16)}rem`,
       letterSpacing: '0px',
       fontWeight: 400,
-      fontSize: `${pxToRem(17)}rem`,
 
       [theme.breakpoints.up('lg')]: {
-        fontSize: `${pxToRem(15)}rem`,
+        lineHeight: `${pxToRem(24)}rem`,
+        fontSize: `${pxToRem(16)}rem`,
       },
 
       [theme.breakpoints.up('xl')]: {
-        fontSize: `${pxToRem(17)}rem`,
+        lineHeight: `${pxToRem(24)}rem`,
+        fontSize: `${pxToRem(16)}rem`,
       },
     };
 
@@ -87,24 +105,20 @@ export default function Provider({ children }) {
 
     theme.typography.body3 = {
       fontWeight: 400,
-      fontSize: `${pxToRem(15)}rem`,
-      lineHeight: 1.1,
+      fontSize: `${pxToRem(13)}rem`,
+      lineHeight: `${pxToRem(21)}rem`,
       letterSpacing: '0px',
 
       [theme.breakpoints.up('lg')]: {
         fontSize: `${pxToRem(13)}rem`,
+        lineHeight: `${pxToRem(21)}rem`,
       },
 
       [theme.breakpoints.up('xl')]: {
-        fontSize: `${pxToRem(15)}rem`,
+        fontSize: `${pxToRem(13)}rem`,
+        lineHeight: `${pxToRem(21)}rem`,
       },
     };
-
-    theme.typography.display1 = undefined;
-    theme.typography.display2 = undefined;
-    theme.typography.h4 = undefined;
-    theme.typography.body4 = undefined;
-    theme.typography.body5 = undefined;
 
     return theme;
   }, []);

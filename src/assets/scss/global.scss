@@ -1,5 +1,5 @@
 // will be used as global font for the whole app
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 .cursor-pointer {
   cursor: pointer;
@@ -233,9 +233,9 @@ table > thead {
 
 // =================== overriding styles for designing the app ** will remove later
 body {
-  background: #fff;
-  font-family: 'Open Sans', sans-serif;
-  color: #000;
+  background: #e5e5e5;
+  font-family: 'Inter', sans-serif;
+  color: #3f4254;
 }
 
 @keyframes refreshIconSpin {
