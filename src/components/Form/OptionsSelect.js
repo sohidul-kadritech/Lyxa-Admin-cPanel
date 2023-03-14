@@ -45,13 +45,14 @@ export default function OptionsSelect({
       }}
     >
       {items.map((item) => {
-        const hide = !(hideOnDisabled && disabled)
+        const hide = !(hideOnDisabled && (disabled || item.isDisabled))
           ? false
           : multiple
           ? !value.includes(item.value)
           : item.value !== value;
         const active = multiple ? value.includes(item.value) : item.value === value;
-        const isDisabled = disabled ? true : disableMultiple ? disableMultiple.includes(item.value) : undefined;
+        const isDisabled =
+          disabled || item.isDisabled ? true : disableMultiple ? disableMultiple.includes(item.value) : undefined;
 
         defaultSx = disabled ? { ...defaultSx, ...disabledSx } : defaultSx;
 

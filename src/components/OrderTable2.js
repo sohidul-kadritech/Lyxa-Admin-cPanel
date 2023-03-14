@@ -22,8 +22,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'reactstrap';
 import styled from 'styled-components';
@@ -31,17 +31,18 @@ import { butlerOrderUpdateStatus, orderStatusOptions } from '../assets/staticDat
 import { successMsg } from '../helpers/successMsg';
 
 // project import
+import * as Api from '../network/Api';
 import { ACTIVE_DEIVERY_BOYS, NEAR_BY_BUTLERS_FOR_ORDER } from '../network/Api';
+import AXIOS from '../network/axios';
 import requestApi from '../network/httpRequest';
 import {
-  addButlerOrderFlag,
   cancelButlerOrderByAdmin,
   updateButlerOrderIsCancelled,
   updateButlerOrderIsFlagged,
   updateButlerOrderIsUpdated,
   updateButlerOrderStatus,
 } from '../store/Butler/butlerActions';
-import { cancelOrderByAdmin, orderUpdateStatus, sentOrderFlag } from '../store/order/orderAction';
+import { cancelOrderByAdmin, orderUpdateStatus } from '../store/order/orderAction';
 import { getAllCancelReasons } from '../store/Settings/settingsAction';
 import CloseButton from './Common/CloseButton';
 import TableLoader from './Common/TableLoader';
@@ -49,6 +50,9 @@ import OptionsSelect from './Form/OptionsSelect';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
+// ==== react query
+
+// add order flag
 const getOrderStatus = (statusName) => {
   switch (statusName) {
     case 'accepted_delivery_boy':
@@ -108,36 +112,35 @@ const fetchNearByButlers = async (orderId, isButler) => {
 };
 
 // flag type options
-const flagTypeOptions = [
+const butlerFlagTypeOptions = [
   { label: 'User', value: 'user' },
   { label: 'Butler', value: 'delivery' },
 ];
 
-// order flag type options
 const orderFlagTypeOptions = [
   { label: 'User', value: 'user' },
-  { label: 'Butler', value: 'delivery' },
+  { label: 'Rider', value: 'delivery' },
   { label: 'Shop', value: 'shop' },
 ];
 
 // disabled flag options
-const getDisabledFlagOptions = (flags) => {
-  const list = [];
+// const getDisabledFlagOptions = (flags) => {
+//   const list = [];
 
-  flags.forEach((item) => {
-    if (item.user) {
-      list.push('user');
-    }
-    if (item.delivery) {
-      list.push('delivery');
-    }
-    if (item.shop) {
-      list.push('shop');
-    }
-  });
+//   flags.forEach((item) => {
+//     if (item.user) {
+//       list.push('user');
+//     }
+//     if (item.delivery) {
+//       list.push('delivery');
+//     }
+//     if (item.shop) {
+//       list.push('shop');
+//     }
+//   });
 
-  return list;
-};
+//   return list;
+// };
 
 const cancelOrderInit = {
   cancelReasonId: '',
@@ -183,11 +186,32 @@ const updateOrderStatusOptions = (currentOrder) => {
   return orderStatusOptions.filter((item) => item.value !== currentOrder?.orderStatus);
 };
 
-const getFlagTypeOptions = (currentOrder) => {
-  if (currentOrder?.isButler) {
-    return flagTypeOptions.filter((item) => currentOrder?.deliveryBoy?._id || item.value !== 'delivery');
-  }
-  return orderFlagTypeOptions;
+const getFlagOptions = (currentOrder) => {
+  const options = currentOrder?.isButler ? butlerFlagTypeOptions : orderFlagTypeOptions;
+  const newOptions = [];
+  let isAllFlagged = true;
+
+  options.forEach((item) => {
+    if (!currentOrder?.deliveryBoy?._id && item.value === 'delivery') {
+      return;
+    }
+    if (currentOrder?.flag?.find((flagItem) => flagItem[item.value])) {
+      newOptions.push({
+        ...item,
+        isDisabled: true,
+      });
+    } else {
+      isAllFlagged = false;
+      newOptions.push({
+        ...item,
+      });
+    }
+  });
+
+  return {
+    options: newOptions,
+    isAllFlagged,
+  };
 };
 
 export default function ButlerOrderTable({ orders, loading, onRowClick }) {
@@ -212,11 +236,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
   const [currentOrderShop, setCurrentOrderShop] = useState({});
 
-  // flag order
-  const [flagModal, setFlagModal] = useState(false);
-  const [flagType, setFlagType] = useState([]);
-  const [flagComment, setFlagComment] = useState('');
-
   // cancel order
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [orderCancel, setOrderCancel] = useState(cancelOrderInit);
@@ -226,6 +245,73 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     deliveryBoy: 0,
     admin: 0,
   });
+
+  // flag order
+  const [flagModal, setFlagModal] = useState(false);
+  const [flagType, setFlagType] = useState([]);
+  const [flagComment, setFlagComment] = useState('');
+
+  const flagOptions = useMemo(() => getFlagOptions(currentOrder), [currentOrder]);
+
+  const resetFlagModal = () => {
+    setFlagModal(false);
+    setFlagType([]);
+    setFlagComment('');
+  };
+
+  const addFlagMutation = useMutation(
+    (payload) => {
+      console.log('payload data', payload.data);
+      const API = payload.service === 'butler' ? Api.BUTLER_ORDER_ADD_FLAG : Api.SEND_ORDER_FLAG;
+      return AXIOS.post(API, payload.data);
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          queryClient.invalidateQueries(['all-orders']);
+          successMsg(data?.message, 'success');
+          resetFlagModal();
+        } else {
+          successMsg(data?.message);
+        }
+      },
+      onError: (error) => {
+        successMsg(error?.message);
+        console.log('api error: ', error);
+      },
+    }
+  );
+
+  const addOrderFlag = () => {
+    console.log('triggerring order flaggin');
+    if (flagComment.trim() === '') {
+      successMsg('Comment cannot be empty');
+      return;
+    }
+
+    if (flagType.length === 0) {
+      successMsg('Please select someone to flag');
+      return;
+    }
+
+    const data = {};
+    data.orderId = currentOrder?._id;
+    data.comment = flagComment.trim();
+
+    flagType.forEach((item) => {
+      if (item === 'user') {
+        data.user = currentOrder?.user?._id;
+      }
+      if (item === 'delivery') {
+        data.delivery = currentOrder?.deliveryBoy?._id;
+      }
+      if (item === 'shop') {
+        data.shop = currentOrder?.shop?._id;
+      }
+    });
+
+    addFlagMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
+  };
 
   // handle flag type change
   const handleFlagTypeChange = (value) => {
@@ -290,43 +376,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     queryClient.invalidateQueries(['all-orders']);
     dispatch(orderUpdateStatus(data, socket));
     setUpdateStatusModal(false);
-  };
-
-  const addOrderFlag = () => {
-    if (flagComment.trim() === '') {
-      successMsg('Comment cannot be empty');
-      return;
-    }
-
-    if (flagType.length === 0) {
-      successMsg('User type cannot be empty');
-      return;
-    }
-
-    const data = {};
-    data.orderId = currentOrder?._id;
-    data.comment = flagComment.trim();
-
-    if (flagType.includes('user')) {
-      data.user = currentOrder?.user?._id;
-    }
-
-    if (flagType.includes('delivery')) {
-      data.delivery = currentOrder?.deliveryBoy?._id;
-    }
-
-    if (flagType.includes('shop')) {
-      data.shop = currentOrder?.shop?._id;
-    }
-
-    if (currentOrder?.isButler) {
-      dispatch(addButlerOrderFlag(data));
-      queryClient.invalidateQueries(['all-orders']);
-    } else {
-      setFlagModal(false);
-      dispatch(sentOrderFlag(data));
-      queryClient.invalidateQueries(['all-orders']);
-    }
   };
 
   const getThreedotMenuOptions = (orderStatus) => {
@@ -518,12 +567,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     setNewOrderStatus('');
     setCurrentButlerSearchKey('');
     setCurrentButler({});
-  };
-
-  const resetFlagModal = () => {
-    setFlagModal(false);
-    setFlagType([]);
-    setFlagComment('');
   };
 
   // temp
@@ -764,8 +807,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                 }}
               />
             </Stack>
-            {getFlagTypeOptions(currentOrder)?.length ===
-            getDisabledFlagOptions(currentOrder?.flag || [])?.length >= 2 ? (
+            {flagOptions.isAllFlagged ? (
               <Stack spacing={3} mb={4}>
                 <Typography
                   variant="body1"
@@ -783,9 +825,9 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   <Typography variant="h5">Choose Type</Typography>
                   <OptionsSelect
                     value={flagType}
-                    items={getFlagTypeOptions(currentOrder)}
+                    items={flagOptions.options}
                     onChange={handleFlagTypeChange}
-                    disableMultiple={getDisabledFlagOptions(currentOrder?.flag || [])}
+                    // disableMultiple={getDisabledFlagOptions(currentOrder?.flag || [])}
                     multiple
                   />
                 </Stack>
