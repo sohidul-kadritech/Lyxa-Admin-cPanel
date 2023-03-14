@@ -55,7 +55,6 @@ import TagsList from '../pages/Categories&Tags/Tags/TagsList/TagsList';
 import ChatDetails from '../pages/Chat/ChatDetails/ChatDetails';
 import DeliverymanDetails from '../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
-import RefusedOrders from '../pages/Orders/RefusedOrders/RefusedOrders';
 import ProductAdd from '../pages/Product/ProductAdd/ProductAdd';
 import ProductDetails from '../pages/Product/ProductDetails/ProductDetails';
 import ProductList from '../pages/Product/ProductList/ProductList';
@@ -87,14 +86,12 @@ const userRoutes = [
   // dashboard
   { path: '/dashboard', component: Dashboard },
   // orders
-  { path: '/orders/list', component: OrdersList },
-  { path: '/orders/details/:id', component: OrderDetails },
-  { path: '/orders/refused', component: RefusedOrders },
-  // butler
-  { path: '/butler/list', component: ButlerOrderList },
-  { path: '/butler/list/order-details/:id', component: ButlerOrderDetails },
-  { path: '/butler/list/canceled', component: ButlerCancelOrders },
-  { path: '/butler/list/flagged', component: ButlerFlaggedOrder },
+  { path: '/orders/list', component: ButlerOrderList },
+  { path: '/orders/details/regular/:id', component: OrderDetails },
+  { path: '/orders/details/butler/:id', component: ButlerOrderDetails },
+  { path: '/orders/list/cancel', component: ButlerCancelOrders },
+  { path: '/orders/list/flagged', component: ButlerFlaggedOrder },
+
   // vat
   { path: '/vat', component: Vat },
   // Banner

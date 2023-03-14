@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 // third party
 import ReplayIcon from '@mui/icons-material/Replay';
 import { Box, Paper, Stack, Tab, Tabs, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
@@ -25,8 +24,8 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/butler/list/flagged',
-    label: 'Butler Flags',
+    to: '/orders/list/flagged',
+    label: 'Flags Orders',
   },
 ];
 

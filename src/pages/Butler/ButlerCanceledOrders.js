@@ -1,19 +1,24 @@
-/* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable react/no-unstable-nested-components */
-// third party
+// third pary
 import { Box, Stack, Tooltip, Unstable_Grid2 as Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 
 // prodject import
 import ReplayIcon from '@mui/icons-material/Replay';
-import ButlerOrderTable from '../../components/ButlerOrderTable';
+import moment from 'moment';
+import { useHistory } from 'react-router-dom';
+import { orderModelOptions, orderTypeOptionsAll } from '../../assets/staticData';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import FilterButton from '../../components/Filter/FilterButton';
+import FilterDate from '../../components/Filter/FilterDate';
+import FilterSearch from '../../components/Filter/FilterSearch';
+import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
-import { getAllButlerOrders, updateButlerOrderPage } from '../../store/Butler/butlerActions';
+import OrderTable from '../../components/OrderTable2';
+import minInMiliSec from '../../helpers/minInMiliSec';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 
 // breadcrumb items
 const breadcrumbItems = [
@@ -22,78 +27,222 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/butler/list/canceled',
-    label: 'Canceled Orders',
+    to: '/orders/list/cancel',
+    label: 'Cancel Orders',
   },
 ];
 
-export default function ButlerCancelOrders() {
-  const dispatch = useDispatch();
+// throttle params
+let delaying = false;
+const delay = 200;
+
+const sortByOptions = [
+  {
+    label: 'Desc',
+    value: 'DESC',
+  },
+  {
+    label: 'Asc',
+    value: 'ASC',
+  },
+];
+
+const getAllOrders = (page, sortBy, startDate, endDate, searchKey, orderType, service) =>
+  AXIOS.get(Api.ORDER_LIST, {
+    params: {
+      page,
+      pageSize: 50,
+      sortBy,
+      type: 'cancelled',
+      startDate,
+      endDate,
+      searchKey,
+      orderType,
+      model: service,
+    },
+  });
+
+export default function ButlerOrderList() {
   const history = useHistory();
 
-  const { orders, loading, page, totalPage } = useSelector((state) => state.butlerReducer);
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState('DESC');
+  const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().endOf('month').format('YYYY-MM-DD'));
+  const [searchKey, setSearchKey] = useState('');
+  const [orderType, setOrderType] = useState('all');
+  const [service, setService] = useState('');
 
-  // eslint-disable-next-line no-unused-vars
-  const [isRightBarOpen, setIsRightBarOpen] = useState(false);
-
-  // get order list
-  const getOrderLIst = (refresh = false) => {
-    dispatch(getAllButlerOrders(refresh));
-  };
-
-  // update page
-  const updatePage = (newPage) => {
-    if (newPage !== page) {
-      dispatch(updateButlerOrderPage(newPage));
-      getOrderLIst(true);
+  // get all data
+  const allOrdersQuery = useQuery(
+    ['all-orders', { currentPage, sortBy, startDate, endDate, searchKey, orderType, service }],
+    () => getAllOrders(currentPage, sortBy, startDate, endDate, searchKey, orderType, service),
+    {
+      staleTime: minInMiliSec(3),
     }
+  );
+
+  const clearFilter = () => {
+    setSortBy('DESC');
+    setStartDate(moment().startOf('month').format('YYYY-MM-DD'));
+    setEndDate(moment().endOf('month').format('YYYY-MM-DD'));
+    setSearchKey('');
+    setOrderType('all');
+    setService('');
+    setIsFilterApplied(false);
   };
-
-  // update orderlist
-  const updateOrderList = (type) => {
-    switch (type) {
-      case 'refresh':
-        getOrderLIst(true);
-        break;
-
-      default:
-    }
-  };
-
-  useEffect(() => {
-    if (orders?.length === 0) {
-      getOrderLIst();
-    }
-  }, []);
 
   return (
     <GlobalWrapper padding>
       <Box className="page-content" sx={{ height: '100vh' }}>
         <Grid container sx={{ height: '100%' }}>
-          {/* left */}
-          <Grid md={isRightBarOpen ? 8 : 12} sx={{ height: '100%', overflowY: 'scroll' }}>
+          <Grid xs={12} sx={{ height: '100%', overflowY: 'scroll' }}>
             <BreadCrumbs items={breadcrumbItems} />
             {/* filters */}
             <Stack direction="row" spacing={3} pt={6.5} pb={4.5}>
+              {/* service */}
+              <Tooltip title="Service">
+                <Box>
+                  <FilterSelect
+                    items={orderModelOptions}
+                    value={service}
+                    placeholder="Service"
+                    onChange={(e) => {
+                      setService(e.target.value);
+                      setIsFilterApplied(true);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order type */}
+              <Tooltip title="Order Type">
+                <Box>
+                  <FilterSelect
+                    items={orderTypeOptionsAll}
+                    value={orderType}
+                    placeholder="Order Type"
+                    onChange={(e) => {
+                      setOrderType(e.target.value);
+                      setIsFilterApplied(true);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* sort */}
+              <Tooltip title="Sort By">
+                <Box>
+                  <FilterSelect
+                    items={sortByOptions}
+                    value={sortBy}
+                    placeholder="Sort by"
+                    onChange={(event) => {
+                      setSortBy(event.target.value);
+                      setIsFilterApplied(true);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order status */}
+              {/* <Tooltip title="Order Status">
+                <Box>
+                  <FilterSelect
+                    items={orderStatusOptionsAll}
+                    value={orderStatus}
+                    placeholder="Order Status"
+                    onChange={(e) => {
+                      setOrderStatus(e.target.value);
+                      setIsFilterApplied(true);
+                    }}
+                  />
+                </Box>
+              </Tooltip> */}
+              {/* order start date */}
+              <Tooltip title="Start Date">
+                <Box>
+                  <FilterDate
+                    value={startDate}
+                    onChange={(e) => {
+                      setStartDate(e._d);
+                      setIsFilterApplied(true);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order end date */}
+              <Tooltip title="End Date">
+                <Box>
+                  <FilterDate
+                    value={endDate}
+                    onChange={(e) => {
+                      setEndDate(e._d);
+                      setIsFilterApplied(true);
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* order note / id */}
+              <Tooltip title="Search Order">
+                <Box>
+                  <FilterSearch
+                    value={searchKey}
+                    onChange={(value) => {
+                      if (delaying === false) {
+                        delaying = true;
+                        setSearchKey(value);
+                        setIsFilterApplied(true);
+                        setTimeout(() => {
+                          delaying = false;
+                        }, delay);
+                      }
+                    }}
+                  />
+                </Box>
+              </Tooltip>
+              {/* clear filter */}
+              <Tooltip className={`${isFilterApplied ? '' : 'd-none'}`} title="Clear Filter">
+                <Box>
+                  <FilterButton
+                    label="Clear"
+                    sx={{
+                      background: 'rgb(63,63,63)',
+                      color: '#fff',
+                      '&:hover': {
+                        background: 'rgb(78,78,78)',
+                      },
+                    }}
+                    onClick={() => {
+                      clearFilter();
+                    }}
+                  />
+                </Box>
+              </Tooltip>
               {/* refresh */}
               <Tooltip title="Refresh">
                 <Box>
                   <FilterButton
+                    className={`${allOrdersQuery.isLoading || allOrdersQuery.isFetching ? 'refresh-animate' : ''}`}
                     label="Refresh"
                     endIcon={<ReplayIcon />}
                     onClick={() => {
-                      updateOrderList('refresh');
+                      allOrdersQuery.refetch();
+                    }}
+                    sx={{
+                      gap: '8px',
+                      '& .MuiButton-endIcon': {
+                        marginLeft: '0px',
+                      },
                     }}
                   />
                 </Box>
               </Tooltip>
             </Stack>
             <Box sx={{ minHeight: 'calc(100% - 308px)' }}>
-              <ButlerOrderTable
-                orders={orders.filter((item) => item?.orderStatus === 'cancelled')}
-                loading={loading}
+              <OrderTable
+                orders={allOrdersQuery?.data?.data?.orders || []}
+                loading={allOrdersQuery.isLoading || allOrdersQuery.isFetching}
                 onRowClick={(params) => {
-                  history.push(`order-details/${params?.row?._id}`);
+                  history.push(`list/order-details/${params?.row?._id}`);
                 }}
               />
             </Box>
@@ -103,12 +252,14 @@ export default function ButlerCancelOrders() {
                 pb: 7.5,
               }}
             >
-              <AppPagination currentPage={page} lisener={updatePage} totalPage={totalPage} />
+              <AppPagination
+                currentPage={currentPage}
+                lisener={(newPage) => {
+                  setCurrentPage(newPage);
+                }}
+                totalPage={allOrdersQuery?.data?.data?.metadata?.page?.totalPage || 1}
+              />
             </Box>
-          </Grid>
-          {/* right */}
-          <Grid className={`${isRightBarOpen ? '' : 'd-none'}`} md={4}>
-            This is rightBar
           </Grid>
         </Grid>
       </Box>

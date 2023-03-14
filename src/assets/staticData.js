@@ -231,17 +231,21 @@ export const orderStatusOptionsAll = [
   { label: 'Cancelled', value: 'cancelled' },
 ];
 
-export const butlerOrderStatusOptionsAll = [
+export const orderTypeOptionsAll = [
   { label: 'All', value: 'all' },
-  { label: 'Placed', value: 'placed' },
-  { label: 'Accepted by delivery boy', value: 'accepted_delivery_boy' },
-  { label: 'On the way', value: 'order_on_the_way' },
-  { label: 'Delivered', value: 'delivered' },
-  { label: 'Refused', value: 'refused' },
-  { label: 'Cancelled', value: 'cancelled' },
+  { label: 'Food', value: 'food' },
+  { label: 'Grocery', value: 'grocery' },
+  { label: 'Pharmacy', value: 'pharmacy' },
+  { label: 'Delivery Only', value: 'delivery_only' },
+  { label: 'Purchase Delivery', value: 'purchase_delivery' },
 ];
 
-export const butlerOrderStatusOptionsForAdminUpdate = [
+export const orderModelOptions = [
+  { label: 'Butler', value: 'butler' },
+  { label: 'Regular', value: 'order' },
+];
+
+export const butlerOrderUpdateStatus = [
   { label: 'Accepted by rider', value: 'accepted_delivery_boy' },
   { label: 'On the way', value: 'order_on_the_way' },
   { label: 'Delivered', value: 'delivered' },

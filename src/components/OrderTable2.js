@@ -23,14 +23,15 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'reactstrap';
 import styled from 'styled-components';
-import { butlerOrderStatusOptionsForAdminUpdate } from '../assets/staticData';
+import { butlerOrderUpdateStatus, orderStatusOptions } from '../assets/staticData';
 import { successMsg } from '../helpers/successMsg';
 
 // project import
-import { NEAR_BY_BUTLERS_FOR_ORDER } from '../network/Api';
+import { ACTIVE_DEIVERY_BOYS, NEAR_BY_BUTLERS_FOR_ORDER } from '../network/Api';
 import requestApi from '../network/httpRequest';
 import {
   addButlerOrderFlag,
@@ -40,6 +41,7 @@ import {
   updateButlerOrderIsUpdated,
   updateButlerOrderStatus,
 } from '../store/Butler/butlerActions';
+import { cancelOrderByAdmin, orderUpdateStatus, sentOrderFlag } from '../store/order/orderAction';
 import { getAllCancelReasons } from '../store/Settings/settingsAction';
 import CloseButton from './Common/CloseButton';
 import TableLoader from './Common/TableLoader';
@@ -76,14 +78,22 @@ const getOrderStatus = (statusName) => {
 };
 
 // fetch nearby deliveryboys
-const fetchNearByButlers = async (orderId) => {
+const fetchNearByButlers = async (orderId, isButler) => {
+  let api = ACTIVE_DEIVERY_BOYS;
+
+  if (isButler) {
+    api = NEAR_BY_BUTLERS_FOR_ORDER;
+  }
+
   try {
-    const { data } = await requestApi().request(NEAR_BY_BUTLERS_FOR_ORDER, {
+    const { data } = await requestApi().request(api, {
       method: 'GET',
       params: {
         orderId,
       },
     });
+
+    console.log(data);
 
     if (data?.status) {
       return data?.data?.nearByDeliveryBoys;
@@ -103,6 +113,13 @@ const flagTypeOptions = [
   { label: 'Butler', value: 'delivery' },
 ];
 
+// order flag type options
+const orderFlagTypeOptions = [
+  { label: 'User', value: 'user' },
+  { label: 'Butler', value: 'delivery' },
+  { label: 'Shop', value: 'shop' },
+];
+
 // disabled flag options
 const getDisabledFlagOptions = (flags) => {
   const list = [];
@@ -113,6 +130,9 @@ const getDisabledFlagOptions = (flags) => {
     }
     if (item.delivery) {
       list.push('delivery');
+    }
+    if (item.shop) {
+      list.push('shop');
     }
   });
 
@@ -145,14 +165,42 @@ const CancelOrderRefunds = styled.div`
   }
 `;
 
+// get order update status options
+const updateOrderStatusOptions = (currentOrder) => {
+  // butler
+  if (currentOrder?.isButler) {
+    return butlerOrderUpdateStatus.filter((item) => item.value !== currentOrder?.orderStatus);
+  }
+
+  // self shop
+  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+    return orderStatusOptions.filter(
+      (item) => item.value !== 'ready_to_pickup' || item.value !== currentOrder?.orderStatus
+    );
+  }
+
+  // regular order
+  return orderStatusOptions.filter((item) => item.value !== currentOrder?.orderStatus);
+};
+
+const getFlagTypeOptions = (currentOrder) => {
+  if (currentOrder?.isButler) {
+    return flagTypeOptions.filter((item) => currentOrder?.deliveryBoy?._id || item.value !== 'delivery');
+  }
+  return orderFlagTypeOptions;
+};
+
 export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+
   const { cancelReasons } = useSelector((state) => state.settingsReducer);
   const { isCanceled } = useSelector((state) => state.butlerReducer);
 
   const { isUpdated, isFlagged, status } = useSelector((store) => store.butlerReducer);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const { account_type } = useSelector((store) => store.Login.admin);
+  const { socket } = useSelector((state) => state.socketReducer);
 
   // update order status
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
@@ -162,6 +210,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const [nearByButlersIsLoading, setNearByButlersIsLoading] = useState(false);
   const [currentButler, setCurrentButler] = useState({});
   const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
+  const [currentOrderShop, setCurrentOrderShop] = useState({});
 
   // flag order
   const [flagModal, setFlagModal] = useState(false);
@@ -192,7 +241,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     if (newStatus === 'accepted_delivery_boy') {
       try {
         setNearByButlersIsLoading(true);
-        const data = await fetchNearByButlers(currentOrder?._id);
+        const data = await fetchNearByButlers(currentOrder?._id, currentOrder?.isButler);
         setNearByBulters(data);
         setNearByButlersIsLoading(false);
       } catch (error) {
@@ -206,21 +255,41 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       successMsg('Please select status');
       return;
     }
+
     const data = {};
     data.orderId = currentOrder?._id;
     data.orderStatus = newOrderStatus;
     data.deliveryBoy = '';
 
-    if (newOrderStatus === 'accepted_delivery_boy') {
-      if (!currentButler?._id) {
-        successMsg('Please select butler');
-        return;
+    if (currentOrder.isButler) {
+      if (newOrderStatus === 'accepted_delivery_boy') {
+        if (!currentButler?._id) {
+          successMsg('Please select butler');
+          return;
+        }
+
+        data.deliveryBoy = currentButler;
       }
 
-      data.deliveryBoy = currentButler;
+      dispatch(updateButlerOrderStatus(data));
+      queryClient.invalidateQueries(['all-orders']);
+      return;
     }
 
-    dispatch(updateButlerOrderStatus(data));
+    if (
+      (newOrderStatus === 'delivered' || newOrderStatus === 'preparing') &&
+      !currentButler?._id &&
+      !currentOrder?.shop?.haveOwnDeliveryBoy
+    ) {
+      successMsg(`Assign delivery boy first`);
+      return;
+    }
+
+    data.shop = currentOrderShop?._id;
+    data.deliveryBoy = currentButler?._id;
+    queryClient.invalidateQueries(['all-orders']);
+    dispatch(orderUpdateStatus(data, socket));
+    setUpdateStatusModal(false);
   };
 
   const addOrderFlag = () => {
@@ -235,9 +304,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     }
 
     const data = {};
-
     data.orderId = currentOrder?._id;
-    data.comment = flagComment;
+    data.comment = flagComment.trim();
 
     if (flagType.includes('user')) {
       data.user = currentOrder?.user?._id;
@@ -247,7 +315,18 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       data.delivery = currentOrder?.deliveryBoy?._id;
     }
 
-    dispatch(addButlerOrderFlag(data));
+    if (flagType.includes('shop')) {
+      data.shop = currentOrder?.shop?._id;
+    }
+
+    if (currentOrder?.isButler) {
+      dispatch(addButlerOrderFlag(data));
+      queryClient.invalidateQueries(['all-orders']);
+    } else {
+      setFlagModal(false);
+      dispatch(sentOrderFlag(data));
+      queryClient.invalidateQueries(['all-orders']);
+    }
   };
 
   const getThreedotMenuOptions = (orderStatus) => {
@@ -267,36 +346,59 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   };
 
   const threeDotHandler = (menu, order) => {
-    setCurrentOrder(order);
-
     if (menu === 'Flag') {
       setFlagModal(true);
+      setCurrentOrder(order);
     }
     if (menu === 'Cancel Order') {
-      console.log(order);
-
+      setCurrentOrder(order);
       setOpenCancelModal(!openCancelModal);
-      setOrderCancel({
-        ...orderCancel,
-        cancelReasonId: '',
-        otherReason: '',
-        deliveryBoy: order?.deliveryBoy,
-        paymentMethod: order?.paymentMethod,
-        orderId: order?._id,
-        refundType: 'none',
-        partialPayment: {
-          deliveryBoy: '',
-          admin: '',
-        },
-      });
 
-      setOrderPayment({
-        deliveryBoy: order?.deliveryBoyFee,
-        admin: order?.dropCharge,
-      });
+      if (order?.isButler) {
+        setOrderPayment({
+          deliveryBoy: order?.deliveryBoyFee,
+          admin: order?.dropCharge,
+        });
+        setOrderCancel({
+          ...orderCancel,
+          cancelReasonId: '',
+          otherReason: '',
+          deliveryBoy: order?.deliveryBoy,
+          paymentMethod: order?.paymentMethod,
+          orderId: order?._id,
+          refundType: 'none',
+          partialPayment: {
+            deliveryBoy: '',
+            admin: '',
+          },
+        });
+      } else {
+        setOrderPayment({
+          shop: order?.sellerEarnings,
+          deliveryBoy: order?.deliveryBoyFee,
+          admin: order?.dropCharge?.totalDropAmount,
+        });
+        setOrderCancel({
+          ...orderCancel,
+          cancelReasonId: '',
+          otherReason: '',
+          deliveryBoy: order?.deliveryBoy,
+          paymentMethod: order?.paymentMethod,
+          shop: order?.shop,
+          orderId: order?._id,
+          refundType: 'none',
+          partialPayment: {
+            deliveryBoy: '',
+            admin: '',
+          },
+        });
+      }
     }
     if (menu === 'Update Status') {
       setUpdateStatusModal(true);
+      setCurrentOrder(order);
+      setCurrentOrderShop(order?.shop);
+      setCurrentButler(order?.deliveryBoy || {});
     }
   };
 
@@ -322,6 +424,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
               {params?.row?.user?.name}
             </Typography>
             <Typography variant="body3">{params?.row?.orderId}</Typography>
+            {!params?.row?.isButler && <Typography variant="body3">{params?.row?.shop?.shopName}</Typography>}
           </Stack>
         </Stack>
       ),
@@ -334,10 +437,10 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      renderCell: (params) => (
+      renderCell: ({ row }) => (
         <Stack width="100%" spacing={2} alignItems="center">
-          <Typography variant="body1">{new Date(params?.row?.createdAt).toLocaleDateString()}</Typography>
-          <Typography variant="body3">{new Date(params?.row?.createdAt).toLocaleTimeString()}</Typography>
+          <Typography variant="body1">{new Date(row?.createdAt).toLocaleDateString()}</Typography>
+          <Typography variant="body3">{new Date(row?.createdAt).toLocaleTimeString()}</Typography>
         </Stack>
       ),
     },
@@ -429,23 +532,35 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     e.preventDefault();
 
     const {
-      partialPayment: { deliveryBoy, admin },
+      partialPayment: { deliveryBoy, admin, shop },
     } = orderCancel;
 
-    if (orderCancel.refundType === 'partial' && !deliveryBoy && !admin) {
-      return successMsg('Enter Minimum One Partial Amount');
+    if (currentOrder?.isButler) {
+      if (orderCancel.refundType === 'partial' && !deliveryBoy && !admin) {
+        return successMsg('Enter Minimum One Partial Amount');
+      }
+      const data = {
+        ...orderCancel,
+        cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
+      };
+
+      delete data.deliveryBoy;
+
+      dispatch(cancelButlerOrderByAdmin(data));
+    } else {
+      if (orderCancel.refundType === 'partial' && !shop && !deliveryBoy && !admin) {
+        return successMsg('Enter Minimum One Partial Amount');
+      }
+
+      const data = {
+        ...orderCancel,
+        cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
+      };
+
+      delete data.deliveryBoy;
+
+      dispatch(cancelOrderByAdmin(data));
     }
-
-    console.log('order cancel before dispatch', orderCancel);
-
-    const data = {
-      ...orderCancel,
-      cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
-    };
-
-    delete data.deliveryBoy;
-
-    dispatch(cancelButlerOrderByAdmin(data));
   };
 
   const updateRefundType = (type) => {
@@ -465,7 +580,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
-    const { admin, deliveryBoy } = orderPayment;
+    const { admin, deliveryBoy, shop } = orderPayment;
 
     if (name === 'admin' && Number(value) > admin) {
       return successMsg('Invalid Lyxa Amount');
@@ -473,6 +588,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     if (name === 'deliveryBoy' && Number(value) > deliveryBoy) {
       return successMsg('Invalid Delivery Boy Amount');
     }
+
+    if (shop && name === 'shop' && Number(value) > shop) {
+      return successMsg('Invalid Shop Amount');
+    }
+
     setOrderCancel({
       ...orderCancel,
       partialPayment: {
@@ -507,11 +627,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   useEffect(() => {
     if (isCanceled) {
       dispatch(updateButlerOrderIsCancelled(false));
-      // dispatch(getAllButlerOrders(true));
     }
   }, [isCanceled]);
-
-  console.log(orderCancel);
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -524,7 +641,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
           },
         }}
         getRowId={(row) => row?._id}
-        rowHeight={71}
+        rowHeight={73}
         onRowClick={(params) => {
           if (onRowClick) {
             onRowClick(params);
@@ -576,13 +693,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     handleOrderStatusChange(e.target.value);
                   }}
                 >
-                  {butlerOrderStatusOptionsForAdminUpdate
-                    .filter((item) => item.value !== currentOrder?.orderStatus)
-                    .map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
-                        {item.label}
-                      </MenuItem>
-                    ))}
+                  {updateOrderStatusOptions(currentOrder).map((item) => (
+                    <MenuItem key={item.value} value={item.value}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               {/* near by delivery boys */}
@@ -649,7 +764,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                 }}
               />
             </Stack>
-            {currentOrder?.flag?.length >= 2 ? (
+            {getFlagTypeOptions(currentOrder)?.length ===
+            getDisabledFlagOptions(currentOrder?.flag || [])?.length >= 2 ? (
               <Stack spacing={3} mb={4}>
                 <Typography
                   variant="body1"
@@ -667,9 +783,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   <Typography variant="h5">Choose Type</Typography>
                   <OptionsSelect
                     value={flagType}
-                    items={flagTypeOptions.filter(
-                      (item) => currentOrder?.deliveryBoy?._id || item.value !== 'delivery'
-                    )}
+                    items={getFlagTypeOptions(currentOrder)}
                     onChange={handleFlagTypeChange}
                     disableMultiple={getDisabledFlagOptions(currentOrder?.flag || [])}
                     multiple
@@ -832,6 +946,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     />
                     <span>Lyxa Earning: {orderPayment?.admin}</span>
                   </div>
+                  {console.log(orderCancel)}
                   {orderCancel?.deliveryBoy?._id && (
                     <div className="refund_item_wrapper">
                       <input
@@ -845,6 +960,21 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                         value={orderCancel?.partialPayment?.deliveryBoy}
                       />
                       <span>Delivery Earning: {orderPayment?.deliveryBoy}</span>
+                    </div>
+                  )}
+                  {orderCancel?.shop?._id && (
+                    <div className="refund_item_wrapper">
+                      <input
+                        type="number"
+                        className="form-control refund_input"
+                        placeholder="Enter Shop Amount"
+                        min={0}
+                        max={orderPayment?.shop}
+                        onChange={updateRefundAmount}
+                        name="shop"
+                        value={orderCancel?.partialPayment?.shop}
+                      />
+                      <span>Shop Earning: {orderPayment?.shop}</span>
                     </div>
                   )}
                 </CancelOrderRefunds>

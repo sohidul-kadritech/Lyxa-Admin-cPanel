@@ -44,7 +44,7 @@ export default function FilterSelect({ items, placeholder, sx, ...props }) {
         if (!value) {
           return <em>{placeholder}</em>;
         }
-        return items.find((item) => item.value === value).label;
+        return items.find((item) => item.value === value)?.label || <em>{placeholder}</em>;
       }}
       {...props}
     >
