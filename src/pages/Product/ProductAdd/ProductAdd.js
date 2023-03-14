@@ -108,6 +108,7 @@ function ProductAdd() {
     setAttributes(attributes);
     setUnit(findUnit);
     setQuantity(quantity);
+    setSearchCategoryKey(category?.name || '');
   };
 
   useEffect(() => {
@@ -116,11 +117,13 @@ function ProductAdd() {
 
       if (findProduct) {
         setProductValue(findProduct);
+        console.log(findProduct);
       } else {
         (async function getProduct() {
           const data = await callApi(id, SINGLE_PRODUCT, 'product');
           if (data) {
             setProductValue(data);
+            console.log(data);
           } else {
             history.push('/products/list', { replace: true });
           }
@@ -575,16 +578,25 @@ function ProductAdd() {
                             setCategory(newValue);
                           }}
                           getOptionLabel={(option) => (option?.category?.name ? option?.category?.name : '')}
-                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                          isOptionEqualToValue={(option, value) => option?.category?._id === value?._id}
                           inputValue={searchCategoryKey}
                           onInputChange={(event, newInputValue) => {
-                            setSearchCategoryKey(newInputValue);
+                            console.log(event, newInputValue);
+                            if (event) {
+                              setSearchCategoryKey(newInputValue);
+                            }
                           }}
                           id="controllable-states-demo"
                           options={categories.length > 0 ? categories : []}
                           sx={{ width: '100%' }}
                           renderInput={(params) => (
-                            <TextField {...params} label="Select a category" required name="category" />
+                            <TextField
+                              {...params}
+                              value={searchCategoryKey}
+                              label="Select a category"
+                              required
+                              name="category"
+                            />
                           )}
                           renderOption={(props, option) => (
                             <Box
@@ -703,13 +715,13 @@ function ProductAdd() {
                                       className="form-check-input"
                                       type="checkbox"
                                       value={isRequiredAttribute}
-                                      id="flexCheckDefault"
+                                      id="flexCheckDefault2"
                                       onChange={(e) => setIsRequiredAttribute(e.target.checked)}
                                     />
                                     <label
                                       className="form-check-label ms-1"
                                       style={{ fontSize: '16px' }}
-                                      htmlFor="flexCheckDefault"
+                                      htmlFor="flexCheckDefault2"
                                     >
                                       Required
                                     </label>
@@ -720,13 +732,13 @@ function ProductAdd() {
                                       className="form-check-input"
                                       type="checkbox"
                                       value={isMultipleAttribute}
-                                      id="flexCheckDefault"
+                                      id="flexCheckDefault3"
                                       onChange={(e) => setIsMultipleAttribute(e.target.checked)}
                                     />
                                     <label
                                       className="form-check-label ms-1"
                                       style={{ fontSize: '16px' }}
-                                      htmlFor="flexCheckDefault"
+                                      htmlFor="flexCheckDefault3"
                                     >
                                       Multiple
                                     </label>
