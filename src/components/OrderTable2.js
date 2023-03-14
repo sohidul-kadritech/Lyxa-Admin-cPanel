@@ -23,7 +23,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'reactstrap';
 import styled from 'styled-components';
@@ -32,9 +32,7 @@ import { successMsg } from '../helpers/successMsg';
 
 // project import
 import * as Api from '../network/Api';
-import { ACTIVE_DEIVERY_BOYS, NEAR_BY_BUTLERS_FOR_ORDER } from '../network/Api';
 import AXIOS from '../network/axios';
-import requestApi from '../network/httpRequest';
 import {
   cancelButlerOrderByAdmin,
   updateButlerOrderIsCancelled,
@@ -49,8 +47,6 @@ import TableLoader from './Common/TableLoader';
 import OptionsSelect from './Form/OptionsSelect';
 import StyledTable from './StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
-
-// ==== react query
 
 // add order flag
 const getOrderStatus = (statusName) => {
@@ -81,36 +77,6 @@ const getOrderStatus = (statusName) => {
   }
 };
 
-// fetch nearby deliveryboys
-const fetchNearByButlers = async (orderId, isButler) => {
-  let api = ACTIVE_DEIVERY_BOYS;
-
-  if (isButler) {
-    api = NEAR_BY_BUTLERS_FOR_ORDER;
-  }
-
-  try {
-    const { data } = await requestApi().request(api, {
-      method: 'GET',
-      params: {
-        orderId,
-      },
-    });
-
-    console.log(data);
-
-    if (data?.status) {
-      return data?.data?.nearByDeliveryBoys;
-    }
-    successMsg(data?.message || 'No butlers found');
-    return [];
-  } catch (error) {
-    console.log(error);
-    successMsg(error?.message || 'No butlers found');
-    return [];
-  }
-};
-
 // flag type options
 const butlerFlagTypeOptions = [
   { label: 'User', value: 'user' },
@@ -122,25 +88,6 @@ const orderFlagTypeOptions = [
   { label: 'Rider', value: 'delivery' },
   { label: 'Shop', value: 'shop' },
 ];
-
-// disabled flag options
-// const getDisabledFlagOptions = (flags) => {
-//   const list = [];
-
-//   flags.forEach((item) => {
-//     if (item.user) {
-//       list.push('user');
-//     }
-//     if (item.delivery) {
-//       list.push('delivery');
-//     }
-//     if (item.shop) {
-//       list.push('shop');
-//     }
-//   });
-
-//   return list;
-// };
 
 const cancelOrderInit = {
   cancelReasonId: '',
@@ -227,13 +174,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const { socket } = useSelector((state) => state.socketReducer);
 
   // update order status
-  const [updateStatusModal, setUpdateStatusModal] = useState(false);
-  const [newOrderStatus, setNewOrderStatus] = useState('');
   const [currentOrder, setCurrentOrder] = useState({});
-  const [nearByBulters, setNearByBulters] = useState([]);
-  const [nearByButlersIsLoading, setNearByButlersIsLoading] = useState(false);
-  const [currentButler, setCurrentButler] = useState({});
-  const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
   const [currentOrderShop, setCurrentOrderShop] = useState({});
 
   // cancel order
@@ -252,6 +193,14 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const [flagComment, setFlagComment] = useState('');
 
   const flagOptions = useMemo(() => getFlagOptions(currentOrder), [currentOrder]);
+
+  const handleFlagTypeChange = (value) => {
+    if (flagType.includes(value)) {
+      setFlagType((prev) => prev.filter((val) => val !== value));
+    } else {
+      setFlagType((prev) => [...prev, value]);
+    }
+  };
 
   const resetFlagModal = () => {
     setFlagModal(false);
@@ -313,28 +262,39 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     addFlagMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
 
-  // handle flag type change
-  const handleFlagTypeChange = (value) => {
-    if (flagType.includes(value)) {
-      setFlagType((prev) => prev.filter((val) => val !== value));
-    } else {
-      setFlagType((prev) => [...prev, value]);
-    }
+  // status change
+  const [updateStatusModal, setUpdateStatusModal] = useState(false);
+  const [newOrderStatus, setNewOrderStatus] = useState('');
+  const [currentButler, setCurrentButler] = useState({});
+  const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
+
+  const getNearByDeliveryBoys = () => {
+    const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
+    return AXIOS.get(API, {
+      params: {
+        orderId: currentOrder?._id,
+      },
+    });
   };
 
-  const handleOrderStatusChange = async (newStatus) => {
-    setNewOrderStatus(newStatus);
-    if (newStatus === 'accepted_delivery_boy') {
-      try {
-        setNearByButlersIsLoading(true);
-        const data = await fetchNearByButlers(currentOrder?._id, currentOrder?.isButler);
-        setNearByBulters(data);
-        setNearByButlersIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
+  const nearByDeliveryBoysQuery = useQuery(
+    ['single-order-nearby-delivery-boys', { orderId: currentOrder?._id || '' }],
+    getNearByDeliveryBoys,
+    {
+      enabled: newOrderStatus === 'accepted_delivery_boy',
+      cacheTime: 0,
+      staleTime: 0,
+      onSuccess: (data) => {
+        if (!data?.status) {
+          successMsg(data?.message || 'Could not get delivery boys');
+        }
+      },
+      onError: (error) => {
+        console.log('api error: ', error);
+        successMsg(error?.message || 'Could not get delivery boys', 'error');
+      },
     }
-  };
+  );
 
   const updateStatus = () => {
     if (newOrderStatus === '') {
@@ -569,7 +529,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     setCurrentButler({});
   };
 
-  // temp
   // CANCEL ORDER
   const submitOrderCancel = (e) => {
     e.preventDefault();
@@ -703,11 +662,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       {/* update order status modal */}
       <Modal
         open={updateStatusModal}
-        sx={{
-          display: 'inline-flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
         onClose={() => {
           resetUpdateStatusModal();
         }}
@@ -733,7 +687,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                   value={newOrderStatus}
                   label="Select Status"
                   onChange={(e) => {
-                    handleOrderStatusChange(e.target.value);
+                    setNewOrderStatus(e.target.value);
                   }}
                 >
                   {updateOrderStatusOptions(currentOrder).map((item) => (
@@ -744,29 +698,29 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                 </Select>
               </FormControl>
               {/* near by delivery boys */}
-              <Autocomplete
-                className={`${newOrderStatus === 'accepted_delivery_boy' ? '' : 'd-none'}`}
-                value={currentButler}
-                disabled={nearByButlersIsLoading}
-                onChange={(event, newValue) => {
-                  console.log(newValue);
-                  setCurrentButler(newValue);
-                }}
-                getOptionLabel={(option) => option.name || ''}
-                isOptionEqualToValue={(option, value) => option?._id === value?._id}
-                inputValue={currentButlerSearchKey}
-                onInputChange={(event, newInputValue) => {
-                  setCurrentButlerSearchKey(newInputValue);
-                }}
-                options={nearByBulters}
-                sx={{ width: '100%' }}
-                renderInput={(params) => <TextField {...params} label="Select " />}
-                renderOption={(props, option) => (
-                  <Box component="li" {...props} key={option._id}>
-                    {option.name}
-                  </Box>
-                )}
-              />
+              {newOrderStatus === 'accepted_delivery_boy' && (
+                <Autocomplete
+                  value={currentButler}
+                  disabled={nearByDeliveryBoysQuery.isLoading || nearByDeliveryBoysQuery.isFetching}
+                  onChange={(event, newValue) => {
+                    setCurrentButler(newValue);
+                  }}
+                  getOptionLabel={(option) => option.name || ''}
+                  isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                  inputValue={currentButlerSearchKey}
+                  onInputChange={(event, newInputValue) => {
+                    setCurrentButlerSearchKey(newInputValue);
+                  }}
+                  options={nearByDeliveryBoysQuery.data?.data?.nearByDeliveryBoys || []}
+                  sx={{ width: '100%' }}
+                  renderInput={(params) => <TextField {...params} label="Select " />}
+                  renderOption={(props, option) => (
+                    <Box component="li" {...props} key={option._id}>
+                      {option.name}
+                    </Box>
+                  )}
+                />
+              )}
               <Button
                 variant="contained"
                 color="primary"
@@ -786,11 +740,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
         open={flagModal}
         onClose={() => {
           resetFlagModal();
-        }}
-        sx={{
-          display: 'inline-flex',
-          justifyContent: 'center',
-          alignItems: 'center',
         }}
       >
         <Paper
@@ -843,7 +792,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={loading}
+                  disabled={addFlagMutation.isLoading}
                   fullWidth
                   onClick={() => {
                     addOrderFlag();
@@ -861,11 +810,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
         open={openCancelModal}
         onClose={() => {
           setOpenCancelModal(!openCancelModal);
-        }}
-        sx={{
-          display: 'inline-flex',
-          justifyContent: 'center',
-          alignItems: 'center',
         }}
       >
         <Paper
