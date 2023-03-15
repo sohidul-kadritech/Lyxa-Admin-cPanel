@@ -59,7 +59,7 @@ const flagTypeOptions = [
     value: 'refused',
   },
   {
-    label: 'Auto',
+    label: 'Auto Cancel',
     value: 'auto',
   },
   {
