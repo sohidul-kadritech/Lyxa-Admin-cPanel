@@ -27,8 +27,8 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/orders/list/cancel',
-    label: 'Cancelled Orders',
+    to: '/orders/list',
+    label: 'Orders',
   },
 ];
 
@@ -140,6 +140,7 @@ export default function ButlerOrderList() {
                     items={orderTypeOptionsAll}
                     value={orderType}
                     placeholder="Order Type"
+                    filterName="Order Type:"
                     onChange={(e) => {
                       handleOrderTypeChange(e.target.value);
                       setIsFilterApplied(true);
@@ -163,7 +164,10 @@ export default function ButlerOrderList() {
                   </Box>
                 </Tooltip>
               )}
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/dev-nazib
               {/* sort */}
               <Tooltip title="Sort By">
                 <Box>
@@ -185,6 +189,7 @@ export default function ButlerOrderList() {
                     items={orderStatusOptionsAll}
                     value={orderStatus}
                     placeholder="Order Status"
+                    filterName="Order Status:"
                     onChange={(e) => {
                       setOrderStatus(e.target.value);
                       setIsFilterApplied(true);
