@@ -269,8 +269,9 @@ export default function ButlerOrderList() {
                 onRowClick={(params) => {
                   if (params?.row?.isButler) {
                     history.push(`/orders/details/butler/${params?.row?._id}`);
+                  } else {
+                    history.push(`/orders/details/regular/${params?.row?._id}`);
                   }
-                  history.push(`/orders/details/regular/${params?.row?._id}`);
                 }}
               />
             </Box>
