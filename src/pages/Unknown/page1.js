@@ -1,10 +1,22 @@
 // third party
+import { Edit } from '@mui/icons-material';
 import WestIcon from '@mui/icons-material/West';
-import { Box, Button, Chip, Stack, styled, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  Stack,
+  styled,
+  Typography,
+  Unstable_Grid2 as Grid,
+  useTheme,
+} from '@mui/material';
 
 // project import
 import HandleIcon from '../../assets/icons/handle.svg';
 import PageButton from '../../components/Common/PageButton';
+import StyledSwitch from '../../components/Common/StyledSwitch';
 import NumberInput from '../../components/Form/NumberInput';
 import Wrapper from '../../components/Wrapper';
 
@@ -168,6 +180,12 @@ export default function Page1() {
                         }}
                       />
                       <StyledChip label="Food" />
+                    </Stack>
+                    <Stack direction="row" justifyContent="flex-end" gap={3}>
+                      <StyledSwitch />
+                      <IconButton variant="contained">
+                        <Edit />
+                      </IconButton>
                     </Stack>
                   </Stack>
                 </Stack>
