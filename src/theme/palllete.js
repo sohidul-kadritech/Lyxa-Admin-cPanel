@@ -23,6 +23,7 @@ export default function GetPallete() {
     custom: {
       tableLoader: 'rgba(255, 255, 255, 0.7)',
       contrastText: '#ffffff',
+      subHeading: '#B5B5C3',
     },
   };
 }

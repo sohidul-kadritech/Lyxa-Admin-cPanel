@@ -34,7 +34,9 @@ export default function FlagDetails({ flag, closeSideBar }) {
       label: 'Order Id',
       value: flag?.orderId.orderId,
       link: true,
-      to: `/orders/details/${flag?.orderId?._id}`,
+      to: flag?.orderId?.isButler
+        ? `/orders/details/regular/${flag?.orderId?._id}`
+        : `/orders/details/butler/${flag?.orderId?._id}`,
     },
     {
       label: 'Order Staus',
