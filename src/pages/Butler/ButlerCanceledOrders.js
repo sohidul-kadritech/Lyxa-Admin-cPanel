@@ -168,7 +168,7 @@ export default function ButlerOrderList() {
                 </Box>
               </Tooltip>
               {/* order status */}
-              <Tooltip title="Order Status">
+              {/* <Tooltip title="Order Status">
                 <Box>
                   <FilterSelect
                     items={orderStatusOptionsAll}
@@ -181,7 +181,7 @@ export default function ButlerOrderList() {
                     }}
                   />
                 </Box>
-              </Tooltip>
+              </Tooltip> */}
               {/* order start date */}
               <Tooltip title="Start Date">
                 <Box>
