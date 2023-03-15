@@ -1,36 +1,17 @@
 /* eslint-disable consistent-return */
 // third party
 import { Box, Chip, Stack, Typography } from '@mui/material';
-
 import TableLoader from './Common/TableLoader';
-
 import StyledTable from './StyledTable';
 
-// get flag types
-// eslint-disable-next-line no-unused-vars
-// const getFlagTypes = (flag) => {
-//   if (flag?.isAutomatic) {
-//     return 'Auto';
-//   }
-
-//   if (flag?.isRefused) {
-//     return 'Refused';
-//   }
-
-//   if (flag?.user) {
-//     return 'User';
-//   }
-
-//   if (flag?.delivery) {
-//     return 'Rider';
-//   }
-
-//   if (flag?.shop) {
-//     return 'Shop';
-//   }
-
-//   return '';
-// };
+const flagTypeMap = {
+  user: 'User',
+  delivery: 'Rider',
+  shop: 'Shop',
+  refused: 'Refused',
+  auto: 'Auto Cancel',
+  delay: 'Delay',
+};
 
 export default function FlaggedOrdersTable({ flagsList, flagsLoading, ...props }) {
   // columns,
@@ -85,7 +66,7 @@ export default function FlaggedOrdersTable({ flagsList, flagsLoading, ...props }
               background: 'rgb(78,78,78)',
             },
           }}
-          label={row?.type}
+          label={flagTypeMap[row?.type] || ''}
           variant="contained"
         />
       ),

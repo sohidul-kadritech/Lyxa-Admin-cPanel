@@ -7,30 +7,14 @@ import * as Api from '../network/Api';
 import Axios from '../network/axios';
 import DetailList from './DetailList';
 
-// get flag types
-// const getFlagTypes = (flag) => {
-//   if (flag?.isAutomatic) {
-//     return 'Auto';
-//   }
-
-//   if (flag?.isRefused) {
-//     return 'Refused';
-//   }
-
-//   if (flag?.user) {
-//     return 'User';
-//   }
-
-//   if (flag?.delivery) {
-//     return 'Rider';
-//   }
-
-//   if (flag?.shop) {
-//     return 'Shop';
-//   }
-
-//   return '';
-// };
+const flagTypeMap = {
+  user: 'User',
+  delivery: 'Rider',
+  shop: 'Shop',
+  refused: 'Refused',
+  auto: 'Auto Cancel',
+  delay: 'Delay',
+};
 
 export default function FlagDetails({ flag, closeSideBar }) {
   const theme = useTheme();
@@ -39,7 +23,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
   const orderDetailsList = [
     {
       label: 'Order Type',
-      value: flag?.orderType,
+      value: flag?.orderId?.isButler ? 'Butler' : flag?.orderId?.shop?.shopType,
       itemSx: {
         '& .value': {
           textTransform: 'capitalize',
@@ -97,7 +81,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
   const flagDetailOptions = [
     {
       label: 'Flag Type',
-      value: flag?.type,
+      value: flagTypeMap[flag?.type],
       itemSx: {
         '& .value': {
           textTransform: 'capitalize',
