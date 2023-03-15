@@ -25,7 +25,7 @@ export const adminMenuItem = [
       },
       {
         icon: 'fas fa-flag',
-        name: 'Flaged Orders',
+        name: 'Flagged Orders',
         link: '/orders/list/flagged',
         isSubmenu: false,
       },

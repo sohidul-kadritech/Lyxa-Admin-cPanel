@@ -236,8 +236,7 @@ export const orderTypeOptionsAll = [
   { label: 'Food', value: 'food' },
   { label: 'Grocery', value: 'grocery' },
   { label: 'Pharmacy', value: 'pharmacy' },
-  { label: 'Delivery Only', value: 'delivery_only' },
-  { label: 'Purchase Delivery', value: 'purchase_delivery' },
+  { label: 'Butler', value: 'butler' },
 ];
 
 export const orderModelOptions = [
