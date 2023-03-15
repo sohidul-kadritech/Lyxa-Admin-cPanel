@@ -8,29 +8,30 @@ import Axios from '../network/axios';
 import DetailList from './DetailList';
 
 // get flag types
-const getFlagTypes = (flag) => {
-  if (flag?.isAutomatic) {
-    return 'Auto';
-  }
+// const getFlagTypes = (flag) => {
+//   if (flag?.isAutomatic) {
+//     return 'Auto';
+//   }
 
-  if (flag?.isRefused) {
-    return 'Refused';
-  }
+//   if (flag?.isRefused) {
+//     return 'Refused';
+//   }
 
-  if (flag?.user) {
-    return 'User';
-  }
+//   if (flag?.user) {
+//     return 'User';
+//   }
 
-  if (flag?.delivery) {
-    return 'Rider';
-  }
+//   if (flag?.delivery) {
+//     return 'Rider';
+//   }
 
-  if (flag?.shop) {
-    return 'Shop';
-  }
+//   if (flag?.shop) {
+//     return 'Shop';
+//   }
 
-  return '';
-};
+//   return '';
+// };
+
 export default function FlagDetails({ flag, closeSideBar }) {
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -96,7 +97,12 @@ export default function FlagDetails({ flag, closeSideBar }) {
   const flagDetailOptions = [
     {
       label: 'Flag Type',
-      value: getFlagTypes(flag),
+      value: flag?.type,
+      itemSx: {
+        '& .value': {
+          textTransform: 'capitalize',
+        },
+      },
     },
     {
       label: 'Flag Comment',

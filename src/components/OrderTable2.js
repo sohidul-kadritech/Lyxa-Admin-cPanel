@@ -27,7 +27,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'reactstrap';
 import styled from 'styled-components';
-import { butlerOrderUpdateStatus, orderStatusOptions } from '../assets/staticData';
 import { successMsg } from '../helpers/successMsg';
 
 // project import
@@ -111,20 +110,19 @@ const CancelOrderRefunds = styled.div`
 
 // get order update status options
 const updateOrderStatusOptions = (currentOrder) => {
-  // butler
-  if (currentOrder?.isButler) {
-    return butlerOrderUpdateStatus.filter((item) => item.value !== currentOrder?.orderStatus);
-  }
+  const list = [];
 
-  // self shop
-  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
-    return orderStatusOptions.filter(
-      (item) => item.value !== 'ready_to_pickup' || item.value !== currentOrder?.orderStatus
-    );
-  }
+  currentOrder?.timeline?.forEach((item) => {
+    if (item.status === 'placed') return;
+    if (item.status === 'accepted_delivery_boy' ? false : currentOrder?.orderStatus === item?.status) return;
 
-  // regular order
-  return orderStatusOptions.filter((item) => item.value !== currentOrder?.orderStatus);
+    list.push({
+      value: item?.status,
+      label: item?.title,
+    });
+  });
+
+  return list;
 };
 
 const getFlagOptions = (currentOrder) => {
@@ -691,8 +689,9 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     setNewOrderStatus(e.target.value);
                   }}
                 >
+                  {console.log(updateOrderStatusOptions(currentOrder))}
                   {updateOrderStatusOptions(currentOrder).map((item) => (
-                    <MenuItem key={item.value} value={item.value}>
+                    <MenuItem key={item.value} value={item.value} disabled={item.disabled}>
                       {item.label}
                     </MenuItem>
                   ))}
@@ -725,7 +724,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={loading}
+                disabled={updateStatusMutation.isLoading}
                 onClick={() => {
                   updateOrderStatus();
                 }}
@@ -777,7 +776,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     value={flagType}
                     items={flagOptions.options}
                     onChange={handleFlagTypeChange}
-                    // disableMultiple={getDisabledFlagOptions(currentOrder?.flag || [])}
                     multiple
                   />
                 </Stack>

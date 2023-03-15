@@ -62,6 +62,10 @@ const flagTypeOptions = [
     label: 'Auto',
     value: 'auto',
   },
+  {
+    label: 'Delay',
+    value: 'delay',
+  },
 ];
 
 // api
@@ -104,9 +108,9 @@ export default function FlaggedOrders() {
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
 
   // filtering
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState('desc');
   const [flagTypeKey, setFlagTypeKey] = useState('');
-  const [resolveType, setResolveType] = useState('true');
+  const [resolveType, setResolveType] = useState('false');
   const [filterIsApplied, setFilterIsApplied] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -185,11 +189,11 @@ export default function FlaggedOrders() {
                     value={currentTab}
                     onChange={(event, value) => {
                       setCurrentTab(value);
-                      setResolveType(value === 0 ? 'true' : 'false');
+                      setResolveType(value === 0 ? 'false' : 'true');
                     }}
                   >
-                    <Tab label="Resolved" />
                     <Tab label="Unresolved" />
+                    <Tab label="Resolved" />
                   </Tabs>
                 </Box>
                 <Box>

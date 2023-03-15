@@ -7,29 +7,30 @@ import TableLoader from './Common/TableLoader';
 import StyledTable from './StyledTable';
 
 // get flag types
-const getFlagTypes = (flag) => {
-  if (flag?.isAutomatic) {
-    return 'Auto';
-  }
+// eslint-disable-next-line no-unused-vars
+// const getFlagTypes = (flag) => {
+//   if (flag?.isAutomatic) {
+//     return 'Auto';
+//   }
 
-  if (flag?.isRefused) {
-    return 'Refused';
-  }
+//   if (flag?.isRefused) {
+//     return 'Refused';
+//   }
 
-  if (flag?.user) {
-    return 'User';
-  }
+//   if (flag?.user) {
+//     return 'User';
+//   }
 
-  if (flag?.delivery) {
-    return 'Rider';
-  }
+//   if (flag?.delivery) {
+//     return 'Rider';
+//   }
 
-  if (flag?.shop) {
-    return 'Shop';
-  }
+//   if (flag?.shop) {
+//     return 'Shop';
+//   }
 
-  return '';
-};
+//   return '';
+// };
 
 export default function FlaggedOrdersTable({ flagsList, flagsLoading, ...props }) {
   // columns,
@@ -76,6 +77,7 @@ export default function FlaggedOrdersTable({ flagsList, flagsLoading, ...props }
       align: 'center',
       renderCell: ({ row }) => (
         <Chip
+          className="text-capitalize"
           sx={{
             background: 'rgb(63,63,63)',
             color: '#fff',
@@ -83,7 +85,7 @@ export default function FlaggedOrdersTable({ flagsList, flagsLoading, ...props }
               background: 'rgb(78,78,78)',
             },
           }}
-          label={getFlagTypes(row, 'order')}
+          label={row?.type}
           variant="contained"
         />
       ),
