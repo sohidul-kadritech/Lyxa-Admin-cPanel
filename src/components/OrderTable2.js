@@ -33,14 +33,8 @@ import { successMsg } from '../helpers/successMsg';
 // project import
 import * as Api from '../network/Api';
 import AXIOS from '../network/axios';
-import {
-  cancelButlerOrderByAdmin,
-  updateButlerOrderIsCancelled,
-  updateButlerOrderIsFlagged,
-  updateButlerOrderIsUpdated,
-  updateButlerOrderStatus,
-} from '../store/Butler/butlerActions';
-import { cancelOrderByAdmin, orderUpdateStatus } from '../store/order/orderAction';
+import { cancelButlerOrderByAdmin, updateButlerOrderIsCancelled } from '../store/Butler/butlerActions';
+import { cancelOrderByAdmin } from '../store/order/orderAction';
 import { getAllCancelReasons } from '../store/Settings/settingsAction';
 import CloseButton from './Common/CloseButton';
 import TableLoader from './Common/TableLoader';
@@ -167,25 +161,14 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
   const { cancelReasons } = useSelector((state) => state.settingsReducer);
   const { isCanceled } = useSelector((state) => state.butlerReducer);
-
-  const { isUpdated, isFlagged, status } = useSelector((store) => store.butlerReducer);
+  const { status } = useSelector((store) => store.butlerReducer);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const { account_type } = useSelector((store) => store.Login.admin);
   const { socket } = useSelector((state) => state.socketReducer);
 
-  // update order status
   const [currentOrder, setCurrentOrder] = useState({});
   const [currentOrderShop, setCurrentOrderShop] = useState({});
-
-  // cancel order
-  const [openCancelModal, setOpenCancelModal] = useState(false);
-  const [orderCancel, setOrderCancel] = useState(cancelOrderInit);
-  const [isOtherReason, setIsOtherReason] = useState(false);
-  const [deliverySearchKey, setDeliverySearchKey] = useState(null);
-  const [orderPayment, setOrderPayment] = useState({
-    deliveryBoy: 0,
-    admin: 0,
-  });
+  const [currentOrderDelivery, setCurrentOrderDelivery] = useState({});
 
   // flag order
   const [flagModal, setFlagModal] = useState(false);
@@ -262,10 +245,9 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     addFlagMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
 
-  // status change
+  // update order status
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   const [newOrderStatus, setNewOrderStatus] = useState('');
-  const [currentButler, setCurrentButler] = useState({});
   const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
 
   const getNearByDeliveryBoys = () => {
@@ -296,47 +278,84 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     }
   );
 
-  const updateStatus = () => {
+  const resetUpdateStatusModal = () => {
+    setUpdateStatusModal(false);
+    setNewOrderStatus('');
+    setCurrentButlerSearchKey('');
+    setCurrentOrderDelivery({});
+    setCurrentOrder({});
+    setCurrentOrderShop({});
+  };
+
+  const updateStatusMutation = useMutation(
+    (payload) => {
+      const API = payload.service === 'butler' ? Api.BUTLER_ORDER_UPDATE_STATUS : Api.ORDRE_UPDATE_STATUS;
+      return AXIOS.post(API, payload.data);
+    },
+    {
+      onSuccess: (data, config) => {
+        console.log(data, config);
+        if (data.status) {
+          successMsg(data?.message, 'success');
+          queryClient.invalidateQueries(['all-orders']);
+          resetUpdateStatusModal();
+          // emit socket
+          if (config.service === 'regular') {
+            if (config?.data?.orderStatus === 'accepted_delivery_boy')
+              socket.emit('adminAcceptedOrder', { orderId: config.data?.orderId });
+            else
+              socket.emit('updateOrder', {
+                orderId: config.data?.orderId,
+              });
+          }
+        } else {
+          successMsg(data?.message);
+        }
+      },
+      onError: (error) => {
+        console.log('api error: ', error);
+      },
+    }
+  );
+
+  const updateOrderStatus = () => {
     if (newOrderStatus === '') {
       successMsg('Please select status');
       return;
     }
 
-    const data = {};
-    data.orderId = currentOrder?._id;
-    data.orderStatus = newOrderStatus;
-    data.deliveryBoy = '';
-
-    if (currentOrder.isButler) {
-      if (newOrderStatus === 'accepted_delivery_boy') {
-        if (!currentButler?._id) {
-          successMsg('Please select butler');
-          return;
-        }
-
-        data.deliveryBoy = currentButler;
-      }
-
-      dispatch(updateButlerOrderStatus(data));
-      queryClient.invalidateQueries(['all-orders']);
+    if (newOrderStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
+      successMsg('Please select butler');
       return;
     }
 
     if (
       (newOrderStatus === 'delivered' || newOrderStatus === 'preparing') &&
-      !currentButler?._id &&
+      !currentOrderDelivery?._id &&
       !currentOrder?.shop?.haveOwnDeliveryBoy
     ) {
       successMsg(`Assign delivery boy first`);
       return;
     }
 
-    data.shop = currentOrderShop?._id;
-    data.deliveryBoy = currentButler?._id;
-    queryClient.invalidateQueries(['all-orders']);
-    dispatch(orderUpdateStatus(data, socket));
-    setUpdateStatusModal(false);
+    const data = {};
+    data.orderId = currentOrder?._id;
+    data.orderStatus = newOrderStatus;
+    data.deliveryBoy = currentOrderDelivery?._id || '';
+    data.shop = currentOrderShop?._id || undefined;
+
+    updateStatusMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
+
+  // cancel order
+  const [openCancelModal, setOpenCancelModal] = useState(false);
+  const [orderCancel, setOrderCancel] = useState(cancelOrderInit);
+  const [isOtherReason, setIsOtherReason] = useState(false);
+  const [deliverySearchKey, setDeliverySearchKey] = useState(null);
+  const [orderPayment, setOrderPayment] = useState({
+    deliveryBoy: 0,
+    admin: 0,
+  });
 
   const getThreedotMenuOptions = (orderStatus) => {
     const options = [];
@@ -407,7 +426,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       setUpdateStatusModal(true);
       setCurrentOrder(order);
       setCurrentOrderShop(order?.shop);
-      setCurrentButler(order?.deliveryBoy || {});
+      setCurrentOrderDelivery(order?.deliveryBoy || {});
     }
   };
 
@@ -522,13 +541,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     },
   ];
 
-  const resetUpdateStatusModal = () => {
-    setUpdateStatusModal(false);
-    setNewOrderStatus('');
-    setCurrentButlerSearchKey('');
-    setCurrentButler({});
-  };
-
   // CANCEL ORDER
   const submitOrderCancel = (e) => {
     e.preventDefault();
@@ -616,17 +628,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   }, [status]);
 
   useEffect(() => {
-    if (isUpdated) {
-      resetUpdateStatusModal();
-      dispatch(updateButlerOrderIsUpdated(false));
-    }
-    if (isFlagged) {
-      resetFlagModal();
-      dispatch(updateButlerOrderIsFlagged(false));
-    }
-  }, [isUpdated, isFlagged]);
-
-  useEffect(() => {
     if (isCanceled) {
       dispatch(updateButlerOrderIsCancelled(false));
     }
@@ -700,10 +701,10 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
               {/* near by delivery boys */}
               {newOrderStatus === 'accepted_delivery_boy' && (
                 <Autocomplete
-                  value={currentButler}
+                  value={currentOrderDelivery}
                   disabled={nearByDeliveryBoysQuery.isLoading || nearByDeliveryBoysQuery.isFetching}
                   onChange={(event, newValue) => {
-                    setCurrentButler(newValue);
+                    setCurrentOrderDelivery(newValue);
                   }}
                   getOptionLabel={(option) => option.name || ''}
                   isOptionEqualToValue={(option, value) => option?._id === value?._id}
@@ -726,7 +727,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                 color="primary"
                 disabled={loading}
                 onClick={() => {
-                  updateStatus();
+                  updateOrderStatus();
                 }}
               >
                 Update
@@ -932,7 +933,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     />
                     <span>Lyxa Earning: {orderPayment?.admin}</span>
                   </div>
-                  {console.log(orderCancel)}
                   {orderCancel?.deliveryBoy?._id && (
                     <div className="refund_item_wrapper">
                       <input
