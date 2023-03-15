@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import ReplayIcon from '@mui/icons-material/Replay';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
-import { orderModelOptions, orderTypeOptionsAll } from '../../assets/staticData';
+import { orderTypeOptionsAll } from '../../assets/staticData';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import FilterButton from '../../components/Filter/FilterButton';
@@ -27,8 +27,8 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/orders/list',
-    label: 'Orders',
+    to: '/orders/list/cancel',
+    label: 'Cancelled Orders',
   },
 ];
 
@@ -94,8 +94,11 @@ export default function ButlerOrderList() {
     if (value !== 'butler') {
       setOrderTypeMain(value);
       setOrderType(value);
+      setService(value);
     } else {
       setOrderType(value);
+      setOrderTypeMain('');
+      setService(value);
     }
   };
 
@@ -106,9 +109,9 @@ export default function ButlerOrderList() {
     setEndDate(moment().endOf('month').format('YYYY-MM-DD'));
     setSearchKey('');
     setOrderType('all');
-    setService('');
-    setIsFilterApplied(false);
     setOrderTypeMain('all');
+    setIsFilterApplied(false);
+    setService('');
   };
 
   return (
@@ -119,20 +122,6 @@ export default function ButlerOrderList() {
             <BreadCrumbs items={breadcrumbItems} />
             {/* filters */}
             <Stack direction="row" spacing={3} pt={6.5} pb={4.5}>
-              {/* service */}
-              <Tooltip title="Service">
-                <Box>
-                  <FilterSelect
-                    items={orderModelOptions}
-                    value={service}
-                    placeholder="Service"
-                    onChange={(e) => {
-                      setService(e.target.value);
-                      setIsFilterApplied(true);
-                    }}
-                  />
-                </Box>
-              </Tooltip>
               {/* order type */}
               <Tooltip title="Order Type">
                 <Box>
