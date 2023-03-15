@@ -1,6 +1,5 @@
-/* eslint-disable consistent-return */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable react/no-unstable-nested-components */
 // third party
 import {
   Autocomplete,
@@ -151,6 +150,44 @@ const getFlagOptions = (currentOrder) => {
     options: newOptions,
     isAllFlagged,
   };
+};
+
+const shopColorVariants = {
+  food: {
+    background: '#ffcfce',
+    color: '#ff0000',
+  },
+  grocery: {
+    background: '#e1f4d0',
+    color: '#5BBD4E',
+  },
+  pharmacy: {
+    background: '#d3f7ff',
+    color: '#15BFCA',
+  },
+  butler: {
+    background: '#ffedb7',
+    color: '#F78C3F',
+  },
+};
+
+const statusColorVariants = {
+  refused: {
+    backgroundColor: '#ececec',
+    color: '#1c1c1c',
+  },
+  cancelled: {
+    background: '#ffcfce',
+    color: '#ff0000',
+  },
+  delivered: {
+    background: '#e1f4d0',
+    color: '#56ca00',
+  },
+  active: {
+    backgroundColor: '#fff9bd',
+    color: '#eac300',
+  },
 };
 
 export default function ButlerOrderTable({ orders, loading, onRowClick }) {
@@ -363,9 +400,12 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       options.push('Update Status');
     }
 
+    if (account_type === 'admin' && hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+      options.push('Cancel Order');
+    }
+
     if (account_type === 'admin') {
       options.push('Flag');
-      options.push('Cancel Order');
     }
 
     return options;
@@ -450,7 +490,17 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
               {params?.row?.user?.name}
             </Typography>
             <Typography variant="body3">{params?.row?.orderId}</Typography>
-            {!params?.row?.isButler && <Typography variant="body3">{params?.row?.shop?.shopName}</Typography>}
+            <Chip
+              label={params?.row?.shop?.shopName || 'Butler'}
+              sx={{
+                ...shopColorVariants[params?.row?.shop?.shopType || 'butler'],
+                height: '20px',
+                fontSize: '11px',
+                maxWidth: '130px',
+              }}
+              variant="contained"
+              size="small"
+            />
           </Stack>
         </Stack>
       ),
@@ -508,13 +558,16 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
         const status = getOrderStatus(params?.row?.orderStatus);
         return (
           <Chip
+            // className="refused-inactive-status"
             label={status}
             color={status === 'Cancelled' || status === 'Refused' ? 'primary' : 'success'}
-            sx={
-              status === 'Cancelled' || status === 'Refused'
-                ? { background: '#ffcfce', color: '#ff0000' }
-                : { background: '#e1f4d0', color: '#56ca00' }
-            }
+            // sx={
+            //   status === 'Cancelled' || status === 'Refused'
+            //     ? { background: '#ffcfce', color: '#ff0000' }
+            //     : { background: '#e1f4d0', color: '#56ca00' }
+            // }
+            sx={statusColorVariants[params?.row?.orderStatus] || statusColorVariants.active}
+            // className="orderStatus"
             variant="contained"
           />
         );
@@ -549,7 +602,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
 
     if (currentOrder?.isButler) {
       if (orderCancel.refundType === 'partial' && !deliveryBoy && !admin) {
-        return successMsg('Enter Minimum One Partial Amount');
+        successMsg('Enter Minimum One Partial Amount');
+        return;
       }
       const data = {
         ...orderCancel,
@@ -561,7 +615,8 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       dispatch(cancelButlerOrderByAdmin(data));
     } else {
       if (orderCancel.refundType === 'partial' && !shop && !deliveryBoy && !admin) {
-        return successMsg('Enter Minimum One Partial Amount');
+        successMsg('Enter Minimum One Partial Amount');
+        return;
       }
 
       const data = {
@@ -595,14 +650,17 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
     const { admin, deliveryBoy, shop } = orderPayment;
 
     if (name === 'admin' && Number(value) > admin) {
-      return successMsg('Invalid Lyxa Amount');
+      successMsg('Invalid Lyxa Amount');
+      return;
     }
     if (name === 'deliveryBoy' && Number(value) > deliveryBoy) {
-      return successMsg('Invalid Delivery Boy Amount');
+      successMsg('Invalid Delivery Boy Amount');
+      return;
     }
 
     if (shop && name === 'shop' && Number(value) > shop) {
-      return successMsg('Invalid Shop Amount');
+      successMsg('Invalid Shop Amount');
+      return;
     }
 
     setOrderCancel({

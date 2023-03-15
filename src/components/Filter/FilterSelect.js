@@ -27,7 +27,7 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   },
 }));
 
-export default function FilterSelect({ items, placeholder, sx, ...props }) {
+export default function FilterSelect({ items, filterName, placeholder, sx, ...props }) {
   const theme = useTheme();
 
   return (
@@ -44,7 +44,7 @@ export default function FilterSelect({ items, placeholder, sx, ...props }) {
         if (!value) {
           return <em>{placeholder}</em>;
         }
-        return items.find((item) => item.value === value)?.label || <em>{placeholder}</em>;
+        return `${filterName || ''} ${items.find((item) => item.value === value)?.label}` || <em>{placeholder}</em>;
       }}
       {...props}
     >

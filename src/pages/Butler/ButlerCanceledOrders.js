@@ -27,8 +27,8 @@ const breadcrumbItems = [
     label: 'Lyxa',
   },
   {
-    to: '/orders/list/cancel',
-    label: 'Cancel Orders',
+    to: '/orders/list',
+    label: 'Orders',
   },
 ];
 
@@ -47,7 +47,7 @@ const sortByOptions = [
   },
 ];
 
-const getAllOrders = (page, sortBy, startDate, endDate, searchKey, orderType, service) =>
+const getAllOrders = (page, sortBy, orderStatus, startDate, endDate, searchKey, orderType, service) =>
   AXIOS.get(Api.ORDER_LIST, {
     params: {
       page,
@@ -62,35 +62,53 @@ const getAllOrders = (page, sortBy, startDate, endDate, searchKey, orderType, se
     },
   });
 
+const butlerTypeOptions = [
+  { label: 'Delivery Only', value: 'delivery_only' },
+  { label: 'Purchase Delivery', value: 'purchase_delivery' },
+];
+
 export default function ButlerOrderList() {
   const history = useHistory();
 
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('DESC');
+  const [orderStatus, setOrderStatus] = useState('all');
   const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().endOf('month').format('YYYY-MM-DD'));
   const [searchKey, setSearchKey] = useState('');
+  const [orderTypeMain, setOrderTypeMain] = useState('all');
   const [orderType, setOrderType] = useState('all');
   const [service, setService] = useState('');
 
   // get all data
   const allOrdersQuery = useQuery(
-    ['all-orders', { currentPage, sortBy, startDate, endDate, searchKey, orderType, service }],
-    () => getAllOrders(currentPage, sortBy, startDate, endDate, searchKey, orderType, service),
+    ['all-orders', { currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderTypeMain, service }],
+    () => getAllOrders(currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderTypeMain, service),
     {
       staleTime: minInMiliSec(3),
     }
   );
 
+  const handleOrderTypeChange = (value) => {
+    if (value !== 'butler') {
+      setOrderTypeMain(value);
+      setOrderType(value);
+    } else {
+      setOrderType(value);
+    }
+  };
+
   const clearFilter = () => {
     setSortBy('DESC');
+    setOrderStatus('all');
     setStartDate(moment().startOf('month').format('YYYY-MM-DD'));
     setEndDate(moment().endOf('month').format('YYYY-MM-DD'));
     setSearchKey('');
     setOrderType('all');
     setService('');
     setIsFilterApplied(false);
+    setOrderTypeMain('all');
   };
 
   return (
@@ -122,13 +140,30 @@ export default function ButlerOrderList() {
                     items={orderTypeOptionsAll}
                     value={orderType}
                     placeholder="Order Type"
+                    filterName="Order Type:"
                     onChange={(e) => {
-                      setOrderType(e.target.value);
+                      handleOrderTypeChange(e.target.value);
                       setIsFilterApplied(true);
                     }}
                   />
                 </Box>
               </Tooltip>
+              {/* butler order type */}
+              {orderType === 'butler' && (
+                <Tooltip title="Butler Type">
+                  <Box>
+                    <FilterSelect
+                      items={butlerTypeOptions}
+                      value={orderTypeMain}
+                      placeholder="Butler Type"
+                      onChange={(e) => {
+                        setOrderTypeMain(e.target.value);
+                        setIsFilterApplied(true);
+                      }}
+                    />
+                  </Box>
+                </Tooltip>
+              )}
               {/* sort */}
               <Tooltip title="Sort By">
                 <Box>
@@ -150,6 +185,7 @@ export default function ButlerOrderList() {
                     items={orderStatusOptionsAll}
                     value={orderStatus}
                     placeholder="Order Status"
+                    filterName="Order Status:"
                     onChange={(e) => {
                       setOrderStatus(e.target.value);
                       setIsFilterApplied(true);
@@ -242,7 +278,10 @@ export default function ButlerOrderList() {
                 orders={allOrdersQuery?.data?.data?.orders || []}
                 loading={allOrdersQuery.isLoading || allOrdersQuery.isFetching}
                 onRowClick={(params) => {
-                  history.push(`list/order-details/${params?.row?._id}`);
+                  if (params?.row?.isButler) {
+                    history.push(`/orders/details/butler/${params?.row?._id}`);
+                  }
+                  history.push(`/orders/details/regular/${params?.row?._id}`);
                 }}
               />
             </Box>

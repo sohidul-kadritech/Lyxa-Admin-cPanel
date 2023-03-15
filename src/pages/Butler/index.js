@@ -62,6 +62,11 @@ const getAllOrders = (page, sortBy, orderStatus, startDate, endDate, searchKey, 
     },
   });
 
+const butlerTypeOptions = [
+  { label: 'Delivery Only', value: 'delivery_only' },
+  { label: 'Purchase Delivery', value: 'purchase_delivery' },
+];
+
 export default function ButlerOrderList() {
   const history = useHistory();
 
@@ -72,17 +77,27 @@ export default function ButlerOrderList() {
   const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().endOf('month').format('YYYY-MM-DD'));
   const [searchKey, setSearchKey] = useState('');
+  const [orderTypeMain, setOrderTypeMain] = useState('all');
   const [orderType, setOrderType] = useState('all');
   const [service, setService] = useState('');
 
   // get all data
   const allOrdersQuery = useQuery(
-    ['all-orders', { currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderType, service }],
-    () => getAllOrders(currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderType, service),
+    ['all-orders', { currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderTypeMain, service }],
+    () => getAllOrders(currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderTypeMain, service),
     {
       staleTime: minInMiliSec(3),
     }
   );
+
+  const handleOrderTypeChange = (value) => {
+    if (value !== 'butler') {
+      setOrderTypeMain(value);
+      setOrderType(value);
+    } else {
+      setOrderType(value);
+    }
+  };
 
   const clearFilter = () => {
     setSortBy('DESC');
@@ -93,6 +108,7 @@ export default function ButlerOrderList() {
     setOrderType('all');
     setService('');
     setIsFilterApplied(false);
+    setOrderTypeMain('all');
   };
 
   return (
@@ -124,13 +140,30 @@ export default function ButlerOrderList() {
                     items={orderTypeOptionsAll}
                     value={orderType}
                     placeholder="Order Type"
+                    filterName="Order Type:"
                     onChange={(e) => {
-                      setOrderType(e.target.value);
+                      handleOrderTypeChange(e.target.value);
                       setIsFilterApplied(true);
                     }}
                   />
                 </Box>
               </Tooltip>
+              {/* butler order type */}
+              {orderType === 'butler' && (
+                <Tooltip title="Butler Type">
+                  <Box>
+                    <FilterSelect
+                      items={butlerTypeOptions}
+                      value={orderTypeMain}
+                      placeholder="Butler Type"
+                      onChange={(e) => {
+                        setOrderTypeMain(e.target.value);
+                        setIsFilterApplied(true);
+                      }}
+                    />
+                  </Box>
+                </Tooltip>
+              )}
               {/* sort */}
               <Tooltip title="Sort By">
                 <Box>
@@ -152,6 +185,7 @@ export default function ButlerOrderList() {
                     items={orderStatusOptionsAll}
                     value={orderStatus}
                     placeholder="Order Status"
+                    filterName="Order Status:"
                     onChange={(e) => {
                       setOrderStatus(e.target.value);
                       setIsFilterApplied(true);
