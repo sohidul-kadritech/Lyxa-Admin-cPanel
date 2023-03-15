@@ -6,7 +6,7 @@ export default function GetPallete() {
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#15BFCA',
+      main: '#5E97A9',
       contrastText: '#ffffff',
     },
     info: {
@@ -14,8 +14,9 @@ export default function GetPallete() {
       contrastText: '#ffffff',
     },
     text: {
-      primary: 'rgba(0, 0, 0, 1)',
-      secondary: '#646464',
+      primary: '#3F4254',
+      secondary: '#525252',
+      heading: '#363636',
     },
     grey: {
       200: 'rgba(0, 0, 0, 0.08)',
@@ -23,7 +24,9 @@ export default function GetPallete() {
     custom: {
       tableLoader: 'rgba(255, 255, 255, 0.7)',
       contrastText: '#ffffff',
-      subHeading: '#B5B5C3',
+    },
+    background: {
+      secondary: '#F6F8FA',
     },
   };
 }

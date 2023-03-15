@@ -15,8 +15,6 @@ export default function Provider({ children }) {
     theme.components = Components(theme);
 
     // typography
-    // theme.typography.fontFamily = ['Inter', 'sans-serif', 'Poppins', 'sans-serif'].join(',');
-
     theme.typography.h1 = {
       [theme.breakpoints.up('xs')]: {
         fontWeight: 600,

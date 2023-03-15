@@ -4,7 +4,13 @@ export default function Button() {
       disableElevation: true,
     },
     styleOverrides: {
-      root: {},
+      root: {
+        fontSize: '16px',
+        fontWeight: '500',
+        lineHeight: '24px',
+        borderRadius: '30px',
+        padding: '12px 30px',
+      },
     },
   };
 }
