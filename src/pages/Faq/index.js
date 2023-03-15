@@ -1,19 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 // mui
 import ReplayIcon from '@mui/icons-material/Replay';
-import {
-  Box,
-  Button,
-  Chip,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  Tooltip,
-  Typography,
-  Unstable_Grid2 as Grid,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, Chip, Paper, Stack, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 
 // third party
 import { useEffect, useState } from 'react';
@@ -513,7 +501,7 @@ export default function Faq() {
                 <Stack direction="row" justifyContent="space-between" alignItems="center" pr={1}>
                   <Box>
                     {/* tab headers */}
-                    <Tabs
+                    {/* <Tabs
                       value={currentTab}
                       onChange={(event, value) => {
                         setCurrentTab(value);
@@ -521,7 +509,7 @@ export default function Faq() {
                     >
                       <Tab label="Edit FAQ" className={`${currentFaq?._id ? '' : 'd-none'}`} />
                       <Tab label="Add New" />
-                    </Tabs>
+                    </Tabs> */}
                   </Box>
                 </Stack>
                 {/* tab bodies */}
