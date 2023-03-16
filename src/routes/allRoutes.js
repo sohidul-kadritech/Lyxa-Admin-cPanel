@@ -80,11 +80,9 @@ import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTerms
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
 import Transactions from '../pages/Transactions/Transactions';
-import Page1 from '../pages/Unknown/page1';
 import Vat from '../pages/Vat';
 
 const userRoutes = [
-  { path: '/unknown', component: Page1 },
   // dashboard
   { path: '/dashboard', component: Dashboard },
   // orders

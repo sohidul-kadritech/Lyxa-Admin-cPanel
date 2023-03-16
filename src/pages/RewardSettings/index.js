@@ -1,57 +1,33 @@
-// thrid party
-import DeleteIcon from '@mui/icons-material/Delete';
+// third party
+import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { Add, Close, Edit, West } from '@mui/icons-material';
 import {
   Box,
   Button,
   Chip,
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
+  styled,
   Typography,
   Unstable_Grid2 as Grid,
   useTheme,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
-import BreadCrumbs from '../../components/Common/BreadCrumb2';
-import ConfirmModal from '../../components/Common/ConfirmModal';
-import GlobalWrapper from '../../components/GlobalWrapper';
+import HandleIcon from '../../assets/icons/handle.svg';
+import PageButton from '../../components/Common/PageButton';
+import StyledSwitch from '../../components/Common/StyledSwitch';
+import NumberInput from '../../components/Form/NumberInput';
+import Wrapper from '../../components/Wrapper';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
-const breadcrumbItems = [
-  {
-    to: '/',
-    label: 'Lyxa',
-  },
-  {
-    to: 'admin/settings/reward-settings',
-    label: 'Reward Settings',
-  },
-];
-
-// static
-const livStatusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' },
-];
-
-const deleteModalInit = {
-  open: false,
-  message: '',
-  onConfirm: () => {},
-};
-
 const rewardCategoryInit = {
   name: '',
-  status: '',
+  status: 'active',
 };
 
 const getRewardInit = {
@@ -62,13 +38,57 @@ const getRewardInit = {
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
 
-export default function RewardSettings() {
+const StyledChip = styled(Chip)(({ theme }) => ({
+  background: theme.palette.background.secondary,
+  borderRadius: '30px',
+  padding: '12px 30px',
+  height: 'auto',
+  gap: '12px',
+
+  '& .MuiChip-label': {
+    padding: '0',
+    fontFamily: 'Inter',
+    fontWeight: '500',
+    lineHeight: '24px',
+  },
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '17px',
+    color: '#3F4254',
+    margin: '0',
+
+    '&:hover': {
+      color: '#3F4254',
+      opacity: '.7',
+    },
+  },
+}));
+
+const StyledIconButton = styled(IconButton)(() => ({
+  background: '#F3F6F9',
+  borderRadius: '6px!important',
+  width: '32px',
+  height: '32px',
+
+  '&:hover': {
+    background: '#e9eff5',
+  },
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '16px',
+  },
+}));
+
+export default function Page1() {
   const theme = useTheme();
-  // query only once
+  const [render, setRender] = useState(false);
+  const [fetchedData, setFetchedData] = useState({});
 
   // reward category
   const [rewardCategory, setRewardCategory] = useState([]);
-  const [newRewardCategory, setNewRewardCategory] = useState(rewardCategoryInit);
+  const [newRewardCategory, setNewRewardCategory] = useState({ ...rewardCategoryInit });
+  const [showAddNewRewardCategory, setShowAddNewRewardCategory] = useState(false);
+  const addRewardCategoryInputRef = useRef();
 
   const validateRewardCategory = (category) => {
     if (!category?.name?.trim()) {
@@ -91,14 +111,17 @@ export default function RewardSettings() {
 
   const addRewardCategory = () => {
     if (validateRewardCategory(newRewardCategory)) {
-      setRewardCategory((prev) => [newRewardCategory, ...prev]);
-      setNewRewardCategory(rewardCategoryInit);
+      setRewardCategory((prev) => [...prev, { ...newRewardCategory }]);
+      setNewRewardCategory({ ...rewardCategoryInit });
+      setShowAddNewRewardCategory(false);
     }
   };
 
   // reward bundle
   const [newBundleItem, setNewBundleItem] = useState('');
   const [rewardBundle, setRewardBundle] = useState([]);
+  const [showAddRewardBundle, setShowAddRewardBundle] = useState(false);
+  const addRewardBundleInputRef = useRef();
 
   const addNewBundleItem = () => {
     if (Number(newBundleItem) < 1) {
@@ -116,8 +139,9 @@ export default function RewardSettings() {
       return;
     }
 
-    setRewardBundle((prev) => [Number(newBundleItem), ...prev]);
+    setRewardBundle((prev) => [...prev, Number(newBundleItem)]);
     setNewBundleItem('');
+    setShowAddRewardBundle(false);
   };
 
   // get reward
@@ -125,21 +149,12 @@ export default function RewardSettings() {
   const [redeemReward, setRedeemReward] = useState(getRewardInit);
   const [adminCutForReward, setAdminCutForReward] = useState('0');
   const [expirationPeriod, setExpirationPeriod] = useState('0');
-
-  // delete modal
-  const [deleteModal, setDeleteModal] = useState(deleteModalInit);
+  const [minSpendLimit, setMinSpendLimit] = useState('0');
 
   const deleteItem = (type, payload) => {
     switch (type) {
       case 'rewardCategory':
-        setDeleteModal({
-          open: true,
-          message: 'Do you want to delete this reward category?',
-          onConfirm: () => {
-            setRewardCategory((prev) => prev.filter((item) => item.name !== payload.name));
-            setDeleteModal(deleteModalInit);
-          },
-        });
+        setRewardCategory((prev) => prev.filter((item) => item.name !== payload.name));
         break;
 
       case 'bundleItem':
@@ -157,390 +172,587 @@ export default function RewardSettings() {
     setRedeemReward(data?.redeemReward || {});
     setAdminCutForReward(data?.adminCutForReward || '');
     setExpirationPeriod(data?.expiration_period || '');
+    console.log('min spend limit', data?.minSpendLimit);
+    setMinSpendLimit(data?.minSpendLimit || '');
   };
 
-  const settingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
+  useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
     enabled: !QUERY_RUNNED,
     onSuccess: (data) => {
       QUERY_RUNNED = false;
-      updateLocalState(data?.data?.rewardSetting || {});
+      setFetchedData(data?.data?.rewardSetting);
+      console.log('backend data', data?.data?.rewardSetting);
+      let newData;
+
+      try {
+        newData = JSON.parse(JSON.stringify(data?.data?.rewardSetting));
+      } catch (error) {
+        console.log(error);
+      }
+
+      updateLocalState(newData || {});
     },
   });
 
-  const updateSettings = useMutation((data) => AXIOS.post(Api.EDIT_ADMIN_REWARD_SETTINGS, data), {
+  const updateSettingsMutation = useMutation((data) => AXIOS.post(Api.EDIT_ADMIN_REWARD_SETTINGS, data), {
     onSuccess: (data) => {
-      updateLocalState(data?.data?.rewardSetting || {});
+      if (data?.status) {
+        successMsg(data?.message, 'success');
+        let newData;
+
+        try {
+          newData = JSON.parse(JSON.stringify(data?.data?.rewardSetting));
+        } catch (error) {
+          console.log(error);
+        }
+
+        updateLocalState(newData || {});
+        setFetchedData(data?.data?.rewardSetting);
+      } else {
+        successMsg(data?.message);
+      }
     },
     onError: (error) => {
       console.log('api error: ', error);
     },
   });
 
+  const updateSettings = () => {
+    updateSettingsMutation.mutate({
+      minSpendLimit,
+      rewardBundle,
+      rewardCategory,
+      getReward: {
+        amount: 1,
+        points: getReward.points,
+      },
+      redeemReward: {
+        amount: 1,
+        points: redeemReward.points,
+      },
+      adminCutForReward,
+      expiration_period: expirationPeriod,
+      type: [
+        'expiration_period',
+        'adminCutForReward',
+        'redeemReward',
+        'getReward',
+        'rewardCategory',
+        'rewardBundle',
+        'minSpendLimit',
+      ],
+    });
+  };
+
+  const discardChanges = () => {
+    let data;
+
+    try {
+      data = JSON.parse(JSON.stringify(fetchedData));
+    } catch (error) {
+      console.log(error);
+    }
+
+    updateLocalState(data || {});
+  };
+
   return (
-    <GlobalWrapper padding>
-      <Box className="page-content2">
-        <Grid container gap={5}>
-          <Grid xs={12}>
-            <BreadCrumbs items={breadcrumbItems} />
-          </Grid>
-          {/* Reward Category */}
-          <Grid md={4}>
-            <Box
-              padding={5}
+    <Wrapper>
+      <Box
+        className="page-content"
+        sx={{ height: '100vh', paddingLeft: '0px', paddingRight: '0px', overflowY: 'scroll' }}
+      >
+        {/* top */}
+        <Box
+          sx={{
+            pb: 5,
+          }}
+        >
+          <PageButton label="Back to Marketing" startIcon={<West />} />
+          <Typography
+            variant="h4"
+            color={theme.palette.text.heading}
+            sx={{
+              pt: 5,
+              pb: 2,
+            }}
+          >
+            Loyalty Points
+          </Typography>
+        </Box>
+        {/* settings */}
+        <Box
+          sx={{
+            background: '#fff',
+            borderRadius: '6px',
+            pl: 10,
+            pr: 10,
+          }}
+        >
+          <Grid container>
+            {/* value per points */}
+            <Grid
+              xs={12}
+              container
               sx={{
-                borderRadius: '6px',
-                border: `1px solid ${theme.palette.grey[200]}`,
+                borderBottom: '1px dashed #E5E5E5',
+                pt: 6,
+                pb: 8,
               }}
             >
-              <Typography variant="h3" pb={5}>
-                Reward Category
-              </Typography>
-              <Stack gap={4}>
-                <TextField
-                  label="Name"
-                  variant="outlined"
-                  value={newRewardCategory.name}
-                  onChange={(e) => {
-                    setNewRewardCategory((prev) => ({ ...prev, name: e.target.value }));
-                  }}
-                />
-                <FormControl fullWidth>
-                  <InputLabel>Status</InputLabel>
-                  <Select
-                    label="Status"
-                    value={newRewardCategory.status}
-                    onChange={(e) => {
-                      setNewRewardCategory((prev) => ({ ...prev, status: e.target.value }));
-                    }}
-                  >
-                    {livStatusOptions.map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
-                        {item.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <Button
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  variant="contained"
-                  fullWidth
-                  onClick={() => {
-                    addRewardCategory();
-                  }}
-                >
-                  Add
-                </Button>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  onClick={() => {
-                    updateSettings.mutate({
-                      rewardCategory,
-                      type: ['rewardCategory'],
-                    });
-                  }}
-                >
-                  Update
-                </Button>
-              </Stack>
-              {/* category list */}
-              <Typography
-                variant="h6"
-                pb={5}
-                pt={5}
-                sx={{
-                  fontWeight: '500',
-                }}
-              >
-                List
-              </Typography>
-              <Stack spacing={5}>
-                {rewardCategory.map((item) => (
-                  <Stack
-                    key={item.name}
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{
-                      background: theme.palette.grey[100],
-                      padding: '8px',
-                      borderRadius: '4px',
-                      border: `1px solid ${theme.palette.grey[200]}`,
-                    }}
-                  >
-                    <Stack gap={2}>
-                      <Typography variant="body1">Name: {item.name}</Typography>
-                      <Typography variant="body1" textTransform="capitalize">
-                        Staus: {item.status}
-                      </Typography>
-                    </Stack>
-                    <Box>
-                      <IconButton
-                        onClick={() => {
-                          deleteItem('rewardCategory', item);
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </Stack>
-                ))}
-                {rewardCategory?.length === 0 && <Typography variant="body1">No category found</Typography>}
-              </Stack>
-            </Box>
-          </Grid>
-          {/*  Reward Bundle */}
-          <Grid md={4}>
-            <Box
-              padding={5}
-              sx={{
-                borderRadius: '6px',
-                border: `1px solid ${theme.palette.grey[200]}`,
-              }}
-            >
-              <Typography variant="h3" pb={5}>
-                Reward Bundle
-              </Typography>
-              <Stack gap={4}>
-                <TextField
-                  label="Bundle Pts"
-                  variant="outlined"
-                  type="number"
-                  value={newBundleItem}
-                  onChange={(e) => {
-                    setNewBundleItem(e.target.value);
-                  }}
-                />
-                <Button
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  variant="contained"
-                  fullWidth
-                  onClick={() => {
-                    addNewBundleItem();
-                  }}
-                >
-                  Add
-                </Button>
-                <Button
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  fullWidth
-                  variant="contained"
-                  onClick={() => {
-                    updateSettings.mutate({
-                      rewardBundle,
-                      type: ['rewardBundle'],
-                    });
-                  }}
-                >
-                  Update
-                </Button>
+              <Grid xs={12} md={6}>
+                <Typography variant="h6" fontWeight={600} pb={1.5}>
+                  Points earned value
+                </Typography>
                 <Stack
                   direction="row"
-                  flexWrap="wrap"
-                  gap={3}
-                  padding={3}
+                  alignItems="center"
+                  justifyContent="space-between"
                   sx={{
-                    background: theme.palette.grey[100],
-                    borderRadius: '6px',
-                    border: `1px solid ${theme.palette.grey[200]}`,
-                    minHeight: '50px',
+                    maxWidth: '370px',
                   }}
                 >
+                  <Typography variant="body1">Value of 1 Point</Typography>
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      value={getReward?.points || '0'}
+                      type="number"
+                      onChange={(e) => {
+                        setGetReward((prev) => ({ ...prev, points: e.target.value }));
+                      }}
+                    />
+                    <Typography variant="body1">$</Typography>
+                  </Stack>
+                </Stack>
+              </Grid>
+              <Grid xs={12} md={6}>
+                <Stack direction="row" alignItems="center" justifyContent="flex-end">
+                  <Box>
+                    <Typography variant="h6" fontWeight={600} pb={1.5}>
+                      Points used value
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{
+                        maxWidth: '370px',
+                        width: '370px',
+                      }}
+                    >
+                      <Typography variant="body1">Value of 1 Point</Typography>
+                      <Stack direction="row" alignItems="center" gap={3}>
+                        <NumberInput
+                          type="number"
+                          value={redeemReward?.points || '0'}
+                          onChange={(e) => {
+                            setRedeemReward((prev) => ({ ...prev, points: e.target.value }));
+                          }}
+                        />
+                        <Typography variant="body1">$</Typography>
+                      </Stack>
+                    </Stack>
+                  </Box>
+                </Stack>
+              </Grid>
+            </Grid>
+            {/* distributed cost */}
+            <Grid
+              xs={12}
+              container
+              sx={{
+                borderBottom: '1px dashed #E5E5E5',
+                pt: 6,
+                pb: 8,
+              }}
+            >
+              <Grid xs={12} md={6}>
+                <Typography variant="h6" fontWeight={600} pb={1.5}>
+                  Distributed Cost
+                </Typography>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    maxWidth: '370px',
+                  }}
+                >
+                  <Typography variant="body1">Lyxa</Typography>
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      type="number"
+                      value={adminCutForReward}
+                      onChange={(e) => {
+                        setAdminCutForReward(e.target.value);
+                      }}
+                    />
+                    <Typography variant="body1">%</Typography>
+                  </Stack>
+                </Stack>
+              </Grid>
+              <Grid xs={12} md={6}>
+                <Stack
+                  direction="row"
+                  alignItems="flex-end"
+                  justifyContent="flex-end"
+                  sx={{
+                    height: '100%',
+                  }}
+                >
+                  <Stack
+                    justifyContent="flex-end"
+                    sx={{
+                      height: '100%',
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{
+                        maxWidth: '370px',
+                        width: '370px',
+                        pr: 4.5,
+                      }}
+                    >
+                      <Typography variant="body1"> Shop</Typography>
+                      <NumberInput type="text" value={`${Number(100 - adminCutForReward)}%`} />
+                    </Stack>
+                  </Stack>
+                </Stack>
+              </Grid>
+            </Grid>
+            {/* categories */}
+            <Grid
+              xs={12}
+              container
+              sx={{
+                borderBottom: '1px dashed #E5E5E5',
+                pt: 6,
+                pb: 8,
+              }}
+            >
+              <Grid xs={12} md={12}>
+                <Typography variant="h6" fontWeight={600} pb={6.5}>
+                  Categories
+                </Typography>
+                {/* categories container */}
+                <Stack gap={2.5} pb={6}>
+                  {/* item */}
+                  {rewardCategory.map((item) => (
+                    <Stack key={item.name} direction="row" alignItems="center" justifyContent="space-between">
+                      {/* left */}
+                      <Stack alignItems="center" direction="row" gap="30px">
+                        <img
+                          src={HandleIcon}
+                          alt="icon"
+                          style={{
+                            width: '14px',
+                          }}
+                        />
+                        <StyledChip label={item.name} />
+                      </Stack>
+                      {/* right */}
+                      <Stack direction="row" justifyContent="flex-end" gap={11}>
+                        <StyledSwitch
+                          checked={item.status === 'active'}
+                          onChange={(event) => {
+                            item.status = event.target.checked ? 'active' : 'inactive';
+                            setRender(!render);
+                          }}
+                        />
+                        <Stack direction="row" gap={2.5}>
+                          <StyledIconButton color="secondary">
+                            <Edit />
+                          </StyledIconButton>
+                          <StyledIconButton
+                            color="secondary"
+                            onClick={() => {
+                              deleteItem('rewardCategory', item);
+                            }}
+                          >
+                            <Close />
+                          </StyledIconButton>
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  ))}
+                  {showAddNewRewardCategory && (
+                    <ClickAwayListener
+                      onClickAway={() => {
+                        if (showAddNewRewardCategory) {
+                          setShowAddNewRewardCategory(false);
+                          setNewRewardCategory({ ...rewardCategoryInit });
+                        }
+                      }}
+                    >
+                      <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        {/* left */}
+                        <Stack alignItems="center" direction="row" gap="30px">
+                          <img
+                            src={HandleIcon}
+                            alt="icon"
+                            style={{
+                              width: '14px',
+                            }}
+                          />
+                          <NumberInput
+                            value={newRewardCategory.name}
+                            ref={addRewardCategoryInputRef}
+                            sx={{
+                              width: 'auto',
+                              maxWidth: '200px',
+                              '& input': {
+                                fontSize: '13px',
+                              },
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                addRewardCategory();
+                              }
+                            }}
+                            onChange={(event) => {
+                              setNewRewardCategory((prev) => ({ ...prev, name: event.target.value }));
+                            }}
+                          />
+                        </Stack>
+                        {/* right */}
+                        <Stack direction="row" justifyContent="flex-end" gap={11}>
+                          <StyledSwitch
+                            checked={newRewardCategory.status === 'active'}
+                            onChange={(event) => {
+                              setNewRewardCategory((prev) => ({
+                                ...prev,
+                                status: event.target.checked ? 'active' : 'inactive',
+                              }));
+                            }}
+                          />
+                          <Stack direction="row" gap={2.5}>
+                            <StyledIconButton color="secondary">
+                              <Edit />
+                            </StyledIconButton>
+                            <StyledIconButton color="secondary">
+                              <Close />
+                            </StyledIconButton>
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </ClickAwayListener>
+                  )}
+                </Stack>
+                <Button
+                  color="secondary"
+                  variant="text"
+                  startIcon={<Add />}
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '17px',
+                    padding: '0px',
+
+                    '&:hover': {
+                      background: 'transparent',
+                    },
+                  }}
+                  onClick={() => {
+                    setShowAddNewRewardCategory(true);
+                    setTimeout(() => {
+                      addRewardCategoryInputRef?.current?.querySelector('input')?.focus();
+                    }, 10);
+                  }}
+                >
+                  Add category
+                </Button>
+              </Grid>
+              <Grid xs={12} md={6}></Grid>
+            </Grid>
+            {/* reward bundle */}
+            <Grid
+              xs={12}
+              container
+              sx={{
+                borderBottom: '1px dashed #E5E5E5',
+                pt: 6,
+                pb: 8,
+              }}
+            >
+              <Grid xs={12}>
+                <Typography variant="h6" fontWeight={600} pb={4}>
+                  Reward Bundle
+                </Typography>
+                <Stack direction="row" gap={2} alignItems="center"></Stack>
+                <Stack direction="row" gap={4} mb={6}>
                   {rewardBundle.map((item, index) => (
-                    <Chip
-                      key={index}
+                    <StyledChip
+                      key={item}
                       label={item}
                       onDelete={() => {
                         deleteItem('bundleItem', index);
                       }}
                     />
                   ))}
+                  {showAddRewardBundle && (
+                    <ClickAwayListener
+                      onClickAway={() => {
+                        if (showAddRewardBundle) {
+                          setShowAddRewardBundle(false);
+                          setNewBundleItem('');
+                        }
+                      }}
+                    >
+                      <NumberInput
+                        ref={addRewardBundleInputRef}
+                        type="number"
+                        value={newBundleItem}
+                        sx={{
+                          '& input': {
+                            fontSize: '13px',
+                            height: 'auto',
+                          },
+                        }}
+                        onChange={(e) => {
+                          setNewBundleItem(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            addNewBundleItem();
+                          }
+                        }}
+                      />
+                    </ClickAwayListener>
+                  )}
                 </Stack>
-              </Stack>
-            </Box>
-          </Grid>
-          {/* Get Reward */}
-          <Grid md={4}>
-            <Box
-              padding={5}
-              sx={{
-                borderRadius: '6px',
-                border: `1px solid ${theme.palette.grey[200]}`,
-              }}
-            >
-              <Typography variant="h3" pb={5}>
-                Get Reward
-              </Typography>
-              <Stack gap={4}>
-                <TextField
-                  label="Amount"
-                  variant="outlined"
-                  type="number"
-                  value={getReward?.amount || ''}
-                  onChange={(e) => {
-                    setGetReward((prev) => ({ ...prev, amount: e.target.value }));
-                  }}
-                />
-                <TextField
-                  label="Points"
-                  variant="outlined"
-                  type="number"
-                  value={getReward?.points || ''}
-                  onChange={(e) => {
-                    setGetReward((prev) => ({ ...prev, points: e.target.value }));
-                  }}
-                />
                 <Button
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  variant="contained"
-                  fullWidth
+                  disableRipple
+                  color="secondary"
+                  variant="text"
+                  startIcon={<Add />}
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '17px',
+                    padding: '0px',
+
+                    '&:hover': {
+                      background: 'transparent',
+                    },
+                  }}
                   onClick={() => {
-                    updateSettings.mutate({
-                      getReward,
-                      type: ['getReward'],
-                    });
+                    setShowAddRewardBundle(true);
+                    setTimeout(() => {
+                      addRewardBundleInputRef?.current?.querySelector('input')?.focus();
+                    }, 10);
                   }}
                 >
-                  Update
+                  Add
                 </Button>
-              </Stack>
-            </Box>
-          </Grid>
-          {/* Redeem Reward */}
-          <Grid md={4}>
-            <Box
-              padding={5}
+              </Grid>
+            </Grid>
+            {/* spending limits */}
+            <Grid
+              xs={12}
+              container
               sx={{
-                borderRadius: '6px',
-                border: `1px solid ${theme.palette.grey[200]}`,
+                borderBottom: '1px dashed #E5E5E5',
+                pt: 6,
+                pb: 8,
               }}
             >
-              <Typography variant="h3" pb={5}>
-                Redeem Reward
-              </Typography>
-              <Stack gap={4}>
-                <TextField
-                  label="Amount"
-                  variant="outlined"
-                  type="number"
-                  value={redeemReward?.amount || ''}
-                  onChange={(e) => {
-                    setRedeemReward((prev) => ({ ...prev, amount: e.target.value }));
-                  }}
-                />
-                <TextField
-                  label="Points"
-                  variant="outlined"
-                  type="number"
-                  value={redeemReward?.points || ''}
-                  onChange={(e) => {
-                    setRedeemReward((prev) => ({ ...prev, points: e.target.value }));
-                  }}
-                />
-                <Button
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  variant="contained"
-                  fullWidth
-                  onClick={() => {
-                    updateSettings.mutate({
-                      redeemReward,
-                      type: ['redeemReward'],
-                    });
+              <Grid xs={12} md={6}>
+                <Typography variant="h6" fontWeight={600} pb={1.5}>
+                  Spending Limits
+                </Typography>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    maxWidth: '370px',
                   }}
                 >
-                  Update
-                </Button>
-              </Stack>
-            </Box>
-          </Grid>
-          {/* admin cut */}
-          <Grid md={4}>
-            <Box
-              padding={5}
+                  <Typography variant="body1">Minimum spending limit/week</Typography>
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      type="number"
+                      value={minSpendLimit}
+                      onChange={(event) => {
+                        setMinSpendLimit(event.target.value);
+                      }}
+                    />
+                    <Typography variant="body1">$</Typography>
+                  </Stack>
+                </Stack>
+              </Grid>
+            </Grid>
+            {/* expiration */}
+            <Grid
+              xs={12}
+              container
               sx={{
-                borderRadius: '6px',
-                border: `1px solid ${theme.palette.grey[200]}`,
+                pt: 6,
+                pb: 8,
               }}
             >
-              <Typography variant="h3" pb={5}>
-                Admin Cut
-              </Typography>
-              <Stack gap={4}>
-                <TextField
-                  label="Percentage"
-                  variant="outlined"
-                  type="number"
-                  value={adminCutForReward}
-                  onChange={(e) => {
-                    setAdminCutForReward(e.target.value);
-                  }}
-                />
-                <Button
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  variant="contained"
-                  fullWidth
-                  onClick={() => {
-                    updateSettings.mutate({
-                      adminCutForReward,
-                      type: ['adminCutForReward'],
-                    });
+              <Grid xs={12} md={6}>
+                <Typography variant="h6" fontWeight={600} pb={1.5}>
+                  Expiration
+                </Typography>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    maxWidth: '370px',
                   }}
                 >
-                  Update
-                </Button>
-              </Stack>
-            </Box>
+                  <Typography variant="body1">Number of days</Typography>
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      type="number"
+                      value={expirationPeriod}
+                      onChange={(e) => {
+                        setExpirationPeriod(e.target.value);
+                      }}
+                    />
+                    <Typography variant="body1">D</Typography>
+                  </Stack>
+                </Stack>
+              </Grid>
+            </Grid>
           </Grid>
-          {/* Expiration Period */}
-          <Grid md={4}>
-            <Box
-              padding={5}
-              sx={{
-                borderRadius: '6px',
-                border: `1px solid ${theme.palette.grey[200]}`,
-              }}
-            >
-              <Typography variant="h3" pb={5}>
-                Expiration Period
-              </Typography>
-              <Stack gap={4}>
-                <TextField
-                  label="Days"
-                  variant="outlined"
-                  type="number"
-                  value={expirationPeriod}
-                  onChange={(e) => {
-                    setExpirationPeriod(e.target.value);
-                  }}
-                />
-                <Button
-                  disabled={settingsQuery.isLoading || updateSettings.isLoading}
-                  variant="contained"
-                  fullWidth
-                  onClick={() => {
-                    updateSettings.mutate({
-                      expiration_period: expirationPeriod,
-                      type: ['expiration_period'],
-                    });
-                  }}
-                >
-                  Update
-                </Button>
-              </Stack>
-            </Box>
-          </Grid>
-        </Grid>
-        {/* Reward Category delete modal */}
-        <ConfirmModal
-          isOpen={deleteModal.open}
-          message={deleteModal.message}
-          onConfirm={deleteModal.onConfirm}
-          onCancel={() => {
-            setDeleteModal(deleteModalInit);
+        </Box>
+        {/* buttons */}
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          gap={4}
+          sx={{
+            mt: 9,
+            pb: 12,
           }}
-        />
+        >
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => {
+              discardChanges();
+            }}
+          >
+            Discard
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={updateSettingsMutation.isLoading}
+            onClick={() => {
+              updateSettings();
+            }}
+          >
+            Save Changes
+          </Button>
+        </Stack>
       </Box>
-    </GlobalWrapper>
+    </Wrapper>
   );
 }

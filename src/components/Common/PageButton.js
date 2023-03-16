@@ -6,6 +6,7 @@ export default function PageButton({ label, to, ...props }) {
 
   return (
     <Button
+      disableRipple
       sx={{
         fontWeight: '500',
         fontSize: '17px',
