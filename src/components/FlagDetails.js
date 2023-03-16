@@ -32,7 +32,7 @@ export default function FlagDetails({ flag, closeSideBar }) {
     },
     {
       label: 'Order Id',
-      value: flag?.orderId.orderId,
+      value: flag?.orderId?.orderId,
       link: true,
       to: flag?.orderId?.isButler
         ? `/orders/details/regular/${flag?.orderId?._id}`
