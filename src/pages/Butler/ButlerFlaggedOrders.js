@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // third party
 import ReplayIcon from '@mui/icons-material/Replay';
 import { Box, Paper, Stack, Tab, Tabs, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
@@ -77,7 +78,7 @@ const fetchFlags = async (sortBy, flagTypeKey, resolveType, currentPage) => {
       resolved: resolveType,
       sortBy,
       page: currentPage,
-      pageSize: 50,
+      pageSize: 25,
     },
   });
 
@@ -113,6 +114,7 @@ export default function FlaggedOrders() {
   const [resolveType, setResolveType] = useState('false');
   const [filterIsApplied, setFilterIsApplied] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
   // tabs
   const [currentTab, setCurrentTab] = useState(0);
@@ -125,6 +127,9 @@ export default function FlaggedOrders() {
     () => fetchFlags(sortBy, flagTypeKey, resolveType, currentPage),
     {
       staleTime: minInMiliSec(3),
+      onSuccess: (data) => {
+        setTotalPage(data?.paginate?.metadata?.page?.totalPage);
+      },
     }
   );
 
@@ -288,7 +293,7 @@ export default function FlaggedOrders() {
                     lisener={(page) => {
                       updateFilter('page', page);
                     }}
-                    paging={flagsQuery?.data?.paginate?.metadata?.page?.totalPage}
+                    totalPage={totalPage}
                   />
                 </Box>
               </Grid>

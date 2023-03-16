@@ -112,7 +112,10 @@ function SidebarContent({ location, list }) {
                     <li key={index}>
                       <Link to={sub.link}>
                         <i className={sub.icon} />
-                        <span>{sub.name} </span>
+                        <p className="d-inline">
+                          {sub?.badgeId && <span className="cs-badge" id={sub.badgeId}></span>}
+                          <span>{sub.name} </span>
+                        </p>
                       </Link>
                     </li>
                   ))}

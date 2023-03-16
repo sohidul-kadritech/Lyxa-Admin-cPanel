@@ -28,6 +28,7 @@ export const adminMenuItem = [
         name: 'Flagged Orders',
         link: '/orders/list/flagged',
         isSubmenu: false,
+        badgeId: 'sidebar-item-flagged-orders',
       },
     ],
   },

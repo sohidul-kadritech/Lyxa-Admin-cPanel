@@ -747,7 +747,6 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
                     setNewOrderStatus(e.target.value);
                   }}
                 >
-                  {console.log(updateOrderStatusOptions(currentOrder))}
                   {updateOrderStatusOptions(currentOrder).map((item) => (
                     <MenuItem key={item.value} value={item.value} disabled={item.disabled}>
                       {item.label}
