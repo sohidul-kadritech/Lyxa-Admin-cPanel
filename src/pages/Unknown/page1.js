@@ -1,4 +1,5 @@
 // third party
+import ClickAwayListener from '@mui/base/ClickAwayListener';
 import { Add, Close, Edit, West } from '@mui/icons-material';
 import {
   Box,
@@ -11,6 +12,8 @@ import {
   Unstable_Grid2 as Grid,
   useTheme,
 } from '@mui/material';
+import { useRef, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 
 // project import
 import HandleIcon from '../../assets/icons/handle.svg';
@@ -18,13 +21,29 @@ import PageButton from '../../components/Common/PageButton';
 import StyledSwitch from '../../components/Common/StyledSwitch';
 import NumberInput from '../../components/Form/NumberInput';
 import Wrapper from '../../components/Wrapper';
+import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
+
+const rewardCategoryInit = {
+  name: '',
+  status: 'active',
+};
+
+const getRewardInit = {
+  amount: '',
+  points: '',
+};
+
+// QUERY ONLY ONCE
+let QUERY_RUNNED = false;
 
 const StyledChip = styled(Chip)(({ theme }) => ({
   background: theme.palette.background.secondary,
   borderRadius: '30px',
   padding: '12px 30px',
   height: 'auto',
-  gap: '8px',
+  gap: '12px',
 
   '& .MuiChip-label': {
     padding: '0',
@@ -36,6 +55,7 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   '& .MuiSvgIcon-root': {
     fontSize: '17px',
     color: '#3F4254',
+    margin: '0',
 
     '&:hover': {
       color: '#3F4254',
@@ -59,29 +79,182 @@ const StyledIconButton = styled(IconButton)(() => ({
   },
 }));
 
-const categoryItems = [
-  {
-    label: 'Food',
-    id: 1,
-  },
-  {
-    label: 'Drinks',
-    id: 2,
-  },
-  {
-    label: 'Energy',
-    id: 3,
-  },
-  {
-    label: 'Mood Booster',
-    id: 4,
-  },
-];
-
-const rewardBundles = [25, 30, 40, 60, 100];
-
 export default function Page1() {
   const theme = useTheme();
+  const [render, setRender] = useState(false);
+  const [fetchedData, setFetchedData] = useState({});
+
+  // reward category
+  const [rewardCategory, setRewardCategory] = useState([]);
+  const [newRewardCategory, setNewRewardCategory] = useState({ ...rewardCategoryInit });
+  const [showAddNewRewardCategory, setShowAddNewRewardCategory] = useState(false);
+  const addRewardCategoryInputRef = useRef();
+
+  const validateRewardCategory = (category) => {
+    if (!category?.name?.trim()) {
+      successMsg('Reward Category must have a name');
+      return false;
+    }
+
+    if (rewardCategory.find((item) => item.name === category.name)) {
+      successMsg('The category name already exists');
+      return false;
+    }
+
+    if (!category?.status?.trim()) {
+      successMsg('Reward Category must have a status');
+      return false;
+    }
+
+    return true;
+  };
+
+  const addRewardCategory = () => {
+    if (validateRewardCategory(newRewardCategory)) {
+      setRewardCategory((prev) => [...prev, { ...newRewardCategory }]);
+      setNewRewardCategory({ ...rewardCategoryInit });
+      setShowAddNewRewardCategory(false);
+    }
+  };
+
+  // reward bundle
+  const [newBundleItem, setNewBundleItem] = useState('');
+  const [rewardBundle, setRewardBundle] = useState([]);
+  const [showAddRewardBundle, setShowAddRewardBundle] = useState(false);
+  const addRewardBundleInputRef = useRef();
+
+  const addNewBundleItem = () => {
+    if (Number(newBundleItem) < 1) {
+      successMsg('Reward Bundle cannot be smaller than 1');
+      return;
+    }
+
+    if (Number.isNaN(Number(newBundleItem))) {
+      successMsg('Please enter a valid value');
+      return;
+    }
+
+    if (rewardBundle.includes(Number(newBundleItem))) {
+      successMsg('Reward Bundle item already exists');
+      return;
+    }
+
+    setRewardBundle((prev) => [...prev, Number(newBundleItem)]);
+    setNewBundleItem('');
+    setShowAddRewardBundle(false);
+  };
+
+  // get reward
+  const [getReward, setGetReward] = useState(getRewardInit);
+  const [redeemReward, setRedeemReward] = useState(getRewardInit);
+  const [adminCutForReward, setAdminCutForReward] = useState('0');
+  const [expirationPeriod, setExpirationPeriod] = useState('0');
+  const [minSpendLimit, setMinSpendLimit] = useState('0');
+
+  const deleteItem = (type, payload) => {
+    switch (type) {
+      case 'rewardCategory':
+        setRewardCategory((prev) => prev.filter((item) => item.name !== payload.name));
+        break;
+
+      case 'bundleItem':
+        setRewardBundle((prev) => prev.filter((item, index) => index !== payload));
+        break;
+
+      default:
+    }
+  };
+
+  const updateLocalState = (data) => {
+    setRewardCategory(data?.rewardCategory || []);
+    setRewardBundle(data?.rewardBundle || []);
+    setGetReward(data?.getReward || {});
+    setRedeemReward(data?.redeemReward || {});
+    setAdminCutForReward(data?.adminCutForReward || '');
+    setExpirationPeriod(data?.expiration_period || '');
+    console.log('min spend limit', data?.minSpendLimit);
+    setMinSpendLimit(data?.minSpendLimit || '');
+  };
+
+  useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
+    enabled: !QUERY_RUNNED,
+    onSuccess: (data) => {
+      QUERY_RUNNED = false;
+      setFetchedData(data?.data?.rewardSetting);
+      console.log('backend data', data?.data?.rewardSetting);
+      let newData;
+
+      try {
+        newData = JSON.parse(JSON.stringify(data?.data?.rewardSetting));
+      } catch (error) {
+        console.log(error);
+      }
+
+      updateLocalState(newData || {});
+    },
+  });
+
+  const updateSettingsMutation = useMutation((data) => AXIOS.post(Api.EDIT_ADMIN_REWARD_SETTINGS, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg(data?.message, 'success');
+        let newData;
+
+        try {
+          newData = JSON.parse(JSON.stringify(data?.data?.rewardSetting));
+        } catch (error) {
+          console.log(error);
+        }
+
+        updateLocalState(newData || {});
+        setFetchedData(data?.data?.rewardSetting);
+      } else {
+        successMsg(data?.message);
+      }
+    },
+    onError: (error) => {
+      console.log('api error: ', error);
+    },
+  });
+
+  const updateSettings = () => {
+    updateSettingsMutation.mutate({
+      minSpendLimit,
+      rewardBundle,
+      rewardCategory,
+      getReward: {
+        amount: 1,
+        points: getReward.points,
+      },
+      redeemReward: {
+        amount: 1,
+        points: redeemReward.points,
+      },
+      adminCutForReward,
+      expiration_period: expirationPeriod,
+      type: [
+        'expiration_period',
+        'adminCutForReward',
+        'redeemReward',
+        'getReward',
+        'rewardCategory',
+        'rewardBundle',
+        'minSpendLimit',
+      ],
+    });
+  };
+
+  const discardChanges = () => {
+    let data;
+
+    try {
+      data = JSON.parse(JSON.stringify(fetchedData));
+    } catch (error) {
+      console.log(error);
+    }
+
+    updateLocalState(data || {});
+  };
 
   return (
     <Wrapper>
@@ -136,27 +309,50 @@ export default function Page1() {
                   alignItems="center"
                   justifyContent="space-between"
                   sx={{
-                    maxWidth: '345px',
+                    maxWidth: '370px',
                   }}
                 >
                   <Typography variant="body1">Value of 1 Point</Typography>
-                  <NumberInput type="text" value="$1" />
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      value={getReward?.points || '0'}
+                      type="number"
+                      onChange={(e) => {
+                        setGetReward((prev) => ({ ...prev, points: e.target.value }));
+                      }}
+                    />
+                    <Typography variant="body1">$</Typography>
+                  </Stack>
                 </Stack>
               </Grid>
               <Grid xs={12} md={6}>
-                <Typography variant="h6" fontWeight={600} pb={1.5}>
-                  Points used value
-                </Typography>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  sx={{
-                    maxWidth: '345px',
-                  }}
-                >
-                  <Typography variant="body1">Value of 1 Point</Typography>
-                  <NumberInput type="text" value="$1" />
+                <Stack direction="row" alignItems="center" justifyContent="flex-end">
+                  <Box>
+                    <Typography variant="h6" fontWeight={600} pb={1.5}>
+                      Points used value
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{
+                        maxWidth: '370px',
+                        width: '370px',
+                      }}
+                    >
+                      <Typography variant="body1">Value of 1 Point</Typography>
+                      <Stack direction="row" alignItems="center" gap={3}>
+                        <NumberInput
+                          type="number"
+                          value={redeemReward?.points || '0'}
+                          onChange={(e) => {
+                            setRedeemReward((prev) => ({ ...prev, points: e.target.value }));
+                          }}
+                        />
+                        <Typography variant="body1">$</Typography>
+                      </Stack>
+                    </Stack>
+                  </Box>
                 </Stack>
               </Grid>
             </Grid>
@@ -179,30 +375,50 @@ export default function Page1() {
                   alignItems="center"
                   justifyContent="space-between"
                   sx={{
-                    maxWidth: '345px',
+                    maxWidth: '370px',
                   }}
                 >
                   <Typography variant="body1">Lyxa</Typography>
-                  <NumberInput type="text" value="100%" />
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      type="number"
+                      value={adminCutForReward}
+                      onChange={(e) => {
+                        setAdminCutForReward(e.target.value);
+                      }}
+                    />
+                    <Typography variant="body1">%</Typography>
+                  </Stack>
                 </Stack>
               </Grid>
               <Grid xs={12} md={6}>
                 <Stack
+                  direction="row"
+                  alignItems="flex-end"
                   justifyContent="flex-end"
                   sx={{
                     height: '100%',
                   }}
                 >
                   <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
+                    justifyContent="flex-end"
                     sx={{
-                      maxWidth: '345px',
+                      height: '100%',
                     }}
                   >
-                    <Typography variant="body1"> Shop</Typography>
-                    <NumberInput type="text" value="99%" />
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{
+                        maxWidth: '370px',
+                        width: '370px',
+                        pr: 4.5,
+                      }}
+                    >
+                      <Typography variant="body1"> Shop</Typography>
+                      <NumberInput type="text" value={`${Number(100 - adminCutForReward)}%`} />
+                    </Stack>
                   </Stack>
                 </Stack>
               </Grid>
@@ -217,17 +433,17 @@ export default function Page1() {
                 pb: 8,
               }}
             >
-              <Grid xs={12} md={6}>
+              <Grid xs={12} md={12}>
                 <Typography variant="h6" fontWeight={600} pb={6.5}>
                   Categories
                 </Typography>
                 {/* categories container */}
                 <Stack gap={2.5} pb={6}>
                   {/* item */}
-                  {categoryItems.map((item) => (
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                  {rewardCategory.map((item) => (
+                    <Stack key={item.name} direction="row" alignItems="center" justifyContent="space-between">
                       {/* left */}
-                      <Stack key={item.id} alignItems="center" direction="row" gap="30px">
+                      <Stack alignItems="center" direction="row" gap="30px">
                         <img
                           src={HandleIcon}
                           alt="icon"
@@ -235,22 +451,95 @@ export default function Page1() {
                             width: '14px',
                           }}
                         />
-                        <StyledChip label={item.label} />
+                        <StyledChip label={item.name} />
                       </Stack>
                       {/* right */}
                       <Stack direction="row" justifyContent="flex-end" gap={11}>
-                        <StyledSwitch />
+                        <StyledSwitch
+                          checked={item.status === 'active'}
+                          onChange={(event) => {
+                            item.status = event.target.checked ? 'active' : 'inactive';
+                            setRender(!render);
+                          }}
+                        />
                         <Stack direction="row" gap={2.5}>
                           <StyledIconButton color="secondary">
                             <Edit />
                           </StyledIconButton>
-                          <StyledIconButton color="secondary">
+                          <StyledIconButton
+                            color="secondary"
+                            onClick={() => {
+                              deleteItem('rewardCategory', item);
+                            }}
+                          >
                             <Close />
                           </StyledIconButton>
                         </Stack>
                       </Stack>
                     </Stack>
                   ))}
+                  {showAddNewRewardCategory && (
+                    <ClickAwayListener
+                      onClickAway={() => {
+                        if (showAddNewRewardCategory) {
+                          setShowAddNewRewardCategory(false);
+                          setNewRewardCategory({ ...rewardCategoryInit });
+                        }
+                      }}
+                    >
+                      <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        {/* left */}
+                        <Stack alignItems="center" direction="row" gap="30px">
+                          <img
+                            src={HandleIcon}
+                            alt="icon"
+                            style={{
+                              width: '14px',
+                            }}
+                          />
+                          <NumberInput
+                            value={newRewardCategory.name}
+                            ref={addRewardCategoryInputRef}
+                            sx={{
+                              width: 'auto',
+                              maxWidth: '200px',
+                              '& input': {
+                                fontSize: '13px',
+                              },
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                addRewardCategory();
+                              }
+                            }}
+                            onChange={(event) => {
+                              setNewRewardCategory((prev) => ({ ...prev, name: event.target.value }));
+                            }}
+                          />
+                        </Stack>
+                        {/* right */}
+                        <Stack direction="row" justifyContent="flex-end" gap={11}>
+                          <StyledSwitch
+                            checked={newRewardCategory.status === 'active'}
+                            onChange={(event) => {
+                              setNewRewardCategory((prev) => ({
+                                ...prev,
+                                status: event.target.checked ? 'active' : 'inactive',
+                              }));
+                            }}
+                          />
+                          <Stack direction="row" gap={2.5}>
+                            <StyledIconButton color="secondary">
+                              <Edit />
+                            </StyledIconButton>
+                            <StyledIconButton color="secondary">
+                              <Close />
+                            </StyledIconButton>
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </ClickAwayListener>
+                  )}
                 </Stack>
                 <Button
                   color="secondary"
@@ -265,6 +554,12 @@ export default function Page1() {
                     '&:hover': {
                       background: 'transparent',
                     },
+                  }}
+                  onClick={() => {
+                    setShowAddNewRewardCategory(true);
+                    setTimeout(() => {
+                      addRewardCategoryInputRef?.current?.querySelector('input')?.focus();
+                    }, 10);
                   }}
                 >
                   Add category
@@ -283,44 +578,78 @@ export default function Page1() {
               }}
             >
               <Grid xs={12}>
-                <Stack direction="row" gap={2} alignItems="center" pb={4}>
-                  <Typography variant="h6" fontWeight={600}>
-                    Reward Bundle
-                  </Typography>
-                  <Button
-                    disableRipple
-                    color="secondary"
-                    variant="text"
-                    startIcon={<Add />}
-                    sx={{
-                      fontWeight: '500',
-                      fontSize: '14px',
-                      lineHeight: '17px',
-                      color: '#417C45',
-                      padding: '0px',
-
-                      '&:hover': {
-                        background: 'transparent',
-                      },
-                    }}
-                  >
-                    Add
-                  </Button>
-                </Stack>
-                <Stack direction="row" gap={4}>
-                  {rewardBundles.map((item) => (
+                <Typography variant="h6" fontWeight={600} pb={4}>
+                  Reward Bundle
+                </Typography>
+                <Stack direction="row" gap={2} alignItems="center"></Stack>
+                <Stack direction="row" gap={4} mb={6}>
+                  {rewardBundle.map((item, index) => (
                     <StyledChip
                       key={item}
                       label={item}
-                      deleteIcon={<Close />}
                       onDelete={() => {
-                        console.log('delete me');
+                        deleteItem('bundleItem', index);
                       }}
                     />
                   ))}
+                  {showAddRewardBundle && (
+                    <ClickAwayListener
+                      onClickAway={() => {
+                        if (showAddRewardBundle) {
+                          setShowAddRewardBundle(false);
+                          setNewBundleItem('');
+                        }
+                      }}
+                    >
+                      <NumberInput
+                        ref={addRewardBundleInputRef}
+                        type="number"
+                        value={newBundleItem}
+                        sx={{
+                          '& input': {
+                            fontSize: '13px',
+                            height: 'auto',
+                          },
+                        }}
+                        onChange={(e) => {
+                          setNewBundleItem(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            addNewBundleItem();
+                          }
+                        }}
+                      />
+                    </ClickAwayListener>
+                  )}
                 </Stack>
+                <Button
+                  disableRipple
+                  color="secondary"
+                  variant="text"
+                  startIcon={<Add />}
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '17px',
+                    padding: '0px',
+
+                    '&:hover': {
+                      background: 'transparent',
+                    },
+                  }}
+                  onClick={() => {
+                    setShowAddRewardBundle(true);
+                    setTimeout(() => {
+                      addRewardBundleInputRef?.current?.querySelector('input')?.focus();
+                    }, 10);
+                  }}
+                >
+                  Add
+                </Button>
               </Grid>
             </Grid>
+            {/* spending limits */}
             <Grid
               xs={12}
               container
@@ -339,15 +668,24 @@ export default function Page1() {
                   alignItems="center"
                   justifyContent="space-between"
                   sx={{
-                    maxWidth: '345px',
+                    maxWidth: '370px',
                   }}
                 >
                   <Typography variant="body1">Minimum spending limit/week</Typography>
-                  <NumberInput type="text" value="$1" />
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      type="number"
+                      value={minSpendLimit}
+                      onChange={(event) => {
+                        setMinSpendLimit(event.target.value);
+                      }}
+                    />
+                    <Typography variant="body1">$</Typography>
+                  </Stack>
                 </Stack>
               </Grid>
             </Grid>
-            {/* fourth */}
+            {/* expiration */}
             <Grid
               xs={12}
               container
@@ -365,11 +703,20 @@ export default function Page1() {
                   alignItems="center"
                   justifyContent="space-between"
                   sx={{
-                    maxWidth: '345px',
+                    maxWidth: '370px',
                   }}
                 >
                   <Typography variant="body1">Number of days</Typography>
-                  <NumberInput type="text" value="10" />
+                  <Stack direction="row" alignItems="center" gap={3}>
+                    <NumberInput
+                      type="number"
+                      value={expirationPeriod}
+                      onChange={(e) => {
+                        setExpirationPeriod(e.target.value);
+                      }}
+                    />
+                    <Typography variant="body1">D</Typography>
+                  </Stack>
                 </Stack>
               </Grid>
             </Grid>
@@ -382,12 +729,26 @@ export default function Page1() {
           gap={4}
           sx={{
             mt: 9,
+            pb: 12,
           }}
         >
-          <Button variant="outlined" color="secondary">
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => {
+              discardChanges();
+            }}
+          >
             Discard
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={updateSettingsMutation.isLoading}
+            onClick={() => {
+              updateSettings();
+            }}
+          >
             Save Changes
           </Button>
         </Stack>

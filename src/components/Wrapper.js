@@ -8,7 +8,7 @@ export default function Wrapper({ children }) {
         paddingTop: 8,
         paddingLeft: 10,
         paddingRight: 10,
-        background: '#E5E5E5',
+        background: '#fbfbfb',
         height: '100vh',
         overflowY: 'hidden',
       }}

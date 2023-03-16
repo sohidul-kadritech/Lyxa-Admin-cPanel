@@ -1,6 +1,9 @@
 import { styled, TextField } from '@mui/material';
+import React from 'react';
 
-const NumberInput = styled(TextField)(({ theme }) => ({
+const Input = React.forwardRef(({ ...props }, ref) => <TextField {...props} ref={ref} />);
+
+const NumberInput = styled(Input)(({ theme }) => ({
   minWidth: 'inherit',
   width: '74px',
   '& .MuiInputBase-root': {

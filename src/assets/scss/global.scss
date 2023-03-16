@@ -250,3 +250,14 @@ body {
 .refresh-animate .MuiButton-endIcon {
   animation: refreshIconSpin 800ms linear infinite forwards;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
