@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
 import HandleIcon from '../../assets/icons/handle.svg';
@@ -79,7 +80,7 @@ const StyledIconButton = styled(IconButton)(() => ({
   },
 }));
 
-export default function Page1() {
+export default function RewardSettings() {
   const theme = useTheme();
   const [render, setRender] = useState(false);
   const [fetchedData, setFetchedData] = useState({});
@@ -254,6 +255,19 @@ export default function Page1() {
     }
 
     updateLocalState(data || {});
+  };
+
+  const dropSort = ({ removedIndex, addedIndex }) => {
+    console.log(removedIndex, addedIndex);
+    if (removedIndex === null || addedIndex === null) return;
+
+    const p = rewardCategory[removedIndex];
+    const n = rewardCategory[addedIndex];
+
+    rewardCategory[removedIndex] = n;
+    rewardCategory[addedIndex] = p;
+
+    setRender(!render);
   };
 
   return (
@@ -440,44 +454,59 @@ export default function Page1() {
                 {/* categories container */}
                 <Stack gap={2.5} pb={6}>
                   {/* item */}
-                  {rewardCategory.map((item) => (
-                    <Stack key={item.name} direction="row" alignItems="center" justifyContent="space-between">
-                      {/* left */}
-                      <Stack alignItems="center" direction="row" gap="30px">
-                        <img
-                          src={HandleIcon}
-                          alt="icon"
-                          style={{
-                            width: '14px',
-                          }}
-                        />
-                        <StyledChip label={item.name} />
-                      </Stack>
-                      {/* right */}
-                      <Stack direction="row" justifyContent="flex-end" gap={11}>
-                        <StyledSwitch
-                          checked={item.status === 'active'}
-                          onChange={(event) => {
-                            item.status = event.target.checked ? 'active' : 'inactive';
-                            setRender(!render);
-                          }}
-                        />
-                        <Stack direction="row" gap={2.5}>
-                          <StyledIconButton color="secondary">
-                            <Edit />
-                          </StyledIconButton>
-                          <StyledIconButton
-                            color="secondary"
-                            onClick={() => {
-                              deleteItem('rewardCategory', item);
-                            }}
-                          >
-                            <Close />
-                          </StyledIconButton>
+                  <Container
+                    onDrop={dropSort}
+                    lockAxis="y"
+                    dragHandleSelector=".drag-handler"
+                    style={{
+                      display: 'flex',
+                      gap: '10px',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    {rewardCategory.map((item) => (
+                      <Draggable key={item.name}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                          {/* left */}
+                          <Stack alignItems="center" direction="row" gap="30px">
+                            <span className="drag-handler grabable">
+                              <img
+                                src={HandleIcon}
+                                alt="icon"
+                                style={{
+                                  width: '14px',
+                                }}
+                              />
+                            </span>
+                            <StyledChip label={item.name} />
+                          </Stack>
+                          {/* right */}
+                          <Stack direction="row" justifyContent="flex-end" gap={11}>
+                            <StyledSwitch
+                              checked={item.status === 'active'}
+                              onChange={(event) => {
+                                item.status = event.target.checked ? 'active' : 'inactive';
+                                setRender(!render);
+                              }}
+                            />
+                            <Stack direction="row" gap={2.5}>
+                              <StyledIconButton color="secondary">
+                                <Edit />
+                              </StyledIconButton>
+                              <StyledIconButton
+                                color="secondary"
+                                onClick={() => {
+                                  deleteItem('rewardCategory', item);
+                                }}
+                              >
+                                <Close />
+                              </StyledIconButton>
+                            </Stack>
+                          </Stack>
                         </Stack>
-                      </Stack>
-                    </Stack>
-                  ))}
+                      </Draggable>
+                    ))}
+                  </Container>
                   {showAddNewRewardCategory && (
                     <ClickAwayListener
                       onClickAway={() => {
