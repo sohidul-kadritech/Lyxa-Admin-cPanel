@@ -17,7 +17,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
-import HandleIcon from '../../assets/icons/handle.svg';
+import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import PageButton from '../../components/Common/PageButton';
 import StyledSwitch from '../../components/Common/StyledSwitch';
 import NumberInput from '../../components/Form/NumberInput';
@@ -450,25 +450,13 @@ export default function RewardSettings() {
                 {/* categories container */}
                 <Box pb={4.5}>
                   {/* item */}
-                  <Container
-                    onDrop={dropSort}
-                    lockAxis="y"
-                    // dragHandleSelector=".drag-handler"
-                  >
+                  <Container onDrop={dropSort} lockAxis="y" dragHandleSelector=".drag-handler">
                     {rewardCategory.map((item) => (
                       <Draggable key={item.name}>
                         <Stack direction="row" alignItems="center" justifyContent="space-between" pb={1.5} pt={1.5}>
                           {/* left */}
                           <Stack alignItems="center" direction="row" gap="30px">
-                            <span className="drag-handler grabable">
-                              <img
-                                src={HandleIcon}
-                                alt="icon"
-                                style={{
-                                  width: '14px',
-                                }}
-                              />
-                            </span>
+                            <HandleIcon className="grabable drag-handler" />
                             <StyledChip label={item.name} />
                           </Stack>
                           {/* right */}
@@ -510,13 +498,7 @@ export default function RewardSettings() {
                       <Stack direction="row" alignItems="center" justifyContent="space-between">
                         {/* left */}
                         <Stack alignItems="center" direction="row" gap="30px">
-                          <img
-                            src={HandleIcon}
-                            alt="icon"
-                            style={{
-                              width: '14px',
-                            }}
-                          />
+                          <HandleIcon />
                           <NumberInput
                             value={newRewardCategory.name}
                             ref={addRewardCategoryInputRef}
