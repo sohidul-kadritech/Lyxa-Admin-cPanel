@@ -258,14 +258,10 @@ export default function RewardSettings() {
   };
 
   const dropSort = ({ removedIndex, addedIndex }) => {
-    console.log(removedIndex, addedIndex);
     if (removedIndex === null || addedIndex === null) return;
 
-    const p = rewardCategory[removedIndex];
-    const n = rewardCategory[addedIndex];
-
-    rewardCategory[removedIndex] = n;
-    rewardCategory[addedIndex] = p;
+    const item = rewardCategory.splice(removedIndex, 1);
+    rewardCategory.splice(addedIndex, 0, item[0]);
 
     setRender(!render);
   };
@@ -448,25 +444,20 @@ export default function RewardSettings() {
               }}
             >
               <Grid xs={12} md={12}>
-                <Typography variant="h6" fontWeight={600} pb={6.5}>
+                <Typography variant="h6" fontWeight={600} pb={5}>
                   Categories
                 </Typography>
                 {/* categories container */}
-                <Stack gap={2.5} pb={6}>
+                <Box pb={4.5}>
                   {/* item */}
                   <Container
                     onDrop={dropSort}
                     lockAxis="y"
-                    dragHandleSelector=".drag-handler"
-                    style={{
-                      display: 'flex',
-                      gap: '10px',
-                      flexDirection: 'column',
-                    }}
+                    // dragHandleSelector=".drag-handler"
                   >
                     {rewardCategory.map((item) => (
                       <Draggable key={item.name}>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" pb={1.5} pt={1.5}>
                           {/* left */}
                           <Stack alignItems="center" direction="row" gap="30px">
                             <span className="drag-handler grabable">
@@ -569,7 +560,7 @@ export default function RewardSettings() {
                       </Stack>
                     </ClickAwayListener>
                   )}
-                </Stack>
+                </Box>
                 <Button
                   color="secondary"
                   variant="text"
