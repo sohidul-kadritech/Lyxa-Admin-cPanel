@@ -16,8 +16,8 @@ import TableLoader from '../../components/Common/TableLoader';
 import FilterButton from '../../components/Filter/FilterButton';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
-import StyledTable from '../../components/StyledTable';
-import TabPanel from '../../components/TabPanel';
+import StyledTable from '../../components/Styled/StyledTable';
+import TabPanel from '../../components/Common/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import { successMsg } from '../../helpers/successMsg';
 import {

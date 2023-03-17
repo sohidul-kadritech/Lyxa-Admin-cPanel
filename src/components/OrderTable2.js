@@ -36,8 +36,8 @@ import { cancelOrderByAdmin } from '../store/order/orderAction';
 import { getAllCancelReasons } from '../store/Settings/settingsAction';
 import CloseButton from './Common/CloseButton';
 import TableLoader from './Common/TableLoader';
-import OptionsSelect from './Form/OptionsSelect';
-import StyledTable from './StyledTable';
+import OptionsSelect from './Filter/OptionsSelect';
+import StyledTable from './Styled/StyledTable';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
 // add order flag

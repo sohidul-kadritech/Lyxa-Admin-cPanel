@@ -1,20 +1,12 @@
 /* eslint-disable no-unused-vars */
 // third party
-import { ExpandMore } from '@mui/icons-material';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Stack,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
-import StyledTable2 from '../../../components/StyledTable2';
+
+// project import
+import StyledAccordion from '../../../components/Styled/StyledAccordion';
+import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import StyledTable2 from '../../../components/Styled/StyledTable2';
 
 const products = [
   {
@@ -42,6 +34,39 @@ const data = [
     rewardCategory: 'Mood Booster',
   },
 ];
+
+const itemSelectOptions = [
+  { label: 'Selected Items', value: 'multiple' },
+  { label: 'Entire Menu', value: 'all' },
+];
+
+function ItemsTitle() {
+  const theme = useTheme();
+  return (
+    <Stack direction="row" alignItems="center" gap={2.5}>
+      <Typography
+        variant="body1"
+        color={theme.palette.text.heading}
+        sx={{
+          lineHeight: '19px',
+          fontWeight: 600,
+        }}
+      >
+        Items
+      </Typography>
+      <span
+        style={{
+          fontWeight: '500',
+          fontSize: '11px',
+          lineHeight: '20px',
+          color: theme.palette.primary.main,
+        }}
+      >
+        Required
+      </span>
+    </Stack>
+  );
+}
 
 // project import
 export default function LoyaltySettings() {
@@ -112,93 +137,18 @@ export default function LoyaltySettings() {
           Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on
           an item, giving them more incentive to order from your business.
         </Typography>
-        {/* sections */}
-        <Accordion
-          expanded={currentExpanedTab === 0}
-          onChange={(e, closed) => {
+        {/* tabs */}
+        <StyledAccordion
+          Title={<ItemsTitle />}
+          isOpen={currentExpanedTab === 0}
+          onChange={(closed) => {
             seCurrentExpanedTab(closed ? 0 : -1);
           }}
         >
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-label="Items"
-            aria-controls="item-content"
-            sx={{
-              padding: '0',
-              '& .MuiSvgIcon-root': {
-                color: theme.palette.text.heading,
-              },
-            }}
-          >
-            <Stack direction="row" alignItems="center" gap={2.5}>
-              <Typography
-                variant="body1"
-                color={theme.palette.text.heading}
-                sx={{
-                  lineHeight: '19px',
-                  fontWeight: 600,
-                }}
-              >
-                Items
-              </Typography>
-              <span
-                style={{
-                  fontWeight: '500',
-                  fontSize: '11px',
-                  lineHeight: '20px',
-                  color: theme.palette.primary.main,
-                }}
-              >
-                Required
-              </span>
-            </Stack>
-          </AccordionSummary>
-          <AccordionDetails>
-            {/* radio input */}
-            <RadioGroup
-              sx={{
-                gap: '17px',
-              }}
-            >
-              <FormControlLabel
-                value="multiple"
-                control={<Radio color="secondary" />}
-                label="Selected Items"
-                sx={{
-                  gap: '12px',
-                  margin: '0',
-                  '& .MuiRadio-root': {
-                    padding: 0,
-                  },
-                  '& .MuiFormControlLabel-label': {
-                    fontWeight: '500',
-                    fontSize: '15px',
-                    lineHeight: '18px',
-                  },
-                }}
-              />
-              <FormControlLabel
-                value="full"
-                control={<Radio color="secondary" />}
-                label="Entire Menu"
-                sx={{
-                  gap: '12px',
-                  margin: '0',
-                  '& .MuiRadio-root': {
-                    padding: 0,
-                  },
-                  '& .MuiFormControlLabel-label': {
-                    fontWeight: '500',
-                    fontSize: '15px',
-                    lineHeight: '18px',
-                  },
-                }}
-              />
-            </RadioGroup>
-          </AccordionDetails>
+          <StyledRadioGroup items={itemSelectOptions} />
           {/* product table */}
           <StyledTable2 columns={columns} rows={data} />
-        </Accordion>
+        </StyledAccordion>
       </Box>
       {/* right */}
       <Box

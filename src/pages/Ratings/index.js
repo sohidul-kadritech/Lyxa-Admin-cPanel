@@ -24,7 +24,7 @@ import CloseButton from '../../components/Common/CloseButton';
 import TableLoader from '../../components/Common/TableLoader';
 import FilterButton from '../../components/Filter/FilterButton';
 import GlobalWrapper from '../../components/GlobalWrapper';
-import StyledTable from '../../components/StyledTable';
+import StyledTable from '../../components/Styled/StyledTable';
 import minInMiliSec from '../../helpers/minInMiliSec';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';

@@ -2,7 +2,7 @@
 // third party
 import { Box, Chip, Stack, Typography } from '@mui/material';
 import TableLoader from './Common/TableLoader';
-import StyledTable from './StyledTable';
+import StyledTable from './Styled/StyledTable';
 
 const flagTypeMap = {
   user: 'User',

@@ -19,8 +19,8 @@ import { Container, Draggable } from 'react-smooth-dnd';
 // project import
 import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import PageButton from '../../components/Common/PageButton';
-import StyledSwitch from '../../components/Common/StyledSwitch';
-import NumberInput from '../../components/Form/NumberInput';
+import StyledInput from '../../components/Styled/StyledInput';
+import StyledSwitch from '../../components/Styled/StyledSwitch';
 import Wrapper from '../../components/Wrapper';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
@@ -324,7 +324,7 @@ export default function RewardSettings() {
                 >
                   <Typography variant="body1">Value of 1 Point</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
-                    <NumberInput
+                    <StyledInput
                       value={getReward?.points || '0'}
                       type="number"
                       onChange={(e) => {
@@ -352,7 +352,7 @@ export default function RewardSettings() {
                     >
                       <Typography variant="body1">Value of 1 Point</Typography>
                       <Stack direction="row" alignItems="center" gap={3}>
-                        <NumberInput
+                        <StyledInput
                           type="number"
                           value={redeemReward?.points || '0'}
                           onChange={(e) => {
@@ -390,7 +390,7 @@ export default function RewardSettings() {
                 >
                   <Typography variant="body1">Lyxa</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
-                    <NumberInput
+                    <StyledInput
                       type="number"
                       value={adminCutForReward}
                       onChange={(e) => {
@@ -427,7 +427,7 @@ export default function RewardSettings() {
                       }}
                     >
                       <Typography variant="body1"> Shop</Typography>
-                      <NumberInput type="text" value={`${Number(100 - adminCutForReward)}%`} />
+                      <StyledInput type="text" value={`${Number(100 - adminCutForReward)}%`} />
                     </Stack>
                   </Stack>
                 </Stack>
@@ -499,7 +499,7 @@ export default function RewardSettings() {
                         {/* left */}
                         <Stack alignItems="center" direction="row" gap="30px">
                           <HandleIcon />
-                          <NumberInput
+                          <StyledInput
                             value={newRewardCategory.name}
                             ref={addRewardCategoryInputRef}
                             sx={{
@@ -603,7 +603,7 @@ export default function RewardSettings() {
                         }
                       }}
                     >
-                      <NumberInput
+                      <StyledInput
                         ref={addRewardBundleInputRef}
                         type="number"
                         value={newBundleItem}
@@ -675,7 +675,7 @@ export default function RewardSettings() {
                 >
                   <Typography variant="body1">Minimum spending limit/week</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
-                    <NumberInput
+                    <StyledInput
                       type="number"
                       value={minSpendLimit}
                       onChange={(event) => {
@@ -710,7 +710,7 @@ export default function RewardSettings() {
                 >
                   <Typography variant="body1">Number of days</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
-                    <NumberInput
+                    <StyledInput
                       type="number"
                       value={expirationPeriod}
                       onChange={(e) => {

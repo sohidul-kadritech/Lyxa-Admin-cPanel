@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 // project import
-import OptionsSelect from '../../components/Form/OptionsSelect';
+import OptionsSelect from '../../components/Filter/OptionsSelect';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';

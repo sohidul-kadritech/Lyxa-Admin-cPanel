@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 // project import
 import { useDispatch, useSelector } from 'react-redux';
 import { faqType as faqTypeOptions } from '../../assets/staticData';
-import OptionsSelect from '../../components/Form/OptionsSelect';
+import OptionsSelect from '../../components/Filter/OptionsSelect';
 import { updateChatReasonIsAdded, updateChatReasonIsUpdated } from '../../store/ChatReason/chatReasonActions';
 import { updateFaqIsAdded, updateFaqIsUpdated } from '../../store/faq/faqActions';
 
