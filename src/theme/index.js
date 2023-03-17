@@ -21,6 +21,7 @@ export default function Provider({ children }) {
         fontSize: `${pxToRem(36)}rem`,
         lineHeight: 1.1,
         letterSpacing: '0px',
+        color: theme.palette.text.heading,
       },
       [theme.breakpoints.up('lg')]: {
         fontWeight: 700,
@@ -38,6 +39,7 @@ export default function Provider({ children }) {
         fontSize: `${pxToRem(32)}rem`,
         lineHeight: 1.1,
         letterSpacing: '0px',
+        color: theme.palette.text.heading,
       },
       [theme.breakpoints.up('lg')]: {
         fontWeight: 700,
@@ -54,6 +56,7 @@ export default function Provider({ children }) {
       fontSize: `${pxToRem(24)}rem`,
       lineHeight: 1.1,
       letterSpacing: '0px',
+      color: theme.palette.text.heading,
     };
 
     theme.typography.h4 = {
@@ -61,6 +64,7 @@ export default function Provider({ children }) {
       fontSize: `${pxToRem(20)}rem`,
       lineHeight: `${pxToRem(24)}rem`,
       letterSpacing: '0px',
+      color: theme.palette.text.heading,
     };
 
     theme.typography.h5 = {
@@ -96,9 +100,9 @@ export default function Provider({ children }) {
     };
 
     theme.typography.body2 = {
-      fontWeight: 400,
-      fontSize: `${pxToRem(16)}rem`,
-      lineHeight: 1.1,
+      fontWeight: 500,
+      fontSize: `${pxToRem(14)}rem`,
+      lineHeight: `${pxToRem(17)}rem`,
       letterSpacing: '0px',
     };
 
@@ -106,7 +110,6 @@ export default function Provider({ children }) {
       fontWeight: 400,
       fontSize: `${pxToRem(13)}rem`,
       lineHeight: `${pxToRem(21)}rem`,
-      letterSpacing: '0px',
 
       [theme.breakpoints.up('lg')]: {
         fontSize: `${pxToRem(13)}rem`,

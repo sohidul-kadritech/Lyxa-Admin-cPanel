@@ -1,10 +1,17 @@
 import Close from '@mui/icons-material/Close';
 import { IconButton, styled } from '@mui/material';
 
-const Button = styled(IconButton)(({ theme }) => ({
-  color: '#000',
+const Button = styled(IconButton)(() => ({
+  background: 'transparent',
+
+  '& .MuiSvgIcon-root': {
+    width: '14px',
+    height: '14px',
+  },
+
   '&:hover': {
-    background: theme.palette.grey[300],
+    background: 'transparent',
+    fontSize: '16px',
   },
 }));
 
