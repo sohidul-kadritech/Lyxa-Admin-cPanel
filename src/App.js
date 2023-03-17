@@ -14,7 +14,7 @@ import CircularLoader from './components/CircularLoader';
 import { getAllAppSettings } from './store/Settings/settingsAction';
 
 // Import Routes all
-import { customerServiceRoutes, sellerRoutes, shopRoutes, userRoutes } from './routes/allRoutes';
+import { adminRoutes, customerServiceRoutes, sellerRoutes, shopRoutes } from './routes/allRoutes';
 
 // Import all middleware
 import Authmiddleware from './routes/middleware/Authmiddleware';
@@ -110,7 +110,7 @@ export default function App() {
 
   useEffect(() => {
     if (account_type === 'admin' && adminType !== 'customerService') {
-      setRouteList(userRoutes);
+      setRouteList(adminRoutes);
     } else if (account_type === 'admin' && adminType === 'customerService') {
       setRouteList(customerServiceRoutes);
     } else if (account_type === 'seller') {

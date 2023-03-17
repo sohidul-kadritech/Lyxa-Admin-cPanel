@@ -7,10 +7,10 @@ const StyledTabPanel = styled(Box)(({ theme }) => ({
   paddingBottom: theme.spacing(6),
 }));
 
-export default function TabPanel({ value, index, containerSx, children }) {
+export default function TabPanel({ value, index, children, ...props }) {
   if (value !== index) {
     return <></>;
   }
 
-  return <StyledTabPanel sx={containerSx}>{children}</StyledTabPanel>;
+  return <StyledTabPanel {...props}>{children}</StyledTabPanel>;
 }

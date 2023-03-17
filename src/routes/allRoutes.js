@@ -82,7 +82,7 @@ import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndCondi
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
 
-const userRoutes = [
+const adminRoutes = [
   // dashboard
   { path: '/dashboard', component: Dashboard },
   // orders
@@ -91,7 +91,6 @@ const userRoutes = [
   { path: '/orders/details/butler/:id', component: ButlerOrderDetails },
   { path: '/orders/list/cancel', component: ButlerCancelOrders },
   { path: '/orders/list/flagged', component: ButlerFlaggedOrder },
-
   // vat
   { path: '/vat', component: Vat },
   // Banner
@@ -200,9 +199,6 @@ const userRoutes = [
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },
-  // marketing
-  { path: '/marketing', component: Marketing },
-
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
@@ -264,8 +260,6 @@ const sellerRoutes = [
   { path: '/categories/list', component: CategoryList },
   { path: '/categories/edit/:id', component: CategoryAdd },
   { path: '/category/details/:id', component: CategoryDetails },
-  // marketing
-  { path: '/marketing', component: Marketing },
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
@@ -305,4 +299,4 @@ const shopRoutes = [
 
 const authRoutes = [{ path: '/login', component: Login }];
 
-export { userRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };
+export { adminRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };

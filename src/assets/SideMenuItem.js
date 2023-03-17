@@ -32,32 +32,6 @@ export const adminMenuItem = [
       },
     ],
   },
-  // {
-  //   name: 'Butler',
-  //   icon: 'fas fa-truck',
-  //   link: '/#',
-  //   isSubmenu: true,
-  //   submenu: [
-  //     {
-  //       icon: 'fas fa-cart-plus',
-  //       name: 'All Orders',
-  //       link: '/butler/list',
-  //       isSubmenu: false,
-  //     },
-  //     {
-  //       icon: 'fas fa-cart-plus',
-  //       name: 'Cancelled Orders',
-  //       link: '/butler/list/canceled',
-  //       isSubmenu: false,
-  //     },
-  //     {
-  //       icon: 'fas fa-flag',
-  //       name: 'Flaged Orders',
-  //       link: '/butler/list/flagged',
-  //       isSubmenu: false,
-  //     },
-  //   ],
-  // },
   {
     name: 'Banner',
     icon: 'fas fa-image',
@@ -300,12 +274,6 @@ export const adminMenuItem = [
         isSubmenu: false,
       },
     ],
-  },
-  {
-    name: 'Marketing',
-    icon: 'fas fa-cart-plus',
-    link: '/marketing',
-    isSubmenu: false,
   },
   {
     id: 17,

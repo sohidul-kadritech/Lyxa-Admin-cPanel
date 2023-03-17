@@ -1,57 +1,92 @@
-// third party
-import { Button, Paper, Stack, styled, Typography } from '@mui/material';
+// thrid party
+import { Cached, ChevronRight } from '@mui/icons-material';
+import { Box, Button, Paper, Stack, Typography, useTheme } from '@mui/material';
 
-// icons
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+export default function MCard({ icon: Icon, title, description, onOpen, ongoing }) {
+  const theme = useTheme();
 
-const CardBottom = styled(Stack)(() => ({
-  '& .MuiButton-root': {
-    border: '0px',
-    borderTop: `1px solid rgba(221, 91, 99, 0.2)`,
-    padding: '12px 15px',
-
-    '&:hover': {
-      border: '0px',
-      borderTop: `1px solid rgba(221, 91, 99, 0.2)`,
-    },
-
-    '&:first-child': {
-      borderTop: '0px',
-    },
-  },
-}));
-
-// styles
-const cardIconSx = {
-  height: '100px',
-  width: 'auto',
-};
-
-export default function MarketingCard({ title, Icon, onVeiwDetails, addNew, onAddnew }) {
   return (
     <Paper
-      variant="outlined"
       sx={{
         borderRadius: '12px',
-        textAlign: 'center',
-        padding: 3,
-        paddingBottom: '0px',
+        border: '1px solid #EEEEEE',
+        padding: '16px',
+        position: 'relative',
       }}
     >
-      <Icon sx={cardIconSx} color="primary" />
-      <Typography variant="h3" mt={5} mb={8}>
-        {title}
-      </Typography>
-      <CardBottom mt={3}>
-        {addNew && (
-          <Button disableElevation variant="outlined" onClick={onAddnew} endIcon={<ChevronRightIcon />}>
-            Add New
-          </Button>
-        )}
-        <Button disableElevation variant="outlined" onClick={onVeiwDetails} endIcon={<ChevronRightIcon />}>
-          View Detatils
+      {ongoing && (
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<Cached />}
+          onClick={onOpen}
+          sx={{
+            fontSize: '15px',
+            lineHeight: '24px',
+            background: '#F6F8FA',
+            color: '#5E97A9',
+            gap: '0px',
+            padding: '5px 15px',
+            position: 'absolute',
+            right: '16px',
+            top: '16px',
+            textTransform: 'none',
+
+            '&:hover': {
+              background: '#F6F8FA',
+              color: '#5E97A9',
+            },
+          }}
+        >
+          Ongoing promotion
         </Button>
-      </CardBottom>
+      )}
+
+      <Box>
+        {/* <img
+          src={icon}
+          alt="icon"
+          style={{
+            display: 'inline-block',
+          }}
+        /> */}
+        <Icon />
+      </Box>
+      <Stack
+        direction="row"
+        gap="10px"
+        alignItems="center"
+        sx={{
+          paddingTop: 5,
+          paddingBottom: 7.5,
+          cursor: 'pointer',
+          display: 'inline-flex',
+        }}
+        onClick={onOpen}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            fontSize: '19px',
+          }}
+        >
+          {title}
+        </Typography>
+        <Box>
+          <ChevronRight />
+        </Box>
+      </Stack>
+      <Typography
+        variant="body1"
+        sx={{
+          lineHeight: '28px',
+          fontSize: '17px !important',
+          color: theme.palette.text.heading,
+        }}
+      >
+        {description}
+      </Typography>
     </Paper>
   );
 }

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 // thrid party
 
-export default function Wrapper({ children }) {
+export default function Wrapper({ children, sx, ...props }) {
   return (
     <Box
       sx={{
@@ -11,7 +11,9 @@ export default function Wrapper({ children }) {
         background: '#fbfbfb',
         height: '100vh',
         overflowY: 'hidden',
+        ...(sx || {}),
       }}
+      {...props}
     >
       {children}
     </Box>

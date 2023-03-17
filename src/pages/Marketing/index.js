@@ -1,115 +1,81 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable max-len */
 // third party
-import { Box, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
-import { useState } from 'react';
-
-// icons
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
-import StarIcon from '@mui/icons-material/Star';
+import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 
 // project import
-import BreadCrumbs from '../../components/Common/BreadCrumb2';
-import GlobalWrapper from '../../components/GlobalWrapper';
-import MarketingCard from './MarketingCard';
+import { ReactComponent as BuyIcon } from '../../assets/icons/buy-icon.svg';
+import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon.svg';
+import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
+import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
+import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
+import Wrapper from '../../components/Wrapper';
+import MCard from './MarketingCard';
 
-const cardIconSx = {
-  height: '100px',
-  width: 'auto',
-};
-
-const tabPanelSx = {
-  padding: '24px 16px',
-};
-
-// breadcrumb items
-const breadcrumbItems = [
-  {
-    to: '/',
-    label: 'Lyxa',
-  },
-  {
-    to: '/marketing',
-    label: 'Marketing',
-  },
-];
-
-// dynamic sidebar ttitle
 export default function Marketing() {
-  const theme = useTheme();
-
-  const [isRightBarOpen, setIsRightBarOpen] = useState(false);
-  const [currentTab, setCurrentTab] = useState(0);
-
   return (
-    <GlobalWrapper padding>
-      <div className="page-content">
-        <Grid container spacing={0} sx={{ height: 'calc(100vh - 130px)', overflowY: 'hidden' }}>
-          {/* left */}
-          <Grid md={isRightBarOpen ? 8 : 12} pr={isRightBarOpen ? 10 : 0}>
-            <Box>
-              <Grid container spacing={6}>
-                <Grid xs={12}>
-                  <BreadCrumbs
-                    items={breadcrumbItems}
-                    sx={{
-                      pb: 5,
-                    }}
-                  />
-                </Grid>
-                <Grid md={isRightBarOpen ? 6 : 4}>
-                  <MarketingCard
-                    title="Deals"
-                    Icon={LocalOfferIcon}
-                    onVeiwDetails={() => {
-                      setIsRightBarOpen('deals');
-                      setCurrentTab(0);
-                    }}
-                    addNew
-                    onAddnew={() => {}}
-                  />
-                </Grid>
-                <Grid md={isRightBarOpen ? 6 : 4}>
-                  <MarketingCard
-                    title="Featured"
-                    Icon={StarIcon}
-                    onVeiwDetails={() => {
-                      setIsRightBarOpen('featured');
-                      setCurrentTab(1);
-                    }}
-                    addNew
-                    onAddnew={() => {}}
-                  />
-                </Grid>
-                <Grid md={isRightBarOpen ? 6 : 4}>
-                  <MarketingCard
-                    title="Loyalty"
-                    Icon={MilitaryTechIcon}
-                    onVeiwDetails={() => {
-                      setIsRightBarOpen('loyalty');
-                      setCurrentTab(2);
-                    }}
-                    addNew
-                    onAddnew={() => {}}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
+    <Wrapper
+      sx={{
+        paddingTop: '70px',
+        paddingBottom: '60px',
+      }}
+    >
+      <Box sx={{ height: '100%', overflowY: 'scroll', pt: 20, pb: 16 }}>
+        <Box>
+          <Grid container spacing={8} flexWrap="wrap">
+            <Grid xs={6} md={4}>
+              <MCard
+                description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
+                title="Discounted Items"
+                icon={DiscountIcon}
+                ongoing
+                onOpen={() => {
+                  console.log('opened');
+                }}
+              />
+            </Grid>
+            <Grid xs={6} md={4}>
+              <MCard
+                description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
+                title="Buy 1, Get 1 Free"
+                icon={BuyIcon}
+                onOpen={() => {
+                  console.log('opened');
+                }}
+              />
+            </Grid>
+            <Grid xs={6} md={4}>
+              <MCard
+                description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
+                title="$0 Delivery Fee"
+                icon={DeliveryIcon}
+                onOpen={() => {
+                  console.log('opened');
+                }}
+              />
+            </Grid>
+            <Grid xs={6} md={4}>
+              <MCard
+                description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
+                title="Loyalty Points"
+                icon={LoyaltyIcon}
+                onOpen={() => {
+                  console.log('opened');
+                }}
+              />
+            </Grid>
+            <Grid xs={6} md={4}>
+              <MCard
+                description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
+                title="Promotions"
+                icon={PromoIcon}
+                onOpen={() => {
+                  console.log('opened');
+                }}
+              />
+            </Grid>
           </Grid>
-          {/* right */}
-          <Grid
-            md={4}
-            spacing={3}
-            className={`${isRightBarOpen ? '' : 'd-none'}`}
-            pl={10}
-            sx={{
-              borderLeft: `1px solid ${theme.palette.grey[200]}`,
-            }}
-          >
-            <Grid md={12}></Grid>
-          </Grid>
-        </Grid>
-      </div>
-    </GlobalWrapper>
+        </Box>
+      </Box>
+    </Wrapper>
   );
 }

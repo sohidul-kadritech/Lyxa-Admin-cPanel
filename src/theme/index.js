@@ -68,6 +68,7 @@ export default function Provider({ children }) {
       fontSize: `${pxToRem(18)}rem`,
       lineHeight: `${pxToRem(28)}rem`,
       letterSpacing: '-2%',
+      color: theme.palette.text.heading,
     };
 
     theme.typography.h6 = {
