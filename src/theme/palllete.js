@@ -29,6 +29,7 @@ export default function GetPallete() {
     },
     background: {
       secondary: '#F6F8FA',
+      secondaryHover: '#f0f3f6',
     },
   };
 }

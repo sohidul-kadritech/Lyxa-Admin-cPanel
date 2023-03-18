@@ -3,35 +3,38 @@ import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
 
 const StyledGrid2 = styled(DataGrid)(({ theme }) => ({
-  border: 0,
-  color: theme.palette.mode === 'light' ? 'rgba(0,0,0,1)' : 'rgba(255,255,255,0.85)',
+  border: `1px solid ${theme.palette.custom.border}`,
+  borderRadius: '7px',
   WebkitFontSmoothing: 'auto',
   letterSpacing: 'normal',
-  '& .MuiDataGrid-main': {
-    border: `1px solid ${theme.palette.custom.border}`,
-    borderRadius: '7px',
-  },
+
   '& .MuiDataGrid-columnHeaders': {
-    borderBottom: `2px solid ${theme.palette.grey[200]}`,
+    borderBottom: `1px solid ${theme.palette.custom.border}`,
+  },
+  '& .MuiDataGrid-columnHeader': {
+    padding: '0 16px',
+
+    '&:focus-within': {
+      outline: 'none',
+    },
   },
   '& .MuiDataGrid-iconSeparator': {
     display: 'none',
   },
   '& .MuiDataGrid-columnHeaderTitle': {
-    [theme.breakpoints.up('xl')]: {
-      fontSize: '18px',
-      fontWeight: 600,
-    },
     [theme.breakpoints.up('lg')]: {
       fontSize: '16px',
+      lineHeight: '19px',
       fontWeight: 600,
     },
+
+    color: theme.palette.text.heading,
   },
   '& .MuiDataGrid-footerContainer': {
     display: 'none',
   },
-  '& .MuiDataGrid-columnHeader:focus-within': {
-    outline: 'none',
+  '& .MuiDataGrid-row:hover': {
+    backgroundColor: 'transparent!important',
   },
   '& .MuiDataGrid-cell': {
     fontSize: '17px',
@@ -46,7 +49,8 @@ const StyledGrid2 = styled(DataGrid)(({ theme }) => ({
 export default function StyledTable({ ...props }) {
   return (
     <StyledGrid2
-      density="comfortable"
+      density="standard"
+      headerHeight={46}
       autoHeight
       disableColumnMenu
       disableSelectionOnClick
