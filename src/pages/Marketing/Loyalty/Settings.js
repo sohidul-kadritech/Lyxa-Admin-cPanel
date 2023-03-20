@@ -24,6 +24,8 @@ import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 
 // project import
+import moment from 'moment';
+import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
@@ -94,6 +96,35 @@ function ItemsTitle() {
         }}
       >
         Required
+      </span>
+    </Stack>
+  );
+}
+
+function CommonTitle({ title, subTitle }) {
+  const theme = useTheme();
+
+  return (
+    <Stack gap={1.5}>
+      <Typography
+        variant="body1"
+        color={theme.palette.text.heading}
+        sx={{
+          lineHeight: '19px',
+          fontWeight: 600,
+        }}
+      >
+        {title}
+      </Typography>
+      <span
+        style={{
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '17px',
+          color: '#737373',
+        }}
+      >
+        {subTitle}
       </span>
     </Stack>
   );
@@ -240,6 +271,10 @@ export default function LoyaltySettings() {
   const [productsData, setProductsData] = useState(data);
   const [render, setRender] = useState(false);
 
+  // filter
+  const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().endOf('month').format('YYYY-MM-DD'));
+
   const productsQuery = useQuery(
     ['products-query'],
     () =>
@@ -264,7 +299,7 @@ export default function LoyaltySettings() {
     },
   });
 
-  console.log(rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount);
+  const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
   const createGroupedList = (products) =>
     Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
@@ -425,9 +460,7 @@ export default function LoyaltySettings() {
           }}
         >
           <Typography variant="body1">
-            {Math.round((params?.row?.product?.price / 100) * params.row.rewardBundle) *
-              rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount}{' '}
-            Pts + {currency}{' '}
+            {Math.round((params?.row?.product?.price / 100) * params.row.rewardBundle) * rewardAmount} Pts + {currency}{' '}
             {Math.round(params?.row?.product?.price - (params?.row?.product?.price / 100) * params.row.rewardBundle)}
           </Typography>
           <Typography
@@ -499,6 +532,61 @@ export default function LoyaltySettings() {
               rowHeight={64}
             />
           </Box>
+        </StyledAccordion>
+        <StyledAccordion
+          isOpen={currentExpanedTab === 1}
+          onChange={(closed) => {
+            seCurrentExpanedTab(closed ? 1 : -1);
+          }}
+          Title={
+            <CommonTitle
+              title="Duration"
+              subTitle={
+                currentExpanedTab === 1
+                  ? 'Please choose the date range during which your items will be running.'
+                  : 'March 1, 2023 - April 1, 2023'
+              }
+            />
+          }
+        >
+          <Stack direction="row" alignItems="center" gap={5} pt={1}>
+            <Stack gap={2.5}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: '500',
+                  fontSize: '14px',
+                  lineHeight: '17px',
+                }}
+              >
+                Start Date
+              </Typography>
+              <FilterDate
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e._d);
+                }}
+              />
+            </Stack>
+            <Stack gap={2.5}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: '500',
+                  fontSize: '14px',
+                  lineHeight: '17px',
+                }}
+              >
+                End Date
+              </Typography>
+              <FilterDate
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e._d);
+                }}
+              />
+            </Stack>
+          </Stack>
         </StyledAccordion>
       </Box>
       {/* right */}
