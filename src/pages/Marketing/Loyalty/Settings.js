@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-dupe-keys */
 // third party
 import ClearIcon from '@mui/icons-material/Clear';
@@ -8,6 +9,7 @@ import {
   Box,
   IconButton,
   InputAdornment,
+  Paper,
   Stack,
   styled,
   TextField,
@@ -17,6 +19,7 @@ import {
 import _ from 'lodash';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 
 // project import
 import FilterSelect from '../../../components/Filter/FilterSelect';
@@ -103,6 +106,7 @@ const StyledAutoComplete = styled(Autocomplete)(({ theme }) => ({
   /* normal styles */
   '& .MuiAutocomplete-listbox': {
     maxHeight: '300px',
+    background: theme.palette.background.secondary,
   },
 
   '& .MuiInputBase-root': {
@@ -142,19 +146,31 @@ const StyledAutoComplete = styled(Autocomplete)(({ theme }) => ({
     border: 'none',
   },
 
+  '& .custom-clear-button': {
+    visibility: 'hidden',
+    opacity: '0',
+    pointerEvents: 'none',
+
+    '& .MuiSvgIcon-root': {
+      width: '19px',
+      height: '19px',
+    },
+  },
+
   /* focus styles */
   '&:has(.MuiInputBase-input:focus)': {
     borderRadius: '25px',
-    width: '430px',
+    width: '475px',
     position: 'absolute',
     zIndex: '99',
-    top: '0',
+    top: '8px',
   },
 
   '& .MuiInputBase-root:has(.MuiInputBase-input:focus)': {
     padding: '13px 16px!important',
     paddingRight: '70px!important',
     position: 'relative',
+    borderRadius: '40px 40px 0 0',
 
     '& .MuiInputAdornment-positionStart': {
       visibility: 'visible',
@@ -179,6 +195,14 @@ const StyledAutoComplete = styled(Autocomplete)(({ theme }) => ({
       visibility: 'visible!important',
       pointerEvents: 'all',
     },
+
+    '& .custom-clear-button': {
+      visibility: 'visible',
+      opacity: '1',
+      pointerEvents: 'all',
+      top: '18.5px',
+      right: '24.5px',
+    },
   },
 
   '& .MuiInputBase-input:focus': {
@@ -187,62 +211,18 @@ const StyledAutoComplete = styled(Autocomplete)(({ theme }) => ({
     borderRadius: '40px',
     paddingLeft: '42px!important',
   },
-  '& .custom-clear-button': {
-    display: '-webkit-inline-box',
-    display: '-webkit-inline-flex',
-    display: '-ms-inline-flexbox',
-    display: 'inline-flex',
-    WebkitAlignItems: 'center',
-    WebkitBoxAlign: 'center',
-    MsFlexAlign: 'center',
-    alignItems: 'center',
-    WebkitBoxPack: 'center',
-    MsFlexPack: 'center',
-    WebkitJustifyContent: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    boxSizing: 'border-box',
-    WebkitTapHighlightColor: 'transparent',
-    backgroundColor: 'transparent',
-    outline: '0',
-    border: '0',
-    margin: '0',
-    borderRadius: '0',
-    padding: '0',
-    cursor: 'pointer',
-    WebkitUserSelect: 'none',
-    MozUserSelect: 'none',
-    MsUserSelect: 'none',
-    userSelect: 'none',
-    verticalAlign: 'middle',
-    MozAppearance: 'none',
-    WebkitAppearance: 'none',
-    WebkitTextDecoration: 'none',
-    textDecoration: 'none',
-    color: 'inherit',
-    textAlign: 'center',
-    WebkitFlex: '0 0 auto',
-    MsFlex: '0 0 auto',
-    flex: '0 0 auto',
-    fontSize: '1.5rem',
-    padding: '8px',
-    borderRadius: '50%',
-    overflow: 'visible',
-    color: 'rgba(0, 0, 0, 0.54)',
-    WebkitTransition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    marginRight: '-2px',
-    padding: '4px',
-    visibility: 'hidden',
-  },
 }));
 
 const GroupHeader = styled('div')(({ theme }) => ({
   position: 'sticky',
   top: '-8px',
-  padding: '4px 10px',
-  color: theme.palette.primary.main,
-  backgroundColor: theme.palette.primary.light,
+  fontWeight: '600',
+  fontSize: '16px',
+  lineHeight: '28px',
+  color: '#737373',
+  fontStyle: 'italic',
+  padding: '8px 45px 8px 16px',
+  backgroundColor: theme.palette.background.secondary,
 }));
 
 const GroupItems = styled('ul')({
@@ -254,8 +234,8 @@ export default function LoyaltySettings() {
   const theme = useTheme();
   const [currentExpanedTab, seCurrentExpanedTab] = useState(0);
   const [itemSelectType, setItemSelectType] = useState('multiple');
-  // eslint-disable-next-line no-unused-vars
   const [productsData, setProductsData] = useState(data);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   const productsQuery = useQuery(
     ['products-query'],
@@ -286,14 +266,40 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: () => (
+      renderCell: (params) => (
         <StyledAutoComplete
           fullWidth
+          blurOnSelect
+          openOnFocus
           options={createGroupedList(productsQuery?.data?.data?.products || [])}
           popupIcon={<KeyboardArrowDownIcon />}
           getOptionLabel={(option) => option?.name}
           loading={productsQuery.isLoading || productsQuery.isFetching}
           readOnly={undefined}
+          PaperComponent={({ children }) => (
+            <Paper
+              sx={{
+                background: theme.palette.background.secondary,
+                '& .MuiAutocomplete-listbox': {
+                  padding: 0,
+                },
+
+                '& .MuiAutocomplete-option': {
+                  padding: '0px',
+                  color: theme.palette.text.heading,
+                  fontWeight: 600,
+                  lineHeight: '31px',
+                  fontSize: '15px',
+                  alignItems: 'center',
+                  justifyContent: 'space-between!important',
+                  flexDirection: 'row',
+                  padding: '0px 45px 0px 16px',
+                },
+              }}
+            >
+              {children}
+            </Paper>
+          )}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -313,7 +319,9 @@ export default function LoyaltySettings() {
                         size="small"
                         // eslint-disable-next-line max-len
                         className="custom-clear-button MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator"
-                        onClick={() => {}}
+                        onClick={() => {
+                          console.log('clicked');
+                        }}
                         edge="end"
                       >
                         <ClearIcon />
@@ -329,6 +337,14 @@ export default function LoyaltySettings() {
             <li key={params.key}>
               <GroupHeader>{params.group}</GroupHeader>
               <GroupItems>{params.children}</GroupItems>
+            </li>
+          )}
+          renderOption={(props, option) => (
+            <li {...props}>
+              <span>{option?.name}</span>
+              <span>
+                {currency} {option?.price}
+              </span>
             </li>
           )}
         />
