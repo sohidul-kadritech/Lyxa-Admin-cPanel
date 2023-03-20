@@ -98,7 +98,7 @@ export default function Marketing() {
                 setCurrentModal(null);
               }}
             />
-            <Box>{currentModal === 'loyalty' && <LoyaltySettings />}</Box>
+            <Box dis>{currentModal === 'loyalty' && <LoyaltySettings />}</Box>
           </Paper>
         </Modal>
       </Box>

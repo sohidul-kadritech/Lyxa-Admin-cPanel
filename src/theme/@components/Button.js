@@ -10,6 +10,7 @@ export default function Button() {
         lineHeight: '24px',
         borderRadius: '30px',
         padding: '12px 30px',
+        textTransform: 'none',
       },
     },
   };

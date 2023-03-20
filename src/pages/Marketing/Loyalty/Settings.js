@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
@@ -9,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import {
   Autocomplete,
   Box,
+  Button,
   Checkbox,
   FormControlLabel,
   IconButton,
@@ -261,6 +263,29 @@ const GroupItems = styled('ul')({
   padding: 0,
 });
 
+const createGroupedList = (products) =>
+  Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
+
+const createGroupedDataRow = (products) => {
+  const categoryMap = {};
+  const result = [];
+
+  products.forEach((item) => {
+    if (categoryMap[item?.category?.name] === undefined) {
+      categoryMap[item?.category.name] = [item];
+    } else {
+      categoryMap[item?.category.name].push(item);
+    }
+  });
+
+  Object.entries(categoryMap).forEach((category, index) => {
+    result.push({ _id: `c-${index}`, isCategoryHeader: true, categoryName: category[0] });
+    result.push(...category[1]);
+  });
+
+  return result;
+};
+
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
 
@@ -273,6 +298,9 @@ export default function LoyaltySettings() {
   const [itemSelectType, setItemSelectType] = useState('multiple');
   const [productsData, setProductsData] = useState(data);
   const [render, setRender] = useState(false);
+
+  // accept terms and conditions
+  const [termAndCondition, setTermAndCondition] = useState(false);
 
   // filter
   const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
@@ -304,8 +332,7 @@ export default function LoyaltySettings() {
 
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
-  const createGroupedList = (products) =>
-    Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
+  console.log(rewardSettingsQuery.data);
 
   const columns = [
     {
@@ -316,95 +343,116 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: (params) => (
-        <StyledAutoComplete
-          fullWidth
-          blurOnSelect
-          openOnFocus
-          value={params.row?.product}
-          options={createGroupedList(productsQuery?.data?.data?.products || [])}
-          isOptionEqualToValue={(option, value) => option?._id === value?._id}
-          onChange={(event, newValue) => {
-            params.row.product = newValue;
-            setRender(!render);
-          }}
-          popupIcon={<KeyboardArrowDownIcon />}
-          getOptionLabel={(option) => option?.name || 'Select Product'}
-          loading={productsQuery.isLoading || productsQuery.isFetching}
-          readOnly={undefined}
-          PaperComponent={({ children }) => (
-            <Paper
+      renderCell: (params) => {
+        if (params?.row?.isCategoryHeader) {
+          return (
+            <Typography
+              variant="body1"
               sx={{
-                background: theme.palette.background.secondary,
-                '& .MuiAutocomplete-listbox': {
-                  padding: 0,
-                },
-
-                '& .MuiAutocomplete-option': {
-                  padding: '0px',
-                  color: theme.palette.text.heading,
-                  fontWeight: 600,
-                  lineHeight: '31px',
-                  fontSize: '15px',
-                  alignItems: 'center',
-                  justifyContent: 'space-between!important',
-                  flexDirection: 'row',
-                  padding: '0px 45px 0px 16px',
-                },
+                fontSize: '16px',
+                lineHeight: '24px',
+                fontWeight: 600,
+                color: '#737373',
+                fontStyle: 'italic',
+                pl: 1.5,
               }}
             >
-              {children}
-            </Paper>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {params.InputProps.endAdornment}
-                    {!params.inputProps.value && (
-                      <IconButton
-                        size="small"
-                        // eslint-disable-next-line max-len
-                        className="custom-clear-button MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator"
-                        onClick={() => {
-                          console.log('clicked');
-                        }}
-                        edge="end"
-                      >
-                        <ClearIcon />
-                      </IconButton>
-                    )}
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-          groupBy={(option) => option?.category?.name}
-          renderGroup={(params) => (
-            <li key={params.key}>
-              <GroupHeader>{params.group}</GroupHeader>
-              <GroupItems>{params.children}</GroupItems>
-            </li>
-          )}
-          renderOption={(props, option) => (
-            <li {...props}>
-              <span>{option?.name}</span>
-              <span>
-                {currency} {option?.price}
-              </span>
-            </li>
-          )}
-        />
-      ),
+              {params?.row?.categoryName !== 'undefined' ? params?.row?.categoryName : 'Select'}
+              {console.log(params?.row?.categoryName)}
+            </Typography>
+          );
+        }
+
+        return (
+          <StyledAutoComplete
+            fullWidth
+            blurOnSelect
+            openOnFocus
+            value={params.row}
+            options={createGroupedList(productsQuery?.data?.data?.products || [])}
+            isOptionEqualToValue={(option, value) => option?._id === value?._id}
+            onChange={(event, newValue) => {
+              params.row.product = newValue;
+              setRender(!render);
+            }}
+            popupIcon={<KeyboardArrowDownIcon />}
+            getOptionLabel={(option) => option?.name || 'Select Product'}
+            loading={productsQuery.isLoading || productsQuery.isFetching}
+            readOnly={undefined}
+            PaperComponent={({ children }) => (
+              <Paper
+                sx={{
+                  background: theme.palette.background.secondary,
+                  '& .MuiAutocomplete-listbox': {
+                    padding: 0,
+                  },
+
+                  '& .MuiAutocomplete-option': {
+                    padding: '0px',
+                    color: theme.palette.text.heading,
+                    fontWeight: 600,
+                    lineHeight: '31px',
+                    fontSize: '15px',
+                    alignItems: 'center',
+                    justifyContent: 'space-between!important',
+                    flexDirection: 'row',
+                    padding: '0px 45px 0px 16px',
+                  },
+                }}
+              >
+                {children}
+              </Paper>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {params.InputProps.endAdornment}
+                      {!params.inputProps.value && (
+                        <IconButton
+                          size="small"
+                          // eslint-disable-next-line max-len
+                          className="custom-clear-button MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator"
+                          onClick={() => {
+                            console.log('clicked');
+                          }}
+                          edge="end"
+                        >
+                          <ClearIcon />
+                        </IconButton>
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+            groupBy={(option) => option?.category?.name}
+            renderGroup={(params) => (
+              <li key={params.key}>
+                <GroupHeader>{params.group}</GroupHeader>
+                <GroupItems>{params.children}</GroupItems>
+              </li>
+            )}
+            renderOption={(props, option) => (
+              <li {...props}>
+                <span>{option?.name}</span>
+                <span>
+                  {currency} {option?.price}
+                </span>
+              </li>
+            )}
+          />
+        );
+      },
     },
     {
       id: 2,
@@ -414,16 +462,22 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: (params) => (
-        <FilterSelect
-          items={rewardBundles}
-          onChange={(e) => {
-            params.row.rewardBundle = Number(e.target.value);
-            setRender(!render);
-          }}
-          value={params.row?.rewardBundle}
-        />
-      ),
+      renderCell: (params) => {
+        if (params?.row?.isCategoryHeader) {
+          return <></>;
+        }
+
+        return (
+          <FilterSelect
+            items={rewardBundles}
+            onChange={(e) => {
+              params.row.rewardBundle = Number(e.target.value);
+              setRender(!render);
+            }}
+            value={params.row?.rewardBundle}
+          />
+        );
+      },
     },
     {
       id: 3,
@@ -433,16 +487,22 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: (params) => (
-        <FilterSelect
-          items={rewardCategories}
-          value={params.row?.rewardCategory}
-          onChange={(e) => {
-            params.row.rewardCategory = e.target.value;
-            setRender(!render);
-          }}
-        />
-      ),
+      renderCell: (params) => {
+        if (params?.row?.isCategoryHeader) {
+          return <></>;
+        }
+
+        return (
+          <FilterSelect
+            items={rewardCategories}
+            value={params.row?.rewardCategory?.name}
+            onChange={(e) => {
+              params.row.rewardCategory = e.target.value;
+              setRender(!render);
+            }}
+          />
+        );
+      },
     },
     {
       id: 4,
@@ -452,32 +512,39 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: (params) => (
-        <Stack
-          direction="row"
-          alignItem="center"
-          gap={1.5}
-          color={theme.palette.secondary.main}
-          sx={{
-            fontWeight: 500,
-          }}
-        >
-          <Typography variant="body1">
-            {Math.round((params?.row?.product?.price / 100) * params.row.rewardBundle) * rewardAmount} Pts + {currency}{' '}
-            {Math.round(params?.row?.product?.price - (params?.row?.product?.price / 100) * params.row.rewardBundle)}
-          </Typography>
-          <Typography
+      renderCell: (params) => {
+        if (params?.row?.isCategoryHeader) {
+          return <></>;
+        }
+
+        return (
+          <Stack
+            direction="row"
+            alignItem="center"
+            gap={1.5}
+            color={theme.palette.secondary.main}
             sx={{
-              color: '#A3A3A3',
               fontWeight: 500,
-              textDecoration: 'line-through',
             }}
-            variant="body1"
           >
-            {currency} {params?.row?.product?.price}
-          </Typography>
-        </Stack>
-      ),
+            <Typography variant="body1">
+              {Math.round((params?.row?.product?.price / 100) * params.row.rewardBundle) * rewardAmount} Pts +{' '}
+              {currency}{' '}
+              {Math.round(params?.row?.product?.price - (params?.row?.product?.price / 100) * params.row.rewardBundle)}
+            </Typography>
+            <Typography
+              sx={{
+                color: '#A3A3A3',
+                fontWeight: 500,
+                textDecoration: 'line-through',
+              }}
+              variant="body1"
+            >
+              {currency} {params?.row?.product?.price}
+            </Typography>
+          </Stack>
+        );
+      },
     },
   ];
 
@@ -486,7 +553,6 @@ export default function LoyaltySettings() {
       sx={{
         display: 'grid',
         gridTemplateColumns: '1fr 305px',
-        paddingBottom: '250px',
       }}
     >
       {/* left */}
@@ -494,7 +560,6 @@ export default function LoyaltySettings() {
         sx={{
           padding: '36px',
           borderRight: `1px solid ${theme.palette.custom.border}`,
-          position: 'relative',
         }}
       >
         <Typography variant="h4" pb={3}>
@@ -532,8 +597,15 @@ export default function LoyaltySettings() {
                   overflow: 'visible!important',
                 },
               }}
-              rows={productsData}
+              rows={createGroupedDataRow(data)}
+              getRowId={(row) => row?._id}
               rowHeight={64}
+              getRowHeight={({ model }) => {
+                if (model.isCategoryHeader) {
+                  return 42;
+                }
+                return 64;
+              }}
             />
           </Box>
         </StyledAccordion>
@@ -669,36 +741,72 @@ export default function LoyaltySettings() {
             />
           </Stack>
         </StyledAccordion>
-        {/* footer */}
         <Box
           sx={{
-            position: 'absolute',
-            left: 0,
-            bottom: 0,
+            height: '160px',
           }}
-        >
-          <FormControlLabel
+        ></Box>
+        {/* promotion isn't set up */}
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="center"
             sx={{
-              '& .MuiTypography-root': {
+              marginLeft: '-11px',
+            }}
+          >
+            <Checkbox
+              sx={{
+                '&.Mui-checked': {
+                  color: theme.palette.text.heading,
+                },
+              }}
+              checked={termAndCondition}
+              onChange={(e) => {
+                setTermAndCondition(e.target.checked);
+              }}
+            />
+            <Typography
+              variant="body1"
+              sx={{
                 fontWeight: '500',
                 fontSize: '14px',
                 lineHeight: '20px',
-                color: theme.palette.text.heading,
+                color: '#404040',
+                marginRight: '6px',
+              }}
+            >
+              I accept
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: '500',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: theme.palette.secondary.main,
+              }}
+            >
+              Terms & Conditions
+            </Typography>
+          </Stack>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={!termAndCondition}
+            sx={{
+              borderRadius: 1.5,
+              textTransform: 'none',
+              '&.Mui-disabled': {
+                background: theme.palette.secondary.main,
+                opacity: 0.3,
+                color: '#fff',
               },
             }}
-            label="Set maximum weekly spending limit"
-            control={
-              <Checkbox
-                sx={{
-                  '&.Mui-checked': {
-                    color: theme.palette.text.heading,
-                  },
-                }}
-                checked
-              />
-            }
-          />
-        </Box>
+          >
+            Activate Promotion
+          </Button>
+        </Stack>
       </Box>
       {/* right */}
       <Box

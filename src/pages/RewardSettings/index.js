@@ -224,12 +224,12 @@ export default function RewardSettings() {
       rewardBundle,
       rewardCategory,
       getReward: {
-        amount: 1,
-        points: getReward.points,
+        amount: getReward.amount,
+        points: 1,
       },
       redeemReward: {
-        amount: 1,
-        points: redeemReward.points,
+        amount: redeemReward.amount,
+        points: 1,
       },
       adminCutForReward,
       expiration_period: expirationPeriod,
@@ -325,10 +325,10 @@ export default function RewardSettings() {
                   <Typography variant="body1">Value of 1 Point</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
                     <StyledInput
-                      value={getReward?.points || '0'}
+                      value={getReward?.amount || '0'}
                       type="number"
                       onChange={(e) => {
-                        setGetReward((prev) => ({ ...prev, points: e.target.value }));
+                        setGetReward((prev) => ({ ...prev, amount: e.target.value }));
                       }}
                     />
                     <Typography variant="body1">$</Typography>
@@ -354,9 +354,9 @@ export default function RewardSettings() {
                       <Stack direction="row" alignItems="center" gap={3}>
                         <StyledInput
                           type="number"
-                          value={redeemReward?.points || '0'}
+                          value={redeemReward?.amount || '0'}
                           onChange={(e) => {
-                            setRedeemReward((prev) => ({ ...prev, points: e.target.value }));
+                            setRedeemReward((prev) => ({ ...prev, amount: e.target.value }));
                           }}
                         />
                         <Typography variant="body1">$</Typography>
