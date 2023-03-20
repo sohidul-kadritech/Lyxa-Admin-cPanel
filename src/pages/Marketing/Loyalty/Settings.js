@@ -9,6 +9,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import {
   Autocomplete,
   Box,
+  Checkbox,
+  FormControlLabel,
   IconButton,
   InputAdornment,
   Paper,
@@ -28,6 +30,7 @@ import moment from 'moment';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
+import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import StyledTable2 from '../../../components/Styled/StyledTable2';
 import * as Api from '../../../network/Api';
@@ -491,6 +494,7 @@ export default function LoyaltySettings() {
         sx={{
           padding: '36px',
           borderRight: `1px solid ${theme.palette.custom.border}`,
+          position: 'relative',
         }}
       >
         <Typography variant="h4" pb={3}>
@@ -500,7 +504,7 @@ export default function LoyaltySettings() {
           Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on
           an item, giving them more incentive to order from your business.
         </Typography>
-        {/* tabs */}
+        {/* products */}
         <StyledAccordion
           Title={<ItemsTitle />}
           isOpen={currentExpanedTab === 0}
@@ -533,6 +537,7 @@ export default function LoyaltySettings() {
             />
           </Box>
         </StyledAccordion>
+        {/* duration */}
         <StyledAccordion
           isOpen={currentExpanedTab === 1}
           onChange={(closed) => {
@@ -588,6 +593,112 @@ export default function LoyaltySettings() {
             </Stack>
           </Stack>
         </StyledAccordion>
+        {/* spend limit */}
+        <StyledAccordion
+          isOpen={currentExpanedTab === 2}
+          onChange={(closed) => {
+            seCurrentExpanedTab(closed ? 2 : -1);
+          }}
+          Title={
+            <CommonTitle
+              title="Spend Limit"
+              subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
+            />
+          }
+        >
+          <Stack direction="row" alignItems="center" gap={5} pt={1}>
+            <FormControlLabel
+              sx={{
+                '& .MuiTypography-root': {
+                  fontWeight: '500',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  color: theme.palette.text.heading,
+                },
+              }}
+              label="Set maximum weekly spending limit"
+              control={
+                <Checkbox
+                  sx={{
+                    '&.Mui-checked': {
+                      color: theme.palette.text.heading,
+                    },
+                  }}
+                  checked
+                />
+              }
+            />
+            <StyledInput
+              type="number"
+              sx={{
+                width: '100%',
+                maxWidth: '280px',
+
+                '& .MuiInputBase-root': {
+                  padding: '12px 17px 12px 22px',
+                },
+
+                '& .MuiInputBase-input': {
+                  padding: 0,
+                  textAlign: 'left',
+
+                  '&::placeholder': {
+                    opacity: 1,
+                    color: '#737373',
+                  },
+                },
+
+                '& .MuiTypography-root': {
+                  fontWeight: '500',
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  color: theme.palette.text.heading,
+                },
+
+                '& .MuiInputAdornment-positionStart': {
+                  p: {
+                    paddingRight: '6px',
+                  },
+                },
+              }}
+              placeholder="Max amount"
+              InputProps={{
+                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                endAdornment: <InputAdornment position="end">/week</InputAdornment>,
+              }}
+            />
+          </Stack>
+        </StyledAccordion>
+        {/* footer */}
+        <Box
+          sx={{
+            position: 'absolute',
+            left: 0,
+            bottom: 0,
+          }}
+        >
+          <FormControlLabel
+            sx={{
+              '& .MuiTypography-root': {
+                fontWeight: '500',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: theme.palette.text.heading,
+              },
+            }}
+            label="Set maximum weekly spending limit"
+            control={
+              <Checkbox
+                sx={{
+                  '&.Mui-checked': {
+                    color: theme.palette.text.heading,
+                  },
+                }}
+                checked
+              />
+            }
+          />
+        </Box>
       </Box>
       {/* right */}
       <Box

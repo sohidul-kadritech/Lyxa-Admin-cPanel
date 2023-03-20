@@ -5,6 +5,13 @@ export default function StyledAccordion({ isOpen, onChange, children, Title, ...
   const theme = useTheme();
   return (
     <Accordion
+      sx={{
+        borderBottom: '1px solid #EEEEEE',
+
+        '&:before': {
+          display: 'none',
+        },
+      }}
       expanded={isOpen}
       onChange={(e, closed) => {
         onChange(closed);
@@ -15,8 +22,14 @@ export default function StyledAccordion({ isOpen, onChange, children, Title, ...
         expandIcon={<ExpandMore />}
         sx={{
           padding: '0',
+
           '& .MuiSvgIcon-root': {
             color: theme.palette.text.heading,
+          },
+
+          '& .MuiAccordionSummary-content': {
+            marginTop: '19px',
+            marginBottom: '26px',
           },
         }}
       >
@@ -24,7 +37,13 @@ export default function StyledAccordion({ isOpen, onChange, children, Title, ...
           {Title}
         </Stack>
       </AccordionSummary>
-      <AccordionDetails>{children}</AccordionDetails>
+      <AccordionDetails
+        sx={{
+          paddingBottom: '30px',
+        }}
+      >
+        {children}
+      </AccordionDetails>
     </Accordion>
   );
 }

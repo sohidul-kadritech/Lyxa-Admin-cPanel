@@ -3,7 +3,7 @@ import React from 'react';
 
 const Input = React.forwardRef(({ ...props }, ref) => <TextField {...props} ref={ref} />);
 
-const NumberInput = styled(Input)(({ theme }) => ({
+const StyledInput = styled(Input)(({ theme }) => ({
   minWidth: 'inherit',
   width: '74px',
   '& .MuiInputBase-root': {
@@ -22,4 +22,4 @@ const NumberInput = styled(Input)(({ theme }) => ({
   },
 }));
 
-export default NumberInput;
+export default StyledInput;
