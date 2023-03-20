@@ -1,3 +1,5 @@
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-dupe-keys */
 // third party
@@ -28,8 +30,26 @@ import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import StyledTable2 from '../../../components/Styled/StyledTable2';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { data } from './mockData';
 
-const rewardBundles = [25, 30, 40, 50, 100];
+const rewardBundles = [
+  {
+    label: 25,
+    value: 25,
+  },
+  {
+    label: 40,
+    value: 40,
+  },
+  {
+    label: 50,
+    value: 50,
+  },
+  {
+    label: 100,
+    value: 100,
+  },
+];
 
 const rewardCategories = [
   {
@@ -43,29 +63,6 @@ const rewardCategories = [
   {
     label: 'Couple Dinner',
     value: 'Couple Dinner',
-  },
-];
-
-const data = [
-  {
-    id: 1,
-    product: {
-      label: 'Vegan Burger',
-      name: 'vegan-burger',
-      price: 30,
-    },
-    rewardBundle: 50,
-    rewardCategory: 'Mood Booster',
-  },
-  {
-    id: 3,
-    product: {
-      label: 'Vegan Sandwitch',
-      name: 'vegan-sandwitch',
-      price: 70,
-    },
-    rewardBundle: 50,
-    rewardCategory: 'Late Night',
   },
 ];
 
@@ -104,6 +101,7 @@ function ItemsTitle() {
 
 const StyledAutoComplete = styled(Autocomplete)(({ theme }) => ({
   /* normal styles */
+
   '& .MuiAutocomplete-listbox': {
     maxHeight: '300px',
     background: theme.palette.background.secondary,
@@ -229,13 +227,18 @@ const GroupItems = styled('ul')({
   padding: 0,
 });
 
+// QUERY ONLY ONCE
+let QUERY_RUNNED = false;
+
 // project import
 export default function LoyaltySettings() {
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const theme = useTheme();
+
   const [currentExpanedTab, seCurrentExpanedTab] = useState(0);
   const [itemSelectType, setItemSelectType] = useState('multiple');
   const [productsData, setProductsData] = useState(data);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const [render, setRender] = useState(false);
 
   const productsQuery = useQuery(
     ['products-query'],
@@ -254,6 +257,15 @@ export default function LoyaltySettings() {
     }
   );
 
+  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
+    enabled: !QUERY_RUNNED,
+    onSuccess: (data) => {
+      QUERY_RUNNED = false;
+    },
+  });
+
+  console.log(rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount);
+
   const createGroupedList = (products) =>
     Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
 
@@ -271,9 +283,15 @@ export default function LoyaltySettings() {
           fullWidth
           blurOnSelect
           openOnFocus
+          value={params.row?.product}
           options={createGroupedList(productsQuery?.data?.data?.products || [])}
+          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+          onChange={(event, newValue) => {
+            params.row.product = newValue;
+            setRender(!render);
+          }}
           popupIcon={<KeyboardArrowDownIcon />}
-          getOptionLabel={(option) => option?.name}
+          getOptionLabel={(option) => option?.name || 'Select Product'}
           loading={productsQuery.isLoading || productsQuery.isFetching}
           readOnly={undefined}
           PaperComponent={({ children }) => (
@@ -358,7 +376,16 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: (params) => <FilterSelect plainList items={rewardBundles} value={params.row?.rewardBundle} />,
+      renderCell: (params) => (
+        <FilterSelect
+          items={rewardBundles}
+          onChange={(e) => {
+            params.row.rewardBundle = Number(e.target.value);
+            setRender(!render);
+          }}
+          value={params.row?.rewardBundle}
+        />
+      ),
     },
     {
       id: 3,
@@ -368,7 +395,16 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: (params) => <FilterSelect items={rewardCategories} value={params.row?.rewardCategory} />,
+      renderCell: (params) => (
+        <FilterSelect
+          items={rewardCategories}
+          value={params.row?.rewardCategory}
+          onChange={(e) => {
+            params.row.rewardCategory = e.target.value;
+            setRender(!render);
+          }}
+        />
+      ),
     },
     {
       id: 4,
@@ -378,7 +414,34 @@ export default function LoyaltySettings() {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: (params) => <Typography variant="body1">{params?.row?.product?.price}</Typography>,
+      renderCell: (params) => (
+        <Stack
+          direction="row"
+          alignItem="center"
+          gap={1.5}
+          color={theme.palette.secondary.main}
+          sx={{
+            fontWeight: 500,
+          }}
+        >
+          <Typography variant="body1">
+            {Math.round((params?.row?.product?.price / 100) * params.row.rewardBundle) *
+              rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount}{' '}
+            Pts + {currency}{' '}
+            {Math.round(params?.row?.product?.price - (params?.row?.product?.price / 100) * params.row.rewardBundle)}
+          </Typography>
+          <Typography
+            sx={{
+              color: '#A3A3A3',
+              fontWeight: 500,
+              textDecoration: 'line-through',
+            }}
+            variant="body1"
+          >
+            {currency} {params?.row?.product?.price}
+          </Typography>
+        </Stack>
+      ),
     },
   ];
 
@@ -421,7 +484,20 @@ export default function LoyaltySettings() {
             }}
           />
           <Box pt={5}>
-            <StyledTable2 columns={columns} rows={productsData} rowHeight={64} />
+            <StyledTable2
+              columns={columns}
+              sx={{
+                '& .MuiDataGrid-main': {
+                  overflow: 'visible!important',
+                },
+                '& .MuiDataGrid-cell': {
+                  position: 'relative',
+                  overflow: 'visible!important',
+                },
+              }}
+              rows={productsData}
+              rowHeight={64}
+            />
           </Box>
         </StyledAccordion>
       </Box>
