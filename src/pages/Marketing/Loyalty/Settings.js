@@ -8,7 +8,6 @@ import ClearIcon from '@mui/icons-material/Clear';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
 import {
-  Autocomplete,
   Box,
   Button,
   Checkbox,
@@ -29,54 +28,17 @@ import { useSelector } from 'react-redux';
 
 // project import
 import moment from 'moment';
+import ProductSelect from '../../../components/Common/ProductSelect';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import StyledTable2 from '../../../components/Styled/StyledTable2';
+import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
+import setCookiesAsObj from '../../../helpers/cookies/setCookiesAsObject';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import { data } from './mockData';
-
-const rewardBundles = [
-  {
-    label: 25,
-    value: 25,
-  },
-  {
-    label: 40,
-    value: 40,
-  },
-  {
-    label: 50,
-    value: 50,
-  },
-  {
-    label: 100,
-    value: 100,
-  },
-];
-
-const rewardCategories = [
-  {
-    label: 'Mood Booster',
-    value: 'Mood Booster',
-  },
-  {
-    label: 'Late Night',
-    value: 'Late Night',
-  },
-  {
-    label: 'Couple Dinner',
-    value: 'Couple Dinner',
-  },
-];
-
-const itemSelectOptions = [
-  { label: 'Selected Items', value: 'multiple' },
-  { label: 'Entire Menu', value: 'all' },
-];
 
 function ItemsTitle() {
   const theme = useTheme();
@@ -135,118 +97,6 @@ function CommonTitle({ title, subTitle }) {
   );
 }
 
-const StyledAutoComplete = styled(Autocomplete)(({ theme }) => ({
-  /* normal styles */
-
-  '& .MuiAutocomplete-listbox': {
-    maxHeight: '300px',
-    background: theme.palette.background.secondary,
-  },
-
-  '& .MuiInputBase-root': {
-    background: theme.palette.background.secondary,
-    borderRadius: '40px',
-    padding: '12px 40px 12px 8px !important',
-
-    '& .MuiInputAdornment-positionStart': {
-      width: '0px',
-      height: '0px',
-      visibility: 'hidden',
-      opacity: '0',
-    },
-
-    '& .MuiAutocomplete-clearIndicator': {
-      color: theme.palette.secondary.main,
-    },
-  },
-
-  '& .MuiInputBase-input': {
-    fontSize: '16px',
-    lineHeight: '24px',
-    fontWeight: '500',
-    color: theme.palette.text.heading,
-    padding: '0!important',
-  },
-
-  '& .MuiAutocomplete-popupIndicator:hover': {
-    background: 'transparent',
-  },
-
-  '& .MuiAutocomplete-clearIndicator:hover': {
-    background: 'none',
-  },
-
-  '& fieldset': {
-    border: 'none',
-  },
-
-  '& .custom-clear-button': {
-    visibility: 'hidden',
-    opacity: '0',
-    pointerEvents: 'none',
-
-    '& .MuiSvgIcon-root': {
-      width: '19px',
-      height: '19px',
-    },
-  },
-
-  /* focus styles */
-  '&:has(.MuiInputBase-input:focus)': {
-    borderRadius: '25px',
-    width: '475px',
-    position: 'absolute',
-    zIndex: '99',
-    top: '8px',
-  },
-
-  '& .MuiInputBase-root:has(.MuiInputBase-input:focus)': {
-    padding: '13px 16px!important',
-    paddingRight: '70px!important',
-    position: 'relative',
-    borderRadius: '40px 40px 0 0',
-
-    '& .MuiInputAdornment-positionStart': {
-      visibility: 'visible',
-      opacity: '1',
-      margin: '0',
-      height: 'auto',
-      width: 'auto',
-      position: 'absolute',
-      left: '26px',
-      top: '22px',
-    },
-
-    '& .MuiAutocomplete-popupIndicator': {
-      display: 'none!important',
-    },
-
-    '& .MuiAutocomplete-clearIndicator': {
-      position: 'absolute',
-      right: '15px',
-      top: '0px',
-      color: theme.palette.secondary.main,
-      visibility: 'visible!important',
-      pointerEvents: 'all',
-    },
-
-    '& .custom-clear-button': {
-      visibility: 'visible',
-      opacity: '1',
-      pointerEvents: 'all',
-      top: '18.5px',
-      right: '24.5px',
-    },
-  },
-
-  '& .MuiInputBase-input:focus': {
-    background: '#fff',
-    height: '40px',
-    borderRadius: '40px',
-    paddingLeft: '42px!important',
-  },
-}));
-
 const GroupHeader = styled('div')(({ theme }) => ({
   position: 'sticky',
   top: '-8px',
@@ -286,36 +136,53 @@ const createGroupedDataRow = (products) => {
   return result;
 };
 
+// access token
+let accountId = null;
+let acceptedLoyaltyProgram = false;
+
+if (document.cookie.length) {
+  const { account_id, loyaltyProgramAccepted } = getCookiesAsObject();
+  accountId = account_id || null;
+  acceptedLoyaltyProgram = Boolean(loyaltyProgramAccepted);
+}
+
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
+
+// disabled accordion sx
+const disabledSx = {
+  pointerEvents: 'none',
+  opacity: '.6',
+};
 
 // project import
 export default function LoyaltySettings() {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const theme = useTheme();
 
-  const [currentExpanedTab, seCurrentExpanedTab] = useState(0);
-  const [itemSelectType, setItemSelectType] = useState('multiple');
-  const [productsData, setProductsData] = useState(data);
-  const [render, setRender] = useState(false);
-
   // accept terms and conditions
   const [termAndCondition, setTermAndCondition] = useState(false);
+
+  const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
+  const [itemSelectType, setItemSelectType] = useState('multiple');
+  const [isPageDisabled, setIsPageDisabled] = useState(true);
+  const [render, setRender] = useState(false);
 
   // filter
   const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().endOf('month').format('YYYY-MM-DD'));
 
+  // get all products
   const productsQuery = useQuery(
     ['products-query'],
     () =>
       AXIOS.get(Api.ALL_PRODUCT, {
         params: {
           page: 1,
-          pageSize: 50,
+          pageSize: 100,
           type: 'all',
           status: 'all',
-          shop: '6406e183c65e42a0fe26891d',
+          shop: accountId,
         },
       }),
     {
@@ -323,6 +190,7 @@ export default function LoyaltySettings() {
     }
   );
 
+  // get reward settings
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
     enabled: !QUERY_RUNNED,
     onSuccess: (data) => {
@@ -332,7 +200,10 @@ export default function LoyaltySettings() {
 
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
-  console.log(rewardSettingsQuery.data);
+  // get loyalty settings
+  const loyaltySettingsQuery = useQuery(['loyalty-settings'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
+    staleTime: 1000 * 60 * 10,
+  });
 
   const columns = [
     {
@@ -364,7 +235,7 @@ export default function LoyaltySettings() {
         }
 
         return (
-          <StyledAutoComplete
+          <ProductSelect
             fullWidth
             blurOnSelect
             openOnFocus
@@ -469,7 +340,7 @@ export default function LoyaltySettings() {
 
         return (
           <FilterSelect
-            items={rewardBundles}
+            items={[]}
             onChange={(e) => {
               params.row.rewardBundle = Number(e.target.value);
               setRender(!render);
@@ -494,7 +365,7 @@ export default function LoyaltySettings() {
 
         return (
           <FilterSelect
-            items={rewardCategories}
+            items={[]}
             value={params.row?.rewardCategory?.name}
             onChange={(e) => {
               params.row.rewardCategory = e.target.value;
@@ -553,8 +424,26 @@ export default function LoyaltySettings() {
       sx={{
         display: 'grid',
         gridTemplateColumns: '1fr 305px',
+        position: 'relative',
       }}
     >
+      {/* overlay */}
+      {Boolean(loyaltySettingsQuery.isLoading) && (
+        <Box
+          sx={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0,
+            width: '100%',
+            background: 'rgba(255, 255, 255, .6)',
+            zIndex: '9999',
+            borderRadius: '7px',
+          }}
+        ></Box>
+      )}
+
       {/* left */}
       <Box
         sx={{
@@ -576,10 +465,11 @@ export default function LoyaltySettings() {
           onChange={(closed) => {
             seCurrentExpanedTab(closed ? 0 : -1);
           }}
+          sx={isPageDisabled ? disabledSx : {}}
         >
           <StyledRadioGroup
             color="secondary"
-            items={itemSelectOptions}
+            items={[]}
             value={itemSelectType}
             onChange={(e) => {
               setItemSelectType(e.target.value);
@@ -597,8 +487,15 @@ export default function LoyaltySettings() {
                   overflow: 'visible!important',
                 },
               }}
-              rows={createGroupedDataRow(data)}
+              rows={[]}
               getRowId={(row) => row?._id}
+              components={{
+                NoRowsOverlay: () => (
+                  <Stack height="100%" alignItems="center" justifyContent="center">
+                    No Products Added
+                  </Stack>
+                ),
+              }}
               rowHeight={64}
               getRowHeight={({ model }) => {
                 if (model.isCategoryHeader) {
@@ -625,6 +522,7 @@ export default function LoyaltySettings() {
               }
             />
           }
+          sx={isPageDisabled ? disabledSx : {}}
         >
           <Stack direction="row" alignItems="center" gap={5} pt={1}>
             <Stack gap={2.5}>
@@ -677,6 +575,7 @@ export default function LoyaltySettings() {
               subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
             />
           }
+          sx={isPageDisabled ? disabledSx : {}}
         >
           <Stack direction="row" alignItems="center" gap={5} pt={1}>
             <FormControlLabel
@@ -747,66 +646,152 @@ export default function LoyaltySettings() {
           }}
         ></Box>
         {/* promotion isn't set up */}
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Stack
-            direction="row"
-            alignItems="center"
-            sx={{
-              marginLeft: '-11px',
-            }}
-          >
-            <Checkbox
+        {!loyaltySettingsQuery.data?.isLoyaltyProgram && !loyaltySettingsQuery.isLoading && !acceptedLoyaltyProgram && (
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack
+              direction="row"
+              alignItems="center"
               sx={{
-                '&.Mui-checked': {
-                  color: theme.palette.text.heading,
+                marginLeft: '-11px',
+              }}
+            >
+              <Checkbox
+                sx={{
+                  '&.Mui-checked': {
+                    color: theme.palette.text.heading,
+                  },
+                }}
+                checked={termAndCondition}
+                onChange={(e) => {
+                  setTermAndCondition(e.target.checked);
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: '500',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  color: '#404040',
+                  marginRight: '6px',
+                }}
+              >
+                I accept
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: '500',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  color: theme.palette.secondary.main,
+                }}
+              >
+                Terms & Conditions
+              </Typography>
+            </Stack>
+            <Button
+              variant="contained"
+              color="secondary"
+              disabled={!termAndCondition}
+              onClick={() => {
+                setCookiesAsObj(
+                  {
+                    loyaltyProgramAccepted: true,
+                  },
+                  7
+                );
+              }}
+              sx={{
+                borderRadius: 1.5,
+                textTransform: 'none',
+                '&.Mui-disabled': {
+                  background: theme.palette.secondary.main,
+                  opacity: 0.3,
+                  color: '#fff',
                 },
               }}
-              checked={termAndCondition}
-              onChange={(e) => {
-                setTermAndCondition(e.target.checked);
-              }}
-            />
-            <Typography
-              variant="body1"
-              sx={{
-                fontWeight: '500',
-                fontSize: '14px',
-                lineHeight: '20px',
-                color: '#404040',
-                marginRight: '6px',
-              }}
             >
-              I accept
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                fontWeight: '500',
-                fontSize: '14px',
-                lineHeight: '20px',
-                color: theme.palette.secondary.main,
-              }}
-            >
-              Terms & Conditions
-            </Typography>
+              Activate Promotion
+            </Button>
           </Stack>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={!termAndCondition}
-            sx={{
-              borderRadius: 1.5,
-              textTransform: 'none',
-              '&.Mui-disabled': {
-                background: theme.palette.secondary.main,
-                opacity: 0.3,
-                color: '#fff',
-              },
-            }}
-          >
-            Activate Promotion
-          </Button>
-        </Stack>
+        )}
+        {isPageDisabled && (
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{
+                borderRadius: 1.5,
+                textTransform: 'none',
+
+                '&.Mui-disabled': {
+                  borderColor: theme.palette.secondary.main,
+                  opacity: 0.3,
+                  color: '#fff',
+                },
+              }}
+              onClick={() => {
+                setIsPageDisabled(false);
+              }}
+            >
+              Edit Promotion
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: 1.5,
+                textTransform: 'none',
+                '&.Mui-disabled': {
+                  background: theme.palette.primary.main,
+                  opacity: 0.3,
+                  color: '#fff',
+                },
+              }}
+            >
+              Deactivate Promotion
+            </Button>
+          </Stack>
+        )}
+        {!isPageDisabled && (
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{
+                borderRadius: 1.5,
+                textTransform: 'none',
+
+                '&.Mui-disabled': {
+                  borderColor: theme.palette.secondary.main,
+                  opacity: 0.3,
+                  color: '#fff',
+                },
+              }}
+            >
+              Discard Changes
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                setIsPageDisabled(true);
+              }}
+              sx={{
+                borderRadius: 1.5,
+                textTransform: 'none',
+                '&.Mui-disabled': {
+                  background: theme.palette.primary.secondary,
+                  opacity: 0.3,
+                  color: '#fff',
+                },
+              }}
+            >
+              Save Changes
+            </Button>
+          </Stack>
+        )}
       </Box>
       {/* right */}
       <Box
