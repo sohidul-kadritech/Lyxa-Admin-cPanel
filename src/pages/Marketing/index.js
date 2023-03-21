@@ -91,11 +91,13 @@ export default function Marketing() {
               color="secondary"
               sx={{
                 position: 'absolute',
-                right: '25px',
-                top: '22',
+                right: '10px',
+                top: '10px',
+                zIndex: '99',
               }}
               onClick={() => {
                 setCurrentModal(null);
+                console.log('clicked');
               }}
             />
             <Box dis>{currentModal === 'loyalty' && <LoyaltySettings />}</Box>
