@@ -11,7 +11,6 @@ export const FORGET_PASS = `${API_URL}forget`;
 export const GET_GALLERY_LIST = `${ADMIN_ENDPOINT}/image`;
 
 // dasboard
-
 export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/shop`;
@@ -164,7 +163,6 @@ export const DATABASE_DELETE_COLLECTION = `${ADMIN_ENDPOINT}/database/delete-col
 export const DATABASE_DELETE_ALL_COLLECTION = `${ADMIN_ENDPOINT}/database/delete-all`;
 
 // DEAL
-
 export const ADD_DEAL = `${ADMIN_ENDPOINT}/deal/add`;
 export const GET_ALL_DEAL = `${ADMIN_ENDPOINT}/deal`;
 export const EDIT_DEAL = `${ADMIN_ENDPOINT}/deal/edit`;
@@ -174,13 +172,11 @@ export const ALL_DEAL_FOR_ADD = `${ADMIN_ENDPOINT}/deal/get-deals-for-add`;
 export const ALL_TAG = `${ADMIN_ENDPOINT}/deal/get-tags`;
 
 // DROP PAY
-
 export const DROP_PAY_LIST = `${ADMIN_ENDPOINT}/drop-pay`;
 export const ADD_USER_BALANCE = `${ADMIN_ENDPOINT}/user/add-balance`;
 export const REMOVE_USER_BALANCE = `${ADMIN_ENDPOINT}/user/withdraw-balance`;
 
 // APP WALLET
-
 export const SELLERS_TRX = `${ADMIN_ENDPOINT}/drop-wallet/sellers`;
 export const SELLER_TRX = `${ADMIN_ENDPOINT}/drop-wallet/seller/shops`;
 export const SHOP_TRX = `${ADMIN_ENDPOINT}/drop-wallet/seller/shops-details`;
@@ -232,28 +228,23 @@ export const EDIT_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message/update`;
 export const CLOSE_CONVERSATION = `${ADMIN_ENDPOINT}/user-chat-request/close`;
 
 // TERMS AND CONDITIONS
-
 export const ADD_TERMS_AND_CONDITIONS = `${ADMIN_ENDPOINT}/`;
 
 // NOTIFICATION
-
 export const CREATE_NOTIFICATION = `${ADMIN_ENDPOINT}/notification/add`;
 export const GET_NOTIFICATIONS = `${ADMIN_ENDPOINT}/notification`;
 export const UPDATE_NOTIFICATION_STATUS = `${ADMIN_ENDPOINT}/notification/delete`;
 
 // TERMS AND CONDITIONS
-
 export const UPDATE_CONDITION = `${ADMIN_ENDPOINT}/setting/app-setting/terms/edit`;
 export const GET_CONDITION = `${ADMIN_ENDPOINT}/setting/app-setting/terms`;
 
 // TAG
-
 export const CREATE_TAG = `${ADMIN_ENDPOINT}/tags/add`;
 export const ALL_TAGS = `${ADMIN_ENDPOINT}/tags`;
 export const UPDATE_TAG = `${ADMIN_ENDPOINT}/tags/update`;
 
 // IMAGE UPLOAD
-
 export const IMAGE_UPLOAD = 'image/single-image-upload';
 
 // END ADMIN API
@@ -279,3 +270,8 @@ export const DELETE_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/delete`;
 // FLAGS
 export const GET_ALL_FLAGS = `${ADMIN_ENDPOINT}/flag`;
 export const RESOLVE_FLAG = `${ADMIN_ENDPOINT}/flag/resolved-flag`;
+
+// MARKETING
+export const GET_LOYALTY_SETTINGS = `${ADMIN_ENDPOINT}/loyalty-program`;
+export const UPDATE_LOYALTY_SETTINGS = `${ADMIN_ENDPOINT}/loyalty-program/edit`;
+export const DELETE_LOYALTY_SETTINGS = `${ADMIN_ENDPOINT}/loyalty-program/delete`;
