@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-dupe-keys */
 // third party
 import ClearIcon from '@mui/icons-material/Clear';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -28,6 +26,7 @@ import { useSelector } from 'react-redux';
 
 // project import
 import moment from 'moment';
+import CloseButton from '../../../components/Common/CloseButton';
 import ProductSelect from '../../../components/Common/ProductSelect';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
@@ -148,6 +147,7 @@ if (document.cookie.length) {
 
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
+let LOYALTY_PROGRAM_QUERY_RUNNED = false;
 
 // disabled accordion sx
 const disabledSx = {
@@ -175,6 +175,7 @@ export default function LoyaltySettings() {
 
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const [itemSelectType, setItemSelectType] = useState('multiple');
+  const [globalRewardBundle, setGlobalRewardBundle] = useState();
   const [isPageDisabled, setIsPageDisabled] = useState(true);
   const [render, setRender] = useState(false);
 
@@ -206,15 +207,14 @@ export default function LoyaltySettings() {
   // get reward settings
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
     enabled: !QUERY_RUNNED,
-    onSuccess: (data) => {
-      QUERY_RUNNED = false;
+    onSuccess: () => {
+      QUERY_RUNNED = true;
     },
   });
 
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
   // get loyalty settings
-
   const updateLocalData = (data) => {
     if (!data?.isLoyaltyProgram) {
       setIsPageDisabled(true);
@@ -235,9 +235,10 @@ export default function LoyaltySettings() {
 
   const loyaltySettingsQuery = useQuery(['loyalty-settings'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
     staleTime: 1000 * 60 * 10,
+    enabled: !LOYALTY_PROGRAM_QUERY_RUNNED,
     onSuccess: (data) => {
-      // console.log(data);
       updateLocalData(data);
+      LOYALTY_PROGRAM_QUERY_RUNNED = true;
     },
   });
 
@@ -251,7 +252,7 @@ export default function LoyaltySettings() {
       rewardBundle: item?.rewardBundle,
       reward: {
         amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
-        points: Math.round((item?.price / 100) * item?.rewardBundle) * rewardAmount,
+        points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
       },
     }));
 
@@ -261,6 +262,11 @@ export default function LoyaltySettings() {
       duration,
       spendLimit,
     });
+  };
+
+  // remove product
+  const removeProduct = (product) => {
+    setProducts((prev) => prev.filter((item) => item?._id !== product?._id));
   };
 
   const columns = [
@@ -287,7 +293,6 @@ export default function LoyaltySettings() {
               }}
             >
               {params?.row?.categoryName !== 'undefined' ? params?.row?.categoryName : 'Select'}
-              {console.log(params?.row?.categoryName)}
             </Typography>
           );
         }
@@ -298,10 +303,8 @@ export default function LoyaltySettings() {
             blurOnSelect
             openOnFocus
             value={params.row}
-            options={createGroupedList(productsQuery?.data?.data?.products || []).filter((item) => {
-              const productFound = products.find((product) => product?._id === item?._id);
-              return !productFound;
-            })}
+            disabled={productsQuery.isLoading}
+            options={createGroupedList(productsQuery?.data?.data?.products || [])}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
             onChange={(event, newValue) => {
               params.row = newValue;
@@ -309,6 +312,7 @@ export default function LoyaltySettings() {
             }}
             popupIcon={<KeyboardArrowDownIcon />}
             getOptionLabel={(option) => option?.name || 'Select Product'}
+            getOptionDisabled={(option) => !!products?.find((item) => item._id === option._id)}
             loading={productsQuery.isLoading || productsQuery.isFetching}
             readOnly={undefined}
             PaperComponent={({ children }) => (
@@ -320,7 +324,6 @@ export default function LoyaltySettings() {
                   },
 
                   '& .MuiAutocomplete-option': {
-                    padding: '0px',
                     color: theme.palette.text.heading,
                     fontWeight: 600,
                     lineHeight: '31px',
@@ -466,29 +469,29 @@ export default function LoyaltySettings() {
         }
 
         return (
-          <Stack
-            direction="row"
-            alignItems="center"
-            gap={1.5}
-            color={theme.palette.secondary.main}
-            sx={{
-              fontWeight: 500,
-            }}
-          >
-            <Typography variant="body1">
-              {Math.round((params?.row?.price / 100) * params?.row?.rewardBundle) * rewardAmount} Pts + {currency}{' '}
-              {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
-            </Typography>
-            <Typography
-              sx={{
-                color: '#A3A3A3',
-                fontWeight: 500,
-                textDecoration: 'line-through',
+          <Stack direction="row" alignItems="center" gap={1.5}>
+            <Stack direction="row" alignItems="center" gap={1.5}>
+              <Typography variant="body1" color={theme.palette.secondary.main}>
+                {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
+                {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
+              </Typography>
+              <Typography
+                sx={{
+                  color: '#A3A3A3',
+                  fontWeight: 500,
+                  textDecoration: 'line-through',
+                }}
+                variant="body1"
+              >
+                {currency} {params?.row?.price}
+              </Typography>
+            </Stack>
+            <CloseButton
+              color="secondary"
+              onClick={() => {
+                removeProduct(params.row);
               }}
-              variant="body1"
-            >
-              {currency} {params?.row?.price}
-            </Typography>
+            />
           </Stack>
         );
       },
@@ -505,7 +508,7 @@ export default function LoyaltySettings() {
       }}
     >
       {/* overlay */}
-      {Boolean(loyaltySettingsQuery.isLoading) && (
+      {loyaltySettingsQuery.isLoading && (
         <Box
           sx={{
             position: 'absolute',
@@ -546,54 +549,103 @@ export default function LoyaltySettings() {
           }}
           sx={isPageDisabled ? disabledSx : {}}
         >
-          <StyledRadioGroup
-            color="secondary"
-            items={itemSelectOptions}
-            value={itemSelectType}
-            onChange={(e) => {
-              if (e.target.value === 'all') {
-                setProducts([...(productsQuery?.data?.data?.products?.slice(0, 9) || [])]);
-              }
-              setItemSelectType(e.target.value);
-            }}
-          />
-          <Box pt={5} position="relative" height="250px">
-            <StyledTable2
-              columns={columns}
-              sx={{
-                '& .MuiDataGrid-main': {
-                  overflow: 'visible!important',
-                },
-
-                '& .MuiDataGrid-cell': {
-                  position: 'relative',
-                  overflow: 'visible!important',
-                },
-
-                '& .MuiDataGrid-virtualScroller': {
-                  paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
-                },
-              }}
-              rows={createGroupedDataRow(products)}
-              getRowId={(row) => row?._id}
-              components={{
-                NoRowsOverlay: () => (
-                  <Stack height="100%" alignItems="center" justifyContent="center">
-                    No Products Added
-                  </Stack>
-                ),
-              }}
-              rowHeight={64}
-              autoHeight={false}
-              getRowHeight={({ model }) => {
-                if (model.isCategoryHeader) {
-                  return 42;
+          <Box position="relative">
+            <StyledRadioGroup
+              color="secondary"
+              items={itemSelectOptions}
+              value={itemSelectType}
+              onChange={(e) => {
+                if (e.target.value === 'all') {
+                  setProducts([...(productsQuery?.data?.data?.products?.slice(0, 9) || [])]);
                 }
-                return 64;
+                setItemSelectType(e.target.value);
               }}
             />
+            {itemSelectType === 'all' && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  zIndex: '99',
+                  bottom: '-6px',
+                  left: '130px',
+                }}
+              >
+                <FilterSelect
+                  items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
+                  placeholder="0%"
+                  getKey={(item) => item}
+                  getValue={(item) => item}
+                  getLabel={(item) => item}
+                  getDisplayValue={(value) => `${value}`}
+                  onChange={(e) => {
+                    setGlobalRewardBundle(Number(e.target.value));
+                    products.forEach((product) => {
+                      product.rewardBundle = Number(e.target.value);
+                    });
+                  }}
+                  value={globalRewardBundle}
+                  sx={{
+                    minWidth: '80px',
+                    '& .MuiInputBase-input': {
+                      fontWeight: '500',
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      paddingTop: '6px',
+                      paddingBottom: '6px',
+                      textAlign: 'center',
+                    },
+                  }}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
+          <Box pt={5}>
+            <Box
+              sx={{
+                minHeight: '0px',
+                height: '500px',
+              }}
+            >
+              <StyledTable2
+                columns={columns}
+                sx={{
+                  '& .MuiDataGrid-main': {
+                    overflow: 'visible!important',
+                  },
+
+                  '& .MuiDataGrid-cell': {
+                    position: 'relative',
+                    overflow: 'visible!important',
+                  },
+
+                  '& .MuiDataGrid-virtualScroller': {
+                    paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
+                  },
+                }}
+                rows={createGroupedDataRow(products)}
+                getRowId={(row) => row?._id}
+                components={{
+                  NoRowsOverlay: () => (
+                    <Stack height="100%" alignItems="center" justifyContent="center">
+                      No Products Added
+                    </Stack>
+                  ),
+                }}
+                rowHeight={64}
+                autoHeight={false}
+                getRowHeight={({ model }) => {
+                  if (model.isCategoryHeader) {
+                    return 42;
+                  }
+                  return 64;
+                }}
+              />
+            </Box>
             {/* add new */}
-            {itemSelectType === 'multiple' && products.length < 10 && (
+            {products.length < productsQuery?.data?.data?.products?.length && (
               <Stack
                 direction="row"
                 alignItems="center"
@@ -601,14 +653,9 @@ export default function LoyaltySettings() {
                 sx={{
                   paddingLeft: '20px',
                   paddingRight: '20px',
-                  position: 'absolute',
-                  bottom: '15px',
-                  left: 0,
-                  right: 0,
-                  widht: '100%',
+                  paddingTop: '20px',
                 }}
               >
-                {}
                 <Button
                   disableRipple
                   variant="text"
@@ -633,7 +680,7 @@ export default function LoyaltySettings() {
                     lineHeight: '16px',
                   }}
                 >
-                  {1}/{10} items
+                  {products?.length} items
                 </Typography>
               </Stack>
             )}

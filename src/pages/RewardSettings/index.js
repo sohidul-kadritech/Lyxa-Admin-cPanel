@@ -222,7 +222,10 @@ export default function RewardSettings() {
     updateSettingsMutation.mutate({
       minSpendLimit,
       rewardBundle,
-      rewardCategory,
+      rewardCategory: rewardCategory.map((item, index) => {
+        item.sortingOrder = index;
+        return item;
+      }),
       getReward: {
         amount: getReward.amount,
         points: 1,
