@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import _ from 'lodash';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 
 // project import
@@ -122,9 +122,9 @@ const createGroupedDataRow = (products) => {
 
   products.forEach((item) => {
     if (categoryMap[item?.category?.name] === undefined) {
-      categoryMap[item?.category.name] = [item];
+      categoryMap[item?.category?.name] = [item];
     } else {
-      categoryMap[item?.category.name].push(item);
+      categoryMap[item?.category?.name].push(item);
     }
   });
 
@@ -155,6 +155,16 @@ const disabledSx = {
   opacity: '.6',
 };
 
+const itemSelectOptions = [
+  { label: 'Selected Items', value: 'multiple' },
+  { label: 'Entire Menu', value: 'all' },
+];
+
+const durationInit = {
+  start: moment().startOf('month').format('YYYY-MM-DD'),
+  end: moment().endOf('month').format('YYYY-MM-DD'),
+};
+
 // project import
 export default function LoyaltySettings() {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
@@ -169,8 +179,11 @@ export default function LoyaltySettings() {
   const [render, setRender] = useState(false);
 
   // filter
-  const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(moment().endOf('month').format('YYYY-MM-DD'));
+  const [duration, setDuration] = useState(durationInit);
+  const [spendLimit, setSpendLimit] = useState('');
+
+  // products
+  const [products, setProducts] = useState([]);
 
   // get all products
   const productsQuery = useQuery(
@@ -201,9 +214,54 @@ export default function LoyaltySettings() {
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
   // get loyalty settings
+
+  const updateLocalData = (data) => {
+    if (!data?.isLoyaltyProgram) {
+      setIsPageDisabled(true);
+      return;
+    }
+
+    let newData = {};
+    try {
+      console.log(data);
+      newData = JSON.parse(JSON.stringify(data?.data?.loyaltyProgram));
+      setProducts(newData?.products);
+      setDuration(newData?.duration);
+      setSpendLimit(newData?.spendLimit);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const loyaltySettingsQuery = useQuery(['loyalty-settings'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
     staleTime: 1000 * 60 * 10,
+    onSuccess: (data) => {
+      // console.log(data);
+      updateLocalData(data);
+    },
   });
+
+  // update loyalty settings
+  const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data));
+
+  const updateLoyaltySettings = () => {
+    const productsData = products.map((item) => ({
+      id: item?._id,
+      rewardCategory: item?.rewardCategory,
+      rewardBundle: item?.rewardBundle,
+      reward: {
+        amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
+        points: Math.round((item?.price / 100) * item?.rewardBundle) * rewardAmount,
+      },
+    }));
+
+    loyaltySettingsMutaion.mutate({
+      products: productsData,
+      shop: accountId,
+      duration,
+      spendLimit,
+    });
+  };
 
   const columns = [
     {
@@ -240,10 +298,13 @@ export default function LoyaltySettings() {
             blurOnSelect
             openOnFocus
             value={params.row}
-            options={createGroupedList(productsQuery?.data?.data?.products || [])}
+            options={createGroupedList(productsQuery?.data?.data?.products || []).filter((item) => {
+              const productFound = products.find((product) => product?._id === item?._id);
+              return !productFound;
+            })}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
             onChange={(event, newValue) => {
-              params.row.product = newValue;
+              params.row = newValue;
               setRender(!render);
             }}
             popupIcon={<KeyboardArrowDownIcon />}
@@ -332,7 +393,6 @@ export default function LoyaltySettings() {
       field: 'rewardBundle',
       flex: 1,
       align: 'left',
-      headerAlign: 'left',
       renderCell: (params) => {
         if (params?.row?.isCategoryHeader) {
           return <></>;
@@ -340,12 +400,17 @@ export default function LoyaltySettings() {
 
         return (
           <FilterSelect
-            items={[]}
+            items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
+            placeholder="Select Percentage"
+            getKey={(item) => item}
+            getValue={(item) => item}
+            getLabel={(item) => item}
+            getDisplayValue={(value) => `${value}`}
             onChange={(e) => {
               params.row.rewardBundle = Number(e.target.value);
               setRender(!render);
             }}
-            value={params.row?.rewardBundle}
+            value={params.row?.rewardBundle || ''}
           />
         );
       },
@@ -365,8 +430,16 @@ export default function LoyaltySettings() {
 
         return (
           <FilterSelect
-            items={[]}
-            value={params.row?.rewardCategory?.name}
+            items={rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory || []}
+            value={params.row?.rewardCategory || ''}
+            getKey={(item) => item?._id}
+            getValue={(item) => item?._id}
+            getLabel={(item) => item?.name}
+            getDisplayValue={(value) =>
+              rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory?.find((item) => item?._id === value)
+                ?.name || ''
+            }
+            placeholder="Select Category"
             onChange={(e) => {
               params.row.rewardCategory = e.target.value;
               setRender(!render);
@@ -388,10 +461,14 @@ export default function LoyaltySettings() {
           return <></>;
         }
 
+        if (!(params?.row?.price && params?.row?.rewardBundle && rewardAmount !== undefined)) {
+          return <>--</>;
+        }
+
         return (
           <Stack
             direction="row"
-            alignItem="center"
+            alignItems="center"
             gap={1.5}
             color={theme.palette.secondary.main}
             sx={{
@@ -399,9 +476,8 @@ export default function LoyaltySettings() {
             }}
           >
             <Typography variant="body1">
-              {Math.round((params?.row?.product?.price / 100) * params.row.rewardBundle) * rewardAmount} Pts +{' '}
-              {currency}{' '}
-              {Math.round(params?.row?.product?.price - (params?.row?.product?.price / 100) * params.row.rewardBundle)}
+              {Math.round((params?.row?.price / 100) * params?.row?.rewardBundle) * rewardAmount} Pts + {currency}{' '}
+              {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
             </Typography>
             <Typography
               sx={{
@@ -411,7 +487,7 @@ export default function LoyaltySettings() {
               }}
               variant="body1"
             >
-              {currency} {params?.row?.product?.price}
+              {currency} {params?.row?.price}
             </Typography>
           </Stack>
         );
@@ -425,6 +501,7 @@ export default function LoyaltySettings() {
         display: 'grid',
         gridTemplateColumns: '1fr 305px',
         position: 'relative',
+        height: '100%',
       }}
     >
       {/* overlay */}
@@ -443,12 +520,14 @@ export default function LoyaltySettings() {
           }}
         ></Box>
       )}
-
       {/* left */}
       <Box
         sx={{
           padding: '36px',
           borderRight: `1px solid ${theme.palette.custom.border}`,
+          minHeight: '0',
+          maxHeight: '100%',
+          overflowY: 'scroll',
         }}
       >
         <Typography variant="h4" pb={3}>
@@ -469,25 +548,33 @@ export default function LoyaltySettings() {
         >
           <StyledRadioGroup
             color="secondary"
-            items={[]}
+            items={itemSelectOptions}
             value={itemSelectType}
             onChange={(e) => {
+              if (e.target.value === 'all') {
+                setProducts([...(productsQuery?.data?.data?.products?.slice(0, 9) || [])]);
+              }
               setItemSelectType(e.target.value);
             }}
           />
-          <Box pt={5}>
+          <Box pt={5} position="relative" height="250px">
             <StyledTable2
               columns={columns}
               sx={{
                 '& .MuiDataGrid-main': {
                   overflow: 'visible!important',
                 },
+
                 '& .MuiDataGrid-cell': {
                   position: 'relative',
                   overflow: 'visible!important',
                 },
+
+                '& .MuiDataGrid-virtualScroller': {
+                  paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
+                },
               }}
-              rows={[]}
+              rows={createGroupedDataRow(products)}
               getRowId={(row) => row?._id}
               components={{
                 NoRowsOverlay: () => (
@@ -497,6 +584,7 @@ export default function LoyaltySettings() {
                 ),
               }}
               rowHeight={64}
+              autoHeight={false}
               getRowHeight={({ model }) => {
                 if (model.isCategoryHeader) {
                   return 42;
@@ -504,6 +592,51 @@ export default function LoyaltySettings() {
                 return 64;
               }}
             />
+            {/* add new */}
+            {itemSelectType === 'multiple' && products.length < 10 && (
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{
+                  paddingLeft: '20px',
+                  paddingRight: '20px',
+                  position: 'absolute',
+                  bottom: '15px',
+                  left: 0,
+                  right: 0,
+                  widht: '100%',
+                }}
+              >
+                {}
+                <Button
+                  disableRipple
+                  variant="text"
+                  color="secondary"
+                  sx={{
+                    padding: '0!important',
+                    '&:hover': {
+                      background: 'transparent',
+                    },
+                  }}
+                  onClick={() => {
+                    setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
+                  }}
+                >
+                  + Add items
+                </Button>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '13px',
+                    lineHeight: '16px',
+                  }}
+                >
+                  {1}/{10} items
+                </Typography>
+              </Stack>
+            )}
           </Box>
         </StyledAccordion>
         {/* duration */}
@@ -537,9 +670,9 @@ export default function LoyaltySettings() {
                 Start Date
               </Typography>
               <FilterDate
-                value={startDate}
+                value={duration.start}
                 onChange={(e) => {
-                  setStartDate(e._d);
+                  setDuration((prev) => ({ ...prev, start: e._d }));
                 }}
               />
             </Stack>
@@ -555,9 +688,9 @@ export default function LoyaltySettings() {
                 End Date
               </Typography>
               <FilterDate
-                value={endDate}
+                value={duration.end}
                 onChange={(e) => {
-                  setEndDate(e._d);
+                  setDuration((prev) => ({ ...prev, end: e._d }));
                 }}
               />
             </Stack>
@@ -633,6 +766,10 @@ export default function LoyaltySettings() {
                 },
               }}
               placeholder="Max amount"
+              value={spendLimit}
+              onChange={(event) => {
+                setSpendLimit(event.target.value);
+              }}
               InputProps={{
                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                 endAdornment: <InputAdornment position="end">/week</InputAdornment>,
@@ -776,7 +913,8 @@ export default function LoyaltySettings() {
               variant="contained"
               color="secondary"
               onClick={() => {
-                setIsPageDisabled(true);
+                // setIsPageDisabled(true);
+                updateLoyaltySettings();
               }}
               sx={{
                 borderRadius: 1.5,

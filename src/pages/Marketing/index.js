@@ -79,12 +79,22 @@ export default function Marketing() {
           </Grid>
         </Grid>
         {/* settings modal */}
-        <Modal open={Boolean(currentModal)}>
+        <Modal
+          open={Boolean(currentModal)}
+          sx={{
+            minHeight: '0',
+            maxHeight: '90%',
+          }}
+        >
           <Paper
             sx={{
               maxWidth: 'calc(100vw - 100px)',
               position: 'relative',
               borderRadius: '10px',
+              // height: 'auto',
+              minHeight: '0',
+              maxHeight: '100%',
+              overflowY: 'scroll',
             }}
           >
             <CloseButton
@@ -100,7 +110,7 @@ export default function Marketing() {
                 console.log('clicked');
               }}
             />
-            <Box dis>{currentModal === 'loyalty' && <LoyaltySettings />}</Box>
+            {currentModal === 'loyalty' && <LoyaltySettings />}
           </Paper>
         </Modal>
       </Box>

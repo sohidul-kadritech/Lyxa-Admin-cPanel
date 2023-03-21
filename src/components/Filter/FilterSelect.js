@@ -38,7 +38,17 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   },
 }));
 
-export default function FilterSelect({ items, plainList, filterName, placeholder, ...props }) {
+export default function FilterSelect({
+  items,
+  plainList,
+  filterName,
+  placeholder,
+  getValue,
+  getLabel,
+  getKey,
+  getDisplayValue,
+  ...props
+}) {
   const theme = useTheme();
 
   return (
@@ -53,16 +63,20 @@ export default function FilterSelect({ items, plainList, filterName, placeholder
       input={<OutlinedInput />}
       renderValue={(value) => {
         if (!value) {
-          return <em>{placeholder}</em>;
+          return <span>{placeholder}</span>;
         }
-        return `${filterName || ''} ${items.find((item) => item.value === value)?.label}` || <em>{placeholder}</em>;
+        return (
+          `${filterName || ''} ${
+            getDisplayValue ? getDisplayValue(value) : items.find((item) => item.value === value)?.label
+          }` || <span>{placeholder}</span>
+        );
       }}
       {...props}
     >
       {items.map((item) => (
         <MenuItem
-          key={plainList ? item : item.value}
-          value={plainList ? item : item.value}
+          key={getKey ? getKey(item) : item.value}
+          value={getValue ? getValue(item) : item.value}
           sx={{
             [theme.breakpoints.up('lg')]: {
               fontSize: '12px',
@@ -72,7 +86,7 @@ export default function FilterSelect({ items, plainList, filterName, placeholder
             },
           }}
         >
-          {plainList ? item : item.label}
+          {getLabel ? getLabel(item) : item.label}
         </MenuItem>
       ))}
     </StyledSelect>
