@@ -44,7 +44,6 @@ import AXIOS from '../../../network/axios';
 // helper functions
 const createGroupedList = (products, category) => {
   const productsList = Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
-  console.log(productsList);
   return productsList.filter((item) => !category || item?.category?.name === category);
 };
 
@@ -162,7 +161,7 @@ const confirmActionInit = {
 
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
-let LOYALTY_PROGRAM_QUERY_RUNNED = false;
+// let LOYALTY_PROGRAM_QUERY_RUNNED = false;
 
 // access token
 let accountId = null;
@@ -174,7 +173,9 @@ if (document.cookie.length) {
   acceptedLoyaltyProgram = Boolean(loyaltyProgramAccepted);
 }
 
-export default function LoyaltySettings() {
+const productSelectKeyForLS = 'loyaltySettingsSelectType';
+
+export default function LoyaltySettings({ closeModal }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -198,7 +199,7 @@ export default function LoyaltySettings() {
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
   // loyalty settings
-  const [itemSelectType, setItemSelectType] = useState('multiple');
+  const [itemSelectType, setItemSelectType] = useState(localStorage.getItem(productSelectKeyForLS) || 'multiple');
   const [hasChanged, setHasChanged] = useState(false);
   const [globalRewardBundle, setGlobalRewardBundle] = useState();
   const [hasGlobalChange, setHasGlobalChange] = useState(false);
@@ -213,36 +214,30 @@ export default function LoyaltySettings() {
     setProducts(data?.products);
     setDuration(data?.duration);
     setSpendLimit(data?.spendLimit);
-  };
 
-  console.log(!LOYALTY_PROGRAM_QUERY_RUNNED);
+    if (data?.spendLimit > 0) {
+      setSpendLimitChecked(true);
+    } else {
+      setSpendLimitChecked(false);
+    }
+  };
 
   const loyaltySettingsQuery = useQuery(['loyalty-settings'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
     staleTime: 0,
     cacheTime: 0,
     enabled: loyalityQueryEnabled,
-    // refetchOnMount: 'always',
     onSuccess: (data) => {
-      LOYALTY_PROGRAM_QUERY_RUNNED = true;
       setLoyalityQueryEnabled(false);
 
-      if (!data?.isLoyaltyProgram) {
-        // setIsPageDisabled(false);
-        // console.log('triggered');
-      } else {
+      if (data?.isLoyaltyProgram) {
         setIsPageDisabled(true);
         setServerState(data?.data?.loyaltyProgram);
         const newData = deepClone(data?.data?.loyaltyProgram);
 
         if (newData?.products?.length > 0) {
-          setHasChanged(true);
-          setHasGlobalChange(true);
+          // setHasChanged(true);
+          // setHasGlobalChange(true);
         }
-
-        if (newData.spendLimit > 0) {
-          setSpendLimitChecked(true);
-        }
-
         setLocalData(newData);
       }
     },
@@ -263,23 +258,70 @@ export default function LoyaltySettings() {
 
   // update loyalty settings
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data), {
-    onSuccess: () => {
-      successMsg('Settings successfully updated', 'success');
-      queryClient.invalidateQueries(['loyalty-settings']);
-      queryClient.invalidateQueries(['loyalty']);
+    onSuccess: (data) => {
+      if (data?.status) {
+        setServerState((prev) => data?.data?.loyaltyProgram || prev);
+        setHasChanged(false);
+        setHasGlobalChange(false);
+        successMsg('Settings successfully updated', 'success');
+        queryClient.invalidateQueries(['loyalty-settings']);
+        queryClient.invalidateQueries(['loyalty']);
+        setIsPageDisabled(true);
+      }
     },
   });
 
   const updateLoyaltySettings = () => {
-    const productsData = products.map((item) => ({
-      id: item?._id,
-      rewardCategory: item?.rewardCategory,
-      rewardBundle: item?.rewardBundle,
-      reward: {
-        amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
-        points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
-      },
-    }));
+    let prb = null;
+
+    const productsData = products.map((item) => {
+      if (!item?._id) {
+        prb = 'Please remove empty items from list!';
+      }
+
+      if (!item?.rewardCategory) {
+        prb = 'Please select category for product!';
+      }
+
+      if (!item?.rewardBundle) {
+        prb = 'Please select reward bundle for product!';
+      }
+
+      return {
+        id: item?._id,
+        rewardCategory: item?.rewardCategory,
+        rewardBundle: item?.rewardBundle,
+        reward: {
+          amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
+          points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
+        },
+      };
+    });
+
+    if (products?.length === 0) {
+      successMsg('Products cannot be empty!', 'warn');
+      return;
+    }
+
+    if (prb) {
+      successMsg(prb, 'warn');
+      return;
+    }
+
+    if (new Date(duration.end).getTime() < new Date().getTime()) {
+      successMsg('Invalid end date', 'warn');
+      return;
+    }
+
+    if (new Date(duration.end).getTime() < new Date(duration.start).getTime()) {
+      successMsg('Invalid start date', 'warn');
+      return;
+    }
+
+    if (spendLimitChecked && !Number(spendLimit)) {
+      successMsg('Spend limit cannot be empty', 'warn');
+      return;
+    }
 
     loyaltySettingsMutaion.mutate({
       products: productsData,
@@ -288,6 +330,19 @@ export default function LoyaltySettings() {
       spendLimit: spendLimitChecked ? spendLimit : 0,
     });
   };
+
+  // delete settings
+  const deleteLoyaltySettingsMutation = useMutation(
+    () =>
+      AXIOS.post(Api.DELETE_LOYALTY_SETTINGS, {
+        id: serverState?._id,
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
 
   // shop products
   const productsQuery = useQuery(
@@ -454,6 +509,7 @@ export default function LoyaltySettings() {
           <FilterSelect
             items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
             placeholder="Select Percentage"
+            disabled={!params.row?.price}
             getKey={(item) => item}
             getValue={(item) => item}
             getLabel={(item) => item}
@@ -485,6 +541,7 @@ export default function LoyaltySettings() {
         return (
           <FilterSelect
             items={rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory || []}
+            disabled={!params.row?.price}
             value={params.row?.rewardCategory || ''}
             getKey={(item) => item?._id}
             getValue={(item) => item?._id}
@@ -561,6 +618,27 @@ export default function LoyaltySettings() {
         height: '100%',
       }}
     >
+      <CloseButton
+        color="secondary"
+        sx={{
+          position: 'absolute',
+          right: '10px',
+          top: '10px',
+          zIndex: '99',
+        }}
+        onClick={() => {
+          if (hasGlobalChange) {
+            setConfirmModal(true);
+            setConfirmAction({
+              message: 'You have unsaved changes, discard?',
+              onCancel: () => setConfirmModal(false),
+              onConfirm: () => closeModal(),
+            });
+          } else {
+            closeModal();
+          }
+        }}
+      />
       {/* overlay */}
       {loyaltySettingsQuery.isLoading && (
         <Box
@@ -636,11 +714,13 @@ export default function LoyaltySettings() {
 
                         if (itemSelectType === 'multiple') {
                           setProducts(deepClone(productsQuery?.data?.data?.products || []));
-                          setItemSelectType('all');
                           setGlobalRewardBundle('');
+                          setItemSelectType('all');
+                          localStorage.setItem(productSelectKeyForLS, 'all');
                         } else {
                           setProducts([]);
                           setItemSelectType('multiple');
+                          localStorage.setItem(productSelectKeyForLS, 'multiple');
                         }
                       },
                     });
@@ -653,6 +733,7 @@ export default function LoyaltySettings() {
 
                     setItemSelectType(event.target.value);
                     setHasGlobalChange(true);
+                    localStorage.setItem(productSelectKeyForLS, event.target.value);
                   }
                 }}
               />
@@ -876,6 +957,7 @@ export default function LoyaltySettings() {
                     checked={spendLimitChecked}
                     onChange={(event) => {
                       setSpendLimitChecked(event.target.checked);
+                      setHasGlobalChange(true);
                     }}
                   />
                 }
@@ -980,7 +1062,8 @@ export default function LoyaltySettings() {
               <Button
                 variant="contained"
                 color="secondary"
-                disabled={!termAndCondition}
+                disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
+                // loyaltySettingsMutaion
                 onClick={() => {
                   updateLoyaltySettings();
                 }}
@@ -999,41 +1082,71 @@ export default function LoyaltySettings() {
             </Stack>
           )}
           {isPageDisabled && loyaltySettingsQuery.data?.isLoyaltyProgram && (
-            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                sx={{
-                  borderRadius: 1.5,
-                  textTransform: 'none',
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Box>
+                <Button
+                  disabled={deleteLoyaltySettingsMutation.isLoading}
+                  variant="text"
+                  color="primary"
+                  disableRipple
+                  onClick={() => {
+                    deleteLoyaltySettingsMutation.mutate();
+                  }}
+                  sx={{
+                    padding: '0px',
+                    background: 'transparent',
 
-                  '&.Mui-disabled': {
-                    borderColor: theme.palette.secondary.main,
-                    opacity: 0.3,
-                    color: '#fff',
-                  },
-                }}
-                onClick={() => {
-                  setIsPageDisabled(false);
-                }}
-              >
-                Edit Promotion
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  borderRadius: 1.5,
-                  textTransform: 'none',
-                  '&.Mui-disabled': {
-                    background: theme.palette.primary.main,
-                    opacity: 0.3,
-                    color: '#fff',
-                  },
-                }}
-              >
-                Deactivate Promotion
-              </Button>
+                    '&:hover': {
+                      background: 'transparent',
+                    },
+
+                    '&.Mui-disabled': {
+                      color: theme.palette.primary.main,
+                      opacity: '0.3',
+                    },
+                  }}
+                >
+                  Delete Promotion
+                </Button>
+              </Box>
+              <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  disabled={deleteLoyaltySettingsMutation.isLoading}
+                  sx={{
+                    borderRadius: 1.5,
+                    textTransform: 'none',
+
+                    '&.Mui-disabled': {
+                      borderColor: theme.palette.secondary.main,
+                      opacity: 0.3,
+                      color: theme.palette.secondary.main,
+                    },
+                  }}
+                  onClick={() => {
+                    setIsPageDisabled(false);
+                  }}
+                >
+                  Edit Promotion
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={deleteLoyaltySettingsMutation.isLoading}
+                  sx={{
+                    borderRadius: 1.5,
+                    textTransform: 'none',
+                    '&.Mui-disabled': {
+                      background: theme.palette.primary.main,
+                      opacity: 0.3,
+                      color: '#fff',
+                    },
+                  }}
+                >
+                  Deactivate Promotion
+                </Button>
+              </Stack>
             </Stack>
           )}
           {!isPageDisabled && loyaltySettingsQuery.data?.isLoyaltyProgram && (
@@ -1048,7 +1161,7 @@ export default function LoyaltySettings() {
                   '&.Mui-disabled': {
                     borderColor: theme.palette.secondary.main,
                     opacity: 0.3,
-                    color: '#fff',
+                    color: theme.palette.secondary.main,
                   },
                 }}
                 disabled={loyaltySettingsMutaion.isLoading}
