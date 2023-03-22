@@ -165,12 +165,12 @@ let QUERY_RUNNED = false;
 
 // access token
 let accountId = null;
-let acceptedLoyaltyProgram = false;
+// let acceptedLoyaltyProgram = false;
 
 if (document.cookie.length) {
-  const { account_id, loyaltyProgramAccepted } = getCookiesAsObject();
+  const { account_id } = getCookiesAsObject();
   accountId = account_id || null;
-  acceptedLoyaltyProgram = Boolean(loyaltyProgramAccepted);
+  // acceptedLoyaltyProgram = Boolean(loyaltyProgramAccepted);
 }
 
 const productSelectKeyForLS = 'loyaltySettingsSelectType';
@@ -187,6 +187,7 @@ export default function LoyaltySettings({ closeModal }) {
   const [confirmModal, setConfirmModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(confirmActionInit);
   const [serverState, setServerState] = useState({});
+  const [pageMode, setPageMode] = useState(0);
 
   // reward settings
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
@@ -231,6 +232,8 @@ export default function LoyaltySettings({ closeModal }) {
 
       if (data?.isLoyaltyProgram) {
         setIsPageDisabled(true);
+        setPageMode(1);
+
         setServerState(data?.data?.loyaltyProgram);
         const newData = deepClone(data?.data?.loyaltyProgram);
 
@@ -239,6 +242,9 @@ export default function LoyaltySettings({ closeModal }) {
           // setHasGlobalChange(true);
         }
         setLocalData(newData);
+      } else {
+        setPageMode(0);
+        setIsPageDisabled(false);
       }
     },
   });
@@ -258,14 +264,20 @@ export default function LoyaltySettings({ closeModal }) {
 
   // update loyalty settings
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data), {
-    onSuccess: (data) => {
+    onSuccess: (data, args) => {
+      console.log(args);
+
       if (data?.status) {
         setServerState((prev) => data?.data?.loyaltyProgram || prev);
+        successMsg('Settings successfully updated', 'success');
+
         setHasChanged(false);
         setHasGlobalChange(false);
-        successMsg('Settings successfully updated', 'success');
+
         queryClient.invalidateQueries(['loyalty-settings']);
         queryClient.invalidateQueries(['loyalty']);
+
+        setPageMode(1);
         setIsPageDisabled(true);
       }
     },
@@ -332,6 +344,15 @@ export default function LoyaltySettings({ closeModal }) {
   };
 
   // delete settings
+  const resetPage = () => {
+    setIsPageDisabled(false);
+    setPageMode(0);
+    setProducts([]);
+    setDuration(durationInit);
+    setSpendLimit('');
+    setSpendLimitChecked(false);
+  };
+
   const deleteLoyaltySettingsMutation = useMutation(
     () =>
       AXIOS.post(Api.DELETE_LOYALTY_SETTINGS, {
@@ -339,7 +360,11 @@ export default function LoyaltySettings({ closeModal }) {
       }),
     {
       onSuccess: (data) => {
-        console.log(data);
+        successMsg(data?.message, 'success');
+
+        if (data?.status) {
+          resetPage();
+        }
       },
     }
   );
@@ -1010,110 +1035,151 @@ export default function LoyaltySettings({ closeModal }) {
             </Stack>
           </StyledAccordion>
         </Box>
-        <Box
-          sx={{
-            paddingTop: '70px',
-          }}
-        >
-          {!loyaltySettingsQuery.data?.isLoyaltyProgram && !loyaltySettingsQuery.isLoading && !acceptedLoyaltyProgram && (
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Stack
-                direction="row"
-                alignItems="center"
-                sx={{
-                  marginLeft: '-11px',
-                }}
-              >
-                <Checkbox
+        {!loyaltySettingsQuery.isLoading && (
+          <Box
+            sx={{
+              paddingTop: '70px',
+            }}
+          >
+            {pageMode === 0 && (
+              <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Stack
+                  direction="row"
+                  alignItems="center"
                   sx={{
-                    '&.Mui-checked': {
-                      color: theme.palette.text.heading,
-                    },
-                  }}
-                  checked={termAndCondition}
-                  onChange={(e) => {
-                    setTermAndCondition(e.target.checked);
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    color: '#404040',
-                    marginRight: '6px',
+                    marginLeft: '-11px',
                   }}
                 >
-                  I accept
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    color: theme.palette.secondary.main,
-                  }}
-                >
-                  Terms & Conditions
-                </Typography>
-              </Stack>
-              <Button
-                variant="contained"
-                color="secondary"
-                disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
-                // loyaltySettingsMutaion
-                onClick={() => {
-                  updateLoyaltySettings();
-                }}
-                sx={{
-                  borderRadius: 1.5,
-                  textTransform: 'none',
-                  '&.Mui-disabled': {
-                    background: theme.palette.secondary.main,
-                    opacity: 0.3,
-                    color: '#fff',
-                  },
-                }}
-              >
-                Activate Promotion
-              </Button>
-            </Stack>
-          )}
-          {isPageDisabled && loyaltySettingsQuery.data?.isLoyaltyProgram && (
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Box>
+                  <Checkbox
+                    sx={{
+                      '&.Mui-checked': {
+                        color: theme.palette.text.heading,
+                      },
+                    }}
+                    checked={termAndCondition}
+                    onChange={(e) => {
+                      setTermAndCondition(e.target.checked);
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: '500',
+                      fontSize: '14px',
+                      lineHeight: '20px',
+                      color: '#404040',
+                      marginRight: '6px',
+                    }}
+                  >
+                    I accept
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: '500',
+                      fontSize: '14px',
+                      lineHeight: '20px',
+                      color: theme.palette.secondary.main,
+                    }}
+                  >
+                    Terms & Conditions
+                  </Typography>
+                </Stack>
                 <Button
-                  disabled={deleteLoyaltySettingsMutation.isLoading}
-                  variant="text"
-                  color="primary"
-                  disableRipple
+                  variant="contained"
+                  color="secondary"
+                  disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
                   onClick={() => {
-                    deleteLoyaltySettingsMutation.mutate();
+                    updateLoyaltySettings();
                   }}
                   sx={{
-                    padding: '0px',
-                    background: 'transparent',
-
-                    '&:hover': {
-                      background: 'transparent',
-                    },
-
+                    borderRadius: 1.5,
+                    textTransform: 'none',
                     '&.Mui-disabled': {
-                      color: theme.palette.primary.main,
-                      opacity: '0.3',
+                      background: theme.palette.secondary.main,
+                      opacity: 0.3,
+                      color: '#fff',
                     },
                   }}
                 >
-                  Delete Promotion
+                  Activate Promotion
                 </Button>
-              </Box>
+              </Stack>
+            )}
+            {pageMode === 1 && (
+              <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Box>
+                  <Button
+                    disabled={deleteLoyaltySettingsMutation.isLoading}
+                    variant="text"
+                    color="primary"
+                    disableRipple
+                    onClick={() => {
+                      deleteLoyaltySettingsMutation.mutate();
+                    }}
+                    sx={{
+                      padding: '0px',
+                      background: 'transparent',
+
+                      '&:hover': {
+                        background: 'transparent',
+                      },
+
+                      '&.Mui-disabled': {
+                        color: theme.palette.primary.main,
+                        opacity: '0.3',
+                      },
+                    }}
+                  >
+                    Delete Promotion
+                  </Button>
+                </Box>
+                <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    disabled={deleteLoyaltySettingsMutation.isLoading}
+                    sx={{
+                      borderRadius: 1.5,
+                      textTransform: 'none',
+
+                      '&.Mui-disabled': {
+                        borderColor: theme.palette.secondary.main,
+                        opacity: 0.3,
+                        color: theme.palette.secondary.main,
+                      },
+                    }}
+                    onClick={() => {
+                      setIsPageDisabled(false);
+                      setPageMode(2);
+                    }}
+                  >
+                    Edit Promotion
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={deleteLoyaltySettingsMutation.isLoading}
+                    sx={{
+                      borderRadius: 1.5,
+                      textTransform: 'none',
+                      '&.Mui-disabled': {
+                        background: theme.palette.primary.main,
+                        opacity: 0.3,
+                        color: '#fff',
+                      },
+                    }}
+                  >
+                    Deactivate Promotion
+                  </Button>
+                </Stack>
+              </Stack>
+            )}
+            {pageMode === 2 && (
               <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
                 <Button
                   variant="outlined"
                   color="secondary"
-                  disabled={deleteLoyaltySettingsMutation.isLoading}
                   sx={{
                     borderRadius: 1.5,
                     textTransform: 'none',
@@ -1124,88 +1190,49 @@ export default function LoyaltySettings({ closeModal }) {
                       color: theme.palette.secondary.main,
                     },
                   }}
+                  disabled={loyaltySettingsMutaion.isLoading}
                   onClick={() => {
-                    setIsPageDisabled(false);
+                    if (hasGlobalChange) {
+                      setConfirmModal(true);
+                      setConfirmAction({
+                        message: 'All your changes will be lost, Discard?',
+                        onCancel: () => setConfirmModal(false),
+                        onConfirm: () => {
+                          discardChanges();
+                          setConfirmModal(false);
+                          setHasGlobalChange(false);
+                        },
+                      });
+                    } else {
+                      discardChanges();
+                    }
                   }}
                 >
-                  Edit Promotion
+                  Discard Changes
                 </Button>
                 <Button
+                  disabled={loyaltySettingsMutaion.isLoading}
                   variant="contained"
-                  color="primary"
-                  disabled={deleteLoyaltySettingsMutation.isLoading}
+                  color="secondary"
+                  onClick={() => {
+                    updateLoyaltySettings();
+                  }}
                   sx={{
                     borderRadius: 1.5,
                     textTransform: 'none',
                     '&.Mui-disabled': {
-                      background: theme.palette.primary.main,
+                      background: theme.palette.primary.secondary,
                       opacity: 0.3,
                       color: '#fff',
                     },
                   }}
                 >
-                  Deactivate Promotion
+                  Save Changes
                 </Button>
               </Stack>
-            </Stack>
-          )}
-          {!isPageDisabled && loyaltySettingsQuery.data?.isLoyaltyProgram && (
-            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                sx={{
-                  borderRadius: 1.5,
-                  textTransform: 'none',
-
-                  '&.Mui-disabled': {
-                    borderColor: theme.palette.secondary.main,
-                    opacity: 0.3,
-                    color: theme.palette.secondary.main,
-                  },
-                }}
-                disabled={loyaltySettingsMutaion.isLoading}
-                onClick={() => {
-                  if (hasGlobalChange) {
-                    setConfirmModal(true);
-                    setConfirmAction({
-                      message: 'All your changes will be lost, Discard?',
-                      onCancel: () => setConfirmModal(false),
-                      onConfirm: () => {
-                        discardChanges();
-                        setConfirmModal(false);
-                        setHasGlobalChange(false);
-                      },
-                    });
-                  } else {
-                    discardChanges();
-                  }
-                }}
-              >
-                Discard Changes
-              </Button>
-              <Button
-                disabled={loyaltySettingsMutaion.isLoading}
-                variant="contained"
-                color="secondary"
-                onClick={() => {
-                  updateLoyaltySettings();
-                }}
-                sx={{
-                  borderRadius: 1.5,
-                  textTransform: 'none',
-                  '&.Mui-disabled': {
-                    background: theme.palette.primary.secondary,
-                    opacity: 0.3,
-                    color: '#fff',
-                  },
-                }}
-              >
-                Save Changes
-              </Button>
-            </Stack>
-          )}
-        </Box>
+            )}
+          </Box>
+        )}
       </Box>
       {/* right */}
       <Box
