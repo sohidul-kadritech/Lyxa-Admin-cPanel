@@ -4,6 +4,7 @@ import { Box, Modal, Paper, Unstable_Grid2 as Grid } from '@mui/material';
 import { useState } from 'react';
 
 // project import
+import { useQuery } from 'react-query';
 import { ReactComponent as BuyIcon } from '../../assets/icons/buy-icon.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon.svg';
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
@@ -11,11 +12,17 @@ import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.sv
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
 import CloseButton from '../../components/Common/CloseButton';
 import Wrapper from '../../components/Wrapper';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import LoyaltySettings from './Loyalty/Settings';
 import MCard from './MarketingCard';
 
 export default function Marketing() {
   const [currentModal, setCurrentModal] = useState(null);
+
+  const loyaltySettingsQuery = useQuery(['loyalty'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
+    staleTime: 0,
+  });
 
   return (
     <Wrapper
@@ -31,7 +38,6 @@ export default function Marketing() {
               description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
               title="Discounted Items"
               icon={DiscountIcon}
-              ongoing
               onOpen={() => {
                 console.log('opened');
               }}
@@ -61,6 +67,7 @@ export default function Marketing() {
             <MCard
               description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
               title="Loyalty Points"
+              ongoing={loyaltySettingsQuery?.data?.isLoyaltyProgram}
               icon={LoyaltyIcon}
               onOpen={() => {
                 setCurrentModal('loyalty');

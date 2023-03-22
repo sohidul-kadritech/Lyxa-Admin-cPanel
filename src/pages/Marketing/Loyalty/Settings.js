@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import _ from 'lodash';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 
 // project import
@@ -36,14 +36,17 @@ import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import StyledTable2 from '../../../components/Styled/StyledTable2';
 import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
-import setCookiesAsObj from '../../../helpers/cookies/setCookiesAsObject';
 import { deepClone } from '../../../helpers/deepClone';
+import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
 // helper functions
-const createGroupedList = (products) =>
-  Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
+const createGroupedList = (products, category) => {
+  const productsList = Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
+  console.log(productsList);
+  return productsList.filter((item) => !category || item?.category?.name === category);
+};
 
 const createGroupedDataRow = (products) => {
   const categoryMap = {};
@@ -151,6 +154,12 @@ const durationInit = {
   end: moment().endOf('month').format('YYYY-MM-DD'),
 };
 
+const confirmActionInit = {
+  message: '',
+  onConfirm: () => {},
+  onCancel: () => {},
+};
+
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
 let LOYALTY_PROGRAM_QUERY_RUNNED = false;
@@ -168,11 +177,15 @@ if (document.cookie.length) {
 export default function LoyaltySettings() {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const theme = useTheme();
+  const queryClient = useQueryClient();
 
-  const [isPageDisabled, setIsPageDisabled] = useState(true);
+  const [isPageDisabled, setIsPageDisabled] = useState(false);
   const [termAndCondition, setTermAndCondition] = useState(false);
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const [render, setRender] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(confirmActionInit);
+  const [serverState, setServerState] = useState({});
 
   // reward settings
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
@@ -188,30 +201,49 @@ export default function LoyaltySettings() {
   const [itemSelectType, setItemSelectType] = useState('multiple');
   const [hasChanged, setHasChanged] = useState(false);
   const [globalRewardBundle, setGlobalRewardBundle] = useState();
-  const [confirmModal, setConfirmModal] = useState(false);
+  const [hasGlobalChange, setHasGlobalChange] = useState(false);
+  const [loyalityQueryEnabled, setLoyalityQueryEnabled] = useState(true);
 
   const [duration, setDuration] = useState(durationInit);
   const [spendLimit, setSpendLimit] = useState('');
   const [products, setProducts] = useState([]);
+  const [spendLimitChecked, setSpendLimitChecked] = useState(false);
+
+  const setLocalData = (data) => {
+    setProducts(data?.products);
+    setDuration(data?.duration);
+    setSpendLimit(data?.spendLimit);
+  };
+
+  console.log(!LOYALTY_PROGRAM_QUERY_RUNNED);
 
   const loyaltySettingsQuery = useQuery(['loyalty-settings'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
-    staleTime: 1000 * 60 * 10,
-    enabled: !LOYALTY_PROGRAM_QUERY_RUNNED,
+    staleTime: 0,
+    cacheTime: 0,
+    enabled: loyalityQueryEnabled,
+    // refetchOnMount: 'always',
     onSuccess: (data) => {
       LOYALTY_PROGRAM_QUERY_RUNNED = true;
+      setLoyalityQueryEnabled(false);
 
       if (!data?.isLoyaltyProgram) {
-        setIsPageDisabled(true);
+        // setIsPageDisabled(false);
+        // console.log('triggered');
       } else {
+        setIsPageDisabled(true);
+        setServerState(data?.data?.loyaltyProgram);
         const newData = deepClone(data?.data?.loyaltyProgram);
-        setProducts(newData?.products);
 
         if (newData?.products?.length > 0) {
           setHasChanged(true);
+          setHasGlobalChange(true);
         }
 
-        setDuration(newData?.duration);
-        setSpendLimit(newData?.spendLimit);
+        if (newData.spendLimit > 0) {
+          setSpendLimitChecked(true);
+        }
+
+        setLocalData(newData);
       }
     },
   });
@@ -220,8 +252,23 @@ export default function LoyaltySettings() {
     setProducts((prev) => prev.filter((item) => item?._id !== product?._id));
   };
 
+  const discardChanges = () => {
+    const newData = deepClone(serverState);
+    if (newData?.products?.length > 0) {
+      setHasChanged(true);
+      setHasGlobalChange(true);
+    }
+    setLocalData(newData);
+  };
+
   // update loyalty settings
-  const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data));
+  const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data), {
+    onSuccess: () => {
+      successMsg('Settings successfully updated', 'success');
+      queryClient.invalidateQueries(['loyalty-settings']);
+      queryClient.invalidateQueries(['loyalty']);
+    },
+  });
 
   const updateLoyaltySettings = () => {
     const productsData = products.map((item) => ({
@@ -238,7 +285,7 @@ export default function LoyaltySettings() {
       products: productsData,
       shop: accountId,
       duration,
-      spendLimit,
+      spendLimit: spendLimitChecked ? spendLimit : 0,
     });
   };
 
@@ -295,17 +342,21 @@ export default function LoyaltySettings() {
             openOnFocus
             value={params.row}
             disabled={productsQuery.isLoading}
-            options={createGroupedList(productsQuery?.data?.data?.products || [])}
+            options={createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
             onChange={(event, newValue) => {
-              params.row = newValue;
+              const index = products.findIndex((item) => item?._id === params.row?._id);
+              products[index] = newValue;
               setRender(!render);
               setHasChanged(true);
+              setHasGlobalChange(true);
             }}
             popupIcon={<KeyboardArrowDownIcon />}
             getOptionLabel={(option) => option?.name || 'Select Product'}
-            getOptionDisabled={(option) => !!products?.find((item) => item._id === option._id)}
+            getOptionDisabled={(option) => !!products?.find((item) => item?._id === option?._id)}
             loading={productsQuery.isLoading || productsQuery.isFetching}
+            disableClearable
+            disablePortal
             readOnly={undefined}
             PaperComponent={({ children }) => (
               <Paper
@@ -411,6 +462,7 @@ export default function LoyaltySettings() {
               params.row.rewardBundle = Number(e.target.value);
               setRender(!render);
               setHasChanged(true);
+              setHasGlobalChange(true);
             }}
             value={params.row?.rewardBundle || ''}
           />
@@ -446,6 +498,7 @@ export default function LoyaltySettings() {
               params.row.rewardCategory = e.target.value;
               setRender(!render);
               setHasChanged(true);
+              setHasGlobalChange(true);
             }}
           />
         );
@@ -490,6 +543,7 @@ export default function LoyaltySettings() {
               color="secondary"
               onClick={() => {
                 removeProduct(params.row);
+                setHasChanged(true);
               }}
             />
           </Stack>
@@ -545,8 +599,10 @@ export default function LoyaltySettings() {
               zIndex: '9999',
               background: '#fff',
             }}
+            pt={9}
+            pb={2}
           >
-            <Typography variant="h4" pb={3} pt={9}>
+            <Typography variant="h4" pb={3}>
               Loyalty Program
             </Typography>
             <Typography variant="body2" color={theme.palette.text.secondary2}>
@@ -571,13 +627,32 @@ export default function LoyaltySettings() {
                 onChange={(event) => {
                   if (hasChanged && products?.length > 0) {
                     setConfirmModal(true);
+                    setConfirmAction({
+                      message: 'Changing selection type will discard all your changes?',
+                      onCancel: () => setConfirmModal(false),
+                      onConfirm: () => {
+                        setHasChanged(false);
+                        setConfirmModal(false);
+
+                        if (itemSelectType === 'multiple') {
+                          setProducts(deepClone(productsQuery?.data?.data?.products || []));
+                          setItemSelectType('all');
+                          setGlobalRewardBundle('');
+                        } else {
+                          setProducts([]);
+                          setItemSelectType('multiple');
+                        }
+                      },
+                    });
                   } else {
                     if (event.target.value === 'all') {
                       setProducts(deepClone(productsQuery?.data?.data?.products || []));
                     } else {
                       setProducts([]);
                     }
+
                     setItemSelectType(event.target.value);
+                    setHasGlobalChange(true);
                   }
                 }}
               />
@@ -603,6 +678,7 @@ export default function LoyaltySettings() {
                       });
                       setGlobalRewardBundle(Number(e.target.value));
                       setHasChanged(true);
+                      setHasGlobalChange(true);
                     }}
                     value={globalRewardBundle}
                     sx={{
@@ -624,7 +700,7 @@ export default function LoyaltySettings() {
               <Box
                 sx={{
                   minHeight: '0px',
-                  height: '500px',
+                  height: `${products.length > 0 ? '500px' : '200px'}`,
                 }}
               >
                 <StyledTable2
@@ -641,6 +717,7 @@ export default function LoyaltySettings() {
 
                     '& .MuiDataGrid-virtualScroller': {
                       paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
+                      overflowX: 'scroll!important',
                     },
                   }}
                   rows={createGroupedDataRow(products)}
@@ -663,46 +740,46 @@ export default function LoyaltySettings() {
                 />
               </Box>
               {/* add new */}
-              {products.length < productsQuery?.data?.data?.products?.length && (
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{
+                  paddingLeft: '20px',
+                  paddingRight: '20px',
+                  paddingTop: '20px',
+                }}
+              >
+                <Button
+                  disableRipple
+                  className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
+                  variant="text"
+                  color="secondary"
                   sx={{
-                    paddingLeft: '20px',
-                    paddingRight: '20px',
-                    paddingTop: '20px',
+                    padding: '0!important',
+                    '&:hover': {
+                      background: 'transparent',
+                    },
+                  }}
+                  onClick={() => {
+                    setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
+                    setHasChanged(true);
+                    setHasGlobalChange(true);
                   }}
                 >
-                  <Button
-                    disableRipple
-                    variant="text"
-                    color="secondary"
-                    sx={{
-                      padding: '0!important',
-                      '&:hover': {
-                        background: 'transparent',
-                      },
-                    }}
-                    onClick={() => {
-                      setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
-                      setHasChanged(true);
-                    }}
-                  >
-                    + Add items
-                  </Button>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontWeight: '500',
-                      fontSize: '13px',
-                      lineHeight: '16px',
-                    }}
-                  >
-                    {products?.length} items
-                  </Typography>
-                </Stack>
-              )}
+                  + Add items
+                </Button>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '13px',
+                    lineHeight: '16px',
+                  }}
+                >
+                  {products?.length} items
+                </Typography>
+              </Stack>
             </Box>
           </StyledAccordion>
           {/* duration */}
@@ -739,6 +816,7 @@ export default function LoyaltySettings() {
                   value={duration.start}
                   onChange={(e) => {
                     setDuration((prev) => ({ ...prev, start: e._d }));
+                    setHasGlobalChange(true);
                   }}
                 />
               </Stack>
@@ -757,6 +835,7 @@ export default function LoyaltySettings() {
                   value={duration.end}
                   onChange={(e) => {
                     setDuration((prev) => ({ ...prev, end: e._d }));
+                    setHasGlobalChange(true);
                   }}
                 />
               </Stack>
@@ -794,7 +873,10 @@ export default function LoyaltySettings() {
                         color: theme.palette.text.heading,
                       },
                     }}
-                    checked
+                    checked={spendLimitChecked}
+                    onChange={(event) => {
+                      setSpendLimitChecked(event.target.checked);
+                    }}
                   />
                 }
               />
@@ -831,10 +913,12 @@ export default function LoyaltySettings() {
                     },
                   },
                 }}
+                disabled={!spendLimitChecked}
                 placeholder="Max amount"
                 value={spendLimit}
                 onChange={(event) => {
                   setSpendLimit(event.target.value);
+                  setHasGlobalChange(true);
                 }}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">$</InputAdornment>,
@@ -844,7 +928,6 @@ export default function LoyaltySettings() {
             </Stack>
           </StyledAccordion>
         </Box>
-        {/* promotion isn't set up */}
         <Box
           sx={{
             paddingTop: '70px',
@@ -899,12 +982,7 @@ export default function LoyaltySettings() {
                 color="secondary"
                 disabled={!termAndCondition}
                 onClick={() => {
-                  setCookiesAsObj(
-                    {
-                      loyaltyProgramAccepted: true,
-                    },
-                    7
-                  );
+                  updateLoyaltySettings();
                 }}
                 sx={{
                   borderRadius: 1.5,
@@ -920,7 +998,7 @@ export default function LoyaltySettings() {
               </Button>
             </Stack>
           )}
-          {isPageDisabled && (
+          {isPageDisabled && loyaltySettingsQuery.data?.isLoyaltyProgram && (
             <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
               <Button
                 variant="outlined"
@@ -958,7 +1036,7 @@ export default function LoyaltySettings() {
               </Button>
             </Stack>
           )}
-          {!isPageDisabled && (
+          {!isPageDisabled && loyaltySettingsQuery.data?.isLoyaltyProgram && (
             <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
               <Button
                 variant="outlined"
@@ -973,14 +1051,31 @@ export default function LoyaltySettings() {
                     color: '#fff',
                   },
                 }}
+                disabled={loyaltySettingsMutaion.isLoading}
+                onClick={() => {
+                  if (hasGlobalChange) {
+                    setConfirmModal(true);
+                    setConfirmAction({
+                      message: 'All your changes will be lost, Discard?',
+                      onCancel: () => setConfirmModal(false),
+                      onConfirm: () => {
+                        discardChanges();
+                        setConfirmModal(false);
+                        setHasGlobalChange(false);
+                      },
+                    });
+                  } else {
+                    discardChanges();
+                  }
+                }}
               >
                 Discard Changes
               </Button>
               <Button
+                disabled={loyaltySettingsMutaion.isLoading}
                 variant="contained"
                 color="secondary"
                 onClick={() => {
-                  // setIsPageDisabled(true);
                   updateLoyaltySettings();
                 }}
                 sx={{
@@ -1008,25 +1103,11 @@ export default function LoyaltySettings() {
         Fist Side
       </Box>
       <ConfirmModal
-        message="Changing selection type will discard all your changes?"
+        message={confirmAction.message}
         isOpen={confirmModal}
         blurClose
-        onCancel={() => {
-          setConfirmModal(false);
-        }}
-        onConfirm={() => {
-          setHasChanged(false);
-          setConfirmModal(false);
-
-          if (itemSelectType === 'multiple') {
-            setProducts(deepClone(productsQuery?.data?.data?.products || []));
-            setItemSelectType('all');
-            setGlobalRewardBundle('');
-          } else {
-            setProducts([]);
-            setItemSelectType('multiple');
-          }
-        }}
+        onCancel={confirmAction.onCancel}
+        onConfirm={confirmAction.onConfirm}
       />
     </Box>
   );
