@@ -84,6 +84,7 @@ export default function Marketing() {
           sx={{
             minHeight: '0',
             maxHeight: '90%',
+            top: '5%',
           }}
         >
           <Paper
@@ -91,10 +92,7 @@ export default function Marketing() {
               maxWidth: 'calc(100vw - 100px)',
               position: 'relative',
               borderRadius: '10px',
-              // height: 'auto',
-              minHeight: '0',
-              maxHeight: '100%',
-              overflowY: 'scroll',
+              height: '100%',
             }}
           >
             <CloseButton
@@ -107,7 +105,6 @@ export default function Marketing() {
               }}
               onClick={() => {
                 setCurrentModal(null);
-                console.log('clicked');
               }}
             />
             {currentModal === 'loyalty' && <LoyaltySettings />}

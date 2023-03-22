@@ -27,6 +27,7 @@ import { useSelector } from 'react-redux';
 // project import
 import moment from 'moment';
 import CloseButton from '../../../components/Common/CloseButton';
+import ConfirmModal from '../../../components/Common/ConfirmModal';
 import ProductSelect from '../../../components/Common/ProductSelect';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
@@ -36,9 +37,35 @@ import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import StyledTable2 from '../../../components/Styled/StyledTable2';
 import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
 import setCookiesAsObj from '../../../helpers/cookies/setCookiesAsObject';
+import { deepClone } from '../../../helpers/deepClone';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
+// helper functions
+const createGroupedList = (products) =>
+  Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
+
+const createGroupedDataRow = (products) => {
+  const categoryMap = {};
+  const result = [];
+
+  products.forEach((item) => {
+    if (categoryMap[item?.category?.name] === undefined) {
+      categoryMap[item?.category?.name] = [item];
+    } else {
+      categoryMap[item?.category?.name].push(item);
+    }
+  });
+
+  Object.entries(categoryMap).forEach((category, index) => {
+    result.push({ _id: `c-${index}`, isCategoryHeader: true, categoryName: category[0] });
+    result.push(...category[1]);
+  });
+
+  return result;
+};
+
+// helper components
 function ItemsTitle() {
   const theme = useTheme();
   return (
@@ -108,47 +135,6 @@ const GroupHeader = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.secondary,
 }));
 
-const GroupItems = styled('ul')({
-  padding: 0,
-});
-
-const createGroupedList = (products) =>
-  Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
-
-const createGroupedDataRow = (products) => {
-  const categoryMap = {};
-  const result = [];
-
-  products.forEach((item) => {
-    if (categoryMap[item?.category?.name] === undefined) {
-      categoryMap[item?.category?.name] = [item];
-    } else {
-      categoryMap[item?.category?.name].push(item);
-    }
-  });
-
-  Object.entries(categoryMap).forEach((category, index) => {
-    result.push({ _id: `c-${index}`, isCategoryHeader: true, categoryName: category[0] });
-    result.push(...category[1]);
-  });
-
-  return result;
-};
-
-// access token
-let accountId = null;
-let acceptedLoyaltyProgram = false;
-
-if (document.cookie.length) {
-  const { account_id, loyaltyProgramAccepted } = getCookiesAsObject();
-  accountId = account_id || null;
-  acceptedLoyaltyProgram = Boolean(loyaltyProgramAccepted);
-}
-
-// QUERY ONLY ONCE
-let QUERY_RUNNED = false;
-let LOYALTY_PROGRAM_QUERY_RUNNED = false;
-
 // disabled accordion sx
 const disabledSx = {
   pointerEvents: 'none',
@@ -165,46 +151,30 @@ const durationInit = {
   end: moment().endOf('month').format('YYYY-MM-DD'),
 };
 
-// project import
+// QUERY ONLY ONCE
+let QUERY_RUNNED = false;
+let LOYALTY_PROGRAM_QUERY_RUNNED = false;
+
+// access token
+let accountId = null;
+let acceptedLoyaltyProgram = false;
+
+if (document.cookie.length) {
+  const { account_id, loyaltyProgramAccepted } = getCookiesAsObject();
+  accountId = account_id || null;
+  acceptedLoyaltyProgram = Boolean(loyaltyProgramAccepted);
+}
+
 export default function LoyaltySettings() {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const theme = useTheme();
 
-  // accept terms and conditions
-  const [termAndCondition, setTermAndCondition] = useState(false);
-
-  const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
-  const [itemSelectType, setItemSelectType] = useState('multiple');
-  const [globalRewardBundle, setGlobalRewardBundle] = useState();
   const [isPageDisabled, setIsPageDisabled] = useState(true);
+  const [termAndCondition, setTermAndCondition] = useState(false);
+  const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const [render, setRender] = useState(false);
 
-  // filter
-  const [duration, setDuration] = useState(durationInit);
-  const [spendLimit, setSpendLimit] = useState('');
-
-  // products
-  const [products, setProducts] = useState([]);
-
-  // get all products
-  const productsQuery = useQuery(
-    ['products-query'],
-    () =>
-      AXIOS.get(Api.ALL_PRODUCT, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          type: 'all',
-          status: 'all',
-          shop: accountId,
-        },
-      }),
-    {
-      staleTime: 1000 * 60 * 10,
-    }
-  );
-
-  // get reward settings
+  // reward settings
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
     enabled: !QUERY_RUNNED,
     onSuccess: () => {
@@ -214,33 +184,41 @@ export default function LoyaltySettings() {
 
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
-  // get loyalty settings
-  const updateLocalData = (data) => {
-    if (!data?.isLoyaltyProgram) {
-      setIsPageDisabled(true);
-      return;
-    }
+  // loyalty settings
+  const [itemSelectType, setItemSelectType] = useState('multiple');
+  const [hasChanged, setHasChanged] = useState(false);
+  const [globalRewardBundle, setGlobalRewardBundle] = useState();
+  const [confirmModal, setConfirmModal] = useState(false);
 
-    let newData = {};
-    try {
-      console.log(data);
-      newData = JSON.parse(JSON.stringify(data?.data?.loyaltyProgram));
-      setProducts(newData?.products);
-      setDuration(newData?.duration);
-      setSpendLimit(newData?.spendLimit);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [duration, setDuration] = useState(durationInit);
+  const [spendLimit, setSpendLimit] = useState('');
+  const [products, setProducts] = useState([]);
 
   const loyaltySettingsQuery = useQuery(['loyalty-settings'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
     staleTime: 1000 * 60 * 10,
     enabled: !LOYALTY_PROGRAM_QUERY_RUNNED,
     onSuccess: (data) => {
-      updateLocalData(data);
       LOYALTY_PROGRAM_QUERY_RUNNED = true;
+
+      if (!data?.isLoyaltyProgram) {
+        setIsPageDisabled(true);
+      } else {
+        const newData = deepClone(data?.data?.loyaltyProgram);
+        setProducts(newData?.products);
+
+        if (newData?.products?.length > 0) {
+          setHasChanged(true);
+        }
+
+        setDuration(newData?.duration);
+        setSpendLimit(newData?.spendLimit);
+      }
     },
   });
+
+  const removeProduct = (product) => {
+    setProducts((prev) => prev.filter((item) => item?._id !== product?._id));
+  };
 
   // update loyalty settings
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data));
@@ -264,10 +242,23 @@ export default function LoyaltySettings() {
     });
   };
 
-  // remove product
-  const removeProduct = (product) => {
-    setProducts((prev) => prev.filter((item) => item?._id !== product?._id));
-  };
+  // shop products
+  const productsQuery = useQuery(
+    ['products-query'],
+    () =>
+      AXIOS.get(Api.ALL_PRODUCT, {
+        params: {
+          page: 1,
+          pageSize: 100,
+          type: 'all',
+          status: 'all',
+          shop: accountId,
+        },
+      }),
+    {
+      staleTime: 1000 * 60 * 10,
+    }
+  );
 
   const columns = [
     {
@@ -309,6 +300,7 @@ export default function LoyaltySettings() {
             onChange={(event, newValue) => {
               params.row = newValue;
               setRender(!render);
+              setHasChanged(true);
             }}
             popupIcon={<KeyboardArrowDownIcon />}
             getOptionLabel={(option) => option?.name || 'Select Product'}
@@ -374,7 +366,13 @@ export default function LoyaltySettings() {
             renderGroup={(params) => (
               <li key={params.key}>
                 <GroupHeader>{params.group}</GroupHeader>
-                <GroupItems>{params.children}</GroupItems>
+                <ul
+                  style={{
+                    padding: 0,
+                  }}
+                >
+                  {params.children}
+                </ul>
               </li>
             )}
             renderOption={(props, option) => (
@@ -412,6 +410,7 @@ export default function LoyaltySettings() {
             onChange={(e) => {
               params.row.rewardBundle = Number(e.target.value);
               setRender(!render);
+              setHasChanged(true);
             }}
             value={params.row?.rewardBundle || ''}
           />
@@ -446,6 +445,7 @@ export default function LoyaltySettings() {
             onChange={(e) => {
               params.row.rewardCategory = e.target.value;
               setRender(!render);
+              setHasChanged(true);
             }}
           />
         );
@@ -527,456 +527,477 @@ export default function LoyaltySettings() {
       <Box
         sx={{
           padding: '36px',
+          paddingTop: '0px',
           borderRight: `1px solid ${theme.palette.custom.border}`,
           minHeight: '0',
           maxHeight: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
           overflowY: 'scroll',
         }}
       >
-        <Typography variant="h4" pb={3}>
-          Loyalty Program
-        </Typography>
-        <Typography variant="body2" color={theme.palette.text.secondary2}>
-          Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on
-          an item, giving them more incentive to order from your business.
-        </Typography>
-        {/* products */}
-        <StyledAccordion
-          Title={<ItemsTitle />}
-          isOpen={currentExpanedTab === 0}
-          onChange={(closed) => {
-            seCurrentExpanedTab(closed ? 0 : -1);
-          }}
-          sx={isPageDisabled ? disabledSx : {}}
-        >
-          <Box position="relative">
-            <StyledRadioGroup
-              color="secondary"
-              items={itemSelectOptions}
-              value={itemSelectType}
-              onChange={(e) => {
-                if (e.target.value === 'all') {
-                  setProducts([...(productsQuery?.data?.data?.products?.slice(0, 9) || [])]);
-                }
-                setItemSelectType(e.target.value);
-              }}
-            />
-            {itemSelectType === 'all' && (
+        <Box>
+          <Box
+            sx={{
+              position: 'sticky',
+              top: '0',
+              zIndex: '9999',
+              background: '#fff',
+            }}
+          >
+            <Typography variant="h4" pb={3} pt={9}>
+              Loyalty Program
+            </Typography>
+            <Typography variant="body2" color={theme.palette.text.secondary2}>
+              Enable this feature and allow customers to use their points to pay for a portion or all of their purchase
+              on an item, giving them more incentive to order from your business.
+            </Typography>
+          </Box>
+          {/* products */}
+          <StyledAccordion
+            Title={<ItemsTitle />}
+            isOpen={currentExpanedTab === 0}
+            onChange={(closed) => {
+              seCurrentExpanedTab(closed ? 0 : -1);
+            }}
+            sx={isPageDisabled ? disabledSx : {}}
+          >
+            <Box position="relative">
+              <StyledRadioGroup
+                color="secondary"
+                items={itemSelectOptions}
+                value={itemSelectType}
+                onChange={(event) => {
+                  if (hasChanged && products?.length > 0) {
+                    setConfirmModal(true);
+                  } else {
+                    if (event.target.value === 'all') {
+                      setProducts(deepClone(productsQuery?.data?.data?.products || []));
+                    } else {
+                      setProducts([]);
+                    }
+                    setItemSelectType(event.target.value);
+                  }
+                }}
+              />
+              {itemSelectType === 'all' && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    zIndex: '99',
+                    bottom: '-6px',
+                    left: '130px',
+                  }}
+                >
+                  <FilterSelect
+                    items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
+                    placeholder="0%"
+                    getKey={(item) => item}
+                    getValue={(item) => item}
+                    getLabel={(item) => item}
+                    getDisplayValue={(value) => `${value}`}
+                    onChange={(e) => {
+                      products.forEach((product) => {
+                        product.rewardBundle = Number(e.target.value);
+                      });
+                      setGlobalRewardBundle(Number(e.target.value));
+                      setHasChanged(true);
+                    }}
+                    value={globalRewardBundle}
+                    sx={{
+                      minWidth: '80px',
+                      '& .MuiInputBase-input': {
+                        fontWeight: '500',
+                        fontSize: '15px',
+                        lineHeight: '24px',
+                        paddingTop: '6px',
+                        paddingBottom: '6px',
+                        textAlign: 'center',
+                      },
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
+            <Box pt={5}>
               <Box
                 sx={{
-                  position: 'absolute',
-                  zIndex: '99',
-                  bottom: '-6px',
-                  left: '130px',
+                  minHeight: '0px',
+                  height: '500px',
                 }}
               >
-                <FilterSelect
-                  items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
-                  placeholder="0%"
-                  getKey={(item) => item}
-                  getValue={(item) => item}
-                  getLabel={(item) => item}
-                  getDisplayValue={(value) => `${value}`}
-                  onChange={(e) => {
-                    setGlobalRewardBundle(Number(e.target.value));
-                    products.forEach((product) => {
-                      product.rewardBundle = Number(e.target.value);
-                    });
-                  }}
-                  value={globalRewardBundle}
+                <StyledTable2
+                  columns={columns}
                   sx={{
-                    minWidth: '80px',
-                    '& .MuiInputBase-input': {
-                      fontWeight: '500',
-                      fontSize: '15px',
-                      lineHeight: '24px',
-                      paddingTop: '6px',
-                      paddingBottom: '6px',
-                      textAlign: 'center',
+                    '& .MuiDataGrid-main': {
+                      overflow: 'visible!important',
+                    },
+
+                    '& .MuiDataGrid-cell': {
+                      position: 'relative',
+                      overflow: 'visible!important',
+                    },
+
+                    '& .MuiDataGrid-virtualScroller': {
+                      paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
                     },
                   }}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                  rows={createGroupedDataRow(products)}
+                  getRowId={(row) => row?._id}
+                  components={{
+                    NoRowsOverlay: () => (
+                      <Stack height="100%" alignItems="center" justifyContent="center">
+                        No Products Added
+                      </Stack>
+                    ),
+                  }}
+                  rowHeight={64}
+                  autoHeight={false}
+                  getRowHeight={({ model }) => {
+                    if (model.isCategoryHeader) {
+                      return 42;
+                    }
+                    return 64;
                   }}
                 />
               </Box>
-            )}
-          </Box>
-          <Box pt={5}>
-            <Box
-              sx={{
-                minHeight: '0px',
-                height: '500px',
-              }}
-            >
-              <StyledTable2
-                columns={columns}
-                sx={{
-                  '& .MuiDataGrid-main': {
-                    overflow: 'visible!important',
-                  },
-
-                  '& .MuiDataGrid-cell': {
-                    position: 'relative',
-                    overflow: 'visible!important',
-                  },
-
-                  '& .MuiDataGrid-virtualScroller': {
-                    paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
-                  },
-                }}
-                rows={createGroupedDataRow(products)}
-                getRowId={(row) => row?._id}
-                components={{
-                  NoRowsOverlay: () => (
-                    <Stack height="100%" alignItems="center" justifyContent="center">
-                      No Products Added
-                    </Stack>
-                  ),
-                }}
-                rowHeight={64}
-                autoHeight={false}
-                getRowHeight={({ model }) => {
-                  if (model.isCategoryHeader) {
-                    return 42;
-                  }
-                  return 64;
-                }}
-              />
-            </Box>
-            {/* add new */}
-            {products.length < productsQuery?.data?.data?.products?.length && (
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{
-                  paddingLeft: '20px',
-                  paddingRight: '20px',
-                  paddingTop: '20px',
-                }}
-              >
-                <Button
-                  disableRipple
-                  variant="text"
-                  color="secondary"
+              {/* add new */}
+              {products.length < productsQuery?.data?.data?.products?.length && (
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
                   sx={{
-                    padding: '0!important',
-                    '&:hover': {
-                      background: 'transparent',
-                    },
-                  }}
-                  onClick={() => {
-                    setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
+                    paddingLeft: '20px',
+                    paddingRight: '20px',
+                    paddingTop: '20px',
                   }}
                 >
-                  + Add items
-                </Button>
+                  <Button
+                    disableRipple
+                    variant="text"
+                    color="secondary"
+                    sx={{
+                      padding: '0!important',
+                      '&:hover': {
+                        background: 'transparent',
+                      },
+                    }}
+                    onClick={() => {
+                      setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
+                      setHasChanged(true);
+                    }}
+                  >
+                    + Add items
+                  </Button>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: '500',
+                      fontSize: '13px',
+                      lineHeight: '16px',
+                    }}
+                  >
+                    {products?.length} items
+                  </Typography>
+                </Stack>
+              )}
+            </Box>
+          </StyledAccordion>
+          {/* duration */}
+          <StyledAccordion
+            isOpen={currentExpanedTab === 1}
+            onChange={(closed) => {
+              seCurrentExpanedTab(closed ? 1 : -1);
+            }}
+            Title={
+              <CommonTitle
+                title="Duration"
+                subTitle={
+                  currentExpanedTab === 1
+                    ? 'Please choose the date range during which your items will be running.'
+                    : 'March 1, 2023 - April 1, 2023'
+                }
+              />
+            }
+            sx={isPageDisabled ? disabledSx : {}}
+          >
+            <Stack direction="row" alignItems="center" gap={5} pt={1}>
+              <Stack gap={2.5}>
                 <Typography
                   variant="body1"
                   sx={{
                     fontWeight: '500',
-                    fontSize: '13px',
-                    lineHeight: '16px',
+                    fontSize: '14px',
+                    lineHeight: '17px',
                   }}
                 >
-                  {products?.length} items
+                  Start Date
                 </Typography>
+                <FilterDate
+                  value={duration.start}
+                  onChange={(e) => {
+                    setDuration((prev) => ({ ...prev, start: e._d }));
+                  }}
+                />
               </Stack>
-            )}
-          </Box>
-        </StyledAccordion>
-        {/* duration */}
-        <StyledAccordion
-          isOpen={currentExpanedTab === 1}
-          onChange={(closed) => {
-            seCurrentExpanedTab(closed ? 1 : -1);
-          }}
-          Title={
-            <CommonTitle
-              title="Duration"
-              subTitle={
-                currentExpanedTab === 1
-                  ? 'Please choose the date range during which your items will be running.'
-                  : 'March 1, 2023 - April 1, 2023'
-              }
-            />
-          }
-          sx={isPageDisabled ? disabledSx : {}}
-        >
-          <Stack direction="row" alignItems="center" gap={5} pt={1}>
-            <Stack gap={2.5}>
-              <Typography
-                variant="body1"
+              <Stack gap={2.5}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '17px',
+                  }}
+                >
+                  End Date
+                </Typography>
+                <FilterDate
+                  value={duration.end}
+                  onChange={(e) => {
+                    setDuration((prev) => ({ ...prev, end: e._d }));
+                  }}
+                />
+              </Stack>
+            </Stack>
+          </StyledAccordion>
+          {/* spend limit */}
+          <StyledAccordion
+            isOpen={currentExpanedTab === 2}
+            onChange={(closed) => {
+              seCurrentExpanedTab(closed ? 2 : -1);
+            }}
+            Title={
+              <CommonTitle
+                title="Spend Limit"
+                subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
+              />
+            }
+            sx={isPageDisabled ? disabledSx : {}}
+          >
+            <Stack direction="row" alignItems="center" gap={5} pt={1}>
+              <FormControlLabel
                 sx={{
-                  fontWeight: '500',
-                  fontSize: '14px',
-                  lineHeight: '17px',
+                  '& .MuiTypography-root': {
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    color: theme.palette.text.heading,
+                  },
                 }}
-              >
-                Start Date
-              </Typography>
-              <FilterDate
-                value={duration.start}
-                onChange={(e) => {
-                  setDuration((prev) => ({ ...prev, start: e._d }));
+                label="Set maximum weekly spending limit"
+                control={
+                  <Checkbox
+                    sx={{
+                      '&.Mui-checked': {
+                        color: theme.palette.text.heading,
+                      },
+                    }}
+                    checked
+                  />
+                }
+              />
+              <StyledInput
+                type="number"
+                sx={{
+                  width: '100%',
+                  maxWidth: '280px',
+
+                  '& .MuiInputBase-root': {
+                    padding: '12px 17px 12px 22px',
+                  },
+
+                  '& .MuiInputBase-input': {
+                    padding: 0,
+                    textAlign: 'left',
+
+                    '&::placeholder': {
+                      opacity: 1,
+                      color: '#737373',
+                    },
+                  },
+
+                  '& .MuiTypography-root': {
+                    fontWeight: '500',
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: theme.palette.text.heading,
+                  },
+
+                  '& .MuiInputAdornment-positionStart': {
+                    p: {
+                      paddingRight: '6px',
+                    },
+                  },
+                }}
+                placeholder="Max amount"
+                value={spendLimit}
+                onChange={(event) => {
+                  setSpendLimit(event.target.value);
+                }}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                  endAdornment: <InputAdornment position="end">/week</InputAdornment>,
                 }}
               />
             </Stack>
-            <Stack gap={2.5}>
-              <Typography
-                variant="body1"
+          </StyledAccordion>
+        </Box>
+        {/* promotion isn't set up */}
+        <Box
+          sx={{
+            paddingTop: '70px',
+          }}
+        >
+          {!loyaltySettingsQuery.data?.isLoyaltyProgram && !loyaltySettingsQuery.isLoading && !acceptedLoyaltyProgram && (
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Stack
+                direction="row"
+                alignItems="center"
                 sx={{
-                  fontWeight: '500',
-                  fontSize: '14px',
-                  lineHeight: '17px',
+                  marginLeft: '-11px',
                 }}
               >
-                End Date
-              </Typography>
-              <FilterDate
-                value={duration.end}
-                onChange={(e) => {
-                  setDuration((prev) => ({ ...prev, end: e._d }));
-                }}
-              />
-            </Stack>
-          </Stack>
-        </StyledAccordion>
-        {/* spend limit */}
-        <StyledAccordion
-          isOpen={currentExpanedTab === 2}
-          onChange={(closed) => {
-            seCurrentExpanedTab(closed ? 2 : -1);
-          }}
-          Title={
-            <CommonTitle
-              title="Spend Limit"
-              subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
-            />
-          }
-          sx={isPageDisabled ? disabledSx : {}}
-        >
-          <Stack direction="row" alignItems="center" gap={5} pt={1}>
-            <FormControlLabel
-              sx={{
-                '& .MuiTypography-root': {
-                  fontWeight: '500',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: theme.palette.text.heading,
-                },
-              }}
-              label="Set maximum weekly spending limit"
-              control={
                 <Checkbox
                   sx={{
                     '&.Mui-checked': {
                       color: theme.palette.text.heading,
                     },
                   }}
-                  checked
+                  checked={termAndCondition}
+                  onChange={(e) => {
+                    setTermAndCondition(e.target.checked);
+                  }}
                 />
-              }
-            />
-            <StyledInput
-              type="number"
-              sx={{
-                width: '100%',
-                maxWidth: '280px',
-
-                '& .MuiInputBase-root': {
-                  padding: '12px 17px 12px 22px',
-                },
-
-                '& .MuiInputBase-input': {
-                  padding: 0,
-                  textAlign: 'left',
-
-                  '&::placeholder': {
-                    opacity: 1,
-                    color: '#737373',
-                  },
-                },
-
-                '& .MuiTypography-root': {
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  color: theme.palette.text.heading,
-                },
-
-                '& .MuiInputAdornment-positionStart': {
-                  p: {
-                    paddingRight: '6px',
-                  },
-                },
-              }}
-              placeholder="Max amount"
-              value={spendLimit}
-              onChange={(event) => {
-                setSpendLimit(event.target.value);
-              }}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                endAdornment: <InputAdornment position="end">/week</InputAdornment>,
-              }}
-            />
-          </Stack>
-        </StyledAccordion>
-        <Box
-          sx={{
-            height: '160px',
-          }}
-        ></Box>
-        {/* promotion isn't set up */}
-        {!loyaltySettingsQuery.data?.isLoyaltyProgram && !loyaltySettingsQuery.isLoading && !acceptedLoyaltyProgram && (
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{
-                marginLeft: '-11px',
-              }}
-            >
-              <Checkbox
-                sx={{
-                  '&.Mui-checked': {
-                    color: theme.palette.text.heading,
-                  },
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    color: '#404040',
+                    marginRight: '6px',
+                  }}
+                >
+                  I accept
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    color: theme.palette.secondary.main,
+                  }}
+                >
+                  Terms & Conditions
+                </Typography>
+              </Stack>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={!termAndCondition}
+                onClick={() => {
+                  setCookiesAsObj(
+                    {
+                      loyaltyProgramAccepted: true,
+                    },
+                    7
+                  );
                 }}
-                checked={termAndCondition}
-                onChange={(e) => {
-                  setTermAndCondition(e.target.checked);
-                }}
-              />
-              <Typography
-                variant="body1"
                 sx={{
-                  fontWeight: '500',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: '#404040',
-                  marginRight: '6px',
+                  borderRadius: 1.5,
+                  textTransform: 'none',
+                  '&.Mui-disabled': {
+                    background: theme.palette.secondary.main,
+                    opacity: 0.3,
+                    color: '#fff',
+                  },
                 }}
               >
-                I accept
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: '500',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: theme.palette.secondary.main,
-                }}
-              >
-                Terms & Conditions
-              </Typography>
+                Activate Promotion
+              </Button>
             </Stack>
-            <Button
-              variant="contained"
-              color="secondary"
-              disabled={!termAndCondition}
-              onClick={() => {
-                setCookiesAsObj(
-                  {
-                    loyaltyProgramAccepted: true,
+          )}
+          {isPageDisabled && (
+            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  borderRadius: 1.5,
+                  textTransform: 'none',
+
+                  '&.Mui-disabled': {
+                    borderColor: theme.palette.secondary.main,
+                    opacity: 0.3,
+                    color: '#fff',
                   },
-                  7
-                );
-              }}
-              sx={{
-                borderRadius: 1.5,
-                textTransform: 'none',
-                '&.Mui-disabled': {
-                  background: theme.palette.secondary.main,
-                  opacity: 0.3,
-                  color: '#fff',
-                },
-              }}
-            >
-              Activate Promotion
-            </Button>
-          </Stack>
-        )}
-        {isPageDisabled && (
-          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{
-                borderRadius: 1.5,
-                textTransform: 'none',
+                }}
+                onClick={() => {
+                  setIsPageDisabled(false);
+                }}
+              >
+                Edit Promotion
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: 1.5,
+                  textTransform: 'none',
+                  '&.Mui-disabled': {
+                    background: theme.palette.primary.main,
+                    opacity: 0.3,
+                    color: '#fff',
+                  },
+                }}
+              >
+                Deactivate Promotion
+              </Button>
+            </Stack>
+          )}
+          {!isPageDisabled && (
+            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  borderRadius: 1.5,
+                  textTransform: 'none',
 
-                '&.Mui-disabled': {
-                  borderColor: theme.palette.secondary.main,
-                  opacity: 0.3,
-                  color: '#fff',
-                },
-              }}
-              onClick={() => {
-                setIsPageDisabled(false);
-              }}
-            >
-              Edit Promotion
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                borderRadius: 1.5,
-                textTransform: 'none',
-                '&.Mui-disabled': {
-                  background: theme.palette.primary.main,
-                  opacity: 0.3,
-                  color: '#fff',
-                },
-              }}
-            >
-              Deactivate Promotion
-            </Button>
-          </Stack>
-        )}
-        {!isPageDisabled && (
-          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{
-                borderRadius: 1.5,
-                textTransform: 'none',
-
-                '&.Mui-disabled': {
-                  borderColor: theme.palette.secondary.main,
-                  opacity: 0.3,
-                  color: '#fff',
-                },
-              }}
-            >
-              Discard Changes
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                // setIsPageDisabled(true);
-                updateLoyaltySettings();
-              }}
-              sx={{
-                borderRadius: 1.5,
-                textTransform: 'none',
-                '&.Mui-disabled': {
-                  background: theme.palette.primary.secondary,
-                  opacity: 0.3,
-                  color: '#fff',
-                },
-              }}
-            >
-              Save Changes
-            </Button>
-          </Stack>
-        )}
+                  '&.Mui-disabled': {
+                    borderColor: theme.palette.secondary.main,
+                    opacity: 0.3,
+                    color: '#fff',
+                  },
+                }}
+              >
+                Discard Changes
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  // setIsPageDisabled(true);
+                  updateLoyaltySettings();
+                }}
+                sx={{
+                  borderRadius: 1.5,
+                  textTransform: 'none',
+                  '&.Mui-disabled': {
+                    background: theme.palette.primary.secondary,
+                    opacity: 0.3,
+                    color: '#fff',
+                  },
+                }}
+              >
+                Save Changes
+              </Button>
+            </Stack>
+          )}
+        </Box>
       </Box>
       {/* right */}
       <Box
@@ -986,6 +1007,27 @@ export default function LoyaltySettings() {
       >
         Fist Side
       </Box>
+      <ConfirmModal
+        message="Changing selection type will discard all your changes?"
+        isOpen={confirmModal}
+        blurClose
+        onCancel={() => {
+          setConfirmModal(false);
+        }}
+        onConfirm={() => {
+          setHasChanged(false);
+          setConfirmModal(false);
+
+          if (itemSelectType === 'multiple') {
+            setProducts(deepClone(productsQuery?.data?.data?.products || []));
+            setItemSelectType('all');
+            setGlobalRewardBundle('');
+          } else {
+            setProducts([]);
+            setItemSelectType('multiple');
+          }
+        }}
+      />
     </Box>
   );
 }
