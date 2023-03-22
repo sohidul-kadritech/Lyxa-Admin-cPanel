@@ -161,16 +161,13 @@ const confirmActionInit = {
 
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
-// let LOYALTY_PROGRAM_QUERY_RUNNED = false;
 
 // access token
 let accountId = null;
-// let acceptedLoyaltyProgram = false;
 
 if (document.cookie.length) {
   const { account_id } = getCookiesAsObject();
   accountId = account_id || null;
-  // acceptedLoyaltyProgram = Boolean(loyaltyProgramAccepted);
 }
 
 const productSelectKeyForLS = 'loyaltySettingsSelectType';
@@ -198,6 +195,24 @@ export default function LoyaltySettings({ closeModal }) {
   });
 
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
+
+  // shop products
+  const productsQuery = useQuery(
+    ['products-query'],
+    () =>
+      AXIOS.get(Api.ALL_PRODUCT, {
+        params: {
+          page: 1,
+          pageSize: 100,
+          type: 'all',
+          status: 'all',
+          shop: accountId,
+        },
+      }),
+    {
+      staleTime: 1000 * 60 * 10,
+    }
+  );
 
   // loyalty settings
   const [itemSelectType, setItemSelectType] = useState(localStorage.getItem(productSelectKeyForLS) || 'multiple');
@@ -236,18 +251,58 @@ export default function LoyaltySettings({ closeModal }) {
 
         setServerState(data?.data?.loyaltyProgram);
         const newData = deepClone(data?.data?.loyaltyProgram);
+        setLocalData(newData);
 
         if (newData?.products?.length > 0) {
-          // setHasChanged(true);
-          // setHasGlobalChange(true);
+          setHasChanged(true);
         }
-        setLocalData(newData);
       } else {
         setPageMode(0);
         setIsPageDisabled(false);
       }
     },
   });
+
+  const onProductSelectChange = (event) => {
+    if (hasChanged && products?.length > 0) {
+      // open confirm modal
+      setConfirmModal(true);
+
+      // onconfirm
+      const confirmFunc = (value) => {
+        if (value === 'multiple') {
+          setProducts([]);
+        } else {
+          setGlobalRewardBundle('');
+          setProducts(deepClone(productsQuery?.data?.data?.products || []));
+        }
+
+        setConfirmModal(false);
+        localStorage.setItem(productSelectKeyForLS, value);
+
+        setItemSelectType(value);
+        setHasChanged(false);
+        setHasGlobalChange(true);
+      };
+
+      setConfirmAction({
+        message: 'Changing selection type will reset product list?',
+        onCancel: () => setConfirmModal(false),
+        onConfirm: () => confirmFunc(event.target.value),
+      });
+    } else {
+      if (event.target.value === 'all') {
+        setProducts(deepClone(productsQuery?.data?.data?.products || []));
+      } else {
+        setProducts([]);
+      }
+
+      setItemSelectType(event.target.value);
+      setHasGlobalChange(true);
+      setHasChanged(false);
+      localStorage.setItem(productSelectKeyForLS, event.target.value);
+    }
+  };
 
   const removeProduct = (product) => {
     setProducts((prev) => prev.filter((item) => item?._id !== product?._id));
@@ -257,21 +312,23 @@ export default function LoyaltySettings({ closeModal }) {
     const newData = deepClone(serverState);
     if (newData?.products?.length > 0) {
       setHasChanged(true);
-      setHasGlobalChange(true);
     }
+
     setLocalData(newData);
+    setHasGlobalChange(false);
   };
 
   // update loyalty settings
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data), {
-    onSuccess: (data, args) => {
-      console.log(args);
-
+    onSuccess: (data) => {
       if (data?.status) {
         setServerState((prev) => data?.data?.loyaltyProgram || prev);
         successMsg('Settings successfully updated', 'success');
 
-        setHasChanged(false);
+        if (data?.data?.loyaltyProgram?.products?.length > 0) {
+          setHasChanged(true);
+        }
+
         setHasGlobalChange(false);
 
         queryClient.invalidateQueries(['loyalty-settings']);
@@ -347,6 +404,9 @@ export default function LoyaltySettings({ closeModal }) {
   const resetPage = () => {
     setIsPageDisabled(false);
     setPageMode(0);
+    setTermAndCondition(false);
+    setHasChanged(false);
+    setHasGlobalChange(false);
     setProducts([]);
     setDuration(durationInit);
     setSpendLimit('');
@@ -366,24 +426,6 @@ export default function LoyaltySettings({ closeModal }) {
           resetPage();
         }
       },
-    }
-  );
-
-  // shop products
-  const productsQuery = useQuery(
-    ['products-query'],
-    () =>
-      AXIOS.get(Api.ALL_PRODUCT, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          type: 'all',
-          status: 'all',
-          shop: accountId,
-        },
-      }),
-    {
-      staleTime: 1000 * 60 * 10,
     }
   );
 
@@ -727,40 +769,7 @@ export default function LoyaltySettings({ closeModal }) {
                 color="secondary"
                 items={itemSelectOptions}
                 value={itemSelectType}
-                onChange={(event) => {
-                  if (hasChanged && products?.length > 0) {
-                    setConfirmModal(true);
-                    setConfirmAction({
-                      message: 'Changing selection type will discard all your changes?',
-                      onCancel: () => setConfirmModal(false),
-                      onConfirm: () => {
-                        setHasChanged(false);
-                        setConfirmModal(false);
-
-                        if (itemSelectType === 'multiple') {
-                          setProducts(deepClone(productsQuery?.data?.data?.products || []));
-                          setGlobalRewardBundle('');
-                          setItemSelectType('all');
-                          localStorage.setItem(productSelectKeyForLS, 'all');
-                        } else {
-                          setProducts([]);
-                          setItemSelectType('multiple');
-                          localStorage.setItem(productSelectKeyForLS, 'multiple');
-                        }
-                      },
-                    });
-                  } else {
-                    if (event.target.value === 'all') {
-                      setProducts(deepClone(productsQuery?.data?.data?.products || []));
-                    } else {
-                      setProducts([]);
-                    }
-
-                    setItemSelectType(event.target.value);
-                    setHasGlobalChange(true);
-                    localStorage.setItem(productSelectKeyForLS, event.target.value);
-                  }
-                }}
+                onChange={onProductSelectChange}
               />
               {itemSelectType === 'all' && (
                 <Box
@@ -1200,7 +1209,6 @@ export default function LoyaltySettings({ closeModal }) {
                         onConfirm: () => {
                           discardChanges();
                           setConfirmModal(false);
-                          setHasGlobalChange(false);
                         },
                       });
                     } else {
