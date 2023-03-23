@@ -70,6 +70,7 @@ import ButlerFlaggedOrder from '../pages/Butler/ButlerFlaggedOrders';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import DefaultChat from '../pages/DefaultChat/DefaultChat';
+import LoyaltyProgramDashboard from '../pages/Marketing/Loyalty/Dashbaord';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 import RewardSettings from '../pages/RewardSettings';
@@ -266,6 +267,8 @@ const sellerRoutes = [
 
 const shopRoutes = [
   // dashboard
+
+  { path: '/unknown', component: LoyaltyProgramDashboard },
   { path: '/dashboard', component: Dashboard },
   // orders
   { path: '/orders/list', component: OrdersList },

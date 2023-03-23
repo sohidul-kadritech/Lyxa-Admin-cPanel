@@ -3,30 +3,36 @@ import { Box, Breadcrumbs, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const contianerSx = {
-  pt: 7.5,
+  pt: 2.5,
   pb: 5,
 };
 
-const linkStyle = {
-  fontSize: '14px',
+const linkStyle = (isActive) => ({
+  fontSize: '13px',
   fontWeight: '500',
-  color: '#000',
+  lineHeight: '21px',
   display: 'inline-block',
-  paddingBottom: '2px',
-  borderBottom: '2px solid #15BFCA',
-};
+  color: `${isActive ? '#363636' : '#737373'}`,
+});
 
 export default function BreadCrumbs({ items, sx }) {
   const { length } = items;
 
   return (
     <Box sx={{ ...contianerSx, ...(sx || {}) }}>
-      <Typography variant="h1" pb={2.5}>
+      <Typography
+        variant="h4"
+        pb={2}
+        sx={{
+          fontSize: '19px',
+          lineHeight: '23px',
+        }}
+      >
         {items[length - 1].label}
       </Typography>
-      <Breadcrumbs separator=">">
-        {items.map((item) => (
-          <Link key={item.to} to={item.to} style={linkStyle}>
+      <Breadcrumbs separator="/">
+        {items.map((item, index) => (
+          <Link key={item.to} to={item.to} style={linkStyle(index === length - 1)}>
             {item.label}
           </Link>
         ))}

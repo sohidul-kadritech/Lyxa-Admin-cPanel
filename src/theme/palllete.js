@@ -13,6 +13,9 @@ export default function GetPallete() {
       main: '#636363',
       contrastText: '#ffffff',
     },
+    success: {
+      main: '#15803D',
+    },
     text: {
       primary: '#3F4254',
       secondary: '#525252',
