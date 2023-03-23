@@ -2,6 +2,7 @@
 // third party
 import { Box, Modal, Paper, Unstable_Grid2 as Grid } from '@mui/material';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 // project import
 import { useQuery } from 'react-query';
@@ -18,6 +19,7 @@ import MCard from './MarketingCard';
 
 export default function Marketing() {
   const [currentModal, setCurrentModal] = useState(null);
+  const history = useHistory();
 
   const loyaltySettingsQuery = useQuery(['loyalty'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
     staleTime: 0,
@@ -69,7 +71,11 @@ export default function Marketing() {
               ongoing={loyaltySettingsQuery?.data?.isLoyaltyProgram}
               icon={LoyaltyIcon}
               onOpen={() => {
-                setCurrentModal('loyalty');
+                if (loyaltySettingsQuery?.data?.isLoyaltyProgram) {
+                  history.push('/marketing/loyalty');
+                } else {
+                  setCurrentModal('loyalty');
+                }
               }}
             />
           </Grid>

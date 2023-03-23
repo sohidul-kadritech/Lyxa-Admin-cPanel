@@ -412,6 +412,7 @@ export default function LoyaltySettings({ closeModal }) {
   };
 
   // delete settings
+  // eslint-disable-next-line no-unused-vars
   const resetPage = () => {
     setIsPageDisabled(false);
     setPageMode(0);
@@ -422,6 +423,8 @@ export default function LoyaltySettings({ closeModal }) {
     setDuration(durationInit);
     setSpendLimit('');
     setSpendLimitChecked(false);
+    localStorage.setItem(productSelectKeyForLS, 'multiple');
+    setItemSelectType('multiple');
   };
 
   const loyaltySettingsDeleteMutation = useMutation(
@@ -434,7 +437,9 @@ export default function LoyaltySettings({ closeModal }) {
         successMsg(data?.message, 'success');
 
         if (data?.status) {
-          resetPage();
+          queryClient.invalidateQueries(['loyalty']);
+          localStorage.setItem(productSelectKeyForLS, 'multiple');
+          closeModal();
         }
       },
     }

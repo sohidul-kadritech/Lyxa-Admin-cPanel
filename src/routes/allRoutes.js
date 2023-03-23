@@ -267,8 +267,6 @@ const sellerRoutes = [
 
 const shopRoutes = [
   // dashboard
-
-  { path: '/unknown', component: LoyaltyProgramDashboard },
   { path: '/dashboard', component: Dashboard },
   // orders
   { path: '/orders/list', component: OrdersList },
@@ -296,6 +294,8 @@ const shopRoutes = [
   { path: '/category/details/:id', component: CategoryDetails },
   // marketing
   { path: '/marketing', component: Marketing },
+  { path: '/marketing/loyalty', component: LoyaltyProgramDashboard },
+  { path: '/unknown', component: LoyaltyProgramDashboard },
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];

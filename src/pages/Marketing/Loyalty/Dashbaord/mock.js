@@ -31,14 +31,14 @@ export const ProductsInfoListData = [
   },
 ];
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August'];
 
 export const barChartData = {
   labels,
   datasets: [
     {
       label: 'Dataset 1',
-      data: labels.map((item, index) => index),
+      data: labels.map(() => Math.round(Math.random() * 200)),
       backgroundColor: '#15BFCA',
     },
   ],
@@ -52,6 +52,7 @@ export const areaChartData = {
       label: 'Dataset 2',
       data: labels.map(() => Math.round(Math.random() * 200)),
       borderColor: 'rgba(21, 191, 202, 1)',
+      borderWidth: 1,
       backgroundColor: 'rgba(21, 191, 202, .3)',
     },
   ],
@@ -65,6 +66,7 @@ export const lineChartData = {
       data: [undefined, 32, 70, 29, 82, undefined],
       borderColor: 'rgba(21, 191, 202, 1)',
       backgroundColor: 'rgba(21, 191, 202, 0)',
+      borderWidth: 1,
     },
   ],
 };

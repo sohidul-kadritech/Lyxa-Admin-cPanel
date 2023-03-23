@@ -7,6 +7,13 @@ export const defaultOptions = {
   legend: {
     display: false,
   },
+  scales: {
+    xAxes: [
+      {
+        barThickness: 20,
+      },
+    ],
+  },
 };
 
 export default function StyledBarChart({ data, options }) {
