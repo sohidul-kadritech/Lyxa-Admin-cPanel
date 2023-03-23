@@ -246,8 +246,13 @@ export default function LoyaltySettings({ closeModal }) {
       setLoyalityQueryEnabled(false);
 
       if (data?.isLoyaltyProgram) {
-        setIsPageDisabled(true);
-        setPageMode(1);
+        if (data?.data?.loyaltyProgram?.isActive) {
+          setIsPageDisabled(true);
+          setPageMode(1);
+        } else {
+          setPageMode(0);
+          setIsPageDisabled(false);
+        }
 
         setServerState(data?.data?.loyaltyProgram);
         const newData = deepClone(data?.data?.loyaltyProgram);
@@ -320,7 +325,7 @@ export default function LoyaltySettings({ closeModal }) {
 
   // update loyalty settings
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data), {
-    onSuccess: (data) => {
+    onSuccess: (data, args) => {
       if (data?.status) {
         setServerState((prev) => data?.data?.loyaltyProgram || prev);
         successMsg('Settings successfully updated', 'success');
@@ -334,13 +339,18 @@ export default function LoyaltySettings({ closeModal }) {
         queryClient.invalidateQueries(['loyalty-settings']);
         queryClient.invalidateQueries(['loyalty']);
 
-        setPageMode(1);
-        setIsPageDisabled(true);
+        if (args.status === 'inactive') {
+          setPageMode(0);
+          setIsPageDisabled(false);
+        } else {
+          setPageMode(1);
+          setIsPageDisabled(true);
+        }
       }
     },
   });
 
-  const updateLoyaltySettings = () => {
+  const updateLoyaltySettings = (status) => {
     let prb = null;
 
     const productsData = products.map((item) => {
@@ -397,6 +407,7 @@ export default function LoyaltySettings({ closeModal }) {
       shop: accountId,
       duration,
       spendLimit: spendLimitChecked ? spendLimit : 0,
+      status: status || 'active',
     });
   };
 
@@ -413,7 +424,7 @@ export default function LoyaltySettings({ closeModal }) {
     setSpendLimitChecked(false);
   };
 
-  const deleteLoyaltySettingsMutation = useMutation(
+  const loyaltySettingsDeleteMutation = useMutation(
     () =>
       AXIOS.post(Api.DELETE_LOYALTY_SETTINGS, {
         id: serverState?._id,
@@ -1119,12 +1130,12 @@ export default function LoyaltySettings({ closeModal }) {
               <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Button
-                    disabled={deleteLoyaltySettingsMutation.isLoading}
+                    disabled={loyaltySettingsDeleteMutation.isLoading}
                     variant="text"
                     color="primary"
                     disableRipple
                     onClick={() => {
-                      deleteLoyaltySettingsMutation.mutate();
+                      loyaltySettingsDeleteMutation.mutate();
                     }}
                     sx={{
                       padding: '0px',
@@ -1147,7 +1158,7 @@ export default function LoyaltySettings({ closeModal }) {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    disabled={deleteLoyaltySettingsMutation.isLoading}
+                    disabled={loyaltySettingsDeleteMutation.isLoading}
                     sx={{
                       borderRadius: 1.5,
                       textTransform: 'none',
@@ -1168,7 +1179,10 @@ export default function LoyaltySettings({ closeModal }) {
                   <Button
                     variant="contained"
                     color="primary"
-                    disabled={deleteLoyaltySettingsMutation.isLoading}
+                    disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
+                    onClick={() => {
+                      updateLoyaltySettings('inactive');
+                    }}
                     sx={{
                       borderRadius: 1.5,
                       textTransform: 'none',
