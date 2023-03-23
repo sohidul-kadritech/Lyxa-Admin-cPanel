@@ -90,7 +90,6 @@
     "react-super-responsive-table": "^5.2.0",
     "react-toastify": "^8.1.0",
     "reactstrap": "^8.9.0",
-    "recharts": "^2.5.0",
     "redux": "^4.1.0",
     "redux-form": "^8.3.7",
     "redux-saga": "^1.1.3",

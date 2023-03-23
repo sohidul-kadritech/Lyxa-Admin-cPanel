@@ -1,15 +1,10 @@
 // thrid party
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 export default function InfoCard({ title, value, Tag }) {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
-        background: '#fff',
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '7px',
         padding: '14px 10px 10px 20px',
       }}
     >

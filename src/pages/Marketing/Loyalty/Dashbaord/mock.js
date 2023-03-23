@@ -5,28 +5,54 @@ export const ProductsInfoListData = [
     sold: '10',
   },
   {
-    name: 'Vegan Burger',
+    name: 'Chicken Burger',
     points: '10',
     sold: '10',
   },
   {
-    name: 'Vegan Burger',
+    name: 'Meat Burger',
     points: '10',
     sold: '10',
   },
   {
-    name: 'Vegan Burger',
+    name: 'Chicken Shawarma',
     points: '10',
     sold: '10',
   },
   {
-    name: 'Vegan Burger',
+    name: 'Cheese Sandwich',
     points: '10',
     sold: '10',
   },
   {
-    name: 'Vegan Burger',
+    name: 'Tawouk Special',
     points: '10',
     sold: '10',
   },
 ];
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+export const barChartData = {
+  labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: labels.map((item, index) => index),
+      backgroundColor: '#15BFCA',
+    },
+  ],
+};
+
+export const areaChartData = {
+  labels,
+  datasets: [
+    {
+      fill: true,
+      label: 'Dataset 2',
+      data: labels.map(() => Math.round(Math.random() * 200)),
+      borderColor: 'rgba(21, 191, 202, 1)',
+      backgroundColor: 'rgba(21, 191, 202, .3)',
+    },
+  ],
+};
