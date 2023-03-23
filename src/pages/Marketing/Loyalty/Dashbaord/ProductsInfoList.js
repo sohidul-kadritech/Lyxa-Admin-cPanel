@@ -60,7 +60,11 @@ export default function ProductsInfoList({ items, onViewMore }) {
         Top selling items
       </Typography>
       <TableContainer component={Paper}>
-        <StyledInfoTable>
+        <StyledInfoTable
+          sx={{
+            minWidth: '450px',
+          }}
+        >
           <TableHead>
             <TableRow>
               <TableCell>Item name</TableCell>

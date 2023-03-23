@@ -56,3 +56,15 @@ export const areaChartData = {
     },
   ],
 };
+
+export const lineChartData = {
+  labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: [undefined, 32, 70, 29, 82, undefined],
+      borderColor: 'rgba(21, 191, 202, 1)',
+      backgroundColor: 'rgba(21, 191, 202, 0)',
+    },
+  ],
+};

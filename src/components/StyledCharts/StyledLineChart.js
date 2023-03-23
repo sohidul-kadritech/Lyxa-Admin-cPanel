@@ -7,7 +7,6 @@ export const options = {
     display: false,
   },
 };
-
-export default function StyledAreaChart({ data }) {
+export default function StyledLineChart({ data }) {
   return <Line options={options} data={data} />;
 }

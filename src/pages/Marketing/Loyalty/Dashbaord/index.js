@@ -9,7 +9,7 @@ import StyledAreaChartfrom from '../../../../components/StyledCharts/StyledAreaC
 import StyledBarChart from '../../../../components/StyledCharts/StyledBarChart';
 import Wrapper from '../../../../components/Wrapper';
 import InfoCard from './InfoCard';
-import { areaChartData, barChartData, ProductsInfoListData } from './mock';
+import { areaChartData, barChartData, lineChartData, ProductsInfoListData } from './mock';
 import ProductsInfoList from './ProductsInfoList';
 import { IncreaseDecreaseTag, ViewMoreTag } from './Tags';
 
@@ -64,30 +64,35 @@ export default function LoyaltyProgramDashboard() {
       </Stack>
       <BreadCrumbs items={breadCrumbItems} />
       <Grid container spacing={6.5} pb={3}>
-        <Grid xs={6} md={4}>
+        <Grid sm={6} md={4} lg={4}>
           <StyledBox>
             <InfoCard title="Ongoing Promotions on Items" value={14} Tag={<ViewMoreTag />} />
           </StyledBox>
         </Grid>
-        <Grid xs={6} md={4}>
+        <Grid sm={6} md={4} lg={4}>
           <StyledBox>
             <InfoCard title="Ongoing Promotions on Items" value={14} Tag={<IncreaseDecreaseTag status="increase" />} />
           </StyledBox>
         </Grid>
-        <Grid xs={6} md={4}>
+        <Grid sm={6} md={4} lg={4}>
           <StyledBox>
             <InfoCard title="Ongoing Promotions on Items" value={14} Tag={<IncreaseDecreaseTag />} />
           </StyledBox>
         </Grid>
-        <Grid xs={12} md={5}>
+        <Grid sm={12} md={12} lg={5}>
           <StyledBox>
-            <ProductsInfoList items={ProductsInfoListData} onVeiwMore={() => {}} />
+            <ProductsInfoList
+              items={ProductsInfoListData}
+              onVeiwMore={() => {
+                console.log('Clicked');
+              }}
+            />
           </StyledBox>
         </Grid>
-        <Grid xs={12} md={7}>
+        <Grid sm={12} md={12} lg={7}>
           <StyledBox
             sx={{
-              padding: '14px 18px 23px 20px',
+              padding: '18px 18px 23px 20px',
             }}
           >
             <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
@@ -105,10 +110,10 @@ export default function LoyaltyProgramDashboard() {
             </Box>
           </StyledBox>
         </Grid>
-        <Grid xs={12}>
+        <Grid sm={12}>
           <StyledBox
             sx={{
-              padding: '14px 18px 23px 20px',
+              padding: '18px 18px 23px 20px',
             }}
           >
             <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
@@ -119,29 +124,22 @@ export default function LoyaltyProgramDashboard() {
             </Stack>
             <Box
               sx={{
-                height: '325px',
+                height: '245px',
               }}
             >
               <StyledAreaChartfrom data={areaChartData} />
             </Box>
           </StyledBox>
         </Grid>
-      </Grid>
-      {/* <Grid container spacing={6.5}>
-        <Grid xs={12} md={5}>
-          <StyledBox>
-            <ProductsInfoList items={ProductsInfoListData} onVeiwMore={() => {}} />
-          </StyledBox>
-        </Grid>
-        <Grid xs={12} md={7}>
+        <Grid sm={12} md={12} lg={6}>
           <StyledBox
             sx={{
-              padding: '14px 18px 23px 20px',
+              padding: '18px 18px 23px 20px',
             }}
           >
             <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
               <Typography variant="body1" fontWeight={600}>
-                Loyalty points usage
+                Customers
               </Typography>
               <StyledSelect2 items={selectMockOptions} defaultValue="week" />
             </Stack>
@@ -154,7 +152,28 @@ export default function LoyaltyProgramDashboard() {
             </Box>
           </StyledBox>
         </Grid>
-      </Grid> */}
+        <Grid sm={12} md={12} lg={6}>
+          <StyledBox
+            sx={{
+              padding: '18px 18px 23px 20px',
+            }}
+          >
+            <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
+              <Typography variant="body1" fontWeight={600}>
+                Amount spent
+              </Typography>
+              <StyledSelect2 items={selectMockOptions} defaultValue="week" />
+            </Stack>
+            <Box
+              sx={{
+                height: '325px',
+              }}
+            >
+              <StyledAreaChartfrom data={lineChartData} />
+            </Box>
+          </StyledBox>
+        </Grid>
+      </Grid>
     </Wrapper>
   );
 }

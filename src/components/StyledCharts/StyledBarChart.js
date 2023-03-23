@@ -2,8 +2,8 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
 export const defaultOptions = {
-  maintainAspectRatio: false,
   reponsive: true,
+  maintainAspectRatio: false,
   legend: {
     display: false,
   },
