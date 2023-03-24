@@ -1,6 +1,8 @@
 // third party
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Box, Button, Stack, styled, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Button, Modal, Paper, Stack, styled, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { useState } from 'react';
+
 // project import
 import BreadCrumbs from '../../../../components/Common/BreadCrumb2';
 import PageButton from '../../../../components/Common/PageButton';
@@ -8,6 +10,7 @@ import StyledSelect2 from '../../../../components/Styled/StyledSelect2';
 import StyledAreaChartfrom from '../../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../../components/StyledCharts/StyledBarChart';
 import Wrapper from '../../../../components/Wrapper';
+import LoyaltySettings from '../Settings';
 import InfoCard from './InfoCard';
 import { areaChartData, barChartData, lineChartData, ProductsInfoListData } from './mock';
 import ProductsInfoList from './ProductsInfoList';
@@ -46,6 +49,8 @@ const selectMockOptions = [
 ];
 
 export default function LoyaltyProgramDashboard() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <Wrapper
       sx={{
@@ -58,7 +63,13 @@ export default function LoyaltyProgramDashboard() {
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center" pt={8}>
         <PageButton label="Back to Marketing" to="/marketing" startIcon={<KeyboardBackspaceIcon />} />
-        <Button variant="contained" color="secondary">
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
+        >
           Manage Promotions
         </Button>
       </Stack>
@@ -174,6 +185,29 @@ export default function LoyaltyProgramDashboard() {
           </StyledBox>
         </Grid>
       </Grid>
+      <Modal
+        sx={{
+          minHeight: '0',
+          maxHeight: '90%',
+          top: '5%',
+        }}
+        open={isModalOpen}
+      >
+        <Paper
+          sx={{
+            maxWidth: 'calc(100vw - 100px)',
+            position: 'relative',
+            borderRadius: '10px',
+            height: '100%',
+          }}
+        >
+          <LoyaltySettings
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        </Paper>
+      </Modal>
     </Wrapper>
   );
 }

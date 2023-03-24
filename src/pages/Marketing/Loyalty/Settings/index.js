@@ -26,20 +26,21 @@ import { useSelector } from 'react-redux';
 
 // project import
 import moment from 'moment';
-import CloseButton from '../../../components/Common/CloseButton';
-import ConfirmModal from '../../../components/Common/ConfirmModal';
-import ProductSelect from '../../../components/Common/ProductSelect';
-import FilterDate from '../../../components/Filter/FilterDate';
-import FilterSelect from '../../../components/Filter/FilterSelect';
-import StyledAccordion from '../../../components/Styled/StyledAccordion';
-import StyledInput from '../../../components/Styled/StyledInput';
-import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
-import StyledTable2 from '../../../components/Styled/StyledTable2';
-import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
-import { deepClone } from '../../../helpers/deepClone';
-import { successMsg } from '../../../helpers/successMsg';
-import * as Api from '../../../network/Api';
-import AXIOS from '../../../network/axios';
+import CloseButton from '../../../../components/Common/CloseButton';
+import ConfirmModal from '../../../../components/Common/ConfirmModal';
+import ProductSelect from '../../../../components/Common/ProductSelect';
+import FilterDate from '../../../../components/Filter/FilterDate';
+import FilterSelect from '../../../../components/Filter/FilterSelect';
+import StyledAccordion from '../../../../components/Styled/StyledAccordion';
+import StyledInput from '../../../../components/Styled/StyledInput';
+import StyledRadioGroup from '../../../../components/Styled/StyledRadioGroup';
+import StyledTable2 from '../../../../components/Styled/StyledTable2';
+import getCookiesAsObject from '../../../../helpers/cookies/getCookiesAsObject';
+import { deepClone } from '../../../../helpers/deepClone';
+import { successMsg } from '../../../../helpers/successMsg';
+import * as Api from '../../../../network/Api';
+import AXIOS from '../../../../network/axios';
+import BannerPreview from './BannerPreview';
 
 // helper functions
 const createGroupedList = (products, category) => {
@@ -174,6 +175,7 @@ const productSelectKeyForLS = 'loyaltySettingsSelectType';
 
 export default function LoyaltySettings({ closeModal }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { shopBanner, shopLogo, shopName } = useSelector((store) => store.Login.admin);
   const theme = useTheme();
   const queryClient = useQueryClient();
 
@@ -264,6 +266,8 @@ export default function LoyaltySettings({ closeModal }) {
       } else {
         setPageMode(0);
         setIsPageDisabled(false);
+        setItemSelectType('multiple');
+        localStorage.setItem(productSelectKeyForLS, 'multiple');
       }
     },
   });
@@ -321,6 +325,9 @@ export default function LoyaltySettings({ closeModal }) {
 
     setLocalData(newData);
     setHasGlobalChange(false);
+
+    setIsPageDisabled(true);
+    setPageMode(1);
   };
 
   // update loyalty settings
@@ -1267,7 +1274,10 @@ export default function LoyaltySettings({ closeModal }) {
           padding: '36px',
         }}
       >
-        Fist Side
+        <Typography variant="h4" pb={8}>
+          Preview
+        </Typography>
+        <BannerPreview banner={shopBanner} logo={shopLogo} name={shopName} />
       </Box>
       <ConfirmModal
         message={confirmAction.message}
