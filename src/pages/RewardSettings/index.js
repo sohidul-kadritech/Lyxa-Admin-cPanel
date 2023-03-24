@@ -1,17 +1,7 @@
 // third party
 import ClickAwayListener from '@mui/base/ClickAwayListener';
 import { Add, Close, Edit, West } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  Stack,
-  styled,
-  Typography,
-  Unstable_Grid2 as Grid,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, IconButton, Stack, styled, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
@@ -19,6 +9,7 @@ import { Container, Draggable } from 'react-smooth-dnd';
 // project import
 import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import PageButton from '../../components/Common/PageButton';
+import StyledChip from '../../components/Styled/StyledChips';
 import StyledInput from '../../components/Styled/StyledInput';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import Wrapper from '../../components/Wrapper';
@@ -38,32 +29,6 @@ const getRewardInit = {
 
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
-
-const StyledChip = styled(Chip)(({ theme }) => ({
-  background: theme.palette.background.secondary,
-  borderRadius: '30px',
-  padding: '12px 30px',
-  height: 'auto',
-  gap: '12px',
-
-  '& .MuiChip-label': {
-    padding: '0',
-    fontFamily: 'Inter',
-    fontWeight: '500',
-    lineHeight: '24px',
-  },
-
-  '& .MuiSvgIcon-root': {
-    fontSize: '17px',
-    color: '#3F4254',
-    margin: '0',
-
-    '&:hover': {
-      color: '#3F4254',
-      opacity: '.7',
-    },
-  },
-}));
 
 const StyledIconButton = styled(IconButton)(() => ({
   background: '#F3F6F9',
