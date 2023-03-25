@@ -4,7 +4,7 @@ import ClickAwayListener from '@mui/base/ClickAwayListener';
 import { Add, West } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
 import { useRef, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 // project import
 import PageButton from '../../components/Common/PageButton';
@@ -12,16 +12,12 @@ import StyledChip from '../../components/Styled/StyledChips';
 import StyledInput from '../../components/Styled/StyledInput';
 import StyledSwitchList from '../../components/Styled/StyledSwitchList';
 import Wrapper from '../../components/Wrapper';
+import { deepClone } from '../../helpers/deepClone';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
-// QUERY ONLY ONCE
-let QUERY_RUNNED = false;
-
-const mockItems = [10, 20, 30];
-
-const restaurantDealOptions = [
+const dealTypes = [
   {
     value: 'double_menu',
     label: 'Double Menu',
@@ -38,35 +34,40 @@ const restaurantDealOptions = [
   },
 ];
 
+// QUERY ONLY ONCE
+let QUERY_RUNNED = false;
+
 export default function DealSettings() {
   const theme = useTheme();
   const [serverState, setServerState] = useState({});
   const [newBundleItem, setNewBundleItem] = useState('');
 
   // restaurant
-  const [restaurantBundles, setRestaurantBundles] = useState(mockItems);
+  const [restaurantBundles, setRestaurantBundles] = useState([]);
   const [showRestaurantAdd, setShowRestaurantAdd] = useState(false);
-  const [restaurantOptions, setRestaurantOptions] = useState([]);
+  const [restaurantDeals, setRestaurantDeals] = useState([]);
   const restaurantAddBundleRef = useRef();
 
   // grocery
-  const [groceryBundles, setGroceryBundles] = useState(mockItems);
+  const [groceryBundles, setGroceryBundles] = useState([]);
   const [showGroceryAdd, setShowGroceryAdd] = useState(false);
+  const [groceryDeals, setGroceryDeals] = useState([]);
   const groceryAddBundleRef = useRef();
 
   // pharmacy
-  const [pharmacyBundles, setPharmacyBundles] = useState(mockItems);
+  const [pharmacyBundles, setPharmacyBundles] = useState([]);
   const [showPharmacyAdd, setShowPharmacyAdd] = useState(false);
+  const [pharmacyDeals, setPharmacyDeals] = useState([]);
   const pharmacyAddBundleRef = useRef();
 
-  // reward bundle
-  const [rewardBundle, setRewardBundle] = useState([]);
-  const [showAddRewardBundle, setShowAddRewardBundle] = useState(false);
-  const addRewardBundleInputRef = useRef();
-
-  const addNewBundleItem = () => {
+  const addNewBundleItem = (type) => {
     if (Number(newBundleItem) < 1) {
       successMsg('Reward Bundle cannot be smaller than 1');
+      return;
+    }
+
+    if (Number(newBundleItem) > 100) {
+      successMsg('Reward Bundle cannot be greater than 100');
       return;
     }
 
@@ -75,111 +76,133 @@ export default function DealSettings() {
       return;
     }
 
-    if (rewardBundle.includes(Number(newBundleItem))) {
+    let oldList;
+    let setOldList;
+    let setShowAdd;
+
+    if (type === 'pharmacy') {
+      oldList = pharmacyBundles;
+      setOldList = setPharmacyBundles;
+      setShowAdd = setShowPharmacyAdd;
+    } else if (type === 'grocery') {
+      oldList = groceryBundles;
+      setOldList = setGroceryBundles;
+      setShowAdd = setShowGroceryAdd;
+    } else {
+      oldList = restaurantBundles;
+      setOldList = setRestaurantBundles;
+      setShowAdd = setShowRestaurantAdd;
+    }
+
+    if (oldList.includes(Number(newBundleItem))) {
       successMsg('Reward Bundle item already exists');
       return;
     }
 
-    setRewardBundle((prev) => [...prev, Number(newBundleItem)]);
+    setOldList((prev) => [...prev, Number(newBundleItem)]);
     setNewBundleItem('');
-    setShowAddRewardBundle(false);
+    setShowAdd(false);
   };
 
   const deleteItem = (type, payload) => {
     switch (type) {
-      case 'bundleItem':
-        setRewardBundle((prev) => prev.filter((item, index) => index !== payload));
+      case 'restaurant':
+        setRestaurantBundles((prev) => prev.filter((item, index) => index !== payload));
         break;
 
+      case 'grocery':
+        setGroceryBundles((prev) => prev.filter((item, index) => index !== payload));
+        break;
+
+      case 'pharmacy':
+        setPharmacyBundles((prev) => prev.filter((item, index) => index !== payload));
+        break;
       default:
     }
   };
 
   const updateLocalState = (data) => {
-    setRewardBundle(data?.rewardBundle || []);
+    data?.forEach((item) => {
+      if (item?.type === 'pharmacy') {
+        setPharmacyBundles(item?.percentageBundle || []);
+        setPharmacyDeals(item?.option || []);
+      } else if (item?.type === 'grocery') {
+        setGroceryBundles(item?.percentageBundle || []);
+        setGroceryDeals(item?.option || []);
+      } else {
+        setRestaurantBundles(item?.percentageBundle || []);
+        setRestaurantDeals(item?.option || []);
+      }
+    });
   };
 
-  useQuery(['deal-settings'], () => AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS), {
-    enabled: !QUERY_RUNNED,
+  useQuery(
+    ['deal-settings'],
+    () =>
+      AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
+        params: {
+          type: 'all',
+        },
+      }),
+    {
+      enabled: !QUERY_RUNNED,
+      onSuccess: (data) => {
+        QUERY_RUNNED = true;
+        console.log('backend data', data);
+
+        if (data?.status) {
+          setServerState(data?.data?.dealSetting);
+
+          const newData = deepClone(data?.data?.dealSetting);
+          updateLocalState(newData || []);
+        }
+      },
+      onError: (error) => {
+        console.log('api error: ', error);
+      },
+    }
+  );
+
+  const updateSettingsMutation = useMutation((data) => AXIOS.post(Api.EDIT_ADMIN_DEAL_SETTINGS, data), {
     onSuccess: (data) => {
-      QUERY_RUNNED = false;
-      setServerState(data?.data?.rewardSetting);
-      console.log('backend data', data?.data?.rewardSetting);
-      let newData;
+      successMsg(data?.message, 'success');
 
-      try {
-        newData = JSON.parse(JSON.stringify(data?.data?.rewardSetting));
-      } catch (error) {
-        console.log(error);
+      if (data?.status) {
+        const newData = deepClone(data?.data?.dealSetting);
+        updateLocalState(newData || []);
+        setServerState(data?.data?.dealSetting);
       }
-
-      updateLocalState(newData || {});
+    },
+    onError: (error) => {
+      console.log('api error: ', error);
     },
   });
 
-  // const updateSettingsMutation = useMutation((data) => AXIOS.post(Api.EDIT_ADMIN_REWARD_SETTINGS, data), {
-  //   onSuccess: (data) => {
-  //     if (data?.status) {
-  //       successMsg(data?.message, 'success');
-  //       let newData;
-
-  //       try {
-  //         newData = JSON.parse(JSON.stringify(data?.data?.rewardSetting));
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-
-  //       updateLocalState(newData || {});
-  //       setFetchedData(data?.data?.rewardSetting);
-  //     } else {
-  //       successMsg(data?.message);
-  //     }
-  //   },
-  //   onError: (error) => {
-  //     console.log('api error: ', error);
-  //   },
-  // });
-
-  // const updateSettings = () => {
-  //   updateSettingsMutation.mutate({
-  //     minSpendLimit,
-  //     rewardBundle,
-  //     rewardCategory: rewardCategory.map((item, index) => {
-  //       item.sortingOrder = index;
-  //       return item;
-  //     }),
-  //     getReward: {
-  //       amount: getReward.amount,
-  //       points: 1,
-  //     },
-  //     redeemReward: {
-  //       amount: redeemReward.amount,
-  //       points: 1,
-  //     },
-  //     adminCutForReward,
-  //     expiration_period: expirationPeriod,
-  //     type: [
-  //       'expiration_period',
-  //       'adminCutForReward',
-  //       'redeemReward',
-  //       'getReward',
-  //       'rewardCategory',
-  //       'rewardBundle',
-  //       'minSpendLimit',
-  //     ],
-  //   });
-  // };
+  const updateSettings = () => {
+    updateSettingsMutation.mutate({
+      deals: [
+        {
+          percentageBundle: pharmacyBundles,
+          type: 'pharmacy',
+          option: pharmacyDeals,
+        },
+        {
+          percentageBundle: groceryBundles,
+          type: 'grocery',
+          option: groceryDeals,
+        },
+        {
+          percentageBundle: restaurantBundles,
+          type: 'restaurant',
+          option: restaurantDeals,
+        },
+      ],
+      type: ['pharmacy', 'grocery', 'restaurant'],
+    });
+  };
 
   const discardChanges = () => {
-    let data;
-
-    try {
-      data = JSON.parse(JSON.stringify(serverState));
-    } catch (error) {
-      console.log(error);
-    }
-
-    updateLocalState(data || {});
+    updateLocalState(deepClone(serverState) || []);
   };
 
   return (
@@ -242,17 +265,17 @@ export default function DealSettings() {
                       }}
                     />
                   ))}
-                  {showAddRewardBundle && (
+                  {showRestaurantAdd && (
                     <ClickAwayListener
                       onClickAway={() => {
-                        if (showAddRewardBundle) {
+                        if (showRestaurantAdd) {
                           setShowRestaurantAdd(false);
                           setNewBundleItem('');
                         }
                       }}
                     >
                       <StyledInput
-                        ref={addRewardBundleInputRef}
+                        ref={restaurantAddBundleRef}
                         type="number"
                         value={newBundleItem}
                         sx={{
@@ -289,9 +312,9 @@ export default function DealSettings() {
                     },
                   }}
                   onClick={() => {
-                    setShowAddRewardBundle(true);
+                    setShowRestaurantAdd(true);
                     setTimeout(() => {
-                      addRewardBundleInputRef?.current?.querySelector('input')?.focus();
+                      restaurantAddBundleRef?.current?.querySelector('input')?.focus();
                     }, 10);
                   }}
                 >
@@ -300,18 +323,19 @@ export default function DealSettings() {
               </Box>
               {/* options */}
               <StyledSwitchList
-                items={restaurantDealOptions}
-                values={restaurantOptions}
+                items={dealTypes}
+                values={restaurantDeals}
                 onChange={(value) => {
-                  if (restaurantOptions.includes(value)) {
-                    setRestaurantOptions((prev) => prev.filter((item) => item !== value));
+                  if (restaurantDeals.includes(value)) {
+                    setRestaurantDeals((prev) => prev.filter((item) => item !== value));
                   } else {
-                    setRestaurantOptions((prev) => [...prev, value]);
+                    setRestaurantDeals((prev) => [...prev, value]);
                   }
                 }}
               />
             </Box>
           </Grid>
+          {/* grocery */}
           <Grid xs={12}>
             <Box
               sx={{
@@ -337,26 +361,26 @@ export default function DealSettings() {
                   Percentage Bundle
                 </Typography>
                 <Stack direction="row" gap={4} mb={2.5}>
-                  {restaurantBundles.map((item, index) => (
+                  {groceryBundles.map((item, index) => (
                     <StyledChip
                       key={item}
                       label={item}
                       onDelete={() => {
-                        deleteItem('restaurant', index);
+                        deleteItem('grocery', index);
                       }}
                     />
                   ))}
-                  {showAddRewardBundle && (
+                  {showGroceryAdd && (
                     <ClickAwayListener
                       onClickAway={() => {
-                        if (showAddRewardBundle) {
-                          setShowRestaurantAdd(false);
+                        if (showGroceryAdd) {
+                          setShowGroceryAdd(false);
                           setNewBundleItem('');
                         }
                       }}
                     >
                       <StyledInput
-                        ref={addRewardBundleInputRef}
+                        ref={groceryAddBundleRef}
                         type="number"
                         value={newBundleItem}
                         sx={{
@@ -370,7 +394,7 @@ export default function DealSettings() {
                         }}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
-                            addNewBundleItem();
+                            addNewBundleItem('grocery');
                           }
                         }}
                       />
@@ -393,9 +417,9 @@ export default function DealSettings() {
                     },
                   }}
                   onClick={() => {
-                    setShowAddRewardBundle(true);
+                    setShowGroceryAdd(true);
                     setTimeout(() => {
-                      addRewardBundleInputRef?.current?.querySelector('input')?.focus();
+                      groceryAddBundleRef?.current?.querySelector('input')?.focus();
                     }, 10);
                   }}
                 >
@@ -404,18 +428,19 @@ export default function DealSettings() {
               </Box>
               {/* options */}
               <StyledSwitchList
-                items={restaurantDealOptions}
-                values={restaurantOptions}
+                items={dealTypes}
+                values={groceryDeals}
                 onChange={(value) => {
-                  if (restaurantOptions.includes(value)) {
-                    setRestaurantOptions((prev) => prev.filter((item) => item !== value));
+                  if (groceryDeals.includes(value)) {
+                    setGroceryDeals((prev) => prev.filter((item) => item !== value));
                   } else {
-                    setRestaurantOptions((prev) => [...prev, value]);
+                    setGroceryDeals((prev) => [...prev, value]);
                   }
                 }}
               />
             </Box>
           </Grid>
+          {/* prarmacy */}
           <Grid xs={12}>
             <Box
               sx={{
@@ -441,26 +466,26 @@ export default function DealSettings() {
                   Percentage Bundle
                 </Typography>
                 <Stack direction="row" gap={4} mb={2.5}>
-                  {restaurantBundles.map((item, index) => (
+                  {pharmacyBundles.map((item, index) => (
                     <StyledChip
                       key={item}
                       label={item}
                       onDelete={() => {
-                        deleteItem('restaurant', index);
+                        deleteItem('pharmacy', index);
                       }}
                     />
                   ))}
-                  {showAddRewardBundle && (
+                  {showPharmacyAdd && (
                     <ClickAwayListener
                       onClickAway={() => {
-                        if (showAddRewardBundle) {
-                          setShowRestaurantAdd(false);
+                        if (showPharmacyAdd) {
+                          setShowPharmacyAdd(false);
                           setNewBundleItem('');
                         }
                       }}
                     >
                       <StyledInput
-                        ref={addRewardBundleInputRef}
+                        ref={pharmacyAddBundleRef}
                         type="number"
                         value={newBundleItem}
                         sx={{
@@ -474,7 +499,7 @@ export default function DealSettings() {
                         }}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
-                            addNewBundleItem();
+                            addNewBundleItem('pharmacy');
                           }
                         }}
                       />
@@ -497,9 +522,9 @@ export default function DealSettings() {
                     },
                   }}
                   onClick={() => {
-                    setShowAddRewardBundle(true);
+                    setShowPharmacyAdd(true);
                     setTimeout(() => {
-                      addRewardBundleInputRef?.current?.querySelector('input')?.focus();
+                      pharmacyAddBundleRef?.current?.querySelector('input')?.focus();
                     }, 10);
                   }}
                 >
@@ -508,13 +533,13 @@ export default function DealSettings() {
               </Box>
               {/* options */}
               <StyledSwitchList
-                items={restaurantDealOptions}
-                values={restaurantOptions}
+                items={dealTypes}
+                values={pharmacyDeals}
                 onChange={(value) => {
-                  if (restaurantOptions.includes(value)) {
-                    setRestaurantOptions((prev) => prev.filter((item) => item !== value));
+                  if (pharmacyDeals.includes(value)) {
+                    setPharmacyDeals((prev) => prev.filter((item) => item !== value));
                   } else {
-                    setRestaurantOptions((prev) => [...prev, value]);
+                    setPharmacyDeals((prev) => [...prev, value]);
                   }
                 }}
               />
@@ -543,10 +568,10 @@ export default function DealSettings() {
           <Button
             variant="contained"
             color="secondary"
-            // disabled={updateSettingsMutation.isLoading}
-            // onClick={() => {
-            //   updateSettings();
-            // }}
+            disabled={updateSettingsMutation.isLoading}
+            onClick={() => {
+              updateSettings();
+            }}
           >
             Save Changes
           </Button>
