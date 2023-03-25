@@ -110,6 +110,7 @@ export default function Provider({ children }) {
       fontWeight: 400,
       fontSize: `${pxToRem(13)}rem`,
       lineHeight: `${pxToRem(21)}rem`,
+      color: '#B5B5C3!important',
 
       [theme.breakpoints.up('lg')]: {
         fontSize: `${pxToRem(13)}rem`,

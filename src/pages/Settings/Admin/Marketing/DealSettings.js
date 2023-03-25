@@ -7,15 +7,15 @@ import { useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
-import PageButton from '../../components/Common/PageButton';
-import StyledChip from '../../components/Styled/StyledChips';
-import StyledInput from '../../components/Styled/StyledInput';
-import StyledSwitchList from '../../components/Styled/StyledSwitchList';
-import Wrapper from '../../components/Wrapper';
-import { deepClone } from '../../helpers/deepClone';
-import { successMsg } from '../../helpers/successMsg';
-import * as Api from '../../network/Api';
-import AXIOS from '../../network/axios';
+import PageButton from '../../../../components/Common/PageButton';
+import StyledChip from '../../../../components/Styled/StyledChips';
+import StyledInput from '../../../../components/Styled/StyledInput';
+import StyledSwitchList from '../../../../components/Styled/StyledSwitchList';
+import Wrapper from '../../../../components/Wrapper';
+import { deepClone } from '../../../../helpers/deepClone';
+import { successMsg } from '../../../../helpers/successMsg';
+import * as Api from '../../../../network/Api';
+import AXIOS from '../../../../network/axios';
 
 const dealTypes = [
   {
@@ -35,12 +35,13 @@ const dealTypes = [
 ];
 
 // QUERY ONLY ONCE
-let QUERY_RUNNED = false;
+const QUERY_RUNNED = false;
 
 export default function DealSettings() {
   const theme = useTheme();
   const [serverState, setServerState] = useState({});
   const [newBundleItem, setNewBundleItem] = useState('');
+  const [queryRunned, setQueryRunned] = useState(false);
 
   // restaurant
   const [restaurantBundles, setRestaurantBundles] = useState([]);
@@ -145,10 +146,9 @@ export default function DealSettings() {
         },
       }),
     {
-      enabled: !QUERY_RUNNED,
+      enabled: !queryRunned,
       onSuccess: (data) => {
-        QUERY_RUNNED = true;
-        console.log('backend data', data);
+        setQueryRunned(true);
 
         if (data?.status) {
           setServerState(data?.data?.dealSetting);
@@ -217,7 +217,7 @@ export default function DealSettings() {
             pb: 5,
           }}
         >
-          <PageButton label="Back to Marketing" startIcon={<West />} />
+          <PageButton label="Back to Marketing" startIcon={<West />} to="/admin/settings2/marketing" />
           <Typography
             variant="h4"
             color={theme.palette.text.heading}
@@ -226,7 +226,7 @@ export default function DealSettings() {
               pb: 2,
             }}
           >
-            Loyalty Points
+            Deals
           </Typography>
         </Box>
         <Grid container spacing="25px">

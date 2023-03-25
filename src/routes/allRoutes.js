@@ -53,7 +53,6 @@ import CategoryList from '../pages/Categories&Tags/Category/CategoryList/Categor
 import TagAdd from '../pages/Categories&Tags/Tags/TagAdd/TagAdd';
 import TagsList from '../pages/Categories&Tags/Tags/TagsList/TagsList';
 import ChatDetails from '../pages/Chat/ChatDetails/ChatDetails';
-import DealSettings from '../pages/Deals';
 import DeliverymanDetails from '../pages/Deliveryman/DeliverymanDetails/DeliverymanDetails';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import ProductAdd from '../pages/Product/ProductAdd/ProductAdd';
@@ -62,6 +61,7 @@ import ProductList from '../pages/Product/ProductList/ProductList';
 import UnitTypes from '../pages/Product/UnitTypes/UnitTypes';
 import RatingSettings from '../pages/Ratings';
 import SellerDetails from '../pages/Seller/SellerDetails/SellerDetails';
+import AdminDealSettings from '../pages/Settings/Admin/Marketing/DealSettings';
 import Cuisine from '../pages/Shops/Cuisine';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import UserTransaction from '../pages/Users/UserTransaction/UserTransaction';
@@ -74,8 +74,10 @@ import DefaultChat from '../pages/DefaultChat/DefaultChat';
 import LoyaltyProgramDashboard from '../pages/Marketing/Loyalty/Dashbaord';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
-import RewardSettings from '../pages/RewardSettings';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
+import AdminSettings2 from '../pages/Settings/Admin';
+import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
+import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
 import Tags from '../pages/Tags/Tags';
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
@@ -201,8 +203,11 @@ const adminRoutes = [
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/admin/default-chat-message', component: DefaultChat },
   { path: '/admin/database/collections', component: DatabaseSettings },
-  { path: '/admin/settings/reward-settings', component: RewardSettings },
-  { path: '/admin/settings/deal-settings', component: DealSettings },
+
+  { path: '/admin/settings2', component: AdminSettings2 },
+  { path: '/admin/settings2/marketing', component: AdminMarketingSettings },
+  { path: '/admin/settings2/marketing/loyalty', component: AdminLoyaltySettings },
+  { path: '/admin/settings2/marketing/deals', component: AdminDealSettings },
 
   // terms and conditions
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },

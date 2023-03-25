@@ -7,15 +7,15 @@ import { useMutation, useQuery } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
-import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
-import PageButton from '../../components/Common/PageButton';
-import StyledChip from '../../components/Styled/StyledChips';
-import StyledInput from '../../components/Styled/StyledInput';
-import StyledSwitch from '../../components/Styled/StyledSwitch';
-import Wrapper from '../../components/Wrapper';
-import { successMsg } from '../../helpers/successMsg';
-import * as Api from '../../network/Api';
-import AXIOS from '../../network/axios';
+import { ReactComponent as HandleIcon } from '../../../../assets/icons/handle.svg';
+import PageButton from '../../../../components/Common/PageButton';
+import StyledChip from '../../../../components/Styled/StyledChips';
+import StyledInput from '../../../../components/Styled/StyledInput';
+import StyledSwitch from '../../../../components/Styled/StyledSwitch';
+import Wrapper from '../../../../components/Wrapper';
+import { successMsg } from '../../../../helpers/successMsg';
+import * as Api from '../../../../network/Api';
+import AXIOS from '../../../../network/axios';
 
 const rewardCategoryInit = {
   name: '',
@@ -45,7 +45,7 @@ const StyledIconButton = styled(IconButton)(() => ({
   },
 }));
 
-export default function RewardSettings() {
+export default function LoyaltySettings() {
   const theme = useTheme();
   const [render, setRender] = useState(false);
   const [fetchedData, setFetchedData] = useState({});
@@ -236,17 +236,14 @@ export default function RewardSettings() {
 
   return (
     <Wrapper>
-      <Box
-        className="page-content"
-        sx={{ height: '100vh', paddingLeft: '0px', paddingRight: '0px', overflowY: 'scroll' }}
-      >
+      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
         {/* top */}
         <Box
           sx={{
             pb: 5,
           }}
         >
-          <PageButton label="Back to Marketing" startIcon={<West />} />
+          <PageButton label="Back to Marketing" startIcon={<West />} to="/admin/settings2/marketing" />
           <Typography
             variant="h4"
             color={theme.palette.text.heading}
