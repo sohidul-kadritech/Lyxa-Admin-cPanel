@@ -27,9 +27,9 @@ export default function PageList({ items }) {
   const history = useHistory();
   return (
     <Stack gap={5}>
-      {items.map((item) => (
+      {items.map((item, index) => (
         <StyledButton
-          key={item.to}
+          key={index}
           disableRipple
           endIcon={<EastIcon />}
           onClick={() => {

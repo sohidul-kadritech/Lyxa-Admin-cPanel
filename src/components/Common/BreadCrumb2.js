@@ -15,11 +15,11 @@ const linkStyle = (isActive) => ({
   color: `${isActive ? '#363636' : '#737373'}`,
 });
 
-export default function BreadCrumbs({ items, sx }) {
+export default function BreadCrumbs({ items, sx, ...props }) {
   const { length } = items;
 
   return (
-    <Box sx={{ ...contianerSx, ...(sx || {}) }}>
+    <Box sx={{ ...contianerSx, ...(sx || {}) }} {...props}>
       <Typography
         variant="h4"
         pb={2}

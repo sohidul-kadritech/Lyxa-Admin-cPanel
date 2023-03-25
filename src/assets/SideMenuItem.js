@@ -303,6 +303,12 @@ export const adminMenuItem = [
     ],
   },
   {
+    name: 'Display',
+    icon: 'ti-settings',
+    link: '/display',
+    isSubmenu: false,
+  },
+  {
     name: 'Settings',
     icon: 'ti-settings',
     link: '/admin/settings2',

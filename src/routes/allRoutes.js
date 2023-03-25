@@ -71,6 +71,8 @@ import ButlerFlaggedOrder from '../pages/Butler/ButlerFlaggedOrders';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import DefaultChat from '../pages/DefaultChat/DefaultChat';
+import DisplaySettings from '../pages/Display';
+import ListContainers from '../pages/Display/ListContianer';
 import LoyaltyProgramDashboard from '../pages/Marketing/Loyalty/Dashbaord';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
@@ -224,6 +226,10 @@ const adminRoutes = [
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },
+
+  // DISPLAY
+  { path: '/display', component: DisplaySettings },
+  { path: '/display/list-containers', component: ListContainers },
 
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
