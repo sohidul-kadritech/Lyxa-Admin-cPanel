@@ -2,7 +2,6 @@
 // third party
 import { Box, Modal, Paper, Unstable_Grid2 as Grid } from '@mui/material';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 // project import
 import { useQuery } from 'react-query';
@@ -20,7 +19,7 @@ import MarketingSettings from './Settings';
 
 export default function Marketing() {
   const [currentModal, setCurrentModal] = useState(null);
-  const history = useHistory();
+  // const history = useHistory();
   // eslint-disable-next-line no-unused-vars
   const { shopType, _id } = useSelector((store) => store.Login.admin);
 
@@ -73,7 +72,7 @@ export default function Marketing() {
               title="Buy 1, Get 1 Free"
               icon={BuyIcon}
               onOpen={() => {
-                console.log('opened');
+                setCurrentModal('double_menu');
               }}
             />
           </Grid>
@@ -94,11 +93,7 @@ export default function Marketing() {
               ongoing={loyaltySettingsQuery?.data?.isLoyaltyProgram}
               icon={LoyaltyIcon}
               onOpen={() => {
-                if (loyaltySettingsQuery?.data?.isLoyaltyProgram) {
-                  history.push('/marketing/loyalty');
-                } else {
-                  setCurrentModal('reward');
-                }
+                setCurrentModal('reward');
               }}
             />
           </Grid>
@@ -138,10 +133,17 @@ export default function Marketing() {
                 }}
               />
             )}
-            <div />
             {currentModal === 'percentage' && (
               <MarketingSettings
                 marketingType="percentage"
+                closeModal={() => {
+                  setCurrentModal(null);
+                }}
+              />
+            )}
+            {currentModal === 'double_menu' && (
+              <MarketingSettings
+                marketingType="double_menu"
                 closeModal={() => {
                   setCurrentModal(null);
                 }}

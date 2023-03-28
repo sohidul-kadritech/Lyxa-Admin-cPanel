@@ -10,7 +10,6 @@ function Skeleton({ sx, ...props }) {
       sx={{
         background: '#F6F6F6',
         display: 'block',
-        // width: '100%',
         borderRadius: '3px',
         ...(sx || {}),
       }}
@@ -47,44 +46,47 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
             objectFit: 'cover',
           }}
         />
-        <Box
-          sx={{
-            position: 'absolute',
-            left: '5px',
-            top: '3px',
-          }}
-        >
-          <TagBg />
-          <Stack
-            direction="row"
-            alignItems="center"
-            gap="3px"
-            sx={{
-              marginTop: '-25px',
-              paddingLeft: '8px',
-            }}
-          >
-            <Tag />
-            <Typography
+        {marketingType === 'percentage' ||
+          (marketingType === 'double_menu' && (
+            <Box
               sx={{
-                fontSize: '10px!important',
-                fontWeight: 400,
-                lineHeight: '14px',
-                color: '#6F6F6F',
+                position: 'absolute',
+                left: '5px',
+                top: '3px',
               }}
             >
-              <span
-                style={{
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
+              <TagBg />
+              <Stack
+                direction="row"
+                alignItems="center"
+                gap="3px"
+                sx={{
+                  marginTop: '-23px',
+                  paddingLeft: '8px',
                 }}
               >
-                50% off{' '}
-              </span>
-              on selected items
-            </Typography>
-          </Stack>
-        </Box>
+                <Tag />
+                <Typography
+                  sx={{
+                    fontSize: '10px!important',
+                    fontWeight: 400,
+                    lineHeight: '14px',
+                    color: '#6F6F6F',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: theme.palette.primary.main,
+                    }}
+                  >
+                    {marketingType === 'double_menu' ? '2x Deal ' : '50% off '}
+                  </span>
+                  on selected items
+                </Typography>
+              </Stack>
+            </Box>
+          ))}
       </Box>
       <Stack direction="row" gap="10px" alignItems="baseline" pt={2.5}>
         {/* logo */}

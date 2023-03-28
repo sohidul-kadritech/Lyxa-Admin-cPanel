@@ -416,6 +416,11 @@ export default function MarketingSettings({ closeModal, marketingType }) {
           discount: (item?.price / 100) * item?.discountPercentage,
         };
       }
+
+      // double_menu
+      return {
+        id: item?._id,
+      };
     });
 
     if (products?.length === 0) {
@@ -497,7 +502,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
   const allColumns = [
     {
       id: 1,
-      showFor: ['reward', 'percentage'],
+      showFor: ['reward', 'percentage', 'double_menu'],
       headerName: `Item`,
       sortable: false,
       field: 'product',
@@ -823,6 +828,52 @@ export default function MarketingSettings({ closeModal, marketingType }) {
         );
       },
     },
+    {
+      id: 7,
+      headerName: `Final Price`,
+      showFor: ['double_menu'],
+      sortable: false,
+      field: 'calc',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => {
+        if (params?.row?.isCategoryHeader) {
+          return <></>;
+        }
+
+        if (!params?.row?.price) {
+          return <>--</>;
+        }
+
+        return (
+          <Stack direction="row" alignItems="center" gap={1.5}>
+            <Stack direction="row" alignItems="center" gap={1.5}>
+              <Typography variant="body1" color={theme.palette.text.heading}>
+                {currency} {params?.row?.price}
+              </Typography>
+              <Typography
+                sx={{
+                  color: '#A3A3A3',
+                  fontWeight: 500,
+                  textDecoration: 'line-through',
+                }}
+                variant="body1"
+              >
+                {currency} {params?.row?.price * 2}{' '}
+              </Typography>
+            </Stack>
+            <CloseButton
+              color="secondary"
+              onClick={() => {
+                removeProduct(params.row);
+                setHasChanged(true);
+              }}
+            />
+          </Stack>
+        );
+      },
+    },
   ];
 
   return (
@@ -899,12 +950,15 @@ export default function MarketingSettings({ closeModal, marketingType }) {
             <Typography variant="h4" pb={3}>
               {marketingType === 'reward' && 'Loyalty Program'}
               {marketingType === 'percentage' && 'Discounted Items'}
+              {marketingType === 'double_menu' && 'Buy 1, Get 1 Free'}
             </Typography>
             <Typography variant="body2" color={theme.palette.text.secondary2}>
               {marketingType === 'reward' &&
                 'Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item, giving them more incentive to order from your business.'}
               {marketingType === 'percentage' &&
                 'Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes.'}
+              {marketingType === 'double_menu' &&
+                "Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost"}
             </Typography>
           </Box>
           {/* products */}
@@ -923,7 +977,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
                 value={itemSelectType}
                 onChange={onProductSelectChange}
               />
-              {itemSelectType === 'multiple' && (
+              {itemSelectType === 'multiple' && marketingType === 'reward' && (
                 <Box
                   sx={{
                     position: 'absolute',
