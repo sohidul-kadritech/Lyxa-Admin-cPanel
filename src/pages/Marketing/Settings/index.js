@@ -160,9 +160,6 @@ const confirmActionInit = {
   onCancel: () => {},
 };
 
-// QUERY ONLY ONCE
-// const QUERY_RUNNED = false;
-
 // access token
 let accountId = null;
 
@@ -173,9 +170,9 @@ if (document.cookie.length) {
 
 // const productSelectKeyForLS = 'loyaltySettingsSelectType';
 
-export default function MarketingSettings({ closeModal, marketingType = 'reward' }) {
+export default function MarketingSettings({ closeModal, marketingType }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
-  const { shopBanner, shopLogo, shopName } = useSelector((store) => store.Login.admin);
+  const { shopBanner, shopLogo, shopName, shopType } = useSelector((store) => store.Login.admin);
   const theme = useTheme();
   const queryClient = useQueryClient();
 
@@ -189,7 +186,9 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
   const [pageMode, setPageMode] = useState(0);
 
   // reward settings
-  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS));
+  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
+    enabled: marketingType === 'reward',
+  });
 
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
@@ -204,6 +203,22 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
         shop: accountId,
       },
     })
+  );
+
+  console.log(productsQuery.data);
+
+  // deal settings query
+  const dealSettingsQuery = useQuery(
+    ['deal-settings'],
+    () =>
+      AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
+        params: {
+          type: shopType === 'food' ? 'restaurant' : shopType,
+        },
+      }),
+    {
+      enabled: marketingType === 'percentage',
+    }
   );
 
   const [itemSelectType, setItemSelectType] = useState('single');
@@ -334,8 +349,6 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
   // update loyalty settings
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.EDIT_MARKETING_SETTINGS, data), {
     onSuccess: (data, args) => {
-      // successMsg(data?.message);
-
       if (data?.status) {
         setServerState((prev) => data?.data?.marketing || prev);
         successMsg('Settings successfully updated', 'success');
@@ -363,28 +376,46 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
   const updateLoyaltySettings = (status) => {
     let prb = null;
 
+    // eslint-disable-next-line array-callback-return, consistent-return
     const productsData = products.map((item) => {
+      // reward
       if (!item?._id) {
         prb = 'Please remove empty items from list!';
       }
 
-      if (!item?.rewardCategory) {
+      if (marketingType === 'reward' && !item?.rewardCategory) {
         prb = 'Please select category for product!';
       }
 
-      if (!item?.rewardBundle) {
+      if (marketingType === 'reward' && !item?.rewardBundle) {
         prb = 'Please select reward bundle for product!';
       }
 
-      return {
-        id: item?._id,
-        rewardCategory: item?.rewardCategory,
-        rewardBundle: item?.rewardBundle,
-        reward: {
-          amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
-          points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
-        },
-      };
+      if (marketingType === 'reward') {
+        return {
+          id: item?._id,
+          rewardCategory: item?.rewardCategory,
+          rewardBundle: item?.rewardBundle,
+          reward: {
+            amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
+            points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
+          },
+        };
+      }
+
+      // percentage
+      if (marketingType === 'percentage' && !item?.discountPercentage) {
+        prb = 'Please select percentage bundle for product!';
+      }
+
+      if (marketingType === 'percentage') {
+        return {
+          id: item?._id,
+          discountPercentage: item?.discountPercentage,
+          discountPrice: item?.price - (item?.price / 100) * item?.discountPercentage,
+          discount: (item?.price / 100) * item?.discountPercentage,
+        };
+      }
     });
 
     if (products?.length === 0) {
@@ -420,7 +451,7 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
       duration,
       spendLimit: spendLimitChecked ? spendLimit : 0,
       status: status || 'active',
-      itemSelectType: 'multiple',
+      itemSelectionType: itemSelectType,
     });
   };
 
@@ -457,6 +488,11 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
       },
     }
   );
+
+  const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
+    ? dealSettingsQuery?.data?.data?.dealSetting[0]?.percentageBundle
+    : [];
+  console.log(dealSettingsQuery);
 
   const allColumns = [
     {
@@ -638,7 +674,7 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
 
         return (
           <FilterSelect
-            items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
+            items={shopPercentageDeals}
             placeholder="Select Percentage"
             disabled={!params.row?.price}
             getKey={(item) => item}
@@ -646,12 +682,12 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
             getLabel={(item) => item}
             getDisplayValue={(value) => `${value}`}
             onChange={(e) => {
-              params.row.rewardBundle = Number(e.target.value);
+              params.row.discountPercentage = Number(e.target.value);
               setRender(!render);
               setHasChanged(true);
               setHasGlobalChange(true);
             }}
-            value={params.row?.rewardBundle || ''}
+            value={params?.row?.discountPercentage || ''}
           />
         );
       },
@@ -754,16 +790,16 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
           return <></>;
         }
 
-        // if (!(params?.row?.price && params?.row?.rewardBundle && rewardAmount !== undefined)) {
-        //   return <>--</>;
-        // }
+        if (!params?.row?.discountPercentage) {
+          return <>--</>;
+        }
 
         return (
           <Stack direction="row" alignItems="center" gap={1.5}>
             <Stack direction="row" alignItems="center" gap={1.5}>
-              <Typography variant="body1" color={theme.palette.secondary.main}>
-                {/* {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
-                {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)} */}
+              <Typography variant="body1" color={theme.palette.text.heading}>
+                {currency}{' '}
+                {(params?.row?.price - (params?.row?.price / 100) * params?.row?.discountPercentage)?.toFixed(2)}{' '}
               </Typography>
               <Typography
                 sx={{
@@ -861,11 +897,14 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
             pb={2}
           >
             <Typography variant="h4" pb={3}>
-              Loyalty Program
+              {marketingType === 'reward' && 'Loyalty Program'}
+              {marketingType === 'percentage' && 'Discounted Items'}
             </Typography>
             <Typography variant="body2" color={theme.palette.text.secondary2}>
-              Enable this feature and allow customers to use their points to pay for a portion or all of their purchase
-              on an item, giving them more incentive to order from your business.
+              {marketingType === 'reward' &&
+                'Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item, giving them more incentive to order from your business.'}
+              {marketingType === 'percentage' &&
+                'Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes.'}
             </Typography>
           </Box>
           {/* products */}
@@ -1367,7 +1406,7 @@ export default function MarketingSettings({ closeModal, marketingType = 'reward'
         <Typography variant="h4" pb={8}>
           Preview
         </Typography>
-        <BannerPreview banner={shopBanner} logo={shopLogo} name={shopName} />
+        <BannerPreview shopBanner={shopBanner} shopLogo={shopLogo} shopName={shopName} marketingType={marketingType} />
       </Box>
       <ConfirmModal
         message={confirmAction.message}

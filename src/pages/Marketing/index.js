@@ -12,7 +12,6 @@ import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
 import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
-import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import Wrapper from '../../components/Wrapper';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -139,6 +138,7 @@ export default function Marketing() {
                 }}
               />
             )}
+            <div />
             {currentModal === 'percentage' && (
               <MarketingSettings
                 marketingType="percentage"

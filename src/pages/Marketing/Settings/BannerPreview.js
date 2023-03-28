@@ -1,6 +1,8 @@
 // third party
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { ReactComponent as Tag } from '../../../assets/icons/tag.svg';
+import { ReactComponent as TagBg } from '../../../assets/icons/tagBg.svg';
 
 function Skeleton({ sx, ...props }) {
   return (
@@ -17,7 +19,7 @@ function Skeleton({ sx, ...props }) {
   );
 }
 
-export default function BannerPreview({ banner, logo, name }) {
+export default function BannerPreview({ shopBanner, shopLogo, shopName, marketingType }) {
   const theme = useTheme();
 
   return (
@@ -32,10 +34,11 @@ export default function BannerPreview({ banner, logo, name }) {
         sx={{
           overflow: 'hidden',
           borderRadius: '8px',
+          position: 'relative',
         }}
       >
         <img
-          src={banner}
+          src={shopBanner}
           alt="banner"
           style={{
             width: '100%',
@@ -44,6 +47,44 @@ export default function BannerPreview({ banner, logo, name }) {
             objectFit: 'cover',
           }}
         />
+        <Box
+          sx={{
+            position: 'absolute',
+            left: '5px',
+            top: '3px',
+          }}
+        >
+          <TagBg />
+          <Stack
+            direction="row"
+            alignItems="center"
+            gap="3px"
+            sx={{
+              marginTop: '-25px',
+              paddingLeft: '8px',
+            }}
+          >
+            <Tag />
+            <Typography
+              sx={{
+                fontSize: '10px!important',
+                fontWeight: 400,
+                lineHeight: '14px',
+                color: '#6F6F6F',
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: theme.palette.primary.main,
+                }}
+              >
+                50% off{' '}
+              </span>
+              on selected items
+            </Typography>
+          </Stack>
+        </Box>
       </Box>
       <Stack direction="row" gap="10px" alignItems="baseline" pt={2.5}>
         {/* logo */}
@@ -57,7 +98,7 @@ export default function BannerPreview({ banner, logo, name }) {
           }}
         >
           <img
-            src={logo}
+            src={shopLogo}
             alt="Logo"
             style={{
               width: '100%',
@@ -76,7 +117,7 @@ export default function BannerPreview({ banner, logo, name }) {
         >
           <Stack direction="row" alignItems="center" justifyContent="space-between" pb={2}>
             <Typography variant="body2" fontWeight={500}>
-              {name}
+              {shopName}
             </Typography>
             <Skeleton width={10} height={10} />
           </Stack>
@@ -84,27 +125,36 @@ export default function BannerPreview({ banner, logo, name }) {
         </Box>
       </Stack>
       <Stack direction="row" alignItems="center" gap="6px">
-        <Button
-          startIcon={<CardGiftcardIcon />}
-          disableRipple
-          sx={{
-            background: '#EFF8FA',
-            color: '#15BFCA',
-            padding: '4px 9px',
-            fontWeight: '500',
-            fontSize: '10px',
-            lineHeight: 1,
-            borderRadius: '3px',
+        {marketingType === 'reward' ? (
+          <Button
+            startIcon={<CardGiftcardIcon />}
+            disableRipple
+            sx={{
+              background: '#EFF8FA',
+              color: '#15BFCA',
+              padding: '4px 9px',
+              fontWeight: '500',
+              fontSize: '10px',
+              lineHeight: 1,
+              borderRadius: '3px',
 
-            '& .MuiSvgIcon-root': {
-              fontSize: '14px',
-            },
+              '& .MuiSvgIcon-root': {
+                fontSize: '14px',
+              },
 
-            '&:hover': { background: '#EFF8FA', color: theme.palette.secondary.main },
-          }}
-        >
-          Rewards
-        </Button>
+              '&:hover': { background: '#EFF8FA', color: theme.palette.secondary.main },
+            }}
+          >
+            Rewards
+          </Button>
+        ) : (
+          <Skeleton
+            height={15}
+            sx={{
+              flex: 1,
+            }}
+          />
+        )}
         <Skeleton
           height={15}
           sx={{
@@ -123,7 +173,6 @@ export default function BannerPreview({ banner, logo, name }) {
             flex: 1,
           }}
         />
-        {/* <Skeleton height={15} /> */}
       </Stack>
     </Box>
   );
