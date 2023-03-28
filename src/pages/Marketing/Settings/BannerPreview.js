@@ -1,5 +1,6 @@
 // third party
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as Tag } from '../../../assets/icons/tag.svg';
 import { ReactComponent as TagBg } from '../../../assets/icons/tagBg.svg';
@@ -157,12 +158,42 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
             }}
           />
         )}
-        <Skeleton
+        {marketingType === 'free_delivery' ? (
+          <Button
+            startIcon={<DeliveryDiningIcon />}
+            disableRipple
+            sx={{
+              background: 'rgba(91, 189, 78, 0.07)',
+              color: '#5BBD4E',
+              padding: '4px 9px',
+              fontWeight: '500',
+              fontSize: '10px',
+              lineHeight: 1,
+              borderRadius: '3px',
+
+              '& .MuiSvgIcon-root': {
+                fontSize: '14px',
+              },
+
+              '&:hover': { background: 'rgba(91, 189, 78, 0.07)', color: theme.palette.secondary.main },
+            }}
+          >
+            Free
+          </Button>
+        ) : (
+          <Skeleton
+            height={15}
+            sx={{
+              flex: 1,
+            }}
+          />
+        )}
+        {/* <Skeleton
           height={15}
           sx={{
             flex: 1,
           }}
-        />
+        /> */}
         <Skeleton
           height={15}
           sx={{

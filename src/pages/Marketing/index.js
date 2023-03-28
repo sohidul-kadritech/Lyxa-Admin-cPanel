@@ -82,7 +82,7 @@ export default function Marketing() {
               title="$0 Delivery Fee"
               icon={DeliveryIcon}
               onOpen={() => {
-                console.log('opened');
+                setCurrentModal('free_delivery');
               }}
             />
           </Grid>
@@ -120,6 +120,7 @@ export default function Marketing() {
           <Paper
             sx={{
               maxWidth: 'calc(100vw - 100px)',
+              width: 'min(calc(100vw - 100px), 1500px)',
               position: 'relative',
               borderRadius: '10px',
               height: '100%',
@@ -144,6 +145,14 @@ export default function Marketing() {
             {currentModal === 'double_menu' && (
               <MarketingSettings
                 marketingType="double_menu"
+                closeModal={() => {
+                  setCurrentModal(null);
+                }}
+              />
+            )}
+            {currentModal === 'free_delivery' && (
+              <MarketingSettings
+                marketingType="free_delivery"
                 closeModal={() => {
                   setCurrentModal(null);
                 }}

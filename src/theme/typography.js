@@ -9,10 +9,12 @@ const Typography = (theme) => ({
       letterSpacing: '0px',
       color: theme.palette.text.heading,
     },
+
     [theme.breakpoints.up('lg')]: {
       fontWeight: 700,
       fontSize: `${pxToRem(36)}rem`,
     },
+
     [theme.breakpoints.up('xl')]: {
       fontWeight: 700,
       fontSize: `${pxToRem(42)}rem`,
@@ -27,10 +29,12 @@ const Typography = (theme) => ({
       letterSpacing: '0px',
       color: theme.palette.text.heading,
     },
+
     [theme.breakpoints.up('lg')]: {
       fontWeight: 700,
       fontSize: `${pxToRem(26)}rem`,
     },
+
     [theme.breakpoints.up('xl')]: {
       fontWeight: 600,
       fontSize: `${pxToRem(32)}rem`,

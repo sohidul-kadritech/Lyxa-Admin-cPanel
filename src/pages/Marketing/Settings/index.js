@@ -423,7 +423,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
       };
     });
 
-    if (products?.length === 0) {
+    if (marketingType !== 'free_delivery' && products?.length === 0) {
       successMsg('Products cannot be empty!', 'warn');
       return;
     }
@@ -835,8 +835,8 @@ export default function MarketingSettings({ closeModal, marketingType }) {
       sortable: false,
       field: 'calc',
       flex: 1,
-      align: 'center',
-      headerAlign: 'center',
+      align: 'right',
+      headerAlign: 'right',
       renderCell: (params) => {
         if (params?.row?.isCategoryHeader) {
           return <></>;
@@ -951,6 +951,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
               {marketingType === 'reward' && 'Loyalty Program'}
               {marketingType === 'percentage' && 'Discounted Items'}
               {marketingType === 'double_menu' && 'Buy 1, Get 1 Free'}
+              {marketingType === 'free_delivery' && '$0 Delivery fee'}
             </Typography>
             <Typography variant="body2" color={theme.palette.text.secondary2}>
               {marketingType === 'reward' &&
@@ -959,150 +960,154 @@ export default function MarketingSettings({ closeModal, marketingType }) {
                 'Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes.'}
               {marketingType === 'double_menu' &&
                 "Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost"}
+              {marketingType === 'free_delivery' &&
+                'Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales.'}
             </Typography>
           </Box>
           {/* products */}
-          <StyledAccordion
-            Title={<ItemsTitle />}
-            isOpen={currentExpanedTab === 0}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 0 : -1);
-            }}
-            sx={isPageDisabled ? disabledSx : {}}
-          >
-            <Box position="relative">
-              <StyledRadioGroup
-                color="secondary"
-                items={itemSelectOptions}
-                value={itemSelectType}
-                onChange={onProductSelectChange}
-              />
-              {itemSelectType === 'multiple' && marketingType === 'reward' && (
+          {marketingType !== 'free_delivery' && (
+            <StyledAccordion
+              Title={<ItemsTitle />}
+              isOpen={currentExpanedTab === 0}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 0 : -1);
+              }}
+              sx={isPageDisabled ? disabledSx : {}}
+            >
+              <Box position="relative">
+                <StyledRadioGroup
+                  color="secondary"
+                  items={itemSelectOptions}
+                  value={itemSelectType}
+                  onChange={onProductSelectChange}
+                />
+                {itemSelectType === 'multiple' && marketingType === 'reward' && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      zIndex: '99',
+                      bottom: '-6px',
+                      left: '130px',
+                    }}
+                  >
+                    <FilterSelect
+                      items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
+                      placeholder="0%"
+                      getKey={(item) => item}
+                      getValue={(item) => item}
+                      getLabel={(item) => item}
+                      getDisplayValue={(value) => `${value}`}
+                      onChange={(e) => {
+                        products.forEach((product) => {
+                          product.rewardBundle = Number(e.target.value);
+                        });
+                        setGlobalRewardBundle(Number(e.target.value));
+                        setHasChanged(true);
+                        setHasGlobalChange(true);
+                      }}
+                      value={globalRewardBundle}
+                      sx={{
+                        minWidth: '80px',
+                        '& .MuiInputBase-input': {
+                          fontWeight: '500',
+                          fontSize: '15px',
+                          lineHeight: '24px',
+                          paddingTop: '6px',
+                          paddingBottom: '6px',
+                          textAlign: 'center',
+                        },
+                      }}
+                    />
+                  </Box>
+                )}
+              </Box>
+              <Box pt={5}>
                 <Box
                   sx={{
-                    position: 'absolute',
-                    zIndex: '99',
-                    bottom: '-6px',
-                    left: '130px',
+                    minHeight: '0px',
+                    height: `${products?.length > 0 ? '500px' : '200px'}`,
                   }}
                 >
-                  <FilterSelect
-                    items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
-                    placeholder="0%"
-                    getKey={(item) => item}
-                    getValue={(item) => item}
-                    getLabel={(item) => item}
-                    getDisplayValue={(value) => `${value}`}
-                    onChange={(e) => {
-                      products.forEach((product) => {
-                        product.rewardBundle = Number(e.target.value);
-                      });
-                      setGlobalRewardBundle(Number(e.target.value));
-                      setHasChanged(true);
-                      setHasGlobalChange(true);
-                    }}
-                    value={globalRewardBundle}
+                  <StyledTable2
+                    columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
                     sx={{
-                      minWidth: '80px',
-                      '& .MuiInputBase-input': {
-                        fontWeight: '500',
-                        fontSize: '15px',
-                        lineHeight: '24px',
-                        paddingTop: '6px',
-                        paddingBottom: '6px',
-                        textAlign: 'center',
+                      '& .MuiDataGrid-main': {
+                        overflow: 'visible!important',
                       },
+
+                      '& .MuiDataGrid-cell': {
+                        position: 'relative',
+                        overflow: 'visible!important',
+                      },
+
+                      '& .MuiDataGrid-virtualScroller': {
+                        paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
+                        overflowX: 'scroll!important',
+                      },
+                    }}
+                    rows={createGroupedDataRow(products || [])}
+                    getRowId={(row) => row?._id}
+                    components={{
+                      NoRowsOverlay: () => (
+                        <Stack height="100%" alignItems="center" justifyContent="center">
+                          No Products Added
+                        </Stack>
+                      ),
+                    }}
+                    rowHeight={64}
+                    autoHeight={false}
+                    getRowHeight={({ model }) => {
+                      if (model.isCategoryHeader) {
+                        return 42;
+                      }
+                      return 64;
                     }}
                   />
                 </Box>
-              )}
-            </Box>
-            <Box pt={5}>
-              <Box
-                sx={{
-                  minHeight: '0px',
-                  height: `${products?.length > 0 ? '500px' : '200px'}`,
-                }}
-              >
-                <StyledTable2
-                  columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
+                {/* add new */}
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
                   sx={{
-                    '& .MuiDataGrid-main': {
-                      overflow: 'visible!important',
-                    },
-
-                    '& .MuiDataGrid-cell': {
-                      position: 'relative',
-                      overflow: 'visible!important',
-                    },
-
-                    '& .MuiDataGrid-virtualScroller': {
-                      paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
-                      overflowX: 'scroll!important',
-                    },
+                    paddingLeft: '20px',
+                    paddingRight: '20px',
+                    paddingTop: '20px',
                   }}
-                  rows={createGroupedDataRow(products || [])}
-                  getRowId={(row) => row?._id}
-                  components={{
-                    NoRowsOverlay: () => (
-                      <Stack height="100%" alignItems="center" justifyContent="center">
-                        No Products Added
-                      </Stack>
-                    ),
-                  }}
-                  rowHeight={64}
-                  autoHeight={false}
-                  getRowHeight={({ model }) => {
-                    if (model.isCategoryHeader) {
-                      return 42;
-                    }
-                    return 64;
-                  }}
-                />
+                >
+                  <Button
+                    disableRipple
+                    className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
+                    variant="text"
+                    color="secondary"
+                    sx={{
+                      padding: '0!important',
+                      '&:hover': {
+                        background: 'transparent',
+                      },
+                    }}
+                    onClick={() => {
+                      setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
+                      setHasChanged(true);
+                      setHasGlobalChange(true);
+                    }}
+                  >
+                    + Add items
+                  </Button>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: '500',
+                      fontSize: '13px',
+                      lineHeight: '16px',
+                    }}
+                  >
+                    {products?.length} items
+                  </Typography>
+                </Stack>
               </Box>
-              {/* add new */}
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{
-                  paddingLeft: '20px',
-                  paddingRight: '20px',
-                  paddingTop: '20px',
-                }}
-              >
-                <Button
-                  disableRipple
-                  className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
-                  variant="text"
-                  color="secondary"
-                  sx={{
-                    padding: '0!important',
-                    '&:hover': {
-                      background: 'transparent',
-                    },
-                  }}
-                  onClick={() => {
-                    setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
-                    setHasChanged(true);
-                    setHasGlobalChange(true);
-                  }}
-                >
-                  + Add items
-                </Button>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '13px',
-                    lineHeight: '16px',
-                  }}
-                >
-                  {products?.length} items
-                </Typography>
-              </Stack>
-            </Box>
-          </StyledAccordion>
+            </StyledAccordion>
+          )}
           {/* duration */}
           <StyledAccordion
             isOpen={currentExpanedTab === 1}
@@ -1257,69 +1262,85 @@ export default function MarketingSettings({ closeModal, marketingType }) {
             }}
           >
             {pageMode === 0 && (
-              <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  sx={{
-                    marginLeft: '-11px',
-                  }}
-                >
-                  <Checkbox
+              <>
+                {marketingType === 'free_delivery' && (
+                  <Box pb={8}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: '#363636',
+                      }}
+                    >
+                      In your market, the average cost of delivery for an order is €1.66, and the maximum delivery fee
+                      per order that you will be charged is €5.99. The minimum basket size is predetermined by Lyxa, but
+                      you have the ability to make changes to this campaign before it begins.
+                    </Typography>
+                  </Box>
+                )}
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                  <Stack
+                    direction="row"
+                    alignItems="center"
                     sx={{
-                      '&.Mui-checked': {
-                        color: theme.palette.text.heading,
+                      marginLeft: '-11px',
+                    }}
+                  >
+                    <Checkbox
+                      sx={{
+                        '&.Mui-checked': {
+                          color: theme.palette.text.heading,
+                        },
+                      }}
+                      checked={termAndCondition}
+                      onChange={(e) => {
+                        setTermAndCondition(e.target.checked);
+                      }}
+                    />
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: '500',
+                        fontSize: '14px',
+                        lineHeight: '20px',
+                        color: '#404040',
+                        marginRight: '6px',
+                      }}
+                    >
+                      I accept
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: '500',
+                        fontSize: '14px',
+                        lineHeight: '20px',
+                        color: theme.palette.secondary.main,
+                      }}
+                    >
+                      Terms & Conditions
+                    </Typography>
+                  </Stack>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
+                    onClick={() => {
+                      updateLoyaltySettings();
+                    }}
+                    sx={{
+                      borderRadius: 1.5,
+                      textTransform: 'none',
+                      '&.Mui-disabled': {
+                        background: theme.palette.secondary.main,
+                        opacity: 0.3,
+                        color: '#fff',
                       },
                     }}
-                    checked={termAndCondition}
-                    onChange={(e) => {
-                      setTermAndCondition(e.target.checked);
-                    }}
-                  />
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontWeight: '500',
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      color: '#404040',
-                      marginRight: '6px',
-                    }}
                   >
-                    I accept
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontWeight: '500',
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      color: theme.palette.secondary.main,
-                    }}
-                  >
-                    Terms & Conditions
-                  </Typography>
+                    Activate Promotion
+                  </Button>
                 </Stack>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
-                  onClick={() => {
-                    updateLoyaltySettings();
-                  }}
-                  sx={{
-                    borderRadius: 1.5,
-                    textTransform: 'none',
-                    '&.Mui-disabled': {
-                      background: theme.palette.secondary.main,
-                      opacity: 0.3,
-                      color: '#fff',
-                    },
-                  }}
-                >
-                  Activate Promotion
-                </Button>
-              </Stack>
+              </>
             )}
             {pageMode === 1 && (
               <Stack direction="row" alignItems="center" justifyContent="space-between">
