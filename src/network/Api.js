@@ -274,6 +274,6 @@ export const GET_ALL_FLAGS = `${ADMIN_ENDPOINT}/flag`;
 export const RESOLVE_FLAG = `${ADMIN_ENDPOINT}/flag/resolved-flag`;
 
 // MARKETING
-export const GET_LOYALTY_SETTINGS = `${ADMIN_ENDPOINT}/loyalty-program`;
-export const UPDATE_LOYALTY_SETTINGS = `${ADMIN_ENDPOINT}/loyalty-program/edit`;
-export const DELETE_LOYALTY_SETTINGS = `${ADMIN_ENDPOINT}/loyalty-program/delete`;
+export const GET_MARKETING_SETTINGS = `${ADMIN_ENDPOINT}/marketing`;
+export const EDIT_MARKETING_SETTINGS = `${ADMIN_ENDPOINT}/marketing/edit`;
+export const DELETE_MARKETING_SETTINGS = `${ADMIN_ENDPOINT}/marketing/delete`;

@@ -6,24 +6,47 @@ import { useHistory } from 'react-router-dom';
 
 // project import
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import { ReactComponent as BuyIcon } from '../../assets/icons/buy-icon.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon.svg';
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
 import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
+import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import Wrapper from '../../components/Wrapper';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import LoyaltySettings from './Loyalty/Settings';
 import MCard from './MarketingCard';
+import MarketingSettings from './Settings';
 
 export default function Marketing() {
   const [currentModal, setCurrentModal] = useState(null);
   const history = useHistory();
+  // eslint-disable-next-line no-unused-vars
+  const { shopType, _id } = useSelector((store) => store.Login.admin);
 
-  const loyaltySettingsQuery = useQuery(['loyalty'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
-    staleTime: 0,
-  });
+  const loyaltySettingsQuery = useQuery(
+    ['loyalty'],
+    () =>
+      AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+        params: {
+          shop: _id,
+          type: 'reward',
+        },
+      }),
+    {
+      staleTime: 0,
+    }
+  );
+
+  // deal settings
+  const dealSettingsQuery = useQuery(['deal-settings'], () =>
+    AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
+      params: {
+        type: 'all',
+      },
+    })
+  );
 
   return (
     <Wrapper
@@ -39,8 +62,9 @@ export default function Marketing() {
               description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
               title="Discounted Items"
               icon={DiscountIcon}
+              disabled={dealSettingsQuery.isLoading}
               onOpen={() => {
-                console.log('opened');
+                setCurrentModal('percentage');
               }}
             />
           </Grid>
@@ -74,7 +98,7 @@ export default function Marketing() {
                 if (loyaltySettingsQuery?.data?.isLoyaltyProgram) {
                   history.push('/marketing/loyalty');
                 } else {
-                  setCurrentModal('loyalty');
+                  setCurrentModal('reward');
                 }
               }}
             />
@@ -107,8 +131,17 @@ export default function Marketing() {
               height: '100%',
             }}
           >
-            {currentModal === 'loyalty' && (
-              <LoyaltySettings
+            {currentModal === 'reward' && (
+              <MarketingSettings
+                marketingType="reward"
+                closeModal={() => {
+                  setCurrentModal(null);
+                }}
+              />
+            )}
+            {currentModal === 'percentage' && (
+              <MarketingSettings
+                marketingType="percentage"
                 closeModal={() => {
                   setCurrentModal(null);
                 }}

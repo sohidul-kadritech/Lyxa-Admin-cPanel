@@ -1,6 +1,21 @@
 // third party
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-import { Box, Button, Skeleton, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+
+function Skeleton({ sx, ...props }) {
+  return (
+    <Box
+      sx={{
+        background: '#F6F6F6',
+        display: 'block',
+        // width: '100%',
+        borderRadius: '3px',
+        ...(sx || {}),
+      }}
+      {...props}
+    ></Box>
+  );
+}
 
 export default function BannerPreview({ banner, logo, name }) {
   const theme = useTheme();
@@ -74,12 +89,13 @@ export default function BannerPreview({ banner, logo, name }) {
           disableRipple
           sx={{
             background: '#EFF8FA',
-            color: theme.palette.secondary.main,
+            color: '#15BFCA',
             padding: '4px 9px',
             fontWeight: '500',
             fontSize: '10px',
             lineHeight: 1,
-            // lineHeight: '20px',
+            borderRadius: '3px',
+
             '& .MuiSvgIcon-root': {
               fontSize: '14px',
             },

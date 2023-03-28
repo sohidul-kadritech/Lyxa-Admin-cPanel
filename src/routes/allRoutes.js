@@ -73,7 +73,7 @@ import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import DefaultChat from '../pages/DefaultChat/DefaultChat';
 import DisplaySettings from '../pages/Display';
 import ListContainers from '../pages/Display/ListContianer';
-import LoyaltyProgramDashboard from '../pages/Marketing/Loyalty/Dashbaord';
+import LoyaltyProgramDashboard from '../pages/Marketing/Dashbaord';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';

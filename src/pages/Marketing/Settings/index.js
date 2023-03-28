@@ -26,20 +26,20 @@ import { useSelector } from 'react-redux';
 
 // project import
 import moment from 'moment';
-import CloseButton from '../../../../components/Common/CloseButton';
-import ConfirmModal from '../../../../components/Common/ConfirmModal';
-import ProductSelect from '../../../../components/Common/ProductSelect';
-import FilterDate from '../../../../components/Filter/FilterDate';
-import FilterSelect from '../../../../components/Filter/FilterSelect';
-import StyledAccordion from '../../../../components/Styled/StyledAccordion';
-import StyledInput from '../../../../components/Styled/StyledInput';
-import StyledRadioGroup from '../../../../components/Styled/StyledRadioGroup';
-import StyledTable2 from '../../../../components/Styled/StyledTable2';
-import getCookiesAsObject from '../../../../helpers/cookies/getCookiesAsObject';
-import { deepClone } from '../../../../helpers/deepClone';
-import { successMsg } from '../../../../helpers/successMsg';
-import * as Api from '../../../../network/Api';
-import AXIOS from '../../../../network/axios';
+import CloseButton from '../../../components/Common/CloseButton';
+import ConfirmModal from '../../../components/Common/ConfirmModal';
+import ProductSelect from '../../../components/Common/ProductSelect';
+import FilterDate from '../../../components/Filter/FilterDate';
+import FilterSelect from '../../../components/Filter/FilterSelect';
+import StyledAccordion from '../../../components/Styled/StyledAccordion';
+import StyledInput from '../../../components/Styled/StyledInput';
+import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import StyledTable2 from '../../../components/Styled/StyledTable2';
+import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
+import { deepClone } from '../../../helpers/deepClone';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import BannerPreview from './BannerPreview';
 
 // helper functions
@@ -145,8 +145,8 @@ const disabledSx = {
 };
 
 const itemSelectOptions = [
-  { label: 'Selected Items', value: 'multiple' },
-  { label: 'Entire Menu', value: 'all' },
+  { label: 'Selected Items', value: 'single' },
+  { label: 'Entire Menu', value: 'multiple' },
 ];
 
 const durationInit = {
@@ -161,7 +161,7 @@ const confirmActionInit = {
 };
 
 // QUERY ONLY ONCE
-let QUERY_RUNNED = false;
+// const QUERY_RUNNED = false;
 
 // access token
 let accountId = null;
@@ -171,9 +171,9 @@ if (document.cookie.length) {
   accountId = account_id || null;
 }
 
-const productSelectKeyForLS = 'loyaltySettingsSelectType';
+// const productSelectKeyForLS = 'loyaltySettingsSelectType';
 
-export default function LoyaltySettings({ closeModal }) {
+export default function MarketingSettings({ closeModal, marketingType = 'reward' }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { shopBanner, shopLogo, shopName } = useSelector((store) => store.Login.admin);
   const theme = useTheme();
@@ -189,39 +189,28 @@ export default function LoyaltySettings({ closeModal }) {
   const [pageMode, setPageMode] = useState(0);
 
   // reward settings
-  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
-    enabled: !QUERY_RUNNED,
-    onSuccess: () => {
-      QUERY_RUNNED = true;
-    },
-  });
+  const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS));
 
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
   // shop products
-  const productsQuery = useQuery(
-    ['products-query'],
-    () =>
-      AXIOS.get(Api.ALL_PRODUCT, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          type: 'all',
-          status: 'all',
-          shop: accountId,
-        },
-      }),
-    {
-      staleTime: 1000 * 60 * 10,
-    }
+  const productsQuery = useQuery(['products-query'], () =>
+    AXIOS.get(Api.ALL_PRODUCT, {
+      params: {
+        page: 1,
+        pageSize: 100,
+        type: 'all',
+        status: 'all',
+        shop: accountId,
+      },
+    })
   );
 
-  // loyalty settings
-  const [itemSelectType, setItemSelectType] = useState(localStorage.getItem(productSelectKeyForLS) || 'multiple');
+  const [itemSelectType, setItemSelectType] = useState('single');
   const [hasChanged, setHasChanged] = useState(false);
   const [globalRewardBundle, setGlobalRewardBundle] = useState();
   const [hasGlobalChange, setHasGlobalChange] = useState(false);
-  const [loyalityQueryEnabled, setLoyalityQueryEnabled] = useState(true);
+  const [queryEnabled, setQueryEnabled] = useState(true);
 
   const [duration, setDuration] = useState(durationInit);
   const [spendLimit, setSpendLimit] = useState('');
@@ -232,6 +221,7 @@ export default function LoyaltySettings({ closeModal }) {
     setProducts(data?.products);
     setDuration(data?.duration);
     setSpendLimit(data?.spendLimit);
+    setItemSelectType(data?.itemSelectionType);
 
     if (data?.spendLimit > 0) {
       setSpendLimitChecked(true);
@@ -240,37 +230,45 @@ export default function LoyaltySettings({ closeModal }) {
     }
   };
 
-  const loyaltySettingsQuery = useQuery(['loyalty-settings'], () => AXIOS.get(Api.GET_LOYALTY_SETTINGS), {
-    staleTime: 0,
-    cacheTime: 0,
-    enabled: loyalityQueryEnabled,
-    onSuccess: (data) => {
-      setLoyalityQueryEnabled(false);
+  const loyaltySettingsQuery = useQuery(
+    [`marketing-${marketingType}-settings`],
+    () =>
+      AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+        params: {
+          creatorType: 'shop',
+          type: marketingType,
+          shop: accountId,
+        },
+      }),
+    {
+      staleTime: 0,
+      cacheTime: 0,
+      enabled: queryEnabled,
+      onSuccess: (data) => {
+        setQueryEnabled(false);
+        if (data?.isMarketing) {
+          if (data?.data?.marketing?.status === 'active') {
+            setIsPageDisabled(true);
+            setPageMode(1);
+          } else {
+            setPageMode(0);
+            setIsPageDisabled(false);
+          }
 
-      if (data?.isLoyaltyProgram) {
-        if (data?.data?.loyaltyProgram?.isActive) {
-          setIsPageDisabled(true);
-          setPageMode(1);
+          setServerState(data?.data?.marketing);
+          const newData = deepClone(data?.data?.marketing);
+          setLocalData(newData);
+
+          if (newData?.products?.length > 0) {
+            setHasChanged(true);
+          }
         } else {
           setPageMode(0);
           setIsPageDisabled(false);
         }
-
-        setServerState(data?.data?.loyaltyProgram);
-        const newData = deepClone(data?.data?.loyaltyProgram);
-        setLocalData(newData);
-
-        if (newData?.products?.length > 0) {
-          setHasChanged(true);
-        }
-      } else {
-        setPageMode(0);
-        setIsPageDisabled(false);
-        setItemSelectType('multiple');
-        localStorage.setItem(productSelectKeyForLS, 'multiple');
-      }
-    },
-  });
+      },
+    }
+  );
 
   const onProductSelectChange = (event) => {
     if (hasChanged && products?.length > 0) {
@@ -279,7 +277,7 @@ export default function LoyaltySettings({ closeModal }) {
 
       // onconfirm
       const confirmFunc = (value) => {
-        if (value === 'multiple') {
+        if (value === 'single') {
           setProducts([]);
         } else {
           setGlobalRewardBundle('');
@@ -287,7 +285,7 @@ export default function LoyaltySettings({ closeModal }) {
         }
 
         setConfirmModal(false);
-        localStorage.setItem(productSelectKeyForLS, value);
+        // localStorage.setItem(productSelectKeyForLS, value);
 
         setItemSelectType(value);
         setHasChanged(false);
@@ -300,7 +298,7 @@ export default function LoyaltySettings({ closeModal }) {
         onConfirm: () => confirmFunc(event.target.value),
       });
     } else {
-      if (event.target.value === 'all') {
+      if (event.target.value === 'multiple') {
         setProducts(deepClone(productsQuery?.data?.data?.products || []));
       } else {
         setProducts([]);
@@ -309,7 +307,7 @@ export default function LoyaltySettings({ closeModal }) {
       setItemSelectType(event.target.value);
       setHasGlobalChange(true);
       setHasChanged(false);
-      localStorage.setItem(productSelectKeyForLS, event.target.value);
+      // localStorage.setItem(productSelectKeyForLS, event.target.value);
     }
   };
 
@@ -326,25 +324,30 @@ export default function LoyaltySettings({ closeModal }) {
     setLocalData(newData);
     setHasGlobalChange(false);
 
+    console.log('triggered');
+
     setIsPageDisabled(true);
     setPageMode(1);
+    seCurrentExpanedTab(-1);
   };
 
   // update loyalty settings
-  const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.UPDATE_LOYALTY_SETTINGS, data), {
+  const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.EDIT_MARKETING_SETTINGS, data), {
     onSuccess: (data, args) => {
+      // successMsg(data?.message);
+
       if (data?.status) {
-        setServerState((prev) => data?.data?.loyaltyProgram || prev);
+        setServerState((prev) => data?.data?.marketing || prev);
         successMsg('Settings successfully updated', 'success');
 
-        if (data?.data?.loyaltyProgram?.products?.length > 0) {
+        if (data?.data?.marketing?.products?.length > 0) {
           setHasChanged(true);
         }
 
         setHasGlobalChange(false);
 
-        queryClient.invalidateQueries(['loyalty-settings']);
-        queryClient.invalidateQueries(['loyalty']);
+        queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
+        queryClient.invalidateQueries([`${marketingType}`]);
 
         if (args.status === 'inactive') {
           setPageMode(0);
@@ -405,16 +408,19 @@ export default function LoyaltySettings({ closeModal }) {
     }
 
     if (spendLimitChecked && !Number(spendLimit)) {
-      successMsg('Spend limit cannot be empty', 'warn');
+      successMsg('Invalid spend limit', 'warn');
       return;
     }
 
     loyaltySettingsMutaion.mutate({
-      products: productsData,
       shop: accountId,
+      type: marketingType,
+      creatorType: 'shop',
+      products: productsData,
       duration,
       spendLimit: spendLimitChecked ? spendLimit : 0,
       status: status || 'active',
+      itemSelectType: 'multiple',
     });
   };
 
@@ -430,31 +436,32 @@ export default function LoyaltySettings({ closeModal }) {
     setDuration(durationInit);
     setSpendLimit('');
     setSpendLimitChecked(false);
-    localStorage.setItem(productSelectKeyForLS, 'multiple');
     setItemSelectType('multiple');
   };
 
   const loyaltySettingsDeleteMutation = useMutation(
     () =>
-      AXIOS.post(Api.DELETE_LOYALTY_SETTINGS, {
-        id: serverState?._id,
+      AXIOS.post(Api.DELETE_MARKETING_SETTINGS, {
+        marketingId: serverState?._id,
+        shopId: accountId,
+        creatorType: 'shop',
       }),
     {
       onSuccess: (data) => {
         successMsg(data?.message, 'success');
 
         if (data?.status) {
-          queryClient.invalidateQueries(['loyalty']);
-          localStorage.setItem(productSelectKeyForLS, 'multiple');
+          queryClient.invalidateQueries([`${marketingType}`]);
           closeModal();
         }
       },
     }
   );
 
-  const columns = [
+  const allColumns = [
     {
       id: 1,
+      showFor: ['reward', 'percentage'],
       headerName: `Item`,
       sortable: false,
       field: 'product',
@@ -586,6 +593,7 @@ export default function LoyaltySettings({ closeModal }) {
     {
       id: 2,
       headerName: `Point Percentage`,
+      showFor: ['reward'],
       sortable: false,
       field: 'rewardBundle',
       flex: 1,
@@ -617,7 +625,41 @@ export default function LoyaltySettings({ closeModal }) {
     },
     {
       id: 3,
+      headerName: `Discount`,
+      showFor: ['percentage'],
+      sortable: false,
+      field: 'discount',
+      flex: 1,
+      align: 'left',
+      renderCell: (params) => {
+        if (params?.row?.isCategoryHeader) {
+          return <></>;
+        }
+
+        return (
+          <FilterSelect
+            items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
+            placeholder="Select Percentage"
+            disabled={!params.row?.price}
+            getKey={(item) => item}
+            getValue={(item) => item}
+            getLabel={(item) => item}
+            getDisplayValue={(value) => `${value}`}
+            onChange={(e) => {
+              params.row.rewardBundle = Number(e.target.value);
+              setRender(!render);
+              setHasChanged(true);
+              setHasGlobalChange(true);
+            }}
+            value={params.row?.rewardBundle || ''}
+          />
+        );
+      },
+    },
+    {
+      id: 4,
       headerName: `Category`,
+      showFor: ['reward'],
       sortable: false,
       field: 'rewardCategory',
       flex: 1,
@@ -652,8 +694,9 @@ export default function LoyaltySettings({ closeModal }) {
       },
     },
     {
-      id: 4,
+      id: 5,
       headerName: `Final Price`,
+      showFor: ['reward'],
       sortable: false,
       field: 'calc',
       flex: 1,
@@ -674,6 +717,53 @@ export default function LoyaltySettings({ closeModal }) {
               <Typography variant="body1" color={theme.palette.secondary.main}>
                 {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
                 {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
+              </Typography>
+              <Typography
+                sx={{
+                  color: '#A3A3A3',
+                  fontWeight: 500,
+                  textDecoration: 'line-through',
+                }}
+                variant="body1"
+              >
+                {currency} {params?.row?.price}
+              </Typography>
+            </Stack>
+            <CloseButton
+              color="secondary"
+              onClick={() => {
+                removeProduct(params.row);
+                setHasChanged(true);
+              }}
+            />
+          </Stack>
+        );
+      },
+    },
+    {
+      id: 6,
+      headerName: `Final Price`,
+      showFor: ['percentage'],
+      sortable: false,
+      field: 'calc',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: (params) => {
+        if (params?.row?.isCategoryHeader) {
+          return <></>;
+        }
+
+        // if (!(params?.row?.price && params?.row?.rewardBundle && rewardAmount !== undefined)) {
+        //   return <>--</>;
+        // }
+
+        return (
+          <Stack direction="row" alignItems="center" gap={1.5}>
+            <Stack direction="row" alignItems="center" gap={1.5}>
+              <Typography variant="body1" color={theme.palette.secondary.main}>
+                {/* {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
+                {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)} */}
               </Typography>
               <Typography
                 sx={{
@@ -794,7 +884,7 @@ export default function LoyaltySettings({ closeModal }) {
                 value={itemSelectType}
                 onChange={onProductSelectChange}
               />
-              {itemSelectType === 'all' && (
+              {itemSelectType === 'multiple' && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -838,11 +928,11 @@ export default function LoyaltySettings({ closeModal }) {
               <Box
                 sx={{
                   minHeight: '0px',
-                  height: `${products.length > 0 ? '500px' : '200px'}`,
+                  height: `${products?.length > 0 ? '500px' : '200px'}`,
                 }}
               >
                 <StyledTable2
-                  columns={columns}
+                  columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
                   sx={{
                     '& .MuiDataGrid-main': {
                       overflow: 'visible!important',
@@ -858,7 +948,7 @@ export default function LoyaltySettings({ closeModal }) {
                       overflowX: 'scroll!important',
                     },
                   }}
-                  rows={createGroupedDataRow(products)}
+                  rows={createGroupedDataRow(products || [])}
                   getRowId={(row) => row?._id}
                   components={{
                     NoRowsOverlay: () => (

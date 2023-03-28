@@ -4,12 +4,12 @@ import { Box, Button, Modal, Paper, Stack, styled, Typography, Unstable_Grid2 as
 import { useState } from 'react';
 
 // project import
-import BreadCrumbs from '../../../../components/Common/BreadCrumb2';
-import PageButton from '../../../../components/Common/PageButton';
-import StyledSelect2 from '../../../../components/Styled/StyledSelect2';
-import StyledAreaChartfrom from '../../../../components/StyledCharts/StyledAreaChart';
-import StyledBarChart from '../../../../components/StyledCharts/StyledBarChart';
-import Wrapper from '../../../../components/Wrapper';
+import BreadCrumbs from '../../../components/Common/BreadCrumb2';
+import PageButton from '../../../components/Common/PageButton';
+import StyledSelect2 from '../../../components/Styled/StyledSelect2';
+import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
+import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
+import Wrapper from '../../../components/Wrapper';
 import LoyaltySettings from '../Settings';
 import InfoCard from './InfoCard';
 import { areaChartData, barChartData, lineChartData, ProductsInfoListData } from './mock';
