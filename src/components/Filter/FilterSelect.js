@@ -38,6 +38,29 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   },
 }));
 
+const sizes = {
+  md: {
+    root: {
+      '& .MuiSelect-select': {
+        paddingTop: '7.5px',
+        paddingBottom: '7.5px',
+      },
+
+      '& .MuiOutlinedInput-input': {
+        fontWeight: '500',
+        fontSize: '12px',
+        lineHeight: '20px',
+      },
+    },
+    menuSx: {
+      '& .MuiMenuItem-root': {
+        fontSize: '12px',
+        lineHeight: '20px',
+      },
+    },
+  },
+};
+
 export default function FilterSelect({
   items,
   plainList,
@@ -47,6 +70,8 @@ export default function FilterSelect({
   getLabel,
   getKey,
   getDisplayValue,
+  size,
+  sx,
   ...props
 }) {
   const theme = useTheme();
@@ -57,6 +82,7 @@ export default function FilterSelect({
       MenuProps={{
         sx: {
           marginTop: '5px',
+          ...(sizes[size]?.menuSx || {}),
         },
       }}
       displayEmpty
@@ -70,6 +96,10 @@ export default function FilterSelect({
             getDisplayValue ? getDisplayValue(value) : items.find((item) => item.value === value)?.label
           }` || <span>{placeholder}</span>
         );
+      }}
+      sx={{
+        ...(sizes[size]?.root || {}),
+        ...(sx || {}),
       }}
       {...props}
     >

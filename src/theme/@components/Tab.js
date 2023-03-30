@@ -5,13 +5,14 @@ export default function Tab(theme) {
     },
     styleOverrides: {
       root: {
-        fontWeight: '700',
-        fontSize: '19px',
-        lineHeight: '20px',
         color: theme.palette.text.heading,
+        // color: 'red',
         borderBottom: '2px solid #EEEEEE',
-        padding: '14px 16px',
-        textTransform: 'initial',
+        padding: '15px',
+        fontWeight: '600',
+        fontSize: '15px',
+        lineHeight: '20px',
+        opacity: '1',
       },
     },
   };

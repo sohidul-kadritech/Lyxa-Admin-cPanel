@@ -19,8 +19,8 @@ export default function GetPallete() {
     text: {
       primary: '#3F4254',
       secondary: '#525252',
-      heading: '#363636',
       secondary2: '#737373',
+      heading: '#363636',
     },
     grey: {
       200: 'rgba(0, 0, 0, 0.08)',

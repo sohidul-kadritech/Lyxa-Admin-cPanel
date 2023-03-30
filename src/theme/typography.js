@@ -112,6 +112,13 @@ const Typography = (theme) => ({
       lineHeight: `${pxToRem(21)}rem`,
     },
   },
+
+  body4: {
+    fontWeight: 500,
+    fontSize: `${pxToRem(15)}rem`,
+    lineHeight: `${pxToRem(18)}rem`,
+    letterSpacing: '0px',
+  },
 });
 
 export default Typography;

@@ -1,8 +1,12 @@
-export default function Tabs() {
+export default function Tabs(theme) {
   return {
     defaultProps: {
       textColor: 'inherit',
-      indicatorColor: 'secondary',
+    },
+    styleOverrides: {
+      indicator: {
+        backgroundColor: theme.palette.text.heading,
+      },
     },
   };
 }

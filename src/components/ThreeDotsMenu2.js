@@ -9,6 +9,7 @@ const DropDown = styled(Menu)(() => ({
     border: '1px solid #EEEEEE',
     borderRadius: '10px',
     padding: '8px 0px',
+    marginTop: '4px',
   },
   '& .MuiMenu-list': {
     padding: '0px',
@@ -58,24 +59,40 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
       >
         <MoreHorizIcon />
       </StyledButton>
-      <DropDown anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        {menuItems?.map(
-          (menu) =>
-            menu && (
-              <MenuItem
-                key={menu}
-                value={menu}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log('dslfaksdj;');
-                  handleMenuClick(menu);
-                  handleClose();
-                }}
-              >
-                <span>{menu}</span>
-              </MenuItem>
-            )
-        )}
+      <DropDown
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        // transformOrigin={{
+        //   vertical: 'bottom',
+        //   horizontal: 'right',
+        // }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {menuItems?.map((item) => (
+          <MenuItem
+            key={item?.value}
+            value={item?.value}
+            sx={{
+              ...(item?.sx || {}),
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleMenuClick(item?.value);
+              handleClose();
+            }}
+          >
+            <span>{item?.label}</span>
+          </MenuItem>
+        ))}
       </DropDown>
     </>
   );

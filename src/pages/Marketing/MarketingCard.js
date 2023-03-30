@@ -2,7 +2,7 @@
 import { Cached, ChevronRight } from '@mui/icons-material';
 import { Box, Button, Paper, Stack, Typography, useTheme } from '@mui/material';
 
-export default function MCard({ icon: Icon, title, description, onOpen, ongoing, disabled }) {
+export default function MCard({ icon: Icon, title, description, onOpen, ongoing }) {
   const theme = useTheme();
 
   return (
@@ -41,9 +41,6 @@ export default function MCard({ icon: Icon, title, description, onOpen, ongoing,
           Ongoing promotion
         </Button>
       )}
-      {
-        
-      }
       <Box>
         <Icon />
       </Box>

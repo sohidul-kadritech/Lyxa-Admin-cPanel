@@ -25,13 +25,33 @@ const StyledInput = styled(TextField)(({ theme }) => ({
   },
 }));
 
-export default function FilterDate({ value, onChange, ...props }) {
+const sizes = {
+  md: {
+    root: {
+      '& .MuiInputBase-input': {
+        // fontWeight: '500',
+        fontSize: '12px',
+        lineHeight: '20px',
+      },
+    },
+  },
+};
+
+export default function FilterDate({ value, onChange, size, sx, ...props }) {
   return (
     <DesktopDatePicker
       value={value}
       onChange={onChange}
       {...props}
-      renderInput={(params) => <StyledInput {...params} />}
+      renderInput={(params) => (
+        <StyledInput
+          sx={{
+            ...(sizes[size]?.root || {}),
+            ...(sx || {}),
+          }}
+          {...params}
+        />
+      )}
     />
   );
 }

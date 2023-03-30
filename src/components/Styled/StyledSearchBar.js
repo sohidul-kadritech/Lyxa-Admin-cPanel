@@ -1,11 +1,12 @@
-import SearchIcon from '@mui/icons-material/Search';
+// import SearchIcon from '@mui/icons-material/Search';
 import { Input, InputAdornment, styled } from '@mui/material';
+import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg';
 
 const StyledInput = styled(Input)(({ theme }) => ({
   background: '#FFFFFF',
   border: '0.5px solid #D6D6D6',
   borderRadius: '7px',
-  padding: '8px 12px',
+  padding: '7px 12px',
 
   '&::before': {
     display: 'none',
@@ -27,6 +28,7 @@ const StyledInput = styled(Input)(({ theme }) => ({
       fontWeight: '500',
       fontSize: '13px',
       lineHeight: '16px',
+      opacity: 1,
     },
 
     '&::-webkit-input-placeholder': {
@@ -34,6 +36,7 @@ const StyledInput = styled(Input)(({ theme }) => ({
       fontWeight: '500',
       fontSize: '13px',
       lineHeight: '16px',
+      opacity: 1,
     },
   },
 

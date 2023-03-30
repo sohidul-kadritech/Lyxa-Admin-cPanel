@@ -13,7 +13,7 @@ export default function Components(theme) {
   return {
     MuiButton: Button(),
     MuiPaper: Paper(),
-    MuiTabs: Tabs(),
+    MuiTabs: Tabs(theme),
     MuiMenu: Menu(theme),
     MuiPopover: Popover(),
     MuiTypography: Typography(theme),
