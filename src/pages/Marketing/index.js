@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 // third party
-import { Box, Modal, Paper, Unstable_Grid2 as Grid } from '@mui/material';
-import { useState } from 'react';
+import { Box, Unstable_Grid2 as Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 // project import
 import { useQuery } from 'react-query';
@@ -15,6 +15,7 @@ import Wrapper from '../../components/Wrapper';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import MCard from './MarketingCard';
+import MSettingsModal from './MSettingsModal';
 import MarketingSettings from './Settings';
 
 const enabledDealsInit = {
@@ -23,12 +24,41 @@ const enabledDealsInit = {
   double_menu: false,
 };
 
+const marketingTypesInit = {
+  free_delivery: false,
+  double_menu: false,
+  percentage: false,
+  reward: false,
+};
+
 export default function Marketing() {
   const [currentModal, setCurrentModal] = useState(null);
   const [enabledDeals, setEnabledDeals] = useState(enabledDealsInit);
-  const { shopType, _id } = useSelector((store) => store.Login.admin);
+  const [disabledMarktingTypes, setDisabledMarktingTypes] = useState(marketingTypesInit);
+  const shop = useSelector((store) => store.Login.admin);
+  console.log(shop);
+
+  // eslint-disable-next-line no-unused-vars
+  const { reward, double_menu, free_delivery, percentage } = disabledMarktingTypes;
+  console.log(disabledMarktingTypes);
+
+  const getMarketingOptions = (marketings, currentUserType) => {
+    const options = { ...marketingTypesInit };
+    marketings.forEach((item) => {
+      if (item?.creatorType !== currentUserType) {
+        options[item?.type] = true;
+      }
+    });
+
+    setDisabledMarktingTypes(options);
+  };
+
+  useEffect(() => {
+    getMarketingOptions(shop?.marketings, 'shop');
+  }, []);
 
   // deal settings
+  // eslint-disable-next-line no-unused-vars
   const dealSettingsQuery = useQuery(
     ['deal-settings'],
     () =>
@@ -40,7 +70,7 @@ export default function Marketing() {
     {
       onSuccess: (data) => {
         data?.data?.dealSetting?.forEach((item) => {
-          if (item?.type === shopType || (item?.type === 'restaurant' && shopType === 'food')) {
+          if (item?.type === shop?.shopType || (item?.type === 'restaurant' && shop?.shopType === 'food')) {
             const deals = { ...enabledDealsInit };
 
             item?.option?.forEach((item) => {
@@ -56,7 +86,7 @@ export default function Marketing() {
   const rewardSettingsQuery = useQuery(['marketing-reward-settings'], () =>
     AXIOS.get(Api.GET_MARKETING_SETTINGS, {
       params: {
-        shop: _id,
+        shop: shop?._id,
         type: 'reward',
       },
     })
@@ -65,7 +95,7 @@ export default function Marketing() {
   const discountSettingsQuery = useQuery(['marketing-percentage-settings'], () =>
     AXIOS.get(Api.GET_MARKETING_SETTINGS, {
       params: {
-        shop: _id,
+        shop: shop?._id,
         type: 'percentage',
       },
     })
@@ -74,7 +104,7 @@ export default function Marketing() {
   const doubleDealSettingsQuery = useQuery(['marketing-double_menu-settings'], () =>
     AXIOS.get(Api.GET_MARKETING_SETTINGS, {
       params: {
-        shop: _id,
+        shop: shop?._id,
         type: 'double_menu',
       },
     })
@@ -83,7 +113,7 @@ export default function Marketing() {
   const freeDeliverySettingsQuery = useQuery(['marketing-free_delivery-settings'], () =>
     AXIOS.get(Api.GET_MARKETING_SETTINGS, {
       params: {
-        shop: _id,
+        shop: shop?._id,
         type: 'free_delivery',
       },
     })
@@ -103,7 +133,7 @@ export default function Marketing() {
               description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
               title="Discounted Items"
               icon={DiscountIcon}
-              disabled={dealSettingsQuery.isLoading || !enabledDeals.percentage}
+              disabled={dealSettingsQuery.isLoading || !enabledDeals.percentage || reward || double_menu || percentage}
               ongoing={discountSettingsQuery.data?.data?.marketing?.isActive}
               onOpen={() => {
                 if (enabledDeals.percentage) {
@@ -117,7 +147,7 @@ export default function Marketing() {
               description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
               title="Buy 1, Get 1 Free"
               icon={BuyIcon}
-              disabled={dealSettingsQuery.isLoading || !enabledDeals.double_menu}
+              disabled={dealSettingsQuery.isLoading || !enabledDeals.double_menu || reward || double_menu || percentage}
               ongoing={doubleDealSettingsQuery.data?.data?.marketing?.isActive}
               onOpen={() => {
                 if (enabledDeals.double_menu) {
@@ -130,7 +160,7 @@ export default function Marketing() {
             <MCard
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
-              disabled={dealSettingsQuery.isLoading || !enabledDeals.free_delivery}
+              disabled={dealSettingsQuery.isLoading || !enabledDeals.free_delivery || free_delivery}
               ongoing={freeDeliverySettingsQuery.data?.data?.marketing?.isActive}
               icon={DeliveryIcon}
               onOpen={() => {
@@ -144,6 +174,7 @@ export default function Marketing() {
             <MCard
               description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
               title="Loyalty Points"
+              disabled={dealSettingsQuery.isLoading || !enabledDeals.double_menu || reward || double_menu || percentage}
               ongoing={rewardSettingsQuery?.data?.isLoyaltyProgram}
               icon={LoyaltyIcon}
               onOpen={() => {
@@ -163,57 +194,16 @@ export default function Marketing() {
           </Grid>
         </Grid>
         {/* settings modal */}
-        <Modal
-          open={Boolean(currentModal)}
-          sx={{
-            minHeight: '0',
-            maxHeight: '90%',
-            top: '5%',
-          }}
-        >
-          <Paper
-            sx={{
-              maxWidth: 'calc(100vw - 100px)',
-              width: 'min(calc(100vw - 100px), 1500px)',
-              position: 'relative',
-              borderRadius: '10px',
-              height: '100%',
+        <MSettingsModal open={Boolean(currentModal)}>
+          <MarketingSettings
+            shop={shop}
+            creatorType="shop"
+            marketingType={currentModal}
+            closeModal={() => {
+              setCurrentModal(null);
             }}
-          >
-            {currentModal === 'reward' && (
-              <MarketingSettings
-                marketingType="reward"
-                closeModal={() => {
-                  setCurrentModal(null);
-                }}
-              />
-            )}
-            {currentModal === 'percentage' && (
-              <MarketingSettings
-                marketingType="percentage"
-                closeModal={() => {
-                  setCurrentModal(null);
-                }}
-              />
-            )}
-            {currentModal === 'double_menu' && (
-              <MarketingSettings
-                marketingType="double_menu"
-                closeModal={() => {
-                  setCurrentModal(null);
-                }}
-              />
-            )}
-            {currentModal === 'free_delivery' && (
-              <MarketingSettings
-                marketingType="free_delivery"
-                closeModal={() => {
-                  setCurrentModal(null);
-                }}
-              />
-            )}
-          </Paper>
-        </Modal>
+          />
+        </MSettingsModal>
       </Box>
     </Wrapper>
   );

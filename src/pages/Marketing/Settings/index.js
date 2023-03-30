@@ -159,9 +159,8 @@ const confirmActionInit = {
   onCancel: () => {},
 };
 
-export default function MarketingSettings({ closeModal, marketingType }) {
+export default function MarketingSettings({ closeModal, marketingType, shop, creatorType }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
-  const { shopBanner, shopLogo, shopName, shopType, _id: accountId } = useSelector((store) => store.Login.admin);
   const theme = useTheme();
   const queryClient = useQueryClient();
 
@@ -189,7 +188,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
         pageSize: 100,
         type: 'all',
         status: 'all',
-        shop: accountId,
+        shop: shop?._id,
       },
     })
   );
@@ -200,7 +199,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
     () =>
       AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
         params: {
-          type: shopType === 'food' ? 'restaurant' : shopType,
+          type: shop?.shopType === 'food' ? 'restaurant' : shop?.shopType,
         },
       }),
     {
@@ -237,9 +236,9 @@ export default function MarketingSettings({ closeModal, marketingType }) {
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: {
-          creatorType: 'shop',
+          creatorType,
           type: marketingType,
-          shop: accountId,
+          shop: shop?._id,
         },
       }),
     {
@@ -249,28 +248,28 @@ export default function MarketingSettings({ closeModal, marketingType }) {
 
   useEffect(() => {
     if (loyaltySettingsQuery?.data !== undefined) {
-      setQueryEnabled(false);
-    }
+      if (loyaltySettingsQuery?.data?.isMarketing) {
+        console.log('--------0000000000000-----');
+        if (loyaltySettingsQuery?.data?.data?.marketing?.status === 'active') {
+          setIsPageDisabled(true);
+          setPageMode(1);
+        } else {
+          setPageMode(0);
+          setIsPageDisabled(false);
+        }
 
-    if (loyaltySettingsQuery?.data?.isMarketing) {
-      if (loyaltySettingsQuery?.data?.data?.marketing?.status === 'active') {
-        setIsPageDisabled(true);
-        setPageMode(1);
+        setServerState(loyaltySettingsQuery?.data?.data?.marketing);
+        const newData = deepClone(loyaltySettingsQuery?.data?.data?.marketing);
+        setLocalData(newData);
+
+        if (newData?.products?.length > 0) {
+          setHasChanged(true);
+        }
       } else {
         setPageMode(0);
         setIsPageDisabled(false);
       }
-
-      setServerState(loyaltySettingsQuery?.data?.data?.marketing);
-      const newData = deepClone(loyaltySettingsQuery?.data?.data?.marketing);
-      setLocalData(newData);
-
-      if (newData?.products?.length > 0) {
-        setHasChanged(true);
-      }
-    } else {
-      setPageMode(0);
-      setIsPageDisabled(false);
+      setQueryEnabled(false);
     }
   }, [loyaltySettingsQuery?.data]);
 
@@ -329,7 +328,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
 
     setIsPageDisabled(true);
     setPageMode(1);
-    seCurrentExpanedTab(-1);
+    // seCurrentExpanedTab(-1);
   };
 
   // update loyalty settings
@@ -434,9 +433,9 @@ export default function MarketingSettings({ closeModal, marketingType }) {
     }
 
     loyaltySettingsMutaion.mutate({
-      shop: accountId,
+      shop: shop?._id,
       type: marketingType,
-      creatorType: 'shop',
+      creatorType,
       products: productsData,
       duration,
       spendLimit: spendLimitChecked ? spendLimit : 0,
@@ -449,8 +448,8 @@ export default function MarketingSettings({ closeModal, marketingType }) {
     () =>
       AXIOS.post(Api.DELETE_MARKETING_SETTINGS, {
         marketingId: serverState?._id,
-        shopId: accountId,
-        creatorType: 'shop',
+        shopId: shop?._id,
+        creatorType,
       }),
     {
       onSuccess: (data) => {
@@ -1326,7 +1325,15 @@ export default function MarketingSettings({ closeModal, marketingType }) {
                     color="primary"
                     disableRipple
                     onClick={() => {
-                      loyaltySettingsDeleteMutation.mutate();
+                      setConfirmModal(true);
+                      setConfirmAction({
+                        message: 'Are you sure?. Your campaign will be deleted.',
+                        onCancel: () => setConfirmModal(false),
+                        onConfirm: () => {
+                          loyaltySettingsDeleteMutation.mutate();
+                          setConfirmModal(false);
+                        },
+                      });
                     }}
                     sx={{
                       padding: '0px',
@@ -1372,7 +1379,15 @@ export default function MarketingSettings({ closeModal, marketingType }) {
                     color="primary"
                     disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
                     onClick={() => {
-                      updateLoyaltySettings('inactive');
+                      setConfirmModal(true);
+                      setConfirmAction({
+                        message: 'Are you sure?. Your campaign will be deactivaed.',
+                        onCancel: () => setConfirmModal(false),
+                        onConfirm: () => {
+                          updateLoyaltySettings('inactive');
+                          setConfirmModal(false);
+                        },
+                      });
                     }}
                     sx={{
                       borderRadius: 1.5,
@@ -1456,7 +1471,12 @@ export default function MarketingSettings({ closeModal, marketingType }) {
         <Typography variant="h4" pb={8}>
           Preview
         </Typography>
-        <BannerPreview shopBanner={shopBanner} shopLogo={shopLogo} shopName={shopName} marketingType={marketingType} />
+        <BannerPreview
+          shopBanner={shop?.shopBanner}
+          shopLogo={shop?.shopLogo}
+          shopName={shop?.shopName}
+          marketingType={marketingType}
+        />
       </Box>
       <ConfirmModal
         message={confirmAction.message}

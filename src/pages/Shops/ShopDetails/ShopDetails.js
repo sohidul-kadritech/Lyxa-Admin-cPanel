@@ -59,8 +59,18 @@ import {
   updateShopStatus,
 } from '../../../store/Shop/shopAction';
 // eslint-disable-next-line import/extensions
-import ReviewTable from '../../../components/ReviewTable.js';
+// import * as Api from '../../../../network/api';
+// import ReviewTable from '../../../components/ReviewTable.js';
 import { getAllAppSettings } from '../../../store/Settings/settingsAction';
+import MSettingsModal from '../../Marketing/MSettingsModal';
+import MarketingSettings from '../../Marketing/Settings';
+
+const marketingTypesInit = {
+  free_delivery: false,
+  double_menu: false,
+  percentage: false,
+  reward: false,
+};
 
 function ShopDetails() {
   const { id } = useParams();
@@ -78,6 +88,43 @@ function ShopDetails() {
   const [isLoading, setIsLoading] = useState(false);
   const { account_type } = useSelector((store) => store.Login.admin);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const [currentMarketing, setCurrentMarketing] = useState(null);
+  const [disabledMarktingTypes, setDisabledMarktingTypes] = useState(marketingTypesInit);
+
+  const getMarketingOptions = (marketings, currentUserType) => {
+    const options = { ...marketingTypesInit };
+    marketings.forEach((item) => {
+      if (item?.creatorType !== currentUserType) {
+        options[item?.type] = true;
+      }
+    });
+
+    setDisabledMarktingTypes(options);
+  };
+
+  // const dealSettingsQuery = useQuery(
+  //   ['deal-settings'],
+  //   () =>
+  //     AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
+  //       params: {
+  //         type: 'all',
+  //       },
+  //     }),
+  //   {
+  //     onSuccess: (data) => {
+  //       data?.data?.dealSetting?.forEach((item) => {
+  //         if (item?.type === shop?.shopType || (item?.type === 'restaurant' && shop?.shopType === 'food')) {
+  //           const deals = { ...enabledDealsInit };
+
+  //           item?.option?.forEach((item) => {
+  //             deals[item] = true;
+  //           });
+  //           setEnabledDeals(deals);
+  //         }
+  //       });
+  //     },
+  //   }
+  // );
 
   const getShop = async () => {
     const data = await callApi(id, SINGLE_SHOP, 'shop');
@@ -86,6 +133,7 @@ function ShopDetails() {
       const activeStatus = data?.liveStatus === 'online';
       setLiveStatus(activeStatus);
       setShop(data);
+      getMarketingOptions(data?.marketings || [], account_type);
     } else {
       history.push('/shops/list', { replace: true });
     }
@@ -98,6 +146,7 @@ function ShopDetails() {
         const activeStatus = findShop?.liveStatus === 'online';
         setLiveStatus(activeStatus);
         setShop(findShop);
+        getMarketingOptions(findShop?.marketings || [], account_type);
       } else {
         getShop();
       }
@@ -269,7 +318,6 @@ function ShopDetails() {
                       Download Product Template
                     </TemplateButton>
                   </Button>
-
                   <Button
                     outline
                     color="success"
@@ -278,23 +326,52 @@ function ShopDetails() {
                   >
                     Import Products
                   </Button>
-
                   <Button outline color="success" onClick={() => setMaxDiscountModal(true)} className="me-3">
                     Add Max Discount
                   </Button>
-                  <Button
-                    outline
-                    color="success"
-                    onClick={() => {
-                      setModalCenter(!modalCenter);
-                      document.body.classList.add('no_padding');
-                    }}
-                    className="me-3"
-                  >
-                    Add Deal
-                  </Button>
                   {account_type === 'admin' && (
                     <>
+                      <Button
+                        outline
+                        color="success"
+                        disabled={disabledMarktingTypes?.free_delivery}
+                        onClick={() => {
+                          setCurrentMarketing('free_delivery');
+                        }}
+                        className="me-3"
+                      >
+                        Add Free Delivery
+                      </Button>
+                      <Button
+                        outline
+                        color="success"
+                        disabled={
+                          disabledMarktingTypes?.percentage ||
+                          disabledMarktingTypes?.double_menu ||
+                          disabledMarktingTypes?.double_menu
+                        }
+                        onClick={() => {
+                          setCurrentMarketing('percentage');
+                        }}
+                        className="me-3"
+                      >
+                        Add Percentage Deal
+                      </Button>
+                      <Button
+                        outline
+                        color="success"
+                        disabled={
+                          disabledMarktingTypes?.percentage ||
+                          disabledMarktingTypes?.double_menu ||
+                          disabledMarktingTypes?.double_menu
+                        }
+                        onClick={() => {
+                          setCurrentMarketing('double_menu');
+                        }}
+                        className="me-3"
+                      >
+                        Add Double Deal
+                      </Button>
                       <Button outline color="success" onClick={setAsFeatured} className="me-3">
                         {!shop?.isFeatured ? 'Set as featured' : 'Remove featured'}
                       </Button>
@@ -445,9 +522,7 @@ function ShopDetails() {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                   <Typography>Order Reviews</Typography>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <ReviewTable reviews={shop?.reviews} isFromOrder={false} />
-                </AccordionDetails>
+                <AccordionDetails>{/* <ReviewTable reviews={shop?.reviews} isFromOrder={false} /> */}</AccordionDetails>
               </Accordion>
             </Col>
             <Col xl={6}>
@@ -708,6 +783,17 @@ function ShopDetails() {
           </Stack>
         </div>
       </Modal>
+      {/* marketing modal */}
+      <MSettingsModal open={Boolean(currentMarketing)}>
+        <MarketingSettings
+          shop={shop}
+          creatorType="admin"
+          marketingType={currentMarketing}
+          closeModal={() => {
+            setCurrentMarketing(null);
+          }}
+        />
+      </MSettingsModal>
     </GlobalWrapper>
   );
 }

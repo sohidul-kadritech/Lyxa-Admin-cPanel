@@ -47,47 +47,46 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
             objectFit: 'cover',
           }}
         />
-        {marketingType === 'percentage' ||
-          (marketingType === 'double_menu' && (
-            <Box
+        {(marketingType === 'percentage' || marketingType === 'double_menu') && (
+          <Box
+            sx={{
+              position: 'absolute',
+              left: '5px',
+              top: '3px',
+            }}
+          >
+            <TagBg />
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap="3px"
               sx={{
-                position: 'absolute',
-                left: '5px',
-                top: '3px',
+                marginTop: '-23px',
+                paddingLeft: '8px',
               }}
             >
-              <TagBg />
-              <Stack
-                direction="row"
-                alignItems="center"
-                gap="3px"
+              <Tag />
+              <Typography
                 sx={{
-                  marginTop: '-23px',
-                  paddingLeft: '8px',
+                  fontSize: '10px!important',
+                  fontWeight: 400,
+                  lineHeight: '14px',
+                  color: '#6F6F6F',
                 }}
               >
-                <Tag />
-                <Typography
-                  sx={{
-                    fontSize: '10px!important',
-                    fontWeight: 400,
-                    lineHeight: '14px',
-                    color: '#6F6F6F',
+                <span
+                  style={{
+                    fontWeight: 600,
+                    color: theme.palette.primary.main,
                   }}
                 >
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      color: theme.palette.primary.main,
-                    }}
-                  >
-                    {marketingType === 'double_menu' ? '2x Deal ' : '50% off '}
-                  </span>
-                  on selected items
-                </Typography>
-              </Stack>
-            </Box>
-          ))}
+                  {marketingType === 'double_menu' ? '2x Deal ' : '50% off '}
+                </span>
+                on selected items
+              </Typography>
+            </Stack>
+          </Box>
+        )}
       </Box>
       <Stack direction="row" gap="10px" alignItems="baseline" pt={2.5}>
         {/* logo */}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-// import { Spinner } from 'reactstrap';
 
 import Lightbox from 'react-image-lightbox';
 import { useDispatch, useSelector } from 'react-redux';
@@ -62,7 +61,7 @@ function ProductTable({ products, loading }) {
           <Tr>
             <Th>Product</Th>
             <Th>Shop</Th>
-            <Th>Deal</Th>
+            {/* <Th>Deal</Th> */}
             <Th>Price ({currency})</Th>
             <Th>Status</Th>
             <Th>Action</Th>
@@ -90,16 +89,6 @@ function ProductTable({ products, loading }) {
                 <Td onClick={() => goToDetails(item?._id)}>
                   <p>{item?.shop?.shopName}</p>
                 </Td>
-                <Td onClick={() => goToDetails(item?._id)}>
-                  {item?.deals.length > 0
-                    ? item?.deals.map((item) => (
-                        <div key={item?.name}>
-                          <p>{item?.name}</p>
-                        </div>
-                      ))
-                    : '--'}
-                </Td>
-
                 <Td onClick={() => goToDetails(item?._id)}>
                   <p>{item?.price}</p>
                   <p>{item?.shopEndTimeText}</p>
