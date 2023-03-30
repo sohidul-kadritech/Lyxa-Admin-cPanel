@@ -1,8 +1,10 @@
 // thrid pary
-import { Avatar, Chip, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Chip, Drawer, Stack, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
+import AddContainer from '../AddContainer';
 
 const statusColorVariants = {
   inactive: {
@@ -39,6 +41,14 @@ const menuItems = [
 
 export default function ListTable({ items }) {
   const theme = useTheme();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // three dot handler
+  const handleMenuClick = (menu) => {
+    if (menu === 'edit') {
+      setSidebarOpen(true);
+    }
+  };
 
   const allColumns = [
     {
@@ -135,18 +145,29 @@ export default function ListTable({ items }) {
       flex: 1,
       align: 'right',
       headerAlign: 'right',
-      renderCell: () => <ThreeDotsMenu handleMenuClick={() => {}} menuItems={menuItems} />,
+      renderCell: () => <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={menuItems} />,
     },
   ];
 
   return (
-    <StyledTable
-      columns={allColumns}
-      rowHeight={70}
-      rows={items}
-      sx={{
-        background: '#fff',
-      }}
-    />
+    <>
+      <StyledTable
+        columns={allColumns}
+        rowHeight={70}
+        rows={items}
+        sx={{
+          background: '#fff',
+        }}
+      />
+      <Drawer
+        anchor="right"
+        open={sidebarOpen}
+        onClose={() => {
+          setSidebarOpen(false);
+        }}
+      >
+        <AddContainer />
+      </Drawer>
+    </>
   );
 }

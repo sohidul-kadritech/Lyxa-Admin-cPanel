@@ -112,8 +112,6 @@ export default function ListContainers() {
                 </Tooltip>
               </Stack>
               <ListTable items={listData} />
-              {/* <Box height={50}> */}
-              {/* </Box> */}
             </TabPanel>
             <TabPanel index={1} value={currentTab}></TabPanel>
             <TabPanel index={2} value={currentTab}></TabPanel>

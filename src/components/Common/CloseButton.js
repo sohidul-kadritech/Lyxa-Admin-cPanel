@@ -4,10 +4,10 @@ import { IconButton, styled } from '@mui/material';
 const Button = styled(IconButton)(() => ({
   background: 'transparent',
 
-  '& .MuiSvgIcon-root': {
-    width: '14px',
-    height: '14px',
-  },
+  // '& .MuiSvgIcon-root': {
+  //   width: '14px',
+  //   height: '14px',
+  // },
 
   '&:hover': {
     background: 'transparent',
@@ -15,9 +15,25 @@ const Button = styled(IconButton)(() => ({
   },
 }));
 
-export default function CloseButton({ ...props }) {
+const sizes = {
+  sm: {
+    '& .MuiSvgIcon-root': {
+      width: '14px',
+      height: '14px',
+    },
+  },
+  md: {},
+};
+
+export default function CloseButton({ size, sx, ...props }) {
   return (
-    <Button {...props}>
+    <Button
+      sx={{
+        ...(sizes[size || 'md'] || {}),
+        ...(sx || {}),
+      }}
+      {...props}
+    >
       <Close />
     </Button>
   );

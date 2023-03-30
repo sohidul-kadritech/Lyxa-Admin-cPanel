@@ -5,7 +5,6 @@ const Input = React.forwardRef(({ ...props }, ref) => <TextField {...props} ref=
 
 const StyledInput = styled(Input)(({ theme }) => ({
   minWidth: 'inherit',
-  width: '74px',
   '& .MuiInputBase-root': {
     borderRadius: '30px',
     background: theme.palette.background.secondary,
@@ -17,7 +16,6 @@ const StyledInput = styled(Input)(({ theme }) => ({
   '& input': {
     paddingTop: '12px',
     paddingBottom: '12px',
-    textAlign: 'center',
     fontWeight: '500',
   },
 }));
