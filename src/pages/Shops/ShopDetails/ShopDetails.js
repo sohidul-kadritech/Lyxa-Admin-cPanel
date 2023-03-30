@@ -59,8 +59,8 @@ import {
   updateShopStatus,
 } from '../../../store/Shop/shopAction';
 // eslint-disable-next-line import/extensions
-// import * as Api from '../../../../network/api';
-// import ReviewTable from '../../../components/ReviewTable.js';
+import ReviewTable from '../../../components/ReviewTable.js';
+
 import { getAllAppSettings } from '../../../store/Settings/settingsAction';
 import MSettingsModal from '../../Marketing/MSettingsModal';
 import MarketingSettings from '../../Marketing/Settings';
@@ -522,7 +522,9 @@ function ShopDetails() {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                   <Typography>Order Reviews</Typography>
                 </AccordionSummary>
-                <AccordionDetails>{/* <ReviewTable reviews={shop?.reviews} isFromOrder={false} /> */}</AccordionDetails>
+                <AccordionDetails>
+                  <ReviewTable reviews={shop?.reviews} isFromOrder={false} />
+                </AccordionDetails>
               </Accordion>
             </Col>
             <Col xl={6}>
