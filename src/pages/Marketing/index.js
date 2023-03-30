@@ -17,31 +17,74 @@ import AXIOS from '../../network/axios';
 import MCard from './MarketingCard';
 import MarketingSettings from './Settings';
 
+const enabledDealsInit = {
+  free_delivery: false,
+  percentage: false,
+  double_menu: false,
+};
+
 export default function Marketing() {
   const [currentModal, setCurrentModal] = useState(null);
-  // const history = useHistory();
-  // eslint-disable-next-line no-unused-vars
+  const [enabledDeals, setEnabledDeals] = useState(enabledDealsInit);
   const { shopType, _id } = useSelector((store) => store.Login.admin);
 
-  const loyaltySettingsQuery = useQuery(
-    ['loyalty'],
+  // deal settings
+  const dealSettingsQuery = useQuery(
+    ['deal-settings'],
     () =>
-      AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+      AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
         params: {
-          shop: _id,
-          type: 'reward',
+          type: 'all',
         },
       }),
     {
-      staleTime: 0,
+      onSuccess: (data) => {
+        data?.data?.dealSetting?.forEach((item) => {
+          if (item?.type === shopType || (item?.type === 'restaurant' && shopType === 'food')) {
+            const deals = { ...enabledDealsInit };
+
+            item?.option?.forEach((item) => {
+              deals[item] = true;
+            });
+            setEnabledDeals(deals);
+          }
+        });
+      },
     }
   );
 
-  // deal settings
-  const dealSettingsQuery = useQuery(['deal-settings'], () =>
-    AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
+  const rewardSettingsQuery = useQuery(['marketing-reward-settings'], () =>
+    AXIOS.get(Api.GET_MARKETING_SETTINGS, {
       params: {
-        type: 'all',
+        shop: _id,
+        type: 'reward',
+      },
+    })
+  );
+
+  const discountSettingsQuery = useQuery(['marketing-percentage-settings'], () =>
+    AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+      params: {
+        shop: _id,
+        type: 'percentage',
+      },
+    })
+  );
+
+  const doubleDealSettingsQuery = useQuery(['marketing-double_menu-settings'], () =>
+    AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+      params: {
+        shop: _id,
+        type: 'double_menu',
+      },
+    })
+  );
+
+  const freeDeliverySettingsQuery = useQuery(['marketing-free_delivery-settings'], () =>
+    AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+      params: {
+        shop: _id,
+        type: 'free_delivery',
       },
     })
   );
@@ -60,9 +103,12 @@ export default function Marketing() {
               description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
               title="Discounted Items"
               icon={DiscountIcon}
-              disabled={dealSettingsQuery.isLoading}
+              disabled={dealSettingsQuery.isLoading || !enabledDeals.percentage}
+              ongoing={discountSettingsQuery.data?.data?.marketing?.isActive}
               onOpen={() => {
-                setCurrentModal('percentage');
+                if (enabledDeals.percentage) {
+                  setCurrentModal('percentage');
+                }
               }}
             />
           </Grid>
@@ -71,8 +117,12 @@ export default function Marketing() {
               description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
               title="Buy 1, Get 1 Free"
               icon={BuyIcon}
+              disabled={dealSettingsQuery.isLoading || !enabledDeals.double_menu}
+              ongoing={doubleDealSettingsQuery.data?.data?.marketing?.isActive}
               onOpen={() => {
-                setCurrentModal('double_menu');
+                if (enabledDeals.double_menu) {
+                  setCurrentModal('double_menu');
+                }
               }}
             />
           </Grid>
@@ -80,9 +130,13 @@ export default function Marketing() {
             <MCard
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
+              disabled={dealSettingsQuery.isLoading || !enabledDeals.free_delivery}
+              ongoing={freeDeliverySettingsQuery.data?.data?.marketing?.isActive}
               icon={DeliveryIcon}
               onOpen={() => {
-                setCurrentModal('free_delivery');
+                if (enabledDeals.free_delivery) {
+                  setCurrentModal('free_delivery');
+                }
               }}
             />
           </Grid>
@@ -90,7 +144,7 @@ export default function Marketing() {
             <MCard
               description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
               title="Loyalty Points"
-              ongoing={loyaltySettingsQuery?.data?.isLoyaltyProgram}
+              ongoing={rewardSettingsQuery?.data?.isLoyaltyProgram}
               icon={LoyaltyIcon}
               onOpen={() => {
                 setCurrentModal('reward');

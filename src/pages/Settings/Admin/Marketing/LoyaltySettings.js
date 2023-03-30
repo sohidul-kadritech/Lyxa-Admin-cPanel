@@ -292,6 +292,12 @@ export default function LoyaltySettings() {
                     <StyledInput
                       value={getReward?.amount || '0'}
                       type="number"
+                      sx={{
+                        width: '74px',
+                        '& input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       onChange={(e) => {
                         setGetReward((prev) => ({ ...prev, amount: e.target.value }));
                       }}
@@ -319,6 +325,12 @@ export default function LoyaltySettings() {
                       <Stack direction="row" alignItems="center" gap={3}>
                         <StyledInput
                           type="number"
+                          sx={{
+                            width: '74px',
+                            '& input': {
+                              textAlign: 'center',
+                            },
+                          }}
                           value={redeemReward?.amount || '0'}
                           onChange={(e) => {
                             setRedeemReward((prev) => ({ ...prev, amount: e.target.value }));
@@ -356,6 +368,12 @@ export default function LoyaltySettings() {
                   <Typography variant="body1">Lyxa</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
                     <StyledInput
+                      sx={{
+                        width: '74px',
+                        '& input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       type="number"
                       value={adminCutForReward}
                       onChange={(e) => {
@@ -392,7 +410,16 @@ export default function LoyaltySettings() {
                       }}
                     >
                       <Typography variant="body1"> Shop</Typography>
-                      <StyledInput type="text" value={`${Number(100 - adminCutForReward)}%`} />
+                      <StyledInput
+                        sx={{
+                          width: '74px',
+                          '& input': {
+                            textAlign: 'center',
+                          },
+                        }}
+                        type="text"
+                        value={`${Number(100 - adminCutForReward)}%`}
+                      />
                     </Stack>
                   </Stack>
                 </Stack>
@@ -472,6 +499,7 @@ export default function LoyaltySettings() {
                               maxWidth: '200px',
                               '& input': {
                                 fontSize: '13px',
+                                textAlign: 'center',
                               },
                             }}
                             onKeyDown={(event) => {
@@ -573,9 +601,11 @@ export default function LoyaltySettings() {
                         type="number"
                         value={newBundleItem}
                         sx={{
+                          width: '74px',
                           '& input': {
                             fontSize: '13px',
                             height: 'auto',
+                            textAlign: 'center',
                           },
                         }}
                         onChange={(e) => {
@@ -641,6 +671,12 @@ export default function LoyaltySettings() {
                   <Typography variant="body1">Minimum spending limit/week</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
                     <StyledInput
+                      sx={{
+                        width: '74px',
+                        '& input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       type="number"
                       value={minSpendLimit}
                       onChange={(event) => {
@@ -676,6 +712,12 @@ export default function LoyaltySettings() {
                   <Typography variant="body1">Number of days</Typography>
                   <Stack direction="row" alignItems="center" gap={3}>
                     <StyledInput
+                      sx={{
+                        width: '74px',
+                        '& input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       type="number"
                       value={expirationPeriod}
                       onChange={(e) => {

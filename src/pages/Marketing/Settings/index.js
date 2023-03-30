@@ -20,7 +20,7 @@ import {
   useTheme,
 } from '@mui/material';
 import _ from 'lodash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 
@@ -35,7 +35,6 @@ import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import StyledTable2 from '../../../components/Styled/StyledTable2';
-import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
 import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -45,7 +44,7 @@ import BannerPreview from './BannerPreview';
 // helper functions
 const createGroupedList = (products, category) => {
   const productsList = Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
-  return productsList.filter((item) => !category || item?.category?.name === category);
+  return productsList.filter((item) => !item?.marketing && (!category || item?.category?.name === category));
 };
 
 const createGroupedDataRow = (products) => {
@@ -150,7 +149,7 @@ const itemSelectOptions = [
 ];
 
 const durationInit = {
-  start: moment().startOf('month').format('YYYY-MM-DD'),
+  start: moment().format('YYYY-MM-DD'),
   end: moment().endOf('month').format('YYYY-MM-DD'),
 };
 
@@ -160,19 +159,9 @@ const confirmActionInit = {
   onCancel: () => {},
 };
 
-// access token
-let accountId = null;
-
-if (document.cookie.length) {
-  const { account_id } = getCookiesAsObject();
-  accountId = account_id || null;
-}
-
-// const productSelectKeyForLS = 'loyaltySettingsSelectType';
-
 export default function MarketingSettings({ closeModal, marketingType }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
-  const { shopBanner, shopLogo, shopName, shopType } = useSelector((store) => store.Login.admin);
+  const { shopBanner, shopLogo, shopName, shopType, _id: accountId } = useSelector((store) => store.Login.admin);
   const theme = useTheme();
   const queryClient = useQueryClient();
 
@@ -193,7 +182,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
   // shop products
-  const productsQuery = useQuery(['products-query'], () =>
+  const productsQuery = useQuery(['shop-all-products'], () =>
     AXIOS.get(Api.ALL_PRODUCT, {
       params: {
         page: 1,
@@ -204,8 +193,6 @@ export default function MarketingSettings({ closeModal, marketingType }) {
       },
     })
   );
-
-  console.log(productsQuery.data);
 
   // deal settings query
   const dealSettingsQuery = useQuery(
@@ -256,34 +243,36 @@ export default function MarketingSettings({ closeModal, marketingType }) {
         },
       }),
     {
-      staleTime: 0,
-      cacheTime: 0,
       enabled: queryEnabled,
-      onSuccess: (data) => {
-        setQueryEnabled(false);
-        if (data?.isMarketing) {
-          if (data?.data?.marketing?.status === 'active') {
-            setIsPageDisabled(true);
-            setPageMode(1);
-          } else {
-            setPageMode(0);
-            setIsPageDisabled(false);
-          }
-
-          setServerState(data?.data?.marketing);
-          const newData = deepClone(data?.data?.marketing);
-          setLocalData(newData);
-
-          if (newData?.products?.length > 0) {
-            setHasChanged(true);
-          }
-        } else {
-          setPageMode(0);
-          setIsPageDisabled(false);
-        }
-      },
     }
   );
+
+  useEffect(() => {
+    if (loyaltySettingsQuery?.data !== undefined) {
+      setQueryEnabled(false);
+    }
+
+    if (loyaltySettingsQuery?.data?.isMarketing) {
+      if (loyaltySettingsQuery?.data?.data?.marketing?.status === 'active') {
+        setIsPageDisabled(true);
+        setPageMode(1);
+      } else {
+        setPageMode(0);
+        setIsPageDisabled(false);
+      }
+
+      setServerState(loyaltySettingsQuery?.data?.data?.marketing);
+      const newData = deepClone(loyaltySettingsQuery?.data?.data?.marketing);
+      setLocalData(newData);
+
+      if (newData?.products?.length > 0) {
+        setHasChanged(true);
+      }
+    } else {
+      setPageMode(0);
+      setIsPageDisabled(false);
+    }
+  }, [loyaltySettingsQuery?.data]);
 
   const onProductSelectChange = (event) => {
     if (hasChanged && products?.length > 0) {
@@ -300,7 +289,6 @@ export default function MarketingSettings({ closeModal, marketingType }) {
         }
 
         setConfirmModal(false);
-        // localStorage.setItem(productSelectKeyForLS, value);
 
         setItemSelectType(value);
         setHasChanged(false);
@@ -339,8 +327,6 @@ export default function MarketingSettings({ closeModal, marketingType }) {
     setLocalData(newData);
     setHasGlobalChange(false);
 
-    console.log('triggered');
-
     setIsPageDisabled(true);
     setPageMode(1);
     seCurrentExpanedTab(-1);
@@ -360,7 +346,6 @@ export default function MarketingSettings({ closeModal, marketingType }) {
         setHasGlobalChange(false);
 
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
-        queryClient.invalidateQueries([`${marketingType}`]);
 
         if (args.status === 'inactive') {
           setPageMode(0);
@@ -460,21 +445,6 @@ export default function MarketingSettings({ closeModal, marketingType }) {
     });
   };
 
-  // delete settings
-  // eslint-disable-next-line no-unused-vars
-  const resetPage = () => {
-    setIsPageDisabled(false);
-    setPageMode(0);
-    setTermAndCondition(false);
-    setHasChanged(false);
-    setHasGlobalChange(false);
-    setProducts([]);
-    setDuration(durationInit);
-    setSpendLimit('');
-    setSpendLimitChecked(false);
-    setItemSelectType('multiple');
-  };
-
   const loyaltySettingsDeleteMutation = useMutation(
     () =>
       AXIOS.post(Api.DELETE_MARKETING_SETTINGS, {
@@ -487,7 +457,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
         successMsg(data?.message, 'success');
 
         if (data?.status) {
-          queryClient.invalidateQueries([`${marketingType}`]);
+          queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
           closeModal();
         }
       },
@@ -497,7 +467,6 @@ export default function MarketingSettings({ closeModal, marketingType }) {
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
     ? dealSettingsQuery?.data?.data?.dealSetting[0]?.percentageBundle
     : [];
-  console.log(dealSettingsQuery);
 
   const allColumns = [
     {
@@ -772,6 +741,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
             </Stack>
             <CloseButton
               color="secondary"
+              size="sm"
               onClick={() => {
                 removeProduct(params.row);
                 setHasChanged(true);
@@ -818,6 +788,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
               </Typography>
             </Stack>
             <CloseButton
+              size="sm"
               color="secondary"
               onClick={() => {
                 removeProduct(params.row);
@@ -864,6 +835,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
               </Typography>
             </Stack>
             <CloseButton
+              size="sm"
               color="secondary"
               onClick={() => {
                 removeProduct(params.row);
@@ -887,6 +859,7 @@ export default function MarketingSettings({ closeModal, marketingType }) {
     >
       <CloseButton
         color="secondary"
+        size="sm"
         sx={{
           position: 'absolute',
           right: '10px',
@@ -1120,7 +1093,9 @@ export default function MarketingSettings({ closeModal, marketingType }) {
                 subTitle={
                   currentExpanedTab === 1
                     ? 'Please choose the date range during which your items will be running.'
-                    : 'March 1, 2023 - April 1, 2023'
+                    : `${moment(duration.start).format('MMMM, D, YYYY')} - ${moment(duration.end).format(
+                        'MMMM, D, YYYY'
+                      )}`
                 }
               />
             }

@@ -1,8 +1,9 @@
 // thrid party
 import { Cached, ChevronRight } from '@mui/icons-material';
 import { Box, Button, Paper, Stack, Typography, useTheme } from '@mui/material';
+import LoadingOverlay from '../../components/Common/LoadingOverlay';
 
-export default function MCard({ icon: Icon, title, description, onOpen, ongoing }) {
+export default function MCard({ icon: Icon, title, description, onOpen, ongoing, disabled }) {
   const theme = useTheme();
 
   return (
@@ -12,6 +13,7 @@ export default function MCard({ icon: Icon, title, description, onOpen, ongoing 
         border: '1px solid #EEEEEE',
         padding: '16px',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
       {ongoing && (
@@ -41,6 +43,7 @@ export default function MCard({ icon: Icon, title, description, onOpen, ongoing 
           Ongoing promotion
         </Button>
       )}
+      {disabled && <LoadingOverlay />}
       <Box>
         <Icon />
       </Box>
