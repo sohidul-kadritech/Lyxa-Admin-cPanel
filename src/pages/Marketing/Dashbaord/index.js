@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // third party
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Box, Button, Stack, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
+import { Box, Button, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -22,7 +22,7 @@ import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import InfoCard from './InfoCard';
-import { barChartData, lineChartData, ProductsInfoListData } from './mock';
+import { ProductsInfoListData } from './mock';
 import ProductsInfoList from './ProductsInfoList';
 import { IncreaseDecreaseTag, ViewMoreTag } from './Tags';
 
@@ -77,17 +77,41 @@ const dateRangeItit = {
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
 
-const gOrdersData = (items) => {
+const gData = (items, getData, getLabel) => {
   const labels = [];
   const data = [];
 
   items.forEach((item) => {
-    labels.push(moment(item?.date).format('MMMM DD'));
-    data.push(item?.order);
+    // labels.push();
+    labels.push(getLabel(item));
+    data.push(getData(item));
   });
 
   return { labels, data };
 };
+
+function DateRange({ range, setRange }) {
+  return (
+    <Stack direction="row" alignItems="center" gap={2}>
+      <FilterDate
+        value={range?.start}
+        tooltip="Start Date"
+        size="sm"
+        onChange={(e) => {
+          setRange((prev) => ({ ...prev, start: e._d }));
+        }}
+      />
+      <FilterDate
+        value={range?.end}
+        tooltip="End Date"
+        size="sm"
+        onChange={(e) => {
+          setRange((prev) => ({ ...prev, end: e._d }));
+        }}
+      />
+    </Stack>
+  );
+}
 
 export default function MarketingDashboard() {
   const params = useParams();
@@ -122,7 +146,7 @@ export default function MarketingDashboard() {
   );
 
   // orders graph
-  const [orderRange, setOrderRange] = useState(dateRangeItit);
+  const [orderRange, setOrderRange] = useState({ ...dateRangeItit });
 
   const ordersGraphQuery = useQuery(
     [`marketing-graph-orders-${params?.id}-${orderRange.start}-${orderRange.end}`],
@@ -136,7 +160,11 @@ export default function MarketingDashboard() {
       })
   );
 
-  const oData = gOrdersData(ordersGraphQuery?.data?.data?.info || []);
+  const oData = gData(
+    ordersGraphQuery?.data?.data?.info || [],
+    (item) => item.order,
+    (item) => moment(item?.date).format('MMMM DD')
+  );
 
   const oGraphData = {
     labels: oData.labels,
@@ -153,17 +181,72 @@ export default function MarketingDashboard() {
   };
 
   // customer data
+  const [customerRange, setCustomerRange] = useState({ ...dateRangeItit });
+
   const customerGraphQuery = useQuery(
-    [`marketing-graph-customer-${params?.id}-${orderRange.start}-${orderRange.end}`],
+    [`marketing-graph-customer-${params?.id}-${customerRange.start}-${customerRange.end}`],
     () =>
       AXIOS.get(Api.GET_MARKETING_DASHBOARD_CUSTOMER_GRAPH, {
         params: {
           marketingId: params?.id,
-          startDate: orderRange.start,
-          endDate: orderRange.end,
+          startDate: customerRange.start,
+          endDate: customerRange.end,
         },
       })
   );
+
+  const cData = gData(
+    customerGraphQuery?.data?.data?.info || [],
+    (item) => item.customer,
+    (item) => moment(item?.date).format('MMMM DD')
+  );
+
+  const cGraphData = {
+    labels: cData.labels,
+    datasets: [
+      {
+        label: 'Amount',
+        data: cData.data,
+        backgroundColor: '#15BFCA',
+      },
+    ],
+  };
+
+  // amount spent
+  const [amountRange, setAmountRange] = useState({ ...dateRangeItit });
+
+  const amountGraphQuery = useQuery(
+    [`marketing-graph-amount-${params?.id}-${amountRange.start}-${amountRange.end}`],
+    () =>
+      AXIOS.get(Api.GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH, {
+        params: {
+          marketingId: params?.id,
+          startDate: amountRange.start,
+          endDate: amountRange.end,
+        },
+      })
+  );
+
+  const aData = gData(
+    amountGraphQuery?.data?.data?.info || [],
+    (item) => item.amount,
+    (item) => moment(item?.date).format('MMMM DD')
+  );
+
+  const aGraphData = {
+    labels: aData.labels,
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: aData.data,
+        borderColor: 'rgba(21, 191, 202, 1)',
+        backgroundColor: 'rgba(21, 191, 202, 0)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // export const lineChartData =
 
   return (
     <Wrapper
@@ -272,24 +355,7 @@ export default function MarketingDashboard() {
               <Typography variant="body1" fontWeight={600}>
                 Orders
               </Typography>
-              <Stack direction="row" alignItems="center" gap={2}>
-                <FilterDate
-                  value={orderRange?.start}
-                  tooltip="Start Date"
-                  size="sm"
-                  onChange={(e) => {
-                    setOrderRange((prev) => ({ ...prev, start: e._d }));
-                  }}
-                />
-                <FilterDate
-                  value={orderRange?.end}
-                  tooltip="End Date"
-                  size="sm"
-                  onChange={(e) => {
-                    setOrderRange((prev) => ({ ...prev, end: e._d }));
-                  }}
-                />
-              </Stack>
+              <DateRange range={orderRange} setRange={setOrderRange} />
             </Stack>
             <Box
               sx={{
@@ -301,36 +367,36 @@ export default function MarketingDashboard() {
           </StyledBox>
         </Grid>
         <Grid sm={12} md={12} lg={6}>
-          <StyledBox padding>
+          <StyledBox padding loading={customerGraphQuery.isLoading}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
               <Typography variant="body1" fontWeight={600}>
                 Customers
               </Typography>
-              <StyledSelect2 items={selectMockOptions} defaultValue="week" />
+              <DateRange range={customerRange} setRange={setCustomerRange} />
             </Stack>
             <Box
               sx={{
                 height: '325px',
               }}
             >
-              <StyledBarChart data={barChartData} />
+              <StyledBarChart data={cGraphData} />
             </Box>
           </StyledBox>
         </Grid>
         <Grid sm={12} md={12} lg={6}>
-          <StyledBox padding>
+          <StyledBox padding loading={amountGraphQuery.isLoading}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
               <Typography variant="body1" fontWeight={600}>
                 Amount spent
               </Typography>
-              <StyledSelect2 items={selectMockOptions} defaultValue="week" />
+              <DateRange range={amountRange} setRange={setAmountRange} />
             </Stack>
             <Box
               sx={{
                 height: '325px',
               }}
             >
-              <StyledAreaChartfrom data={lineChartData} />
+              <StyledAreaChartfrom data={aGraphData} />
             </Box>
           </StyledBox>
         </Grid>
