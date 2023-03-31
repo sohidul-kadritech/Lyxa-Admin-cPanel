@@ -5,6 +5,7 @@ import { Box, Button, Stack, Typography, Unstable_Grid2 as Grid, useTheme } from
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 // project import
@@ -90,8 +91,9 @@ const gOrdersData = (items) => {
 
 export default function MarketingDashboard() {
   const params = useParams();
+  const adminShop = useSelector((store) => store.Login.admin);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentShop, setCurrentShop] = useState({});
+  const [currentShop, setCurrentShop] = useState(adminShop);
 
   const singleShopQuery = useQuery(
     [`single-shop-${params?.shopId}`],
@@ -162,8 +164,6 @@ export default function MarketingDashboard() {
         },
       })
   );
-
-  console.log(customerGraphQuery);
 
   return (
     <Wrapper

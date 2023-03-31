@@ -249,7 +249,6 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
   useEffect(() => {
     if (loyaltySettingsQuery?.data !== undefined) {
       if (loyaltySettingsQuery?.data?.isMarketing) {
-        console.log('--------0000000000000-----');
         if (loyaltySettingsQuery?.data?.data?.marketing?.status === 'active') {
           setIsPageDisabled(true);
           setPageMode(1);
@@ -502,7 +501,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
             blurOnSelect
             openOnFocus
             value={params.row}
-            disabled={productsQuery.isLoading}
+            disabled={productsQuery.isLoading || itemSelectType === 'multiple'}
             options={createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
             onChange={(event, newValue) => {
@@ -518,7 +517,6 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
             loading={productsQuery.isLoading || productsQuery.isFetching}
             disableClearable
             disablePortal
-            readOnly={undefined}
             PaperComponent={({ children }) => (
               <Paper
                 sx={{
@@ -738,14 +736,16 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                 {currency} {params?.row?.price}
               </Typography>
             </Stack>
-            <CloseButton
-              color="secondary"
-              size="sm"
-              onClick={() => {
-                removeProduct(params.row);
-                setHasChanged(true);
-              }}
-            />
+            {itemSelectType !== 'multiple' && (
+              <CloseButton
+                color="secondary"
+                size="sm"
+                onClick={() => {
+                  removeProduct(params.row);
+                  setHasChanged(true);
+                }}
+              />
+            )}
           </Stack>
         );
       },
@@ -786,14 +786,16 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                 {currency} {params?.row?.price}
               </Typography>
             </Stack>
-            <CloseButton
-              size="sm"
-              color="secondary"
-              onClick={() => {
-                removeProduct(params.row);
-                setHasChanged(true);
-              }}
-            />
+            {itemSelectType !== 'multiple' && (
+              <CloseButton
+                size="sm"
+                color="secondary"
+                onClick={() => {
+                  removeProduct(params.row);
+                  setHasChanged(true);
+                }}
+              />
+            )}
           </Stack>
         );
       },
@@ -833,14 +835,16 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                 {currency} {params?.row?.price * 2}{' '}
               </Typography>
             </Stack>
-            <CloseButton
-              size="sm"
-              color="secondary"
-              onClick={() => {
-                removeProduct(params.row);
-                setHasChanged(true);
-              }}
-            />
+            {itemSelectType !== 'multiple' && (
+              <CloseButton
+                size="sm"
+                color="secondary"
+                onClick={() => {
+                  removeProduct(params.row);
+                  setHasChanged(true);
+                }}
+              />
+            )}
           </Stack>
         );
       },
@@ -972,6 +976,46 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                       onChange={(e) => {
                         products.forEach((product) => {
                           product.rewardBundle = Number(e.target.value);
+                        });
+                        setGlobalRewardBundle(Number(e.target.value));
+                        setHasChanged(true);
+                        setHasGlobalChange(true);
+                      }}
+                      value={globalRewardBundle}
+                      sx={{
+                        minWidth: '80px',
+                        '& .MuiInputBase-input': {
+                          fontWeight: '500',
+                          fontSize: '15px',
+                          lineHeight: '24px',
+                          paddingTop: '6px',
+                          paddingBottom: '6px',
+                          textAlign: 'center',
+                        },
+                      }}
+                    />
+                  </Box>
+                )}
+                {itemSelectType === 'multiple' && marketingType === 'percentage' && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      zIndex: '99',
+                      bottom: '-6px',
+                      left: '130px',
+                    }}
+                  >
+                    <FilterSelect
+                      items={shopPercentageDeals || []}
+                      placeholder="Select Percentage"
+                      // disabled={!params.row?.price}
+                      getKey={(item) => item}
+                      getValue={(item) => item}
+                      getLabel={(item) => item}
+                      getDisplayValue={(value) => `${value}`}
+                      onChange={(e) => {
+                        products.forEach((product) => {
+                          product.discountPercentage = Number(e.target.value);
                         });
                         setGlobalRewardBundle(Number(e.target.value));
                         setHasChanged(true);

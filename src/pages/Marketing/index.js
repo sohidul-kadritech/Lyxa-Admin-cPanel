@@ -173,7 +173,7 @@ export default function Marketing() {
     }
   );
 
-  const dealsAppliedByOther = appliedDeals.percentage || appliedDeals.double_menu || appliedDeals.reward;
+  const dealsAppliedByOther = appliedDeals.percentage || appliedDeals.double_menu;
 
   const openHandler = (marketingType, marketing) => {
     if (!marketing?.isActive) {
@@ -248,11 +248,11 @@ export default function Marketing() {
               <MCard
                 description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
                 title="Loyalty Points"
-                disabled={rewardSettingsQuery.isLoading || dealsAppliedByOther}
+                disabled={rewardSettingsQuery.isLoading}
                 ongoing={rewardSettingsQuery.data?.data?.marketing?.isActive}
                 icon={LoyaltyIcon}
                 onOpen={() => {
-                  if (!dealsAppliedByOther || !rewardSettingsQuery.isLoading) {
+                  if (!rewardSettingsQuery.isLoading) {
                     openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
                   }
                 }}
@@ -264,7 +264,7 @@ export default function Marketing() {
               description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
               title="Promotions"
               icon={PromoIcon}
-              disabled
+              // disabled
               onOpen={() => {
                 console.log('opened');
               }}
