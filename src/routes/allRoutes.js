@@ -73,7 +73,7 @@ import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import DefaultChat from '../pages/DefaultChat/DefaultChat';
 import DisplaySettings from '../pages/Display';
 import ListContainers from '../pages/Display/ListContainer';
-import LoyaltyProgramDashboard from '../pages/Marketing/Dashbaord';
+import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
@@ -124,6 +124,7 @@ const adminRoutes = [
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/marketing/:id', component: Marketing },
+  { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
   { path: '/shops/cuisines', component: Cuisine },
   { path: '/shops/tags', component: Tags },
 
@@ -333,7 +334,7 @@ const shopRoutes = [
 
   // marketing
   { path: '/marketing', component: Marketing },
-  { path: '/marketing/loyalty', component: LoyaltyProgramDashboard },
+  { path: '/marketing/dashboard/:type/:id', component: MarketingDashboard },
 
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },

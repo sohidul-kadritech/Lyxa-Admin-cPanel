@@ -6,6 +6,9 @@ export default function Modal() {
         justifyContent: 'center',
         alignItems: 'center',
       },
+      // backdrop: {
+      //   background: 'rgba(0, 0, 0, 0.6)',
+      // },
     },
   };
 }

@@ -129,6 +129,8 @@ function GraphInfo({ graphType }) {
     }
   };
 
+  console.log(chartData);
+
   return (
     <Graph
       filterType={(type) => updateFilterType(type)}

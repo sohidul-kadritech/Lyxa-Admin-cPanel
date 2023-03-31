@@ -4,7 +4,7 @@ import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 // project import
 import { ReactComponent as BuyIcon } from '../../assets/icons/buy-icon.svg';
@@ -59,6 +59,7 @@ const getActiveDeals = (dealSetting, shopType) => {
 };
 
 export default function Marketing() {
+  const history = useHistory();
   const adminShop = useSelector((store) => store.Login.admin);
 
   const [currentModal, setCurrentModal] = useState(null);
@@ -174,6 +175,16 @@ export default function Marketing() {
 
   const dealsAppliedByOther = appliedDeals.percentage || appliedDeals.double_menu || appliedDeals.reward;
 
+  const openHandler = (marketingType, marketing) => {
+    if (!marketing?.isActive) {
+      setCurrentModal(marketingType);
+    } else if (adminShop?.shopType) {
+      history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
+    } else {
+      history.push(`/shops/marketing/dashboard/${currentShop?._id}/${marketingType}/${marketing?._id}`);
+    }
+  };
+
   return (
     <Wrapper
       sx={{
@@ -198,8 +209,8 @@ export default function Marketing() {
               disabled={discountSettingsQuery.isLoading || dealsAppliedByOther || !activeDeals.percentage}
               ongoing={discountSettingsQuery.data?.data?.marketing?.isActive}
               onOpen={() => {
-                if (!dealsAppliedByOther || activeDeals.percentage) {
-                  setCurrentModal('percentage');
+                if (!dealsAppliedByOther || activeDeals.percentage || !discountSettingsQuery.isLoading) {
+                  openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
                 }
               }}
             />
@@ -212,8 +223,8 @@ export default function Marketing() {
               disabled={doubleDealSettingsQuery.isLoading || dealsAppliedByOther || !activeDeals.double_menu}
               ongoing={doubleDealSettingsQuery.data?.data?.marketing?.isActive}
               onOpen={() => {
-                if (!dealsAppliedByOther || activeDeals.double_menu) {
-                  setCurrentModal('double_menu');
+                if (!doubleDealSettingsQuery.isLoading || !dealsAppliedByOther || activeDeals.double_menu) {
+                  openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
                 }
               }}
             />
@@ -226,8 +237,8 @@ export default function Marketing() {
               ongoing={freeDeliverySettingsQuery.data?.data?.marketing?.isActive}
               icon={DeliveryIcon}
               onOpen={() => {
-                if (!appliedDeals.free_delivery || activeDeals.free_delivery) {
-                  setCurrentModal('free_delivery');
+                if (!appliedDeals.free_delivery || !freeDeliverySettingsQuery.isLoading || activeDeals.free_delivery) {
+                  openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
                 }
               }}
             />
@@ -241,8 +252,8 @@ export default function Marketing() {
                 ongoing={rewardSettingsQuery.data?.data?.marketing?.isActive}
                 icon={LoyaltyIcon}
                 onOpen={() => {
-                  if (!dealsAppliedByOther) {
-                    setCurrentModal('reward');
+                  if (!dealsAppliedByOther || !rewardSettingsQuery.isLoading) {
+                    openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
                   }
                 }}
               />

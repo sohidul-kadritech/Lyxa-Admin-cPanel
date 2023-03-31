@@ -6,7 +6,7 @@ import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 
 // project import
-export function IncreaseDecreaseTag({ status }) {
+export function IncreaseDecreaseTag({ status, amount }) {
   const theme = useTheme();
 
   return (
@@ -40,7 +40,7 @@ export function IncreaseDecreaseTag({ status }) {
           fontWeight: '600',
         }}
       >
-        4% last 30 days
+        {amount} last 30 days
       </Typography>
     </Stack>
   );
