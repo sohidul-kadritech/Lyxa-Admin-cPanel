@@ -123,6 +123,7 @@ const adminRoutes = [
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
+  { path: '/shops/marketing/:id', component: Marketing },
   { path: '/shops/cuisines', component: Cuisine },
   { path: '/shops/tags', component: Tags },
 

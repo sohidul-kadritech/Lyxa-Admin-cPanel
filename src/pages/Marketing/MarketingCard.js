@@ -43,7 +43,13 @@ export default function MCard({ icon: Icon, title, description, onOpen, ongoing,
           Ongoing promotion
         </Button>
       )}
-      {disabled && <LoadingOverlay />}
+      {disabled && (
+        <LoadingOverlay
+          sx={{
+            zIndex: '99',
+          }}
+        />
+      )}
       <Box>
         <Icon />
       </Box>

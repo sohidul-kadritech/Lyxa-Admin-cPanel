@@ -62,15 +62,13 @@ import {
 import ReviewTable from '../../../components/ReviewTable.js';
 
 import { getAllAppSettings } from '../../../store/Settings/settingsAction';
-import MSettingsModal from '../../Marketing/MSettingsModal';
-import MarketingSettings from '../../Marketing/Settings';
 
-const marketingTypesInit = {
-  free_delivery: false,
-  double_menu: false,
-  percentage: false,
-  reward: false,
-};
+// const marketingTypesInit = {
+//   free_delivery: false,
+//   double_menu: false,
+//   percentage: false,
+//   reward: false,
+// };
 
 function ShopDetails() {
   const { id } = useParams();
@@ -88,43 +86,6 @@ function ShopDetails() {
   const [isLoading, setIsLoading] = useState(false);
   const { account_type } = useSelector((store) => store.Login.admin);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
-  const [currentMarketing, setCurrentMarketing] = useState(null);
-  const [disabledMarktingTypes, setDisabledMarktingTypes] = useState(marketingTypesInit);
-
-  const getMarketingOptions = (marketings, currentUserType) => {
-    const options = { ...marketingTypesInit };
-    marketings.forEach((item) => {
-      if (item?.creatorType !== currentUserType) {
-        options[item?.type] = true;
-      }
-    });
-
-    setDisabledMarktingTypes(options);
-  };
-
-  // const dealSettingsQuery = useQuery(
-  //   ['deal-settings'],
-  //   () =>
-  //     AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
-  //       params: {
-  //         type: 'all',
-  //       },
-  //     }),
-  //   {
-  //     onSuccess: (data) => {
-  //       data?.data?.dealSetting?.forEach((item) => {
-  //         if (item?.type === shop?.shopType || (item?.type === 'restaurant' && shop?.shopType === 'food')) {
-  //           const deals = { ...enabledDealsInit };
-
-  //           item?.option?.forEach((item) => {
-  //             deals[item] = true;
-  //           });
-  //           setEnabledDeals(deals);
-  //         }
-  //       });
-  //     },
-  //   }
-  // );
 
   const getShop = async () => {
     const data = await callApi(id, SINGLE_SHOP, 'shop');
@@ -133,7 +94,6 @@ function ShopDetails() {
       const activeStatus = data?.liveStatus === 'online';
       setLiveStatus(activeStatus);
       setShop(data);
-      getMarketingOptions(data?.marketings || [], account_type);
     } else {
       history.push('/shops/list', { replace: true });
     }
@@ -146,7 +106,6 @@ function ShopDetails() {
         const activeStatus = findShop?.liveStatus === 'online';
         setLiveStatus(activeStatus);
         setShop(findShop);
-        getMarketingOptions(findShop?.marketings || [], account_type);
       } else {
         getShop();
       }
@@ -334,43 +293,13 @@ function ShopDetails() {
                       <Button
                         outline
                         color="success"
-                        disabled={disabledMarktingTypes?.free_delivery}
                         onClick={() => {
-                          setCurrentMarketing('free_delivery');
+                          // setCurrentMarketing('percentage');
+                          history.push(`/shops/marketing/${shop?._id}`, shop);
                         }}
                         className="me-3"
                       >
-                        Add Free Delivery
-                      </Button>
-                      <Button
-                        outline
-                        color="success"
-                        disabled={
-                          disabledMarktingTypes?.percentage ||
-                          disabledMarktingTypes?.double_menu ||
-                          disabledMarktingTypes?.double_menu
-                        }
-                        onClick={() => {
-                          setCurrentMarketing('percentage');
-                        }}
-                        className="me-3"
-                      >
-                        Add Percentage Deal
-                      </Button>
-                      <Button
-                        outline
-                        color="success"
-                        disabled={
-                          disabledMarktingTypes?.percentage ||
-                          disabledMarktingTypes?.double_menu ||
-                          disabledMarktingTypes?.double_menu
-                        }
-                        onClick={() => {
-                          setCurrentMarketing('double_menu');
-                        }}
-                        className="me-3"
-                      >
-                        Add Double Deal
+                        Marketing Settings
                       </Button>
                       <Button outline color="success" onClick={setAsFeatured} className="me-3">
                         {!shop?.isFeatured ? 'Set as featured' : 'Remove featured'}
@@ -786,7 +715,7 @@ function ShopDetails() {
         </div>
       </Modal>
       {/* marketing modal */}
-      <MSettingsModal open={Boolean(currentMarketing)}>
+      {/* <MSettingsModal open={Boolean(currentMarketing)}>
         <MarketingSettings
           shop={shop}
           creatorType="admin"
@@ -795,7 +724,7 @@ function ShopDetails() {
             setCurrentMarketing(null);
           }}
         />
-      </MSettingsModal>
+      </MSettingsModal> */}
     </GlobalWrapper>
   );
 }
