@@ -35,7 +35,7 @@ export default function AddContainer() {
         </Typography>
         <CloseButton
           sx={{
-            color: theme.palette.text.heading,
+            color: theme.palette.text.primary,
           }}
         />
       </Stack>

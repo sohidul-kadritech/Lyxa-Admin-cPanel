@@ -28,7 +28,7 @@ const StyledGrid2 = styled(DataGrid)(({ theme }) => ({
       fontWeight: 600,
     },
 
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
   '& .MuiDataGrid-footerContainer': {
     display: 'none',

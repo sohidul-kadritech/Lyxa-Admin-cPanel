@@ -5,7 +5,7 @@ export default function Tabs(theme) {
     },
     styleOverrides: {
       indicator: {
-        backgroundColor: theme.palette.text.heading,
+        backgroundColor: theme.palette.text.primary,
       },
     },
   };

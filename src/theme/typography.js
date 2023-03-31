@@ -7,7 +7,7 @@ const Typography = (theme) => ({
       fontSize: `${pxToRem(36)}rem`,
       lineHeight: 1.1,
       letterSpacing: '0px',
-      color: theme.palette.text.heading,
+      color: theme.palette.text.primary,
     },
 
     [theme.breakpoints.up('lg')]: {
@@ -27,7 +27,7 @@ const Typography = (theme) => ({
       fontSize: `${pxToRem(32)}rem`,
       lineHeight: 1.1,
       letterSpacing: '0px',
-      color: theme.palette.text.heading,
+      color: theme.palette.text.primary,
     },
 
     [theme.breakpoints.up('lg')]: {
@@ -46,7 +46,7 @@ const Typography = (theme) => ({
     fontSize: `${pxToRem(24)}rem`,
     lineHeight: 1.1,
     letterSpacing: '0px',
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
 
   h4: {
@@ -54,7 +54,7 @@ const Typography = (theme) => ({
     fontSize: `${pxToRem(20)}rem`,
     lineHeight: `${pxToRem(24)}rem`,
     letterSpacing: '0px',
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
 
   h5: {
@@ -62,7 +62,7 @@ const Typography = (theme) => ({
     fontSize: `${pxToRem(18)}rem`,
     lineHeight: `${pxToRem(28)}rem`,
     letterSpacing: '-2%',
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
 
   h6: {

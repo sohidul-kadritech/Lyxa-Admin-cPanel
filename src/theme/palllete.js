@@ -17,10 +17,10 @@ export default function GetPallete() {
       main: '#15803D',
     },
     text: {
-      primary: '#3F4254',
+      primary: '#363636',
       secondary: '#525252',
       secondary2: '#737373',
-      heading: '#363636',
+      body: '#3F4254',
     },
     grey: {
       200: 'rgba(0, 0, 0, 0.08)',

@@ -66,7 +66,7 @@ export default function ListTable({ items }) {
           <Typography
             variant="body4"
             sx={{
-              color: theme.palette.text.heading,
+              color: theme.palette.text.primary,
               paddingLeft: '5px',
             }}
           >
@@ -87,7 +87,7 @@ export default function ListTable({ items }) {
         <Typography
           variant="body4"
           sx={{
-            color: theme.palette.text.heading,
+            color: theme.palette.text.primary,
             paddingLeft: '5px',
           }}
         >
@@ -129,7 +129,7 @@ export default function ListTable({ items }) {
         <Typography
           variant="body4"
           sx={{
-            color: theme.palette.text.heading,
+            color: theme.palette.text.primary,
             paddingLeft: '5px',
           }}
         >

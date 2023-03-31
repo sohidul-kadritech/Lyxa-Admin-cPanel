@@ -35,7 +35,7 @@ export default function DisplaySettings() {
         <Box pb={7.5}>
           <Typography
             variant="h4"
-            color={theme.palette.text.heading}
+            color={theme.palette.text.primary}
             sx={{
               pt: 9,
               pb: 2,

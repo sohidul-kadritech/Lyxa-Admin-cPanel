@@ -83,7 +83,7 @@ export default function MCard({ icon: Icon, title, description, onOpen, ongoing,
         sx={{
           lineHeight: '28px',
           fontSize: '17px !important',
-          color: theme.palette.text.heading,
+          color: theme.palette.text.primary,
         }}
       >
         {description}

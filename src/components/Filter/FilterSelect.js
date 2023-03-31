@@ -19,7 +19,7 @@ const StyledSelect = styled(Select)(({ theme }) => ({
     fontSize: '16px',
     lineHeight: '24px',
     fontWeight: 500,
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
   '& .MuiSelect-select': {
     paddingTop: '12px',
@@ -30,7 +30,7 @@ const StyledSelect = styled(Select)(({ theme }) => ({
     outline: 'none !important',
   },
   '& .MuiSvgIcon-root': {
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
   '& fieldset': {
     border: '0',

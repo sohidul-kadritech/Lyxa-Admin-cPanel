@@ -5,7 +5,7 @@ export default function Tab(theme) {
     },
     styleOverrides: {
       root: {
-        color: theme.palette.text.heading,
+        color: theme.palette.text.primary,
         // color: 'red',
         borderBottom: '2px solid #EEEEEE',
         padding: '15px',

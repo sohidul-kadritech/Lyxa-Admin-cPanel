@@ -24,7 +24,7 @@ export default function StyledAccordion({ isOpen, onChange, children, Title, ...
           padding: '0',
 
           '& .MuiSvgIcon-root': {
-            color: theme.palette.text.heading,
+            color: theme.palette.text.primary,
           },
 
           '& .MuiAccordionSummary-content': {

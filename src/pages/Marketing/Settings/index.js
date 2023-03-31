@@ -74,7 +74,7 @@ function ItemsTitle() {
     <Stack direction="row" alignItems="center" gap={2.5}>
       <Typography
         variant="body1"
-        color={theme.palette.text.heading}
+        color={theme.palette.text.primary}
         sx={{
           lineHeight: '19px',
           fontWeight: 600,
@@ -103,7 +103,7 @@ function CommonTitle({ title, subTitle }) {
     <Stack gap={1.5}>
       <Typography
         variant="body1"
-        color={theme.palette.text.heading}
+        color={theme.palette.text.primary}
         sx={{
           lineHeight: '19px',
           fontWeight: 600,
@@ -528,7 +528,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                   },
 
                   '& .MuiAutocomplete-option': {
-                    color: theme.palette.text.heading,
+                    color: theme.palette.text.primary,
                     fontWeight: 600,
                     lineHeight: '31px',
                     fontSize: '15px',
@@ -771,7 +771,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
         return (
           <Stack direction="row" alignItems="center" gap={1.5}>
             <Stack direction="row" alignItems="center" gap={1.5}>
-              <Typography variant="body1" color={theme.palette.text.heading}>
+              <Typography variant="body1" color={theme.palette.text.primary}>
                 {currency}{' '}
                 {(params?.row?.price - (params?.row?.price / 100) * params?.row?.discountPercentage)?.toFixed(2)}{' '}
               </Typography>
@@ -819,7 +819,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
         return (
           <Stack direction="row" alignItems="center" gap={1.5}>
             <Stack direction="row" alignItems="center" gap={1.5}>
-              <Typography variant="body1" color={theme.palette.text.heading}>
+              <Typography variant="body1" color={theme.palette.text.primary}>
                 {currency} {params?.row?.price}
               </Typography>
               <Typography
@@ -1162,7 +1162,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                     fontWeight: '500',
                     fontSize: '14px',
                     lineHeight: '20px',
-                    color: theme.palette.text.heading,
+                    color: theme.palette.text.primary,
                   },
                 }}
                 label="Set maximum weekly spending limit"
@@ -1170,7 +1170,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                   <Checkbox
                     sx={{
                       '&.Mui-checked': {
-                        color: theme.palette.text.heading,
+                        color: theme.palette.text.primary,
                       },
                     }}
                     checked={spendLimitChecked}
@@ -1205,7 +1205,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                     fontWeight: '500',
                     fontSize: '16px',
                     lineHeight: '24px',
-                    color: theme.palette.text.heading,
+                    color: theme.palette.text.primary,
                   },
 
                   '& .MuiInputAdornment-positionStart': {
@@ -1262,7 +1262,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
                     <Checkbox
                       sx={{
                         '&.Mui-checked': {
-                          color: theme.palette.text.heading,
+                          color: theme.palette.text.primary,
                         },
                       }}
                       checked={termAndCondition}

@@ -22,7 +22,7 @@ const StyledInfoTable = styled(Table)(({ theme }) => ({
   '& .MuiTableCell-root': {
     borderBottom: '0px',
     padding: '8px 8px 8px 0px',
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
 
   '& .MuiTableCell-head': {

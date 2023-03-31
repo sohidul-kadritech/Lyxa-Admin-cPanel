@@ -29,7 +29,7 @@ const ProductSelect = styled(Autocomplete)(({ theme }) => ({
     fontSize: '16px',
     lineHeight: '24px',
     fontWeight: '500',
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
     padding: '0!important',
   },
 

@@ -220,7 +220,7 @@ export default function DealSettings() {
           <PageButton label="Back to Marketing" startIcon={<West />} to="/admin/settings2/marketing" />
           <Typography
             variant="h4"
-            color={theme.palette.text.heading}
+            color={theme.palette.text.primary}
             sx={{
               pt: 5,
               pb: 2,

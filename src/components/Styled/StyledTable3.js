@@ -33,7 +33,7 @@ const StyledGrid3 = styled(DataGrid)(({ theme }) => ({
       color: theme.palette.text.secondary2,
     },
 
-    color: theme.palette.text.heading,
+    color: theme.palette.text.primary,
   },
 
   '& .MuiDataGrid-footerContainer': {

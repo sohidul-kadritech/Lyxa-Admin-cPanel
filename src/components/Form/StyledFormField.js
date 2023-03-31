@@ -28,7 +28,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
               paddingRight: '18px',
               fontWeight: '500',
               fontSize: '15px',
-              color: theme.palette.text.heading,
+              color: theme.palette.text.primary,
               ...(inputProps?.sx || {}),
             },
           }}
