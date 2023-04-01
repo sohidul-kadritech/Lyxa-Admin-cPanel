@@ -1,9 +1,55 @@
 // thrid party
-import { Cached, CalendarToday, ChevronRight } from '@mui/icons-material';
+import { Cached, CalendarToday, ChevronRight, NotificationsPaused, PlayCircleFilledWhite } from '@mui/icons-material';
 import { Box, Button, Paper, Stack, Typography, useTheme } from '@mui/material';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 
-export default function MCard({ icon: Icon, title, description, onOpen, ongoing, disabled, scheduled, ongoingBy }) {
+function StatusTag({ status }) {
+  let Icon;
+  let color;
+  let background;
+
+  if (status === 'ongoing') {
+    Icon = Cached;
+    color = '#5E97A9';
+    background = '#F6F8FA';
+  } else if (status === 'scheduled') {
+    Icon = CalendarToday;
+    color = '#5E97A9';
+    background = '#F6F8FA';
+  } else if (status === 'paused') {
+    Icon = PlayCircleFilledWhite;
+    color = '#DD5B63';
+    background = '#FEE2E2';
+  } else {
+    Icon = NotificationsPaused;
+    color = '#DD5B63';
+    background = '#FEE2E2';
+  }
+
+  return (
+    <Button
+      variant="contained"
+      startIcon={<Icon />}
+      sx={{
+        fontSize: '15px',
+        lineHeight: '24px',
+        background,
+        color,
+        gap: '0px',
+        padding: '5px 15px',
+        textTransform: 'capitalize',
+
+        '&:hover': {
+          background,
+        },
+      }}
+    >
+      {status} promotion
+    </Button>
+  );
+}
+
+export default function MCard({ icon: Icon, title, description, onOpen, disabled, ongoingBy, status }) {
   const theme = useTheme();
 
   return (
@@ -29,7 +75,7 @@ export default function MCard({ icon: Icon, title, description, onOpen, ongoing,
         }}
         onClick={onOpen}
       >
-        {(ongoing || scheduled) && (
+        {status && (
           <Stack
             sx={{
               position: 'absolute',
@@ -39,29 +85,8 @@ export default function MCard({ icon: Icon, title, description, onOpen, ongoing,
               alignItems: 'flex-end',
             }}
           >
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={ongoing ? <Cached /> : <CalendarToday />}
-              sx={{
-                fontSize: '15px',
-                lineHeight: '24px',
-                background: '#F6F8FA',
-                color: '#5E97A9',
-                gap: '0px',
-                padding: '5px 15px',
-                textTransform: 'none',
-
-                '&:hover': {
-                  background: '#F6F8FA',
-                  color: '#5E97A9',
-                },
-              }}
-            >
-              {ongoing && 'Ongoing promotion'}
-              {scheduled && 'Scheduled promotion'}
-            </Button>
-            {disabled && ongoingBy && (
+            <StatusTag status={status} />
+            {disabled && ongoingBy && status !== 'deactivated' && (
               <Button
                 variant="contained"
                 color="secondary"

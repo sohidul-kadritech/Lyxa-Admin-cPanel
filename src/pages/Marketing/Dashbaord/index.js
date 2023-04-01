@@ -19,18 +19,15 @@ import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import ProductsInfoList from './ProductsInfoList';
-// import StyledAreaChartfrom from '../../../../components/StyledCharts/StyledAreaChart';
-import {
-  ChartBox,
-  IncreaseDecreaseTag,
-  InfoBox,
-  StyledBox,
-  ViewMoreTag,
-  breadCrumbItems,
-  dateRangeItit,
-  gData,
-} from './helpers';
+import { ChartBox, IncreaseDecreaseTag, InfoBox, StyledBox, ViewMoreTag, dateRangeItit, gData } from './helpers';
 import { ProductsInfoListData } from './mock';
+
+const mTypeMap = {
+  double_menu: 'Buy 1, Get 1 Free',
+  percentage: 'Discounted Items',
+  free_delivery: '$0 Delivery fee',
+  reward: 'Loyalty',
+};
 
 export default function MarketingDashboard() {
   const params = useParams();
@@ -200,6 +197,17 @@ export default function MarketingDashboard() {
     ],
   };
 
+  const breadCrumbItems = [
+    {
+      label: 'Marketing',
+      to: params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing',
+    },
+    {
+      label: `${mTypeMap[params?.type]}`,
+      to: '#',
+    },
+  ];
+
   return (
     <Wrapper
       sx={{
@@ -211,7 +219,11 @@ export default function MarketingDashboard() {
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center" pt={8}>
-        <PageButton label="Back to Marketing" to="/marketing" startIcon={<KeyboardBackspaceIcon />} />
+        <PageButton
+          label="Back to Marketing"
+          to={params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing'}
+          startIcon={<KeyboardBackspaceIcon />}
+        />
         <Button
           variant="contained"
           color="secondary"
@@ -253,7 +265,6 @@ export default function MarketingDashboard() {
           value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
           Tag={
             <IncreaseDecreaseTag
-              // status="decrease"
               status={
                 marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth > 0
                   ? 'increase'

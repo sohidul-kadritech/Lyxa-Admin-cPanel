@@ -11,7 +11,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { ReactComponent as BuyIcon } from '../../assets/icons/buy-icon.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon.svg';
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
-import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
+// import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
 import Wrapper from '../../components/Wrapper';
 import * as Api from '../../network/Api';
@@ -24,6 +24,7 @@ const activeDealsInit = {
   free_delivery: false,
   percentage: false,
   double_menu: false,
+  reward: true,
 };
 
 const marketingTypesInit = {
@@ -174,10 +175,7 @@ export default function Marketing() {
     }
   );
 
-  const dealsAppliedByOther = appliedDeals.percentage || appliedDeals.double_menu;
-
   const openHandler = (marketingType, marketing) => {
-    console.log(marketing);
     if (!marketing?.status) {
       setCurrentModal(marketingType);
     } else if (adminShop?.shopType) {
@@ -187,12 +185,35 @@ export default function Marketing() {
     }
   };
 
-  const isPromotionOn = (mQuery) =>
-    (mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active') ||
-    mQuery.data?.isNotEligible;
+  const getPromotionStatus = (mQuery, type) => {
+    if (type && !activeDeals[type]) {
+      return 'deactivated';
+    }
 
-  const isPromotionStale = (mQuery) =>
-    !mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active';
+    if (mQuery?.data?.isNotEligible) {
+      return mQuery?.data?.status;
+    }
+
+    if (mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active') {
+      return 'ongoing';
+    }
+
+    if (!mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active') {
+      return 'scheduled';
+    }
+
+    if (!mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'inactive') {
+      return 'paused';
+    }
+
+    return '';
+  };
+
+  const G_LOADING =
+    dealSettingsQuery.isLoading ||
+    discountSettingsQuery.isLoading ||
+    doubleDealSettingsQuery.isLoading ||
+    freeDeliverySettingsQuery.isLoading;
 
   return (
     <Wrapper
@@ -215,12 +236,11 @@ export default function Marketing() {
               description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
               title="Discounted Items"
               icon={DiscountIcon}
-              disabled={discountSettingsQuery.isLoading || dealsAppliedByOther || !activeDeals.percentage}
-              ongoing={isPromotionOn(discountSettingsQuery)}
+              disabled={G_LOADING || appliedDeals.percentage || !activeDeals.percentage}
+              status={G_LOADING ? '' : getPromotionStatus(discountSettingsQuery, 'percentage')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
-              scheduled={isPromotionStale(discountSettingsQuery)}
               onOpen={() => {
-                if (!dealsAppliedByOther && activeDeals.percentage && !discountSettingsQuery.isLoading) {
+                if (!appliedDeals.percentage && activeDeals.percentage && !G_LOADING) {
                   openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -231,12 +251,11 @@ export default function Marketing() {
               description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
               title="Buy 1, Get 1 Free"
               icon={BuyIcon}
-              disabled={doubleDealSettingsQuery.isLoading || dealsAppliedByOther || !activeDeals.double_menu}
-              ongoing={isPromotionOn(doubleDealSettingsQuery)}
-              scheduled={isPromotionStale(doubleDealSettingsQuery)}
+              disabled={G_LOADING || appliedDeals.double_menu || !activeDeals.double_menu}
+              status={G_LOADING ? '' : getPromotionStatus(doubleDealSettingsQuery, 'double_menu')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               onOpen={() => {
-                if (!doubleDealSettingsQuery.isLoading && !dealsAppliedByOther && activeDeals.double_menu) {
+                if (!G_LOADING && !appliedDeals.double_menu && activeDeals.double_menu) {
                   openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -246,13 +265,12 @@ export default function Marketing() {
             <MCard
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
-              disabled={freeDeliverySettingsQuery.isLoading || appliedDeals.free_delivery || !activeDeals.free_delivery}
-              ongoing={isPromotionOn(freeDeliverySettingsQuery)}
-              scheduled={isPromotionStale(freeDeliverySettingsQuery)}
+              disabled={G_LOADING || appliedDeals.free_delivery || !activeDeals.free_delivery}
+              status={G_LOADING ? '' : getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               icon={DeliveryIcon}
               onOpen={() => {
-                if (!appliedDeals.free_delivery && !freeDeliverySettingsQuery.isLoading && activeDeals.free_delivery) {
+                if (!G_LOADING && !appliedDeals.free_delivery && activeDeals.free_delivery) {
                   openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -264,8 +282,7 @@ export default function Marketing() {
                 description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
                 title="Loyalty Points"
                 disabled={rewardSettingsQuery.isLoading}
-                ongoing={isPromotionOn(rewardSettingsQuery)}
-                scheduled={isPromotionStale(rewardSettingsQuery)}
+                status={G_LOADING ? '' : getPromotionStatus(rewardSettingsQuery)}
                 icon={LoyaltyIcon}
                 onOpen={() => {
                   if (!rewardSettingsQuery.isLoading) {
@@ -275,7 +292,7 @@ export default function Marketing() {
               />
             </Grid>
           )}
-          <Grid md={6} lg={4}>
+          {/* <Grid md={6} lg={4}>
             <MCard
               description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
               title="Promotions"
@@ -284,7 +301,7 @@ export default function Marketing() {
                 console.log('opened');
               }}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
         {/* settings modal */}
         <MSettingsModal open={Boolean(currentModal)}>
