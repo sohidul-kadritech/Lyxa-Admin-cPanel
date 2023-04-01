@@ -6,7 +6,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 // project import
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
@@ -34,6 +34,8 @@ import { ProductsInfoListData } from './mock';
 
 export default function MarketingDashboard() {
   const params = useParams();
+  const history = useHistory();
+
   const adminShop = useSelector((store) => store.Login.admin);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(adminShop);
@@ -332,8 +334,15 @@ export default function MarketingDashboard() {
           shop={currentShop}
           creatorType={params?.shopId ? 'admin' : 'shop'}
           marketingType={params?.type}
-          closeModal={() => {
+          onClose={() => {
             setIsModalOpen(false);
+          }}
+          onDelete={() => {
+            if (params?.shopId) {
+              history.push(`/shops/marketing/${currentShop?._id}`);
+            } else {
+              history.push(`/marketing`);
+            }
           }}
         />
       </MSettingsModal>

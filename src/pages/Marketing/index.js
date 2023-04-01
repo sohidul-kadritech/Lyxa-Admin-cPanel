@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 // third party
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
@@ -174,9 +175,9 @@ export default function Marketing() {
   );
 
   const dealsAppliedByOther = appliedDeals.percentage || appliedDeals.double_menu;
-  // console.log(dealsAppliedByOther);
 
   const openHandler = (marketingType, marketing) => {
+    console.log(marketing);
     if (!marketing?.status) {
       setCurrentModal(marketingType);
     } else if (adminShop?.shopType) {
@@ -291,7 +292,10 @@ export default function Marketing() {
             shop={currentShop}
             creatorType={adminShop?.shopType ? 'shop' : 'admin'}
             marketingType={currentModal}
-            closeModal={() => {
+            onDelete={() => {
+              setCurrentModal(null);
+            }}
+            onClose={() => {
               setCurrentModal(null);
             }}
           />

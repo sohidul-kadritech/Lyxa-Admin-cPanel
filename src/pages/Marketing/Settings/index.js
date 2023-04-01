@@ -159,7 +159,15 @@ const confirmActionInit = {
   onCancel: () => {},
 };
 
-export default function MarketingSettings({ closeModal, marketingType, shop, creatorType }) {
+export default function MarketingSettings({
+  onClose,
+  // onActivate,
+  // onDeactivate,
+  onDelete,
+  marketingType,
+  shop,
+  creatorType,
+}) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -197,13 +205,23 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
       }),
     {
       onSuccess: (data) => {
-        let isTrue = true;
+        const types = {};
+
         data?.data?.products?.forEach((product) => {
-          if (product?.marketing && isTrue) {
-            setEntireMenu(false);
-            isTrue = false;
+          if (product?.marketing) {
+            types[product?.marketing?.type] = true;
           }
         });
+
+        const keys = Object.keys(types);
+
+        if (keys.length >= 2) {
+          setEntireMenu(false);
+        } else if (keys.length === 1) {
+          if (marketingType !== keys[0]) {
+            setEntireMenu(false);
+          }
+        }
       },
     }
   );
@@ -323,7 +341,6 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
       setItemSelectType(event.target.value);
       setHasGlobalChange(true);
       setHasChanged(false);
-      // localStorage.setItem(productSelectKeyForLS, event.target.value);
     }
   };
 
@@ -342,7 +359,6 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
 
     setIsPageDisabled(true);
     setPageMode(1);
-    // seCurrentExpanedTab(-1);
   };
 
   // update loyalty settings
@@ -359,6 +375,7 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
         setHasGlobalChange(false);
 
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
+        queryClient.invalidateQueries([`shop-all-products`]);
 
         if (args.status === 'inactive') {
           setPageMode(0);
@@ -471,7 +488,9 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
 
         if (data?.status) {
           queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
-          closeModal();
+          queryClient.invalidateQueries([`shop-all-products`]);
+
+          onDelete();
         }
       },
     }
@@ -890,10 +909,10 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
             setConfirmAction({
               message: 'You have unsaved changes, discard?',
               onCancel: () => setConfirmModal(false),
-              onConfirm: () => closeModal(),
+              onConfirm: () => onClose(),
             });
           } else {
-            closeModal();
+            onClose();
           }
         }}
       />

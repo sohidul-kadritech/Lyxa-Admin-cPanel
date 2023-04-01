@@ -60,7 +60,7 @@ export default function AddContainer() {
         />
         <StyledFormField
           label="Deals"
-          intputType="select"
+          intputType="autocomplete"
           containerProps={{
             sx: fieldContainerSx,
           }}
