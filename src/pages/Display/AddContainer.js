@@ -34,6 +34,7 @@ export default function AddContainer() {
           Create New Container
         </Typography>
         <CloseButton
+          disableRipple
           sx={{
             color: theme.palette.text.primary,
           }}
@@ -51,23 +52,17 @@ export default function AddContainer() {
           }}
         />
         <StyledFormField
-          label="Name"
-          intputType="text"
+          label="Photo"
+          intputType="file"
           containerProps={{
             sx: fieldContainerSx,
-          }}
-          inputProps={{
-            type: 'text',
           }}
         />
         <StyledFormField
-          label="Name"
-          intputType="text"
+          label="Deals"
+          intputType="select"
           containerProps={{
             sx: fieldContainerSx,
-          }}
-          inputProps={{
-            type: 'text',
           }}
         />
       </Box>

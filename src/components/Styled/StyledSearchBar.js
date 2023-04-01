@@ -7,6 +7,7 @@ const StyledInput = styled(Input)(({ theme }) => ({
   border: '0.5px solid #D6D6D6',
   borderRadius: '7px',
   padding: '7px 12px',
+  gap: '3px',
 
   '&::before': {
     display: 'none',

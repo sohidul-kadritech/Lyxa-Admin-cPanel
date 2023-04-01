@@ -174,9 +174,10 @@ export default function Marketing() {
   );
 
   const dealsAppliedByOther = appliedDeals.percentage || appliedDeals.double_menu;
+  // console.log(dealsAppliedByOther);
 
   const openHandler = (marketingType, marketing) => {
-    if (!marketing?.isActive) {
+    if (!marketing?.status) {
       setCurrentModal(marketingType);
     } else if (adminShop?.shopType) {
       history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
@@ -184,6 +185,13 @@ export default function Marketing() {
       history.push(`/shops/marketing/dashboard/${currentShop?._id}/${marketingType}/${marketing?._id}`);
     }
   };
+
+  const isPromotionOn = (mQuery) =>
+    (mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active') ||
+    mQuery.data?.isNotEligible;
+
+  const isPromotionStale = (mQuery) =>
+    !mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active';
 
   return (
     <Wrapper
@@ -207,9 +215,11 @@ export default function Marketing() {
               title="Discounted Items"
               icon={DiscountIcon}
               disabled={discountSettingsQuery.isLoading || dealsAppliedByOther || !activeDeals.percentage}
-              ongoing={discountSettingsQuery.data?.data?.marketing?.isActive}
+              ongoing={isPromotionOn(discountSettingsQuery)}
+              ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+              scheduled={isPromotionStale(discountSettingsQuery)}
               onOpen={() => {
-                if (!dealsAppliedByOther || activeDeals.percentage || !discountSettingsQuery.isLoading) {
+                if (!dealsAppliedByOther && activeDeals.percentage && !discountSettingsQuery.isLoading) {
                   openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -221,9 +231,11 @@ export default function Marketing() {
               title="Buy 1, Get 1 Free"
               icon={BuyIcon}
               disabled={doubleDealSettingsQuery.isLoading || dealsAppliedByOther || !activeDeals.double_menu}
-              ongoing={doubleDealSettingsQuery.data?.data?.marketing?.isActive}
+              ongoing={isPromotionOn(doubleDealSettingsQuery)}
+              scheduled={isPromotionStale(doubleDealSettingsQuery)}
+              ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               onOpen={() => {
-                if (!doubleDealSettingsQuery.isLoading || !dealsAppliedByOther || activeDeals.double_menu) {
+                if (!doubleDealSettingsQuery.isLoading && !dealsAppliedByOther && activeDeals.double_menu) {
                   openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -234,10 +246,12 @@ export default function Marketing() {
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
               disabled={freeDeliverySettingsQuery.isLoading || appliedDeals.free_delivery || !activeDeals.free_delivery}
-              ongoing={freeDeliverySettingsQuery.data?.data?.marketing?.isActive}
+              ongoing={isPromotionOn(freeDeliverySettingsQuery)}
+              scheduled={isPromotionStale(freeDeliverySettingsQuery)}
+              ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               icon={DeliveryIcon}
               onOpen={() => {
-                if (!appliedDeals.free_delivery || !freeDeliverySettingsQuery.isLoading || activeDeals.free_delivery) {
+                if (!appliedDeals.free_delivery && !freeDeliverySettingsQuery.isLoading && activeDeals.free_delivery) {
                   openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -249,7 +263,8 @@ export default function Marketing() {
                 description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
                 title="Loyalty Points"
                 disabled={rewardSettingsQuery.isLoading}
-                ongoing={rewardSettingsQuery.data?.data?.marketing?.isActive}
+                ongoing={isPromotionOn(rewardSettingsQuery)}
+                scheduled={isPromotionStale(rewardSettingsQuery)}
                 icon={LoyaltyIcon}
                 onOpen={() => {
                   if (!rewardSettingsQuery.isLoading) {
@@ -264,7 +279,6 @@ export default function Marketing() {
               description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
               title="Promotions"
               icon={PromoIcon}
-              // disabled
               onOpen={() => {
                 console.log('opened');
               }}

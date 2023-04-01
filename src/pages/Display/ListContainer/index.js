@@ -1,6 +1,6 @@
 // thrid pary
 import { West } from '@mui/icons-material';
-import { Box, Button, Stack, Tab, Tabs, Tooltip } from '@mui/material';
+import { Box, Button, Stack, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 
@@ -70,7 +70,6 @@ export default function ListContainers() {
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
             }}
-            aria-label="basic tabs example"
           >
             <Tab label="Food" />
             <Tab label="Grocery" />
@@ -82,34 +81,28 @@ export default function ListContainers() {
               <Stack direction="row" alignItems="center" gap="20px" pb={6.5}>
                 <StyledSearchBar fullWidth placeholder="Search 24 items" />
                 {/* start date */}
-                <Tooltip title="Start Date">
-                  <Box>
-                    <FilterDate
-                      value={startDate}
-                      size="md"
-                      onChange={(e) => {
-                        setStartDate(e._d);
-                      }}
-                    />
-                  </Box>
-                </Tooltip>
+                <FilterDate
+                  tooltip="Start Date"
+                  value={startDate}
+                  size="sm"
+                  onChange={(e) => {
+                    setStartDate(e._d);
+                  }}
+                />
                 {/* end date */}
-                <Tooltip title="Status">
-                  <Box>
-                    <FilterSelect
-                      items={listFilterOptions}
-                      value={status}
-                      placeholder="Status"
-                      size="md"
-                      sx={{
-                        minWidth: 'auto',
-                      }}
-                      onChange={(e) => {
-                        setStatus(e.target.value);
-                      }}
-                    />
-                  </Box>
-                </Tooltip>
+                <FilterSelect
+                  items={listFilterOptions}
+                  value={status}
+                  placeholder="Status"
+                  tooltip="Status"
+                  size="sm"
+                  sx={{
+                    minWidth: 'auto',
+                  }}
+                  onChange={(e) => {
+                    setStatus(e.target.value);
+                  }}
+                />
               </Stack>
               <ListTable items={listData} />
             </TabPanel>

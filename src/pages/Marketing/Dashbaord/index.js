@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // third party
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Box, Button, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
+import { Button, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -10,10 +10,7 @@ import { useParams } from 'react-router-dom';
 
 // project import
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
-import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import PageButton from '../../../components/Common/PageButton';
-import FilterDate from '../../../components/Filter/FilterDate';
-import StyledSelect2 from '../../../components/Styled/StyledSelect2';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import Wrapper from '../../../components/Wrapper';
@@ -21,97 +18,19 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
-import InfoCard from './InfoCard';
-import { ProductsInfoListData } from './mock';
 import ProductsInfoList from './ProductsInfoList';
-import { IncreaseDecreaseTag, ViewMoreTag } from './Tags';
-
-const breadCrumbItems = [
-  {
-    label: 'Marketing',
-    to: '/marketing',
-  },
-  {
-    label: ' Loyalty Points',
-    to: '/unknown',
-  },
-];
-
-function StyledBox({ children, loading, padding }) {
-  const theme = useTheme();
-
-  return (
-    <Box
-      sx={{
-        background: '#fff',
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '7px',
-        position: 'relative',
-        overflow: 'hidden',
-        padding: padding ? '18px 18px 23px 20px' : '0px',
-      }}
-    >
-      {loading && <LoadingOverlay />}
-      {children}
-    </Box>
-  );
-}
-
-const selectMockOptions = [
-  {
-    label: 'Week',
-    value: 'week',
-  },
-  {
-    label: 'Month',
-    value: 'month',
-  },
-  {
-    label: 'Year',
-    value: 'year',
-  },
-];
-
-const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
-};
-
-const gData = (items, getData, getLabel) => {
-  const labels = [];
-  const data = [];
-
-  items.forEach((item) => {
-    // labels.push();
-    labels.push(getLabel(item));
-    data.push(getData(item));
-  });
-
-  return { labels, data };
-};
-
-function DateRange({ range, setRange }) {
-  return (
-    <Stack direction="row" alignItems="center" gap={2}>
-      <FilterDate
-        value={range?.start}
-        tooltip="Start Date"
-        size="sm"
-        onChange={(e) => {
-          setRange((prev) => ({ ...prev, start: e._d }));
-        }}
-      />
-      <FilterDate
-        value={range?.end}
-        tooltip="End Date"
-        size="sm"
-        onChange={(e) => {
-          setRange((prev) => ({ ...prev, end: e._d }));
-        }}
-      />
-    </Stack>
-  );
-}
+// import StyledAreaChartfrom from '../../../../components/StyledCharts/StyledAreaChart';
+import {
+  ChartBox,
+  IncreaseDecreaseTag,
+  InfoBox,
+  StyledBox,
+  ViewMoreTag,
+  breadCrumbItems,
+  dateRangeItit,
+  gData,
+} from './helpers';
+import { ProductsInfoListData } from './mock';
 
 export default function MarketingDashboard() {
   const params = useParams();
@@ -246,7 +165,38 @@ export default function MarketingDashboard() {
     ],
   };
 
-  // export const lineChartData =
+  // loyalty points
+  const [loyalityRange, setLoyalityRange] = useState({ ...dateRangeItit });
+
+  const loyalityGraphQuery = useQuery(
+    [`marketing-graph-amount-${params?.id}-${loyalityRange.start}-${loyalityRange.end}`],
+    () =>
+      AXIOS.get(Api.GET_MARKETING_DASHBOARD_LOYALTY_POINTS_GRAPH, {
+        params: {
+          marketingId: params?.id,
+          startDate: loyalityRange.start,
+          endDate: loyalityRange.end,
+        },
+      })
+  );
+  console.log(loyalityGraphQuery.data);
+
+  const pData = gData(
+    loyalityGraphQuery?.data?.data?.info || [],
+    (item) => item.amountSpent,
+    (item) => moment(item?.date).format('MMMM DD')
+  );
+
+  const pGraphData = {
+    labels: pData.labels,
+    datasets: [
+      {
+        label: 'Amount',
+        data: pData.data,
+        backgroundColor: '#15BFCA',
+      },
+    ],
+  };
 
   return (
     <Wrapper
@@ -273,51 +223,49 @@ export default function MarketingDashboard() {
       </Stack>
       <BreadCrumbs items={breadCrumbItems} />
       <Grid container spacing={6.5} pb={3}>
-        <Grid sm={6} md={4} lg={4}>
-          <StyledBox>
-            <InfoCard
-              title="Ongoing Promotions on Items"
-              value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
-              Tag={<ViewMoreTag />}
-            />
-          </StyledBox>
-        </Grid>
-        <Grid sm={6} md={4} lg={4}>
-          <StyledBox>
-            <InfoCard
-              title="Order Increase with Discounts"
-              value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
-              Tag={
-                <IncreaseDecreaseTag
-                  status={
-                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth > 0
-                      ? 'increase'
-                      : 'decrease'
-                  }
-                  amount={`${Math.round(
-                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0
-                  )}%`}
-                />
+        <InfoBox
+          title="Ongoing Promotions on Items"
+          value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
+          Tag={<ViewMoreTag />}
+          sm={6}
+          md={4}
+          lg={4}
+        />
+        <InfoBox
+          title="Order Increase with Discounts"
+          value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
+          Tag={
+            <IncreaseDecreaseTag
+              status={
+                marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth > 0 ? 'increase' : 'decrease'
               }
+              amount={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0)}%`}
             />
-          </StyledBox>
-        </Grid>
-        <Grid sm={6} md={4} lg={4}>
-          <StyledBox>
-            <InfoCard
-              title="Customer Increase with Discounts"
-              value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
-              Tag={
-                <IncreaseDecreaseTag
-                  status="decrease"
-                  amount={`${Math.round(
-                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
-                  )}%`}
-                />
+          }
+          sm={6}
+          md={4}
+          lg={4}
+        />
+        <InfoBox
+          title="Customer Increase with Discounts"
+          value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
+          Tag={
+            <IncreaseDecreaseTag
+              // status="decrease"
+              status={
+                marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth > 0
+                  ? 'increase'
+                  : 'decrease'
               }
+              amount={`${Math.round(
+                marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
+              )}%`}
             />
-          </StyledBox>
-        </Grid>
+          }
+          sm={6}
+          md={4}
+          lg={4}
+        />
         {params?.type === 'reward' && (
           <>
             <Grid sm={12} md={12} lg={5}>
@@ -330,76 +278,54 @@ export default function MarketingDashboard() {
                 />
               </StyledBox>
             </Grid>
-            <Grid sm={12} md={12} lg={7}>
-              <StyledBox padding>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
-                  <Typography variant="body1" fontWeight={600}>
-                    Loyalty points usage
-                  </Typography>
-                  <StyledSelect2 items={selectMockOptions} defaultValue="week" />
-                </Stack>
-                <Box
-                  sx={{
-                    height: '325px',
-                  }}
-                >
-                  <StyledBarChart data={oGraphData} />
-                </Box>
-              </StyledBox>
-            </Grid>
+            <ChartBox
+              chartHeight={325}
+              dateRange={loyalityRange}
+              setDateRange={setLoyalityRange}
+              loading={loyalityGraphQuery.isLoading}
+              title="Loyalty points usage"
+              sm={12}
+              md={12}
+              lg={7}
+            >
+              <StyledBarChart data={pGraphData} />
+            </ChartBox>
           </>
         )}
-        <Grid sm={12}>
-          <StyledBox padding loading={ordersGraphQuery.isLoading}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
-              <Typography variant="body1" fontWeight={600}>
-                Orders
-              </Typography>
-              <DateRange range={orderRange} setRange={setOrderRange} />
-            </Stack>
-            <Box
-              sx={{
-                height: '245px',
-              }}
-            >
-              <StyledAreaChartfrom data={oGraphData} />
-            </Box>
-          </StyledBox>
-        </Grid>
-        <Grid sm={12} md={12} lg={6}>
-          <StyledBox padding loading={customerGraphQuery.isLoading}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
-              <Typography variant="body1" fontWeight={600}>
-                Customers
-              </Typography>
-              <DateRange range={customerRange} setRange={setCustomerRange} />
-            </Stack>
-            <Box
-              sx={{
-                height: '325px',
-              }}
-            >
-              <StyledBarChart data={cGraphData} />
-            </Box>
-          </StyledBox>
-        </Grid>
-        <Grid sm={12} md={12} lg={6}>
-          <StyledBox padding loading={amountGraphQuery.isLoading}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
-              <Typography variant="body1" fontWeight={600}>
-                Amount spent
-              </Typography>
-              <DateRange range={amountRange} setRange={setAmountRange} />
-            </Stack>
-            <Box
-              sx={{
-                height: '325px',
-              }}
-            >
-              <StyledAreaChartfrom data={aGraphData} />
-            </Box>
-          </StyledBox>
-        </Grid>
+        <ChartBox
+          chartHeight={245}
+          dateRange={orderRange}
+          setDateRange={setOrderRange}
+          title="Orders"
+          sm={12}
+          loading={ordersGraphQuery.isLoading}
+        >
+          <StyledAreaChartfrom data={oGraphData} />
+        </ChartBox>
+        <ChartBox
+          chartHeight={325}
+          dateRange={customerRange}
+          setDateRange={setCustomerRange}
+          loading={customerGraphQuery.isLoading}
+          title="Customers"
+          sm={12}
+          md={12}
+          lg={6}
+        >
+          <StyledBarChart data={cGraphData} />
+        </ChartBox>
+        <ChartBox
+          chartHeight={325}
+          dateRange={amountRange}
+          setDateRange={setAmountRange}
+          loading={amountGraphQuery.isLoading}
+          title="Amount spent"
+          sm={12}
+          md={12}
+          lg={6}
+        >
+          <StyledAreaChartfrom data={aGraphData} />
+        </ChartBox>
       </Grid>
       <MSettingsModal open={Boolean(isModalOpen)}>
         <MarketingSettings

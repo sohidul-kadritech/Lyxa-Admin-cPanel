@@ -172,6 +172,8 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
   const [confirmAction, setConfirmAction] = useState(confirmActionInit);
   const [serverState, setServerState] = useState({});
   const [pageMode, setPageMode] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [entireMenu, setEntireMenu] = useState(true);
 
   // reward settings
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
@@ -181,16 +183,29 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
   const rewardAmount = rewardSettingsQuery?.data?.data?.rewardSetting?.redeemReward?.amount || 1;
 
   // shop products
-  const productsQuery = useQuery(['shop-all-products'], () =>
-    AXIOS.get(Api.ALL_PRODUCT, {
-      params: {
-        page: 1,
-        pageSize: 100,
-        type: 'all',
-        status: 'all',
-        shop: shop?._id,
+  const productsQuery = useQuery(
+    ['shop-all-products'],
+    () =>
+      AXIOS.get(Api.ALL_PRODUCT, {
+        params: {
+          page: 1,
+          pageSize: 100,
+          type: 'all',
+          status: 'all',
+          shop: shop?._id,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        let isTrue = true;
+        data?.data?.products?.forEach((product) => {
+          if (product?.marketing && isTrue) {
+            setEntireMenu(false);
+            isTrue = false;
+          }
+        });
       },
-    })
+    }
   );
 
   // deal settings query
@@ -948,12 +963,12 @@ export default function MarketingSettings({ closeModal, marketingType, shop, cre
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 0 : -1);
               }}
-              sx={isPageDisabled ? disabledSx : {}}
+              sx={isPageDisabled || productsQuery?.isLoading ? disabledSx : {}}
             >
               <Box position="relative">
                 <StyledRadioGroup
                   color="secondary"
-                  items={itemSelectOptions}
+                  items={itemSelectOptions.filter((item) => entireMenu || item.value !== 'multiple')}
                   value={itemSelectType}
                   onChange={onProductSelectChange}
                 />

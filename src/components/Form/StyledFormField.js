@@ -1,5 +1,7 @@
 // import { FormControl, InputLabel } from '@mui/material';
 import { Stack, Typography, useTheme } from '@mui/material';
+import FilterSelect from '../Filter/FilterSelect';
+import StyledFileDropzone from '../Styled/StyledFileDropzone';
 import StyledInput from '../Styled/StyledInput';
 
 export default function StyledFormField({ containerProps, label, labelProps, intputType, inputProps }) {
@@ -19,6 +21,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
       >
         {label}
       </Typography>
+      {/* text field */}
       {intputType === 'text' && (
         <StyledInput
           {...(inputProps || {})}
@@ -34,6 +37,10 @@ export default function StyledFormField({ containerProps, label, labelProps, int
           }}
         />
       )}
+      {/* file dropzone */}
+      {intputType === 'file' && <StyledFileDropzone {...(inputProps || {})} />}
+      {/* select */}
+      {intputType === 'select' && <FilterSelect {...(inputProps || {})} />}
     </Stack>
   );
 }

@@ -1,5 +1,5 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { MenuItem, OutlinedInput, Select, styled, useTheme } from '@mui/material';
+import { Box, MenuItem, OutlinedInput, Select, Tooltip, styled, useTheme } from '@mui/material';
 import pxToRem from '../../helpers/pxToRem';
 
 const StyledSelect = styled(Select)(({ theme }) => ({
@@ -38,8 +38,20 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   },
 }));
 
+function Wrapper({ tooltip, children }) {
+  if (tooltip) {
+    return (
+      <Tooltip title={tooltip}>
+        <Box>{children}</Box>
+      </Tooltip>
+    );
+  }
+
+  return children;
+}
+
 const sizes = {
-  md: {
+  sm: {
     root: {
       '& .MuiSelect-select': {
         paddingTop: '7.5px',
@@ -72,53 +84,56 @@ export default function FilterSelect({
   getDisplayValue,
   size,
   sx,
+  tooltip,
   ...props
 }) {
   const theme = useTheme();
 
   return (
-    <StyledSelect
-      IconComponent={KeyboardArrowDownIcon}
-      MenuProps={{
-        sx: {
-          marginTop: '5px',
-          ...(sizes[size]?.menuSx || {}),
-        },
-      }}
-      displayEmpty
-      input={<OutlinedInput />}
-      renderValue={(value) => {
-        if (!value) {
-          return <span>{placeholder}</span>;
-        }
-        return (
-          `${filterName || ''} ${
-            getDisplayValue ? getDisplayValue(value) : items.find((item) => item.value === value)?.label
-          }` || <span>{placeholder}</span>
-        );
-      }}
-      sx={{
-        ...(sizes[size]?.root || {}),
-        ...(sx || {}),
-      }}
-      {...props}
-    >
-      {items.map((item) => (
-        <MenuItem
-          key={getKey ? getKey(item) : item.value}
-          value={getValue ? getValue(item) : item.value}
-          sx={{
-            [theme.breakpoints.up('lg')]: {
-              fontSize: '12px',
-            },
-            [theme.breakpoints.up('xl')]: {
-              fontSize: '14px',
-            },
-          }}
-        >
-          {getLabel ? getLabel(item) : item.label}
-        </MenuItem>
-      ))}
-    </StyledSelect>
+    <Wrapper tooltip={tooltip}>
+      <StyledSelect
+        IconComponent={KeyboardArrowDownIcon}
+        MenuProps={{
+          sx: {
+            marginTop: '5px',
+            ...(sizes[size]?.menuSx || {}),
+          },
+        }}
+        displayEmpty
+        input={<OutlinedInput />}
+        renderValue={(value) => {
+          if (!value) {
+            return <span>{placeholder}</span>;
+          }
+          return (
+            `${filterName || ''} ${
+              getDisplayValue ? getDisplayValue(value) : items.find((item) => item.value === value)?.label
+            }` || <span>{placeholder}</span>
+          );
+        }}
+        sx={{
+          ...(sizes[size]?.root || {}),
+          ...(sx || {}),
+        }}
+        {...props}
+      >
+        {items.map((item) => (
+          <MenuItem
+            key={getKey ? getKey(item) : item.value}
+            value={getValue ? getValue(item) : item.value}
+            sx={{
+              [theme.breakpoints.up('lg')]: {
+                fontSize: '12px',
+              },
+              [theme.breakpoints.up('xl')]: {
+                fontSize: '14px',
+              },
+            }}
+          >
+            {getLabel ? getLabel(item) : item.label}
+          </MenuItem>
+        ))}
+      </StyledSelect>
+    </Wrapper>
   );
 }

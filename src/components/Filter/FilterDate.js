@@ -62,50 +62,38 @@ const sizes = {
   },
 };
 
-export default function FilterDate({ value, onChange, size, sx, tooltip, ...props }) {
+function Wrapper({ tooltip, children }) {
   if (tooltip) {
     return (
       <Tooltip title={tooltip}>
-        <Box>
-          <DesktopDatePicker
-            value={value}
-            onChange={onChange}
-            components={{
-              OpenPickerIcon: ExpandMoreIcon,
-            }}
-            renderInput={(params) => (
-              <StyledInput
-                sx={{
-                  ...(sizes[size]?.root || {}),
-                  ...(sx || {}),
-                }}
-                {...params}
-              />
-            )}
-            {...props}
-          />
-        </Box>
+        <Box>{children}</Box>
       </Tooltip>
     );
   }
 
+  return children;
+}
+
+export default function FilterDate({ value, onChange, size, sx, tooltip, ...props }) {
   return (
-    <DesktopDatePicker
-      value={value}
-      onChange={onChange}
-      components={{
-        OpenPickerIcon: ExpandMoreIcon,
-      }}
-      renderInput={(params) => (
-        <StyledInput
-          sx={{
-            ...(sizes[size]?.root || {}),
-            ...(sx || {}),
-          }}
-          {...params}
-        />
-      )}
-      {...props}
-    />
+    <Wrapper tooltip={tooltip}>
+      <DesktopDatePicker
+        value={value}
+        onChange={onChange}
+        components={{
+          OpenPickerIcon: ExpandMoreIcon,
+        }}
+        renderInput={(params) => (
+          <StyledInput
+            sx={{
+              ...(sizes[size]?.root || {}),
+              ...(sx || {}),
+            }}
+            {...params}
+          />
+        )}
+        {...props}
+      />
+    </Wrapper>
   );
 }
