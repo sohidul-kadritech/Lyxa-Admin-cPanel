@@ -2,24 +2,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
 // third party
-import ClearIcon from '@mui/icons-material/Clear';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import SearchIcon from '@mui/icons-material/Search';
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  InputAdornment,
-  Paper,
-  Stack,
-  styled,
-  TextField,
-  Typography,
-  useTheme,
-} from '@mui/material';
-import _ from 'lodash';
+import { Box, Button, Checkbox, FormControlLabel, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -40,124 +23,16 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import BannerPreview from './BannerPreview';
-
-// helper functions
-const createGroupedList = (products, category) => {
-  const productsList = Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
-  return productsList.filter((item) => !item?.marketing && (!category || item?.category?.name === category));
-};
-
-const createGroupedDataRow = (products) => {
-  const categoryMap = {};
-  const result = [];
-
-  products.forEach((item) => {
-    if (categoryMap[item?.category?.name] === undefined) {
-      categoryMap[item?.category?.name] = [item];
-    } else {
-      categoryMap[item?.category?.name].push(item);
-    }
-  });
-
-  Object.entries(categoryMap).forEach((category, index) => {
-    result.push({ _id: `c-${index}`, isCategoryHeader: true, categoryName: category[0] });
-    result.push(...category[1]);
-  });
-
-  return result;
-};
-
-// helper components
-function ItemsTitle() {
-  const theme = useTheme();
-  return (
-    <Stack direction="row" alignItems="center" gap={2.5}>
-      <Typography
-        variant="body1"
-        color={theme.palette.text.primary}
-        sx={{
-          lineHeight: '19px',
-          fontWeight: 600,
-        }}
-      >
-        Items
-      </Typography>
-      <span
-        style={{
-          fontWeight: '500',
-          fontSize: '11px',
-          lineHeight: '20px',
-          color: theme.palette.primary.main,
-        }}
-      >
-        Required
-      </span>
-    </Stack>
-  );
-}
-
-function CommonTitle({ title, subTitle }) {
-  const theme = useTheme();
-
-  return (
-    <Stack gap={1.5}>
-      <Typography
-        variant="body1"
-        color={theme.palette.text.primary}
-        sx={{
-          lineHeight: '19px',
-          fontWeight: 600,
-        }}
-      >
-        {title}
-      </Typography>
-      <span
-        style={{
-          fontWeight: '500',
-          fontSize: '14px',
-          lineHeight: '17px',
-          color: '#737373',
-        }}
-      >
-        {subTitle}
-      </span>
-    </Stack>
-  );
-}
-
-const GroupHeader = styled('div')(({ theme }) => ({
-  position: 'sticky',
-  top: '-8px',
-  fontWeight: '600',
-  fontSize: '16px',
-  lineHeight: '28px',
-  color: '#737373',
-  fontStyle: 'italic',
-  padding: '8px 45px 8px 16px',
-  backgroundColor: theme.palette.background.secondary,
-}));
-
-// disabled accordion sx
-const disabledSx = {
-  pointerEvents: 'none',
-  opacity: '.6',
-};
-
-const itemSelectOptions = [
-  { label: 'Selected Items', value: 'single' },
-  { label: 'Entire Menu', value: 'multiple' },
-];
-
-const durationInit = {
-  start: moment().format('YYYY-MM-DD'),
-  end: moment().endOf('month').format('YYYY-MM-DD'),
-};
-
-const confirmActionInit = {
-  message: '',
-  onConfirm: () => {},
-  onCancel: () => {},
-};
+import {
+  CommonTitle,
+  GroupHeader,
+  ItemsTitle,
+  confirmActionInit,
+  createGroupedDataRow,
+  createGroupedList,
+  durationInit,
+  itemSelectOptions,
+} from './helpers';
 
 export default function MarketingSettings({
   onClose,
@@ -531,9 +406,6 @@ export default function MarketingSettings({
 
         return (
           <ProductSelect
-            fullWidth
-            blurOnSelect
-            openOnFocus
             value={params.row}
             disabled={productsQuery.isLoading || itemSelectType === 'multiple'}
             options={createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)}
@@ -545,67 +417,9 @@ export default function MarketingSettings({
               setHasChanged(true);
               setHasGlobalChange(true);
             }}
-            popupIcon={<KeyboardArrowDownIcon />}
             getOptionLabel={(option) => option?.name || 'Select Product'}
             getOptionDisabled={(option) => !!products?.find((item) => item?._id === option?._id)}
             loading={productsQuery.isLoading || productsQuery.isFetching}
-            disableClearable
-            disablePortal
-            PaperComponent={({ children }) => (
-              <Paper
-                sx={{
-                  background: theme.palette.background.secondary,
-                  '& .MuiAutocomplete-listbox': {
-                    padding: 0,
-                  },
-
-                  '& .MuiAutocomplete-option': {
-                    color: theme.palette.text.primary,
-                    fontWeight: 600,
-                    lineHeight: '31px',
-                    fontSize: '15px',
-                    alignItems: 'center',
-                    justifyContent: 'space-between!important',
-                    flexDirection: 'row',
-                    padding: '0px 45px 0px 16px',
-                  },
-                }}
-              >
-                {children}
-              </Paper>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                InputProps={{
-                  ...params.InputProps,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      {params.InputProps.endAdornment}
-                      {!params.inputProps.value && (
-                        <IconButton
-                          size="small"
-                          // eslint-disable-next-line max-len
-                          className="custom-clear-button MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator"
-                          onClick={() => {
-                            console.log('clicked');
-                          }}
-                          edge="end"
-                        >
-                          <ClearIcon />
-                        </IconButton>
-                      )}
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
             groupBy={(option) => option?.category?.name}
             renderGroup={(params) => (
               <li key={params.key}>
@@ -634,7 +448,7 @@ export default function MarketingSettings({
     {
       id: 2,
       headerName: `Point Percentage`,
-      showFor: ['reward'],
+      showFor: ['reward', 'percentage'],
       sortable: false,
       field: 'rewardBundle',
       flex: 1,
@@ -646,7 +460,11 @@ export default function MarketingSettings({
 
         return (
           <FilterSelect
-            items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
+            items={
+              marketingType === 'percentage'
+                ? shopPercentageDeals
+                : rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []
+            }
             placeholder="Select Percentage"
             disabled={!params.row?.price}
             getKey={(item) => item}
@@ -654,51 +472,24 @@ export default function MarketingSettings({
             getLabel={(item) => item}
             getDisplayValue={(value) => `${value}`}
             onChange={(e) => {
-              params.row.rewardBundle = Number(e.target.value);
+              if (marketingType === 'percentage') {
+                params.row.discountPercentage = Number(e.target.value);
+              } else {
+                params.row.rewardBundle = Number(e.target.value);
+              }
               setRender(!render);
               setHasChanged(true);
               setHasGlobalChange(true);
             }}
-            value={params.row?.rewardBundle || ''}
+            value={
+              marketingType === 'percentage' ? params?.row?.discountPercentage || '' : params.row?.rewardBundle || ''
+            }
           />
         );
       },
     },
     {
       id: 3,
-      headerName: `Discount`,
-      showFor: ['percentage'],
-      sortable: false,
-      field: 'discount',
-      flex: 1,
-      align: 'left',
-      renderCell: (params) => {
-        if (params?.row?.isCategoryHeader) {
-          return <></>;
-        }
-
-        return (
-          <FilterSelect
-            items={shopPercentageDeals}
-            placeholder="Select Percentage"
-            disabled={!params.row?.price}
-            getKey={(item) => item}
-            getValue={(item) => item}
-            getLabel={(item) => item}
-            getDisplayValue={(value) => `${value}`}
-            onChange={(e) => {
-              params.row.discountPercentage = Number(e.target.value);
-              setRender(!render);
-              setHasChanged(true);
-              setHasGlobalChange(true);
-            }}
-            value={params?.row?.discountPercentage || ''}
-          />
-        );
-      },
-    },
-    {
-      id: 4,
       headerName: `Category`,
       showFor: ['reward'],
       sortable: false,
@@ -738,29 +529,57 @@ export default function MarketingSettings({
     {
       id: 5,
       headerName: `Final Price`,
-      showFor: ['reward'],
+      showFor: ['reward', 'percentage', 'double_menu'],
       sortable: false,
       field: 'calc',
       flex: 1,
-      align: 'left',
-      headerAlign: 'left',
+      align: marketingType === 'double_menu' ? 'center' : 'left',
+      headerAlign: marketingType === 'double_menu' ? 'center' : 'left',
       minWidth: 180,
       renderCell: (params) => {
         if (params?.row?.isCategoryHeader) {
           return <></>;
         }
 
-        if (!(params?.row?.price && params?.row?.rewardBundle && rewardAmount !== undefined)) {
+        if (
+          marketingType === 'reward' &&
+          !(params?.row?.price && params?.row?.rewardBundle && rewardAmount !== undefined)
+        ) {
+          return <>--</>;
+        }
+
+        if (marketingType === 'percentage' && !params?.row?.discountPercentage) {
+          return <>--</>;
+        }
+
+        if (marketingType === 'double_menu' && !params?.row?.price) {
           return <>--</>;
         }
 
         return (
           <Stack direction="row" alignItems="center" gap={1.5}>
             <Stack direction="row" alignItems="center" gap={1.5}>
-              <Typography variant="body1" color={theme.palette.secondary.main}>
-                {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
-                {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
-              </Typography>
+              {/* reward */}
+              {marketingType === 'reward' && (
+                <Typography variant="body1" color={theme.palette.secondary.main}>
+                  {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
+                  {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
+                </Typography>
+              )}
+              {/* percentage */}
+              {marketingType === 'percentage' && (
+                <Typography variant="body1" color={theme.palette.text.primary}>
+                  {currency}{' '}
+                  {(params?.row?.price - (params?.row?.price / 100) * params?.row?.discountPercentage)?.toFixed(2)}{' '}
+                </Typography>
+              )}
+              {/* double_menu */}
+              {marketingType === 'double_menu' && (
+                <Typography variant="body1" color={theme.palette.text.primary}>
+                  {currency} {params?.row?.price}
+                </Typography>
+              )}
+              {/* second */}
               <Typography
                 sx={{
                   color: '#A3A3A3',
@@ -769,112 +588,16 @@ export default function MarketingSettings({
                 }}
                 variant="body1"
               >
-                {currency} {params?.row?.price}
+                {/* reward/percentage  */}
+                {marketingType === 'reward' || (marketingType === 'percentage' && `${currency} ${params?.row?.price}`)}
+                {/* double_menu */}
+                {marketingType === 'double_menu' && `${currency} ${params?.row?.price * 2} `}
               </Typography>
             </Stack>
             {itemSelectType !== 'multiple' && (
               <CloseButton
                 color="secondary"
                 size="sm"
-                onClick={() => {
-                  removeProduct(params.row);
-                  setHasChanged(true);
-                }}
-              />
-            )}
-          </Stack>
-        );
-      },
-    },
-    {
-      id: 6,
-      headerName: `Final Price`,
-      showFor: ['percentage'],
-      sortable: false,
-      field: 'calc',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: (params) => {
-        if (params?.row?.isCategoryHeader) {
-          return <></>;
-        }
-
-        if (!params?.row?.discountPercentage) {
-          return <>--</>;
-        }
-
-        return (
-          <Stack direction="row" alignItems="center" gap={1.5}>
-            <Stack direction="row" alignItems="center" gap={1.5}>
-              <Typography variant="body1" color={theme.palette.text.primary}>
-                {currency}{' '}
-                {(params?.row?.price - (params?.row?.price / 100) * params?.row?.discountPercentage)?.toFixed(2)}{' '}
-              </Typography>
-              <Typography
-                sx={{
-                  color: '#A3A3A3',
-                  fontWeight: 500,
-                  textDecoration: 'line-through',
-                }}
-                variant="body1"
-              >
-                {currency} {params?.row?.price}
-              </Typography>
-            </Stack>
-            {itemSelectType !== 'multiple' && (
-              <CloseButton
-                size="sm"
-                color="secondary"
-                onClick={() => {
-                  removeProduct(params.row);
-                  setHasChanged(true);
-                }}
-              />
-            )}
-          </Stack>
-        );
-      },
-    },
-    {
-      id: 7,
-      headerName: `Final Price`,
-      showFor: ['double_menu'],
-      sortable: false,
-      field: 'calc',
-      flex: 1,
-      align: 'right',
-      headerAlign: 'right',
-      renderCell: (params) => {
-        if (params?.row?.isCategoryHeader) {
-          return <></>;
-        }
-
-        if (!params?.row?.price) {
-          return <>--</>;
-        }
-
-        return (
-          <Stack direction="row" alignItems="center" gap={1.5}>
-            <Stack direction="row" alignItems="center" gap={1.5}>
-              <Typography variant="body1" color={theme.palette.text.primary}>
-                {currency} {params?.row?.price}
-              </Typography>
-              <Typography
-                sx={{
-                  color: '#A3A3A3',
-                  fontWeight: 500,
-                  textDecoration: 'line-through',
-                }}
-                variant="body1"
-              >
-                {currency} {params?.row?.price * 2}{' '}
-              </Typography>
-            </Stack>
-            {itemSelectType !== 'multiple' && (
-              <CloseButton
-                size="sm"
-                color="secondary"
                 onClick={() => {
                   removeProduct(params.row);
                   setHasChanged(true);
@@ -992,7 +715,7 @@ export default function MarketingSettings({
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 0 : -1);
               }}
-              sx={isPageDisabled || productsQuery?.isLoading ? disabledSx : {}}
+              disabled={isPageDisabled || productsQuery?.isLoading}
             >
               <Box position="relative">
                 <StyledRadioGroup
@@ -1187,7 +910,8 @@ export default function MarketingSettings({
                 }
               />
             }
-            sx={isPageDisabled ? disabledSx : {}}
+            // sx={isPageDisabled ? disabledSx : {}}
+            disabled={isPageDisabled}
           >
             <Stack direction="row" alignItems="center" gap={5} pt={1}>
               <Stack gap={2.5}>
@@ -1242,7 +966,8 @@ export default function MarketingSettings({
                 subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
               />
             }
-            sx={isPageDisabled ? disabledSx : {}}
+            disabled={isPageDisabled}
+            // sx={isPageDisabled ? disabledSx : {}}
           >
             <Stack direction="row" alignItems="center" gap={5} pt={1}>
               <FormControlLabel

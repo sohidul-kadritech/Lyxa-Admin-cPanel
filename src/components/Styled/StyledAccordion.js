@@ -1,7 +1,12 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Stack, useTheme } from '@mui/material';
 
-export default function StyledAccordion({ isOpen, onChange, children, Title, ...props }) {
+const disabledSx = {
+  pointerEvents: 'none',
+  opacity: '.6',
+};
+
+export default function StyledAccordion({ isOpen, onChange, children, disabled, Title, ...props }) {
   const theme = useTheme();
   return (
     <Accordion
@@ -11,6 +16,8 @@ export default function StyledAccordion({ isOpen, onChange, children, Title, ...
         '&:before': {
           display: 'none',
         },
+
+        ...(disabled && disabledSx),
       }}
       expanded={isOpen}
       onChange={(e, closed) => {
