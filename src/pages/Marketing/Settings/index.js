@@ -17,12 +17,12 @@ import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
-import StyledTable2 from '../../../components/Styled/StyledTable2';
 import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import BannerPreview from './BannerPreview';
+import ProductTable from './ProductTable';
 import {
   CommonTitle,
   GroupHeader,
@@ -724,7 +724,7 @@ export default function MarketingSettings({
                   value={itemSelectType}
                   onChange={onProductSelectChange}
                 />
-                {itemSelectType === 'multiple' && marketingType === 'reward' && (
+                {itemSelectType === 'multiple' && (marketingType === 'reward' || marketingType === 'percentage') && (
                   <Box
                     sx={{
                       position: 'absolute',
@@ -734,54 +734,23 @@ export default function MarketingSettings({
                     }}
                   >
                     <FilterSelect
-                      items={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []}
-                      placeholder="0%"
+                      items={
+                        marketingType === 'reward'
+                          ? rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []
+                          : shopPercentageDeals || []
+                      }
+                      placeholder={marketingType === 'reward' ? '0%' : 'Select Percentage'}
                       getKey={(item) => item}
                       getValue={(item) => item}
                       getLabel={(item) => item}
                       getDisplayValue={(value) => `${value}`}
                       onChange={(e) => {
                         products.forEach((product) => {
-                          product.rewardBundle = Number(e.target.value);
-                        });
-                        setGlobalRewardBundle(Number(e.target.value));
-                        setHasChanged(true);
-                        setHasGlobalChange(true);
-                      }}
-                      value={globalRewardBundle}
-                      sx={{
-                        minWidth: '80px',
-                        '& .MuiInputBase-input': {
-                          fontWeight: '500',
-                          fontSize: '15px',
-                          lineHeight: '24px',
-                          paddingTop: '6px',
-                          paddingBottom: '6px',
-                          textAlign: 'center',
-                        },
-                      }}
-                    />
-                  </Box>
-                )}
-                {itemSelectType === 'multiple' && marketingType === 'percentage' && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      zIndex: '99',
-                      bottom: '-6px',
-                      left: '130px',
-                    }}
-                  >
-                    <FilterSelect
-                      items={shopPercentageDeals || []}
-                      placeholder="Select Percentage"
-                      getKey={(item) => item}
-                      getValue={(item) => item}
-                      getLabel={(item) => item}
-                      getDisplayValue={(value) => `${value}`}
-                      onChange={(e) => {
-                        products.forEach((product) => {
-                          product.discountPercentage = Number(e.target.value);
+                          if (marketingType === 'reward') {
+                            product.rewardBundle = Number(e.target.value);
+                          } else {
+                            product.discountPercentage = Number(e.target.value);
+                          }
                         });
                         setGlobalRewardBundle(Number(e.target.value));
                         setHasChanged(true);
@@ -816,44 +785,12 @@ export default function MarketingSettings({
                       minWidth: '850px',
                     }}
                   >
-                    <StyledTable2
+                    <ProductTable
                       columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
-                      sx={{
-                        '& .MuiDataGrid-main': {
-                          overflow: 'visible!important',
-                        },
-
-                        '& .MuiDataGrid-cell': {
-                          position: 'relative',
-                          overflow: 'visible!important',
-                        },
-
-                        '& .MuiDataGrid-virtualScroller': {
-                          paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
-                          overflowX: 'scroll!important',
-                        },
-                      }}
                       rows={createGroupedDataRow(products || [])}
-                      getRowId={(row) => row?._id}
-                      components={{
-                        NoRowsOverlay: () => (
-                          <Stack height="100%" alignItems="center" justifyContent="center">
-                            No Products Added
-                          </Stack>
-                        ),
-                      }}
-                      rowHeight={64}
-                      autoHeight={false}
-                      getRowHeight={({ model }) => {
-                        if (model.isCategoryHeader) {
-                          return 42;
-                        }
-                        return 64;
-                      }}
                     />
                   </Box>
                 </Box>
-
                 {/* add new */}
                 <Stack
                   direction="row"
