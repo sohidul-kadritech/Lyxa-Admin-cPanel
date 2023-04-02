@@ -179,7 +179,7 @@ export default function MarketingSettings({
   const [confirmModal, setConfirmModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(confirmActionInit);
   const [serverState, setServerState] = useState({});
-  const [pageMode, setPageMode] = useState(0);
+  const [pageMode, setPageMode] = useState(-1);
   // eslint-disable-next-line no-unused-vars
   const [entireMenu, setEntireMenu] = useState(true);
 
@@ -1147,12 +1147,6 @@ export default function MarketingSettings({
                     className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
                     variant="text"
                     color="secondary"
-                    sx={{
-                      padding: '0!important',
-                      '&:hover': {
-                        background: 'transparent',
-                      },
-                    }}
                     onClick={() => {
                       setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
                       setHasChanged(true);
@@ -1393,17 +1387,9 @@ export default function MarketingSettings({
                     variant="contained"
                     color="secondary"
                     disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
+                    rounded
                     onClick={() => {
                       updateLoyaltySettings();
-                    }}
-                    sx={{
-                      borderRadius: 1.5,
-                      textTransform: 'none',
-                      '&.Mui-disabled': {
-                        background: theme.palette.secondary.main,
-                        opacity: 0.3,
-                        color: '#fff',
-                      },
                     }}
                   >
                     Activate Promotion
@@ -1430,19 +1416,6 @@ export default function MarketingSettings({
                         },
                       });
                     }}
-                    sx={{
-                      padding: '0px',
-                      background: 'transparent',
-
-                      '&:hover': {
-                        background: 'transparent',
-                      },
-
-                      '&.Mui-disabled': {
-                        color: theme.palette.primary.main,
-                        opacity: '0.3',
-                      },
-                    }}
                   >
                     Delete Promotion
                   </Button>
@@ -1451,17 +1424,8 @@ export default function MarketingSettings({
                   <Button
                     variant="outlined"
                     color="secondary"
+                    rounded
                     disabled={loyaltySettingsDeleteMutation.isLoading}
-                    sx={{
-                      borderRadius: 1.5,
-                      textTransform: 'none',
-
-                      '&.Mui-disabled': {
-                        borderColor: theme.palette.secondary.main,
-                        opacity: 0.3,
-                        color: theme.palette.secondary.main,
-                      },
-                    }}
                     onClick={() => {
                       setIsPageDisabled(false);
                       setPageMode(2);
@@ -1473,6 +1437,7 @@ export default function MarketingSettings({
                     variant="contained"
                     color="primary"
                     disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
+                    rounded
                     onClick={() => {
                       setConfirmModal(true);
                       setConfirmAction({
@@ -1484,17 +1449,8 @@ export default function MarketingSettings({
                         },
                       });
                     }}
-                    sx={{
-                      borderRadius: 1.5,
-                      textTransform: 'none',
-                      '&.Mui-disabled': {
-                        background: theme.palette.primary.main,
-                        opacity: 0.3,
-                        color: '#fff',
-                      },
-                    }}
                   >
-                    Deactivate Promotion
+                    Pause Promotion
                   </Button>
                 </Stack>
               </Stack>
@@ -1504,16 +1460,6 @@ export default function MarketingSettings({
                 <Button
                   variant="outlined"
                   color="secondary"
-                  sx={{
-                    borderRadius: 1.5,
-                    textTransform: 'none',
-
-                    '&.Mui-disabled': {
-                      borderColor: theme.palette.secondary.main,
-                      opacity: 0.3,
-                      color: theme.palette.secondary.main,
-                    },
-                  }}
                   disabled={loyaltySettingsMutaion.isLoading}
                   onClick={() => {
                     if (hasGlobalChange) {
@@ -1537,17 +1483,9 @@ export default function MarketingSettings({
                   disabled={loyaltySettingsMutaion.isLoading}
                   variant="contained"
                   color="secondary"
+                  rounded
                   onClick={() => {
                     updateLoyaltySettings();
-                  }}
-                  sx={{
-                    borderRadius: 1.5,
-                    textTransform: 'none',
-                    '&.Mui-disabled': {
-                      background: theme.palette.primary.secondary,
-                      opacity: 0.3,
-                      color: '#fff',
-                    },
                   }}
                 >
                   Save Changes
