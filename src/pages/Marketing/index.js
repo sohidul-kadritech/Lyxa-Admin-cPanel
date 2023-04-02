@@ -210,10 +210,19 @@ export default function Marketing() {
   };
 
   const G_LOADING =
-    dealSettingsQuery.isLoading ||
-    discountSettingsQuery.isLoading ||
-    doubleDealSettingsQuery.isLoading ||
-    freeDeliverySettingsQuery.isLoading;
+    // dealSettingsQuery.isLoading ||
+    !dealSettingsQuery.isFetchedAfterMount ||
+    // discountSettingsQuery.isLoading ||
+    !discountSettingsQuery.isFetchedAfterMount ||
+    // doubleDealSettingsQuery.isLoading ||
+    !doubleDealSettingsQuery.isFetchedAfterMount ||
+    // freeDeliverySettingsQuery.isLoading ||
+    !freeDeliverySettingsQuery.isFetchedAfterMount ||
+    // rewardSettingsQuery.isLoading ||
+    !rewardSettingsQuery.isFetchedAfterMount ||
+    shopQuery.isLoading;
+
+  console.log(G_LOADING);
 
   return (
     <Wrapper
@@ -236,8 +245,9 @@ export default function Marketing() {
               description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
               title="Discounted Items"
               icon={DiscountIcon}
-              disabled={G_LOADING || appliedDeals.percentage || !activeDeals.percentage}
-              status={G_LOADING ? '' : getPromotionStatus(discountSettingsQuery, 'percentage')}
+              loading={G_LOADING || discountSettingsQuery?.isFetching}
+              disabled={appliedDeals.percentage || !activeDeals.percentage}
+              status={getPromotionStatus(discountSettingsQuery, 'percentage')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               onOpen={() => {
                 if (!appliedDeals.percentage && activeDeals.percentage && !G_LOADING) {
@@ -251,8 +261,9 @@ export default function Marketing() {
               description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
               title="Buy 1, Get 1 Free"
               icon={BuyIcon}
-              disabled={G_LOADING || appliedDeals.double_menu || !activeDeals.double_menu}
-              status={G_LOADING ? '' : getPromotionStatus(doubleDealSettingsQuery, 'double_menu')}
+              loading={G_LOADING || doubleDealSettingsQuery.isFetching}
+              disabled={appliedDeals.double_menu || !activeDeals.double_menu}
+              status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               onOpen={() => {
                 if (!G_LOADING && !appliedDeals.double_menu && activeDeals.double_menu) {
@@ -265,8 +276,9 @@ export default function Marketing() {
             <MCard
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
-              disabled={G_LOADING || appliedDeals.free_delivery || !activeDeals.free_delivery}
-              status={G_LOADING ? '' : getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery')}
+              loading={G_LOADING || freeDeliverySettingsQuery?.isFetching}
+              disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
+              status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               icon={DeliveryIcon}
               onOpen={() => {
@@ -281,8 +293,8 @@ export default function Marketing() {
               <MCard
                 description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
                 title="Loyalty Points"
-                disabled={rewardSettingsQuery.isLoading}
-                status={G_LOADING ? '' : getPromotionStatus(rewardSettingsQuery)}
+                loading={G_LOADING || rewardSettingsQuery.isFetching}
+                status={getPromotionStatus(rewardSettingsQuery)}
                 icon={LoyaltyIcon}
                 onOpen={() => {
                   if (!rewardSettingsQuery.isLoading) {

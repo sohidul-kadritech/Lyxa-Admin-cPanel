@@ -706,6 +706,7 @@ export default function MarketingSettings({
       flex: 1,
       align: 'left',
       headerAlign: 'left',
+      minWidth: 180,
       renderCell: (params) => {
         if (params?.row?.isCategoryHeader) {
           return <></>;
@@ -743,6 +744,7 @@ export default function MarketingSettings({
       flex: 1,
       align: 'left',
       headerAlign: 'left',
+      minWidth: 180,
       renderCell: (params) => {
         if (params?.row?.isCategoryHeader) {
           return <></>;
@@ -889,7 +891,10 @@ export default function MarketingSettings({
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: '1fr 305px',
+        gridTemplateColumns: {
+          lg: '1fr 305px',
+          md: '1fr 250px',
+        },
         position: 'relative',
         height: '100%',
       }}
@@ -935,8 +940,10 @@ export default function MarketingSettings({
       {/* left */}
       <Box
         sx={{
-          padding: '36px',
-          paddingTop: '0px',
+          padding: {
+            lg: '0 36px 36px 36px',
+            md: '0 20px 20px 20px',
+          },
           borderRight: `1px solid ${theme.palette.custom.border}`,
           minHeight: '0',
           maxHeight: '100%',
@@ -953,8 +960,11 @@ export default function MarketingSettings({
               top: '0',
               zIndex: '9999',
               background: '#fff',
+              paddingTop: {
+                lg: '36px',
+                md: '20px',
+              },
             }}
-            pt={9}
             pb={2}
           >
             <Typography variant="h4" pb={3}>
@@ -1042,7 +1052,6 @@ export default function MarketingSettings({
                     <FilterSelect
                       items={shopPercentageDeals || []}
                       placeholder="Select Percentage"
-                      // disabled={!params.row?.price}
                       getKey={(item) => item}
                       getValue={(item) => item}
                       getLabel={(item) => item}
@@ -1074,46 +1083,54 @@ export default function MarketingSettings({
               <Box pt={5}>
                 <Box
                   sx={{
-                    minHeight: '0px',
-                    height: `${products?.length > 0 ? '500px' : '200px'}`,
+                    overflowX: 'scroll',
                   }}
                 >
-                  <StyledTable2
-                    columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
+                  <Box
                     sx={{
-                      '& .MuiDataGrid-main': {
-                        overflow: 'visible!important',
-                      },
+                      minHeight: '0px',
+                      height: `${products?.length > 0 ? '500px' : '200px'}`,
+                      minWidth: '850px',
+                    }}
+                  >
+                    <StyledTable2
+                      columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
+                      sx={{
+                        '& .MuiDataGrid-main': {
+                          overflow: 'visible!important',
+                        },
 
-                      '& .MuiDataGrid-cell': {
-                        position: 'relative',
-                        overflow: 'visible!important',
-                      },
+                        '& .MuiDataGrid-cell': {
+                          position: 'relative',
+                          overflow: 'visible!important',
+                        },
 
-                      '& .MuiDataGrid-virtualScroller': {
-                        paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
-                        overflowX: 'scroll!important',
-                      },
-                    }}
-                    rows={createGroupedDataRow(products || [])}
-                    getRowId={(row) => row?._id}
-                    components={{
-                      NoRowsOverlay: () => (
-                        <Stack height="100%" alignItems="center" justifyContent="center">
-                          No Products Added
-                        </Stack>
-                      ),
-                    }}
-                    rowHeight={64}
-                    autoHeight={false}
-                    getRowHeight={({ model }) => {
-                      if (model.isCategoryHeader) {
-                        return 42;
-                      }
-                      return 64;
-                    }}
-                  />
+                        '& .MuiDataGrid-virtualScroller': {
+                          paddingBottom: itemSelectType === 'multiple' ? '45px' : '0px',
+                          overflowX: 'scroll!important',
+                        },
+                      }}
+                      rows={createGroupedDataRow(products || [])}
+                      getRowId={(row) => row?._id}
+                      components={{
+                        NoRowsOverlay: () => (
+                          <Stack height="100%" alignItems="center" justifyContent="center">
+                            No Products Added
+                          </Stack>
+                        ),
+                      }}
+                      rowHeight={64}
+                      autoHeight={false}
+                      getRowHeight={({ model }) => {
+                        if (model.isCategoryHeader) {
+                          return 42;
+                        }
+                        return 64;
+                      }}
+                    />
+                  </Box>
                 </Box>
+
                 {/* add new */}
                 <Stack
                   direction="row"
@@ -1543,7 +1560,10 @@ export default function MarketingSettings({
       {/* right */}
       <Box
         sx={{
-          padding: '36px',
+          padding: {
+            lg: '36px',
+            md: '20px',
+          },
         }}
       >
         <Typography variant="h4" pb={8}>

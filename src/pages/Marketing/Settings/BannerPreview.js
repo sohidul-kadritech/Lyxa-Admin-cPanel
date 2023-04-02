@@ -61,7 +61,10 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
               alignItems="center"
               gap="3px"
               sx={{
-                marginTop: '-23px',
+                marginTop: {
+                  lg: '-23px',
+                  md: '-18px',
+                },
                 paddingLeft: '8px',
               }}
             >

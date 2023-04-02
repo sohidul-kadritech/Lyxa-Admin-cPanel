@@ -1,6 +1,6 @@
 // thrid party
 import { Cached, CalendarToday, ChevronRight, NotificationsPaused, PlayCircleFilledWhite } from '@mui/icons-material';
-import { Box, Button, Paper, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Paper, Skeleton, Stack, Typography, useTheme } from '@mui/material';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 
 function StatusTag({ status }) {
@@ -49,8 +49,34 @@ function StatusTag({ status }) {
   );
 }
 
-export default function MCard({ icon: Icon, title, description, onOpen, disabled, ongoingBy, status }) {
+export default function MCard({ icon: Icon, title, description, onOpen, disabled, ongoingBy, status, loading }) {
   const theme = useTheme();
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          height: '260px',
+          position: 'relative',
+          padding: '16px',
+        }}
+      >
+        <Skeleton variant="circular" width={62} height={62} />
+        <Skeleton
+          height={35}
+          sx={{
+            marginTop: 3,
+            marginBottom: 6,
+          }}
+        />
+        <Stack gap={1.5}>
+          <Skeleton height={20} />
+          <Skeleton height={20} />
+          <Skeleton height={20} />
+        </Stack>
+      </Box>
+    );
+  }
 
   return (
     <Box

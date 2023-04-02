@@ -4,6 +4,7 @@ import Modal from './Modal';
 import PaginationItem from './PaginationItem';
 import Paper from './Paper';
 import Popover from './Popover';
+import Skeleton from './Skeleton';
 import Tab from './Tab';
 import Tabs from './Tabs';
 import Tooltip from './Tooltip';
@@ -21,5 +22,6 @@ export default function Components(theme) {
     MuiTooltip: Tooltip(),
     MuiModal: Modal(),
     MuiTab: Tab(theme),
+    MuiSkeleton: Skeleton(),
   };
 }

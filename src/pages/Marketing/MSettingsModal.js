@@ -7,14 +7,26 @@ export default function MSettingsModal({ children, open }) {
       open={open}
       sx={{
         minHeight: '0',
-        maxHeight: '90%',
-        top: '5%',
+        maxHeight: {
+          lg: '90%',
+          md: '95%',
+        },
+        top: {
+          lg: '5%',
+          md: '2.5%',
+        },
       }}
     >
       <Paper
         sx={{
-          maxWidth: 'calc(100vw - 100px)',
-          width: 'min(calc(100vw - 100px), 1500px)',
+          maxWidth: {
+            lg: 'calc(100vw - 100px)',
+            md: 'calc(100vw - 50px)',
+          },
+          width: {
+            lg: 'min(calc(100vw - 100px), 1500px)',
+            md: 'min(calc(100vw - 50px), 1500px)',
+          },
           position: 'relative',
           borderRadius: '10px',
           height: '100%',
