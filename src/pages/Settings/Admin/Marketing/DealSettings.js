@@ -1,21 +1,19 @@
-/* eslint-disable no-unused-vars */
 // third party, Typography
-import ClickAwayListener from '@mui/base/ClickAwayListener';
-import { Add, West } from '@mui/icons-material';
-import { Box, Button, Stack, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
-import { useRef, useState } from 'react';
+import { West } from '@mui/icons-material';
+import { Box, Button, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
 import PageButton from '../../../../components/Common/PageButton';
-import StyledChip from '../../../../components/Styled/StyledChips';
-import StyledInput from '../../../../components/Styled/StyledInput';
+import Taglist from '../../../../components/Common/Taglist';
 import StyledSwitchList from '../../../../components/Styled/StyledSwitchList';
 import Wrapper from '../../../../components/Wrapper';
 import { deepClone } from '../../../../helpers/deepClone';
 import { successMsg } from '../../../../helpers/successMsg';
 import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
+import StyledBox from './StyledBox';
 
 const dealTypes = [
   {
@@ -35,91 +33,64 @@ const dealTypes = [
 ];
 
 // QUERY ONLY ONCE
-const QUERY_RUNNED = false;
+// const QUERY_RUNNED = false;
 
 export default function DealSettings() {
   const theme = useTheme();
   const [serverState, setServerState] = useState({});
-  const [newBundleItem, setNewBundleItem] = useState('');
   const [queryRunned, setQueryRunned] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [render, setRender] = useState(false);
 
   // restaurant
   const [restaurantBundles, setRestaurantBundles] = useState([]);
-  const [showRestaurantAdd, setShowRestaurantAdd] = useState(false);
   const [restaurantDeals, setRestaurantDeals] = useState([]);
-  const restaurantAddBundleRef = useRef();
 
   // grocery
   const [groceryBundles, setGroceryBundles] = useState([]);
-  const [showGroceryAdd, setShowGroceryAdd] = useState(false);
   const [groceryDeals, setGroceryDeals] = useState([]);
-  const groceryAddBundleRef = useRef();
 
   // pharmacy
   const [pharmacyBundles, setPharmacyBundles] = useState([]);
-  const [showPharmacyAdd, setShowPharmacyAdd] = useState(false);
   const [pharmacyDeals, setPharmacyDeals] = useState([]);
-  const pharmacyAddBundleRef = useRef();
 
-  const addNewBundleItem = (type) => {
-    if (Number(newBundleItem) < 1) {
+  const addNewBundleItem = (type, value) => {
+    if (Number(value) < 1) {
       successMsg('Reward Bundle cannot be smaller than 1');
-      return;
+      return false;
     }
 
-    if (Number(newBundleItem) > 100) {
+    if (Number(value) > 100) {
       successMsg('Reward Bundle cannot be greater than 100');
-      return;
+      return false;
     }
 
-    if (Number.isNaN(Number(newBundleItem))) {
+    if (Number.isNaN(Number(value))) {
       successMsg('Please enter a valid value');
-      return;
+      return false;
     }
 
     let oldList;
     let setOldList;
-    let setShowAdd;
 
     if (type === 'pharmacy') {
       oldList = pharmacyBundles;
       setOldList = setPharmacyBundles;
-      setShowAdd = setShowPharmacyAdd;
     } else if (type === 'grocery') {
       oldList = groceryBundles;
       setOldList = setGroceryBundles;
-      setShowAdd = setShowGroceryAdd;
     } else {
       oldList = restaurantBundles;
       setOldList = setRestaurantBundles;
-      setShowAdd = setShowRestaurantAdd;
     }
 
-    if (oldList.includes(Number(newBundleItem))) {
+    if (oldList.includes(Number(value))) {
       successMsg('Reward Bundle item already exists');
-      return;
+      return false;
     }
 
-    setOldList((prev) => [...prev, Number(newBundleItem)]);
-    setNewBundleItem('');
-    setShowAdd(false);
-  };
-
-  const deleteItem = (type, payload) => {
-    switch (type) {
-      case 'restaurant':
-        setRestaurantBundles((prev) => prev.filter((item, index) => index !== payload));
-        break;
-
-      case 'grocery':
-        setGroceryBundles((prev) => prev.filter((item, index) => index !== payload));
-        break;
-
-      case 'pharmacy':
-        setPharmacyBundles((prev) => prev.filter((item, index) => index !== payload));
-        break;
-      default:
-    }
+    setOldList((prev) => [...prev, Number(value)]);
+    return true;
   };
 
   const updateLocalState = (data) => {
@@ -220,7 +191,7 @@ export default function DealSettings() {
           <PageButton label="Back to Marketing" startIcon={<West />} to="/admin/settings2/marketing" />
           <Typography
             variant="h4"
-            color={theme.palette.text.primary}
+            color={theme.palette.text.heading}
             sx={{
               pt: 5,
               pb: 2,
@@ -232,94 +203,23 @@ export default function DealSettings() {
         <Grid container spacing="25px">
           {/* restaurant */}
           <Grid xs={12}>
-            <Box
-              sx={{
-                padding: '25px 30px 20px 30px',
-                background: '#fff',
-              }}
-            >
-              <Typography
-                variant="h6"
-                fontWeight={600}
-                pb={4}
-                sx={{
-                  fontWeight: '700',
-                  fontSize: '16px',
-                  lineHeight: '20px',
-                }}
-              >
-                Food
-              </Typography>
-              {/* bundles */}
+            <StyledBox title="Food">
               <Box pb={6}>
                 <Typography variant="h6" pb={4}>
                   Percentage Bundle
                 </Typography>
-                <Stack direction="row" gap={4} mb={2.5}>
-                  {restaurantBundles.map((item, index) => (
-                    <StyledChip
-                      key={item}
-                      label={item}
-                      onDelete={() => {
-                        deleteItem('restaurant', index);
-                      }}
-                    />
-                  ))}
-                  {showRestaurantAdd && (
-                    <ClickAwayListener
-                      onClickAway={() => {
-                        if (showRestaurantAdd) {
-                          setShowRestaurantAdd(false);
-                          setNewBundleItem('');
-                        }
-                      }}
-                    >
-                      <StyledInput
-                        ref={restaurantAddBundleRef}
-                        type="number"
-                        value={newBundleItem}
-                        sx={{
-                          '& input': {
-                            fontSize: '13px',
-                            height: 'auto',
-                          },
-                        }}
-                        onChange={(e) => {
-                          setNewBundleItem(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            addNewBundleItem();
-                          }
-                        }}
-                      />
-                    </ClickAwayListener>
-                  )}
-                </Stack>
-                <Button
-                  disableRipple
-                  color="secondary"
-                  variant="text"
-                  startIcon={<Add />}
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '17px',
-                    padding: '0px',
-
-                    '&:hover': {
-                      background: 'transparent',
-                    },
+                <Taglist
+                  listContainerSx={{
+                    mb: 2.5,
                   }}
-                  onClick={() => {
-                    setShowRestaurantAdd(true);
-                    setTimeout(() => {
-                      restaurantAddBundleRef?.current?.querySelector('input')?.focus();
-                    }, 10);
+                  addButtonLabel="Add bundle"
+                  items={restaurantBundles}
+                  onAdd={(value) => addNewBundleItem('restaurant', value)}
+                  onDelete={(item, index, array) => {
+                    array.splice(index, 1);
+                    setRender((prev) => !prev);
                   }}
-                >
-                  Add bundle
-                </Button>
+                />
               </Box>
               {/* options */}
               <StyledSwitchList
@@ -333,98 +233,25 @@ export default function DealSettings() {
                   }
                 }}
               />
-            </Box>
+            </StyledBox>
           </Grid>
           {/* grocery */}
           <Grid xs={12}>
-            <Box
-              sx={{
-                padding: '25px 30px 20px 30px',
-                background: '#fff',
-              }}
-            >
-              <Typography
-                variant="h6"
-                fontWeight={600}
-                pb={4}
-                sx={{
-                  fontWeight: '700',
-                  fontSize: '16px',
-                  lineHeight: '20px',
-                }}
-              >
-                Grocery
-              </Typography>
-              {/* bundles */}
+            <StyledBox title="Percentage Bundle">
               <Box pb={6}>
-                <Typography variant="h6" pb={4}>
-                  Percentage Bundle
-                </Typography>
-                <Stack direction="row" gap={4} mb={2.5}>
-                  {groceryBundles.map((item, index) => (
-                    <StyledChip
-                      key={item}
-                      label={item}
-                      onDelete={() => {
-                        deleteItem('grocery', index);
-                      }}
-                    />
-                  ))}
-                  {showGroceryAdd && (
-                    <ClickAwayListener
-                      onClickAway={() => {
-                        if (showGroceryAdd) {
-                          setShowGroceryAdd(false);
-                          setNewBundleItem('');
-                        }
-                      }}
-                    >
-                      <StyledInput
-                        ref={groceryAddBundleRef}
-                        type="number"
-                        value={newBundleItem}
-                        sx={{
-                          '& input': {
-                            fontSize: '13px',
-                            height: 'auto',
-                          },
-                        }}
-                        onChange={(e) => {
-                          setNewBundleItem(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            addNewBundleItem('grocery');
-                          }
-                        }}
-                      />
-                    </ClickAwayListener>
-                  )}
-                </Stack>
-                <Button
-                  disableRipple
-                  color="secondary"
-                  variant="text"
-                  startIcon={<Add />}
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '17px',
-                    padding: '0px',
-
-                    '&:hover': {
-                      background: 'transparent',
-                    },
+                <Typography variant="h6" pb={4}></Typography>
+                <Taglist
+                  listContainerSx={{
+                    mb: 2.5,
                   }}
-                  onClick={() => {
-                    setShowGroceryAdd(true);
-                    setTimeout(() => {
-                      groceryAddBundleRef?.current?.querySelector('input')?.focus();
-                    }, 10);
+                  addButtonLabel="Add bundle"
+                  items={groceryBundles}
+                  onAdd={(value) => addNewBundleItem('grocery', value)}
+                  onDelete={(item, index, array) => {
+                    array.splice(index, 1);
+                    setRender((prev) => !prev);
                   }}
-                >
-                  Add bundle
-                </Button>
+                />
               </Box>
               {/* options */}
               <StyledSwitchList
@@ -438,98 +265,27 @@ export default function DealSettings() {
                   }
                 }}
               />
-            </Box>
+            </StyledBox>
           </Grid>
           {/* prarmacy */}
           <Grid xs={12}>
-            <Box
-              sx={{
-                padding: '25px 30px 20px 30px',
-                background: '#fff',
-              }}
-            >
-              <Typography
-                variant="h6"
-                fontWeight={600}
-                pb={4}
-                sx={{
-                  fontWeight: '700',
-                  fontSize: '16px',
-                  lineHeight: '20px',
-                }}
-              >
-                Pharmacy
-              </Typography>
-              {/* bundles */}
+            <StyledBox title="Pharmacy">
               <Box pb={6}>
                 <Typography variant="h6" pb={4}>
                   Percentage Bundle
                 </Typography>
-                <Stack direction="row" gap={4} mb={2.5}>
-                  {pharmacyBundles.map((item, index) => (
-                    <StyledChip
-                      key={item}
-                      label={item}
-                      onDelete={() => {
-                        deleteItem('pharmacy', index);
-                      }}
-                    />
-                  ))}
-                  {showPharmacyAdd && (
-                    <ClickAwayListener
-                      onClickAway={() => {
-                        if (showPharmacyAdd) {
-                          setShowPharmacyAdd(false);
-                          setNewBundleItem('');
-                        }
-                      }}
-                    >
-                      <StyledInput
-                        ref={pharmacyAddBundleRef}
-                        type="number"
-                        value={newBundleItem}
-                        sx={{
-                          '& input': {
-                            fontSize: '13px',
-                            height: 'auto',
-                          },
-                        }}
-                        onChange={(e) => {
-                          setNewBundleItem(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            addNewBundleItem('pharmacy');
-                          }
-                        }}
-                      />
-                    </ClickAwayListener>
-                  )}
-                </Stack>
-                <Button
-                  disableRipple
-                  color="secondary"
-                  variant="text"
-                  startIcon={<Add />}
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '17px',
-                    padding: '0px',
-
-                    '&:hover': {
-                      background: 'transparent',
-                    },
+                <Taglist
+                  listContainerSx={{
+                    mb: 2.5,
                   }}
-                  onClick={() => {
-                    setShowPharmacyAdd(true);
-                    setTimeout(() => {
-                      pharmacyAddBundleRef?.current?.querySelector('input')?.focus();
-                    }, 10);
+                  addButtonLabel="Add bundle"
+                  items={pharmacyBundles}
+                  onAdd={(value) => addNewBundleItem('prarmacy', value)}
+                  onDelete={(item, index, array) => {
+                    array.splice(index, 1);
+                    setRender((prev) => !prev);
                   }}
-                >
-                  Add bundle
-                </Button>
+                />
               </Box>
               {/* options */}
               <StyledSwitchList
@@ -543,7 +299,7 @@ export default function DealSettings() {
                   }
                 }}
               />
-            </Box>
+            </StyledBox>
           </Grid>
         </Grid>
         {/* buttons */}
