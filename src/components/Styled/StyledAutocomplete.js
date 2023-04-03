@@ -1,6 +1,9 @@
-import { Autocomplete, styled } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import SearchIcon from '@mui/icons-material/Search';
+import { Autocomplete, IconButton, InputAdornment, Paper, TextField, styled, useTheme } from '@mui/material';
 
-const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
+const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   /* normal styles */
 
   '& .MuiAutocomplete-listbox': {
@@ -56,6 +59,20 @@ const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
     },
   },
 
+  '& .MuiFormControl-root': {
+    '& .MuiFormLabel-root': {
+      bottom: '-1px',
+      top: 'auto',
+      fontWeight: '500',
+      fontSize: '21px',
+      lineHeight: '24px',
+      margin: '0',
+      color: `${theme.palette.text.primary}!important`,
+      paddingLeft: '12px',
+      pointerEvents: 'none',
+    },
+  },
+
   /* focus styles */
   '&:has(.MuiInputBase-input:focus)': {
     borderRadius: '25px',
@@ -63,6 +80,12 @@ const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
     position: 'absolute',
     zIndex: '99',
     top: '8px',
+
+    '& .MuiFormControl-root': {
+      '& .MuiFormLabel-root': {
+        display: 'none',
+      },
+    },
   },
 
   '& .MuiInputBase-root:has(.MuiInputBase-input:focus)': {
@@ -112,4 +135,74 @@ const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
   },
 }));
 
-export default StyledAutocomplete;
+export default function StyledAutocomplete({ label, placeholder, ...props }) {
+  const theme = useTheme();
+
+  return (
+    <StyledSelect
+      blurOnSelect
+      openOnFocus
+      disableClearable
+      disablePortal
+      popupIcon={<KeyboardArrowDownIcon />}
+      PaperComponent={({ children }) => (
+        <Paper
+          sx={{
+            background: theme.palette.background.secondary,
+            '& .MuiAutocomplete-listbox': {
+              padding: 0,
+            },
+
+            '& .MuiAutocomplete-option': {
+              color: theme.palette.text.primary,
+              fontWeight: 600,
+              lineHeight: '31px',
+              fontSize: '15px',
+              alignItems: 'center',
+              justifyContent: 'space-between!important',
+              flexDirection: 'row',
+              padding: '0px 45px 0px 16px',
+            },
+          }}
+        >
+          {children}
+        </Paper>
+      )}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          placeholder={placeholder}
+          label={label}
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                {params.InputProps.endAdornment}
+                {!params.inputProps.value && (
+                  <IconButton
+                    size="small"
+                    // eslint-disable-next-line max-len
+                    className="custom-clear-button MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator"
+                    // onClick={() => {
+                    //   console.log('clicked');
+                    // }}
+                    edge="end"
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                )}
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
+      {...props}
+    />
+  );
+}
