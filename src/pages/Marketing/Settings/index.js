@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import CloseButton from '../../../components/Common/CloseButton';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import ProductSelect from '../../../components/Common/ProductSelect';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
@@ -391,8 +392,6 @@ export default function MarketingSettings({
             <Typography
               variant="body1"
               sx={{
-                fontSize: '16px',
-                lineHeight: '24px',
                 fontWeight: 600,
                 color: '#737373',
                 fontStyle: 'italic',
@@ -645,21 +644,7 @@ export default function MarketingSettings({
         }}
       />
       {/* overlay */}
-      {loyaltySettingsQuery.isLoading && (
-        <Box
-          sx={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: 0,
-            width: '100%',
-            background: 'rgba(255, 255, 255, .6)',
-            zIndex: '9999',
-            borderRadius: '7px',
-          }}
-        ></Box>
-      )}
+      {loyaltySettingsQuery.isLoading && <LoadingOverlay />}
       {/* left */}
       <Box
         sx={{
@@ -852,16 +837,7 @@ export default function MarketingSettings({
           >
             <Stack direction="row" alignItems="center" gap={5} pt={1}>
               <Stack gap={2.5}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '17px',
-                  }}
-                >
-                  Start Date
-                </Typography>
+                <Typography variant="body2">Start Date</Typography>
                 <FilterDate
                   value={duration.start}
                   onChange={(e) => {
@@ -871,16 +847,7 @@ export default function MarketingSettings({
                 />
               </Stack>
               <Stack gap={2.5}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '17px',
-                  }}
-                >
-                  End Date
-                </Typography>
+                <Typography variant="body2">End Date</Typography>
                 <FilterDate
                   value={duration.end}
                   onChange={(e) => {
@@ -904,7 +871,6 @@ export default function MarketingSettings({
               />
             }
             disabled={isPageDisabled}
-            // sx={isPageDisabled ? disabledSx : {}}
           >
             <Stack direction="row" alignItems="center" gap={5} pt={1}>
               <FormControlLabel
@@ -1022,10 +988,8 @@ export default function MarketingSettings({
                       }}
                     />
                     <Typography
-                      variant="body1"
+                      variant="body2"
                       sx={{
-                        fontWeight: '500',
-                        fontSize: '14px',
                         lineHeight: '20px',
                         color: '#404040',
                         marginRight: '6px',
@@ -1034,10 +998,8 @@ export default function MarketingSettings({
                       I accept
                     </Typography>
                     <Typography
-                      variant="body1"
+                      variant="body2"
                       sx={{
-                        fontWeight: '500',
-                        fontSize: '14px',
                         lineHeight: '20px',
                         color: theme.palette.secondary.main,
                       }}

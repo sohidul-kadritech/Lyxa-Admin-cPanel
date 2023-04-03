@@ -10,7 +10,7 @@ const pagesList = [
   },
   {
     label: 'Tags & Cuisines banner',
-    to: '#',
+    to: '',
   },
   {
     label: 'List Container',
@@ -18,7 +18,7 @@ const pagesList = [
   },
   {
     label: 'Filter Container',
-    to: '#',
+    to: '/display/tags-cusines',
   },
 ];
 

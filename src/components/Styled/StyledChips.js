@@ -1,6 +1,6 @@
 import { Chip, styled } from '@mui/material';
 
-const StyledChip = styled(Chip)(({ theme }) => ({
+const CustomChip = styled(Chip)(({ theme }) => ({
   background: theme.palette.background.secondary,
   borderRadius: '30px',
   padding: '12px 30px',
@@ -26,4 +26,26 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   },
 }));
 
-export default StyledChip;
+const sizes = {
+  lg: {
+    padding: '12px 21px',
+
+    '& .MuiChip-label': {
+      fontWeight: '500',
+      fontSize: '15px',
+      lineHeight: '24px',
+    },
+  },
+};
+
+export default function StyledChip({ sx, size, ...props }) {
+  return (
+    <CustomChip
+      sx={{
+        ...(sizes[size] || {}),
+        ...(sx || {}),
+      }}
+      {...props}
+    />
+  );
+}

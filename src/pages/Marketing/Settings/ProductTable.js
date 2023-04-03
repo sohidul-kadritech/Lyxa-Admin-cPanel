@@ -4,7 +4,6 @@ import StyledTable2 from '../../../components/Styled/StyledTable2';
 export default function ProductTable({ ...props }) {
   return (
     <StyledTable2
-      // columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
       sx={{
         '& .MuiDataGrid-main': {
           overflow: 'visible!important',
@@ -20,7 +19,6 @@ export default function ProductTable({ ...props }) {
         //   overflowX: 'scroll!important',
         // },
       }}
-      // rows={createGroupedDataRow(products || [])}
       getRowId={(row) => row?._id}
       components={{
         NoRowsOverlay: () => (

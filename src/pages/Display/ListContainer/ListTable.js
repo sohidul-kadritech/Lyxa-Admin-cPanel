@@ -1,10 +1,11 @@
 // thrid pary
-import { Avatar, Chip, Drawer, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Chip, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
-import StyledTable from '../../../components/Styled/StyledTable3';
+import StyledTable4 from '../../../components/Styled/StyledTable4';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import AddContainer from '../AddContainer';
+import { deals } from '../mock';
 
 const statusColorVariants = {
   inactive: {
@@ -61,7 +62,7 @@ export default function ListTable({ items }) {
       headerAlign: 'left',
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" gap={4}>
-          <HandleIcon />
+          <HandleIcon className="drag-handler" />
           <Avatar src={params.row.bannerImage} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
           <Typography
             variant="body4"
@@ -151,22 +152,15 @@ export default function ListTable({ items }) {
 
   return (
     <>
-      <StyledTable
-        columns={allColumns}
-        rowHeight={70}
-        rows={items}
-        sx={{
-          background: '#fff',
-        }}
-      />
-      <Drawer
-        anchor="right"
-        open={sidebarOpen}
-        onClose={() => {
-          setSidebarOpen(false);
-        }}
-      >
-        <AddContainer />
+      <Box pb={5}></Box>
+      <StyledTable4 columns={allColumns} rows={items} getRowKey={(row) => row?.id} />
+      <Drawer anchor="right" open={sidebarOpen}>
+        <AddContainer
+          deals={deals}
+          onClose={() => {
+            setSidebarOpen(false);
+          }}
+        />
       </Drawer>
     </>
   );
