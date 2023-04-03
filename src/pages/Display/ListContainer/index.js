@@ -12,8 +12,8 @@ import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import Wrapper from '../../../components/Wrapper';
-import AddContainer from '../AddContainer';
 import { deals, listData } from '../mock';
+import AddContainer from './AddContainer';
 import ListTable from './ListTable';
 
 const breadcrumbItems = [

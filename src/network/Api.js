@@ -249,8 +249,6 @@ export const UPDATE_TAG = `${ADMIN_ENDPOINT}/tags/update`;
 // IMAGE UPLOAD
 export const IMAGE_UPLOAD = 'image/single-image-upload';
 
-// END ADMIN API
-
 // FAQ
 export const GET_FAQ = `${ADMIN_ENDPOINT}/faq`;
 export const ADD_FAQ = `${ADMIN_ENDPOINT}/faq/add`;
@@ -282,3 +280,10 @@ export const GET_MARKETING_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/marketing/
 export const GET_MARKETING_DASHBOARD_CUSTOMER_GRAPH = `${ADMIN_ENDPOINT}/marketing/graph/customers`;
 export const GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH = `${ADMIN_ENDPOINT}/marketing/graph/amount-spent`;
 export const GET_MARKETING_DASHBOARD_LOYALTY_POINTS_GRAPH = `${ADMIN_ENDPOINT}/marketing/graph/loyalty-points`;
+
+// TAGS AND CUSINE
+export const GET_ALL_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines`;
+export const GET_SHOP_BY_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/shop`;
+export const ADD_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/add`;
+export const UPDATE_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/update`;
+export const DELETE_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/delete`;

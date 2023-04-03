@@ -1,5 +1,4 @@
 import { Box, Stack, styled } from '@mui/material';
-import { useState } from 'react';
 import { Container, Draggable } from 'react-smooth-dnd';
 
 const CustomTable = styled(Box)(() => ({
@@ -41,20 +40,18 @@ const CustomTable = styled(Box)(() => ({
     paddingBottom: '16px',
     borderBottom: '1px dashed #E4E6EF',
   },
+
+  '& .empty-msg': {
+    minHeight: '100px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: '500',
+    color: '#737373',
+  },
 }));
 
-export default function StyledTable4({ columns, rows, getRowKey }) {
-  const [render, setRender] = useState(false);
-
-  const dropSort = ({ removedIndex, addedIndex }) => {
-    if (removedIndex === null || addedIndex === null) return;
-
-    const item = rows.splice(removedIndex, 1);
-    rows.splice(addedIndex, 0, item[0]);
-
-    setRender(!render);
-  };
-
+export default function StyledTable4({ columns, rows, getRowKey, noRowsMessage, onDrop }) {
   return (
     <CustomTable>
       <Stack className="head row">
@@ -74,11 +71,17 @@ export default function StyledTable4({ columns, rows, getRowKey }) {
         ))}
       </Stack>
       <Container
-        onDrop={dropSort}
+        onDrop={onDrop}
         lockAxis="y"
         dragHandleSelector=".drag-handler"
         render={(ref) => (
-          <Box className="custom-t-body" ref={ref}>
+          <Box
+            className="custom-t-body"
+            style={{
+              position: 'relative',
+            }}
+            ref={ref}
+          >
             {rows.map((row) => (
               <Draggable
                 key={getRowKey(row)}
@@ -103,6 +106,8 @@ export default function StyledTable4({ columns, rows, getRowKey }) {
                 )}
               />
             ))}
+            {/* no items */}
+            {!rows.length && <Box className="empty-msg">{noRowsMessage || 'No data'}</Box>}
           </Box>
         )}
       />

@@ -1,8 +1,8 @@
 // third party
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
-import CloseButton from '../../components/Common/CloseButton';
-import StyledFormField from '../../components/Form/StyledFormField';
+import CloseButton from '../../../components/Common/CloseButton';
+import StyledFormField from '../../../components/Form/StyledFormField';
 
 const fieldContainerSx = {
   padding: '22px 0',

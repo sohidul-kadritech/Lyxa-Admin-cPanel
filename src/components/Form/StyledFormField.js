@@ -1,4 +1,3 @@
-// import { FormControl, InputLabel } from '@mui/material';
 import { Checkbox, Stack, Typography, useTheme } from '@mui/material';
 import FilterSelect from '../Filter/FilterSelect';
 import StyledAutocomplete from '../Styled/StyledAutocomplete';
@@ -23,6 +22,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
       >
         {label}
       </Typography>
+
       {/* text field */}
       {intputType === 'text' && (
         <StyledInput
@@ -41,8 +41,10 @@ export default function StyledFormField({ containerProps, label, labelProps, int
       )}
       {/* file dropzone */}
       {intputType === 'file' && <StyledFileDropzone {...(inputProps || {})} />}
+
       {/* select */}
       {intputType === 'select' && <FilterSelect {...(inputProps || {})} />}
+
       {/* autocompltet */}
       {intputType === 'autocomplete' && (
         <Stack

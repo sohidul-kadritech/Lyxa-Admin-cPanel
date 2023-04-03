@@ -1,7 +1,7 @@
 // third party
 import ClickAwayListener from '@mui/base/ClickAwayListener';
 import { Add, Close, Edit, West } from '@mui/icons-material';
-import { Box, Button, IconButton, Stack, styled, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
+import { Box, Button, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
@@ -10,6 +10,8 @@ import { Container, Draggable } from 'react-smooth-dnd';
 import { ReactComponent as HandleIcon } from '../../../../assets/icons/handle.svg';
 import PageButton from '../../../../components/Common/PageButton';
 import StyledChip from '../../../../components/Styled/StyledChips';
+// eslint-disable-next-line import/no-named-as-default
+import StyledIconButton from '../../../../components/Styled/StyledIconButton';
 import StyledInput from '../../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../../components/Styled/StyledSwitch';
 import Wrapper from '../../../../components/Wrapper';
@@ -29,21 +31,6 @@ const getRewardInit = {
 
 // QUERY ONLY ONCE
 let QUERY_RUNNED = false;
-
-const StyledIconButton = styled(IconButton)(() => ({
-  background: '#F3F6F9',
-  borderRadius: '6px!important',
-  width: '32px',
-  height: '32px',
-
-  '&:hover': {
-    background: '#e9eff5',
-  },
-
-  '& .MuiSvgIcon-root': {
-    fontSize: '16px',
-  },
-}));
 
 export default function LoyaltySettings() {
   const theme = useTheme();
