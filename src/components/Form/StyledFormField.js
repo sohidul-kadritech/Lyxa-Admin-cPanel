@@ -1,4 +1,5 @@
 import { Checkbox, Stack, Typography, useTheme } from '@mui/material';
+import ImagePreview from '../Common/ImagePreview';
 import FilterSelect from '../Filter/FilterSelect';
 import StyledAutocomplete from '../Styled/StyledAutocomplete';
 import StyledChip from '../Styled/StyledChips';
@@ -40,7 +41,12 @@ export default function StyledFormField({ containerProps, label, labelProps, int
         />
       )}
       {/* file dropzone */}
-      {intputType === 'file' && <StyledFileDropzone {...(inputProps || {})} />}
+      {intputType === 'file' && (
+        <Stack gap="30px">
+          <StyledFileDropzone {...(inputProps || {})} />
+          {inputProps.files?.length && <ImagePreview files={inputProps.files} />}
+        </Stack>
+      )}
 
       {/* select */}
       {intputType === 'select' && <FilterSelect {...(inputProps || {})} />}
@@ -54,6 +60,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
           justifyContent="flex-start"
           gap="16px"
           flexWrap="wrap"
+          minHeight="48px"
         >
           <StyledAutocomplete
             renderOption={(props, option, { selected }) => (
@@ -66,7 +73,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                   }}
                 >
                   {inputProps.multiple && <Checkbox checked={selected} />}
-                  <span>{option?.name}</span>
+                  <span>{props.key}</span>
                 </div>
               </li>
             )}
@@ -83,12 +90,12 @@ export default function StyledFormField({ containerProps, label, labelProps, int
           {inputProps.multiple &&
             inputProps.value.map((item, index) => {
               if (inputProps.renderTags) {
-                return inputProps.renderTags(item);
+                return inputProps.renderTags(item, index);
               }
               return (
                 <StyledChip
                   key={item?._id}
-                  label={item?.name}
+                  label={inputProps.getOptionLabel(item) || item?.name}
                   size="lg"
                   onDelete={() => {
                     inputProps.onChange(

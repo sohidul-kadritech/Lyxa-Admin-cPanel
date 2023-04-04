@@ -288,3 +288,10 @@ export const ADD_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/add`;
 export const UPDATE_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/update`;
 export const DELETE_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/delete`;
 export const SORT_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/sort`;
+
+// LIST CONTAINERS
+export const GET_ALL_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container`;
+export const ADD_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/add`;
+export const UPDATE_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/update`;
+export const DELETE_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/delete`;
+export const SORT_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/sort`;

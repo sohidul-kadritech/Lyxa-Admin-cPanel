@@ -135,7 +135,7 @@ const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   },
 }));
 
-export default function StyledAutocomplete({ label, placeholder, ...props }) {
+export default function StyledAutocomplete({ label, placeholder, maxHeight, ...props }) {
   const theme = useTheme();
 
   return (
@@ -151,6 +151,7 @@ export default function StyledAutocomplete({ label, placeholder, ...props }) {
             background: theme.palette.background.secondary,
             '& .MuiAutocomplete-listbox': {
               padding: 0,
+              maxHeight,
             },
 
             '& .MuiAutocomplete-option': {

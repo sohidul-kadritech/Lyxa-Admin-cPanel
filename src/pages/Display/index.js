@@ -9,8 +9,8 @@ const pagesList = [
     to: '#',
   },
   {
-    label: 'Tags & Cuisines banner',
-    to: '',
+    label: 'Tags & Cuisines',
+    to: '/display/tags-cusines',
   },
   {
     label: 'List Container',
@@ -18,7 +18,7 @@ const pagesList = [
   },
   {
     label: 'Filter Container',
-    to: '/display/tags-cusines',
+    to: '#',
   },
 ];
 

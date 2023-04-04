@@ -3,16 +3,14 @@ import { West } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-
 // project import
-// import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
 import PageButton from '../../../components/Common/PageButton';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import Wrapper from '../../../components/Wrapper';
-import { deals, listData } from '../mock';
+import { listData } from '../mock';
 import AddContainer from './AddContainer';
 import ListTable from './ListTable';
 
@@ -32,9 +30,14 @@ const listFilterOptions = [
   },
 ];
 
+const typeToTabIndexMap = {
+  0: 'food',
+  1: 'grocery',
+  2: 'pharmacy',
+};
+
 export default function ListContainers() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const [currentTab, setCurrentTab] = useState(0);
   const [status, setStatus] = useState('');
   const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
@@ -114,7 +117,7 @@ export default function ListContainers() {
       </Box>
       <Drawer anchor="right" open={sidebarOpen}>
         <AddContainer
-          deals={deals}
+          shopType={typeToTabIndexMap[currentTab]}
           onClose={() => {
             setSidebarOpen(false);
           }}

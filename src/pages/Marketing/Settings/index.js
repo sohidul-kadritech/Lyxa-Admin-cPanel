@@ -104,7 +104,7 @@ export default function MarketingSettings({
 
   // deal settings query
   const dealSettingsQuery = useQuery(
-    ['deal-settings'],
+    ['deal-settings', { type: shop?.shopType === 'food' ? 'restaurant' : shop?.shopType }],
     () =>
       AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
         params: {

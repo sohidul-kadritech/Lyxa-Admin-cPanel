@@ -12,7 +12,7 @@ export default function SidebarContainer({ onClose, title, children }) {
         maxWidth: '400px',
         paddingLeft: '16px',
         paddingRight: '20px',
-        paddingTop: '95px',
+        paddingTop: '80px',
         position: 'relative',
         height: '100vh',
       }}
@@ -36,13 +36,7 @@ export default function SidebarContainer({ onClose, title, children }) {
           }}
         />
       </Stack>
-      <Box
-        sx={{
-          height: '100%',
-        }}
-      >
-        {children}
-      </Box>
+      <Box>{children}</Box>
     </Stack>
   );
 }
