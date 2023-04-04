@@ -71,6 +71,32 @@ const sizes = {
       },
     },
   },
+  lg1: {
+    root: {
+      minWidth: 0,
+
+      '& .MuiSelect-select': {
+        paddingLeft: '22px',
+        paddingRight: '43px!important',
+        paddingTop: '11px',
+        paddingBottom: '11px',
+        fontSize: '14px',
+        lineHeight: '20px',
+      },
+
+      '& .MuiSvgIcon-root': {
+        right: '16px',
+        left: 'auto',
+      },
+    },
+    menuSx: {
+      '& .MuiMenuItem-root': {
+        background: '#F6F8FA',
+        fontSize: '13px',
+        lineHeight: '20px',
+      },
+    },
+  },
 };
 
 export default function FilterSelect({
@@ -95,7 +121,13 @@ export default function FilterSelect({
         IconComponent={KeyboardArrowDownIcon}
         MenuProps={{
           sx: {
-            marginTop: '5px',
+            marginTop: '4px',
+            '& .MuiPaper-root': {
+              background: '#F6F8FA',
+              boxShadow: 'initial!important',
+              borderRadius: '7px',
+              border: '1px solid #EEEEEE',
+            },
             ...(sizes[size]?.menuSx || {}),
           },
         }}
@@ -122,6 +154,14 @@ export default function FilterSelect({
             key={getKey ? getKey(item) : item.value}
             value={getValue ? getValue(item) : item.value}
             sx={{
+              '&:hover': {
+                background: '#ecf0f5',
+              },
+
+              '&.Mui-selected': {
+                background: '#ecf0f5!important',
+              },
+
               [theme.breakpoints.up('lg')]: {
                 fontSize: '12px',
               },

@@ -1,46 +1,37 @@
 // thrid pary
 import { Edit, Visibility } from '@mui/icons-material';
-import { Chip, Stack, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
+import FilterSelect from '../../../components/Filter/FilterSelect';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import StyledTable4 from '../../../components/Styled/StyledTable4';
-import * as Api from '../../../network/Api';
-import AXIOS from '../../../network/axios';
 
-const statusColorVariants = {
-  inactive: {
-    background: '#FEE2E2',
-    color: '#DD5B63',
-  },
-  active: {
-    background: '#e1f4d0',
-    color: '#56ca00',
-  },
-};
+// const statusColorVariants = {
+//   inactive: {
+//     background: '#FEE2E2',
+//     color: '#DD5B63',
+//   },
+//   active: {
+//     background: '#e1f4d0',
+//     color: '#56ca00',
+//   },
+// };
 
-export default function ListTable({ items, onEdit }) {
+const listFilterOptions = [
+  {
+    label: 'Active',
+    value: 'active',
+  },
+  {
+    label: 'Inactive',
+    value: 'inactive',
+  },
+];
+
+export default function TagsTable({ items, onEdit, onDrop, onStatusChange, onViewShops, onVisibilityChange }) {
   const theme = useTheme();
-  const [render, setRender] = useState(false);
-
-  const tagsMutation = useMutation((data) =>
-    AXIOS.post(Api.UPDATE_TAGS_AND_CUSINES, {
-      ...data,
-    })
-  );
-
-  const dropSort = ({ removedIndex, addedIndex }) => {
-    console.log(removedIndex, addedIndex);
-    if (removedIndex === null || addedIndex === null) return;
-
-    const item = items.splice(removedIndex, 1);
-    items.splice(addedIndex, 0, item[0]);
-    tagsMutation.mutate({ ...item[0], sortingOrder: addedIndex });
-    setRender(!render);
-  };
 
   const allColumns = [
     {
@@ -73,16 +64,25 @@ export default function ListTable({ items, onEdit }) {
       align: 'left',
       headerAlign: 'left',
       renderCell: (params) => (
-        <Chip
-          className="text-capitalize"
-          label={params?.row?.status || ''}
+        <FilterSelect
+          items={listFilterOptions}
           sx={{
-            height: 'auto',
-            padding: '12px 23px',
-            borderRadius: '40px',
-            ...(statusColorVariants[params?.row?.status] || {}),
+            background: params?.row?.status === 'active' ? '#DCFCE7' : '#FEE2E2',
+            '&:hover': {
+              background: params?.row?.status === 'active' ? '#DCFCE7' : '#FEE2E2',
+            },
+            '& .MuiInputBase-input': {
+              color: params?.row?.status === 'active' ? '#417C45' : '#DD5B63',
+            },
+            '& .MuiSelect-icon': {
+              color: params?.row?.status === 'active' ? '#417C45' : '#DD5B63',
+            },
           }}
-          variant="contained"
+          size="lg1"
+          value={params?.row?.status || ''}
+          onChange={(e) => {
+            onStatusChange(e.target.value, params.row);
+          }}
         />
       ),
     },
@@ -117,11 +117,19 @@ export default function ListTable({ items, onEdit }) {
       headerAlign: 'right',
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
-          <StyledSwitch />
+          <StyledSwitch
+            checked={params?.row?.visibility}
+            onChange={(e) => {
+              onVisibilityChange(e.target.checked, params.row);
+            }}
+          />
           <StyledIconButton
             color="secondary"
             sx={{
               marginLeft: '17px',
+            }}
+            onClick={() => {
+              onViewShops();
             }}
           >
             <Visibility />
@@ -139,5 +147,5 @@ export default function ListTable({ items, onEdit }) {
     },
   ];
 
-  return <StyledTable4 columns={allColumns} rows={items} getRowKey={(row) => row?._id} onDrop={dropSort} />;
+  return <StyledTable4 columns={allColumns} rows={items} getRowKey={(row) => row?._id} onDrop={onDrop} />;
 }

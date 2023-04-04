@@ -5,13 +5,7 @@ const CustomTable = styled(Box)(() => ({
   borderRadius: '7px',
   background: '#fff',
 
-  '& .custom-t-head': {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-
   '& .custom-t-head-cell': {
-    flex: 1,
     fontWeight: '600',
     fontSize: '14px',
     lineHeight: '17px',
@@ -19,7 +13,7 @@ const CustomTable = styled(Box)(() => ({
     color: '#737373',
   },
 
-  '& .row': {
+  '& .custom-t-row': {
     display: 'flex!important',
     flexDirection: 'row',
 
@@ -34,6 +28,7 @@ const CustomTable = styled(Box)(() => ({
   },
 
   '& .custom-t-cell': {
+    flex: 1,
     paddingLeft: '24px',
     paddingRight: '24px',
     paddingTop: '16px',
@@ -54,7 +49,7 @@ const CustomTable = styled(Box)(() => ({
 export default function StyledTable4({ columns, rows, getRowKey, noRowsMessage, onDrop }) {
   return (
     <CustomTable>
-      <Stack className="head row">
+      <Stack className="custom-t-row">
         {columns.map((column) => (
           <Stack
             key={column.id}
@@ -87,7 +82,7 @@ export default function StyledTable4({ columns, rows, getRowKey, noRowsMessage, 
                 key={getRowKey(row)}
                 render={() => (
                   <Box>
-                    <Stack className="row">
+                    <Stack className="custom-t-row">
                       {columns.map((column, index) => (
                         <Stack
                           direction="row"

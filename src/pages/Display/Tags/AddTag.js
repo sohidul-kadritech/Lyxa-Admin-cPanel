@@ -1,12 +1,12 @@
 // third party
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { successMsg } from '../../../helpers/successMsg';
 
 // project import
-import { ReactComponent as DownIcon } from '../../../assets/icons/down.svg';
-import CloseButton from '../../../components/Common/CloseButton';
+import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
+import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -21,8 +21,8 @@ const types = [
     value: 'tag',
   },
   {
-    label: 'Cusine',
-    value: 'cusine',
+    label: 'Cuisine',
+    value: 'cuisine',
   },
 ];
 
@@ -33,9 +33,7 @@ const tagInit = {
 
 // project import
 export default function AddTag({ onClose, shopType, tag }) {
-  const theme = useTheme();
   const queryClient = useQueryClient();
-
   const [currentTag, setCurrentTag] = useState(tag?._id ? tag : tagInit);
 
   const tagsMutation = useMutation(
@@ -52,7 +50,7 @@ export default function AddTag({ onClose, shopType, tag }) {
       onSuccess: (data) => {
         if (data?.status) {
           successMsg(data?.message, 'success');
-          queryClient.invalidateQueries({ queryKey: ['tags-cusines'] });
+          queryClient.invalidateQueries({ queryKey: [`tags-cusines-${shopType}`] });
           onClose();
         }
       },
@@ -60,98 +58,73 @@ export default function AddTag({ onClose, shopType, tag }) {
   );
 
   return (
-    <Box
-      sx={{
-        minWidth: '400px',
-        maxWidth: '400px',
-        paddingLeft: '16px',
-        paddingRight: '20px',
-        paddingTop: '95px',
-        position: 'relative',
-        height: '100vh',
-      }}
-    >
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography
-          variant="h5"
+    <SidebarContainer title="Create New Tags & Cuisine" onClose={onClose}>
+      <>
+        <Box>
+          <StyledFormField
+            label="Type"
+            intputType="select"
+            containerProps={{
+              sx: { ...fieldContainerSx, borderBottom: '0' },
+            }}
+            inputProps={{
+              items: types,
+              inputProps: { readOnly: shopType !== 'food' || !!currentTag?._id },
+              value: shopType === 'food' ? currentTag.type : 'tag',
+              onChange: (e) => {
+                setCurrentTag((prev) => ({ ...prev, type: e.target.value }));
+              },
+            }}
+          />
+          <StyledFormField
+            label="Name"
+            intputType="text"
+            containerProps={{
+              sx: fieldContainerSx,
+            }}
+            inputProps={{
+              type: 'text',
+              value: currentTag.name,
+              onChange: (e) => {
+                setCurrentTag((prev) => ({ ...prev, name: e.target.value }));
+              },
+            }}
+          />
+        </Box>
+        <Box
           sx={{
-            fontWeight: 700,
-            fontSize: '19px',
-            lineHeight: '23px',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            padding: '16px 20px 16px 16px',
           }}
         >
-          Create New Tags & Cuisine
-        </Typography>
-        <CloseButton
-          disableRipple
-          onClick={onClose}
-          sx={{
-            color: theme.palette.text.primary,
-          }}
-        />
-      </Stack>
-      <Box>
-        <StyledFormField
-          label="Type"
-          intputType="select"
-          containerProps={{
-            sx: { ...fieldContainerSx, borderBottom: '0' },
-          }}
-          inputProps={{
-            items: types,
-            value: currentTag.type,
-            onChange: (e) => {
-              setCurrentTag((prev) => ({ ...prev, type: e.target.value }));
-            },
-          }}
-        />
-        <StyledFormField
-          label="Name"
-          intputType="text"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
-          inputProps={{
-            type: 'text',
-            value: currentTag.name,
-            onChange: (e) => {
-              setCurrentTag((prev) => ({ ...prev, name: e.target.value }));
-            },
-          }}
-        />
-      </Box>
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          padding: '16px 20px 16px 16px',
-        }}
-      >
-        <Button
-          fullWidth
-          variant="contained"
-          color="secondary"
-          startIcon={<DownIcon />}
-          disabled={tagsMutation.isLoading}
-          onClick={() => {
-            if (tag?._id) {
-              tagsMutation.mutate({
-                ...currentTag,
-                id: currentTag._id,
-              });
-            } else {
-              tagsMutation.mutate({
-                ...currentTag,
-                shopType,
-              });
-            }
-          }}
-        >
-          Save
-        </Button>
-      </Box>
-    </Box>
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            startIcon={<DropIcon />}
+            disabled={tagsMutation.isLoading}
+            onClick={() => {
+              if (tag?._id) {
+                tagsMutation.mutate({
+                  ...currentTag,
+                  id: currentTag._id,
+                });
+              } else {
+                tagsMutation.mutate({
+                  ...currentTag,
+                  shopType,
+                  type: shopType === 'food' ? currentTag.type : 'tag',
+                });
+              }
+            }}
+          >
+            Save
+          </Button>
+        </Box>
+      </>
+    </SidebarContainer>
   );
 }

@@ -287,3 +287,4 @@ export const GET_SHOP_BY_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/sho
 export const ADD_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/add`;
 export const UPDATE_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/update`;
 export const DELETE_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/delete`;
+export const SORT_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines/sort`;

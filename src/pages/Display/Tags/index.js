@@ -3,36 +3,24 @@ import { West } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 // project import
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import PageButton from '../../../components/Common/PageButton';
-import FilterDate from '../../../components/Filter/FilterDate';
-import FilterSelect from '../../../components/Filter/FilterSelect';
-import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import Wrapper from '../../../components/Wrapper';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import CommonFilters from '../CommonFilters';
 import { deals } from '../mock';
 import AddTag from './AddTag';
+import Restaurants from './Restaurants';
 import TagsTable from './TagsTable';
 
 const breadcrumbItems = [
   { label: 'Display', to: '/display' },
-  { label: 'List Contianer', to: '#' },
-];
-
-const listFilterOptions = [
-  {
-    label: 'Active',
-    value: 'active',
-  },
-  {
-    label: 'Inactive',
-    value: 'inactive',
-  },
+  { label: 'Tags & Cusines', to: '#' },
 ];
 
 const typeToTabIndexMap = {
@@ -41,35 +29,75 @@ const typeToTabIndexMap = {
   2: 'pharmacy',
 };
 
+const filtersInit = {
+  searchKey: '',
+  status: '',
+  date: {
+    start: moment().startOf('month').format('YYYY-MM-DD'),
+    end: moment().endOf('month').format('YYYY-MM-DD'),
+  },
+};
+
 export default function TagsAndCusines() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [status, setStatus] = useState('');
-  const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
   // eslint-disable-next-line no-unused-vars
-  const [endDate, setEndDate] = useState(moment().endOf('month').format('YYYY-MM-DD'));
-  const [searchKey, setSearchKey] = useState('');
+  const [render, setRender] = useState(false);
+  const [sidebar, setSidebar] = useState(null);
+  const [currentTag, setCurrentTag] = useState({});
 
   // query
-  const tagsQuery = useQuery([`tags-cusines`, { searchKey, currentTab, startDate, endDate }], () =>
-    AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
-      params: {
-        page: 1,
-        pageSize: 500,
-        searchKey,
-        sortBy: 'asc',
-        shopType: typeToTabIndexMap[currentTab],
-        status,
-        startDate,
-        endDate,
+  const [filters, setFilters] = useState(filtersInit);
+  const tagsQuery = useQuery(
+    [
+      `tags-cusines-${typeToTabIndexMap[currentTab]}`,
+      {
+        searchKey: filters.searchKey,
+        currentTab,
+        startDate: filters.date.start,
+        endDate: filters.date.end,
+        status: filters.status,
       },
+    ],
+    () =>
+      AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
+        params: {
+          page: 1,
+          pageSize: 500,
+          searchKey: filters.searchKey,
+          sortBy: 'asc',
+          shopType: typeToTabIndexMap[currentTab],
+          status: filters.status,
+          startDate: filters.date.start,
+          endDate: filters.date.end,
+        },
+      })
+  );
+
+  // edit
+  const tagsMutation = useMutation((data) =>
+    AXIOS.post(Api.UPDATE_TAGS_AND_CUSINES, {
+      ...data,
+      id: data?._id,
     })
   );
 
-  // console.log(tagsQuery.data);
+  const items = tagsQuery.data?.data?.tags || [];
 
-  // current tag
-  const [sidebarOpen, setSidebarOpen] = useState();
-  const [currentTag, setCurrentTag] = useState({});
+  const tagsSortingMutation = useMutation((data) => AXIOS.post(Api.SORT_TAGS_AND_CUSINES, data));
+
+  const dropSort = ({ removedIndex, addedIndex }) => {
+    if (removedIndex === null || addedIndex === null) return;
+
+    const item = items.splice(removedIndex, 1);
+    items.splice(addedIndex, 0, item[0]);
+
+    tagsSortingMutation.mutate({
+      tags: items.map((item, index) => ({
+        id: item?._id,
+        sortingOrder: index + 1,
+      })),
+    });
+  };
 
   return (
     <Wrapper
@@ -88,7 +116,7 @@ export default function TagsAndCusines() {
                 borderRadius: '8px',
               }}
               onClick={() => {
-                setSidebarOpen(true);
+                setSidebar('add');
               }}
             >
               Create
@@ -114,71 +142,58 @@ export default function TagsAndCusines() {
           </Tabs>
           {/* panels */}
           <Box pt={7}>
-            <Stack direction="row" alignItems="center" gap="20px" pb={6.5}>
-              <StyledSearchBar
-                fullWidth
-                placeholder="Search 24 items"
-                value={searchKey}
-                onChange={(e) => {
-                  setSearchKey(e.target.value);
-                }}
-              />
-              {/* start date */}
-              <FilterDate
-                tooltip="Start Date"
-                value={startDate}
-                size="sm"
-                onChange={(e) => {
-                  setStartDate(e._d);
-                }}
-              />
-              {/* end date */}
-              <FilterDate
-                tooltip="End Date"
-                value={endDate}
-                size="sm"
-                onChange={(e) => {
-                  setEndDate(e._d);
-                }}
-              />
-              {/* end date */}
-              <FilterSelect
-                items={listFilterOptions}
-                value={status}
-                placeholder="Status"
-                tooltip="Status"
-                size="sm"
-                sx={{
-                  minWidth: 'auto',
-                }}
-                onChange={(e) => {
-                  setStatus(e.target.value);
-                }}
-              />
-            </Stack>
+            <CommonFilters
+              filtersValue={filters}
+              setFiltersValue={setFilters}
+              searchPlaceHolder={`Search ${items.length || 0} items`}
+            />
             <Box position="relative">
               {tagsQuery.isLoading && <LoadingOverlay />}
               <TagsTable
-                items={tagsQuery.data?.data?.tags || []}
+                items={items}
+                onDrop={dropSort}
+                onStatusChange={(value, item) => {
+                  item.status = value;
+                  setRender((prev) => !prev);
+                  tagsMutation.mutate(item);
+                }}
                 onEdit={(item) => {
                   setCurrentTag(item);
-                  setSidebarOpen(true);
+                  setSidebar('add');
+                }}
+                onViewShops={() => {
+                  setSidebar('restaurants');
+                }}
+                onVisibilityChange={(value, item) => {
+                  item.visibility = value;
+                  setRender((prev) => !prev);
+                  tagsMutation.mutate(item);
                 }}
               />
             </Box>
           </Box>
         </Box>
       </Box>
-      <Drawer anchor="right" open={sidebarOpen}>
-        <AddTag
-          shopType={typeToTabIndexMap[currentTab]}
-          tag={currentTag}
-          deals={deals}
-          onClose={() => {
-            setSidebarOpen(false);
-            setCurrentTag({});
-          }}
-        />
+      <Drawer anchor="right" open={sidebar !== null}>
+        {sidebar === 'add' && (
+          <AddTag
+            shopType={typeToTabIndexMap[currentTab]}
+            tag={currentTag}
+            deals={deals}
+            onClose={() => {
+              setSidebar(null);
+              setCurrentTag({});
+            }}
+          />
+        )}
+        {sidebar === 'restaurants' && (
+          <Restaurants
+            onClose={() => {
+              setSidebar(null);
+              setCurrentTag({});
+            }}
+          />
+        )}
       </Drawer>
     </Wrapper>
   );
