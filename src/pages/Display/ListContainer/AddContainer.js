@@ -139,6 +139,8 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
           successMsg(data.message, 'success');
           onClose();
           queryClient.invalidateQueries(['list-containers']);
+        } else {
+          successMsg(data.message, 'error');
         }
       },
     }

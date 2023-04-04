@@ -4,12 +4,14 @@ import { West } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 // project import
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
+import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageButton from '../../../components/Common/PageButton';
 import Wrapper from '../../../components/Wrapper';
+import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
@@ -37,6 +39,8 @@ const filtersInit = {
 };
 
 export default function ListContainers() {
+  const queryClient = useQueryClient();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
   const [filters, setFilters] = useState(filtersInit);
@@ -90,11 +94,46 @@ export default function ListContainers() {
   // list edit
   const [currentItem, setCurrentItem] = useState({});
 
+  // edit
+  const listEditMutation = useMutation((data) => AXIOS.post(Api.UPDATE_LIST_CONTAINERS, data));
+
+  // delete
+  const [confirmModal, setConfrimModal] = useState(false);
+
+  const listDeleteMutation = useMutation((data) => AXIOS.post(Api.DELETE_LIST_CONTAINERS, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        queryClient.invalidateQueries(['list-containers']);
+        successMsg(data.message, 'success');
+        setConfrimModal(false);
+        setCurrentItem({});
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+
   // three dot handler
+  const [render, setRender] = useState(false);
+
   const threeDotHandler = (menu, item) => {
     if (menu === 'edit') {
       setCurrentItem(item);
       setSidebarOpen(true);
+    }
+
+    if (menu === 'status') {
+      item.status = item?.status === 'active' ? 'inactive' : 'active';
+      setRender((prev) => !prev);
+      listEditMutation.mutate({
+        id: item?._id,
+        status: item.status,
+      });
+    }
+
+    if (menu === 'delete') {
+      setCurrentItem(item);
+      setConfrimModal(true);
     }
   };
 
@@ -166,6 +205,22 @@ export default function ListContainers() {
           }}
         />
       </Drawer>
+      {/* confirmModal */}
+      <ConfirmModal
+        isOpen={confirmModal}
+        onCancel={() => {
+          setConfrimModal(false);
+          setCurrentItem({});
+        }}
+        blurClose
+        loading={listDeleteMutation.isLoading}
+        message="Are you sure you want to delete this item ?"
+        onConfirm={() => {
+          listDeleteMutation.mutate({
+            id: currentItem?._id,
+          });
+        }}
+      />
     </Wrapper>
   );
 }

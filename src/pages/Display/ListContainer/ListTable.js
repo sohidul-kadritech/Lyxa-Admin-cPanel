@@ -23,7 +23,7 @@ const menuItems = [
   },
   {
     label: 'Set Active',
-    value: 'active',
+    value: 'status',
   },
   {
     label: 'Delete',
@@ -123,7 +123,15 @@ export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
           handleMenuClick={(menu) => {
             handleMenuClick(menu, params.row);
           }}
-          menuItems={menuItems}
+          menuItems={menuItems.map((item) => {
+            if (item.value === 'status') {
+              return {
+                value: 'status',
+                label: `Set ${params?.row?.status === 'active' ? 'Inactive' : 'Active'}`,
+              };
+            }
+            return item;
+          })}
         />
       ),
     },
