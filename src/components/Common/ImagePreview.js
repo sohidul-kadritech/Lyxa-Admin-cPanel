@@ -50,7 +50,6 @@ const imageSx = {
 };
 
 export default function ImagePreview({ progress, files }) {
-  // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
   const deletePhoto = (fileIndex, files) => {
@@ -63,7 +62,7 @@ export default function ImagePreview({ progress, files }) {
       {files.map((file, index) => (
         <Stack
           sx={{ position: 'relative' }}
-          key={Math.random()}
+          key={file?.preview}
           border={1}
           borderColor="#e6ebf1"
           borderRadius={2}

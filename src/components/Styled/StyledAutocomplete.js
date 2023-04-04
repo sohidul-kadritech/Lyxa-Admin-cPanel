@@ -73,6 +73,11 @@ const StyledSelect = styled(Autocomplete)(({ theme }) => ({
     },
   },
 
+  // disalbed styles
+  '&:has(.MuiInputBase-root.Mui-disabled)': {
+    opacity: '0.85',
+  },
+
   /* focus styles */
   '&:has(.MuiInputBase-input:focus)': {
     borderRadius: '25px',

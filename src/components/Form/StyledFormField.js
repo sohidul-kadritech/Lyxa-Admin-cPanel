@@ -1,5 +1,6 @@
 import { Checkbox, Stack, Typography, useTheme } from '@mui/material';
 import ImagePreview from '../Common/ImagePreview';
+import LoadingOverlay from '../Common/LoadingOverlay';
 import FilterSelect from '../Filter/FilterSelect';
 import StyledAutocomplete from '../Styled/StyledAutocomplete';
 import StyledChip from '../Styled/StyledChips';
@@ -40,11 +41,13 @@ export default function StyledFormField({ containerProps, label, labelProps, int
           }}
         />
       )}
+
       {/* file dropzone */}
       {intputType === 'file' && (
-        <Stack gap="30px">
+        <Stack gap="30px" position="relative">
           <StyledFileDropzone {...(inputProps || {})} />
-          {inputProps.files?.length && <ImagePreview files={inputProps.files} />}
+          {inputProps.files?.length > 0 && <ImagePreview files={inputProps.files} />}
+          {inputProps.disabled && <LoadingOverlay />}
         </Stack>
       )}
 

@@ -1,11 +1,9 @@
 // thrid pary
-import { Avatar, Box, Chip, Drawer, Stack, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
+import { Avatar, Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import StyledTable4 from '../../../components/Styled/StyledTable4';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
-import { deals } from '../mock';
-import AddContainer from './AddContainer';
 
 const statusColorVariants = {
   inactive: {
@@ -40,30 +38,18 @@ const menuItems = [
   },
 ];
 
-export default function ListTable({ items }) {
+export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
   const theme = useTheme();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // three dot handler
-  const handleMenuClick = (menu) => {
-    if (menu === 'edit') {
-      setSidebarOpen(true);
-    }
-  };
 
   const allColumns = [
     {
       id: 1,
       headerName: `NAME`,
-      sortable: false,
-      field: 'product',
       flex: 1.5,
-      align: 'left',
-      headerAlign: 'left',
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" gap={4}>
           <HandleIcon className="drag-handler" />
-          <Avatar src={params.row.bannerImage} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
+          <Avatar src={params.row?.image} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
           <Typography
             variant="body4"
             sx={{
@@ -79,11 +65,7 @@ export default function ListTable({ items }) {
     {
       id: 2,
       headerName: `ITEM`,
-      sortable: false,
-      field: 'type',
       flex: 1,
-      align: 'left',
-      headerAlign: 'left',
       renderCell: (params) => (
         <Typography
           variant="body4"
@@ -99,11 +81,7 @@ export default function ListTable({ items }) {
     {
       id: 3,
       headerName: `STATUS`,
-      sortable: false,
-      field: 'status',
       flex: 1,
-      align: 'left',
-      headerAlign: 'left',
       renderCell: (params) => (
         <Chip
           className="text-capitalize"
@@ -121,11 +99,7 @@ export default function ListTable({ items }) {
     {
       id: 4,
       headerName: `DATE`,
-      sortable: false,
-      field: 'date',
       flex: 1,
-      align: 'left',
-      headerAlign: 'left',
       renderCell: (params) => (
         <Typography
           variant="body4"
@@ -134,34 +108,37 @@ export default function ListTable({ items }) {
             paddingLeft: '5px',
           }}
         >
-          {params.row.date}
+          {new Date(params.row?.createdAt).toLocaleDateString()}
         </Typography>
       ),
     },
     {
       id: 5,
       headerName: `ACTION`,
-      sortable: false,
-      field: 'action',
       flex: 1,
       align: 'right',
       headerAlign: 'right',
-      renderCell: () => <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={menuItems} />,
+      renderCell: (params) => (
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            handleMenuClick(menu, params.row);
+          }}
+          menuItems={menuItems}
+        />
+      ),
     },
   ];
 
   return (
-    <>
-      <Box pb={5}></Box>
-      <StyledTable4 columns={allColumns} rows={items} getRowKey={(row) => row?.id} />
-      <Drawer anchor="right" open={sidebarOpen}>
-        <AddContainer
-          deals={deals}
-          onClose={() => {
-            setSidebarOpen(false);
-          }}
-        />
-      </Drawer>
-    </>
+    <Box position="relative">
+      {loading && <LoadingOverlay />}
+      <StyledTable4
+        columns={allColumns}
+        rows={items}
+        getRowKey={(row) => row?._id}
+        noRowsMessage={loading ? 'Loading ...' : 'No List Containers'}
+        onDrop={onDrop}
+      />
+    </Box>
   );
 }

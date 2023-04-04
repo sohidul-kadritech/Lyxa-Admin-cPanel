@@ -7,7 +7,6 @@ import { useMutation, useQuery } from 'react-query';
 
 // project import
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
-import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import PageButton from '../../../components/Common/PageButton';
 import Wrapper from '../../../components/Wrapper';
 import * as Api from '../../../network/Api';
@@ -147,30 +146,27 @@ export default function TagsAndCusines() {
               setFiltersValue={setFilters}
               searchPlaceHolder={`Search ${items.length || 0} items`}
             />
-            <Box position="relative">
-              {tagsQuery.isLoading && <LoadingOverlay />}
-              <TagsTable
-                items={items}
-                onDrop={dropSort}
-                onStatusChange={(value, item) => {
-                  item.status = value;
-                  setRender((prev) => !prev);
-                  tagsMutation.mutate(item);
-                }}
-                onEdit={(item) => {
-                  setCurrentTag(item);
-                  setSidebar('add');
-                }}
-                onViewShops={() => {
-                  setSidebar('restaurants');
-                }}
-                onVisibilityChange={(value, item) => {
-                  item.visibility = value;
-                  setRender((prev) => !prev);
-                  tagsMutation.mutate(item);
-                }}
-              />
-            </Box>
+            <TagsTable
+              items={items}
+              onDrop={dropSort}
+              onStatusChange={(value, item) => {
+                item.status = value;
+                setRender((prev) => !prev);
+                tagsMutation.mutate(item);
+              }}
+              onEdit={(item) => {
+                setCurrentTag(item);
+                setSidebar('add');
+              }}
+              onViewShops={() => {
+                setSidebar('restaurants');
+              }}
+              onVisibilityChange={(value, item) => {
+                item.visibility = value;
+                setRender((prev) => !prev);
+                tagsMutation.mutate(item);
+              }}
+            />
           </Box>
         </Box>
       </Box>

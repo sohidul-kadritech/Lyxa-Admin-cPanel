@@ -1,7 +1,7 @@
 // third party
 import { Box, Button, Stack } from '@mui/material';
-import { useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
@@ -19,7 +19,6 @@ const selectProps = {
   multiple: true,
   disablePortal: false,
   getOptionLabel: (option) => option?.name || 'None',
-  isOptionEqualToValue: (option, value) => option?._id === value?._id,
   label: 'None',
   sx: {
     '& .MuiFormControl-root': {
@@ -37,7 +36,6 @@ const containerInit = {
   shops: [],
 };
 
-// eslint-disable-next-line no-unused-vars
 const uploadImage = async (image) => {
   const fdata = new FormData();
   fdata.append('image', image);
@@ -56,9 +54,10 @@ const uploadImage = async (image) => {
 
 // project import
 export default function AddContainer({ onClose, shopType, editContainer }) {
-  const [container, setContainer] = useState(containerInit);
-  // eslint-disable-next-line no-unused-vars
+  const queryClient = useQueryClient();
+
   const [loading, setLoading] = useState(false);
+  const [container, setContainer] = useState(containerInit);
 
   // image
   const onDrop = (acceptedFiles) => {
@@ -136,10 +135,10 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
     },
     {
       onSuccess: (data) => {
-        console.log(data);
         if (data?.status) {
           successMsg(data.message, 'success');
           onClose();
+          queryClient.invalidateQueries(['list-containers']);
         }
       },
     }
@@ -177,22 +176,60 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
 
     data.shopType = shopType;
 
-    setLoading(true);
-    const imageData = await uploadImage(container.image[0]);
+    let imageData;
 
-    if (imageData.status === false) {
-      successMsg(imageData.message, 'error');
-      return;
+    if (container.image[0]?.name) {
+      setLoading(true);
+      imageData = await uploadImage(container.image[0]);
+
+      if (imageData.status === false) {
+        successMsg(imageData.message, 'error');
+        return;
+      }
+      setLoading(false);
+    } else {
+      imageData = { url: container.image[0].preview };
     }
-    setLoading(false);
 
     data.image = imageData?.url;
+
+    if (editContainer?._id) {
+      data.id = editContainer?._id;
+    }
 
     listMutation.mutate(data);
   };
 
+  const convertToProperData = (container) => {
+    const newData = {};
+    newData.name = container?.name;
+    newData.image = [{ preview: container?.image }];
+    newData.type = [...(container.type || [])];
+    newData.deals = container?.deals?.map((item) => {
+      if (item === 'double_menu') {
+        return {
+          name: 'Double Menu',
+          value: 'double_menu',
+        };
+      }
+      return { value: item, name: item.toString() };
+    });
+
+    newData.tags = tagsOptions.filter((item) => container?.tags?.includes(item?._id));
+    newData.shops = shopsOptions.filter((item) => container?.shops?.includes(item?._id));
+    setContainer(newData);
+  };
+
+  const G_LOADING = dealSettingsQuery.isLoading || tagsQuery.isLoading || shopsQuery.isLoading;
+
+  useEffect(() => {
+    if (!shopsQuery.isLoading && !tagsQuery.isLoading && !dealSettingsQuery.isLoading && editContainer?._id) {
+      convertToProperData(editContainer);
+    }
+  }, [dealSettingsQuery.isLoading, tagsQuery.isLoading, shopsQuery.isLoading]);
+
   return (
-    <SidebarContainer onClose={onClose} title="Create New Container">
+    <SidebarContainer onClose={onClose} title={editContainer?._id ? 'Edit Container' : 'Create New Container'}>
       <Stack justifyContent="space-between" height="100%">
         <Box>
           <StyledFormField
@@ -203,6 +240,7 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
             }}
             inputProps={{
               type: 'text',
+              disabled: G_LOADING,
               value: container.name,
               onChange: (e) => {
                 setContainer((prev) => ({ ...prev, name: e.target.value }));
@@ -216,6 +254,7 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
               sx: fieldContainerSx,
             }}
             inputProps={{
+              disabled: G_LOADING,
               onDrop,
               accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
               maxSize: 1000 * 1000 * 2,
@@ -232,10 +271,12 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
             }}
             inputProps={{
               ...selectProps,
+              disabled: G_LOADING,
               options: dealsOptions,
               value: container.deals,
               maxHeight: '200px',
-              isOptionEqualToValue: (option, value) => option.value === value.value,
+              // eslint-disable-next-line eqeqeq
+              isOptionEqualToValue: (option, value) => option.value == value.value,
               onChange: (e, v) => {
                 setContainer((prev) => ({ ...prev, deals: v.map((item) => item) }));
               },
@@ -263,8 +304,8 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
             }}
             inputProps={{
               ...selectProps,
-              // open: true,
               maxHeight: '200px',
+              disabled: G_LOADING,
               options: tagsOptions,
               value: container.tags,
               isOptionEqualToValue: (option, value) => option?._id === value?._id,
@@ -283,6 +324,7 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
             inputProps={{
               ...selectProps,
               maxHeight: '110px',
+              disabled: G_LOADING,
               options: shopsOptions,
               value: container.shops,
               isOptionEqualToValue: (option, value) => option?._id === value?._id,

@@ -18,6 +18,10 @@ const StyledInput = styled(Input)(({ theme }) => ({
     paddingBottom: '12px',
     fontWeight: '500',
   },
+  // disabled
+  '&:has(.MuiInputBase-root.Mui-disabled)': {
+    opacity: '0.85',
+  },
 }));
 
 export default StyledInput;
