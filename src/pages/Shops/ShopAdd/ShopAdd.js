@@ -940,6 +940,7 @@ function ShopAdd() {
                           handleAcceptedFiles(acceptedFiles, 'logo');
                         }}
                         accept=".jpg, .jpeg, .png"
+                        maxSize={1000 * 1000}
                       >
                         {({ getRootProps, getInputProps }) => (
                           <div className="dropzone">
@@ -953,6 +954,14 @@ function ShopAdd() {
                                 <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                               </div>
                               <h4>Drop files here or click to upload.</h4>
+                              <small
+                                style={{
+                                  fontSize: '16px',
+                                  fontWeight: 'bold',
+                                }}
+                              >
+                                * Max Image size allowed Id 1 Mb.
+                              </small>
                             </div>
                           </div>
                         )}
@@ -1021,6 +1030,7 @@ function ShopAdd() {
                           handleAcceptedFiles(acceptedFiles, 'banner');
                         }}
                         accept=".jpg, .jpeg, .png"
+                        maxSize={1000 * 1000}
                       >
                         {({ getRootProps, getInputProps }) => (
                           <div className="dropzone">
@@ -1030,6 +1040,14 @@ function ShopAdd() {
                                 <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                               </div>
                               <h4>Drop files here or click to upload.</h4>
+                              <small
+                                style={{
+                                  fontSize: '16px',
+                                  fontWeight: 'bold',
+                                }}
+                              >
+                                * Max Image size allowed Id 1 Mb.
+                              </small>
                             </div>
                           </div>
                         )}

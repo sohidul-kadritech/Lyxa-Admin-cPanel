@@ -204,7 +204,7 @@ export default function AddTag({ onClose, shopType, tag }) {
               inputProps={{
                 onDrop,
                 accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
-                maxSize: 1000 * 1000 * 2,
+                maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: currentTag.image,
               }}

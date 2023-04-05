@@ -433,6 +433,7 @@ function AddBanner() {
                     handleAcceptedFiles(acceptedFiles);
                   }}
                   accept=".jpg, .jpeg, .png"
+                  maxSize={1000 * 1000}
                 >
                   {({ getRootProps, getInputProps }) => (
                     <div className="dropzone">
@@ -447,7 +448,14 @@ function AddBanner() {
                         </div>
                         <h4>Drop files here or click to upload.</h4>
                         <Declaration>
-                          <small>* Max Image size allowed Id 1 Mb.</small>
+                          <small
+                            style={{
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            * Max Image size allowed Id 1 Mb.
+                          </small>
                           <small>* Image dimensions larger than 900 X 600 will be cropped to given dimentions.</small>
                         </Declaration>
                       </div>

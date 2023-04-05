@@ -168,6 +168,7 @@ function FormUpload({ lisener }) {
                       onDrop={(acceptedFiles) => {
                         handleAcceptedFiles(acceptedFiles);
                       }}
+                      maxSize={1000 * 1000}
                     >
                       {({ getRootProps, getInputProps }) => (
                         <div className="dropzone">
@@ -177,6 +178,14 @@ function FormUpload({ lisener }) {
                               <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                             </div>
                             <h4>Drop files here or click to upload.</h4>
+                            <small
+                              style={{
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                              }}
+                            >
+                              * Max Image size allowed Id 1 Mb.
+                            </small>
                           </div>
                         </div>
                       )}

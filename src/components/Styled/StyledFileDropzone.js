@@ -32,6 +32,7 @@ const defaultStyle = {
 
 export default function StyledFileDropzone({ text, classes, ...args }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
+    maxSize: 1000 * 1000,
     ...args,
   });
 

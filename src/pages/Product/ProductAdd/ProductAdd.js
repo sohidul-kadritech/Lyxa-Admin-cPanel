@@ -4,6 +4,7 @@ import Dropzone from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardTitle, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
+import styled from 'styled-components';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 
@@ -938,19 +939,19 @@ function ProductAdd() {
                           handleAcceptedFiles(acceptedFiles);
                         }}
                         accept=".jpg, .jpeg, .png"
+                        maxSize={1000 * 1000}
                       >
                         {({ getRootProps, getInputProps }) => (
                           <div className="dropzone">
-                            <div
-                              className="dz-message needsclick"
-                              {...getRootProps()}
-                              // onClick={() => setmodal_fullscreen(true)}
-                            >
+                            <div className="dz-message needsclick" {...getRootProps()}>
                               <input {...getInputProps()} />
                               <div className="mb-3">
                                 <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                               </div>
                               <h4>Drop files here or click to upload.</h4>
+                              <Declaration>
+                                <small>* Max Image size allowed 1 Mb.</small>
+                              </Declaration>
                             </div>
                           </div>
                         )}
@@ -1032,5 +1033,12 @@ function ProductAdd() {
     </GlobalWrapper>
   );
 }
+
+const Declaration = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: bold;
+`;
 
 export default ProductAdd;

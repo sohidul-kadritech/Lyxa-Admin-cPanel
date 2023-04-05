@@ -215,19 +215,24 @@ function CategoryAdd() {
                             handleAcceptedFiles(acceptedFiles);
                           }}
                           accept=".jpg, .jpeg, .png"
+                          maxSize={1000 * 1000}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
+                              <div className="dz-message needsclick" {...getRootProps()}>
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
                                 <h4>Drop files here or click to upload.</h4>
+                                <small
+                                  style={{
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                  }}
+                                >
+                                  * Max Image size allowed Id 1 Mb.
+                                </small>
                               </div>
                             </div>
                           )}
