@@ -104,11 +104,6 @@ const adminRoutes = [
   // vat
   { path: '/vat', component: Vat },
 
-  // Banner
-  { path: '/banner', component: BannerPage },
-  { path: '/banner/add', component: AddBanner },
-  { path: '/banner/edit/:id', component: AddBanner },
-
   // users
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
@@ -236,6 +231,9 @@ const adminRoutes = [
   { path: '/display/list-containers', component: ListContainers },
   { path: '/display/filter-containers', component: FilterContainers },
   { path: '/display/tags-cusines', component: TagsAndCusines },
+  { path: '/display/banner', component: BannerPage },
+  { path: '/display/banner/add', component: AddBanner },
+  { path: '/display/banner/edit/:id', component: AddBanner },
 
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },

@@ -16,8 +16,8 @@ import styled from 'styled-components';
 import CircularLoader from '../../components/CircularLoader';
 import TableImgItem from '../../components/TableImgItem';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
-import { deleteBanner, filterSelect, getBannerListAction } from '../../store/banner/bannerAction';
 import { updateShopSearchKey, updateShopType } from '../../store/Shop/shopAction';
+import { deleteBanner, filterSelect, getBannerListAction } from '../../store/banner/bannerAction';
 import BreadcrumbsBanner from './BreadcrumbsBanner';
 
 function BannerPage() {
@@ -29,12 +29,12 @@ function BannerPage() {
   const [bannerId, setBannerId] = useState(null);
 
   const route = useHistory();
+  // const [viewStyle, setViewStyle] = useState(
+  //   localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
+  // );
 
-  const [viewStyle, setViewStyle] = useState(
-    localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
-  );
-
-  // useEffect(() => { }, []);
+  // eslint-disable-next-line no-unused-vars
+  const [viewStyle, setViewStyle] = useState('list');
 
   const { loading, list, type } = useSelector((state) => state.bannerReducer);
 
@@ -55,7 +55,7 @@ function BannerPage() {
   }, [type]);
 
   const handleEdit = (id) => {
-    route.push(`/banner/edit/${id}`);
+    route.push(`edit/${id}`);
   };
 
   // DELETE BANNER
@@ -104,7 +104,6 @@ function BannerPage() {
                     <Th data-priority="4">Action</Th>
                   </Tr>
                 </Thead>
-
                 <Tbody style={{ verticalAlign: 'middle' }}>
                   {list.map((item, index) => (
                     <Tr key={index} className="text-capitalize">
@@ -262,8 +261,9 @@ function BannerPage() {
             breadcrumbItem="Banner list"
             callBanner={callBanner}
             loading={loading}
-            lisener={(vStyle) => {
-              setViewStyle(vStyle);
+            lisener={() => {
+              // setViewStyle(vStyle);
+              route.push('add');
             }}
           />
 

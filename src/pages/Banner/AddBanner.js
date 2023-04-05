@@ -15,9 +15,9 @@ import formatBytes from '../../common/imageFormatBytes';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import { GET_SINGLE_BANNER, IMAGE_UPLOAD } from '../../network/Api';
 import requestApi from '../../network/httpRequest';
-import { addBanner, editBanner } from '../../store/banner/bannerAction';
 import { getAllProduct, updateProductSearchKey } from '../../store/Product/productAction';
 import { getAllShop, updateShopSearchKey, updateShopType } from '../../store/Shop/shopAction';
+import { addBanner, editBanner } from '../../store/banner/bannerAction';
 
 import AutocompletedInput from '../../components/AutocompletedInput';
 import ProductAutocompleted from '../../components/ProductAutocompleted';
@@ -86,9 +86,8 @@ function AddBanner() {
     const { data } = await requestApi().request(GET_SINGLE_BANNER + id);
     if (data.status) {
       updateBannerData(data.data.banner);
-      //   setDescriptionText(convertToText)
     } else {
-      route.push('/banner', { replace: true });
+      route.goBack();
     }
   };
 
@@ -104,7 +103,8 @@ function AddBanner() {
         }
       }
     } else {
-      route.push('/banner', { replace: true });
+      // route.push('/banner', { replace: true });
+      route.goBack();
     }
   }, [id]);
 

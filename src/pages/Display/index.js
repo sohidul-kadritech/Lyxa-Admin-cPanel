@@ -6,7 +6,7 @@ import Wrapper from '../../components/Wrapper';
 const pagesList = [
   {
     label: 'Ads Banner',
-    to: '#',
+    to: '/display/banner/',
   },
   {
     label: 'Tags & Cuisines',

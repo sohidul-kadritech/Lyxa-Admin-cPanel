@@ -5,9 +5,10 @@ import { Link } from 'react-router-dom';
 import { BreadcrumbItem, Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row, Spinner } from 'reactstrap';
 
 function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lisener }) {
-  const [bannerViewStyle, setBannerViewStyle] = useState(
-    localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
-  );
+  // const [bannerViewStyle, setBannerViewStyle] = useState(
+  //   localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
+  // );
+  const [bannerViewStyle, setBannerViewStyle] = useState('list');
 
   const [setting_Menu, setsetting_Menu] = useState(false);
 
@@ -66,8 +67,9 @@ function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lis
             </div>
 
             <Dropdown
-              isOpen={setting_Menu}
+              // isOpen={setting_Menu}
               toggle={() => {
+                lisener();
                 setsetting_Menu(!setting_Menu);
               }}
             >
@@ -77,7 +79,7 @@ function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lis
                 ) : (
                   <i className="mdi mdi-grid me-2"></i>
                 )}{' '}
-                View
+                Add
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem onClick={() => changeStyle('list')} tag="a" href="#">
