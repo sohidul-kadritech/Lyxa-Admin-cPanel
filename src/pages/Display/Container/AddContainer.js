@@ -29,7 +29,7 @@ const selectProps = {
 
 const containerInit = {
   name: '',
-  image: [],
+  // image: [],
   type: [],
   deals: [],
   tags: [],
@@ -53,12 +53,22 @@ const uploadImage = async (image) => {
 };
 
 // project import
-export default function AddContainer({ onClose, shopType, editContainer }) {
-  const queryClient = useQueryClient();
-  console.log(shopType);
+export default function AddContainer({ onClose, shopType, editContainer, containerType }) {
+  let itemAddApi = Api.ADD_LIST_CONTAINERS;
+  let itemEditApi = Api.UPDATE_LIST_CONTAINERS;
+  let itemsQueryKey = `list-container-${shopType}`;
 
+  if (containerType === 'filter') {
+    itemAddApi = Api.ADD_FILTER_CONTAINERS;
+    itemEditApi = Api.UPDATE_FILTER_CONTAINERS;
+    itemsQueryKey = `filter-container-${shopType}`;
+  }
+
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
-  const [container, setContainer] = useState(containerInit);
+  const [container, setContainer] = useState(
+    containerType === 'list' ? { ...containerInit, image: [] } : containerInit
+  );
 
   // image
   const onDrop = (acceptedFiles) => {
@@ -128,9 +138,9 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
   // add container
   const listMutation = useMutation(
     (data) => {
-      let api = Api.ADD_LIST_CONTAINERS;
+      let api = itemAddApi;
       if (editContainer?._id) {
-        api = Api.UPDATE_LIST_CONTAINERS;
+        api = itemEditApi;
       }
       return AXIOS.post(api, data);
     },
@@ -139,7 +149,7 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
         if (data?.status) {
           successMsg(data.message, 'success');
           onClose();
-          queryClient.invalidateQueries(['list-containers']);
+          queryClient.invalidateQueries([itemsQueryKey]);
         } else {
           successMsg(data.message, 'error');
         }
@@ -154,7 +164,7 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
       return;
     }
 
-    if (container?.image?.length < 1) {
+    if (containerType === 'list' && container?.image?.length < 1) {
       successMsg('Image is required!');
       return;
     }
@@ -195,22 +205,24 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
 
     data.shopType = shopType;
 
-    let imageData;
+    if (containerType === 'list') {
+      let imageData;
 
-    if (container.image[0]?.name) {
-      setLoading(true);
-      imageData = await uploadImage(container.image[0]);
+      if (container.image[0]?.name) {
+        setLoading(true);
+        imageData = await uploadImage(container.image[0]);
 
-      if (imageData.status === false) {
-        successMsg(imageData.message, 'error');
-        return;
+        if (imageData.status === false) {
+          successMsg(imageData.message, 'error');
+          return;
+        }
+        setLoading(false);
+      } else {
+        imageData = { url: container.image[0].preview };
       }
-      setLoading(false);
-    } else {
-      imageData = { url: container.image[0].preview };
-    }
 
-    data.image = imageData?.url;
+      data.image = imageData?.url;
+    }
 
     if (editContainer?._id) {
       data.id = editContainer?._id;
@@ -222,7 +234,6 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
   const convertToProperData = (container) => {
     const newData = {};
     newData.name = container?.name;
-    newData.image = [{ preview: container?.image }];
     newData.type = [...(container.type || [])];
     newData.deals = container?.deals?.map((item) => {
       if (item === 'double_menu') {
@@ -233,6 +244,10 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
       }
       return { value: item, name: item.toString() };
     });
+
+    if (containerType === 'list') {
+      newData.image = [{ preview: container?.image }];
+    }
 
     newData.tags = tagsOptions.filter((item) => container?.tags?.includes(item?._id));
     newData.shops = shopsOptions.filter((item) => container?.shops?.includes(item?._id));
@@ -266,21 +281,23 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
               },
             }}
           />
-          <StyledFormField
-            label="Photo"
-            intputType="file"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
-            inputProps={{
-              disabled: G_LOADING,
-              onDrop,
-              accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
-              maxSize: 1000 * 1000 * 2,
-              text: 'Drag and drop or chose photo',
-              files: container.image,
-            }}
-          />
+          {containerType === 'list' && (
+            <StyledFormField
+              label="Photo"
+              intputType="file"
+              containerProps={{
+                sx: fieldContainerSx,
+              }}
+              inputProps={{
+                disabled: G_LOADING,
+                onDrop,
+                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
+                maxSize: 1000 * 1000 * 2,
+                text: 'Drag and drop or chose photo',
+                files: container.image,
+              }}
+            />
+          )}
           {/* deals */}
           <StyledFormField
             label="Deals"

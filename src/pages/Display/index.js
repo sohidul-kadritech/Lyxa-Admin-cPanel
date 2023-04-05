@@ -18,7 +18,7 @@ const pagesList = [
   },
   {
     label: 'Filter Container',
-    to: '#',
+    to: '/display/filter-containers',
   },
 ];
 

@@ -16,12 +16,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
 import AddContainer from './AddContainer';
-import ListTable from './ListTable';
-
-const breadcrumbItems = [
-  { label: 'Display', to: '/display' },
-  { label: 'List Contianer', to: '#' },
-];
+import ContainerTable from './ContainerTable';
 
 const typeToTabIndexMap = {
   0: 'food',
@@ -38,17 +33,39 @@ const filtersInit = {
   },
 };
 
-export default function ListContainers() {
-  const queryClient = useQueryClient();
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+export default function ContainerList({ containerType }) {
   const [currentTab, setCurrentTab] = useState(0);
+
+  let itemsQueryKey = `list-container-${typeToTabIndexMap[currentTab]}`;
+  let itemsQueryApi = Api.GET_ALL_LIST_CONTAINERS;
+  let itemsSortingApi = Api.SORT_LIST_CONTAINERS;
+  let itemEditApi = Api.UPDATE_LIST_CONTAINERS;
+  let itemDeleteApi = Api.DELETE_LIST_CONTAINERS;
+  let breadcrumbItems = [
+    { label: 'Display', to: '/display' },
+    { label: 'List Contianer', to: '#' },
+  ];
+
+  if (containerType === 'filter') {
+    itemsQueryKey = `filter-container-${typeToTabIndexMap[currentTab]}`;
+    itemsQueryApi = Api.GET_ALL_FILTER_CONTAINERS;
+    itemsSortingApi = Api.SORT_FILTER_CONTAINERS;
+    itemEditApi = Api.UPDATE_FILTER_CONTAINERS;
+    itemDeleteApi = Api.DELETE_FILTER_CONTAINERS;
+    breadcrumbItems = [
+      { label: 'Display', to: '/display' },
+      { label: 'Filter Contianer', to: '#' },
+    ];
+  }
+
+  const queryClient = useQueryClient();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filters, setFilters] = useState(filtersInit);
 
-  // lis query
+  // list query
   const listQuery = useQuery(
     [
-      'list-containers',
+      itemsQueryKey,
       {
         status: filters.status,
         searchKey: filters.searchKey,
@@ -58,7 +75,7 @@ export default function ListContainers() {
       },
     ],
     () =>
-      AXIOS.get(Api.GET_ALL_LIST_CONTAINERS, {
+      AXIOS.get(itemsQueryApi, {
         params: {
           page: 1,
           pageSize: 500,
@@ -72,10 +89,13 @@ export default function ListContainers() {
       })
   );
 
-  const items = listQuery.data?.data?.listContainer || [];
+  console.log(listQuery);
+
+  const items =
+    containerType === 'list' ? listQuery.data?.data?.listContainer || [] : listQuery.data?.data?.filterContainer || [];
 
   // list sorting
-  const listSortingMutation = useMutation((data) => AXIOS.post(Api.SORT_LIST_CONTAINERS, data));
+  const listSortingMutation = useMutation((data) => AXIOS.post(itemsSortingApi, data));
 
   const dropSort = ({ removedIndex, addedIndex }) => {
     if (removedIndex === null || addedIndex === null) return;
@@ -95,15 +115,15 @@ export default function ListContainers() {
   const [currentItem, setCurrentItem] = useState({});
 
   // edit
-  const listEditMutation = useMutation((data) => AXIOS.post(Api.UPDATE_LIST_CONTAINERS, data));
+  const listEditMutation = useMutation((data) => AXIOS.post(itemEditApi, data));
 
   // delete
   const [confirmModal, setConfrimModal] = useState(false);
 
-  const listDeleteMutation = useMutation((data) => AXIOS.post(Api.DELETE_LIST_CONTAINERS, data), {
+  const listDeleteMutation = useMutation((data) => AXIOS.post(itemDeleteApi, data), {
     onSuccess: (data) => {
       if (data.status) {
-        queryClient.invalidateQueries(['list-containers']);
+        queryClient.invalidateQueries([itemsQueryKey]);
         successMsg(data.message, 'success');
         setConfrimModal(false);
         setCurrentItem({});
@@ -185,11 +205,12 @@ export default function ListContainers() {
               searchPlaceHolder={`Search ${listQuery.data?.data?.listContainer?.length || 0} items`}
             />
             {/* table */}
-            <ListTable
+            <ContainerTable
               items={items}
               loading={listQuery.isLoading}
               onDrop={dropSort}
               handleMenuClick={threeDotHandler}
+              containerType={containerType}
             />
           </Box>
         </Box>
@@ -199,6 +220,7 @@ export default function ListContainers() {
         <AddContainer
           shopType={typeToTabIndexMap[currentTab]}
           editContainer={currentItem}
+          containerType={containerType}
           onClose={() => {
             setSidebarOpen(false);
             setCurrentItem({});

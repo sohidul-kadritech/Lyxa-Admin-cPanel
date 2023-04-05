@@ -1,4 +1,4 @@
-// thrid pary
+// thrid party
 import { Avatar, Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
@@ -44,7 +44,7 @@ const typeLabels = {
   shop: 'Shop',
 };
 
-export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
+export default function ContainerTable({ items, loading, handleMenuClick, onDrop, containerType }) {
   const theme = useTheme();
 
   const allColumns = [
@@ -55,7 +55,9 @@ export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" gap={4}>
           <HandleIcon className="drag-handler" />
-          <Avatar src={params.row?.image} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
+          {containerType === 'list' && (
+            <Avatar src={params.row?.image} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
+          )}
           <Typography
             variant="body4"
             sx={{
@@ -66,24 +68,6 @@ export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
             {params.row.name}
           </Typography>
         </Stack>
-      ),
-    },
-    {
-      id: 2,
-      headerName: `ITEM`,
-      flex: 1,
-      renderCell: (params) => (
-        <Typography
-          variant="body4"
-          sx={{
-            color: theme.palette.text.primary,
-            paddingLeft: '5px',
-          }}
-        >
-          {params.row?.type?.map(
-            (item, index, array) => `${typeLabels[item]}${index === array.length - 1 ? '' : ', '}`
-          )}
-        </Typography>
       ),
     },
     {
@@ -144,6 +128,27 @@ export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
       ),
     },
   ];
+
+  const typeColumn = {
+    id: 2,
+    headerName: `ITEM`,
+    flex: 1,
+    renderCell: (params) => (
+      <Typography
+        variant="body4"
+        sx={{
+          color: theme.palette.text.primary,
+          paddingLeft: '5px',
+        }}
+      >
+        {params.row?.type?.map((item, index, array) => `${typeLabels[item]}${index === array.length - 1 ? '' : ', '}`)}
+      </Typography>
+    ),
+  };
+
+  if (containerType === 'list') {
+    allColumns.splice(1, 0, typeColumn);
+  }
 
   return (
     <Box position="relative">

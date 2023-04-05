@@ -14,7 +14,6 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
-import { deals } from '../mock';
 import AddTag from './AddTag';
 import Restaurants from './Restaurants';
 import TagsTable from './TagsTable';
@@ -201,7 +200,6 @@ export default function TagsAndCusines() {
           <AddTag
             shopType={typeToTabIndexMap[currentTab]}
             tag={currentTag}
-            deals={deals}
             onClose={() => {
               setSidebar(null);
               setCurrentTag({});

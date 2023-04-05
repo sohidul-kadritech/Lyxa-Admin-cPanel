@@ -72,6 +72,7 @@ import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import DefaultChat from '../pages/DefaultChat/DefaultChat';
 import DisplaySettings from '../pages/Display';
+import FilterContainers from '../pages/Display/FilterContainer';
 import ListContainers from '../pages/Display/ListContainer';
 import TagsAndCusines from '../pages/Display/Tags';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
@@ -233,6 +234,7 @@ const adminRoutes = [
   // DISPLAY
   { path: '/display', component: DisplaySettings },
   { path: '/display/list-containers', component: ListContainers },
+  { path: '/display/filter-containers', component: FilterContainers },
   { path: '/display/tags-cusines', component: TagsAndCusines },
 
   // this route should be at the end of all other routes
