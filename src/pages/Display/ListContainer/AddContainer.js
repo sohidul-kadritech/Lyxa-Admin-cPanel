@@ -55,6 +55,7 @@ const uploadImage = async (image) => {
 // project import
 export default function AddContainer({ onClose, shopType, editContainer }) {
   const queryClient = useQueryClient();
+  console.log(shopType);
 
   const [loading, setLoading] = useState(false);
   const [container, setContainer] = useState(containerInit);
@@ -75,7 +76,7 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
   const dealSettingsQuery = useQuery(['deal-settings', { type: shopType }], () =>
     AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
       params: {
-        type: shopType,
+        type: shopType === 'food' ? 'restaurant' : shopType,
       },
     })
   );
@@ -175,6 +176,12 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
     data.types = Object.entries(type)
       .filter((item) => item[1])
       .map((item) => item[0]);
+
+    // validation
+    if (data?.types.length === 0) {
+      successMsg('Please select atleast one of Deal, Shop or Tag!');
+      return;
+    }
 
     data.shopType = shopType;
 

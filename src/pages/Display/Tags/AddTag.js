@@ -29,12 +29,31 @@ const types = [
 const tagInit = {
   name: '',
   type: '',
+  image: [],
+};
+
+const uploadImage = async (image) => {
+  const fdata = new FormData();
+  fdata.append('image', image);
+
+  try {
+    const { data } = await AXIOS.post(Api.IMAGE_UPLOAD, fdata);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return {
+      status: false,
+      message: error?.message,
+    };
+  }
 };
 
 // project import
 export default function AddTag({ onClose, shopType, tag }) {
   const queryClient = useQueryClient();
-  const [currentTag, setCurrentTag] = useState(tag?._id ? tag : tagInit);
+  const [currentTag, setCurrentTag] = useState(
+    tag?._id ? (shopType === 'food' ? { ...tag, image: [{ preview: tag.image }] } : tag) : tagInit
+  );
 
   const tagsMutation = useMutation(
     (data) => {
@@ -56,6 +75,69 @@ export default function AddTag({ onClose, shopType, tag }) {
       },
     }
   );
+
+  // image
+  const onDrop = (acceptedFiles) => {
+    setCurrentTag((prev) => ({
+      ...prev,
+      image: acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      ),
+    }));
+  };
+
+  // update tag
+  const updateTag = async () => {
+    // validation
+    if (!currentTag?.name?.trim()) {
+      successMsg('Name cannot be empty!');
+      return;
+    }
+
+    if (shopType === 'food' && currentTag.image?.length === 0) {
+      successMsg('Image is required for food type');
+      return;
+    }
+
+    if (shopType === 'food' && !currentTag.type) {
+      successMsg('Type cannot be empty');
+      return;
+    }
+
+    if (shopType === 'food') {
+      const data = { ...currentTag };
+      data.type = currentTag.type;
+      data.shopType = shopType;
+
+      let imageData;
+      if (currentTag.image[0]?.name) {
+        imageData = await uploadImage(currentTag.image[0]);
+
+        if (imageData.status === false) {
+          successMsg(imageData.message, 'error');
+          return;
+        }
+      } else {
+        imageData = { url: currentTag.image[0]?.preview };
+      }
+
+      data.image = imageData?.url;
+
+      tagsMutation.mutate(data);
+    } else if (tag?._id) {
+      tagsMutation.mutate({
+        ...currentTag,
+        id: currentTag._id,
+      });
+    } else {
+      tagsMutation.mutate({
+        ...currentTag,
+        shopType,
+      });
+    }
+  };
 
   return (
     <SidebarContainer title="Create New Tags & Cuisine" onClose={onClose}>
@@ -90,6 +172,22 @@ export default function AddTag({ onClose, shopType, tag }) {
               },
             }}
           />
+          {shopType === 'food' && (
+            <StyledFormField
+              label="Photo"
+              intputType="file"
+              containerProps={{
+                sx: fieldContainerSx,
+              }}
+              inputProps={{
+                onDrop,
+                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
+                maxSize: 1000 * 1000 * 2,
+                text: 'Drag and drop or chose photo',
+                files: currentTag.image,
+              }}
+            />
+          )}
         </Box>
         <Box
           sx={{
@@ -107,18 +205,7 @@ export default function AddTag({ onClose, shopType, tag }) {
             startIcon={<DropIcon />}
             disabled={tagsMutation.isLoading}
             onClick={() => {
-              if (tag?._id) {
-                tagsMutation.mutate({
-                  ...currentTag,
-                  id: currentTag._id,
-                });
-              } else {
-                tagsMutation.mutate({
-                  ...currentTag,
-                  shopType,
-                  type: shopType === 'food' ? currentTag.type : 'tag',
-                });
-              }
+              updateTag();
             }}
           >
             Save
