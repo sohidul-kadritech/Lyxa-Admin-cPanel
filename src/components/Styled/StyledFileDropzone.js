@@ -27,6 +27,7 @@ const defaultStyle = {
   backgroundImage:
     "url(\"data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='25' ry='25' stroke='%235E97A9FF' stroke-width='3' stroke-dasharray='11%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e\")",
   borderRadius: '25px',
+  cursor: 'pointer',
 };
 
 export default function StyledFileDropzone({ text, classes, ...args }) {

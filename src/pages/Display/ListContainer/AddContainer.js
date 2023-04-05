@@ -149,6 +149,16 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
 
   // update container
   const updateContainer = async () => {
+    if (!container?.name?.trim()) {
+      successMsg('Name cannot be empty!');
+      return;
+    }
+
+    if (container?.image?.length < 1) {
+      successMsg('Image is required!');
+      return;
+    }
+
     const type = {
       deal: false,
       tag: false,
@@ -164,7 +174,7 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
     });
 
     data.tags = container.tags.map((item) => {
-      type.tags = true;
+      type.tag = true;
       return item._id;
     });
 
@@ -173,12 +183,12 @@ export default function AddContainer({ onClose, shopType, editContainer }) {
       return item._id;
     });
 
-    data.types = Object.entries(type)
+    data.type = Object.entries(type)
       .filter((item) => item[1])
       .map((item) => item[0]);
 
     // validation
-    if (data?.types.length === 0) {
+    if (data?.type.length === 0) {
       successMsg('Please select atleast one of Deal, Shop or Tag!');
       return;
     }

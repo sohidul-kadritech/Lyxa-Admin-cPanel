@@ -38,6 +38,12 @@ const menuItems = [
   },
 ];
 
+const typeLabels = {
+  deal: 'Deal',
+  tag: 'Tag',
+  shop: 'Shop',
+};
+
 export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
   const theme = useTheme();
 
@@ -74,7 +80,9 @@ export default function ListTable({ items, loading, handleMenuClick, onDrop }) {
             paddingLeft: '5px',
           }}
         >
-          {params.row.type.join(' ')}
+          {params.row?.type?.map(
+            (item, index, array) => `${typeLabels[item]}${index === array.length - 1 ? '' : ', '}`
+          )}
         </Typography>
       ),
     },

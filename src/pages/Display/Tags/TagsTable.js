@@ -1,5 +1,6 @@
 // thrid pary
 import { Edit, Visibility } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 
 // project import
@@ -31,6 +32,7 @@ export default function TagsTable({
   onVisibilityChange,
   loading,
   shopType,
+  onDelete,
 }) {
   const theme = useTheme();
 
@@ -42,7 +44,9 @@ export default function TagsTable({
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" gap={4}>
           <HandleIcon className="drag-handler" />
-          <Avatar src={params.row?.image} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
+          {shopType === 'food' && (
+            <Avatar src={params.row?.image} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
+          )}
           <Typography
             variant="body4"
             sx={{
@@ -83,23 +87,6 @@ export default function TagsTable({
       ),
     },
     {
-      id: 3,
-      headerName: `TYPE`,
-      flex: 1,
-      renderCell: (params) => (
-        <Typography
-          variant="body4"
-          className="text-capitalize"
-          sx={{
-            color: theme.palette.text.primary,
-            paddingLeft: '5px',
-          }}
-        >
-          {params.row.type}
-        </Typography>
-      ),
-    },
-    {
       id: 4,
       headerName: `ACTION`,
       flex: 1,
@@ -107,12 +94,14 @@ export default function TagsTable({
       headerAlign: 'right',
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
+          {/* visbility */}
           <StyledSwitch
             checked={params?.row?.visibility}
             onChange={(e) => {
               onVisibilityChange(e.target.checked, params.row);
             }}
           />
+          {/* shops */}
           <StyledIconButton
             color="secondary"
             sx={{
@@ -124,6 +113,16 @@ export default function TagsTable({
           >
             <Visibility />
           </StyledIconButton>
+          {/* delete */}
+          <StyledIconButton
+            color="secondary"
+            onClick={() => {
+              onDelete(params.row);
+            }}
+          >
+            <DeleteIcon />
+          </StyledIconButton>
+          {/* edit */}
           <StyledIconButton
             onClick={() => {
               onEdit(params.row);
@@ -137,9 +136,27 @@ export default function TagsTable({
     },
   ];
 
-  // if(shopType === 'food'){
-  //   allColumns.splice()
-  // }
+  const typeColumn = {
+    id: 3,
+    headerName: `TYPE`,
+    flex: 1,
+    renderCell: (params) => (
+      <Typography
+        variant="body4"
+        className="text-capitalize"
+        sx={{
+          color: theme.palette.text.primary,
+          paddingLeft: '5px',
+        }}
+      >
+        {params.row.type}
+      </Typography>
+    ),
+  };
+
+  if (shopType === 'food') {
+    allColumns.splice(2, 0, typeColumn);
+  }
 
   return (
     <Box position="relative">

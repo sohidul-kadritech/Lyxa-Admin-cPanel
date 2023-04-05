@@ -3,12 +3,14 @@ import { West } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 // project import
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
+import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageButton from '../../../components/Common/PageButton';
 import Wrapper from '../../../components/Wrapper';
+import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
@@ -38,6 +40,8 @@ const filtersInit = {
 };
 
 export default function TagsAndCusines() {
+  const queryClient = useQueryClient();
+
   const [currentTab, setCurrentTab] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
@@ -51,7 +55,7 @@ export default function TagsAndCusines() {
       `tags-cusines-${typeToTabIndexMap[currentTab]}`,
       {
         searchKey: filters.searchKey,
-        currentTab,
+        shopType: typeToTabIndexMap[currentTab],
         startDate: filters.date.start,
         endDate: filters.date.end,
         status: filters.status,
@@ -97,6 +101,22 @@ export default function TagsAndCusines() {
       })),
     });
   };
+
+  // deltete
+  const [confirmModal, setConfrimModal] = useState(false);
+
+  const tagDeleteMutation = useMutation((data) => AXIOS.post(Api.DELETE_TAGS_AND_CUSINES, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        queryClient.invalidateQueries([`tags-cusines-${typeToTabIndexMap[currentTab]}`]);
+        successMsg(data.message, 'success');
+        setConfrimModal(false);
+        setCurrentTag({});
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
 
   return (
     <Wrapper
@@ -148,7 +168,9 @@ export default function TagsAndCusines() {
             />
             <TagsTable
               items={items}
+              shopType={typeToTabIndexMap[currentTab]}
               onDrop={dropSort}
+              loading={tagsQuery.isLoading}
               onStatusChange={(value, item) => {
                 item.status = value;
                 setRender((prev) => !prev);
@@ -165,6 +187,10 @@ export default function TagsAndCusines() {
                 item.visibility = value;
                 setRender((prev) => !prev);
                 tagsMutation.mutate(item);
+              }}
+              onDelete={(item) => {
+                setCurrentTag(item);
+                setConfrimModal(true);
               }}
             />
           </Box>
@@ -191,6 +217,22 @@ export default function TagsAndCusines() {
           />
         )}
       </Drawer>
+      {/* confirmModal */}
+      <ConfirmModal
+        isOpen={confirmModal}
+        onCancel={() => {
+          setConfrimModal(false);
+          setCurrentTag({});
+        }}
+        blurClose
+        loading={tagDeleteMutation.isLoading}
+        message="Are you sure you want to delete this item ?"
+        onConfirm={() => {
+          tagDeleteMutation.mutate({
+            id: currentTag?._id,
+          });
+        }}
+      />
     </Wrapper>
   );
 }

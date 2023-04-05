@@ -1,5 +1,5 @@
 // third party
-import { Box, Button } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { successMsg } from '../../../helpers/successMsg';
@@ -28,8 +28,7 @@ const types = [
 
 const tagInit = {
   name: '',
-  type: '',
-  image: [],
+  type: 'tag',
 };
 
 const uploadImage = async (image) => {
@@ -48,14 +47,20 @@ const uploadImage = async (image) => {
   }
 };
 
+const getTagInit = (shopType, tag) => {
+  if (shopType === 'food' && tag?._id) return { ...tag, image: [{ preview: tag.image }] };
+  if (shopType === 'food' && !tag?._id) return { ...tagInit, image: [] };
+  if (shopType !== 'food' && tag?._id) return { ...tag };
+  if (shopType !== 'food' && !tag?._id) return { ...tagInit };
+  return {};
+};
+
 // project import
 export default function AddTag({ onClose, shopType, tag }) {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
 
-  const [currentTag, setCurrentTag] = useState(
-    tag?._id ? (shopType === 'food' ? { ...tag, image: [{ preview: tag.image }] } : tag) : tagInit
-  );
+  const [currentTag, setCurrentTag] = useState(getTagInit(shopType, tag));
 
   const tagsMutation = useMutation(
     (data) => {
@@ -142,24 +147,39 @@ export default function AddTag({ onClose, shopType, tag }) {
   };
 
   return (
-    <SidebarContainer title="Create New Tags & Cuisine" onClose={onClose}>
-      <>
+    <SidebarContainer title={tag?._id ? 'Edit Tags & Cuisine' : 'Create New Tags & Cuisine'} onClose={onClose}>
+      <Stack justifyContent="space-between" height="100%">
         <Box>
-          <StyledFormField
-            label="Type"
-            intputType="select"
-            containerProps={{
-              sx: { ...fieldContainerSx, borderBottom: '0' },
-            }}
-            inputProps={{
-              items: types,
-              inputProps: { readOnly: shopType !== 'food' || !!currentTag?._id },
-              value: shopType === 'food' ? currentTag.type : 'tag',
-              onChange: (e) => {
-                setCurrentTag((prev) => ({ ...prev, type: e.target.value }));
-              },
-            }}
-          />
+          {shopType !== 'food' || !!currentTag?._id ? (
+            <StyledFormField
+              label="Type"
+              intputType="text"
+              containerProps={{
+                sx: fieldContainerSx,
+              }}
+              inputProps={{
+                readOnly: true,
+                type: 'text',
+                value: currentTag.type === 'tag' ? 'Tag' : 'Cuisine',
+              }}
+            />
+          ) : (
+            <StyledFormField
+              label="Type"
+              intputType="select"
+              containerProps={{
+                sx: { ...fieldContainerSx, borderBottom: '0' },
+              }}
+              inputProps={{
+                items: types,
+                inputProps: { readOnly: shopType !== 'food' || !!currentTag?._id },
+                value: currentTag.type,
+                onChange: (e) => {
+                  setCurrentTag((prev) => ({ ...prev, type: e.target.value }));
+                },
+              }}
+            />
+          )}
           <StyledFormField
             label="Name"
             intputType="text"
@@ -193,11 +213,8 @@ export default function AddTag({ onClose, shopType, tag }) {
         </Box>
         <Box
           sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            padding: '16px 20px 16px 16px',
+            paddingTop: '80px',
+            paddingBottom: '16px',
           }}
         >
           <Button
@@ -213,7 +230,7 @@ export default function AddTag({ onClose, shopType, tag }) {
             Save
           </Button>
         </Box>
-      </>
+      </Stack>
     </SidebarContainer>
   );
 }
