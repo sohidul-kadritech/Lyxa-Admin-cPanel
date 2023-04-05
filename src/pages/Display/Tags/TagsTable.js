@@ -1,6 +1,6 @@
 // thrid pary
 import { Edit, Visibility } from '@mui/icons-material';
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 
 // project import
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
@@ -22,7 +22,16 @@ const listFilterOptions = [
   },
 ];
 
-export default function TagsTable({ items, onEdit, onDrop, onStatusChange, onViewShops, onVisibilityChange, loading }) {
+export default function TagsTable({
+  items,
+  onEdit,
+  onDrop,
+  onStatusChange,
+  onViewShops,
+  onVisibilityChange,
+  loading,
+  shopType,
+}) {
   const theme = useTheme();
 
   const allColumns = [
@@ -33,6 +42,7 @@ export default function TagsTable({ items, onEdit, onDrop, onStatusChange, onVie
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" gap={4}>
           <HandleIcon className="drag-handler" />
+          <Avatar src={params.row?.image} alt={params.row.name} variant="rounded" sx={{ width: 36, height: 36 }} />
           <Typography
             variant="body4"
             sx={{
@@ -126,6 +136,10 @@ export default function TagsTable({ items, onEdit, onDrop, onStatusChange, onVie
       ),
     },
   ];
+
+  // if(shopType === 'food'){
+  //   allColumns.splice()
+  // }
 
   return (
     <Box position="relative">

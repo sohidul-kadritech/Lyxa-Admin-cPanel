@@ -51,6 +51,8 @@ const uploadImage = async (image) => {
 // project import
 export default function AddTag({ onClose, shopType, tag }) {
   const queryClient = useQueryClient();
+  const [loading, setLoading] = useState(false);
+
   const [currentTag, setCurrentTag] = useState(
     tag?._id ? (shopType === 'food' ? { ...tag, image: [{ preview: tag.image }] } : tag) : tagInit
   );
@@ -61,9 +63,9 @@ export default function AddTag({ onClose, shopType, tag }) {
       if (data?._id) {
         API = Api.UPDATE_TAGS_AND_CUSINES;
       }
-      return AXIOS.post(API, {
-        ...data,
-      });
+
+      const fdata = tag?._id ? { ...data, id: tag?._id } : data;
+      return AXIOS.post(API, fdata);
     },
     {
       onSuccess: (data) => {
@@ -90,7 +92,6 @@ export default function AddTag({ onClose, shopType, tag }) {
 
   // update tag
   const updateTag = async () => {
-    // validation
     if (!currentTag?.name?.trim()) {
       successMsg('Name cannot be empty!');
       return;
@@ -112,13 +113,17 @@ export default function AddTag({ onClose, shopType, tag }) {
       data.shopType = shopType;
 
       let imageData;
+
       if (currentTag.image[0]?.name) {
+        setLoading(true);
         imageData = await uploadImage(currentTag.image[0]);
 
         if (imageData.status === false) {
           successMsg(imageData.message, 'error');
           return;
         }
+
+        setLoading(false);
       } else {
         imageData = { url: currentTag.image[0]?.preview };
       }
@@ -127,10 +132,7 @@ export default function AddTag({ onClose, shopType, tag }) {
 
       tagsMutation.mutate(data);
     } else if (tag?._id) {
-      tagsMutation.mutate({
-        ...currentTag,
-        id: currentTag._id,
-      });
+      tagsMutation.mutate(currentTag);
     } else {
       tagsMutation.mutate({
         ...currentTag,
@@ -203,7 +205,7 @@ export default function AddTag({ onClose, shopType, tag }) {
             variant="contained"
             color="secondary"
             startIcon={<DropIcon />}
-            disabled={tagsMutation.isLoading}
+            disabled={tagsMutation.isLoading || loading}
             onClick={() => {
               updateTag();
             }}
