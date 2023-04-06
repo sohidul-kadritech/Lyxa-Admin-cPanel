@@ -1,10 +1,7 @@
 import { styled, TextField } from '@mui/material';
 import React from 'react';
 
-const Input = React.forwardRef(({ ...props }, ref) => <TextField {...props} ref={ref} />);
-
-const StyledInput = styled(Input)(({ theme }) => ({
-  minWidth: 'inherit',
+const SInput = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
     borderRadius: '30px',
     background: theme.palette.background.secondary,
@@ -24,4 +21,14 @@ const StyledInput = styled(Input)(({ theme }) => ({
   },
 }));
 
+const StyledInput = React.forwardRef(({ ...props }, ref) => (
+  <SInput
+    {...props}
+    sx={{
+      ...(props.sx || {}),
+      pointerEvents: props.readOnly ? 'none' : 'initial',
+    }}
+    ref={ref}
+  />
+));
 export default StyledInput;

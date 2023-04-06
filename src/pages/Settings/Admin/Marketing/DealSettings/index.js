@@ -5,14 +5,14 @@ import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
-import PageButton from '../../../../components/Common/PageButton';
-import Taglist from '../../../../components/Common/Taglist';
-import StyledSwitchList from '../../../../components/Styled/StyledSwitchList';
-import Wrapper from '../../../../components/Wrapper';
-import { deepClone } from '../../../../helpers/deepClone';
-import { successMsg } from '../../../../helpers/successMsg';
-import * as Api from '../../../../network/Api';
-import AXIOS from '../../../../network/axios';
+import PageButton from '../../../../../components/Common/PageButton';
+import Taglist from '../../../../../components/Common/Taglist';
+import StyledSwitchList from '../../../../../components/Styled/StyledSwitchList';
+import Wrapper from '../../../../../components/Wrapper';
+import { deepClone } from '../../../../../helpers/deepClone';
+import { successMsg } from '../../../../../helpers/successMsg';
+import * as Api from '../../../../../network/Api';
+import AXIOS from '../../../../../network/axios';
 import StyledBox from './StyledBox';
 
 const dealTypes = [

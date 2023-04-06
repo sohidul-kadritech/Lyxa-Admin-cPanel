@@ -46,9 +46,11 @@ export default function Taglist({
               type="number"
               value={newItem}
               sx={{
+                width: '90px',
                 '& input': {
                   fontSize: '13px',
                   height: 'auto',
+                  textAlign: 'center',
                 },
                 ...(inputSx || {}),
               }}
@@ -73,14 +75,9 @@ export default function Taglist({
         variant="text"
         startIcon={<Add />}
         sx={{
-          fontWeight: '500',
           fontSize: '14px',
           lineHeight: '17px',
-          padding: '0px',
 
-          '&:hover': {
-            background: 'transparent',
-          },
           ...(buttonSx || {}),
         }}
         onClick={() => {
