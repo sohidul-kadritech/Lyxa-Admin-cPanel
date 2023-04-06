@@ -29,7 +29,6 @@ const selectProps = {
 
 const containerInit = {
   name: '',
-  // image: [],
   type: [],
   deals: [],
   tags: [],
@@ -67,14 +66,16 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [container, setContainer] = useState(
-    containerType === 'list' ? { ...containerInit, image: [] } : containerInit
+    containerType === 'list' ? { ...containerInit, image: [], banner: [] } : containerInit
   );
 
+  console.log(container);
+
   // image
-  const onDrop = (acceptedFiles) => {
+  const onDrop = (acceptedFiles, rejectedFiles, dontKnow, fieldName) => {
     setContainer((prev) => ({
       ...prev,
-      image: acceptedFiles.map((file) =>
+      [fieldName]: acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
@@ -170,6 +171,11 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
       return;
     }
 
+    if (containerType === 'list' && container?.banner?.length < 1) {
+      successMsg('Banner is required!');
+      return;
+    }
+
     const type = {
       deal: false,
       tag: false,
@@ -209,22 +215,37 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
     data.shopType = shopType;
 
     if (containerType === 'list') {
-      let imageData;
+      let photoData;
+      let bannerData;
 
       if (container.image[0]?.name) {
         setLoading(true);
-        imageData = await uploadImage(container.image[0]);
+        photoData = await uploadImage(container.image[0]);
 
-        if (imageData.status === false) {
-          successMsg(imageData.message, 'error');
+        if (photoData.status === false) {
+          successMsg(photoData.message, 'error');
+          setLoading(false);
           return;
         }
-        setLoading(false);
       } else {
-        imageData = { url: container.image[0].preview };
+        photoData = { url: container.image[0].preview };
       }
 
-      data.image = imageData?.url;
+      if (container.image[0]?.name) {
+        setLoading(true);
+        bannerData = await uploadImage(container.banner[0]);
+
+        if (bannerData?.status === false) {
+          successMsg(bannerData.message, 'error');
+          setLoading(false);
+          return;
+        }
+      } else {
+        bannerData = { url: container.banner[0].preview };
+      }
+      setLoading(false);
+      data.image = photoData?.url;
+      data.banner = bannerData?.url;
     }
 
     if (editContainer?._id) {
@@ -250,6 +271,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
 
     if (containerType === 'list') {
       newData.image = [{ preview: container?.image }];
+      newData.banner = [{ preview: container?.banner }];
     }
 
     newData.tags = tagsOptions.filter((item) => container?.tags?.includes(item?._id));
@@ -284,20 +306,43 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
               },
             }}
           />
+          {/* photo */}
           {containerType === 'list' && (
             <StyledFormField
-              label="Photo"
+              label="Container Image"
               intputType="file"
               containerProps={{
                 sx: fieldContainerSx,
               }}
               inputProps={{
                 disabled: G_LOADING,
-                onDrop,
+                onDrop: (...props) => {
+                  onDrop(...props, 'image');
+                },
                 accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: container.image,
+              }}
+            />
+          )}
+          {/* banner */}
+          {containerType === 'list' && (
+            <StyledFormField
+              label="Banner Image"
+              intputType="file"
+              containerProps={{
+                sx: fieldContainerSx,
+              }}
+              inputProps={{
+                disabled: G_LOADING,
+                onDrop: (...props) => {
+                  onDrop(...props, 'banner');
+                },
+                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
+                maxSize: 1000 * 1000,
+                text: 'Drag and drop or chose photo',
+                files: container.banner,
               }}
             />
           )}
