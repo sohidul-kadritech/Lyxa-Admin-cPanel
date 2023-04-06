@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable radix */
 import {
   Autocomplete,
@@ -15,6 +16,7 @@ import Paper from '@mui/material/Paper';
 import React, { useEffect, useMemo, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
@@ -23,7 +25,9 @@ import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
 import { IMAGE_UPLOAD, SINGLE_SELLER, SINGLE_SHOP } from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import requestApi from '../../../network/httpRequest';
 import { getAllSeller, updateSellerSearchKey } from '../../../store/Seller/sellerAction';
 import { addShop, editShop, getAllCuisine, getAllTags, updateShopSearchKey } from '../../../store/Shop/shopAction';
@@ -41,6 +45,7 @@ function ShopAdd() {
 
   const { sellers, searchKey: searchSellerKey } = useSelector((state) => state.sellerReducer);
   const { loading, status, shops, cuisines, tags: allTags, searchKey } = useSelector((state) => state.shopReducer);
+
   const [tags, setTags] = useState({
     items: [],
     value: '',
@@ -465,6 +470,28 @@ function ShopAdd() {
     setSelectedCuisines(list);
   };
 
+  const tagsQuery = useQuery(
+    [
+      `tags-cusines-${seller?.sellerType}`,
+      {
+        shopType: seller?.sellerType,
+        status: 'active',
+      },
+    ],
+    () =>
+      AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
+        params: {
+          page: 1,
+          pageSize: 500,
+          sortBy: 'asc',
+          shopType: seller?.sellerType,
+          status: 'active',
+        },
+      })
+  );
+
+  // console.log();
+
   return (
     <GlobalWrapper>
       <div className="page-content">
@@ -777,7 +804,7 @@ function ShopAdd() {
                             dispatch(updateShopSearchKey(newInputValue));
                           }}
                           id="controllable-states-demo"
-                          options={allTags.length > 0 ? allTags : []}
+                          options={tagsQuery.data?.data?.tags?.filter((item) => item?.type === 'tag') || []}
                           sx={{ width: '100%' }}
                           renderInput={(params) => <TextField {...params} label="Select a Tag" name="tag" />}
                           renderOption={(props, option) => (
@@ -872,7 +899,7 @@ function ShopAdd() {
                             setSearchCuisineKey(newInputValue);
                           }}
                           id="controllable-states-demo"
-                          options={cuisines.length > 0 ? cuisines : []}
+                          options={tagsQuery.data?.data?.tags?.filter((item) => item?.type === 'cuisine') || []}
                           sx={{ width: '100%' }}
                           renderInput={(params) => <TextField {...params} label="Select Cuisine" />}
                           renderOption={(props, option) => (
