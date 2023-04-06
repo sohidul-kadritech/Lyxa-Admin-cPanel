@@ -21,7 +21,7 @@ export default function Taglist({
 
   return (
     <Box {...props}>
-      <Stack direction="row" gap={4} sx={listContainerSx}>
+      <Stack direction="row" gap={4} sx={listContainerSx} flexWrap="wrap">
         {items.map((item, index, array) => (
           <StyledChip
             key={item}

@@ -1,17 +1,17 @@
 // third party
 import { West } from '@mui/icons-material';
-import { Box, Button, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Drawer, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
 import PageButton from '../../../../../components/Common/PageButton';
-// eslint-disable-next-line import/no-named-as-default
 import Taglist from '../../../../../components/Common/Taglist';
 import Wrapper from '../../../../../components/Wrapper';
 import { successMsg } from '../../../../../helpers/successMsg';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
+import BundleProducts from './BundleProducts';
 import InputBox from './InputBox';
 import CategoryList from './RewardCategoryList';
 import StyledContainer from './StyledContainer';
@@ -27,6 +27,7 @@ export default function LoyaltySettings() {
   const [render, setRender] = useState(false);
   const [fetchedData, setFetchedData] = useState({});
   const [queryOnce, setQueryOnce] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // reward category
   const [rewardCategory, setRewardCategory] = useState([]);
@@ -60,6 +61,7 @@ export default function LoyaltySettings() {
 
   // reward bundle
   const [rewardBundle, setRewardBundle] = useState([]);
+  const [currentRewardBundle, setCurrentRewardBundle] = useState({});
 
   const addNewBundleItem = (bundle) => {
     if (validateRewardBundle(bundle, rewardBundle)) {
@@ -70,26 +72,21 @@ export default function LoyaltySettings() {
     return false;
   };
 
+  const dropSort = ({ removedIndex, addedIndex }) => {
+    if (removedIndex === null || addedIndex === null) return;
+
+    const item = rewardCategory.splice(removedIndex, 1);
+    rewardCategory.splice(addedIndex, 0, item[0]);
+
+    setRender(!render);
+  };
+
   // get reward
   const [getReward, setGetReward] = useState(getRewardInit);
   const [redeemReward, setRedeemReward] = useState(getRewardInit);
   const [adminCutForReward, setAdminCutForReward] = useState('0');
   const [expirationPeriod, setExpirationPeriod] = useState('0');
   const [minSpendLimit, setMinSpendLimit] = useState('0');
-
-  const deleteItem = (type, payload) => {
-    switch (type) {
-      case 'rewardCategory':
-        setRewardCategory((prev) => prev.filter((item) => item?._id !== payload?._id));
-        break;
-
-      case 'bundleItem':
-        setRewardBundle((prev) => prev.filter((item, index) => index !== payload));
-        break;
-
-      default:
-    }
-  };
 
   const updateLocalState = (data) => {
     setRewardCategory(data?.rewardCategory || []);
@@ -148,7 +145,13 @@ export default function LoyaltySettings() {
       minSpendLimit,
       rewardBundle,
       rewardCategory: rewardCategory.map((item, index) => {
-        item.sortingOrder = index;
+        item.sortingOrder = index + 1;
+        if (item?._id?.startsWith('xxx')) {
+          return {
+            ...item,
+            _id: undefined,
+          };
+        }
         return item;
       }),
       getReward: {
@@ -185,19 +188,9 @@ export default function LoyaltySettings() {
     updateLocalState(data || {});
   };
 
-  const dropSort = ({ removedIndex, addedIndex }) => {
-    if (removedIndex === null || addedIndex === null) return;
-
-    const item = rewardCategory.splice(removedIndex, 1);
-    rewardCategory.splice(addedIndex, 0, item[0]);
-
-    setRender(!render);
-  };
-
   return (
     <Wrapper>
       <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
-        {/* top */}
         <Box
           sx={{
             pb: 5,
@@ -215,7 +208,6 @@ export default function LoyaltySettings() {
             Loyalty Points
           </Typography>
         </Box>
-        {/* settings */}
         <Box
           sx={{
             background: '#fff',
@@ -226,7 +218,7 @@ export default function LoyaltySettings() {
         >
           <Grid container>
             {/* value per points */}
-            <StyledContainer title="Points earned value" xs={12} md={6}>
+            <StyledContainer title="Points earned value">
               <InputBox
                 title="Value of 1 Point"
                 endAdornment="$"
@@ -237,7 +229,7 @@ export default function LoyaltySettings() {
                 }}
               />
             </StyledContainer>
-            <StyledContainer title="Points used value" xs={12} md={6} placement="end">
+            <StyledContainer title="Points used value" placement="end">
               <InputBox
                 placement="end"
                 title="Value of 1 Point"
@@ -250,7 +242,7 @@ export default function LoyaltySettings() {
               />
             </StyledContainer>
             {/* distributed cost */}
-            <StyledContainer title="Distributed Cost" xs={12} md={6}>
+            <StyledContainer title="Distributed Cost">
               <InputBox
                 title="Lyxa"
                 endAdornment="%"
@@ -261,7 +253,7 @@ export default function LoyaltySettings() {
                 }}
               />
             </StyledContainer>
-            <StyledContainer title="" xs={12} md={6} placement="end">
+            <StyledContainer title="" placement="end">
               <InputBox
                 placement="end"
                 title="Shop"
@@ -272,18 +264,22 @@ export default function LoyaltySettings() {
               />
             </StyledContainer>
             {/* categories */}
-            <StyledContainer title="Categories" xs={12} md={12}>
+            <StyledContainer title="Categories" xs={12} lg={12}>
               <CategoryList
-                rewardCategory={rewardCategory}
+                rewardCategories={rewardCategory}
                 setRewardCategory={setRewardCategory}
-                onAddNew={addRewardCategory}
-                onDelete={(item) => {
-                  deleteItem('rewardCategory', item);
+                onSave={addRewardCategory}
+                onViewShops={(item) => {
+                  setCurrentRewardBundle(item);
+                  setSidebarOpen(true);
+                }}
+                onDelete={(category) => {
+                  setRewardCategory((prev) => prev.filter((item) => item?._id !== category?._id));
                 }}
                 onDrop={dropSort}
               />
             </StyledContainer>
-            <StyledContainer title="Reward Bundle" xs={12} md={12}>
+            <StyledContainer title="Reward Bundle" xs={12} lg={12}>
               <Taglist
                 listContainerSx={{
                   mb: 2.5,
@@ -299,7 +295,7 @@ export default function LoyaltySettings() {
               />
             </StyledContainer>
             {/* spending limits */}
-            <StyledContainer title="Spending Limits" xs={12} md={12}>
+            <StyledContainer title="Spending Limits" xs={12} lg={12}>
               <InputBox
                 title="Minimum spending limit/week"
                 endAdornment="$"
@@ -311,7 +307,7 @@ export default function LoyaltySettings() {
               />
             </StyledContainer>
             {/* expiration */}
-            <StyledContainer title="Expiration" xs={12} md={12}>
+            <StyledContainer title="Expiration" xs={12} lg={12}>
               <InputBox
                 title="Number of days"
                 endAdornment="D"
@@ -355,6 +351,16 @@ export default function LoyaltySettings() {
           </Button>
         </Stack>
       </Box>
+      {sidebarOpen && (
+        <Drawer open={sidebarOpen} anchor="right">
+          <BundleProducts
+            rewardBundle={currentRewardBundle}
+            onClose={() => {
+              setSidebarOpen(false);
+            }}
+          />
+        </Drawer>
+      )}
     </Wrapper>
   );
 }

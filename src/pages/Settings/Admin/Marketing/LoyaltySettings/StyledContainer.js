@@ -4,7 +4,7 @@ export default function StyledBox({ title, children, placement, ...props }) {
   return (
     <Grid
       xs={12}
-      md={6}
+      lg={6}
       sx={{
         borderBottom: '1px dashed #E5E5E5',
         pt: 6,
@@ -15,7 +15,10 @@ export default function StyledBox({ title, children, placement, ...props }) {
       <Stack
         direction="row"
         sx={{
-          justifyContent: placement === 'end' ? 'flex-end' : 'flex-start',
+          justifyContent: {
+            lg: placement === 'end' ? 'flex-end' : 'flex-start',
+            xs: 'flex-start',
+          },
         }}
       >
         <Typography

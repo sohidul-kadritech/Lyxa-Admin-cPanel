@@ -16,8 +16,14 @@ export default function StyledBox({ title, inputValue, inputType, onInputChange,
         alignItems="center"
         justifyContent="space-between"
         sx={{
-          maxWidth: '370px',
-          width: '370px',
+          maxWidth: {
+            lg: '370px',
+            xs: '100%',
+          },
+          width: {
+            lg: '370px',
+            xs: '100%',
+          },
         }}
       >
         <Typography variant="body1">{title}</Typography>

@@ -1,6 +1,5 @@
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-unused-vars */
-import { Close, Edit } from '@mui/icons-material';
+import { Close, Edit, Visibility } from '@mui/icons-material';
 import { Stack } from '@mui/material';
 import { useRef, useState } from 'react';
 import { ReactComponent as HandleIcon } from '../../../../../assets/icons/handle.svg';
@@ -9,7 +8,7 @@ import StyledIconButton from '../../../../../components/Styled/StyledIconButton'
 import StyledInput from '../../../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
 
-export default function CategoryItem({ category, onEnter, onDelete, isAddNew }) {
+export default function CategoryItem({ category, onSave, onDelete, isAddNew, onViewShops }) {
   const [render, setRender] = useState(false);
   const [editMode, setEditMode] = useState(isAddNew);
   const inputRef = useRef();
@@ -35,7 +34,7 @@ export default function CategoryItem({ category, onEnter, onDelete, isAddNew }) 
             },
           }}
           onBlur={() => {
-            onEnter(
+            onSave(
               category,
               () => {
                 setEditMode(false);
@@ -52,7 +51,7 @@ export default function CategoryItem({ category, onEnter, onDelete, isAddNew }) 
           }}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
-              onEnter(
+              onSave(
                 category,
                 (status) => {
                   setEditMode(status);
@@ -79,7 +78,15 @@ export default function CategoryItem({ category, onEnter, onDelete, isAddNew }) 
           <Stack direction="row" gap={2.5}>
             <StyledIconButton
               color="secondary"
-              onClick={(event) => {
+              onClick={() => {
+                onViewShops(category);
+              }}
+            >
+              <Visibility />
+            </StyledIconButton>
+            <StyledIconButton
+              color="secondary"
+              onClick={() => {
                 setEditMode(true);
                 setTimeout(() => {
                   inputRef?.current?.querySelector('input')?.focus();

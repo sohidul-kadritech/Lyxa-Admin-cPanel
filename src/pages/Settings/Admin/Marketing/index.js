@@ -1,4 +1,4 @@
-// thrid pary
+// thrid party
 import { West } from '@mui/icons-material';
 import { Box, Typography, useTheme } from '@mui/material';
 import PageButton from '../../../../components/Common/PageButton';

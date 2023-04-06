@@ -154,6 +154,8 @@ export const DELETE_SELLER_SPECIAL_DROP_CHARGE = `${ADMIN_ENDPOINT}/drop-charge/
 export const ADMIN_LOGS_HISTORY = `${ADMIN_ENDPOINT}/setting/admin-logs`;
 export const GET_ADMIN_REWARD_SETTINGS = `${ADMIN_ENDPOINT}/setting/reward-setting`;
 export const EDIT_ADMIN_REWARD_SETTINGS = `${ADMIN_ENDPOINT}/setting/reward-setting/edit`;
+export const GET_REWARD_CATEGORY_WISE_PRODUCTS = `${ADMIN_ENDPOINT}/setting/get-reward-category-wise-product`;
+
 export const GET_ADMIN_DEAL_SETTINGS = `${ADMIN_ENDPOINT}/setting/deal-setting`;
 export const EDIT_ADMIN_DEAL_SETTINGS = `${ADMIN_ENDPOINT}/setting/deal-setting/edit`;
 
