@@ -118,6 +118,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
       params: {
         page: 1,
         pageSize: 500,
+        shopType,
       },
     })
   );
@@ -199,7 +200,9 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
 
     // validation
     if (data?.type.length === 0) {
-      successMsg('Please select atleast one of Deal, Shop or Tag!');
+      successMsg(
+        containerType === 'list' ? 'Please select atleast one of Deal, Shop or Tag!' : 'Please select deals first'
+      );
       return;
     }
 
@@ -308,6 +311,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
             inputProps={{
               ...selectProps,
               disabled: G_LOADING,
+              // open: true,
               options: dealsOptions,
               value: container.deals,
               maxHeight: '200px',
@@ -332,44 +336,48 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
             }}
           />
           {/* tags */}
-          <StyledFormField
-            label="Tags"
-            intputType="autocomplete"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
-            inputProps={{
-              ...selectProps,
-              maxHeight: '200px',
-              disabled: G_LOADING,
-              options: tagsOptions,
-              value: container.tags,
-              isOptionEqualToValue: (option, value) => option?._id === value?._id,
-              onChange: (e, v) => {
-                setContainer((prev) => ({ ...prev, tags: v.map((item) => item) }));
-              },
-            }}
-          />
+          {containerType === 'list' && (
+            <StyledFormField
+              label="Tags"
+              intputType="autocomplete"
+              containerProps={{
+                sx: fieldContainerSx,
+              }}
+              inputProps={{
+                ...selectProps,
+                maxHeight: '200px',
+                disabled: G_LOADING,
+                options: tagsOptions,
+                value: container.tags,
+                isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                onChange: (e, v) => {
+                  setContainer((prev) => ({ ...prev, tags: v.map((item) => item) }));
+                },
+              }}
+            />
+          )}
           {/* restaurants */}
-          <StyledFormField
-            label="Restaurant"
-            intputType="autocomplete"
-            containerProps={{
-              sx: { ...fieldContainerSx, borderBottom: '0' },
-            }}
-            inputProps={{
-              ...selectProps,
-              maxHeight: '110px',
-              disabled: G_LOADING,
-              options: shopsOptions,
-              value: container.shops,
-              isOptionEqualToValue: (option, value) => option?._id === value?._id,
-              getOptionLabel: (option) => option?.shopName,
-              onChange: (e, v) => {
-                setContainer((prev) => ({ ...prev, shops: v.map((item) => item) }));
-              },
-            }}
-          />
+          {containerType === 'list' && (
+            <StyledFormField
+              label={shopType === 'food' ? 'Restaurant' : 'Shop'}
+              intputType="autocomplete"
+              containerProps={{
+                sx: { ...fieldContainerSx, borderBottom: '0' },
+              }}
+              inputProps={{
+                ...selectProps,
+                maxHeight: '110px',
+                disabled: G_LOADING,
+                options: shopsOptions,
+                value: container.shops,
+                isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                getOptionLabel: (option) => option?.shopName,
+                onChange: (e, v) => {
+                  setContainer((prev) => ({ ...prev, shops: v.map((item) => item) }));
+                },
+              }}
+            />
+          )}
         </Box>
         <Box
           sx={{

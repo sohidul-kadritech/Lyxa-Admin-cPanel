@@ -105,7 +105,7 @@ function ShopTable({ shops = [] }) {
                 </div>
               </Td>
               <Td onClick={() => goToDetails(item?._id)}>
-                {item?.deals.length > 0
+                {item?.deals?.length > 0
                   ? item?.deals.map((item) => (
                       <div key={item?.name}>
                         <p>{item?.name}</p>

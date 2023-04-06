@@ -15,6 +15,7 @@ const StyledSelect = styled(Autocomplete)(({ theme }) => ({
     background: theme.palette.background.secondary,
     borderRadius: '40px',
     padding: '12px 40px 12px 8px !important',
+    cursor: 'pointer',
 
     '& .MuiInputAdornment-positionStart': {
       width: '0px',
@@ -153,8 +154,9 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
       PaperComponent={({ children }) => (
         <Paper
           sx={{
-            background: theme.palette.background.secondary,
             '& .MuiAutocomplete-listbox': {
+              background: theme.palette.background.secondary,
+              borderRadius: '0px 0px 25px 25px',
               padding: 0,
               maxHeight,
             },

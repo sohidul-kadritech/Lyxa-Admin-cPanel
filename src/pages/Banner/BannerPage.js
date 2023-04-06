@@ -29,12 +29,12 @@ function BannerPage() {
   const [bannerId, setBannerId] = useState(null);
 
   const route = useHistory();
-  // const [viewStyle, setViewStyle] = useState(
-  //   localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
-  // );
 
-  // eslint-disable-next-line no-unused-vars
-  const [viewStyle, setViewStyle] = useState('list');
+  const [viewStyle, setViewStyle] = useState(
+    localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
+  );
+
+  // useEffect(() => { }, []);
 
   const { loading, list, type } = useSelector((state) => state.bannerReducer);
 
@@ -104,6 +104,7 @@ function BannerPage() {
                     <Th data-priority="4">Action</Th>
                   </Tr>
                 </Thead>
+
                 <Tbody style={{ verticalAlign: 'middle' }}>
                   {list.map((item, index) => (
                     <Tr key={index} className="text-capitalize">
@@ -261,9 +262,8 @@ function BannerPage() {
             breadcrumbItem="Banner list"
             callBanner={callBanner}
             loading={loading}
-            lisener={() => {
-              // setViewStyle(vStyle);
-              route.push('add');
+            lisener={(vStyle) => {
+              setViewStyle(vStyle);
             }}
           />
 

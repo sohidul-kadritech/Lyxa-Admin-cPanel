@@ -12,12 +12,24 @@ export default function SidebarContainer({ onClose, title, children }) {
         maxWidth: '400px',
         paddingLeft: '16px',
         paddingRight: '20px',
-        paddingTop: '80px',
+        paddingTop: '60px',
         position: 'relative',
         height: '100vh',
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{
+          position: 'sticky',
+          top: 0,
+          paddingTop: '20px',
+          paddingBottom: '15px',
+          zIndex: '999',
+          background: '#fff',
+        }}
+      >
         <Typography
           variant="h5"
           sx={{

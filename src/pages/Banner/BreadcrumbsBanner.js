@@ -1,14 +1,24 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row, Spinner } from 'reactstrap';
+import { Link, useHistory } from 'react-router-dom';
+import {
+  BreadcrumbItem,
+  Button,
+  Col,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Row,
+  Spinner,
+} from 'reactstrap';
 
 function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lisener }) {
-  // const [bannerViewStyle, setBannerViewStyle] = useState(
-  //   localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
-  // );
-  const [bannerViewStyle, setBannerViewStyle] = useState('list');
+  const route = useHistory();
+  const [bannerViewStyle, setBannerViewStyle] = useState(
+    localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
+  );
 
   const [setting_Menu, setsetting_Menu] = useState(false);
 
@@ -43,7 +53,7 @@ function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lis
       </Col>
       <Col sm={6}>
         <div className="d-flex justify-content-end align-items-center">
-          <div className="d-flex">
+          <div className="d-flex gap-2">
             <div className="me-4 d-flex align-items-center cursor-pointer" onClick={() => callBanner(true)}>
               {loading ? (
                 <Spinner animation="border" variant="info" style={{ width: '20px', height: '20px' }} />
@@ -65,11 +75,9 @@ function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lis
                 </svg>
               )}
             </div>
-
             <Dropdown
-              // isOpen={setting_Menu}
+              isOpen={setting_Menu}
               toggle={() => {
-                lisener();
                 setsetting_Menu(!setting_Menu);
               }}
             >
@@ -79,7 +87,7 @@ function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lis
                 ) : (
                   <i className="mdi mdi-grid me-2"></i>
                 )}{' '}
-                Add
+                View
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem onClick={() => changeStyle('list')} tag="a" href="#">
@@ -90,6 +98,13 @@ function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lis
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <Button
+              onClick={() => {
+                route.push('add');
+              }}
+            >
+              Add New
+            </Button>
           </div>
         </div>
       </Col>
