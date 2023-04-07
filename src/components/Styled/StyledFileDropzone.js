@@ -3,16 +3,13 @@ import { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
 
-const focusedStyle = {
-  // borderColor: '#1890ff',
-};
+const focusedStyle = {};
 
-const acceptStyle = {
-  // borderColor: '#52c41a',
-};
+const acceptStyle = {};
 
 const rejectStyle = {
-  // borderColor: '#ff4d4f',
+  backgroundImage:
+    "url(\"data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='25' ry='25' stroke='%23DD5B63FF' stroke-width='3' stroke-dasharray='11%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e\")",
 };
 
 const defaultStyle = {

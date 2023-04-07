@@ -57,13 +57,15 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
 
   // image
   const onDrop = (acceptedFiles, rejectedFiles, dontKnow, fieldName) => {
+    const newFiles = acceptedFiles.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      })
+    );
+
     setContainer((prev) => ({
       ...prev,
-      [fieldName]: acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      ),
+      [fieldName]: newFiles?.length > 0 ? newFiles : prev[fieldName],
     }));
   };
 
