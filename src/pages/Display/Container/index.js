@@ -1,23 +1,20 @@
 /* eslint-disable no-unused-vars */
 // thrid pary
-import { West } from '@mui/icons-material';
-import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 // project import
-import BreadCrumbs from '../../../components/Common/BreadCrumb2';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
-import PageButton from '../../../components/Common/PageButton';
+import PageTop from '../../../components/Common/PageTop';
 import Wrapper from '../../../components/Wrapper';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
-import AddContainer from './AddContainer';
-// import ListPageSkeleton from './ListPageSkeleton';
 import ListPageSkeleton from '../ListPageSkeleton';
+import AddContainer from './AddContainer';
 import ContainerTable from './ContainerTable';
 
 const typeToTabIndexMap = {
@@ -165,30 +162,15 @@ export default function ContainerList({ containerType }) {
       }}
     >
       <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
-        <Box pt={9}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <PageButton label="Back to Display" to="/display" startIcon={<West />} />
-            <Button
-              color="secondary"
-              variant="contained"
-              sx={{
-                borderRadius: '8px',
-              }}
-              onClick={() => {
-                setSidebarOpen(true);
-              }}
-            >
-              Create
-            </Button>
-          </Stack>
-          <BreadCrumbs
-            items={breadcrumbItems}
-            sx={{
-              pt: 6.5,
-            }}
-          />
-        </Box>
-
+        <PageTop
+          backButtonLabel="Back to Display"
+          backTo="/display"
+          addButtonLabel="Create"
+          onAdd={() => {
+            setSidebarOpen(true);
+          }}
+          breadcrumbItems={breadcrumbItems}
+        />
         <Box>
           <Tabs
             value={currentTab}

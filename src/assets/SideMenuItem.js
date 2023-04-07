@@ -32,26 +32,6 @@ export const adminMenuItem = [
       },
     ],
   },
-  // {
-  //   name: 'Banner',
-  //   icon: 'fas fa-image',
-  //   link: '/#',
-  //   isSubmenu: true,
-  //   submenu: [
-  //     {
-  //       name: 'List',
-  //       icon: 'fas fa-clipboard-list',
-  //       link: '/banner',
-  //       isSubmenu: false,
-  //     },
-  //     {
-  //       name: 'Add',
-  //       icon: 'fas fa-plus-circle',
-  //       link: '/banner/add',
-  //       isSubmenu: false,
-  //     },
-  //   ],
-  // },
   {
     name: 'User',
     icon: 'fas fa-user-friends',
@@ -94,18 +74,6 @@ export const adminMenuItem = [
         name: 'Add',
         icon: 'fas fa-plus-circle',
         link: '/shops/add',
-        isSubmenu: false,
-      },
-      {
-        name: 'Cuisines',
-        icon: 'fas fa-clipboard-list',
-        link: '/shops/cuisines',
-        isSubmenu: false,
-      },
-      {
-        name: 'Tags',
-        icon: 'fas fa-clipboard-list',
-        link: '/shops/tags',
         isSubmenu: false,
       },
     ],

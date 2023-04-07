@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 
-export default function PageButton({ label, to, ...props }) {
+export default function PageButton({ label, to, sx, ...props }) {
   const history = useHistory();
 
   return (
@@ -14,11 +14,13 @@ export default function PageButton({ label, to, ...props }) {
         textDecorationLine: 'underline',
         textUnderlineOffset: '2px',
         padding: '0px',
-        gap: '15px',
+        gap: '11px',
 
         '& .MuiButton-startIcon, & .MuiButton-endIcon': {
           margin: '0px',
         },
+
+        ...sx,
       }}
       variant="text"
       color="secondary"

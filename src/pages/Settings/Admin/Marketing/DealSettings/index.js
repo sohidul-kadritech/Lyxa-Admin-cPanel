@@ -1,11 +1,10 @@
 // third party, Typography
-import { West } from '@mui/icons-material';
-import { Box, Button, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
-import PageButton from '../../../../../components/Common/PageButton';
+import PageTop from '../../../../../components/Common/PageTop';
 import Taglist from '../../../../../components/Common/Taglist';
 import StyledSwitchList from '../../../../../components/Styled/StyledSwitchList';
 import Wrapper from '../../../../../components/Wrapper';
@@ -32,11 +31,8 @@ const dealTypes = [
   },
 ];
 
-// QUERY ONLY ONCE
-// const QUERY_RUNNED = false;
-
 export default function DealSettings() {
-  const theme = useTheme();
+  // const theme = useTheme();
   const [serverState, setServerState] = useState({});
   const [queryRunned, setQueryRunned] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -177,29 +173,14 @@ export default function DealSettings() {
   };
 
   return (
-    <Wrapper>
-      <Box
-        className="page-content"
-        sx={{ height: '100vh', paddingLeft: '0px', paddingRight: '0px', overflowY: 'scroll' }}
-      >
+    <Wrapper
+      sx={{
+        paddingTop: 0,
+      }}
+    >
+      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
         {/* top */}
-        <Box
-          sx={{
-            pb: 5,
-          }}
-        >
-          <PageButton label="Back to Marketing" startIcon={<West />} to="/admin/settings2/marketing" />
-          <Typography
-            variant="h4"
-            color={theme.palette.text.heading}
-            sx={{
-              pt: 5,
-              pb: 2,
-            }}
-          >
-            Deals
-          </Typography>
-        </Box>
+        <PageTop title="Deals" backButtonLabel="Back to Marketing" backTo="/admin/settings2/marketing" />
         <Grid container spacing="25px">
           {/* restaurant */}
           <Grid xs={12}>

@@ -2,10 +2,7 @@
 import { Box, Breadcrumbs, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const contianerSx = {
-  pt: 2.5,
-  pb: 5,
-};
+const contianerSx = {};
 
 const linkStyle = (isActive) => ({
   fontSize: '13px',
@@ -22,7 +19,7 @@ export default function BreadCrumbs({ items, sx, ...props }) {
     <Box sx={{ ...contianerSx, ...(sx || {}) }} {...props}>
       <Typography
         variant="h4"
-        pb={2}
+        pb={1.5}
         sx={{
           fontSize: '19px',
           lineHeight: '23px',

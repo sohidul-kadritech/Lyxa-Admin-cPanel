@@ -1,6 +1,7 @@
 // thrid pary
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import PageList from '../../components/Common/PageList';
+import PageTop from '../../components/Common/PageTop';
 import Wrapper from '../../components/Wrapper';
 
 const pagesList = [
@@ -23,8 +24,6 @@ const pagesList = [
 ];
 
 export default function DisplaySettings() {
-  const theme = useTheme();
-
   return (
     <Wrapper
       sx={{
@@ -32,19 +31,7 @@ export default function DisplaySettings() {
       }}
     >
       <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
-        <Box pb={7.5}>
-          <Typography
-            variant="h4"
-            color={theme.palette.text.primary}
-            sx={{
-              pt: 9,
-              pb: 2,
-            }}
-          >
-            Display
-          </Typography>
-          <Typography variant="body3">Customize admin settings</Typography>
-        </Box>
+        <PageTop title="Display" subtitle="Customize admin settings" />
         <PageList items={pagesList} />
       </Box>
     </Wrapper>

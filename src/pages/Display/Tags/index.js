@@ -1,14 +1,12 @@
 // thrid pary
-import { West } from '@mui/icons-material';
-import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 // project import
-import BreadCrumbs from '../../../components/Common/BreadCrumb2';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
-import PageButton from '../../../components/Common/PageButton';
+import PageTop from '../../../components/Common/PageTop';
 import Wrapper from '../../../components/Wrapper';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -126,29 +124,15 @@ export default function TagsAndCusines() {
       }}
     >
       <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
-        <Box pt={9}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <PageButton label="Back to Display" to="/display" startIcon={<West />} />
-            <Button
-              color="secondary"
-              variant="contained"
-              sx={{
-                borderRadius: '8px',
-              }}
-              onClick={() => {
-                setSidebar('add');
-              }}
-            >
-              Create
-            </Button>
-          </Stack>
-          <BreadCrumbs
-            items={breadcrumbItems}
-            sx={{
-              pt: 6.5,
-            }}
-          />
-        </Box>
+        <PageTop
+          breadcrumbItems={breadcrumbItems}
+          backButtonLabel="Back to Display"
+          backTo="/display"
+          addButtonLabel="Create"
+          onAdd={() => {
+            setSidebar('add');
+          }}
+        />
         <Box>
           <Tabs
             value={currentTab}

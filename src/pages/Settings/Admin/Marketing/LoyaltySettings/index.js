@@ -1,11 +1,10 @@
 // third party
-import { West } from '@mui/icons-material';
-import { Box, Button, Drawer, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Drawer, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
-import PageButton from '../../../../../components/Common/PageButton';
+import PageTop from '../../../../../components/Common/PageTop';
 import Taglist from '../../../../../components/Common/Taglist';
 import Wrapper from '../../../../../components/Wrapper';
 import { successMsg } from '../../../../../helpers/successMsg';
@@ -23,7 +22,6 @@ const getRewardInit = {
 };
 
 export default function LoyaltySettings() {
-  const theme = useTheme();
   const [render, setRender] = useState(false);
   const [fetchedData, setFetchedData] = useState({});
   const [queryOnce, setQueryOnce] = useState(false);
@@ -189,25 +187,13 @@ export default function LoyaltySettings() {
   };
 
   return (
-    <Wrapper>
+    <Wrapper
+      sx={{
+        paddingTop: 0,
+      }}
+    >
       <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
-        <Box
-          sx={{
-            pb: 5,
-          }}
-        >
-          <PageButton label="Back to Marketing" startIcon={<West />} to="/admin/settings2/marketing" />
-          <Typography
-            variant="h4"
-            color={theme.palette.text.primary}
-            sx={{
-              pt: 5,
-              pb: 2,
-            }}
-          >
-            Loyalty Points
-          </Typography>
-        </Box>
+        <PageTop backButtonLabel="Back to Marketing" backTo="/admin/settings2/marketing" title="Loyalty Points" />
         <Box
           sx={{
             background: '#fff',

@@ -62,7 +62,7 @@ import UnitTypes from '../pages/Product/UnitTypes/UnitTypes';
 import RatingSettings from '../pages/Ratings';
 import SellerDetails from '../pages/Seller/SellerDetails/SellerDetails';
 import AdminDealSettings from '../pages/Settings/Admin/Marketing/DealSettings';
-import Cuisine from '../pages/Shops/Cuisine';
+// import Cuisine from '../pages/Shops/Cuisine';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import UserTransaction from '../pages/Users/UserTransaction/UserTransaction';
 
@@ -83,7 +83,7 @@ import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
-import Tags from '../pages/Tags/Tags';
+// import Tags from '../pages/Tags/Tags';
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
@@ -122,8 +122,8 @@ const adminRoutes = [
   { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/marketing/:id', component: Marketing },
   { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
-  { path: '/shops/cuisines', component: Cuisine },
-  { path: '/shops/tags', component: Tags },
+  // { path: '/shops/cuisines', component: Cuisine },
+  // { path: '/shops/tags', component: Tags },
 
   // product
   { path: '/products/list', component: ProductList },
