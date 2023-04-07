@@ -16,6 +16,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
 import AddContainer from './AddContainer';
+import ContainerListSkeleton from './ContainerListSkeleton';
 import ContainerTable from './ContainerTable';
 
 const typeToTabIndexMap = {
@@ -186,33 +187,37 @@ export default function ContainerList({ containerType }) {
             }}
           />
         </Box>
-        <Box>
-          <Tabs
-            value={currentTab}
-            onChange={(event, newValue) => {
-              setCurrentTab(newValue);
-            }}
-          >
-            <Tab label="Food" />
-            <Tab label="Grocery" />
-            <Tab label="Pharmacy" />
-          </Tabs>
-          <Box pt={7}>
-            <CommonFilters
-              filtersValue={filters}
-              setFiltersValue={setFilters}
-              searchPlaceHolder={`Search ${listQuery.data?.data?.listContainer?.length || 0} items`}
-            />
-            {/* table */}
-            <ContainerTable
-              items={items}
-              loading={listQuery.isLoading}
-              onDrop={dropSort}
-              handleMenuClick={threeDotHandler}
-              containerType={containerType}
-            />
+        {listQuery.isLoading ? (
+          <ContainerListSkeleton containerType={containerType} />
+        ) : (
+          <Box>
+            <Tabs
+              value={currentTab}
+              onChange={(event, newValue) => {
+                setCurrentTab(newValue);
+              }}
+            >
+              <Tab label="Food" />
+              <Tab label="Grocery" />
+              <Tab label="Pharmacy" />
+            </Tabs>
+            <Box pt={7}>
+              <CommonFilters
+                filtersValue={filters}
+                setFiltersValue={setFilters}
+                searchPlaceHolder={`Search ${listQuery.data?.data?.listContainer?.length || 0} items`}
+              />
+              {/* table */}
+              <ContainerTable
+                items={items}
+                loading={listQuery.isLoading}
+                onDrop={dropSort}
+                handleMenuClick={threeDotHandler}
+                containerType={containerType}
+              />
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
       {/* sidebar */}
       <Drawer anchor="right" open={sidebarOpen}>

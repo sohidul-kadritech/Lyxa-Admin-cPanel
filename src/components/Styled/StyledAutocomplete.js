@@ -1,7 +1,7 @@
-import ClearIcon from '@mui/icons-material/Clear';
+/* eslint-disable max-len */
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
-import { Autocomplete, IconButton, InputAdornment, Paper, TextField, styled, useTheme } from '@mui/material';
+import { Autocomplete, InputAdornment, Paper, TextField, styled, useTheme } from '@mui/material';
 
 const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   /* normal styles */
@@ -14,7 +14,7 @@ const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   '& .MuiInputBase-root': {
     background: theme.palette.background.secondary,
     borderRadius: '40px',
-    padding: '12px 40px 12px 8px !important',
+    padding: '12px 60px 12px 8px !important',
     cursor: 'pointer',
 
     '& .MuiInputAdornment-positionStart': {
@@ -159,6 +159,10 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
               borderRadius: '0px 0px 25px 25px',
               padding: 0,
               maxHeight,
+
+              '& .MuiAutocomplete-option[aria-selected="true"]': {
+                background: 'rgb(94, 151, 169, .05)',
+              },
             },
 
             '& .MuiAutocomplete-option': {
@@ -192,10 +196,10 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
             endAdornment: (
               <InputAdornment position="end">
                 {params.InputProps.endAdornment}
-                {!params.inputProps.value && (
+                {/* {!params.inputProps.value && (
                   <IconButton
                     size="small"
-                    // eslint-disable-next-line max-len
+                    //eslint-disable-next-line max-len
                     className="custom-clear-button MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator"
                     // onClick={() => {
                     //   console.log('clicked');
@@ -204,7 +208,7 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
                   >
                     <ClearIcon />
                   </IconButton>
-                )}
+                )} */}
               </InputAdornment>
             ),
           }}

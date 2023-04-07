@@ -2,15 +2,15 @@
 import { Box, Button, Stack } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ReactComponent as DropIcon } from '../../../../assets/icons/down.svg';
-import SidebarContainer from '../../../../components/Common/SidebarContainerSm';
-import StyledFormField from '../../../../components/Form/StyledFormField';
-import StyledChip from '../../../../components/Styled/StyledChips';
-import { successMsg } from '../../../../helpers/successMsg';
-import * as Api from '../../../../network/Api';
-import AXIOS from '../../../../network/axios';
-import { createContainerData } from '../helper';
-import PageSkeleton from './PageSkeleton';
+import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
+import SidebarContainer from '../../../components/Common/SidebarContainerSm';
+import StyledFormField from '../../../components/Form/StyledFormField';
+import StyledChip from '../../../components/Styled/StyledChips';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import AddContainerSkeleton from './AddContainerSkeleton';
+import { createContainerData } from './helper';
 
 const fieldContainerSx = {
   padding: '22px 0',
@@ -19,7 +19,7 @@ const fieldContainerSx = {
 
 const selectProps = {
   multiple: true,
-  disablePortal: false,
+  disablePortal: true,
   getOptionLabel: (option) => option?.name || 'Choose',
   label: 'Choose',
   sx: {
@@ -197,7 +197,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
   return (
     <SidebarContainer onClose={onClose} title={editContainer?._id ? 'Edit Container' : 'Create New Container'}>
       {G_LOADING ? (
-        <PageSkeleton />
+        <AddContainerSkeleton containerType={containerType} />
       ) : (
         <Stack justifyContent="space-between" height="100%">
           <Box>

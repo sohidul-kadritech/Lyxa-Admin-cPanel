@@ -75,7 +75,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                     justifyContent: 'space-between',
                   }}
                 >
-                  {inputProps.multiple && <Checkbox checked={selected} />}
+                  {inputProps.multiple && <Checkbox color="secondary" checked={selected} />}
                   <span>{props.key}</span>
                 </div>
               </li>
