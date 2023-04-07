@@ -1,6 +1,10 @@
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Skeleton, Stack, Typography } from '@mui/material';
 
-export default function ProductCard({ product, currency, ...props }) {
+export default function ProductCard({ product, currency, loading, ...props }) {
+  if (loading) {
+    return <ComponentSkeleton />;
+  }
+
   return (
     <Stack direction="row" alignItems="flex-start" gap="10px" {...props}>
       <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 86, height: 68 }} />
@@ -40,6 +44,27 @@ export default function ProductCard({ product, currency, ...props }) {
           </span>
         </Typography>
       </Box>
+    </Stack>
+  );
+}
+
+function ComponentSkeleton() {
+  return (
+    <Stack
+      direction="row"
+      gap={3}
+      sx={{
+        height: '78px',
+        position: 'relative',
+        marginBottom: '15px',
+      }}
+    >
+      <Skeleton variant="rounded" width={86} height={68} />
+      <Stack gap={1.5}>
+        <Skeleton height={25} width={150} />
+        <Skeleton height={15} />
+        <Skeleton height={15} />
+      </Stack>
     </Stack>
   );
 }

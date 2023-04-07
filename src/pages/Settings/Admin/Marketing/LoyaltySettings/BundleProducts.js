@@ -6,6 +6,8 @@ import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
 import ProductCard from './ProductCard';
 
+const skeletons_count = new Array(5).fill(0);
+
 export default function BundleProducts({ onClose, rewardBundle }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
@@ -28,13 +30,12 @@ export default function BundleProducts({ onClose, rewardBundle }) {
       })
   );
 
-  console.log(productsQuery);
-
   return (
     <SidebarContainer title="Categories: Food" onClose={onClose}>
       <Box pt={11}>
-        {productsQuery.data?.data?.products?.map((product, index, array) => (
+        {(productsQuery.data?.data?.products || skeletons_count).map((product, index, array) => (
           <ProductCard
+            loading={productsQuery?.isLoading}
             key={product?._id}
             product={product}
             currency={currency}
@@ -45,7 +46,19 @@ export default function BundleProducts({ onClose, rewardBundle }) {
             }}
           />
         ))}
-        {!productsQuery.data?.data?.products?.length && <Typography variant="h6">No products found</Typography>}
+        {!productsQuery?.isLoading && !productsQuery.data?.data?.products?.length && (
+          <Typography
+            variant="h6"
+            sx={{
+              paddingTop: '15px',
+              paddingBottom: '15px',
+              borderBottom: '1px solid #EEEEEE',
+              borderTop: '1px solid #EEEEEE',
+            }}
+          >
+            No products found
+          </Typography>
+        )}
       </Box>
     </SidebarContainer>
   );

@@ -46,6 +46,7 @@ export default function ContainerList({ containerType }) {
     { label: 'List Contianer', to: '#' },
   ];
 
+  // switch keys
   if (containerType === 'filter') {
     itemsQueryKey = `filter-container-${typeToTabIndexMap[currentTab]}`;
     itemsQueryApi = Api.GET_ALL_FILTER_CONTAINERS;
@@ -88,8 +89,6 @@ export default function ContainerList({ containerType }) {
         },
       })
   );
-
-  console.log(listQuery);
 
   const items =
     containerType === 'list' ? listQuery.data?.data?.listContainer || [] : listQuery.data?.data?.filterContainer || [];

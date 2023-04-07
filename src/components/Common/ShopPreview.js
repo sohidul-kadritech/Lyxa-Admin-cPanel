@@ -1,17 +1,36 @@
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import StarIcon from '@mui/icons-material/Star';
-import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Skeleton, Stack, Typography, useTheme } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as BikeIcon } from '../../assets/icons/delivery2.svg';
 import { ReactComponent as HeartIcon } from '../../assets/icons/heart.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
+// import { getShopDeals } from '../../helpers/getShopDeals';
 
-const shop = {
-  banner: 'https://xxx.mock',
-  name: 'Chipotle Mexican Grill',
-  isReward: true,
-  priceRange: 1,
-};
+function ComponentSkeleton() {
+  return (
+    <Stack
+      direction="row"
+      gap={3}
+      sx={{
+        height: '70px',
+        position: 'relative',
+      }}
+    >
+      <Skeleton variant="rounded" width={70} height={70} />
+      <Box>
+        <Stack direction="row" gap={3}>
+          <Skeleton height={25} width={200} />
+          <Skeleton height={25} width={25} />
+        </Stack>
+        <Stack gap={1.5}>
+          <Skeleton height={15} />
+          <Skeleton height={15} />
+        </Stack>
+      </Box>
+    </Stack>
+  );
+}
 
 function Info({ Icon, title, dot }) {
   return (
@@ -32,10 +51,13 @@ function Info({ Icon, title, dot }) {
   );
 }
 
-export default function ShopPreview() {
+export default function ShopPreview({ shop, loading }) {
   const theme = useTheme();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
-  // resturants
+  if (loading) {
+    return <ComponentSkeleton />;
+  }
 
   return (
     <Stack direction="row" gap={3}>
@@ -46,7 +68,7 @@ export default function ShopPreview() {
           flexShrink: 0,
         }}
       >
-        <Avatar src={shop.banner} alt={shop.name} variant="rounded" sx={{ width: 74, height: 74 }} />
+        <Avatar src={shop?.shopBanner} alt={shop?.shopName} variant="rounded" sx={{ width: 74, height: 74 }} />
         <span
           style={{
             position: 'absolute',
@@ -68,7 +90,7 @@ export default function ShopPreview() {
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Stack direction="row" alignItems="center">
             <Typography variant="body2" display="inline-block" pr={1.5}>
-              {shop.name}
+              {shop?.shopName}
             </Typography>
             <RewardIcon color="#15BFCA" />
           </Stack>
@@ -87,7 +109,7 @@ export default function ShopPreview() {
                 lineHeight: '12px!important',
               }}
             >
-              4.2
+              {shop?.rating}
             </Typography>
           </Stack>
         </Stack>
@@ -102,7 +124,11 @@ export default function ShopPreview() {
               paddingRight: '5px',
             }}
           >
-            Lunch, Dinner .
+            {shop?.tagsId?.map((tag, index, array) => ` ${tag?.name}${index === array.length - 1 ? '' : ','}`)}
+            {shop?.cuisineType?.length > 0 && ', '}
+            {shop?.cuisineType?.map(
+              (cuisine, index, array) => `${cuisine?.name}${index === array.length - 1 ? '' : ','} `
+            )}
           </Typography>
           <Typography
             variant="body1"
@@ -114,8 +140,9 @@ export default function ShopPreview() {
           >
             {new Array(4).fill(0).map((item, index) => (
               <span
+                key={index}
                 style={{
-                  color: index < shop.priceRange ? undefined : '#D4D4D4',
+                  color: index < shop.expensive ? undefined : '#D4D4D4',
                 }}
               >
                 $
@@ -125,9 +152,8 @@ export default function ShopPreview() {
         </Box>
         {/* Info */}
         <Stack direction="row" alignItems="center" gap="7px">
-          <Info Icon={AccessTimeIcon} title="30-40 min" dot="." />
-          <Info Icon={BikeIcon} title="Free" dot="." />
-          <Info Icon={CartIcon} title="Min. $3" />
+          {shop?.deliveryFee === 0 && <Info Icon={BikeIcon} title="Free" dot="." />}
+          <Info Icon={CartIcon} title={`Min. ${currency} ${shop?.minOrderAmount}`} />
         </Stack>
         <Typography
           color={theme.palette.primary.main}

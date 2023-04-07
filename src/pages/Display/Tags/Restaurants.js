@@ -1,12 +1,12 @@
-// third party
-
 // project import
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useQuery } from 'react-query';
 import ShopPreview from '../../../components/Common/ShopPreview';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+
+const skeletons = new Array(4).fill(0);
 
 export default function Restaurants({ onClose, tagId }) {
   const shopsQuery = useQuery([`shops-by-tag-and-cusine`, { id: tagId }], () =>
@@ -17,12 +17,10 @@ export default function Restaurants({ onClose, tagId }) {
     })
   );
 
-  console.log(shopsQuery.data);
-
   return (
     <SidebarContainer title="Categories: Resturants" onClose={onClose}>
       {/* shop */}
-      <Box pt={16} pb={16}>
+      {(shopsQuery?.data?.data?.shop || skeletons)?.map((shop, index) => (
         <Box
           pt={4}
           pb={4}
@@ -30,21 +28,22 @@ export default function Restaurants({ onClose, tagId }) {
             borderBottom: '1px solid #EEEEEE',
           }}
         >
-          <ShopPreview />
+          <ShopPreview key={index} shop={shop} loading={shopsQuery?.isLoading} />
         </Box>
-        <Box
+      ))}
+      {!shopsQuery.isLoading && !shopsQuery?.data?.data?.shop?.length && (
+        <Typography
+          variant="h6"
           pt={4}
           pb={4}
           sx={{
             borderBottom: '1px solid #EEEEEE',
+            borderTop: '1px solid #EEEEEE',
           }}
         >
-          <ShopPreview />
-        </Box>
-        <Box pt={4} pb={4}>
-          <ShopPreview />
-        </Box>
-      </Box>
+          No shops found
+        </Typography>
+      )}
     </SidebarContainer>
   );
 }

@@ -75,6 +75,8 @@ export default function TagsAndCusines() {
       })
   );
 
+  const items = tagsQuery.data?.data?.tags || [];
+
   // edit
   const tagsMutation = useMutation((data) =>
     AXIOS.post(Api.UPDATE_TAGS_AND_CUSINES, {
@@ -83,8 +85,7 @@ export default function TagsAndCusines() {
     })
   );
 
-  const items = tagsQuery.data?.data?.tags || [];
-
+  // sorting
   const tagsSortingMutation = useMutation((data) => AXIOS.post(Api.SORT_TAGS_AND_CUSINES, data));
 
   const dropSort = ({ removedIndex, addedIndex }) => {
@@ -179,7 +180,8 @@ export default function TagsAndCusines() {
                 setCurrentTag(item);
                 setSidebar('add');
               }}
-              onViewShops={() => {
+              onViewShops={(item) => {
+                setCurrentTag(item);
                 setSidebar('restaurants');
               }}
               onVisibilityChange={(value, item) => {
@@ -208,9 +210,10 @@ export default function TagsAndCusines() {
         )}
         {sidebar === 'restaurants' && (
           <Restaurants
+            tagId={currentTag?._id}
             onClose={() => {
-              setSidebar(null);
               setCurrentTag({});
+              setSidebar(null);
             }}
           />
         )}

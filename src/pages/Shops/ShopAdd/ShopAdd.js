@@ -46,10 +46,10 @@ function ShopAdd() {
   const { sellers, searchKey: searchSellerKey } = useSelector((state) => state.sellerReducer);
   const { loading, status, shops, cuisines, tags: allTags, searchKey } = useSelector((state) => state.shopReducer);
 
-  const [tags, setTags] = useState({
-    items: [],
-    value: '',
-  });
+  const [tags, setTags] = useState([]);
+  const [shop, setShop] = useState({});
+
+  console.log(tags);
 
   const [seller, setSeller] = useState(null);
   const [shopStartTime, setShopStartTime] = useState('');
@@ -116,6 +116,7 @@ function ShopAdd() {
       shopStartTimeText,
       shopStatus,
       tags,
+      tagsId,
       liveStatus,
       address,
       email,
@@ -139,10 +140,6 @@ function ShopAdd() {
     setShopName(shopName);
     setShopStatus(shopStatus);
     setMinOrderAmount(minOrderAmount);
-    setTags({
-      items: tags,
-      value: '',
-    });
     setLiveStatus(liveStatus);
     setPinCode(address.pin);
     handleAddressSelect(address.address, address.placeId);
@@ -162,11 +159,13 @@ function ShopAdd() {
 
       if (findShop) {
         updateData(findShop);
+        setShop(findShop);
       } else {
         // callApi(id, SINGLE_SHOP,);
         const data = await callApi(id, SINGLE_SHOP, 'shop');
         if (data) {
           updateData(data);
+          setShop(data);
         } else {
           history.push('/shops/list', { replace: true });
         }
@@ -217,20 +216,13 @@ function ShopAdd() {
 
   // TAGS ADD
   const handleTagChange = (item) => {
-    // console.log({ item });
     if (item) {
-      setTags({
-        ...tags,
-        items: [...tags.items, item.name],
-      });
+      setTags((prev) => [...prev, item]);
     }
   };
 
-  const handleTagDelete = (item) => {
-    setTags({
-      ...tags,
-      items: tags.items.filter((i) => i !== item),
-    });
+  const handleTagDelete = (tag) => {
+    setTags((prev) => prev.filter((item) => item?._id !== tag?._id));
   };
 
   const getMinutes = (s) => s.split(':').reduce((acc, curr) => acc * 60 + +curr, 0);
@@ -274,7 +266,8 @@ function ShopAdd() {
       shopBanner: bannerUrl,
       shopStatus,
       shopDescription: 'desrcriptions',
-      tags: tags.items,
+      tags: tags.map((item) => item?.name),
+      tagsId: tags.map((item) => item?._id),
       liveStatus,
       cuisineType: cuisinesList,
       dietaryType,
@@ -347,7 +340,7 @@ function ShopAdd() {
     if (!seller) {
       return successMsg('Select a seller');
     }
-    if (seller?.sellerType === 'food' && tags.items.length < 1) {
+    if (seller?.sellerType === 'food' && tags.length < 1) {
       return successMsg('Please Add Shop Tag');
     }
 
@@ -487,10 +480,16 @@ function ShopAdd() {
           shopType: seller?.sellerType,
           status: 'active',
         },
-      })
+      }),
+    {
+      enabled: !!shop?._id,
+      onSuccess: (data) => {
+        if (id) {
+          setTags(data?.data?.tags?.filter((item) => shop?.tagsId?.includes(item?._id)) || []);
+        }
+      },
+    }
   );
-
-  // console.log();
 
   return (
     <GlobalWrapper>
@@ -792,13 +791,13 @@ function ShopAdd() {
                       <div>
                         <Autocomplete
                           className="cursor-pointer"
-                          value={tags.value || null}
+                          value={tags || null}
                           onChange={(event, newValue) => {
                             handleTagChange(newValue);
                           }}
                           disabled={!seller}
                           getOptionLabel={(option) => (option.name ? option.name : '')}
-                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                          isOptionEqualToValue={(option, value) => option === value}
                           inputValue={searchKey}
                           onInputChange={(event, newInputValue) => {
                             dispatch(updateShopSearchKey(newInputValue));
@@ -820,11 +819,11 @@ function ShopAdd() {
                         />
                       </div>
 
-                      {tags.items.length > 0 && (
+                      {tags.length > 0 && (
                         <Paper className="mt-4 p-3">
-                          {tags.items.map((item, index) => (
+                          {tags.map((item, index) => (
                             <div className="tag__wrapper" key={index}>
-                              {item}
+                              {item?.name}
                               <button type="button" className="button" onClick={() => handleTagDelete(item)}>
                                 &times;
                               </button>

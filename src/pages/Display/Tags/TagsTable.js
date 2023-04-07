@@ -108,7 +108,7 @@ export default function TagsTable({
               marginLeft: '17px',
             }}
             onClick={() => {
-              onViewShops();
+              onViewShops(params.row);
             }}
           >
             <Visibility />
