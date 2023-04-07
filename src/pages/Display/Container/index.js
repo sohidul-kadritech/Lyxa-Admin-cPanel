@@ -16,7 +16,8 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
 import AddContainer from './AddContainer';
-import ContainerListSkeleton from './ContainerListSkeleton';
+// import ListPageSkeleton from './ListPageSkeleton';
+import ListPageSkeleton from '../ListPageSkeleton';
 import ContainerTable from './ContainerTable';
 
 const typeToTabIndexMap = {
@@ -200,7 +201,7 @@ export default function ContainerList({ containerType }) {
             <Tab label="Pharmacy" />
           </Tabs>
           {listQuery.isLoading ? (
-            <ContainerListSkeleton containerType={containerType} />
+            <ListPageSkeleton pageType={containerType} />
           ) : (
             <Box pt={7}>
               <CommonFilters

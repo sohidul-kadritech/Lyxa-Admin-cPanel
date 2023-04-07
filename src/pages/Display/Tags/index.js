@@ -14,6 +14,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
+import ListPageSkeleton from '../ListPageSkeleton';
 import AddTag from './AddTag';
 import Restaurants from './Restaurants';
 import TagsTable from './TagsTable';
@@ -160,41 +161,45 @@ export default function TagsAndCusines() {
             <Tab label="Pharmacy" />
           </Tabs>
           {/* panels */}
-          <Box pt={7}>
-            <CommonFilters
-              filtersValue={filters}
-              setFiltersValue={setFilters}
-              searchPlaceHolder={`Search ${items.length || 0} items`}
-            />
-            <TagsTable
-              items={items}
-              shopType={typeToTabIndexMap[currentTab]}
-              onDrop={dropSort}
-              loading={tagsQuery.isLoading}
-              onStatusChange={(value, item) => {
-                item.status = value;
-                setRender((prev) => !prev);
-                tagsMutation.mutate(item);
-              }}
-              onEdit={(item) => {
-                setCurrentTag(item);
-                setSidebar('add');
-              }}
-              onViewShops={(item) => {
-                setCurrentTag(item);
-                setSidebar('restaurants');
-              }}
-              onVisibilityChange={(value, item) => {
-                item.visibility = value;
-                setRender((prev) => !prev);
-                tagsMutation.mutate(item);
-              }}
-              onDelete={(item) => {
-                setCurrentTag(item);
-                setConfrimModal(true);
-              }}
-            />
-          </Box>
+          {tagsQuery.isLoading ? (
+            <ListPageSkeleton pageType="tags" />
+          ) : (
+            <Box pt={7}>
+              <CommonFilters
+                filtersValue={filters}
+                setFiltersValue={setFilters}
+                searchPlaceHolder={`Search ${items.length || 0} items`}
+              />
+              <TagsTable
+                items={items}
+                shopType={typeToTabIndexMap[currentTab]}
+                onDrop={dropSort}
+                loading={tagsQuery.isLoading}
+                onStatusChange={(value, item) => {
+                  item.status = value;
+                  setRender((prev) => !prev);
+                  tagsMutation.mutate(item);
+                }}
+                onEdit={(item) => {
+                  setCurrentTag(item);
+                  setSidebar('add');
+                }}
+                onViewShops={(item) => {
+                  setCurrentTag(item);
+                  setSidebar('restaurants');
+                }}
+                onVisibilityChange={(value, item) => {
+                  item.visibility = value;
+                  setRender((prev) => !prev);
+                  tagsMutation.mutate(item);
+                }}
+                onDelete={(item) => {
+                  setCurrentTag(item);
+                  setConfrimModal(true);
+                }}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
       <Drawer anchor="right" open={sidebar !== null}>

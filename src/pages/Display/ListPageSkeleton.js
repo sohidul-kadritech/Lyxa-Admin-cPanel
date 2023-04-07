@@ -1,14 +1,14 @@
 import { Box, Skeleton, Stack } from '@mui/material';
 
-function Column({ containerType }) {
+function Column({ pageType }) {
   return (
     <Stack gap={10} direction="row" alignItems="center">
       <Stack alignItems="center" direction="row" gap={3} flex={1}>
         <Skeleton height={10} width={20} />
-        {containerType === 'list' && <Skeleton height={36} width={36} />}
+        {(pageType === 'list' || pageType === 'tags') && <Skeleton height={36} width={36} />}
         <Skeleton height={18} width={100} />
       </Stack>
-      {containerType === 'list' && (
+      {pageType === 'list' && (
         <Box
           sx={{
             flex: 1,
@@ -17,7 +17,6 @@ function Column({ containerType }) {
           <Skeleton height={18} width={100} />
         </Box>
       )}
-
       <Box
         sx={{
           flex: 1,
@@ -32,14 +31,21 @@ function Column({ containerType }) {
       >
         <Skeleton height={18} width={100} />
       </Box>
-      <Stack direction="row" justifyContent="flex-end">
-        <Skeleton height={10} width={30} />
-      </Stack>
+      {(pageType === 'filter' || pageType === 'list') && (
+        <Stack direction="row" justifyContent="flex-end">
+          <Skeleton height={10} width={30} />
+        </Stack>
+      )}
+      {pageType === 'tags' && (
+        <Stack direction="row" justifyContent="flex-end">
+          <Skeleton height={30} width={180} />
+        </Stack>
+      )}
     </Stack>
   );
 }
 
-export default function ContainerListSkeleton({ containerType }) {
+export default function ListPageSkeleton({ pageType }) {
   return (
     <Stack>
       <Stack direction="row" height={35} gap={3} mb={11} mt={7}>
@@ -91,18 +97,19 @@ export default function ContainerListSkeleton({ containerType }) {
             flex: 1,
           }}
         />
-        {containerType === 'list' && (
-          <Skeleton
-            height={20}
-            sx={{
-              flex: 1,
-            }}
-          />
-        )}
+        {pageType === 'list' ||
+          (pageType === 'tags' && (
+            <Skeleton
+              height={20}
+              sx={{
+                flex: 1,
+              }}
+            />
+          ))}
       </Stack>
       <Stack gap={5}>
         {new Array(7).fill(0).map((item, idx) => (
-          <Column key={idx} containerType={containerType} />
+          <Column key={idx} pageType={pageType} />
         ))}
       </Stack>
     </Stack>
