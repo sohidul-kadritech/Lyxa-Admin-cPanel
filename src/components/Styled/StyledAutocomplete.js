@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
 import { Autocomplete, InputAdornment, Paper, TextField, styled, useTheme } from '@mui/material';
+import { useState } from 'react';
 
 const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   /* normal styles */
@@ -143,13 +145,16 @@ const StyledSelect = styled(Autocomplete)(({ theme }) => ({
 
 export default function StyledAutocomplete({ label, placeholder, maxHeight, ...props }) {
   const theme = useTheme();
+  const [open, setOpen] = useState(false);
+
+  console.log(props);
 
   return (
     <StyledSelect
       blurOnSelect
       openOnFocus
       disableClearable
-      disablePortal
+      // disablePortal
       popupIcon={<KeyboardArrowDownIcon />}
       PaperComponent={({ children }) => (
         <Paper
@@ -183,6 +188,12 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
       renderInput={(params) => (
         <TextField
           {...params}
+          // onFocus={() => {
+          //   setOpen(true);
+          // }}
+          // onBlur={() => {
+          //   setOpen(false);
+          // }}
           variant="outlined"
           placeholder={placeholder}
           label={label}
@@ -199,7 +210,7 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
                 {/* {!params.inputProps.value && (
                   <IconButton
                     size="small"
-                    //eslint-disable-next-line max-len
+                    // eslint-disable-next-line max-len
                     className="custom-clear-button MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator"
                     // onClick={() => {
                     //   console.log('clicked');

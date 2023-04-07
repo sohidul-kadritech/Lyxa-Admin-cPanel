@@ -12,10 +12,11 @@ import moment from 'moment';
 import CloseButton from '../../../components/Common/CloseButton';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
-import ProductSelect from '../../../components/Common/ProductSelect';
+// import ProductSelect from '../../../components/Common/ProductSelect';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
+import StyledAutocomplete from '../../../components/Styled/StyledAutocomplete';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { deepClone } from '../../../helpers/deepClone';
@@ -404,7 +405,8 @@ export default function MarketingSettings({
         }
 
         return (
-          <ProductSelect
+          <StyledAutocomplete
+            fullWidth
             value={params.row}
             disabled={productsQuery.isLoading || itemSelectType === 'multiple'}
             options={createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)}

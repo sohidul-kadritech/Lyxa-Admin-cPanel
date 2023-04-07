@@ -80,6 +80,8 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                 </div>
               </li>
             )}
+            disableCloseOnSelect={inputProps.multiple}
+            blurOnSelect={!inputProps.multiple}
             {...(inputProps || {})}
             sx={{
               '&:has(.MuiInputBase-input:focus)': {
