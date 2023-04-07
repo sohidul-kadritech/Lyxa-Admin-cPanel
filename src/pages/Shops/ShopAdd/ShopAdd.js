@@ -81,6 +81,7 @@ function ShopAdd() {
   const [accountName, setAccountName] = useState('');
   const [accountNum, setAccountNum] = useState('');
   const [dietaryType, setdietaryType] = useState([]);
+  const [orderCapacity, setOrderCapacity] = useState('');
 
   const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
 
@@ -129,7 +130,9 @@ function ShopAdd() {
       account_name,
       account_number,
       bank_name,
+      orderCapacity,
     } = values;
+    setOrderCapacity(orderCapacity === 0 ? '' : orderCapacity);
     setEmail(email);
     setPhone(phone_number);
     setShopLogo(shopLogo);
@@ -268,6 +271,7 @@ function ShopAdd() {
       shopDescription: 'desrcriptions',
       tags: tags.map((item) => item?.name),
       tagsId: tags.map((item) => item?._id),
+      orderCapacity: orderCapacity === '' ? '0' : orderCapacity,
       liveStatus,
       cuisineType: cuisinesList,
       dietaryType,
@@ -482,7 +486,7 @@ function ShopAdd() {
         },
       }),
     {
-      enabled: !!shop?._id,
+      enabled: (id && !!shop?._id) || !id,
       onSuccess: (data) => {
         if (id) {
           setTags(data?.data?.tags?.filter((item) => shop?.tagsId?.includes(item?._id)) || []);
@@ -881,6 +885,19 @@ function ShopAdd() {
                         placeholder="Enter Bank Name"
                         value={bankName}
                         onChange={(e) => setBankName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="outlined-basic"
+                        label="Order Capacity"
+                        variant="outlined"
+                        placeholder="Enter Order Capacity"
+                        value={orderCapacity}
+                        type="number"
+                        onChange={(e) => setOrderCapacity(e.target.value)}
                         required
                       />
                     </div>

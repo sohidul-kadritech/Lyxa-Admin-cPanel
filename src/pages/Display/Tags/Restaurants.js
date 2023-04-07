@@ -6,6 +6,7 @@ import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
+// eslint-disable-next-line no-unused-vars
 const skeletons = new Array(4).fill(0);
 
 export default function Restaurants({ onClose, tagId }) {
@@ -20,15 +21,16 @@ export default function Restaurants({ onClose, tagId }) {
   return (
     <SidebarContainer title="Categories: Resturants" onClose={onClose}>
       {/* shop */}
-      {(shopsQuery?.data?.data?.shop || skeletons)?.map((shop, index) => (
+      {shopsQuery?.data?.data?.shop?.map((shop) => (
         <Box
           pt={4}
           pb={4}
           sx={{
             borderBottom: '1px solid #EEEEEE',
           }}
+          key={shop?._id}
         >
-          <ShopPreview key={index} shop={shop} loading={shopsQuery?.isLoading} />
+          <ShopPreview shop={shop} loading={shopsQuery?.isLoading} />
         </Box>
       ))}
       {!shopsQuery.isLoading && !shopsQuery?.data?.data?.shop?.length && (

@@ -42,12 +42,7 @@ function Column({ containerType }) {
 export default function ContainerListSkeleton({ containerType }) {
   return (
     <Stack>
-      <Stack height={40} direction="row" gap={1.5} mt={5} mb={6}>
-        <Skeleton width={90} />
-        <Skeleton width={90} />
-        <Skeleton width={90} />
-      </Stack>
-      <Stack direction="row" height={35} gap={3} mb={11}>
+      <Stack direction="row" height={35} gap={3} mb={11} mt={7}>
         <Skeleton
           sx={{
             flex: 3,

@@ -187,20 +187,21 @@ export default function ContainerList({ containerType }) {
             }}
           />
         </Box>
-        {listQuery.isLoading ? (
-          <ContainerListSkeleton containerType={containerType} />
-        ) : (
-          <Box>
-            <Tabs
-              value={currentTab}
-              onChange={(event, newValue) => {
-                setCurrentTab(newValue);
-              }}
-            >
-              <Tab label="Food" />
-              <Tab label="Grocery" />
-              <Tab label="Pharmacy" />
-            </Tabs>
+
+        <Box>
+          <Tabs
+            value={currentTab}
+            onChange={(event, newValue) => {
+              setCurrentTab(newValue);
+            }}
+          >
+            <Tab label="Food" />
+            <Tab label="Grocery" />
+            <Tab label="Pharmacy" />
+          </Tabs>
+          {listQuery.isLoading ? (
+            <ContainerListSkeleton containerType={containerType} />
+          ) : (
             <Box pt={7}>
               <CommonFilters
                 filtersValue={filters}
@@ -216,8 +217,8 @@ export default function ContainerList({ containerType }) {
                 containerType={containerType}
               />
             </Box>
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
       {/* sidebar */}
       <Drawer anchor="right" open={sidebarOpen}>

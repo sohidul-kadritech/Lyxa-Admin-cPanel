@@ -5,51 +5,9 @@ import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as BikeIcon } from '../../assets/icons/delivery2.svg';
 import { ReactComponent as HeartIcon } from '../../assets/icons/heart.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
-// import { getShopDeals } from '../../helpers/getShopDeals';
+import { getShopDeals } from '../../helpers/getShopDeals';
 
-function ComponentSkeleton() {
-  return (
-    <Stack
-      direction="row"
-      gap={3}
-      sx={{
-        height: '70px',
-        position: 'relative',
-      }}
-    >
-      <Skeleton variant="rounded" width={70} height={70} />
-      <Box>
-        <Stack direction="row" gap={3}>
-          <Skeleton height={25} width={200} />
-          <Skeleton height={25} width={25} />
-        </Stack>
-        <Stack gap={1.5}>
-          <Skeleton height={15} />
-          <Skeleton height={15} />
-        </Stack>
-      </Box>
-    </Stack>
-  );
-}
-
-function Info({ Icon, title, dot }) {
-  return (
-    <Typography
-      sx={{
-        fontSize: '10px!important',
-        lineHeight: '20px!important',
-        color: '#737373',
-      }}
-    >
-      <Icon
-        sx={{
-          fontSize: '12px',
-        }}
-      />
-      {` ${title} ${dot || ''}`}
-    </Typography>
-  );
-}
+// eslint-disable-next-line no-unused-vars
 
 export default function ShopPreview({ shop, loading }) {
   const theme = useTheme();
@@ -58,6 +16,9 @@ export default function ShopPreview({ shop, loading }) {
   if (loading) {
     return <ComponentSkeleton />;
   }
+
+  console.log(shop);
+  const deals = getShopDeals(shop);
 
   return (
     <Stack direction="row" gap={3}>
@@ -92,7 +53,7 @@ export default function ShopPreview({ shop, loading }) {
             <Typography variant="body2" display="inline-block" pr={1.5}>
               {shop?.shopName}
             </Typography>
-            <RewardIcon color="#15BFCA" />
+            {deals.reward && <RewardIcon color="#15BFCA" />}
           </Stack>
           <Stack direction="row" alignItems="center" gap="2px">
             <StarIcon
@@ -152,7 +113,7 @@ export default function ShopPreview({ shop, loading }) {
         </Box>
         {/* Info */}
         <Stack direction="row" alignItems="center" gap="7px">
-          {shop?.deliveryFee === 0 && <Info Icon={BikeIcon} title="Free" dot="." />}
+          {deals.free_delivery && <Info Icon={BikeIcon} title="Free" dot="." />}
           <Info Icon={CartIcon} title={`Min. ${currency} ${shop?.minOrderAmount}`} />
         </Stack>
         <Typography
@@ -162,9 +123,53 @@ export default function ShopPreview({ shop, loading }) {
             lineHeight: '14px!important',
           }}
         >
-          X2 Deals, 20% off selected items
+          {deals?.doubbleMenuPercentageStr}
         </Typography>
       </Box>
     </Stack>
+  );
+}
+
+function ComponentSkeleton() {
+  return (
+    <Stack
+      direction="row"
+      gap={3}
+      sx={{
+        height: '70px',
+        position: 'relative',
+      }}
+    >
+      <Skeleton variant="rounded" width={70} height={70} />
+      <Box>
+        <Stack direction="row" gap={3}>
+          <Skeleton height={25} width={200} />
+          <Skeleton height={25} width={25} />
+        </Stack>
+        <Stack gap={1.5}>
+          <Skeleton height={15} />
+          <Skeleton height={15} />
+        </Stack>
+      </Box>
+    </Stack>
+  );
+}
+
+function Info({ Icon, title, dot }) {
+  return (
+    <Typography
+      sx={{
+        fontSize: '10px!important',
+        lineHeight: '20px!important',
+        color: '#737373',
+      }}
+    >
+      <Icon
+        sx={{
+          fontSize: '12px',
+        }}
+      />
+      {` ${title} ${dot || ''}`}
+    </Typography>
   );
 }
