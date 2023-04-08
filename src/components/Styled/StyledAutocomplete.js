@@ -3,7 +3,7 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
 import { Autocomplete, InputAdornment, Paper, TextField, styled, useTheme } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   /* normal styles */
@@ -143,20 +143,26 @@ const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   },
 }));
 
+// const CustomPopper = React.forwardRef((props, ref) => (
+//   <Popper
+//     {...props}
+//     placement="bottom"
+//     popperOptions={{ placement: 'bottom-start', strategy: 'fixed', modifiers: [] }}
+//     ref={ref}
+//   />
+// ));
+
 export default function StyledAutocomplete({ label, placeholder, maxHeight, ...props }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-
-  console.log(props);
 
   return (
     <StyledSelect
       blurOnSelect
       openOnFocus
       disableClearable
-      // disablePortal
       popupIcon={<KeyboardArrowDownIcon />}
-      PaperComponent={({ children }) => (
+      PaperComponent={({ children, ...props }) => (
         <Paper
           sx={{
             '& .MuiAutocomplete-listbox': {
@@ -181,6 +187,7 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
               padding: '0px 45px 0px 16px',
             },
           }}
+          {...props}
         >
           {children}
         </Paper>
@@ -188,12 +195,6 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
       renderInput={(params) => (
         <TextField
           {...params}
-          // onFocus={() => {
-          //   setOpen(true);
-          // }}
-          // onBlur={() => {
-          //   setOpen(false);
-          // }}
           variant="outlined"
           placeholder={placeholder}
           label={label}

@@ -51,10 +51,10 @@ import { successMsg } from '../../../helpers/successMsg';
 import { API_URL, DOWNLOAD_PRODUCT_TEMPLATE, MAP_URL, SINGLE_SHOP, UPLOAD_PRODUCT_FILE } from '../../../network/Api';
 import requestApi from '../../../network/httpRequest';
 import {
+  ShopLiveStatus,
   addShopMaxDiscont,
   deleteDealOfShop,
   setAsFeaturedShop,
-  ShopLiveStatus,
   updateShopIsUpdated,
   updateShopStatus,
 } from '../../../store/Shop/shopAction';
@@ -351,6 +351,11 @@ function ShopDetails() {
                       name="Available"
                     />
                     <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType}`} name="Shop Type" />
+                    <InfoTwo
+                      Icon={AccountBalanceWalletOutlinedIcon}
+                      value={`${shop?.paymentOption?.join(', ')}`}
+                      name="Payment Options"
+                    />
                   </InfoTwoWrapper>
                 </Col>
                 <Col xl={4}>

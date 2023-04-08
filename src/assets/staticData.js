@@ -10,6 +10,12 @@ export const shopDietaryOptions = [
   { label: 'Vegan', value: 'vegan' },
 ];
 
+export const shopPaymentOptions = [
+  { label: 'Cash', value: 'cash' },
+  { label: 'Card', value: 'card' },
+  { label: 'Wallet', value: 'wallet' },
+];
+
 export const faqType = [
   { label: 'User', value: 'user' },
   { label: 'Shop', value: 'shop' },
@@ -163,6 +169,11 @@ export const accountsOptions = [
 export const productVisibility = [
   { label: 'Visiable', value: true },
   { label: 'Invisiable', value: false },
+];
+
+export const shiftOptions = [
+  { label: 'Day', value: 'day' },
+  { label: 'Night', value: 'night' },
 ];
 
 export const activeOptions = [

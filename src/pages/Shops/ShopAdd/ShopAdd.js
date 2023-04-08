@@ -20,7 +20,13 @@ import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
-import { liveStatusOptions, priceRangeOptions, shopDietaryOptions, statusOptions2 } from '../../../assets/staticData';
+import {
+  liveStatusOptions,
+  priceRangeOptions,
+  shopDietaryOptions,
+  shopPaymentOptions,
+  statusOptions2,
+} from '../../../assets/staticData';
 import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
@@ -82,8 +88,11 @@ function ShopAdd() {
   const [accountNum, setAccountNum] = useState('');
   const [dietaryType, setdietaryType] = useState([]);
   const [orderCapacity, setOrderCapacity] = useState('');
+  const [paymentOption, setpaymentOption] = useState([]);
 
   const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
+
+  console.log(dietaryType);
 
   // GET SELLER
   useEffect(() => {
@@ -131,6 +140,7 @@ function ShopAdd() {
       account_number,
       bank_name,
       orderCapacity,
+      paymentOption,
     } = values;
     setOrderCapacity(orderCapacity === 0 ? '' : orderCapacity);
     setEmail(email);
@@ -154,6 +164,7 @@ function ShopAdd() {
     setAccountName(account_name);
     setAccountNum(account_number);
     setdietaryType(dietaryType || []);
+    setpaymentOption(paymentOption);
   };
 
   useEffect(async () => {
@@ -217,6 +228,16 @@ function ShopAdd() {
     );
   };
 
+  const handlePaymentTypeChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setpaymentOption(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    );
+  };
+
   // TAGS ADD
   const handleTagChange = (item) => {
     if (item) {
@@ -272,6 +293,7 @@ function ShopAdd() {
       tags: tags.map((item) => item?.name),
       tagsId: tags.map((item) => item?._id),
       orderCapacity: orderCapacity === '' ? '0' : orderCapacity,
+      paymentOption,
       liveStatus,
       cuisineType: cuisinesList,
       dietaryType,
@@ -357,6 +379,10 @@ function ShopAdd() {
 
     if (deliveryType === 'self' && deliveryFee < 0) {
       return successMsg('Enter Delivery fee');
+    }
+
+    if (paymentOption?.length < 1) {
+      return successMsg('Select at least one payment method');
     }
 
     const getStartSec = getMinutes(shopStartTime);
@@ -738,6 +764,29 @@ function ShopAdd() {
                         required
                       />
                     </div>
+                    <FormControl sx={{ width: '100%' }}>
+                      <InputLabel>Select Payment Options</InputLabel>
+                      <Select
+                        multiple
+                        value={paymentOption}
+                        onChange={handlePaymentTypeChange}
+                        input={<OutlinedInput label="Select Payment Type" />}
+                        renderValue={(selected) => {
+                          const showValue = [];
+                          selected.forEach((seletedItem) => {
+                            showValue.push(shopPaymentOptions.find((item) => item.value === seletedItem).label);
+                          });
+                          return showValue.join(', ');
+                        }}
+                      >
+                        {shopPaymentOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            <Checkbox checked={paymentOption.indexOf(option.value) > -1} />
+                            <ListItemText primary={option.label} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Col>
                   <Col lg={6} className="mt-4 mt-lg-0">
                     <div className="mb-4">

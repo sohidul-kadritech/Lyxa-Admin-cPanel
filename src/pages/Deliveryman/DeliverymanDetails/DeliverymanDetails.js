@@ -151,6 +151,7 @@ function DeliverymanDetails() {
                     <InfoTwo name="Total Income" value={`${deliveryMan?.totalIncome} ${currency}`} Icon={MoneyIcon} />
                     <InfoTwo name="Balance" value={`${deliveryMan?.balance} ${currency}`} Icon={AccountBalanceIcon} />
                     <InfoTwo name="Orders" value={`${deliveryMan?.totalOrder}`} Icon={LocalShippingIcon} />
+                    <InfoTwo name="Shift" value={`${deliveryMan?.shift}`} Icon={RoomOutlinedIcon} />
                   </InfoTwoWrapper>
                 </Col>
               </Row>

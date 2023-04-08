@@ -40,7 +40,7 @@ function ProductAdd() {
 
   const [shop, setShop] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [cuisines, setCuisines] = useState(null);
+  // const [cuisines, setCuisines] = useState(null);
   const [cuisineSearchKey, setCuisineSearchKey] = useState('');
   const [category, setCategory] = useState(null);
   const [searchCategoryKey, setSearchCategoryKey] = useState('');
@@ -212,7 +212,7 @@ function ProductAdd() {
       seoDescription: description,
       attributes,
       addons: addonsData,
-      cuisines,
+      // cuisines,
       unit: unit?.name,
       quantity,
     };
@@ -453,7 +453,6 @@ function ProductAdd() {
                         disabled={!!(searchParams.get('shopId') || id || account_type === 'shop')}
                       />
                     </div>
-
                     <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
                       <div className="mb-4">
                         <AutocompletedInput
@@ -468,7 +467,7 @@ function ProductAdd() {
                         />
                       </div>
                     </Tooltip>
-
+                    {/* remove cusinsen */}
                     {type !== 'food' && (
                       <div className="mb-4">
                         <Autocomplete
@@ -502,41 +501,6 @@ function ProductAdd() {
                         />
                       </div>
                     )}
-
-                    {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
-                      <div className="mb-4">
-                        <Autocomplete
-                          className="cursor-pointer"
-                          value={cuisines || null}
-                          onChange={(event, newValue) => {
-                            setCuisines(newValue);
-                          }}
-                          getOptionLabel={(option) => (option.name ? option.name : '')}
-                          isOptionEqualToValue={(option, value) => option._id === value._id}
-                          inputValue={cuisineSearchKey}
-                          onInputChange={(event, newInputValue) => {
-                            setCuisineSearchKey(newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={shop?.cuisineType?.length > 0 ? shop?.cuisineType : []}
-                          sx={{ width: '100%' }}
-                          renderInput={(params) => (
-                            <TextField {...params} label="Select a Cuisine" required name="cuisine" />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
-                            >
-                              {option?.name}
-                            </Box>
-                          )}
-                        />
-                      </div>
-                    )}
-
                     {type === 'food' && shop?.shopType === 'food' && (
                       <div className="mb-4">
                         <SelectOption

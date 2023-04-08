@@ -20,9 +20,10 @@ export default function AdminSettings() {
     <Wrapper
       sx={{
         paddingTop: 0,
+        height: 'auto',
       }}
     >
-      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
+      <Box className="page-content2">
         <PageTop title="Settings" subtitle="Customize admin settings" />
         <PageList items={pagesList} />
       </Box>

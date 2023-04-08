@@ -19,7 +19,6 @@ const fieldContainerSx = {
 
 const selectProps = {
   multiple: true,
-  disablePortal: true,
   getOptionLabel: (option) => option?.name || 'Choose',
   label: 'Choose',
   sx: {
@@ -271,6 +270,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
                 options: dealsOptions,
                 value: container.deals,
                 maxHeight: '200px',
+                disablePortal: true,
                 // eslint-disable-next-line eqeqeq
                 isOptionEqualToValue: (option, value) => option.value == value.value,
                 onChange: (e, v) => {

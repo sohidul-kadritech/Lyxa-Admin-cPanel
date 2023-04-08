@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
-import { activeOptions } from '../../../assets/staticData';
+import { activeOptions, shiftOptions } from '../../../assets/staticData';
 import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
@@ -45,6 +45,8 @@ function DeliverymanAdd() {
   const [isLoading, setIsLoading] = useState(false);
   const [isValidPhone, setIsValidPhone] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [shift, setShift] = useState('');
+  // console.log(shift);
 
   const handlePhoneChange = (value) => {
     setPhone((prev) => ({ ...prev, number: value }));
@@ -66,18 +68,18 @@ function DeliverymanAdd() {
       image,
       countryCode,
       isLogin,
+      shift,
     } = data;
 
     const findStatus = activeOptions.find((option) => option.value === status);
-    // const findVahicleType = DeliveryBoyVehicleOPtions.find(
-    //   (option) => option.value === vehicleType
-    // );
+    const findShift = shiftOptions.find((option) => option.value === shift);
+    setShift(findShift);
     setIsEditMode(true);
     setName(name);
     setEmail(email);
     setPhone({
-      number: `+${getCountryCallingCode(countryCode)}${number}`,
-      country: countryCode,
+      number: `+${getCountryCallingCode('BD')}${number}`,
+      country: 'BD',
     });
     setActiveStatus(findStatus);
     setNid(nationalIdDocument);
@@ -151,6 +153,7 @@ function DeliverymanAdd() {
       vehicleRegistrationDocument: docUrl,
       contractImage: contractUrl,
       image: profileUrl,
+      shift: shift.value,
     };
 
     if (id) {
@@ -360,6 +363,19 @@ function DeliverymanAdd() {
                           value={vehicleNum}
                           onChange={(e) => setVehicleNum(e.target.value)}
                           required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <Label>Shift</Label>
+                        <Select
+                          palceholder="Select Shift"
+                          name="shift"
+                          options={shiftOptions}
+                          classNamePrefix="select2-selection"
+                          required
+                          value={shift}
+                          onChange={(e) => setShift(e)}
+                          defaultValue=""
                         />
                       </div>
                     </Col>

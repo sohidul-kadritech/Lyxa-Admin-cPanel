@@ -28,9 +28,10 @@ export default function DisplaySettings() {
     <Wrapper
       sx={{
         paddingTop: 0,
+        height: 'auto',
       }}
     >
-      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
+      <Box className="page-content2">
         <PageTop title="Display" subtitle="Customize admin settings" />
         <PageList items={pagesList} />
       </Box>
