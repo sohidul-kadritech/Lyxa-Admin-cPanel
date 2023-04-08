@@ -3,39 +3,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Button, Menu, MenuItem, styled } from '@mui/material';
 import React from 'react';
 
-const DropDown = styled(Menu)(() => ({
-  '& .MuiPopover-paper': {
-    boxShadow: 'none!important',
-    border: '1px solid #EEEEEE',
-    borderRadius: '10px',
-    padding: '8px 0px',
-    marginTop: '4px',
-  },
-  '& .MuiMenu-list': {
-    padding: '0px',
-  },
-  '& .MuiMenuItem-root': {
-    fontWeight: '500',
-    fontSize: '14px',
-    lineHeight: '24px',
-    padding: '3px 20px',
-  },
-}));
-
-const StyledButton = styled(Button)(() => ({
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '0',
-  minWidth: '0',
-  width: '41px',
-  height: '35px',
-
-  '&:hover': {
-    background: '#F6F8FA',
-  },
-}));
-
-function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
+function ThreeDotsMenu({ menuItems = [], handleMenuClick, ButtonComponent }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (e) => {
@@ -49,25 +17,27 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
 
   return (
     <>
-      <StyledButton
-        color="secondary"
-        disableRipple
-        onClick={handleClick}
-        sx={{
-          background: anchorEl ? '#F6F8FA' : 'transparent',
-        }}
-      >
-        <MoreHorizIcon />
-      </StyledButton>
+      {/* button */}
+      {ButtonComponent ? (
+        <ButtonComponent onClick={handleClick} />
+      ) : (
+        <StyledButton
+          color="secondary"
+          disableRipple
+          onClick={handleClick}
+          sx={{
+            background: anchorEl ? '#F6F8FA' : 'transparent',
+          }}
+        >
+          <MoreHorizIcon />
+        </StyledButton>
+      )}
+      {/* dropdown */}
       <DropDown
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        // transformOrigin={{
-        //   vertical: 'bottom',
-        //   horizontal: 'right',
-        // }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -97,5 +67,39 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick }) {
     </>
   );
 }
+
+// styled dropdown
+const DropDown = styled(Menu)(() => ({
+  '& .MuiPopover-paper': {
+    boxShadow: 'none!important',
+    border: '1px solid #EEEEEE',
+    borderRadius: '10px',
+    padding: '8px 0px',
+    marginTop: '4px',
+  },
+  '& .MuiMenu-list': {
+    padding: '0px',
+  },
+  '& .MuiMenuItem-root': {
+    fontWeight: '500',
+    fontSize: '14px',
+    lineHeight: '24px',
+    padding: '3px 20px',
+  },
+}));
+
+// styled button
+const StyledButton = styled(Button)(() => ({
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '0',
+  minWidth: '0',
+  width: '41px',
+  height: '35px',
+
+  '&:hover': {
+    background: '#F6F8FA',
+  },
+}));
 
 export default ThreeDotsMenu;

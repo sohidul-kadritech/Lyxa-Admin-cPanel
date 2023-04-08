@@ -33,6 +33,17 @@ export default function Button() {
         ...(ownerState.rounded && {
           borderRadius: 6,
         }),
+
+        ...(ownerState.size === 'small' && {
+          fontSize: '14px',
+          lineHeight: '24px',
+          padding: '6px 16px',
+          gap: '4px',
+
+          '& .MuiButton-startIcon': {
+            marginRight: 0,
+          },
+        }),
       }),
       text: {
         padding: '0',

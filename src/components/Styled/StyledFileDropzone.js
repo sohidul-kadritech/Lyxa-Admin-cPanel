@@ -59,14 +59,14 @@ export default function StyledFileDropzone({ text, classes, ...args }) {
         <span>
           <UploadIcon /> Drop files here or click to upload
         </span>
-        <span
+        {/* <span
           style={{
             fontSize: '11px',
             lineHeight: '1',
           }}
         >
           Max Image size allowed is 1 Mib
-        </span>
+        </span> */}
       </p>
     </div>
   );

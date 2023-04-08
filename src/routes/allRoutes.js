@@ -62,7 +62,6 @@ import UnitTypes from '../pages/Product/UnitTypes/UnitTypes';
 import RatingSettings from '../pages/Ratings';
 import SellerDetails from '../pages/Seller/SellerDetails/SellerDetails';
 import AdminDealSettings from '../pages/Settings/Admin/Marketing/DealSettings';
-// import Cuisine from '../pages/Shops/Cuisine';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import UserTransaction from '../pages/Users/UserTransaction/UserTransaction';
 
@@ -76,6 +75,7 @@ import FilterContainers from '../pages/Display/FilterContainer';
 import ListContainers from '../pages/Display/ListContainer';
 import TagsAndCusines from '../pages/Display/Tags';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
+import MenuPage from '../pages/Menu';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
@@ -83,7 +83,6 @@ import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
-// import Tags from '../pages/Tags/Tags';
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
@@ -314,6 +313,7 @@ const shopRoutes = [
 
   // products
   { path: '/products/list', component: ProductList },
+  { path: '/products/list2', component: MenuPage },
   { path: '/products/add', component: ProductAdd },
   { path: '/products/edit/:id', component: ProductAdd },
   { path: '/products/details/:id', component: ProductDetails },

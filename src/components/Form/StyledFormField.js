@@ -1,4 +1,4 @@
-import { Checkbox, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Checkbox, Stack, Typography, useTheme } from '@mui/material';
 import ImagePreview from '../Common/ImagePreview';
 import LoadingOverlay from '../Common/LoadingOverlay';
 import FilterSelect from '../Filter/FilterSelect';
@@ -42,10 +42,42 @@ export default function StyledFormField({ containerProps, label, labelProps, int
         />
       )}
 
+      {/* textarea */}
+      {intputType === 'textarea' && (
+        <StyledInput
+          {...(inputProps || {})}
+          sx={{
+            height: '100px',
+
+            '& .MuiInputBase-root': {
+              height: '100%',
+            },
+
+            '& textarea': {
+              height: '100% !important',
+              paddingLeft: '18px',
+              paddingRight: '18px',
+              fontWeight: '500',
+              fontSize: '15px',
+              color: theme.palette.text.primary,
+              ...(inputProps?.sx || {}),
+            },
+          }}
+        />
+      )}
+
       {/* file dropzone */}
       {intputType === 'file' && (
         <Stack gap="30px" position="relative">
-          <StyledFileDropzone {...(inputProps || {})} />
+          <Box>
+            <StyledFileDropzone {...(inputProps || {})} />
+            {inputProps.helperText1 && (
+              <Typography pt={2} variant="body3" display="block">
+                {inputProps.helperText1}
+              </Typography>
+            )}
+            {inputProps.helperText2 && <Typography variant="body3">{inputProps.helperText2}</Typography>}
+          </Box>
           {inputProps.files?.length > 0 && <ImagePreview files={inputProps.files} />}
           {inputProps.disabled && <LoadingOverlay />}
         </Stack>
