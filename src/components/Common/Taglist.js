@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material';
-import { Box, Button, ClickAwayListener, Stack } from '@mui/material';
+import { Box, Button, ClickAwayListener, Stack, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 import StyledChip from '../Styled/StyledChips';
 import StyledInput from '../Styled/StyledInput';
@@ -67,6 +67,11 @@ export default function Taglist({
               }}
             />
           </ClickAwayListener>
+        )}
+        {items?.length < 1 && !showAdd && (
+          <Box pt={2} pb={2}>
+            <Typography variant="body3">No Categories Added</Typography>
+          </Box>
         )}
       </Stack>
       <Button

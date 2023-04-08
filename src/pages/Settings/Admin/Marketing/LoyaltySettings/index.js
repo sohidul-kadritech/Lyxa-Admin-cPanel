@@ -1,9 +1,10 @@
 // third party
 import { Box, Button, Drawer, Unstable_Grid2 as Grid, Stack } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 // project import
+import ConfirmModal from '../../../../../components/Common/ConfirmModal';
 import PageTop from '../../../../../components/Common/PageTop';
 import Taglist from '../../../../../components/Common/Taglist';
 import Wrapper from '../../../../../components/Wrapper';
@@ -13,8 +14,9 @@ import AXIOS from '../../../../../network/axios';
 import BundleProducts from './BundleProducts';
 import InputBox from './InputBox';
 import CategoryList from './RewardCategoryList';
+import SkeletonLoader from './SkeletonLoader';
 import StyledContainer from './StyledContainer';
-import { validateRewardBundle, validateRewardCategory } from './helpers';
+import { confirmActionInit, validateRewardBundle, validateRewardCategory } from './helpers';
 
 const getRewardInit = {
   amount: '',
@@ -26,9 +28,14 @@ export default function LoyaltySettings() {
   const [fetchedData, setFetchedData] = useState({});
   const [queryOnce, setQueryOnce] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [globaChange, setGlobalChange] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(confirmActionInit);
 
   // reward category
   const [rewardCategory, setRewardCategory] = useState([]);
+  const [tempRewardCategory] = useState([]);
+  console.log(rewardCategory);
 
   const addRewardCategory = (category, removeInputFocus, { isAddNew, isClickOutside }, toggleAddItem) => {
     if (isAddNew && isClickOutside) {
@@ -40,15 +47,24 @@ export default function LoyaltySettings() {
       removeInputFocus();
 
       if (isAddNew) {
-        fetchedData?.rewardCategory?.push({ ...category });
+        tempRewardCategory.push({ ...category });
         setRewardCategory((prev) => [...prev, { ...category }]);
         toggleAddItem(false);
+        setGlobalChange(true);
       }
     } else if (!isAddNew && isClickOutside) {
+      let oldList;
+
+      if (category?._id?.startsWith('xxx')) {
+        oldList = tempRewardCategory;
+      } else {
+        oldList = fetchedData?.rewardCategory || [];
+      }
+
       setRewardCategory((prev) =>
         prev.map((item) => {
           if (item?._id === category?._id) {
-            const item = fetchedData?.rewardCategory?.find((oItem) => oItem?._id === category?._id) || category;
+            const item = oldList.find((oItem) => oItem?._id === category?._id) || category;
             return { ...category, name: item?.name };
           }
           return item;
@@ -64,6 +80,7 @@ export default function LoyaltySettings() {
   const addNewBundleItem = (bundle) => {
     if (validateRewardBundle(bundle, rewardBundle)) {
       setRewardBundle((prev) => [...prev, Number(bundle)]);
+      setGlobalChange(true);
 
       return true;
     }
@@ -77,6 +94,7 @@ export default function LoyaltySettings() {
     rewardCategory.splice(addedIndex, 0, item[0]);
 
     setRender(!render);
+    setGlobalChange(true);
   };
 
   // get reward
@@ -97,7 +115,7 @@ export default function LoyaltySettings() {
     setMinSpendLimit(data?.minSpendLimit || '');
   };
 
-  useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
+  const settingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
     enabled: !queryOnce,
     onSuccess: (data) => {
       setQueryOnce(true);
@@ -115,10 +133,22 @@ export default function LoyaltySettings() {
     },
   });
 
+  useEffect(() => {
+    let newData;
+    try {
+      newData = JSON.parse(JSON.stringify(settingsQuery?.data?.data?.rewardSetting));
+    } catch (error) {
+      console.log(error);
+    }
+    updateLocalState(newData || {});
+  }, []);
+
   const updateSettingsMutation = useMutation((data) => AXIOS.post(Api.EDIT_ADMIN_REWARD_SETTINGS, data), {
     onSuccess: (data) => {
+      successMsg(data?.message, 'success');
+
       if (data?.status) {
-        successMsg(data?.message, 'success');
+        setGlobalChange(false);
         let newData;
 
         try {
@@ -129,8 +159,6 @@ export default function LoyaltySettings() {
 
         updateLocalState(newData || {});
         setFetchedData(data?.data?.rewardSetting);
-      } else {
-        successMsg(data?.message);
       }
     },
     onError: (error) => {
@@ -183,7 +211,19 @@ export default function LoyaltySettings() {
       console.log(error);
     }
 
-    updateLocalState(data || {});
+    if (globaChange) {
+      setConfirmModal(true);
+
+      setConfirmAction({
+        message: 'All your changes will be lost?',
+        onCancel: () => setConfirmModal(false),
+        onConfirm: () => {
+          updateLocalState(data || {});
+          setGlobalChange(false);
+          setConfirmModal(false);
+        },
+      });
+    }
   };
 
   return (
@@ -194,148 +234,163 @@ export default function LoyaltySettings() {
     >
       <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
         <PageTop backButtonLabel="Back to Marketing" backTo="/admin/settings2/marketing" title="Loyalty Points" />
-        <Box
-          sx={{
-            background: '#fff',
-            borderRadius: '6px',
-            pl: 10,
-            pr: 10,
-          }}
-        >
-          <Grid container>
-            {/* value per points */}
-            <StyledContainer title="Points earned value">
-              <InputBox
-                title="Value of 1 Point"
-                endAdornment="$"
-                inputValue={getReward?.amount || '0'}
-                inputType="number"
-                onInputChange={(e) => {
-                  setGetReward((prev) => ({ ...prev, amount: e.target.value }));
+        {settingsQuery.isLoading ? (
+          <SkeletonLoader />
+        ) : (
+          <>
+            <Box
+              sx={{
+                background: '#fff',
+                borderRadius: '6px',
+                pl: 10,
+                pr: 10,
+              }}
+            >
+              <Grid container>
+                {/* value per points */}
+                <StyledContainer title="Points earned value">
+                  <InputBox
+                    title="Value of 1 Point"
+                    endAdornment="$"
+                    inputValue={getReward?.amount || '0'}
+                    inputType="number"
+                    onInputChange={(e) => {
+                      setGetReward((prev) => ({ ...prev, amount: e.target.value }));
+                      setGlobalChange(true);
+                    }}
+                  />
+                </StyledContainer>
+                <StyledContainer title="Points used value" placement="end">
+                  <InputBox
+                    placement="end"
+                    title="Value of 1 Point"
+                    endAdornment="$"
+                    inputValue={redeemReward?.amount || '0'}
+                    inputType="number"
+                    onInputChange={(e) => {
+                      setRedeemReward((prev) => ({ ...prev, amount: e.target.value }));
+                      setGlobalChange(true);
+                    }}
+                  />
+                </StyledContainer>
+                {/* distributed cost */}
+                <StyledContainer title="Distributed Cost">
+                  <InputBox
+                    title="Lyxa"
+                    endAdornment="%"
+                    inputValue={adminCutForReward}
+                    inputType="number"
+                    onInputChange={(e) => {
+                      setAdminCutForReward(e.target.value);
+                      setGlobalChange(true);
+                    }}
+                  />
+                </StyledContainer>
+                <StyledContainer title="" placement="end">
+                  <InputBox
+                    placement="end"
+                    title="Shop"
+                    endAdornment="$"
+                    inputValue={`${Number(100 - adminCutForReward)}%`}
+                    inputType="text"
+                    onInputChange={() => {}}
+                  />
+                </StyledContainer>
+                {/* categories */}
+                <StyledContainer title="Categories" xs={12} lg={12}>
+                  <CategoryList
+                    rewardCategories={rewardCategory}
+                    onSave={addRewardCategory}
+                    onViewShops={(item) => {
+                      setCurrentRewardBundle(item);
+                      setSidebarOpen(true);
+                    }}
+                    onDelete={(category) => {
+                      setRewardCategory((prev) => prev.filter((item) => item?._id !== category?._id));
+                      setGlobalChange(true);
+                    }}
+                    onDrop={dropSort}
+                    setGlobalChange={() => {
+                      setGlobalChange(true);
+                    }}
+                  />
+                </StyledContainer>
+                <StyledContainer title="Reward Bundle" xs={12} lg={12}>
+                  <Taglist
+                    listContainerSx={{
+                      mb: 2.5,
+                      mt: 2,
+                    }}
+                    addButtonLabel="Add"
+                    items={rewardBundle}
+                    onAdd={(value) => addNewBundleItem(value)}
+                    onDelete={(item, index, array) => {
+                      array.splice(index, 1);
+                      setRender((prev) => !prev);
+                      setGlobalChange(true);
+                    }}
+                  />
+                </StyledContainer>
+                {/* spending limits */}
+                <StyledContainer title="Spending Limits" xs={12} lg={12}>
+                  <InputBox
+                    title="Minimum spending limit/week"
+                    endAdornment="$"
+                    inputValue={minSpendLimit}
+                    inputType="number"
+                    onInputChange={(e) => {
+                      setMinSpendLimit(e.target.value);
+                      setGlobalChange(true);
+                    }}
+                  />
+                </StyledContainer>
+                {/* expiration */}
+                <StyledContainer title="Expiration" xs={12} lg={12}>
+                  <InputBox
+                    title="Number of days"
+                    endAdornment="D"
+                    inputValue={expirationPeriod}
+                    inputType="number"
+                    onInputChange={(e) => {
+                      setExpirationPeriod(e.target.value);
+                      setGlobalChange(true);
+                    }}
+                  />
+                </StyledContainer>
+              </Grid>
+            </Box>
+            {/* buttons */}
+            <Stack
+              direction="row"
+              justifyContent="flex-end"
+              gap={4}
+              sx={{
+                mt: 9,
+                pb: 12,
+              }}
+            >
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => {
+                  discardChanges();
                 }}
-              />
-            </StyledContainer>
-            <StyledContainer title="Points used value" placement="end">
-              <InputBox
-                placement="end"
-                title="Value of 1 Point"
-                endAdornment="$"
-                inputValue={redeemReward?.amount || '0'}
-                inputType="number"
-                onInputChange={(e) => {
-                  setRedeemReward((prev) => ({ ...prev, amount: e.target.value }));
+              >
+                Discard
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={updateSettingsMutation.isLoading}
+                onClick={() => {
+                  updateSettings();
                 }}
-              />
-            </StyledContainer>
-            {/* distributed cost */}
-            <StyledContainer title="Distributed Cost">
-              <InputBox
-                title="Lyxa"
-                endAdornment="%"
-                inputValue={adminCutForReward}
-                inputType="number"
-                onInputChange={(e) => {
-                  setAdminCutForReward(e.target.value);
-                }}
-              />
-            </StyledContainer>
-            <StyledContainer title="" placement="end">
-              <InputBox
-                placement="end"
-                title="Shop"
-                endAdornment="$"
-                inputValue={`${Number(100 - adminCutForReward)}%`}
-                inputType="text"
-                onInputChange={() => {}}
-              />
-            </StyledContainer>
-            {/* categories */}
-            <StyledContainer title="Categories" xs={12} lg={12}>
-              <CategoryList
-                rewardCategories={rewardCategory}
-                setRewardCategory={setRewardCategory}
-                onSave={addRewardCategory}
-                onViewShops={(item) => {
-                  setCurrentRewardBundle(item);
-                  setSidebarOpen(true);
-                }}
-                onDelete={(category) => {
-                  setRewardCategory((prev) => prev.filter((item) => item?._id !== category?._id));
-                }}
-                onDrop={dropSort}
-              />
-            </StyledContainer>
-            <StyledContainer title="Reward Bundle" xs={12} lg={12}>
-              <Taglist
-                listContainerSx={{
-                  mb: 2.5,
-                  mt: 2,
-                }}
-                addButtonLabel="Add"
-                items={rewardBundle}
-                onAdd={(value) => addNewBundleItem(value)}
-                onDelete={(item, index, array) => {
-                  array.splice(index, 1);
-                  setRender((prev) => !prev);
-                }}
-              />
-            </StyledContainer>
-            {/* spending limits */}
-            <StyledContainer title="Spending Limits" xs={12} lg={12}>
-              <InputBox
-                title="Minimum spending limit/week"
-                endAdornment="$"
-                inputValue={minSpendLimit}
-                inputType="number"
-                onInputChange={(e) => {
-                  setMinSpendLimit(e.target.value);
-                }}
-              />
-            </StyledContainer>
-            {/* expiration */}
-            <StyledContainer title="Expiration" xs={12} lg={12}>
-              <InputBox
-                title="Number of days"
-                endAdornment="D"
-                inputValue={expirationPeriod}
-                inputType="number"
-                onInputChange={(e) => {
-                  setExpirationPeriod(e.target.value);
-                }}
-              />
-            </StyledContainer>
-          </Grid>
-        </Box>
-        {/* buttons */}
-        <Stack
-          direction="row"
-          justifyContent="flex-end"
-          gap={4}
-          sx={{
-            mt: 9,
-            pb: 12,
-          }}
-        >
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => {
-              discardChanges();
-            }}
-          >
-            Discard
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={updateSettingsMutation.isLoading}
-            onClick={() => {
-              updateSettings();
-            }}
-          >
-            Save Changes
-          </Button>
-        </Stack>
+              >
+                Save Changes
+              </Button>
+            </Stack>
+          </>
+        )}
       </Box>
       {sidebarOpen && (
         <Drawer open={sidebarOpen} anchor="right">
@@ -347,6 +402,14 @@ export default function LoyaltySettings() {
           />
         </Drawer>
       )}
+      {}
+      <ConfirmModal
+        message={confirmAction.message}
+        isOpen={confirmModal}
+        blurClose
+        onCancel={confirmAction.onCancel}
+        onConfirm={confirmAction.onConfirm}
+      />
     </Wrapper>
   );
 }

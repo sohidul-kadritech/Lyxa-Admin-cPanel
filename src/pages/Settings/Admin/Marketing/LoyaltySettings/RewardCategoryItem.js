@@ -8,7 +8,7 @@ import StyledIconButton from '../../../../../components/Styled/StyledIconButton'
 import StyledInput from '../../../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
 
-export default function CategoryItem({ category, onSave, onDelete, isAddNew, onViewShops }) {
+export default function CategoryItem({ category, onSave, onDelete, isAddNew, onViewShops, setGlobalChange }) {
   const [render, setRender] = useState(false);
   const [editMode, setEditMode] = useState(isAddNew);
   const inputRef = useRef();
@@ -48,6 +48,7 @@ export default function CategoryItem({ category, onSave, onDelete, isAddNew, onV
           onChange={(event) => {
             category.name = event.target.value;
             setRender((prev) => !prev);
+            setGlobalChange(true);
           }}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
@@ -73,6 +74,7 @@ export default function CategoryItem({ category, onSave, onDelete, isAddNew, onV
             onChange={(event) => {
               category.status = event.target.checked ? 'active' : 'inactive';
               setRender(!render);
+              setGlobalChange(true);
             }}
           />
           <Stack direction="row" gap={2.5}>
@@ -99,6 +101,7 @@ export default function CategoryItem({ category, onSave, onDelete, isAddNew, onV
               color="secondary"
               onClick={() => {
                 onDelete(category);
+                setGlobalChange(true);
               }}
             >
               <Close />

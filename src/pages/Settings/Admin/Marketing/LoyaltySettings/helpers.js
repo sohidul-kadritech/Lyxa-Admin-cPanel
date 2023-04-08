@@ -37,3 +37,9 @@ export const validateRewardBundle = (bundle, rewardBundles) => {
 
   return true;
 };
+
+export const confirmActionInit = {
+  message: '',
+  onConfirm: () => {},
+  onCancel: () => {},
+};
