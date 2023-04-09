@@ -2,11 +2,11 @@ export default function GetPallete() {
   return {
     mode: 'light',
     primary: {
-      main: '#DD5B63',
+      main: '#5E97A9',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#5E97A9',
+      main: '#5BFCA',
       contrastText: '#ffffff',
     },
     info: {
@@ -14,7 +14,11 @@ export default function GetPallete() {
       contrastText: '#ffffff',
     },
     success: {
-      main: '#15803D',
+      main: '#417C45',
+    },
+    danger: {
+      main: '#DD5B63',
+      contrastText: '#ffffff',
     },
     text: {
       primary: '#363636',

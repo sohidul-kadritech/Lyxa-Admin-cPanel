@@ -11,10 +11,10 @@ const StyledButton = styled(Button)(({ theme }) => ({
   fontWeight: '500',
   fontSize: '18px',
   lineHeight: '28px',
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.primary,
 
   '& .MuiSvgIcon-root': {
-    color: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
   },
 
   '&:hover': {

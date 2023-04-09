@@ -562,21 +562,21 @@ export default function MarketingSettings({
             <Stack direction="row" alignItems="center" gap={1.5}>
               {/* reward */}
               {marketingType === 'reward' && (
-                <Typography variant="body1" color={theme.palette.secondary.main}>
+                <Typography variant="body1" color={theme.palette.primary.main}>
                   {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
                   {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
                 </Typography>
               )}
               {/* percentage */}
               {marketingType === 'percentage' && (
-                <Typography variant="body1" color={theme.palette.text.primary}>
+                <Typography variant="body1" color={theme.palette.text.danger}>
                   {currency}{' '}
                   {(params?.row?.price - (params?.row?.price / 100) * params?.row?.discountPercentage)?.toFixed(2)}{' '}
                 </Typography>
               )}
               {/* double_menu */}
               {marketingType === 'double_menu' && (
-                <Typography variant="body1" color={theme.palette.text.primary}>
+                <Typography variant="body1" color={theme.palette.text.danger}>
                   {currency} {params?.row?.price}
                 </Typography>
               )}
@@ -597,7 +597,7 @@ export default function MarketingSettings({
             </Stack>
             {itemSelectType !== 'multiple' && (
               <CloseButton
-                color="secondary"
+                color="primary"
                 size="sm"
                 onClick={() => {
                   removeProduct(params.row);
@@ -624,7 +624,7 @@ export default function MarketingSettings({
       }}
     >
       <CloseButton
-        color="secondary"
+        color="primary"
         size="sm"
         sx={{
           position: 'absolute',
@@ -683,7 +683,7 @@ export default function MarketingSettings({
               {marketingType === 'double_menu' && 'Buy 1, Get 1 Free'}
               {marketingType === 'free_delivery' && '$0 Delivery fee'}
             </Typography>
-            <Typography variant="body2" color={theme.palette.text.secondary2}>
+            <Typography variant="body2" color={theme.palette.text.primary2}>
               {marketingType === 'reward' &&
                 'Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item, giving them more incentive to order from your business.'}
               {marketingType === 'percentage' &&
@@ -706,7 +706,7 @@ export default function MarketingSettings({
             >
               <Box position="relative">
                 <StyledRadioGroup
-                  color="secondary"
+                  color="primary"
                   items={itemSelectOptions.filter((item) => entireMenu || item.value !== 'multiple')}
                   value={itemSelectType}
                   onChange={onProductSelectChange}
@@ -793,7 +793,7 @@ export default function MarketingSettings({
                     disableRipple
                     className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
                     variant="text"
-                    color="secondary"
+                    color="primary"
                     onClick={() => {
                       setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
                       setHasChanged(true);
@@ -881,7 +881,7 @@ export default function MarketingSettings({
                     fontWeight: '500',
                     fontSize: '14px',
                     lineHeight: '20px',
-                    color: theme.palette.text.primary,
+                    color: theme.palette.text.danger,
                   },
                 }}
                 label="Set maximum weekly spending limit"
@@ -889,7 +889,7 @@ export default function MarketingSettings({
                   <Checkbox
                     sx={{
                       '&.Mui-checked': {
-                        color: theme.palette.text.primary,
+                        color: theme.palette.text.danger,
                       },
                     }}
                     checked={spendLimitChecked}
@@ -924,7 +924,7 @@ export default function MarketingSettings({
                     fontWeight: '500',
                     fontSize: '16px',
                     lineHeight: '24px',
-                    color: theme.palette.text.primary,
+                    color: theme.palette.text.danger,
                   },
 
                   '& .MuiInputAdornment-positionStart': {
@@ -981,7 +981,7 @@ export default function MarketingSettings({
                     <Checkbox
                       sx={{
                         '&.Mui-checked': {
-                          color: theme.palette.text.primary,
+                          color: theme.palette.text.danger,
                         },
                       }}
                       checked={termAndCondition}
@@ -1003,7 +1003,7 @@ export default function MarketingSettings({
                       variant="body2"
                       sx={{
                         lineHeight: '20px',
-                        color: theme.palette.secondary.main,
+                        color: theme.palette.primary.main,
                       }}
                     >
                       Terms & Conditions
@@ -1011,7 +1011,7 @@ export default function MarketingSettings({
                   </Stack>
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                     disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
                     rounded
                     onClick={() => {
@@ -1029,7 +1029,7 @@ export default function MarketingSettings({
                   <Button
                     disabled={loyaltySettingsDeleteMutation.isLoading}
                     variant="text"
-                    color="primary"
+                    color="danger"
                     disableRipple
                     onClick={() => {
                       setConfirmModal(true);
@@ -1049,7 +1049,7 @@ export default function MarketingSettings({
                 <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
                   <Button
                     variant="outlined"
-                    color="secondary"
+                    color="primary"
                     rounded
                     disabled={loyaltySettingsDeleteMutation.isLoading}
                     onClick={() => {
@@ -1061,7 +1061,7 @@ export default function MarketingSettings({
                   </Button>
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="danger"
                     disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
                     rounded
                     onClick={() => {
@@ -1085,7 +1085,7 @@ export default function MarketingSettings({
               <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
                 <Button
                   variant="outlined"
-                  color="secondary"
+                  color="primary"
                   disabled={loyaltySettingsMutaion.isLoading}
                   onClick={() => {
                     if (hasGlobalChange) {
@@ -1108,7 +1108,7 @@ export default function MarketingSettings({
                 <Button
                   disabled={loyaltySettingsMutaion.isLoading}
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   rounded
                   onClick={() => {
                     updateLoyaltySettings();

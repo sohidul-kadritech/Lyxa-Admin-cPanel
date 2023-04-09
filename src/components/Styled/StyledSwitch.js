@@ -13,7 +13,7 @@ const StyledSwitch = styled((props) => <Switch focusVisibleClassName=".Mui-focus
         transform: 'translateX(16px)',
         color: '#fff',
         '& + .MuiSwitch-track': {
-          backgroundColor: theme.palette.secondary.main,
+          backgroundColor: theme.palette.primary.main,
           opacity: 1,
           border: 0,
           borderRadius: '20px',

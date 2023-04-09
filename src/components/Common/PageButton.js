@@ -23,7 +23,7 @@ export default function PageButton({ label, to, sx, ...props }) {
         ...sx,
       }}
       variant="text"
-      color="secondary"
+      color="primary"
       onClick={() => {
         if (to) {
           history.push(to);

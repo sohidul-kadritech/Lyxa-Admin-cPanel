@@ -226,7 +226,7 @@ export default function MarketingDashboard() {
         />
         <Button
           variant="contained"
-          color="secondary"
+          color="primary"
           disabled={singleShopQuery.isLoading}
           onClick={() => {
             setIsModalOpen(true);

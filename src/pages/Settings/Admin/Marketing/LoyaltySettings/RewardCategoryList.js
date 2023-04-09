@@ -43,7 +43,7 @@ export default function CategoryList({ rewardCategories, onDrop, onDelete, onSav
         />
       )}
       <Button
-        color="secondary"
+        color="primary"
         variant="text"
         disableRipple
         startIcon={<Add />}

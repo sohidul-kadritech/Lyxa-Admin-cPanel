@@ -295,7 +295,7 @@ export default function DealSettings() {
         >
           <Button
             variant="outlined"
-            color="secondary"
+            color="primary"
             onClick={() => {
               discardChanges();
             }}
@@ -304,7 +304,7 @@ export default function DealSettings() {
           </Button>
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             disabled={updateSettingsMutation.isLoading}
             onClick={() => {
               updateSettings();

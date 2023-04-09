@@ -80,7 +80,7 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
                 <span
                   style={{
                     fontWeight: 600,
-                    color: theme.palette.primary.main,
+                    color: theme.palette.danger.main,
                   }}
                 >
                   {marketingType === 'double_menu' ? '2x Deal ' : '50% off '}
@@ -147,7 +147,7 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
                 fontSize: '14px',
               },
 
-              '&:hover': { background: '#EFF8FA', color: theme.palette.secondary.main },
+              '&:hover': { background: '#EFF8FA', color: theme.palette.primary.main },
             }}
           >
             Rewards
@@ -177,7 +177,7 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
                 fontSize: '14px',
               },
 
-              '&:hover': { background: 'rgba(91, 189, 78, 0.07)', color: theme.palette.secondary.main },
+              '&:hover': { background: 'rgba(91, 189, 78, 0.07)', color: theme.palette.primary.main },
             }}
           >
             Free
@@ -190,12 +190,6 @@ export default function BannerPreview({ shopBanner, shopLogo, shopName, marketin
             }}
           />
         )}
-        {/* <Skeleton
-          height={15}
-          sx={{
-            flex: 1,
-          }}
-        /> */}
         <Skeleton
           height={15}
           sx={{

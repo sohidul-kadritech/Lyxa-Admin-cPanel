@@ -136,7 +136,7 @@ export default function LoyaltySettings() {
   useEffect(() => {
     let newData;
     try {
-      newData = JSON.parse(JSON.stringify(settingsQuery?.data?.data?.rewardSetting));
+      newData = JSON.parse(JSON.stringify(settingsQuery?.data?.data?.rewardSetting || {}));
     } catch (error) {
       console.log(error);
     }
@@ -371,7 +371,7 @@ export default function LoyaltySettings() {
             >
               <Button
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 onClick={() => {
                   discardChanges();
                 }}
@@ -380,7 +380,7 @@ export default function LoyaltySettings() {
               </Button>
               <Button
                 variant="contained"
-                color="secondary"
+                color="primary"
                 disabled={updateSettingsMutation.isLoading}
                 onClick={() => {
                   updateSettings();

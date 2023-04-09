@@ -79,7 +79,7 @@ export default function CategoryItem({ category, onSave, onDelete, isAddNew, onV
           />
           <Stack direction="row" gap={2.5}>
             <StyledIconButton
-              color="secondary"
+              color="primary"
               onClick={() => {
                 onViewShops(category);
               }}
@@ -87,7 +87,7 @@ export default function CategoryItem({ category, onSave, onDelete, isAddNew, onV
               <Visibility />
             </StyledIconButton>
             <StyledIconButton
-              color="secondary"
+              color="primary"
               onClick={() => {
                 setEditMode(true);
                 setTimeout(() => {
@@ -98,7 +98,7 @@ export default function CategoryItem({ category, onSave, onDelete, isAddNew, onV
               <Edit />
             </StyledIconButton>
             <StyledIconButton
-              color="secondary"
+              color="primary"
               onClick={() => {
                 onDelete(category);
                 setGlobalChange(true);

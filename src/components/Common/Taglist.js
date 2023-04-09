@@ -76,7 +76,7 @@ export default function Taglist({
       </Stack>
       <Button
         disableRipple
-        color="secondary"
+        color="primary"
         variant="text"
         startIcon={<Add />}
         sx={{
