@@ -402,7 +402,6 @@ export default function LoyaltySettings() {
           />
         </Drawer>
       )}
-      {}
       <ConfirmModal
         message={confirmAction.message}
         isOpen={confirmModal}

@@ -381,6 +381,12 @@ export const dashboardSummaryOptions = [
   { label: 'Total User', value: 'totalUser' },
 ];
 
+export const confirmActionInit = {
+  message: '',
+  onConfirm: () => {},
+  onCancel: () => {},
+};
+
 export const logoSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
