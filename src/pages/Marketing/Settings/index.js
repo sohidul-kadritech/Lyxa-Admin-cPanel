@@ -12,7 +12,6 @@ import moment from 'moment';
 import CloseButton from '../../../components/Common/CloseButton';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
-// import ProductSelect from '../../../components/Common/ProductSelect';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';

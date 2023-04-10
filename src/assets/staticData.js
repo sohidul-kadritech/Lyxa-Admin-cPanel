@@ -13,7 +13,8 @@ export const shopDietaryOptions = [
 export const shopPaymentOptions = [
   { label: 'Cash', value: 'cash' },
   { label: 'Card', value: 'card' },
-  { label: 'Wallet', value: 'wallet' },
+  { label: 'Lyxa Pay', value: 'wallet' },
+  { label: 'POS', value: 'pos' },
 ];
 
 export const faqType = [

@@ -55,8 +55,6 @@ function ShopAdd() {
   const [tags, setTags] = useState([]);
   const [shop, setShop] = useState({});
 
-  console.log(tags);
-
   const [seller, setSeller] = useState(null);
   const [shopStartTime, setShopStartTime] = useState('');
   const [shopEndTime, setShopEndTime] = useState('');
@@ -178,6 +176,7 @@ function ShopAdd() {
         // callApi(id, SINGLE_SHOP,);
         const data = await callApi(id, SINGLE_SHOP, 'shop');
         if (data) {
+          console.log({ data });
           updateData(data);
           setShop(data);
         } else {

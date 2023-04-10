@@ -6,7 +6,12 @@ import Select from 'react-select';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Card, CardBody, Col, Container, Modal, Row, Spinner } from 'reactstrap';
 import noPhoto from '../../../assets/images/noPhoto.jpg';
-import { liveStatusOptionsOfRider, productStatusOptions, riderSortByOptions } from '../../../assets/staticData';
+import {
+  liveStatusOptionsOfRider,
+  productStatusOptions,
+  riderSortByOptions,
+  shiftOptions,
+} from '../../../assets/staticData';
 import AppPagination from '../../../components/AppPagination';
 import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
@@ -17,10 +22,12 @@ import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
 import TrackingDeliveryBoy from '../../../components/TrackingDeliveryBoy';
+
 import {
   allDeliveryMan,
   riderCurrentLocation,
   updateDeliveryManSearchKey,
+  updateDeliveryManShift,
   updateDeliveryManSortByKey,
   updateDeliveryManStatusKey,
   updateRiderLiveStatus,
@@ -35,6 +42,7 @@ function DeliverymanList() {
     sortByKey,
     statusKey,
     searchKey,
+    shift,
     deliveryMans,
     paging,
     hasNextPage,
@@ -55,10 +63,10 @@ function DeliverymanList() {
   };
 
   useEffect(() => {
-    if (sortByKey || statusKey || searchKey || liveStatus) {
+    if (sortByKey || statusKey || searchKey || liveStatus || shift) {
       callDeliveryManList(true);
     }
-  }, [sortByKey, statusKey, searchKey, liveStatus]);
+  }, [sortByKey, statusKey, searchKey, liveStatus, shift]);
 
   // HANDLE MENU ITEM
   const handleMenu = (menu, item) => {
@@ -141,6 +149,22 @@ function DeliverymanList() {
                 <Col lg={8}>
                   <Search dispatchFunc={updateDeliveryManSearchKey} placeholder="Search by id or name" />
                 </Col>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Shift</label>
+                    <Select
+                      palceholder="Select shift"
+                      options={shiftOptions}
+                      classNamePrefix="select2-selection"
+                      required
+                      value={shift}
+                      onChange={(e) => {
+                        dispatch(updateDeliveryManShift(e));
+                      }}
+                      defaultValue=""
+                    />
+                  </div>
+                </Col>
               </Row>
             </CardBody>
           </Card>
@@ -153,6 +177,7 @@ function DeliverymanList() {
                     <Th>Rider</Th>
                     <Th>Email</Th>
                     <Th>Phone</Th>
+                    <Th>Shift</Th>
                     <Th>Status</Th>
                     <Th>Current availability</Th>
                     <Th>Orders</Th>
@@ -179,6 +204,9 @@ function DeliverymanList() {
                       </Th>
                       <Td onClick={() => goToDetails(item?._id)}>{item?.email}</Td>
                       <Td onClick={() => goToDetails(item?._id)}>{item?.number}</Td>
+                      <Td className="text-capitalize" onClick={() => goToDetails(item?._id)}>
+                        {item?.shift}
+                      </Td>
                       <Td onClick={() => goToDetails(item?._id)}>
                         {`${item?.status === 'active' ? 'Active' : 'Inactive'}`}
                       </Td>

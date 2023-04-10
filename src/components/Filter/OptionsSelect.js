@@ -1,19 +1,25 @@
 import { Box, Chip, styled } from '@mui/material';
 
 const StyledChip = styled(Chip)(({ theme }) => ({
-  fontSize: '12px',
-  '&.Mui-disabled': {
-    opacity: '.80',
+  padding: '12px 21px',
+  height: 'auto',
+  width: 'auto',
+  borderRadius: '35px',
+  background: theme.palette.background.secondary,
+  border: `1.25px solid transparent`,
+  transition: 'border 200ms ease',
+
+  '& .MuiChip-label': {
+    color: theme.palette.text.primary,
+    fontFamily: "'Inter', sans-serif",
+    fontWeight: '500',
+    fontSize: '15px',
+    lineHeight: '24px',
   },
-  '&.active': {
-    background: 'rgb(63,63,63)',
-    color: '#fff',
-    '&:hover': {
-      background: 'rgb(78,78,78)',
-    },
-  },
-  [theme.breakpoints.up('xl')]: {
-    fontSize: '13px',
+
+  '&:hover, &.active': {
+    border: `1.25px solid ${theme.palette.primary.main}`,
+    background: theme.palette.background.secondary,
   },
 }));
 
@@ -58,6 +64,7 @@ export default function OptionsSelect({
 
         return (
           <StyledChip
+            disableRipple
             disabled={isDisabled}
             key={item.value}
             label={item.label}

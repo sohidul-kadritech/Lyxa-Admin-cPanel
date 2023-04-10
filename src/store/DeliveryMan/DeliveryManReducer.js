@@ -27,6 +27,7 @@ const initialState = {
   startDate: moment().startOf('month').format('YYYY-MM-DD'),
   endDate: moment().endOf('month').format('YYYY-MM-DD'),
   liveStatus: { label: 'All', value: 'all' },
+  shift: '',
   currentLocation: {
     lat: null,
     lng: null,
@@ -132,6 +133,12 @@ const deliveryManReducer = (state = initialState, action) => {
       return {
         ...state,
         searchKey: payload,
+      };
+
+    case actionType.UPDATE_RIDER_STATUS:
+      return {
+        ...state,
+        shift: payload,
       };
 
     case actionType.SET_STATUS_FALSE:

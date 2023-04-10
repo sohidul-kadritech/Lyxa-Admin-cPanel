@@ -2,7 +2,9 @@ import { Box, Checkbox, Stack, Typography, useTheme } from '@mui/material';
 import ImagePreview from '../Common/ImagePreview';
 import LoadingOverlay from '../Common/LoadingOverlay';
 import FilterSelect from '../Filter/FilterSelect';
+import OptionsSelect from '../Filter/OptionsSelect';
 import StyledAutocomplete from '../Styled/StyledAutocomplete';
+import StyledCheckboxList from '../Styled/StyledCheckBoxList';
 import StyledChip from '../Styled/StyledChips';
 import StyledFileDropzone from '../Styled/StyledFileDropzone';
 import StyledInput from '../Styled/StyledInput';
@@ -12,18 +14,20 @@ export default function StyledFormField({ containerProps, label, labelProps, int
 
   return (
     <Stack gap={2} {...(containerProps || {})}>
-      <Typography
-        variant="h5"
-        {...(labelProps || {})}
-        sx={{
-          fontWeight: '600',
-          fontSize: '15px',
-          lineHeight: '18px',
-          ...(labelProps?.sx || {}),
-        }}
-      >
-        {label}
-      </Typography>
+      {label && (
+        <Typography
+          variant="h5"
+          {...(labelProps || {})}
+          sx={{
+            fontWeight: '600',
+            fontSize: '15px',
+            lineHeight: '18px',
+            ...(labelProps?.sx || {}),
+          }}
+        >
+          {label}
+        </Typography>
+      )}
 
       {/* text field */}
       {intputType === 'text' && (
@@ -86,7 +90,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
       {/* select */}
       {intputType === 'select' && <FilterSelect {...(inputProps || {})} />}
 
-      {/* autocompltet */}
+      {/* autocomplete */}
       {intputType === 'autocomplete' && (
         <Stack
           position="relative"
@@ -145,6 +149,12 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             })}
         </Stack>
       )}
+
+      {/* options select */}
+      {intputType === 'optionsSelect' && <OptionsSelect {...(inputProps || {})} />}
+
+      {/* options select */}
+      {intputType === 'checkbox' && <StyledCheckboxList {...(inputProps || {})} />}
     </Stack>
   );
 }

@@ -6,7 +6,7 @@ export default function GetPallete() {
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#5BFCA',
+      main: '#15BFCA',
       contrastText: '#ffffff',
     },
     info: {

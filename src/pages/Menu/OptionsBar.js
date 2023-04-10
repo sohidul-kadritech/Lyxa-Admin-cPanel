@@ -8,7 +8,7 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 // styled button
 function StyledButton({ ...props }) {
   return (
-    <Button variant="contained" color="secondary" size="small" startIcon={<Add />} {...props}>
+    <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
       Add
     </Button>
   );
@@ -39,7 +39,7 @@ function OptionsBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse
       <Button
         onClick={onCollapse}
         variant="contained"
-        color="secondary"
+        color="primary"
         size="small"
         sx={{
           minWidth: 'auto',
