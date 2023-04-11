@@ -44,7 +44,7 @@ const accodionSx = {
   },
 };
 
-export default function CategoryContainer({ category, isOridanryCategory }) {
+export default function CategoryContainer({ category, isOridanryCategory, onProductMenuClick }) {
   const adminShop = useSelector((store) => store.Login.admin);
   const theme = useTheme();
   const [open, setOpen] = useState(true);
@@ -103,7 +103,7 @@ export default function CategoryContainer({ category, isOridanryCategory }) {
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails sx={detailsSx}>
-        <ProductsContainer products={category?.sortedProducts} />
+        <ProductsContainer products={category?.sortedProducts} onProductMenuClick={onProductMenuClick} />
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>
             <Button variant="contained" color="primary" size="small" startIcon={<Add />}>

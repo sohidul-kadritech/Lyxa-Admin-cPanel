@@ -15,7 +15,7 @@ const menuItems = [
   },
   {
     label: 'Mark as sold out',
-    value: 'sold-out',
+    value: 'soldOut',
   },
   {
     label: 'Deactivate',
@@ -37,9 +37,10 @@ export default function Product({ product, onMenuClick, ...props }) {
       {/* left */}
       <Stack direction="row" alignItems="center" gap={5} pt={3.5} pb={3.5}>
         <HandleIcon
-          className="drag-handler"
+          className="drag-handler-chlid"
           style={{
             color: product?.isUnsortable ? '#AFAFAE' : '#363636',
+            cursor: 'grap',
           }}
         />
         <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 66, height: 52 }} />

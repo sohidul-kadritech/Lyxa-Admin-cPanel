@@ -1,8 +1,12 @@
+// third party
 import { Box, Drawer } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Container, Draggable } from 'react-smooth-dnd';
+
+// project import
 import PageTop from '../../components/Common/PageTop';
 import Wrapper from '../../components/Wrapper';
 import * as Api from '../../network/Api';
@@ -15,16 +19,16 @@ import { createCatagory } from './helpers';
 
 export default function MenuPage() {
   const adminShop = useSelector((store) => store.Login.admin);
+  const history = useHistory();
+
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
-  // const [globalOpen, setGlobalOpen] = useState(null);
 
   // sidebar
   const [sidebar, setSidebar] = useState(null);
 
   // products
   const [categories, setCategories] = useState([]);
-  console.log(categories);
 
   const productsQuery = useQuery(
     ['category-wise-products', { shopId: adminShop?._id }],
@@ -41,6 +45,24 @@ export default function MenuPage() {
       },
     }
   );
+
+  const onProductMenuClick = (value) => {
+    if (value === 'marketing') history.push('/marketing');
+
+    if (value === 'edit') history.push('/marketing');
+
+    if (value === 'deactivate') {
+      history.push('/marketing');
+    }
+
+    if (value === 'favourite') {
+      history.push('/marketing');
+    }
+
+    if (value === 'soldOut') {
+      history.push('/marketing');
+    }
+  };
 
   // sort products
   const categorySortingMutation = useMutation((data) => AXIOS.post(Api.SORT_CATEGORIES, data));
@@ -82,7 +104,7 @@ export default function MenuPage() {
         <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
           {categories.map((category) => (
             <Draggable key={category?.category?._id}>
-              <CategoryContainer category={category} isOridanryCategory />
+              <CategoryContainer category={category} onProductMenuClick={onProductMenuClick} isOridanryCategory />
             </Draggable>
           ))}
         </Container>

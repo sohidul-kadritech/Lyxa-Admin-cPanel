@@ -5,7 +5,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Product from './Product';
 
-export default function ProductsContainer({ products }) {
+export default function ProductsContainer({ products, onProductMenuClick }) {
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
@@ -27,7 +27,7 @@ export default function ProductsContainer({ products }) {
   };
 
   return (
-    <Container onDrop={onDrop}>
+    <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler-chlid">
       {products.map((product, index, array) => (
         <Draggable key={product?._id}>
           <Product
@@ -35,6 +35,7 @@ export default function ProductsContainer({ products }) {
             sx={{
               borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
             }}
+            onMenuClick={onProductMenuClick}
           />
         </Draggable>
       ))}
