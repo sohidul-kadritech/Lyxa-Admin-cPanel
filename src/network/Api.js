@@ -68,6 +68,7 @@ export const ADD_CATEGORY = `${ADMIN_ENDPOINT}/category/add-category`;
 export const GET_ALL_CATEGORY = `${ADMIN_ENDPOINT}/category`;
 export const SINGLE_CATEGORY = `${ADMIN_ENDPOINT}/category/get-single-category`;
 export const EDIT_CATEGORY = `${ADMIN_ENDPOINT}/category/update`;
+export const SORT_CATEGORIES = `${ADMIN_ENDPOINT}/category/sort`;
 
 // SUB CATEGORY
 export const ADD_SUB_CATEGORY = `${ADMIN_ENDPOINT}/sub-category/add`;
@@ -104,6 +105,7 @@ export const ADD_SHOP_CREDENTIAL = `${ADMIN_ENDPOINT}/shop/add-credential`;
 export const GET_SHOP_CREDENTIALS = `${ADMIN_ENDPOINT}/shop/credential`;
 export const REMOVE_SHOP_CREDENTIAL = `${ADMIN_ENDPOINT}/shop/delete-credential`;
 export const ADD_SHOP_MAX_DISCOUNT = `${ADMIN_ENDPOINT}/shop/add-maxDiscount`;
+export const EDIT_SHOP_BEST_SELLER = `${ADMIN_ENDPOINT}/shop/add-best-seller`;
 
 // PRODUCT
 export const ADD_PRODUCT = `${ADMIN_ENDPOINT}/product/add`;
@@ -113,6 +115,8 @@ export const SINGLE_PRODUCT = `${ADMIN_ENDPOINT}/product/product-details`;
 export const DELETE_PRODUCT = `${ADMIN_ENDPOINT}/product/delete`;
 export const ADD_PRODUCT_DEAL = `${ADMIN_ENDPOINT}/product/add-deal`;
 export const UPDATE_PRODUCT_STATUS = `${ADMIN_ENDPOINT}/product/status`;
+export const GET_CATEGORY_WISE_PRODUCT = `${ADMIN_ENDPOINT}/product/category-wise-products`;
+export const SORT_PRODUCTS = `${ADMIN_ENDPOINT}/product/sort`;
 
 export const DELETE_PRODUCT_DEAL = `${ADMIN_ENDPOINT}/product/delete-deal`;
 export const UPDATE_PRODUCT_REWARD_SETTINGS = `${ADMIN_ENDPOINT}/product/add-reward`;

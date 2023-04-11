@@ -5,8 +5,8 @@ import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import { shopTypeOptions2 } from '../../../assets/staticData';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
+import { attributeInit, attributeOptions, attributeTypeAvailableOptions, dietryOptions, productInit } from '../helpers';
 import AttributeList from './AttributeList';
-import { attributeInit, attributeOptions, attributeTypeAvailableOptions, dietryOptions, productInit } from './helpers';
 
 const fieldContainerSx = {
   padding: '14px 0',
