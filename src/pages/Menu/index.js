@@ -20,12 +20,9 @@ import { createCatagory } from './helpers';
 export default function MenuPage() {
   const adminShop = useSelector((store) => store.Login.admin);
   const history = useHistory();
-
+  const [sidebar, setSidebar] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
-
-  // sidebar
-  const [sidebar, setSidebar] = useState(null);
 
   // products
   const [categories, setCategories] = useState([]);
@@ -46,20 +43,15 @@ export default function MenuPage() {
     }
   );
 
-  const onProductMenuClick = (value) => {
-    if (value === 'marketing') history.push('/marketing');
+  /*
+    Other menu options are handled within the product compoent for avoiding refetch
+  */
+  const onProductMenuClick = (menu) => {
+    if (menu === 'marketing') history.push('/marketing');
 
-    if (value === 'edit') history.push('/marketing');
+    if (menu === 'edit') history.push('/marketing');
 
-    if (value === 'deactivate') {
-      history.push('/marketing');
-    }
-
-    if (value === 'favourite') {
-      history.push('/marketing');
-    }
-
-    if (value === 'soldOut') {
+    if (menu === 'favourite') {
       history.push('/marketing');
     }
   };
@@ -99,7 +91,10 @@ export default function MenuPage() {
           onCollapse={() => {}}
         />
         {/* best seller */}
-        <CategoryContainer category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')} />
+        <CategoryContainer
+          category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
+          onProductMenuClick={onProductMenuClick}
+        />
         {/* <CategoryContainer category={createCatagory(productsQuery?.data?.data || {}, 'favorites')} /> */}
         <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
           {categories.map((category) => (

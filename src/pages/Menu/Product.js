@@ -1,10 +1,14 @@
 import { Avatar, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
+import { useMutation } from 'react-query';
 import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import StyledInput from '../../components/Styled/StyledInput';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
+import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 
-const menuItems = [
+const getMenuItems = (product) => [
   {
     label: 'Edit item',
     value: 'edit',
@@ -18,8 +22,8 @@ const menuItems = [
     value: 'soldOut',
   },
   {
-    label: 'Deactivate',
-    value: 'deactivate',
+    label: product?.productVisibility ? 'Deactivate' : 'Active',
+    value: 'visibility',
   },
   {
     label: 'Add favourite',
@@ -31,6 +35,59 @@ export default function Product({ product, onMenuClick, ...props }) {
   const theme = useTheme();
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
+
+  const productMutation = useMutation(
+    (data) =>
+      AXIOS.post(Api.EDIT_PRODUCT, {
+        ...data,
+        action: undefined,
+      }),
+    {
+      onSuccess: (data, args) => {
+        if (data?.status) {
+          if (args.action === 'visibility') {
+            product.productVisibility = args.productVisibility;
+            successMsg(data?.message, 'success');
+          }
+          setRender((prev) => !prev);
+        } else {
+          successMsg(data?.message);
+        }
+      },
+    }
+  );
+
+  const productStockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STATUS, data), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+    },
+  });
+
+  const handleMenuClick = (menu) => {
+    if (menu === 'visibility') {
+      productMutation.mutate({
+        id: product?._id,
+        productVisibility: !product?.productVisibility,
+        action: 'visibility',
+      });
+    } else if (menu === 'soldOut') {
+      productStockMutation.mutate({
+        id: product?._id,
+        stockQuantity: 0,
+      });
+    } else {
+      onMenuClick(menu, product);
+    }
+  };
+
+  const handlePriceChange = (event) => {
+    product.price = event.target.value;
+    productMutation.mutate({
+      id: product?._id,
+      price: event.target.value,
+      action: 'price',
+    });
+  };
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between" {...props}>
@@ -66,10 +123,7 @@ export default function Product({ product, onMenuClick, ...props }) {
           type="number"
           min={1}
           value={product?.price}
-          onChange={(e) => {
-            product.price = e.target.value;
-            setRender((prev) => !prev);
-          }}
+          onChange={handlePriceChange}
           InputProps={{
             startAdornment: <InputAdornment position="end">$</InputAdornment>,
           }}
@@ -92,7 +146,7 @@ export default function Product({ product, onMenuClick, ...props }) {
             },
           }}
         />
-        <ThreeDotsMenu handleMenuClick={onMenuClick} menuItems={menuItems} />
+        <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={getMenuItems(product)} />
       </Stack>
     </Stack>
   );
