@@ -1,3 +1,39 @@
+// menu options
+export const addMenuOptions = [
+  {
+    label: 'Add item',
+    value: 'add-item',
+  },
+  {
+    label: 'Add category',
+    value: 'add-category',
+  },
+];
+
+export const getProductMenuOptions = (product) => [
+  {
+    label: 'Edit item',
+    value: 'edit',
+  },
+  {
+    label: 'Go to marketing',
+    value: 'marketing',
+  },
+  {
+    label: 'Mark as sold out',
+    value: 'soldOut',
+  },
+  {
+    label: product?.productVisibility ? 'Deactivate' : 'Active',
+    value: 'visibility',
+  },
+  {
+    label: 'Add favourite',
+    value: 'favourite',
+  },
+];
+
+// state inits
 export const attributeOptions = [
   {
     label: 'Yes',
@@ -65,6 +101,7 @@ export const createCatagory = (data, type) => {
         _id: 'bestsellerItems',
         name: 'Best sellers',
         isUnsortable: true,
+        isShopBestSellers: true,
       },
       sortedProducts:
         data?.bestSellerItems?.map((item) => ({
@@ -79,6 +116,8 @@ export const createCatagory = (data, type) => {
     category: {
       _id: 'shopfavoriteItems',
       name: 'Favourites',
+      isUnsortable: true,
+      isShopFavorites: true,
     },
     sortedProducts:
       data?.shopFavouriteItems?.map((item) => ({

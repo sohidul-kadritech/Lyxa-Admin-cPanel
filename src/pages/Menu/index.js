@@ -9,39 +9,46 @@ import { Container, Draggable } from 'react-smooth-dnd';
 // project import
 import PageTop from '../../components/Common/PageTop';
 import Wrapper from '../../components/Wrapper';
+import dropSort from '../../helpers/dropSort';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
 import CategoryContainer from './CategoryContainer';
-import OptionsBar from './OptionsBar';
+import Searchbar from './Searchbar';
 import { createCatagory } from './helpers';
 
 export default function MenuPage() {
-  const adminShop = useSelector((store) => store.Login.admin);
+  const shop = useSelector((store) => store.Login.admin);
   const history = useHistory();
   const [sidebar, setSidebar] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
-  // products
+  // products query
   const [categories, setCategories] = useState([]);
 
   const productsQuery = useQuery(
-    ['category-wise-products', { shopId: adminShop?._id }],
+    ['category-wise-products', { shopId: shop?._id }],
     () =>
       AXIOS.get(Api.GET_CATEGORY_WISE_PRODUCT, {
         params: {
-          shopId: adminShop?._id,
+          shopId: shop?._id,
         },
       }),
     {
       staleTime: 1000 * 60 * 5,
       onSuccess: (data) => {
-        setCategories(data?.data?.productsGroupByCategory || []);
+        setCategories((prev) => data?.data?.productsGroupByCategory || prev);
       },
     }
   );
+
+  // shop favourites
+  const shopFavoriteMutation = useMutation((data) => AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, data), {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
 
   /*
     Other menu options are handled within the product compoent for avoiding refetch
@@ -52,7 +59,11 @@ export default function MenuPage() {
     if (menu === 'edit') history.push('/marketing');
 
     if (menu === 'favourite') {
-      history.push('/marketing');
+      shopFavoriteMutation.mutate({
+        shopId: shop?._id,
+        isActive: true,
+        products: [],
+      });
     }
   };
 
@@ -60,17 +71,14 @@ export default function MenuPage() {
   const categorySortingMutation = useMutation((data) => AXIOS.post(Api.SORT_CATEGORIES, data));
 
   const onDrop = ({ removedIndex, addedIndex }) => {
-    if (removedIndex === null || addedIndex === null) return;
-    const category = categories.splice(removedIndex, 1);
-
-    categories.splice(addedIndex, 0, category[0]);
-    setRender((prev) => !prev);
-
-    categorySortingMutation.mutate({
-      categories: categories.map((category, index) => ({
-        id: category?.category?.category?._id,
-        sortingOrder: index + 1,
-      })),
+    dropSort(removedIndex, addedIndex, categories, (categories) => {
+      setRender(!render);
+      categorySortingMutation.mutate({
+        categories: categories.map((category, index) => ({
+          id: category?.category?.category?._id,
+          sortingOrder: index + 1,
+        })),
+      });
     });
   };
 
@@ -83,8 +91,8 @@ export default function MenuPage() {
     >
       <Box className="page-content2">
         <PageTop title="Menu" />
-        <OptionsBar
-          searchPlaceHolder="Search 24 items"
+        <Searchbar
+          searchPlaceHolder="Search items"
           onMenuClick={(value) => {
             setSidebar(value);
           }}
@@ -95,7 +103,7 @@ export default function MenuPage() {
           category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
           onProductMenuClick={onProductMenuClick}
         />
-        {/* <CategoryContainer category={createCatagory(productsQuery?.data?.data || {}, 'favorites')} /> */}
+        <CategoryContainer category={createCatagory(productsQuery?.data?.data || {}, 'favorites')} />
         <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
           {categories.map((category) => (
             <Draggable key={category?.category?._id}>

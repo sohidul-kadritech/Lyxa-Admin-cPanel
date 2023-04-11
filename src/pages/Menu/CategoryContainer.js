@@ -45,13 +45,13 @@ const accodionSx = {
 };
 
 export default function CategoryContainer({ category, isOridanryCategory, onProductMenuClick }) {
-  const adminShop = useSelector((store) => store.Login.admin);
+  const shop = useSelector((store) => store.Login.admin);
   const theme = useTheme();
   const [open, setOpen] = useState(true);
 
   const bestSellerMutation = useMutation((status) =>
     AXIOS.post(Api.EDIT_SHOP_BEST_SELLER, {
-      shopId: adminShop?._id,
+      shopId: shop?._id,
       isActive: status,
     })
   );
@@ -92,10 +92,10 @@ export default function CategoryContainer({ category, isOridanryCategory, onProd
               }}
             >
               <StyledSwitch
-                checked={adminShop?.bestSeller?.isActive}
+                checked={shop?.bestSeller?.isActive}
                 onChange={(e) => {
                   bestSellerMutation.mutate(e.target.checked);
-                  adminShop.bestSeller.isActive = e.target.checked;
+                  shop.bestSeller.isActive = e.target.checked;
                 }}
               />
             </Box>

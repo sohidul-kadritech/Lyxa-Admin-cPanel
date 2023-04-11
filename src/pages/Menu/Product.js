@@ -7,33 +7,10 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-
-const getMenuItems = (product) => [
-  {
-    label: 'Edit item',
-    value: 'edit',
-  },
-  {
-    label: 'Go to marketing',
-    value: 'marketing',
-  },
-  {
-    label: 'Mark as sold out',
-    value: 'soldOut',
-  },
-  {
-    label: product?.productVisibility ? 'Deactivate' : 'Active',
-    value: 'visibility',
-  },
-  {
-    label: 'Add favourite',
-    value: 'favourite',
-  },
-];
+import { getProductMenuOptions } from './helpers';
 
 export default function Product({ product, onMenuClick, ...props }) {
   const theme = useTheme();
-  // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
   const productMutation = useMutation(
@@ -49,7 +26,7 @@ export default function Product({ product, onMenuClick, ...props }) {
             product.productVisibility = args.productVisibility;
             successMsg(data?.message, 'success');
           }
-          setRender((prev) => !prev);
+          setRender(render);
         } else {
           successMsg(data?.message);
         }
@@ -146,7 +123,7 @@ export default function Product({ product, onMenuClick, ...props }) {
             },
           }}
         />
-        <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={getMenuItems(product)} />
+        <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={getProductMenuOptions(product)} />
       </Stack>
     </Stack>
   );

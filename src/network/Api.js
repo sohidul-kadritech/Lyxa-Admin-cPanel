@@ -106,6 +106,7 @@ export const GET_SHOP_CREDENTIALS = `${ADMIN_ENDPOINT}/shop/credential`;
 export const REMOVE_SHOP_CREDENTIAL = `${ADMIN_ENDPOINT}/shop/delete-credential`;
 export const ADD_SHOP_MAX_DISCOUNT = `${ADMIN_ENDPOINT}/shop/add-maxDiscount`;
 export const EDIT_SHOP_BEST_SELLER = `${ADMIN_ENDPOINT}/shop/add-best-seller`;
+export const EDIT_SHOP_FAVOVRITES = `${ADMIN_ENDPOINT}/shop/add-shop-favourites`;
 
 // PRODUCT
 export const ADD_PRODUCT = `${ADMIN_ENDPOINT}/product/add`;
