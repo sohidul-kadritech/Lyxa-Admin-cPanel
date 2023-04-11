@@ -210,15 +210,10 @@ export default function Marketing() {
   };
 
   const G_LOADING =
-    // dealSettingsQuery.isLoading ||
     !dealSettingsQuery.isFetchedAfterMount ||
-    // discountSettingsQuery.isLoading ||
     !discountSettingsQuery.isFetchedAfterMount ||
-    // doubleDealSettingsQuery.isLoading ||
     !doubleDealSettingsQuery.isFetchedAfterMount ||
-    // freeDeliverySettingsQuery.isLoading ||
     !freeDeliverySettingsQuery.isFetchedAfterMount ||
-    // rewardSettingsQuery.isLoading ||
     !rewardSettingsQuery.isFetchedAfterMount ||
     shopQuery.isLoading;
 

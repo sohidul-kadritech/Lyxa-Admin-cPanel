@@ -55,12 +55,12 @@ export default function StyledFormField({ containerProps, label, labelProps, int
 
             '& .MuiInputBase-root': {
               height: '100%',
+              paddingLeft: '18px',
+              paddingRight: '18px',
             },
 
             '& textarea': {
               height: '100% !important',
-              paddingLeft: '18px',
-              paddingRight: '18px',
               fontWeight: '500',
               fontSize: '15px',
               color: theme.palette.text.primary,

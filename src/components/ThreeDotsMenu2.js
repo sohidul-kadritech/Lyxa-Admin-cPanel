@@ -22,7 +22,7 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick, ButtonComponent }) {
         <ButtonComponent onClick={handleClick} />
       ) : (
         <StyledButton
-          color="secondary"
+          color="primary"
           disableRipple
           onClick={handleClick}
           sx={{
