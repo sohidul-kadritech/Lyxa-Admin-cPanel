@@ -9,7 +9,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { getProductMenuOptions } from './helpers';
 
-export default function Product({ product, onMenuClick, ...props }) {
+export default function Product({ product, onMenuClick, shopFavourites, ...props }) {
   const theme = useTheme();
   const [render, setRender] = useState(false);
 
@@ -34,7 +34,7 @@ export default function Product({ product, onMenuClick, ...props }) {
     }
   );
 
-  const productStockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STATUS, data), {
+  const stockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STATUS, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
     },
@@ -48,7 +48,7 @@ export default function Product({ product, onMenuClick, ...props }) {
         action: 'visibility',
       });
     } else if (menu === 'soldOut') {
-      productStockMutation.mutate({
+      stockMutation.mutate({
         id: product?._id,
         stockQuantity: 0,
       });
@@ -59,6 +59,7 @@ export default function Product({ product, onMenuClick, ...props }) {
 
   const handlePriceChange = (event) => {
     product.price = event.target.value;
+
     productMutation.mutate({
       id: product?._id,
       price: event.target.value,
@@ -123,7 +124,11 @@ export default function Product({ product, onMenuClick, ...props }) {
             },
           }}
         />
-        <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={getProductMenuOptions(product)} />
+        <ThreeDotsMenu
+          handleMenuClick={handleMenuClick}
+          // console={console.log(shopFavourites)}
+          menuItems={getProductMenuOptions(product, shopFavourites)}
+        />
       </Stack>
     </Stack>
   );

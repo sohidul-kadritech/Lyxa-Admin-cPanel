@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 // third party
 import { Box, Drawer } from '@mui/material';
 import { useState } from 'react';
@@ -10,6 +11,7 @@ import { Container, Draggable } from 'react-smooth-dnd';
 import PageTop from '../../components/Common/PageTop';
 import Wrapper from '../../components/Wrapper';
 import dropSort from '../../helpers/dropSort';
+import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
@@ -19,13 +21,15 @@ import Searchbar from './Searchbar';
 import { createCatagory } from './helpers';
 
 export default function MenuPage() {
-  const shop = useSelector((store) => store.Login.admin);
   const history = useHistory();
-  const [sidebar, setSidebar] = useState(null);
-  const [render, setRender] = useState(false);
+  const shop = useSelector((store) => store.Login.admin);
 
-  // products query
+  const [render, setRender] = useState(false);
+  const [sidebar, setSidebar] = useState(null);
+
+  // products
   const [categories, setCategories] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   const productsQuery = useQuery(
     ['category-wise-products', { shopId: shop?._id }],
@@ -39,31 +43,76 @@ export default function MenuPage() {
       staleTime: 1000 * 60 * 5,
       onSuccess: (data) => {
         setCategories((prev) => data?.data?.productsGroupByCategory || prev);
+        setFavorites((prev) => data?.data?.shopFavouriteItems || prev);
       },
     }
   );
 
-  // shop favourites
-  const shopFavoriteMutation = useMutation((data) => AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, data), {
-    onSuccess: (data) => {
-      console.log(data);
-    },
-  });
-
-  /*
-    Other menu options are handled within the product compoent for avoiding refetch
-  */
-  const onProductMenuClick = (menu) => {
-    if (menu === 'marketing') history.push('/marketing');
-
-    if (menu === 'edit') history.push('/marketing');
-
-    if (menu === 'favourite') {
-      shopFavoriteMutation.mutate({
+  const favoriteMutation = useMutation(
+    (data) =>
+      AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, {
         shopId: shop?._id,
-        isActive: true,
-        products: [],
+        ...data,
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
+
+  const handleFavouriteChange = (product) => {
+    // remove item
+    if (favorites?.find((item) => item?.product?._id === product?._id)) {
+      const newList = [];
+      let i = 1;
+
+      setFavorites((prev) =>
+        prev?.filter((item) => {
+          if (item?.product?._id !== product?._id) {
+            newList.push({
+              product: item?.product?._id,
+              sortingOrder: i,
+            });
+
+            i++;
+          }
+          return item?.product?._id !== product?._id;
+        })
+      );
+
+      favoriteMutation.mutate({
+        products: newList,
       });
+      return;
+    }
+
+    // item already full
+    if (favorites?.length >= 3) {
+      successMsg('Favourites items is already full');
+      return;
+    }
+
+    // add item
+    const l = favorites?.length + 1 || 0;
+    setFavorites((prev) => [...prev, { sortingOrder: l, product }]);
+
+    const newList = favorites?.map((item, index) => ({
+      product: item?.product?._id,
+      sortingOrder: index + 1,
+    }));
+    newList.push({ product: product?._id, sortingOrder: l });
+
+    favoriteMutation.mutate({
+      products: newList,
+    });
+  };
+
+  const onProductMenuClick = (menu, product) => {
+    if (menu === 'marketing') history.push('/marketing');
+    if (menu === 'edit') history.push('/marketing');
+    if (menu === 'favourite') {
+      handleFavouriteChange(product);
     }
   };
 
@@ -71,15 +120,13 @@ export default function MenuPage() {
   const categorySortingMutation = useMutation((data) => AXIOS.post(Api.SORT_CATEGORIES, data));
 
   const onDrop = ({ removedIndex, addedIndex }) => {
-    dropSort(removedIndex, addedIndex, categories, (categories) => {
-      setRender(!render);
-      categorySortingMutation.mutate({
-        categories: categories.map((category, index) => ({
-          id: category?.category?.category?._id,
-          sortingOrder: index + 1,
-        })),
-      });
+    categorySortingMutation.mutate({
+      categories: dropSort(removedIndex, addedIndex, categories).map((category, index) => ({
+        id: category?.category?.category?._id,
+        sortingOrder: index + 1,
+      })),
     });
+    setRender(!render);
   };
 
   return (
@@ -92,7 +139,7 @@ export default function MenuPage() {
       <Box className="page-content2">
         <PageTop title="Menu" />
         <Searchbar
-          searchPlaceHolder="Search items"
+          searchPlaceHolder="Search 24 items"
           onMenuClick={(value) => {
             setSidebar(value);
           }}
@@ -102,12 +149,22 @@ export default function MenuPage() {
         <CategoryContainer
           category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
           onProductMenuClick={onProductMenuClick}
+          shopFavourites={favorites}
         />
-        <CategoryContainer category={createCatagory(productsQuery?.data?.data || {}, 'favorites')} />
+        <CategoryContainer
+          category={createCatagory(favorites, 'favorites')}
+          onProductMenuClick={onProductMenuClick}
+          shopFavourites={favorites}
+        />
         <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
           {categories.map((category) => (
             <Draggable key={category?.category?._id}>
-              <CategoryContainer category={category} onProductMenuClick={onProductMenuClick} isOridanryCategory />
+              <CategoryContainer
+                category={category}
+                onProductMenuClick={onProductMenuClick}
+                isOridanryCategory
+                shopFavourites={favorites}
+              />
             </Draggable>
           ))}
         </Container>

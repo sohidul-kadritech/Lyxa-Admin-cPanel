@@ -10,7 +10,7 @@ export const addMenuOptions = [
   },
 ];
 
-export const getProductMenuOptions = (product) => [
+export const getProductMenuOptions = (product, shopFavourites) => [
   {
     label: 'Edit item',
     value: 'edit',
@@ -28,7 +28,7 @@ export const getProductMenuOptions = (product) => [
     value: 'visibility',
   },
   {
-    label: 'Add favourite',
+    label: shopFavourites?.find((item) => item?.product?._id === product?._id) ? 'Remove favourite' : 'Add favourite',
     value: 'favourite',
   },
 ];
@@ -120,9 +120,8 @@ export const createCatagory = (data, type) => {
       isShopFavorites: true,
     },
     sortedProducts:
-      data?.shopFavouriteItems?.map((item) => ({
-        ...item?._id,
-        totalSold: item?.totalSold,
+      data?.map((item) => ({
+        ...item?.product,
       })) || [],
   };
 };

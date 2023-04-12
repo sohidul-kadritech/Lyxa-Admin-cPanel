@@ -6,20 +6,19 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Product from './Product';
 
-export default function ProductsContainer({ products, onProductMenuClick }) {
+export default function ProductsContainer({ products, onProductMenuClick, shopFavourites }) {
   const [render, setRender] = useState(false);
   const sortingMutation = useMutation((data) => AXIOS.post(Api.SORT_PRODUCTS, data));
 
   const onDrop = ({ removedIndex, addedIndex }) => {
-    dropSort(removedIndex, addedIndex, products, (products) => {
-      setRender(!render);
-      sortingMutation.mutate({
-        products: products?.map((product, index) => ({
-          id: product?._id,
-          sortingOrder: index + 1,
-        })),
-      });
+    sortingMutation.mutate({
+      products: dropSort(removedIndex, addedIndex, products).map((product, index) => ({
+        id: product?._id,
+        sortingOrder: index + 1,
+      })),
     });
+
+    setRender(!render);
   };
 
   return (
@@ -32,6 +31,7 @@ export default function ProductsContainer({ products, onProductMenuClick }) {
               borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
             }}
             onMenuClick={onProductMenuClick}
+            shopFavourites={shopFavourites}
           />
         </Draggable>
       ))}

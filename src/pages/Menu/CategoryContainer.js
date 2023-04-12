@@ -44,13 +44,20 @@ const accodionSx = {
   },
 };
 
-export default function CategoryContainer({ category, isOridanryCategory, onProductMenuClick }) {
-  const shop = useSelector((store) => store.Login.admin);
+export default function CategoryContainer({ category, isOridanryCategory, onProductMenuClick, shopFavourites }) {
   const theme = useTheme();
+  const shop = useSelector((store) => store.Login.admin);
   const [open, setOpen] = useState(true);
 
   const bestSellerMutation = useMutation((status) =>
     AXIOS.post(Api.EDIT_SHOP_BEST_SELLER, {
+      shopId: shop?._id,
+      isActive: status,
+    })
+  );
+
+  const favouritesMutation = useMutation((status) =>
+    AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, {
       shopId: shop?._id,
       isActive: status,
     })
@@ -92,10 +99,15 @@ export default function CategoryContainer({ category, isOridanryCategory, onProd
               }}
             >
               <StyledSwitch
-                checked={shop?.bestSeller?.isActive}
+                checked={category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive}
                 onChange={(e) => {
-                  bestSellerMutation.mutate(e.target.checked);
-                  shop.bestSeller.isActive = e.target.checked;
+                  if (category?.isShopBestSellers) {
+                    bestSellerMutation.mutate(e.target.checked);
+                    shop.bestSeller.isActive = e.target.checked;
+                  } else {
+                    favouritesMutation.mutate(e.target.checked);
+                    shop.shopFavourites.isActive = e.target.checked;
+                  }
                 }}
               />
             </Box>
@@ -103,7 +115,11 @@ export default function CategoryContainer({ category, isOridanryCategory, onProd
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails sx={detailsSx}>
-        <ProductsContainer products={category?.sortedProducts} onProductMenuClick={onProductMenuClick} />
+        <ProductsContainer
+          products={category?.sortedProducts}
+          onProductMenuClick={onProductMenuClick}
+          shopFavourites={shopFavourites}
+        />
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>
             <Button variant="contained" color="primary" size="small" startIcon={<Add />}>
