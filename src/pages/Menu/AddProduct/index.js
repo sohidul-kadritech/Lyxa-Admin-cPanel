@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -10,41 +9,27 @@ import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledChip from '../../../components/Styled/StyledChips';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
-import { getImageUrl } from '../../../helpers/images';
 import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import { attributeOptions, attributeTypeAvailableOptions, dietryOptions, productInit } from '../helpers';
+import {
+  attributeOptions,
+  attributeTypeAvailableOptions,
+  createProductData,
+  dietryOptions,
+  getAttrOptionsValues,
+  getProductInit,
+  productAttrInit,
+  validateProduct,
+} from '../helpers';
 import AttributeList from './AttributeList';
 
 const fieldContainerSx = {
   padding: '14px 0',
 };
 
-const attr = {
-  name: '',
-  required: false,
-  select: '',
-  items: [],
-};
-
-const getAttrOptionsValues = (product) => {
-  const values = [];
-  if (product?.attributes[0] && product?.attributes[0]?.required) values.push('required');
-  if (product?.attributes[0] && product?.attributes[0]?.select === 'multiple') values.push('multiple');
-  return values;
-};
-
-const getCateogryInit = (shop, category) => {
-  const data = { ...productInit };
-  // type
-  data.type = shop?.shopType || '';
-  data.shop = shop?._id || '';
-  // category
-  return data;
-};
-
+// eslint-disable-next-line no-unused-vars
 export default function AddProduct({ onClose, editProduct, viewOnly, category }) {
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
@@ -53,7 +38,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  const [product, setProduct] = useState(editProduct || getCateogryInit(shop, category));
+  const [product, setProduct] = useState(editProduct || getProductInit(shop, category));
   const [hasAttribute, setHasAttribute] = useState('');
   const [hasInventory, setHasInventory] = useState(false);
 
@@ -82,8 +67,6 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
     }
   );
 
-  console.log(categoriesQuery.data);
-
   // addons
   const productsQuery = useQuery(
     ['single-shop-products', { shopId: shop?._id }],
@@ -105,13 +88,17 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
     }
   );
 
+  // loading
+  // eslint-disable-next-line no-unused-vars
+  const __loading = categoriesQuery.isLoading || productsQuery.isLoading;
+
   // input handler
   const commonChangeHandler = (e) => {
     setProduct((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   // file handler
-  const onDrop = (acceptedFiles, rejectedFiles) => {
+  const onDrop = (acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -153,38 +140,22 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
   );
 
   const updateProduct = async () => {
-    setLoading(true);
-    const imgUrl = await getImageUrl(product?.images[0]);
+    const productValidation = validateProduct(product);
+    if (!productValidation.status) {
+      successMsg(productValidation?.msg);
+      return;
+    }
 
-    if (!imgUrl) {
+    setLoading(true);
+    const productData = await createProductData(product, shop);
+
+    if (productData?.status === false) {
+      successMsg(productData?.message);
       setLoading(false);
       return;
     }
 
-    // variant props
-    let stockQuantity = product?.stockQuantity;
-    let addons = product?.addons;
-    let attribute = product?.attribute;
-    let dietry = product?.dietry;
-
-    if (shop?.shopType === 'food') {
-      stockQuantity = undefined;
-      addons = product?.addons?.map((p) => p?._id);
-    } else {
-      dietry = undefined;
-      addons = undefined;
-      attribute = undefined;
-    }
-
-    productMutation.mutate({
-      ...product,
-      dietry,
-      addons,
-      attribute,
-      stockQuantity,
-      images: [imgUrl],
-    });
-
+    productMutation.mutate(productData);
     setLoading(false);
   };
 
@@ -311,7 +282,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
                 if (product?.attributes[0]?.name !== undefined) {
                   product.attributes[0].name = e.target.value;
                 } else {
-                  product.attributes.push(attr);
+                  product.attributes.push(productAttrInit);
                 }
 
                 setRender(!render);
@@ -473,7 +444,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
           variant="contained"
           color="primary"
           startIcon={<DropIcon />}
-          // disabled={productMutation?.isLoading || loading}
+          disabled={productMutation?.isLoading || loading}
           fullWidth
           onClick={() => {
             updateProduct();
