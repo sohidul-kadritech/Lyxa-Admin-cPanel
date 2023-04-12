@@ -184,12 +184,13 @@ export const getAttrOptionsValues = (product) => {
   return values;
 };
 
-export const getProductInit = (shop) => {
+export const getProductInit = (shop, categoryId) => {
   const data = { ...productInit };
-  // type
+
   data.type = shop?.shopType || '';
   data.shop = shop?._id || '';
-  // category
+  data.category = categoryId || '';
+
   return data;
 };
 

@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
@@ -30,15 +30,17 @@ const fieldContainerSx = {
 };
 
 // eslint-disable-next-line no-unused-vars
-export default function AddProduct({ onClose, editProduct, viewOnly, category }) {
+export default function AddProduct({ onClose, editProduct, viewOnly, newProductCategory }) {
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
+
+  console.log(editProduct);
 
   const [render, setRender] = useState(false);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  const [product, setProduct] = useState(editProduct || getProductInit(shop, category));
+  const [product, setProduct] = useState(editProduct || getProductInit(shop, newProductCategory));
   const [hasAttribute, setHasAttribute] = useState('');
   const [hasInventory, setHasInventory] = useState(false);
 
@@ -66,6 +68,16 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
       },
     }
   );
+
+  useEffect(() => {
+    if (categoriesQuery.data?.status) {
+      setCategories(
+        (prev) =>
+          categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
+          prev
+      );
+    }
+  }, []);
 
   // addons
   const productsQuery = useQuery(
@@ -202,6 +214,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, category })
           value: product.category,
           items: categories,
           onChange: commonChangeHandler,
+          readOnly: Boolean(newProductCategory),
         }}
       />
       {/* description */}

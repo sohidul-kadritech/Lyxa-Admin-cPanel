@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Add, ExpandMore } from '@mui/icons-material';
 import {
   Accordion,
@@ -44,7 +43,13 @@ const accodionSx = {
   },
 };
 
-export default function CategoryContainer({ category, isOridanryCategory, onProductMenuClick, shopFavourites }) {
+export default function CategoryContainer({
+  category,
+  isOridanryCategory,
+  onProductMenuClick,
+  shopFavourites,
+  setNewProductCategory,
+}) {
   const theme = useTheme();
   const shop = useSelector((store) => store.Login.admin);
   const [open, setOpen] = useState(true);
@@ -122,7 +127,15 @@ export default function CategoryContainer({ category, isOridanryCategory, onProd
         />
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>
-            <Button variant="contained" color="primary" size="small" startIcon={<Add />}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<Add />}
+              onClick={() => {
+                setNewProductCategory(category?.category?.category?._id);
+              }}
+            >
               Add items
             </Button>
           </Box>

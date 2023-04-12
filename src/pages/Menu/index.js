@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
 import { Box, Drawer } from '@mui/material';
-import { useState } from 'react';
+import { createContext, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -20,14 +20,18 @@ import CategoryContainer from './CategoryContainer';
 import Searchbar from './Searchbar';
 import { createCatagory } from './helpers';
 
+export const ProductsContext = createContext({});
+
 export default function MenuPage() {
   const history = useHistory();
   const shop = useSelector((store) => store.Login.admin);
-  // eslint-disable-next-line no-unused-vars
-  const [editProduct, setEditProduct] = useState({});
 
   const [render, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
+
+  const [newProductCategory, setNewProductCategory] = useState(null);
+  const [editProduct, setEditProduct] = useState({});
+  const [productReadonly, setProductReadonly] = useState(false);
 
   // products
   const [categories, setCategories] = useState([]);
@@ -112,10 +116,12 @@ export default function MenuPage() {
 
   const onProductMenuClick = (menu, product) => {
     if (menu === 'marketing') history.push('/marketing');
+
     if (menu === 'edit') {
       setEditProduct(product);
       setSidebar('add-item');
     }
+
     if (menu === 'favourite') {
       handleFavouriteChange(product);
     }
@@ -134,63 +140,89 @@ export default function MenuPage() {
     setRender(!render);
   };
 
+  const ContextObj = useMemo(
+    () => ({
+      favorites,
+      setFavorites,
+      editProduct,
+      setEditProduct: (product) => {
+        setEditProduct(product);
+        setSidebar('add-item');
+        setProductReadonly(true);
+      },
+    }),
+    []
+  );
+
   return (
-    <Wrapper
-      sx={{
-        paddingTop: 0,
-        height: 'auto',
-      }}
-    >
-      <Box className="page-content2">
-        <PageTop title="Menu" />
-        <Searchbar
-          searchPlaceHolder="Search 24 items"
-          onMenuClick={(value) => {
-            setSidebar(value);
-          }}
-          onCollapse={() => {}}
-        />
-        {/* best seller */}
-        <CategoryContainer
-          category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
-          onProductMenuClick={onProductMenuClick}
-          shopFavourites={favorites}
-        />
-        <CategoryContainer
-          category={createCatagory(favorites, 'favorites')}
-          onProductMenuClick={onProductMenuClick}
-          shopFavourites={favorites}
-        />
-        <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
-          {categories.map((category) => (
-            <Draggable key={category?.category?._id}>
-              <CategoryContainer
-                category={category}
-                onProductMenuClick={onProductMenuClick}
-                isOridanryCategory
-                shopFavourites={favorites}
-              />
-            </Draggable>
-          ))}
-        </Container>
-      </Box>
-      {/* sidebar */}
-      <Drawer open={Boolean(sidebar)} anchor="right">
-        {sidebar === 'add-item' && (
-          <AddProduct
-            onClose={() => {
-              setSidebar(null);
+    <ProductsContext.Provider value={ContextObj}>
+      <Wrapper
+        sx={{
+          paddingTop: 0,
+          height: 'auto',
+        }}
+      >
+        <Box className="page-content2">
+          <PageTop title="Menu" />
+          <Searchbar
+            searchPlaceHolder="Search 24 items"
+            onMenuClick={(value) => {
+              setSidebar(value);
             }}
+            onCollapse={() => {}}
           />
-        )}
-        {sidebar === 'add-category' && (
-          <AddCategory
-            onClose={() => {
-              setSidebar(null);
-            }}
+          {/* best seller */}
+          <CategoryContainer
+            category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
+            onProductMenuClick={onProductMenuClick}
+            shopFavourites={favorites}
           />
-        )}
-      </Drawer>
-    </Wrapper>
+          <CategoryContainer
+            category={createCatagory(favorites, 'favorites')}
+            onProductMenuClick={onProductMenuClick}
+            shopFavourites={favorites}
+          />
+          <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
+            {categories.map((category) => (
+              <Draggable key={category?.category?._id}>
+                <CategoryContainer
+                  category={category}
+                  onProductMenuClick={onProductMenuClick}
+                  isOridanryCategory
+                  shopFavourites={favorites}
+                  setNewProductCategory={(categoryId) => {
+                    setNewProductCategory(categoryId);
+                    setSidebar('add-item');
+                  }}
+                />
+              </Draggable>
+            ))}
+          </Container>
+        </Box>
+        {/* sidebar */}
+        <Drawer open={Boolean(sidebar)} anchor="right">
+          {sidebar === 'add-item' && (
+            <AddProduct
+              newProductCategory={newProductCategory}
+              productReadonly={productReadonly}
+              editProduct={editProduct}
+              onClose={() => {
+                setSidebar(null);
+                setNewProductCategory(null);
+                setEditProduct({});
+                setProductReadonly(false);
+              }}
+            />
+          )}
+          {sidebar === 'add-category' && (
+            <AddCategory
+              onClose={() => {
+                setSidebar(null);
+              }}
+            />
+          )}
+        </Drawer>
+      </Wrapper>
+    </ProductsContext.Provider>
   );
 }
