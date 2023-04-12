@@ -3,8 +3,7 @@ import { useState } from 'react';
 import CloseButton from '../../../components/Common/CloseButton';
 import StyledInput from '../../../components/Styled/StyledInput';
 
-export function AttributeItem({ attributeItem, onDelete }) {
-  // eslint-disable-next-line no-unused-vars
+export default function AttributeItem({ attributeItem, onDelete }) {
   const [render, setRender] = useState(false);
 
   return (
@@ -15,15 +14,15 @@ export function AttributeItem({ attributeItem, onDelete }) {
         placeholder="Type here"
         onChange={(e) => {
           attributeItem.name = e.target.value;
-          setRender((prev) => !prev);
+          setRender(!render);
         }}
       />
       <StyledInput
         type="number"
-        value={attributeItem?.price}
+        value={attributeItem?.extraPrice}
         onChange={(e) => {
-          attributeItem.price = e.target.value;
-          setRender((prev) => !prev);
+          attributeItem.extraPrice = e.target.value;
+          setRender(!render);
         }}
         placeholder="$"
         sx={{

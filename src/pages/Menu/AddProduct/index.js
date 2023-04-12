@@ -1,22 +1,109 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import { shopTypeOptions2 } from '../../../assets/staticData';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
-import { attributeInit, attributeOptions, attributeTypeAvailableOptions, dietryOptions, productInit } from '../helpers';
+import StyledChip from '../../../components/Styled/StyledChips';
+import StyledInput from '../../../components/Styled/StyledInput';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import { getImageUrl } from '../../../helpers/images';
+import minInMiliSec from '../../../helpers/minInMiliSec';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import { attributeOptions, attributeTypeAvailableOptions, dietryOptions, productInit } from '../helpers';
 import AttributeList from './AttributeList';
 
 const fieldContainerSx = {
   padding: '14px 0',
 };
 
-export default function AddProduct({ onClose }) {
+const attr = {
+  name: '',
+  required: false,
+  select: '',
+  items: [],
+};
+
+const getAttrOptionsValues = (product) => {
+  const values = [];
+  if (product?.attributes[0] && product?.attributes[0]?.required) values.push('required');
+  if (product?.attributes[0] && product?.attributes[0]?.select === 'multiple') values.push('multiple');
+  return values;
+};
+
+const getCateogryInit = (shop, category) => {
+  const data = { ...productInit };
+  // type
+  data.type = shop?.shopType || '';
+  data.shop = shop?._id || '';
+  // category
+  return data;
+};
+
+export default function AddProduct({ onClose, editProduct, viewOnly, category }) {
+  const shop = useSelector((store) => store.Login.admin);
+  const queryClient = useQueryClient();
+
   const [render, setRender] = useState(false);
-  const [product, setProduct] = useState(productInit);
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  const [product, setProduct] = useState(editProduct || getCateogryInit(shop, category));
   const [hasAttribute, setHasAttribute] = useState('');
-  const [newAttribute, setNewAttribute] = useState(attributeInit);
+  const [hasInventory, setHasInventory] = useState(false);
+
+  // categories
+  const categoriesQuery = useQuery(
+    ['single-shop-category', { shopId: shop?._id }],
+    () =>
+      AXIOS.get(Api.GET_ALL_CATEGORY, {
+        params: {
+          page: 1,
+          pageSize: 100,
+          searchKey: '',
+          sortBy: 'desc',
+          status: 'active',
+          type: shop?.shopType,
+          userType: 'shop',
+        },
+      }),
+    {
+      staleTime: minInMiliSec(10),
+      onSuccess: (data) => {
+        setCategories(
+          (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
+        );
+      },
+    }
+  );
+
+  console.log(categoriesQuery.data);
+
+  // addons
+  const productsQuery = useQuery(
+    ['single-shop-products', { shopId: shop?._id }],
+    () =>
+      AXIOS.get(Api.ALL_PRODUCT, {
+        params: {
+          page: 1,
+          pageSize: 100,
+          sortBy: 'desc',
+          searchKey: '',
+          type: 'all',
+          productVisibility: true,
+          shop: shop?._id,
+          status: 'active',
+        },
+      }),
+    {
+      staleTime: minInMiliSec(10),
+    }
+  );
 
   // input handler
   const commonChangeHandler = (e) => {
@@ -33,8 +120,72 @@ export default function AddProduct({ onClose }) {
 
     setProduct((prev) => ({
       ...prev,
-      photo: newFiles?.length > 0 ? newFiles : prev.photo,
+      images: newFiles?.length > 0 ? newFiles : prev.images,
     }));
+  };
+
+  const attrOptionsHandler = (option) => {
+    if (option.value === 'required') {
+      if (product?.attributes[0]?.required !== undefined) {
+        product.attributes[0].required = !product.attributes[0].required;
+      }
+    } else if (product?.attributes[0]?.select !== undefined) {
+      product.attributes[0].select = product.attributes[0].select === 'multiple' ? '' : 'multiple';
+    }
+    setRender((prev) => !prev);
+  };
+
+  // product mutation
+  const productMutation = useMutation(
+    (data) => {
+      const _api = editProduct ? Api.EDIT_PRODUCT : Api.ADD_PRODUCT;
+      return AXIOS.post(_api, data);
+    },
+    {
+      onSuccess: (data) => {
+        successMsg(data?.message, data?.status ? 'success' : undefined);
+        if (data?.status) {
+          queryClient.invalidateQueries(['category-wise-products']);
+          onClose();
+        }
+      },
+    }
+  );
+
+  const updateProduct = async () => {
+    setLoading(true);
+    const imgUrl = await getImageUrl(product?.images[0]);
+
+    if (!imgUrl) {
+      setLoading(false);
+      return;
+    }
+
+    // variant props
+    let stockQuantity = product?.stockQuantity;
+    let addons = product?.addons;
+    let attribute = product?.attribute;
+    let dietry = product?.dietry;
+
+    if (shop?.shopType === 'food') {
+      stockQuantity = undefined;
+      addons = product?.addons?.map((p) => p?._id);
+    } else {
+      dietry = undefined;
+      addons = undefined;
+      attribute = undefined;
+    }
+
+    productMutation.mutate({
+      ...product,
+      dietry,
+      addons,
+      attribute,
+      stockQuantity,
+      images: [imgUrl],
+    });
+
+    setLoading(false);
   };
 
   return (
@@ -62,12 +213,13 @@ export default function AddProduct({ onClose }) {
         }}
         inputProps={{
           name: 'type',
+          readOnly: true,
           value: product.type,
           items: shopTypeOptions2,
           onChange: commonChangeHandler,
         }}
       />
-      {/* type */}
+      {/* category */}
       <StyledFormField
         label="Category"
         intputType="select"
@@ -77,7 +229,7 @@ export default function AddProduct({ onClose }) {
         inputProps={{
           name: 'category',
           value: product.category,
-          items: shopTypeOptions2,
+          items: categories,
           onChange: commonChangeHandler,
         }}
       />
@@ -89,8 +241,8 @@ export default function AddProduct({ onClose }) {
           sx: fieldContainerSx,
         }}
         inputProps={{
-          name: 'description',
-          value: product.description,
+          name: 'seoDescription',
+          value: product.seoDescription,
           onChange: commonChangeHandler,
           multiline: true,
         }}
@@ -107,7 +259,7 @@ export default function AddProduct({ onClose }) {
           accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
           maxSize: 1000 * 1000,
           text: 'Drag and drop or chose photo',
-          files: product.photo,
+          files: product.images,
           helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
           helperText2: 'Pixels: Minimum 320 for width and height',
         }}
@@ -127,22 +279,23 @@ export default function AddProduct({ onClose }) {
         }}
       />
       {/* attributes */}
-      <StyledFormField
-        label="Attributes"
-        intputType="optionsSelect"
-        containerProps={{
-          sx: fieldContainerSx,
-        }}
-        inputProps={{
-          value: hasAttribute,
-          items: attributeOptions,
-          onChange: (value) => {
-            setHasAttribute(value);
-          },
-        }}
-      />
+      {shop?.shopType === 'food' && (
+        <StyledFormField
+          label="Attributes"
+          intputType="optionsSelect"
+          containerProps={{
+            sx: fieldContainerSx,
+          }}
+          inputProps={{
+            value: hasAttribute,
+            items: attributeOptions,
+            onChange: (value) => {
+              setHasAttribute(value);
+            },
+          }}
+        />
+      )}
       {hasAttribute === 'yes' && (
-        // Attribute Title
         <Box>
           <StyledFormField
             label="Attribute Title"
@@ -153,8 +306,16 @@ export default function AddProduct({ onClose }) {
             inputProps={{
               type: 'text',
               name: 'attributeTitle',
-              value: product?.attributeTitle,
-              onChange: commonChangeHandler,
+              value: product?.attributes[0] ? product?.attributes[0]?.name : '',
+              onChange: (e) => {
+                if (product?.attributes[0]?.name !== undefined) {
+                  product.attributes[0].name = e.target.value;
+                } else {
+                  product.attributes.push(attr);
+                }
+
+                setRender(!render);
+              },
             }}
           />
           {/* type options */}
@@ -167,61 +328,120 @@ export default function AddProduct({ onClose }) {
             }}
             inputProps={{
               items: attributeTypeAvailableOptions,
-              value: product?.attributeTypeOptions,
-              onChange: (option) => {
-                if (product?.attributeTypeOptions?.find((item) => item === option?.value)) {
-                  product.attributeTypeOptions =
-                    product?.attributeTypeOptions?.filter((item) => item !== option?.value) || [];
-                  setRender((prev) => !prev);
-                } else {
-                  product?.attributeTypeOptions?.push(option?.value);
-                  setRender((prev) => !prev);
-                }
-              },
+              value: getAttrOptionsValues(product),
+              onChange: attrOptionsHandler,
             }}
           />
           {/* attribute list */}
-          <AttributeList items={product?.attributes} onDelete={() => {}} />
+          <AttributeList items={product?.attributes?.length ? product?.attributes[0]?.items : []} onDelete={() => {}} />
         </Box>
       )}
-      <StyledFormField
-        label="Add-ons"
-        intputType="autocomplete"
-        containerProps={{
-          sx: fieldContainerSx,
-        }}
-        inputProps={{
-          multiple: true,
-          getOptionLabel: (option) => option?.name || 'Choose',
-          label: 'Choose',
-          sx: {
-            '& .MuiFormControl-root': {
-              minWidth: '100px',
+      {shop?.shopType === 'food' && (
+        <StyledFormField
+          label="Add-ons"
+          intputType="autocomplete"
+          containerProps={{
+            sx: fieldContainerSx,
+          }}
+          inputProps={{
+            multiple: true,
+            label: 'Choose',
+            maxHeight: '200px',
+            options: productsQuery?.data?.data?.products || [],
+            value: product?.addons || [],
+            getOptionLabel: (option) => option?.name || '',
+            isOptionEqualToValue: (option, value) => option?._id === value?._id,
+            onChange: (e, v) => {
+              product.addons = v.map((item) => item);
+              setRender(!render);
             },
-          },
-          maxHeight: '200px',
-          options: [],
-          value: product?.adddons,
-          isOptionEqualToValue: (option, value) => option?._id === value?._id,
-          onChange: (e, v) => {},
-        }}
-      />
+            sx: {
+              '& .MuiFormControl-root': {
+                minWidth: '100px',
+              },
+            },
+            renderTags: (item, index) => (
+              <StyledChip
+                key={item?._id}
+                label={item?.name}
+                size="lg"
+                onDelete={() => {
+                  product.addons.splice(index, 1);
+                  setRender(!render);
+                }}
+              />
+            ),
+          }}
+        />
+      )}
       {/* dietry options */}
-      <StyledFormField
-        label="Dietary"
-        intputType="optionsSelect"
-        containerProps={{
-          sx: fieldContainerSx,
-        }}
-        inputProps={{
-          value: product?.dietry,
-          multiple: true,
-          items: dietryOptions,
-          onChange: (value) => {
-            setHasAttribute(value);
-          },
-        }}
-      />
+      {shop?.shopType === 'food' && (
+        <StyledFormField
+          label="Dietary"
+          intputType="optionsSelect"
+          containerProps={{
+            sx: fieldContainerSx,
+          }}
+          inputProps={{
+            value: product?.dietary,
+            multiple: true,
+            items: dietryOptions,
+            onChange: (value) => {
+              if (product?.dietary?.includes(value)) {
+                product.dietary = product?.dietary?.filter((item) => item !== value) || [];
+              } else {
+                product?.dietary.push(value);
+              }
+              setRender(!render);
+            },
+          }}
+        />
+      )}
+      {/*  inventory */}
+      {shop?.shopType !== 'food' && (
+        <Box sx={fieldContainerSx}>
+          <Stack justifyContent="space-between" alignItems="center" direction="row" pb={1}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: '600',
+                fontSize: '15px',
+                lineHeight: '18px',
+              }}
+            >
+              Inventory
+            </Typography>
+            <StyledSwitch
+              checked={hasInventory}
+              onChange={(e) => {
+                setHasInventory(e.target.checked);
+              }}
+            />
+          </Stack>
+          {hasInventory && (
+            <Stack gap={3.5} alignItems="center" direction="row">
+              <StyledInput
+                value={product?.stockQuantity}
+                type="number"
+                readOnly={false}
+                onChange={(e) => {
+                  console.log(product.stockQuantity);
+                  product.stockQuantity = e.target.value;
+                  setRender(!render);
+                }}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    padding: '12px, 18px ',
+                    maxWidth: '47px',
+                    textAlign: 'center',
+                  },
+                }}
+              />
+              <Typography variant="body4">In stock</Typography>
+            </Stack>
+          )}
+        </Box>
+      )}
       {/* description */}
       <StyledFormField
         label={
@@ -242,14 +462,23 @@ export default function AddProduct({ onClose }) {
           sx: fieldContainerSx,
         }}
         inputProps={{
-          name: 'description',
-          value: product.description,
+          name: 'note',
+          value: product.note,
           onChange: commonChangeHandler,
           multiline: true,
         }}
       />
       <Box pt={6} pb={6}>
-        <Button variant="contained" color="primary" startIcon={<DropIcon />} fullWidth>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<DropIcon />}
+          // disabled={productMutation?.isLoading || loading}
+          fullWidth
+          onClick={() => {
+            updateProduct();
+          }}
+        >
           Save Item
         </Button>
       </Box>

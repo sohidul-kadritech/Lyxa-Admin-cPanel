@@ -48,7 +48,7 @@ export const attributeOptions = [
 export const attributeTypeAvailableOptions = [
   {
     label: 'Multi-select',
-    value: 'multi-select',
+    value: 'multiple',
   },
   {
     label: 'Required',
@@ -78,15 +78,23 @@ export const dietryOptions = [
 export const productInit = {
   name: '',
   type: '',
+  shop: '',
   category: '',
-  description: '',
+  seoDescription: '',
   price: '',
-  photo: [],
-  attributeTitle: '',
-  attributes: [],
-  attributeTypeOptions: [],
-  adddons: [],
-  dietry: [],
+  images: [],
+  attributes: [
+    {
+      name: '',
+      required: false,
+      select: '',
+      items: [],
+    },
+  ],
+  addons: [],
+  dietary: [],
+  note: '',
+  stockQuantity: 0,
 };
 
 export const attributeInit = {

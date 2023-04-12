@@ -187,7 +187,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
   };
 
   // global loading flag
-  const G_LOADING = dealSettingsQuery.isLoading || tagsQuery.isLoading || shopsQuery.isLoading;
+  const __loading = dealSettingsQuery.isLoading || tagsQuery.isLoading || shopsQuery.isLoading;
 
   useEffect(() => {
     if (!shopsQuery.isLoading && !tagsQuery.isLoading && !dealSettingsQuery.isLoading && editContainer?._id) {
@@ -197,7 +197,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
 
   return (
     <SidebarContainer onClose={onClose} title={editContainer?._id ? 'Edit Container' : 'Create New Container'}>
-      {G_LOADING ? (
+      {__loading ? (
         <AddContainerSkeleton containerType={containerType} />
       ) : (
         <Stack justifyContent="space-between" height="100%">
@@ -210,7 +210,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
               }}
               inputProps={{
                 type: 'text',
-                disabled: G_LOADING,
+                disabled: __loading,
                 value: container.name,
                 onChange: (e) => {
                   setContainer((prev) => ({ ...prev, name: e.target.value }));
@@ -226,7 +226,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  disabled: G_LOADING,
+                  disabled: __loading,
                   onDrop: (...props) => {
                     onDrop(...props, 'image');
                   },
@@ -246,7 +246,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  disabled: G_LOADING,
+                  disabled: __loading,
                   onDrop: (...props) => {
                     onDrop(...props, 'banner');
                   },
@@ -266,7 +266,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
               }}
               inputProps={{
                 ...selectProps,
-                disabled: G_LOADING,
+                disabled: __loading,
                 options: dealsOptions,
                 value: container.deals,
                 maxHeight: '200px',
@@ -302,7 +302,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
                 inputProps={{
                   ...selectProps,
                   maxHeight: '200px',
-                  disabled: G_LOADING,
+                  disabled: __loading,
                   options: tagsOptions,
                   value: container.tags,
                   isOptionEqualToValue: (option, value) => option?._id === value?._id,
@@ -323,7 +323,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
                 inputProps={{
                   ...selectProps,
                   maxHeight: '110px',
-                  disabled: G_LOADING,
+                  disabled: __loading,
                   options: shopsOptions,
                   value: container.shops,
                   isOptionEqualToValue: (option, value) => option?._id === value?._id,

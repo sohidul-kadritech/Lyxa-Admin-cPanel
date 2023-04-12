@@ -3,15 +3,16 @@ import { Add } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import CloseButton from '../../../components/Common/CloseButton';
-import { AttributeItem } from './AttributeListItem';
+import AttributeItem from './AttributeListItem';
 
 const attributeInit = {
   name: '',
-  price: '',
+  extraPrice: '',
 };
 
 function AttributeList({ items, onDelete }) {
   const [showAddNew, setShowAddNew] = useState(true);
+  const [render, setRender] = useState(false);
   const [newAttributeItem, setNewAttributeItem] = useState(attributeInit);
 
   return (
@@ -53,7 +54,7 @@ function AttributeList({ items, onDelete }) {
         {items.map((attributeItem, index) => (
           <AttributeItem attributeItem={attributeItem} key={index} onDelete={onDelete} />
         ))}
-        {showAddNew && <AttributeItem attributeItem={newAttributeItem} onDelete={onDelete} />}
+        {/* {showAddNew && <AttributeItem attributeItem={newAttributeItem} onDelete={onDelete} />} */}
       </Stack>
       <Button
         disableRipple
@@ -66,6 +67,8 @@ function AttributeList({ items, onDelete }) {
         }}
         onClick={() => {
           setShowAddNew(true);
+          items.push({ ...attributeInit });
+          setRender(!render);
         }}
       >
         Add

@@ -23,6 +23,8 @@ import { createCatagory } from './helpers';
 export default function MenuPage() {
   const history = useHistory();
   const shop = useSelector((store) => store.Login.admin);
+  // eslint-disable-next-line no-unused-vars
+  const [editProduct, setEditProduct] = useState({});
 
   const [render, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
@@ -110,7 +112,10 @@ export default function MenuPage() {
 
   const onProductMenuClick = (menu, product) => {
     if (menu === 'marketing') history.push('/marketing');
-    if (menu === 'edit') history.push('/marketing');
+    if (menu === 'edit') {
+      setEditProduct(product);
+      setSidebar('add-item');
+    }
     if (menu === 'favourite') {
       handleFavouriteChange(product);
     }

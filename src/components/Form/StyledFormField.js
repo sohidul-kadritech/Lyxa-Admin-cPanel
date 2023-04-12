@@ -135,13 +135,13 @@ export default function StyledFormField({ containerProps, label, labelProps, int
               }
               return (
                 <StyledChip
-                  key={item?._id}
-                  label={inputProps.getOptionLabel(item) || item?.name}
+                  key={inputProps?.getTagKey(item) || item?._id}
+                  label={inputProps?.getOptionLabel(item) || item?.name}
                   size="lg"
                   onDelete={() => {
                     inputProps.onChange(
                       undefined,
-                      inputProps.value.filter((oItem, oIndex) => index !== oIndex)
+                      inputProps.value.filter((dItem, dIndex) => index !== dIndex)
                     );
                   }}
                 />
