@@ -32,7 +32,7 @@ export default function MenuList({ menuList }) {
               return `sidebar-menu-item`;
             }}
           >
-            <Icon />
+            {Icon && <Icon />}
             <Typography
               variant="body2"
               sx={{

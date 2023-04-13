@@ -1,4 +1,4 @@
-export default function Menu(theme) {
+export default function Menu() {
   return {
     defaultProps: {
       open: true,
@@ -12,7 +12,7 @@ export default function Menu(theme) {
       },
       paper: {
         borderRadius: '8px',
-        boxShadow: `${theme.shadows[3]} !important`,
+        // boxShadow: `${theme.shadows[3]} !important`,
       },
     },
   };
