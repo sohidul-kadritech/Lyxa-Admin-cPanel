@@ -121,8 +121,6 @@ const adminRoutes = [
   { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/marketing/:id', component: Marketing },
   { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
-  // { path: '/shops/cuisines', component: Cuisine },
-  // { path: '/shops/tags', component: Tags },
 
   // product
   { path: '/products/list', component: ProductList },

@@ -9,12 +9,13 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import CircularLoader from './components/CircularLoader';
+import NewLayout from './components/Layout';
 import { getAllAppSettings } from './store/Settings/settingsAction';
 
 // Import Routes all
-import { adminRoutes, customerServiceRoutes, sellerRoutes, shopRoutes } from './routes/allRoutes';
+import { adminRoutes, authRoutes, customerServiceRoutes, sellerRoutes, shopRoutes } from './routes/allRoutes';
 
 // Import all middleware
 import Authmiddleware from './routes/middleware/Authmiddleware';
@@ -30,6 +31,7 @@ import { setAdmin } from './store/actions';
 import { getAllChat, incrementOpenChats } from './store/chat/chatAction';
 import { socketConnect } from './store/socket/socketAction';
 
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 import setCookiesAsObj from './helpers/cookies/setCookiesAsObject';
 import { successMsg } from './helpers/successMsg';
 import { SINGLE_ADMIN, SINGLE_SELLER, SINGLE_SHOP } from './network/Api';
@@ -115,8 +117,10 @@ export default function App() {
       setRouteList(customerServiceRoutes);
     } else if (account_type === 'seller') {
       setRouteList(sellerRoutes);
-    } else {
+    } else if (account_type === 'shop') {
       setRouteList(shopRoutes);
+    } else {
+      setRouteList(authRoutes);
     }
   }, [account_type]);
 
@@ -177,13 +181,20 @@ export default function App() {
           routeList?.map((route) => (
             <Authmiddleware
               path={route.path}
-              layout={VeritcalLayout}
+              layout={account_type === 'shop' ? NewLayout : VeritcalLayout}
               component={route.component}
               key={route.path}
               isAuthProtected
               exact
             />
           ))}
+        <Route
+          path={'/newLayout'}
+          exact
+          render={() => {
+            return <NewLayout />;
+          }}
+        />
       </Switch>
     </Router>
   );

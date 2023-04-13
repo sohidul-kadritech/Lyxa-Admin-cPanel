@@ -15,9 +15,9 @@ function StyledButton({ ...props }) {
   );
 }
 
-function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse, onMenuClick }) {
+function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse, onMenuClick, ...props }) {
   return (
-    <Stack direction="row" alignItems="center" gap="15px" pb={6.5}>
+    <Stack direction="row" alignItems="center" gap="15px" pb={6.5} {...props}>
       <StyledSearchBar
         fullWidth
         placeholder={searchPlaceHolder}

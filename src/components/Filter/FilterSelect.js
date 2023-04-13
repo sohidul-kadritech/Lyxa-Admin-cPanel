@@ -9,18 +9,22 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   background: theme.palette.background.secondary,
   borderRadius: '50px',
   minWidth: '190px',
+
   [theme.breakpoints.up('xl')]: {
     fontSize: `${pxToRem(14)}rem!important`,
   },
+
   '&:hover': {
     background: theme.palette.background.secondaryHover,
   },
+
   '& .MuiOutlinedInput-input': {
     fontSize: '16px',
     lineHeight: '24px',
     fontWeight: 500,
     color: theme.palette.text.primary,
   },
+
   '& .MuiSelect-select': {
     paddingTop: '12px',
     paddingBottom: '12px',
@@ -29,12 +33,20 @@ const StyledSelect = styled(Select)(({ theme }) => ({
     borderColor: 'transparent !important',
     outline: 'none !important',
   },
+
   '& .MuiSvgIcon-root': {
     color: theme.palette.text.primary,
   },
+
   '& fieldset': {
     border: '0',
     outline: '0',
+  },
+
+  '&.Mui-readOnly': {
+    '.MuiSvgIcon-root': {
+      visibility: 'hidden',
+    },
   },
 }));
 

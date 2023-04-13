@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
-import { Box, Drawer } from '@mui/material';
+import { Drawer } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -9,7 +9,6 @@ import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
 import PageTop from '../../components/Common/PageTop';
-import Wrapper from '../../components/Wrapper';
 import dropSort from '../../helpers/dropSort';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
@@ -164,79 +163,83 @@ export default function MenuPage() {
 
   return (
     <ProductsContext.Provider value={ContextObj}>
-      <Wrapper
+      <PageTop
+        title="Menu"
         sx={{
-          paddingTop: 0,
-          height: 'auto',
+          position: 'sticky',
+          top: '-2px',
+          zIndex: '999',
+          backgroundColor: '#fbfbfb',
         }}
-      >
-        <Box className="page-content2">
-          <PageTop title="Menu" />
-          {productsQuery?.isLoading && <MenuPageSkeleton />}
-          {!productsQuery?.isLoading && (
-            <>
-              <Searchbar
-                searchPlaceHolder="Search 24 items"
-                onMenuClick={(value) => {
-                  setSidebar(value);
-                }}
-                onCollapse={() => {
-                  set_category_open((prev) => (prev === null ? false : !prev));
-                }}
-              />
-              <CategoryContainer
-                category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
-                onProductMenuClick={onProductMenuClick}
-                gOpen={category_open}
-              />
-              <CategoryContainer
-                category={createCatagory(favorites, 'favorites')}
-                onProductMenuClick={onProductMenuClick}
-                gOpen={category_open}
-              />
-              <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
-                {categories.map((category) => (
-                  <Draggable key={category?.category?._id}>
-                    <CategoryContainer
-                      gOpen={category_open}
-                      category={category}
-                      onProductMenuClick={onProductMenuClick}
-                      isOridanryCategory
-                      setNewProductCategory={(categoryId) => {
-                        setNewProductCategory(categoryId);
-                        setSidebar('add-item');
-                      }}
-                    />
-                  </Draggable>
-                ))}
-              </Container>
-            </>
-          )}
-        </Box>
-        {/* sidebar */}
-        <Drawer open={Boolean(sidebar)} anchor="right">
-          {sidebar === 'add-item' && (
-            <AddProduct
-              newProductCategory={newProductCategory}
-              productReadonly={productReadonly}
-              editProduct={editProduct}
-              onClose={() => {
-                setSidebar(null);
-                setNewProductCategory(null);
-                setEditProduct({});
-                setProductReadonly(false);
-              }}
-            />
-          )}
-          {sidebar === 'add-category' && (
-            <AddCategory
-              onClose={() => {
-                setSidebar(null);
-              }}
-            />
-          )}
-        </Drawer>
-      </Wrapper>
+      />
+      {productsQuery?.isLoading && <MenuPageSkeleton />}
+      {!productsQuery?.isLoading && (
+        <>
+          <Searchbar
+            searchPlaceHolder="Search 24 items"
+            onMenuClick={(value) => {
+              setSidebar(value);
+            }}
+            onCollapse={() => {
+              set_category_open((prev) => (prev === null ? false : !prev));
+            }}
+            sx={{
+              position: 'sticky',
+              top: '88px',
+              zIndex: '999',
+              backgroundColor: '#fbfbfb',
+            }}
+          />
+          <CategoryContainer
+            category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
+            onProductMenuClick={onProductMenuClick}
+            gOpen={category_open}
+          />
+          <CategoryContainer
+            category={createCatagory(favorites, 'favorites')}
+            onProductMenuClick={onProductMenuClick}
+            gOpen={category_open}
+          />
+          <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
+            {categories.map((category) => (
+              <Draggable key={category?.category?._id}>
+                <CategoryContainer
+                  gOpen={category_open}
+                  category={category}
+                  onProductMenuClick={onProductMenuClick}
+                  isOridanryCategory
+                  setNewProductCategory={(categoryId) => {
+                    setNewProductCategory(categoryId);
+                    setSidebar('add-item');
+                  }}
+                />
+              </Draggable>
+            ))}
+          </Container>
+        </>
+      )}
+      <Drawer open={Boolean(sidebar)} anchor="right">
+        {sidebar === 'add-item' && (
+          <AddProduct
+            newProductCategory={newProductCategory}
+            productReadonly={productReadonly}
+            editProduct={editProduct}
+            onClose={() => {
+              setSidebar(null);
+              setNewProductCategory(null);
+              setEditProduct({});
+              setProductReadonly(false);
+            }}
+          />
+        )}
+        {sidebar === 'add-category' && (
+          <AddCategory
+            onClose={() => {
+              setSidebar(null);
+            }}
+          />
+        )}
+      </Drawer>
     </ProductsContext.Provider>
   );
 }

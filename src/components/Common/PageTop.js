@@ -3,11 +3,20 @@ import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import BreadCrumbs from './BreadCrumb2';
 import PageButton from './PageButton';
 
-export default function PageTop({ breadcrumbItems, backTo, backButtonLabel, onAdd, addButtonLabel, title, subtitle }) {
+export default function PageTop({
+  breadcrumbItems,
+  backTo,
+  backButtonLabel,
+  onAdd,
+  addButtonLabel,
+  title,
+  subtitle,
+  ...rest
+}) {
   const theme = useTheme();
 
   return (
-    <Box pt={9} pb={7.5}>
+    <Box pt={9} pb={7.5} {...rest}>
       {(backButtonLabel || addButtonLabel) && (
         <Stack direction="row" alignItems="center" justifyContent="space-between" pb={3.5}>
           {backButtonLabel && <PageButton label={backButtonLabel} to={backTo} startIcon={<West />} />}

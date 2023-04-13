@@ -235,7 +235,7 @@ table > thead {
 body {
   background: #fff;
   font-family: 'Inter', sans-serif;
-  color: #3f4254;
+  // color: #3f4254;
 }
 
 @keyframes refreshIconSpin {
@@ -267,4 +267,18 @@ input[type='number'] {
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
+}
+
+.sidebar-menu-item {
+  padding: 16px 26px;
+  border-left: 4px solid transparent;
+  transition: all 230ms ease 0s;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #fff !important;
+  }
 }
