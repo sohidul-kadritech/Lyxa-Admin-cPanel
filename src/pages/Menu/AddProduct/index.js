@@ -129,7 +129,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     if (productsQuery?.data?.status && editProduct?._id) {
       setProduct(converEditProduct(editProduct));
     }
-  }, []);
+  }, [productsQuery?.data?.status]);
 
   // loading
   const __loading = categoriesQuery.isLoading || productsQuery.isLoading;

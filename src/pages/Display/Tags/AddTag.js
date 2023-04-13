@@ -220,7 +220,7 @@ export default function AddTag({ onClose, shopType, tag }) {
           <Button
             fullWidth
             variant="contained"
-            color="secondary"
+            color="primary"
             startIcon={<DropIcon />}
             disabled={tagsMutation.isLoading || loading}
             onClick={() => {

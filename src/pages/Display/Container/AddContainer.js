@@ -344,7 +344,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
             <Button
               fullWidth
               variant="contained"
-              color="secondary"
+              color="primary"
               startIcon={<DropIcon />}
               disabled={listMutation.isLoading || loading}
               onClick={updateContainer}

@@ -103,7 +103,7 @@ export default function TagsTable({
           />
           {/* shops */}
           <StyledIconButton
-            color="secondary"
+            color="primary"
             sx={{
               marginLeft: '17px',
             }}
@@ -115,7 +115,7 @@ export default function TagsTable({
           </StyledIconButton>
           {/* delete */}
           <StyledIconButton
-            color="secondary"
+            color="primary"
             onClick={() => {
               onDelete(params.row);
             }}
@@ -127,7 +127,7 @@ export default function TagsTable({
             onClick={() => {
               onEdit(params.row);
             }}
-            color="secondary"
+            color="primary"
           >
             <Edit />
           </StyledIconButton>

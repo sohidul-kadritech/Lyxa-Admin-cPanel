@@ -13,7 +13,7 @@ export default function PageTop({ breadcrumbItems, backTo, backButtonLabel, onAd
           {backButtonLabel && <PageButton label={backButtonLabel} to={backTo} startIcon={<West />} />}
           {addButtonLabel && (
             <Button
-              color="secondary"
+              color="primary"
               variant="contained"
               sx={{
                 borderRadius: '8px',
