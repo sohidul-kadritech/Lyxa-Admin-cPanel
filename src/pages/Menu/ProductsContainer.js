@@ -6,7 +6,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Product from './Product';
 
-export default function ProductsContainer({ products, onProductMenuClick, shopFavourites }) {
+export default function ProductsContainer({ products, onProductMenuClick }) {
   const [render, setRender] = useState(false);
   const sortingMutation = useMutation((data) => AXIOS.post(Api.SORT_PRODUCTS, data));
 
@@ -29,9 +29,9 @@ export default function ProductsContainer({ products, onProductMenuClick, shopFa
             product={product}
             sx={{
               borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
+              cursor: 'pointer',
             }}
             onMenuClick={onProductMenuClick}
-            shopFavourites={shopFavourites}
           />
         </Draggable>
       ))}

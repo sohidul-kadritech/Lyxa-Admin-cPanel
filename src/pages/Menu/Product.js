@@ -1,5 +1,6 @@
-import { Avatar, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
+/* eslint-disable no-dupe-keys */
+import { Avatar, Box, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
+import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import StyledInput from '../../components/Styled/StyledInput';
@@ -7,9 +8,12 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { ProductsContext } from './ProductContext';
 import { getProductMenuOptions } from './helpers';
 
-export default function Product({ product, onMenuClick, shopFavourites, ...props }) {
+export default function Product({ product, onMenuClick, ...props }) {
+  const { favorites, setEditProduct } = useContext(ProductsContext);
+
   const theme = useTheme();
   const [render, setRender] = useState(false);
 
@@ -68,14 +72,28 @@ export default function Product({ product, onMenuClick, shopFavourites, ...props
   };
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between" {...props}>
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      bgcolor="#fbfbfb"
+      onClick={() => {
+        setEditProduct(product);
+      }}
+      {...props}
+    >
       {/* left */}
       <Stack direction="row" alignItems="center" gap={5} pt={3.5} pb={3.5}>
         <HandleIcon
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           className="drag-handler-chlid"
           style={{
             color: product?.isUnsortable ? '#AFAFAE' : '#363636',
-            cursor: 'grap',
+            cursor: 'move',
+            cursor: 'grab',
+            cursor: '-webkit-grab',
           }}
         />
         <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 66, height: 52 }} />
@@ -98,6 +116,9 @@ export default function Product({ product, onMenuClick, shopFavourites, ...props
       {/* right */}
       <Stack direction="row" alignItems="center" gap={4}>
         <StyledInput
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           type="number"
           min={1}
           value={product?.price}
@@ -124,11 +145,13 @@ export default function Product({ product, onMenuClick, shopFavourites, ...props
             },
           }}
         />
-        <ThreeDotsMenu
-          handleMenuClick={handleMenuClick}
-          // console={console.log(shopFavourites)}
-          menuItems={getProductMenuOptions(product, shopFavourites)}
-        />
+        <Box
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={getProductMenuOptions(product, favorites)} />
+        </Box>
       </Stack>
     </Stack>
   );

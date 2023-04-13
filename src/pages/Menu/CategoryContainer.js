@@ -10,7 +10,7 @@ import {
   styled,
   useTheme,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
@@ -47,12 +47,12 @@ export default function CategoryContainer({
   category,
   isOridanryCategory,
   onProductMenuClick,
-  shopFavourites,
   setNewProductCategory,
+  gOpen,
 }) {
   const theme = useTheme();
   const shop = useSelector((store) => store.Login.admin);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(!!category?.sortedProducts?.length);
 
   const bestSellerMutation = useMutation((status) =>
     AXIOS.post(Api.EDIT_SHOP_BEST_SELLER, {
@@ -68,6 +68,12 @@ export default function CategoryContainer({
     })
   );
 
+  useEffect(() => {
+    if (gOpen !== null) {
+      setOpen(gOpen);
+    }
+  }, [gOpen]);
+
   return (
     <Accordion
       expanded={open}
@@ -77,6 +83,7 @@ export default function CategoryContainer({
       sx={{
         ...accodionSx,
         borderBottom: open ? '1px solid #EEEEEE' : null,
+        backgroundColor: '#fbfbfb',
       }}
     >
       <StyledAccordionSummary expandIcon={<ExpandMore />}>
@@ -120,11 +127,7 @@ export default function CategoryContainer({
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails sx={detailsSx}>
-        <ProductsContainer
-          products={category?.sortedProducts}
-          onProductMenuClick={onProductMenuClick}
-          shopFavourites={shopFavourites}
-        />
+        <ProductsContainer products={category?.sortedProducts} onProductMenuClick={onProductMenuClick} />
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>
             <Button

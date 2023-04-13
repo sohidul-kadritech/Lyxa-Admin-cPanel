@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
 import { Box, Drawer } from '@mui/material';
-import { createContext, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -17,10 +17,9 @@ import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
 import CategoryContainer from './CategoryContainer';
+import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
 import { createCatagory } from './helpers';
-
-export const ProductsContext = createContext({});
 
 export default function MenuPage() {
   const history = useHistory();
@@ -28,6 +27,7 @@ export default function MenuPage() {
 
   const [render, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
+  const [category_open, set_category_open] = useState(null);
 
   const [newProductCategory, setNewProductCategory] = useState(null);
   const [editProduct, setEditProduct] = useState({});
@@ -151,7 +151,7 @@ export default function MenuPage() {
         setProductReadonly(true);
       },
     }),
-    []
+    [favorites]
   );
 
   return (
@@ -169,27 +169,29 @@ export default function MenuPage() {
             onMenuClick={(value) => {
               setSidebar(value);
             }}
-            onCollapse={() => {}}
+            onCollapse={() => {
+              set_category_open((prev) => !prev);
+            }}
           />
           {/* best seller */}
           <CategoryContainer
             category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
             onProductMenuClick={onProductMenuClick}
-            shopFavourites={favorites}
+            gOpen={category_open}
           />
           <CategoryContainer
             category={createCatagory(favorites, 'favorites')}
             onProductMenuClick={onProductMenuClick}
-            shopFavourites={favorites}
+            gOpen={category_open}
           />
           <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
             {categories.map((category) => (
               <Draggable key={category?.category?._id}>
                 <CategoryContainer
+                  gOpen={category_open}
                   category={category}
                   onProductMenuClick={onProductMenuClick}
                   isOridanryCategory
-                  shopFavourites={favorites}
                   setNewProductCategory={(categoryId) => {
                     setNewProductCategory(categoryId);
                     setSidebar('add-item');

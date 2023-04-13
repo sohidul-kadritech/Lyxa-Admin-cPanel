@@ -31,7 +31,7 @@ const fieldContainerSx = {
 };
 
 // eslint-disable-next-line no-unused-vars
-export default function AddProduct({ onClose, editProduct, viewOnly, newProductCategory }) {
+export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
 
@@ -222,6 +222,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           name: 'name',
           value: product.name,
           onChange: commonChangeHandler,
+          readOnly: productReadonly,
         }}
       />
       {/* type */}
@@ -251,7 +252,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           value: product.category,
           items: categories,
           onChange: commonChangeHandler,
-          readOnly: Boolean(newProductCategory),
+          readOnly: Boolean(newProductCategory) || productReadonly,
         }}
       />
       {/* description */}
@@ -266,6 +267,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           value: product.seoDescription,
           onChange: commonChangeHandler,
           multiline: true,
+          readOnly: productReadonly,
         }}
       />
       {/* photo */}
@@ -283,6 +285,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           files: product.images,
           helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
           helperText2: 'Pixels: Minimum 320 for width and height',
+          disabled: productReadonly,
         }}
       />
       {/* price */}
@@ -297,6 +300,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           name: 'price',
           value: product.price,
           onChange: commonChangeHandler,
+          readOnly: productReadonly,
         }}
       />
       {/* attributes */}
@@ -313,6 +317,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
             onChange: (value) => {
               setHasAttribute(value);
             },
+            disabled: productReadonly,
           }}
         />
       )}
@@ -365,6 +370,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
             sx: fieldContainerSx,
           }}
           inputProps={{
+            disabled: productReadonly,
             multiple: true,
             label: 'Choose',
             maxHeight: '200px',
@@ -404,6 +410,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
             sx: fieldContainerSx,
           }}
           inputProps={{
+            disabled: productReadonly,
             value: product?.dietary,
             multiple: true,
             items: dietryOptions,
@@ -483,6 +490,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           sx: fieldContainerSx,
         }}
         inputProps={{
+          readOnly: productReadonly,
           name: 'note',
           value: product.note,
           onChange: commonChangeHandler,
@@ -494,7 +502,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           variant="contained"
           color="primary"
           startIcon={<DropIcon />}
-          disabled={productMutation?.isLoading || loading}
+          disabled={productMutation?.isLoading || loading || productReadonly}
           fullWidth
           onClick={() => {
             uploadProduct();

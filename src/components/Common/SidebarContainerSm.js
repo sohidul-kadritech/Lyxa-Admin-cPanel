@@ -26,7 +26,7 @@ export default function SidebarContainer({ onClose, title, children }) {
           top: 0,
           paddingTop: '20px',
           paddingBottom: '15px',
-          zIndex: '999',
+          zIndex: '99999',
           background: '#fff',
         }}
       >
