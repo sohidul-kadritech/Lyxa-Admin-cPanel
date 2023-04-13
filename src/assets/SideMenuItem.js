@@ -576,6 +576,12 @@ export const shopMenuItem = [
         isSubmenu: false,
       },
       {
+        name: 'List',
+        icon: 'fas fa-clipboard-list',
+        link: '/products/list2',
+        isSubmenu: false,
+      },
+      {
         name: 'Add',
         icon: 'fas fa-plus-circle',
         link: '/products/add',
