@@ -23,6 +23,7 @@ import {
   productAttrInit,
   validateProduct,
 } from '../helpers';
+import PageSkeleton from './AddProductSkeleton';
 import AttributeList from './AttributeList';
 
 const fieldContainerSx = {
@@ -34,15 +35,15 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
 
-  console.log(editProduct);
-
   const [render, setRender] = useState(false);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  const [product, setProduct] = useState(editProduct || getProductInit(shop, newProductCategory));
+  const [product, setProduct] = useState(getProductInit(shop, newProductCategory));
   const [hasAttribute, setHasAttribute] = useState('');
   const [hasInventory, setHasInventory] = useState(false);
+
+  console.log(editProduct);
 
   // categories
   const categoriesQuery = useQuery(
@@ -69,16 +70,6 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
     }
   );
 
-  useEffect(() => {
-    if (categoriesQuery.data?.status) {
-      setCategories(
-        (prev) =>
-          categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
-          prev
-      );
-    }
-  }, []);
-
   // addons
   const productsQuery = useQuery(
     ['single-shop-products', { shopId: shop?._id }],
@@ -100,8 +91,47 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
     }
   );
 
+  const converEditProduct = (product) => {
+    const data = {
+      category: product?.category._id,
+      images: product?.images?.map((url) => ({
+        preview: url,
+      })),
+      addons: [],
+    };
+
+    product?.addons?.forEach((pId) => {
+      const product = productsQuery?.data?.data?.products?.find((p) => p?._id === pId);
+      if (product) {
+        data.addons.push(product);
+      }
+    });
+
+    if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
+      setHasAttribute('yes');
+    }
+
+    return {
+      ...product,
+      ...data,
+    };
+  };
+
+  useEffect(() => {
+    if (categoriesQuery.data?.status) {
+      setCategories(
+        (prev) =>
+          categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
+          prev
+      );
+    }
+
+    if (productsQuery?.data?.status && editProduct?._id) {
+      setProduct(converEditProduct(editProduct));
+    }
+  }, []);
+
   // loading
-  // eslint-disable-next-line no-unused-vars
   const __loading = categoriesQuery.isLoading || productsQuery.isLoading;
 
   // input handler
@@ -109,7 +139,6 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
     setProduct((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // file handler
   const onDrop = (acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
@@ -151,7 +180,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
     }
   );
 
-  const updateProduct = async () => {
+  const uploadProduct = async () => {
     const productValidation = validateProduct(product);
     if (!productValidation.status) {
       successMsg(productValidation?.msg);
@@ -159,7 +188,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
     }
 
     setLoading(true);
-    const productData = await createProductData(product, shop);
+    const productData = await createProductData(product, shop, !!editProduct?._id);
 
     if (productData?.status === false) {
       successMsg(productData?.message);
@@ -170,6 +199,14 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
     productMutation.mutate(productData);
     setLoading(false);
   };
+
+  if (__loading) {
+    return (
+      <SidebarContainer title="Add Items" onClose={onClose}>
+        <PageSkeleton />
+      </SidebarContainer>
+    );
+  }
 
   return (
     <SidebarContainer title="Add Items" onClose={onClose}>
@@ -460,7 +497,7 @@ export default function AddProduct({ onClose, editProduct, viewOnly, newProductC
           disabled={productMutation?.isLoading || loading}
           fullWidth
           onClick={() => {
-            updateProduct();
+            uploadProduct();
           }}
         >
           Save Item

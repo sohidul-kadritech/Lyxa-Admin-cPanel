@@ -1,10 +1,6 @@
 import { Skeleton, Stack } from '@mui/material';
 
 export default function PageSkeleton({ containerType }) {
-  const sx = {
-    transform: 'none',
-    display: 'block',
-  };
   return (
     <Stack
       sx={{
@@ -18,8 +14,8 @@ export default function PageSkeleton({ containerType }) {
           paddingBottom: '20px',
         }}
       >
-        <Skeleton variant="rounded" height={16} width={150} sx={sx} />
-        <Skeleton width="100%" height={50} sx={sx} />
+        <Skeleton variant="rounded" height={16} width={150} />
+        <Skeleton width="100%" height={50} />
       </Stack>
       {containerType === 'list' && (
         <>
@@ -30,8 +26,8 @@ export default function PageSkeleton({ containerType }) {
               paddingTop: '20px',
             }}
           >
-            <Skeleton variant="rounded" height={16} width={150} sx={sx} />
-            <Skeleton width="100%" height={100} sx={sx} />
+            <Skeleton variant="rounded" height={16} width={150} />
+            <Skeleton width="100%" height={100} />
           </Stack>
           <Stack
             gap={2}
@@ -40,8 +36,8 @@ export default function PageSkeleton({ containerType }) {
               paddingBottom: '20px',
             }}
           >
-            <Skeleton variant="rounded" height={16} width={150} sx={sx} />
-            <Skeleton width="100%" height={100} sx={sx} />
+            <Skeleton variant="rounded" height={16} width={150} />
+            <Skeleton width="100%" height={100} />
           </Stack>
           <Stack
             gap={2}
@@ -52,10 +48,10 @@ export default function PageSkeleton({ containerType }) {
           >
             <Skeleton variant="rounded" height={16} width={150} />
             <Stack direction="row" gap={4}>
-              <Skeleton height={50} width={140} sx={sx} />
-              <Skeleton height={50} width={140} sx={sx} />
-              <Skeleton height={50} width={140} sx={sx} />
-              <Skeleton height={50} width={140} sx={sx} />
+              <Skeleton height={50} width={140} />
+              <Skeleton height={50} width={140} />
+              <Skeleton height={50} width={140} />
+              <Skeleton height={50} width={140} />
             </Stack>
           </Stack>
           <Stack
@@ -67,10 +63,10 @@ export default function PageSkeleton({ containerType }) {
           >
             <Skeleton variant="rounded" height={16} width={150} />
             <Stack direction="row" gap={4}>
-              <Skeleton height={50} width={140} sx={sx} />
-              <Skeleton height={50} width={140} sx={sx} />
-              <Skeleton height={50} width={140} sx={sx} />
-              <Skeleton height={50} width={140} sx={sx} />
+              <Skeleton height={50} width={140} />
+              <Skeleton height={50} width={140} />
+              <Skeleton height={50} width={140} />
+              <Skeleton height={50} width={140} />
             </Stack>
           </Stack>
         </>
@@ -84,10 +80,10 @@ export default function PageSkeleton({ containerType }) {
       >
         <Skeleton variant="rounded" height={16} width={150} />
         <Stack direction="row" gap={4}>
-          <Skeleton height={50} width={140} sx={sx} />
-          <Skeleton height={50} width={140} sx={sx} />
-          <Skeleton height={50} width={140} sx={sx} />
-          <Skeleton height={50} width={140} sx={sx} />
+          <Skeleton height={50} width={140} />
+          <Skeleton height={50} width={140} />
+          <Skeleton height={50} width={140} />
+          <Skeleton height={50} width={140} />
         </Stack>
       </Stack>
     </Stack>

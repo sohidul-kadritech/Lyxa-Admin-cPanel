@@ -137,7 +137,7 @@ export const createCatagory = (data, type) => {
   };
 };
 
-export const createProductData = async (product, shop) => {
+export const createProductData = async (product, shop, isEditProduct) => {
   const imgUrl = await getImageUrl(product?.images[0]);
 
   if (!imgUrl) {
@@ -174,6 +174,7 @@ export const createProductData = async (product, shop) => {
     dietry,
     addons,
     attributes,
+    id: isEditProduct ? product?._id : undefined,
   };
 };
 
