@@ -2,14 +2,14 @@
 import { Avatar, Box, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
-import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
-import StyledInput from '../../components/Styled/StyledInput';
-import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
-import { successMsg } from '../../helpers/successMsg';
-import * as Api from '../../network/Api';
-import AXIOS from '../../network/axios';
-import { ProductsContext } from './ProductContext';
-import { getProductMenuOptions } from './helpers';
+import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
+import StyledInput from '../../../components/Styled/StyledInput';
+import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import { ProductsContext } from '../ProductContext';
+import { getProductMenuOptions } from '../helpers';
 
 export default function Product({ product, onMenuClick, ...props }) {
   const { favorites, setEditProduct } = useContext(ProductsContext);

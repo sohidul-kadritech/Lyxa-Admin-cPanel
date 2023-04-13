@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
-import dropSort from '../../helpers/dropSort';
-import * as Api from '../../network/Api';
-import AXIOS from '../../network/axios';
+import dropSort from '../../../helpers/dropSort';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import Product from './Product';
 
 export default function ProductsContainer({ products, onProductMenuClick }) {

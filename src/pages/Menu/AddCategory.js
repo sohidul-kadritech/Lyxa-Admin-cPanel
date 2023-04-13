@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Button, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -6,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { ReactComponent as DropIcon } from '../../assets/icons/down.svg';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -22,13 +22,11 @@ const getCategoryInit = (shopType) => ({
   note: '',
 });
 
-export default function AddCategory({ onClose, readOnly, editCategory }) {
-  const adminShop = useSelector((store) => store.Login.admin);
+export default function AddCategory({ onClose, editCategory }) {
+  const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
-  const [render, setRender] = useState(false);
-  const [category, setCategory] = useState(editCategory || getCategoryInit(adminShop?.shopType));
-
-  console.log(adminShop);
+  const [category, setCategory] = useState(editCategory || getCategoryInit(shop?.shopType));
+  const [loading, setLoading] = useState(false);
 
   // input handler
   const commonChangeHandler = (e) => {
@@ -36,7 +34,7 @@ export default function AddCategory({ onClose, readOnly, editCategory }) {
   };
 
   // file handler
-  const onDrop = (acceptedFiles, rejectedFiles) => {
+  const onDrop = (acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -58,6 +56,7 @@ export default function AddCategory({ onClose, readOnly, editCategory }) {
     {
       onSuccess: (data) => {
         successMsg(data?.message, data?.status ? 'success' : '');
+        console.log(data);
 
         if (data?.status) {
           queryClient.invalidateQueries('category-wise-products');
@@ -67,16 +66,36 @@ export default function AddCategory({ onClose, readOnly, editCategory }) {
     }
   );
 
-  const onSubmit = () => {
-    category.type = adminShop?.shopType;
+  const onSubmit = async () => {
+    category.type = shop?.shopType;
     const valid = validateCategory(category);
 
     if (!valid?.status) {
       successMsg(valid?.msg);
+      console.log('triggerd');
       return;
     }
 
-    categoryMutation.mutate(category);
+    let imgUrl;
+
+    if (shop?.shopType !== 'food') {
+      setLoading(true);
+      imgUrl = await getImageUrl(category?.image[0]);
+
+      if (!imgUrl) {
+        setLoading(false);
+        successMsg('Error while uploading image');
+        return;
+      }
+    }
+
+    console.log(imgUrl);
+
+    categoryMutation.mutate({
+      ...category,
+      image: imgUrl,
+    });
+    setLoading(false);
   };
 
   return (
@@ -97,7 +116,7 @@ export default function AddCategory({ onClose, readOnly, editCategory }) {
           }}
         />
         {/* photo */}
-        {adminShop?.shopType !== 'food' && (
+        {shop?.shopType !== 'food' && (
           <StyledFormField
             label="Photo"
             intputType="file"
@@ -159,7 +178,7 @@ export default function AddCategory({ onClose, readOnly, editCategory }) {
           startIcon={<DropIcon />}
           fullWidth
           onClick={onSubmit}
-          disabled={categoryMutation?.isLoading}
+          disabled={categoryMutation?.isLoading || loading}
         >
           Save Item
         </Button>

@@ -10,6 +10,9 @@ export const successMsg = (msg, status) => {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
+      bodyStyle: {
+        zIndex: '99999',
+      },
     });
   }
   return toast.warn(msg, {

@@ -13,10 +13,10 @@ import {
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
-import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
-import StyledSwitch from '../../components/Styled/StyledSwitch';
-import * as Api from '../../network/Api';
-import AXIOS from '../../network/axios';
+import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import ProductsContainer from './ProductsContainer';
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({

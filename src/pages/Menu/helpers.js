@@ -77,7 +77,6 @@ export const dietryOptions = [
 ];
 
 // state inits
-
 export const productAttrInit = {
   name: '',
   required: false,
@@ -212,7 +211,7 @@ export const validateCategory = (category) => {
     return status;
   }
 
-  if (category?.type !== 'food' && !category?.image) {
+  if (category?.type !== 'food' && !category?.image?.length) {
     status.msg = 'Category image cannot be empty';
     return status;
   }

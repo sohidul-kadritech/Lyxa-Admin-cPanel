@@ -15,7 +15,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
-import CategoryContainer from './CategoryContainer';
+import CategoryContainer from './List/CategoryContainer';
 import MenuPageSkeleton from './MenuPageSkeleton';
 import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';

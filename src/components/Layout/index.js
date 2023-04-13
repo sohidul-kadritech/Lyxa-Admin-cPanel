@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
@@ -26,6 +27,7 @@ export default function Layout({ children }) {
         >
           {children}
         </Box>
+        <ToastContainer />
       </Box>
     </Box>
   );

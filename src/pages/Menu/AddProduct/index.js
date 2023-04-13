@@ -1,7 +1,10 @@
+// third party
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
+
+// project import
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import { shopTypeOptions2 } from '../../../assets/staticData';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
@@ -100,15 +103,20 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       addons: [],
     };
 
-    product?.addons?.forEach((pId) => {
-      const product = productsQuery?.data?.data?.products?.find((p) => p?._id === pId);
-      if (product) {
-        data.addons.push(product);
+    // food type
+    if (product?.type === 'food') {
+      if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
+        setHasAttribute('yes');
       }
-    });
 
-    if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
-      setHasAttribute('yes');
+      product?.addons?.forEach((pId) => {
+        const product = productsQuery?.data?.data?.products?.find((p) => p?._id === pId);
+        if (product) {
+          data.addons.push(product);
+        }
+      });
+    } else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
+      setHasInventory(true);
     }
 
     return {
@@ -166,7 +174,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   // product mutation
   const productMutation = useMutation(
     (data) => {
-      const _api = editProduct ? Api.EDIT_PRODUCT : Api.ADD_PRODUCT;
+      const _api = editProduct?._id ? Api.EDIT_PRODUCT : Api.ADD_PRODUCT;
       return AXIOS.post(_api, data);
     },
     {
@@ -196,7 +204,10 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       return;
     }
 
-    productMutation.mutate(productData);
+    productMutation.mutate({
+      ...productData,
+      stockQuantity: hasInventory ? product?.stockQuantity : '',
+    });
     setLoading(false);
   };
 
@@ -441,6 +452,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             </Typography>
             <StyledSwitch
               checked={hasInventory}
+              readOnly={productReadonly}
               onChange={(e) => {
                 setHasInventory(e.target.checked);
               }}
@@ -451,7 +463,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
               <StyledInput
                 value={product?.stockQuantity}
                 type="number"
-                readOnly={false}
+                readOnly={productReadonly}
                 onChange={(e) => {
                   console.log(product.stockQuantity);
                   product.stockQuantity = e.target.value;
