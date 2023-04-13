@@ -7,7 +7,7 @@ const StyledSwitch = styled((props) => <Switch focusVisibleClassName=".Mui-focus
     padding: 0,
     '& .MuiSwitch-switchBase': {
       padding: 0,
-      margin: 2,
+      margin: '2.45px 2px 2px 2px',
       transitionDuration: '300ms',
       '&.Mui-checked': {
         transform: 'translateX(16px)',
