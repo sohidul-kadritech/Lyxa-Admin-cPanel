@@ -277,7 +277,8 @@ input[type='number'] {
   align-items: center;
   gap: 11px;
 
-  &:hover {
+  &:hover,
+  &.active {
     background-color: rgba(255, 255, 255, 0.2);
     border-color: #fff !important;
   }

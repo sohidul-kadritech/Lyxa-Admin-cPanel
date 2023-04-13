@@ -3,8 +3,6 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
 export default function Layout({ children }) {
-  // console.log('rendered');
-
   return (
     <Box
       sx={{

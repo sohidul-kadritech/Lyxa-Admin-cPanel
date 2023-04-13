@@ -17,7 +17,7 @@ export const shop_menu_items = [
       {
         label: 'Dashboard',
         icon: DashBoardIcon,
-        to: '/',
+        to: '/dashboard',
       },
       {
         label: 'Marketing',
