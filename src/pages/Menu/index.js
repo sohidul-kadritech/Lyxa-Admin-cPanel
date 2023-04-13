@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
 import { Box, Drawer } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -54,6 +54,13 @@ export default function MenuPage() {
       },
     }
   );
+
+  useEffect(() => {
+    if (productsQuery?.data?.status) {
+      setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
+      setFavorites((prev) => productsQuery?.data?.data?.shopFavouriteItems || prev);
+    }
+  }, []);
 
   const favoriteMutation = useMutation(
     (data) =>

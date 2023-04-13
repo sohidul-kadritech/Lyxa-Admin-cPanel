@@ -10,10 +10,15 @@ const attributeInit = {
   extraPrice: '',
 };
 
-function AttributeList({ items, onDelete }) {
+function AttributeList({ items }) {
   const [showAddNew, setShowAddNew] = useState(true);
   const [render, setRender] = useState(false);
   const [newAttributeItem, setNewAttributeItem] = useState(attributeInit);
+
+  const onDelete = (item, index) => {
+    items.splice(index, 1);
+    setRender(!render);
+  };
 
   return (
     <Box pb={4}>
@@ -52,9 +57,14 @@ function AttributeList({ items, onDelete }) {
       </Stack>
       <Stack gap={4} pb={3}>
         {items.map((attributeItem, index) => (
-          <AttributeItem attributeItem={attributeItem} key={index} onDelete={onDelete} />
+          <AttributeItem
+            attributeItem={attributeItem}
+            key={index}
+            onDelete={() => {
+              onDelete(attributeItem, index);
+            }}
+          />
         ))}
-        {/* {showAddNew && <AttributeItem attributeItem={newAttributeItem} onDelete={onDelete} />} */}
       </Stack>
       <Button
         disableRipple

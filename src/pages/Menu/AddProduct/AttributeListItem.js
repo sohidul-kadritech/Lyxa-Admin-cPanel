@@ -36,9 +36,7 @@ export default function AttributeItem({ attributeItem, onDelete }) {
         sx={{
           padding: 0,
         }}
-        onClick={() => {
-          onDelete(attributeItem);
-        }}
+        onClick={onDelete}
       />
     </Stack>
   );
