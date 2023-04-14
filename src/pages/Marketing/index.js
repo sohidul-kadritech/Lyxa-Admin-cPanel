@@ -209,7 +209,7 @@ export default function Marketing() {
     return '';
   };
 
-  const G_LOADING =
+  const __loading =
     !dealSettingsQuery.isFetchedAfterMount ||
     !discountSettingsQuery.isFetchedAfterMount ||
     !doubleDealSettingsQuery.isFetchedAfterMount ||
@@ -217,7 +217,7 @@ export default function Marketing() {
     !rewardSettingsQuery.isFetchedAfterMount ||
     shopQuery.isLoading;
 
-  console.log(G_LOADING);
+  // console.log(freeDeliverySettingsQuery?.data);
 
   return (
     <Wrapper
@@ -240,12 +240,12 @@ export default function Marketing() {
               description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
               title="Discounted Items"
               icon={DiscountIcon}
-              loading={G_LOADING || discountSettingsQuery?.isFetching}
+              loading={__loading || discountSettingsQuery?.isFetching}
               disabled={appliedDeals.percentage || !activeDeals.percentage}
               status={getPromotionStatus(discountSettingsQuery, 'percentage')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               onOpen={() => {
-                if (!appliedDeals.percentage && activeDeals.percentage && !G_LOADING) {
+                if (!appliedDeals.percentage && activeDeals.percentage && !__loading) {
                   openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -256,12 +256,12 @@ export default function Marketing() {
               description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
               title="Buy 1, Get 1 Free"
               icon={BuyIcon}
-              loading={G_LOADING || doubleDealSettingsQuery.isFetching}
+              loading={__loading || doubleDealSettingsQuery.isFetching}
               disabled={appliedDeals.double_menu || !activeDeals.double_menu}
               status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               onOpen={() => {
-                if (!G_LOADING && !appliedDeals.double_menu && activeDeals.double_menu) {
+                if (!__loading && !appliedDeals.double_menu && activeDeals.double_menu) {
                   openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -271,13 +271,13 @@ export default function Marketing() {
             <MCard
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
-              loading={G_LOADING || freeDeliverySettingsQuery?.isFetching}
+              loading={__loading || freeDeliverySettingsQuery?.isFetching}
               disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
               status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery')}
               ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
               icon={DeliveryIcon}
               onOpen={() => {
-                if (!G_LOADING && !appliedDeals.free_delivery && activeDeals.free_delivery) {
+                if (!__loading && !appliedDeals.free_delivery && activeDeals.free_delivery) {
                   openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
                 }
               }}
@@ -288,7 +288,7 @@ export default function Marketing() {
               <MCard
                 description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
                 title="Loyalty Points"
-                loading={G_LOADING || rewardSettingsQuery.isFetching}
+                loading={__loading || rewardSettingsQuery.isFetching}
                 status={getPromotionStatus(rewardSettingsQuery)}
                 icon={LoyaltyIcon}
                 onOpen={() => {

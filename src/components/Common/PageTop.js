@@ -11,6 +11,7 @@ export default function PageTop({
   addButtonLabel,
   title,
   subtitle,
+  tag,
   ...rest
 }) {
   const theme = useTheme();
@@ -35,18 +36,22 @@ export default function PageTop({
           )}
         </Stack>
       )}
-      {breadcrumbItems && <BreadCrumbs items={breadcrumbItems} />}
+      {breadcrumbItems && (
+        <BreadCrumbs
+          items={breadcrumbItems}
+          sx={{
+            pb: subtitle ? 2 : 0,
+          }}
+        />
+      )}
       {title && (
         <>
-          <Typography
-            variant="h4"
-            color={theme.palette.text.primary}
-            sx={{
-              pb: subtitle ? 2 : 0,
-            }}
-          >
-            {title}
-          </Typography>
+          <Stack direction="row" alignItems="center" gap={3}>
+            <Typography variant="h4" color={theme.palette.text.primary}>
+              {title}
+            </Typography>
+            {tag && tag}
+          </Stack>
           {subtitle && <Typography variant="body3">{subtitle}</Typography>}
         </>
       )}

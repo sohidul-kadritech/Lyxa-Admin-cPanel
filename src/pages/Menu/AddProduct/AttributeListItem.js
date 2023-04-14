@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CloseButton from '../../../components/Common/CloseButton';
 import StyledInput from '../../../components/Styled/StyledInput';
 
-export default function AttributeItem({ attributeItem, onDelete }) {
+export default function AttributeItem({ attributeItem, onDelete, readOnly }) {
   const [render, setRender] = useState(false);
 
   return (
@@ -11,6 +11,7 @@ export default function AttributeItem({ attributeItem, onDelete }) {
       <StyledInput
         type="text"
         value={attributeItem?.name}
+        readOnly={readOnly}
         placeholder="Type here"
         onChange={(e) => {
           attributeItem.name = e.target.value;
@@ -20,6 +21,7 @@ export default function AttributeItem({ attributeItem, onDelete }) {
       <StyledInput
         type="number"
         value={attributeItem?.extraPrice}
+        readOnly={readOnly}
         onChange={(e) => {
           attributeItem.extraPrice = e.target.value;
           setRender(!render);

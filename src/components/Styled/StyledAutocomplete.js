@@ -195,6 +195,12 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
       renderInput={(params) => (
         <TextField
           {...params}
+          console={console.log(params)}
+          sx={{
+            '.MuiInputBase-input': {
+              pointerEvents: props.readOnly ? 'none' : 'initial',
+            },
+          }}
           variant="outlined"
           placeholder={placeholder}
           label={label}

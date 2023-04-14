@@ -19,12 +19,13 @@ import CategoryContainer from './List/CategoryContainer';
 import MenuPageSkeleton from './MenuPageSkeleton';
 import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
-import { createCatagory } from './helpers';
+import { OngoingTag, createCatagory } from './helpers';
 
 export default function MenuPage() {
   const history = useHistory();
   const shop = useSelector((store) => store.Login.admin);
 
+  const [hasMarketing, setHasMarketing] = useState(false);
   const [render, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
   const [category_open, set_category_open] = useState(null);
@@ -58,6 +59,9 @@ export default function MenuPage() {
     if (productsQuery?.data?.status) {
       setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
       setFavorites((prev) => productsQuery?.data?.data?.shopFavouriteItems || prev);
+    }
+    if (shop?.marketings?.some((marketing) => marketing?.isActive && marketing?.status === 'active')) {
+      setHasMarketing(true);
     }
   }, []);
 
@@ -165,6 +169,7 @@ export default function MenuPage() {
     <ProductsContext.Provider value={ContextObj}>
       <PageTop
         title="Menu"
+        tag={hasMarketing ? <OngoingTag /> : undefined}
         sx={{
           position: 'sticky',
           top: '-2px',

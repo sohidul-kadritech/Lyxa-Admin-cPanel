@@ -46,8 +46,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const [hasAttribute, setHasAttribute] = useState('');
   const [hasInventory, setHasInventory] = useState(false);
 
-  console.log(editProduct);
-
   // categories
   const categoriesQuery = useQuery(
     ['single-shop-category', { shopId: shop?._id }],
@@ -328,7 +326,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             onChange: (value) => {
               setHasAttribute(value);
             },
-            disabled: productReadonly,
+            readOnly: productReadonly,
           }}
         />
       )}
@@ -342,6 +340,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             }}
             inputProps={{
               type: 'text',
+              readOnly: productReadonly,
               name: 'attributeTitle',
               value: product?.attributes[0] ? product?.attributes[0]?.name : '',
               onChange: (e) => {
@@ -367,10 +366,14 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
               items: attributeTypeAvailableOptions,
               value: getAttrOptionsValues(product),
               onChange: attrOptionsHandler,
+              readOnly: productReadonly,
             }}
           />
           {/* attribute list */}
-          <AttributeList items={product?.attributes?.length ? product?.attributes[0]?.items : []} onDelete={() => {}} />
+          <AttributeList
+            items={product?.attributes?.length ? product?.attributes[0]?.items : []}
+            readOnly={productReadonly}
+          />
         </Box>
       )}
       {shop?.shopType === 'food' && (
@@ -382,6 +385,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           }}
           inputProps={{
             disabled: productReadonly,
+            open: productReadonly ? false : undefined,
             multiple: true,
             label: 'Choose',
             maxHeight: '200px',
@@ -421,7 +425,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             sx: fieldContainerSx,
           }}
           inputProps={{
-            disabled: productReadonly,
+            readOnly: productReadonly,
             value: product?.dietary,
             multiple: true,
             items: dietryOptions,
@@ -514,9 +518,12 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           variant="contained"
           color="primary"
           startIcon={<DropIcon />}
-          disabled={productMutation?.isLoading || loading || productReadonly}
+          disabled={productMutation?.isLoading || loading}
           fullWidth
           onClick={() => {
+            if (productReadonly) {
+              return;
+            }
             uploadProduct();
           }}
         >

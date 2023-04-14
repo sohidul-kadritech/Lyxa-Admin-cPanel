@@ -126,6 +126,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
               },
               ...(inputProps.sx || {}),
             }}
+            readOnly={inputProps.readOnly}
           />
           {/* tags */}
           {inputProps.multiple &&

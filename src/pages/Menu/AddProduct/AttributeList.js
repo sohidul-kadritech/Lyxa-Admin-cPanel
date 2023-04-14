@@ -10,7 +10,7 @@ const attributeInit = {
   extraPrice: '',
 };
 
-function AttributeList({ items }) {
+function AttributeList({ items, readOnly }) {
   const [showAddNew, setShowAddNew] = useState(true);
   const [render, setRender] = useState(false);
   const [newAttributeItem, setNewAttributeItem] = useState(attributeInit);
@@ -60,7 +60,11 @@ function AttributeList({ items }) {
           <AttributeItem
             attributeItem={attributeItem}
             key={index}
+            readOnly={readOnly}
             onDelete={() => {
+              if (readOnly) {
+                return;
+              }
               onDelete(attributeItem, index);
             }}
           />
@@ -76,6 +80,9 @@ function AttributeList({ items }) {
           lineHeight: '17px',
         }}
         onClick={() => {
+          if (readOnly) {
+            return;
+          }
           setShowAddNew(true);
           items.push({ ...attributeInit });
           setRender(!render);

@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import { getImageUrl } from '../../helpers/images';
 
 // menu options
@@ -282,3 +283,29 @@ export const validateProduct = (product) => {
     status: true,
   };
 };
+
+export function OngoingTag() {
+  return (
+    <Button
+      variant="contained"
+      color="secondary"
+      sx={{
+        border: '1.25px solid #5E97A9',
+        fontSize: '13px',
+        lineHeight: '20px',
+        background: '#F6F8FA',
+        color: '#5E97A9',
+        gap: '0px',
+        padding: '4px 12px',
+        textTransform: 'capitalize',
+
+        '&:hover': {
+          background: '#F6F8FA',
+          color: '#5E97A9',
+        },
+      }}
+    >
+      Ongoing
+    </Button>
+  );
+}
