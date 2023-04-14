@@ -14,6 +14,7 @@ import { deepClone } from '../../helpers/deepClone';
 import dropSort from '../../helpers/dropSort';
 import { local_product_search } from '../../helpers/localSearch';
 import { successMsg } from '../../helpers/successMsg';
+import { Throttler } from '../../helpers/throttle';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
@@ -25,6 +26,8 @@ import Searchbar from './Searchbar';
 import { OngoingTag, createCatagory } from './helpers';
 
 export default function MenuPage() {
+  const searchThrottler = new Throttler(200);
+
   const history = useHistory();
   const shop = useSelector((store) => store.Login.admin);
 
@@ -146,8 +149,11 @@ export default function MenuPage() {
   // product search
   const onSearch = (str) => {
     setSearchValue(str);
-    const categories = deepClone(productsQuery?.data?.data?.productsGroupByCategory || []);
-    setSearchCategories(local_product_search(str, categories));
+
+    searchThrottler.exec(() => {
+      const categories = deepClone(productsQuery?.data?.data?.productsGroupByCategory || []);
+      setSearchCategories(local_product_search(str, categories));
+    });
   };
 
   // sort products
