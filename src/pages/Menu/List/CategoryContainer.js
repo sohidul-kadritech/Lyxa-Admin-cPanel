@@ -49,6 +49,7 @@ export default function CategoryContainer({
   onProductMenuClick,
   setNewProductCategory,
   gOpen,
+  fromSearch,
 }) {
   const theme = useTheme();
   const shop = useSelector((store) => store.Login.admin);
@@ -127,7 +128,11 @@ export default function CategoryContainer({
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails sx={detailsSx}>
-        <ProductsContainer products={category?.sortedProducts} onProductMenuClick={onProductMenuClick} />
+        <ProductsContainer
+          products={category?.sortedProducts}
+          onProductMenuClick={onProductMenuClick}
+          fromSearch={fromSearch}
+        />
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>
             <Button

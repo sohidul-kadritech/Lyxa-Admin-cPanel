@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
 import { Box, Drawer, Typography } from '@mui/material';
@@ -10,6 +9,7 @@ import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
 import PageTop from '../../components/Common/PageTop';
+import { ShopDeals } from '../../helpers/ShopDeals';
 import { deepClone } from '../../helpers/deepClone';
 import dropSort from '../../helpers/dropSort';
 import { local_product_search } from '../../helpers/localSearch';
@@ -30,8 +30,9 @@ export default function MenuPage() {
 
   const history = useHistory();
   const shop = useSelector((store) => store.Login.admin);
+  const Deals = useMemo(() => new ShopDeals(shop), []);
 
-  const [hasMarketing, setHasMarketing] = useState(false);
+  // const [hasMarketing, setHasMarketing] = useState(false);
   const [render, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
   const [category_open, set_category_open] = useState(null);
@@ -67,9 +68,6 @@ export default function MenuPage() {
     if (productsQuery?.data?.status) {
       setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
       setFavorites((prev) => productsQuery?.data?.data?.shopFavouriteItems || prev);
-    }
-    if (shop?.marketings?.some((marketing) => marketing?.isActive && marketing?.status === 'active')) {
-      setHasMarketing(true);
     }
   }, []);
 
@@ -187,7 +185,7 @@ export default function MenuPage() {
     <ProductsContext.Provider value={ContextObj}>
       <PageTop
         title="Menu"
-        tag={hasMarketing ? <OngoingTag /> : undefined}
+        tag={Deals.deals.hasActiveDeal ? <OngoingTag label={Deals.get_promotion_str()} /> : undefined}
         sx={{
           position: 'sticky',
           top: '-2px',
@@ -227,30 +225,51 @@ export default function MenuPage() {
                 onProductMenuClick={onProductMenuClick}
                 gOpen={category_open}
               />
+              <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
+                {categories.map((category) => (
+                  <Draggable key={category?.category?._id}>
+                    <CategoryContainer
+                      gOpen={category_open}
+                      category={category}
+                      onProductMenuClick={onProductMenuClick}
+                      isOridanryCategory
+                      setNewProductCategory={(categoryId) => {
+                        setNewProductCategory(categoryId);
+                        setSidebar('add-item');
+                      }}
+                    />
+                  </Draggable>
+                ))}
+              </Container>
             </>
           )}
-          <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
-            {(searchValue !== '' ? searchCategories : categories).map((category) => (
-              <Draggable key={category?.category?._id}>
-                <CategoryContainer
-                  gOpen={category_open}
-                  category={category}
-                  onProductMenuClick={onProductMenuClick}
-                  isOridanryCategory
-                  setNewProductCategory={(categoryId) => {
-                    setNewProductCategory(categoryId);
-                    setSidebar('add-item');
-                  }}
-                />
-              </Draggable>
-            ))}
-          </Container>
-          {searchValue !== '' && !searchCategories?.length && (
-            <Box>
-              <Typography variant="h5" textAlign="center">
-                No results found
-              </Typography>
-            </Box>
+
+          {searchValue !== '' && (
+            <>
+              <Box>
+                {searchCategories.map((category) => (
+                  <CategoryContainer
+                    fromSearch
+                    key={category?.category?._id}
+                    gOpen={category_open}
+                    category={category}
+                    onProductMenuClick={onProductMenuClick}
+                    isOridanryCategory
+                    setNewProductCategory={(categoryId) => {
+                      setNewProductCategory(categoryId);
+                      setSidebar('add-item');
+                    }}
+                  />
+                ))}
+              </Box>
+              {!searchCategories?.length && (
+                <Box>
+                  <Typography variant="h5" textAlign="center">
+                    No results found
+                  </Typography>
+                </Box>
+              )}
+            </>
           )}
         </>
       )}

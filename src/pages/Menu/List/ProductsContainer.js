@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
@@ -6,7 +7,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import Product from './Product';
 
-export default function ProductsContainer({ products, onProductMenuClick }) {
+export default function ProductsContainer({ products, onProductMenuClick, fromSearch }) {
   const [render, setRender] = useState(false);
   const sortingMutation = useMutation((data) => AXIOS.post(Api.SORT_PRODUCTS, data));
 
@@ -20,6 +21,22 @@ export default function ProductsContainer({ products, onProductMenuClick }) {
 
     setRender(!render);
   };
+
+  if (fromSearch) {
+    <Box onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler-chlid">
+      {products.map((product, index, array) => (
+        <Product
+          key={product?._id}
+          product={product}
+          sx={{
+            borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
+            cursor: 'pointer',
+          }}
+          onMenuClick={onProductMenuClick}
+        />
+      ))}
+    </Box>;
+  }
 
   return (
     <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler-chlid">

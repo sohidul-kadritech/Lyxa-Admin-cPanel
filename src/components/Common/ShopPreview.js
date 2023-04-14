@@ -5,9 +5,7 @@ import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as BikeIcon } from '../../assets/icons/delivery2.svg';
 import { ReactComponent as HeartIcon } from '../../assets/icons/heart.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
-import { getShopDeals } from '../../helpers/getShopDeals';
-
-// eslint-disable-next-line no-unused-vars
+import { ShopDeals } from '../../helpers/ShopDeals';
 
 export default function ShopPreview({ shop, loading }) {
   const theme = useTheme();
@@ -17,8 +15,7 @@ export default function ShopPreview({ shop, loading }) {
     return <ComponentSkeleton />;
   }
 
-  console.log(shop);
-  const deals = getShopDeals(shop);
+  const Deals = new ShopDeals(shop);
 
   return (
     <Stack direction="row" gap={3}>
@@ -53,7 +50,7 @@ export default function ShopPreview({ shop, loading }) {
             <Typography variant="body2" display="inline-block" pr={1.5}>
               {shop?.shopName}
             </Typography>
-            {deals.reward && <RewardIcon color="#15BFCA" />}
+            {Deals.reward && <RewardIcon color="#15BFCA" />}
           </Stack>
           <Stack direction="row" alignItems="center" gap="2px">
             <StarIcon
@@ -113,7 +110,7 @@ export default function ShopPreview({ shop, loading }) {
         </Box>
         {/* Info */}
         <Stack direction="row" alignItems="center" gap="7px">
-          {deals.free_delivery && <Info Icon={BikeIcon} title="Free" dot="." />}
+          {Deals.free_delivery && <Info Icon={BikeIcon} title="Free" dot="." />}
           <Info Icon={CartIcon} title={`Min. ${currency} ${shop?.minOrderAmount}`} />
         </Stack>
         <Typography
@@ -123,7 +120,7 @@ export default function ShopPreview({ shop, loading }) {
             lineHeight: '14px!important',
           }}
         >
-          {deals?.doubbleMenuPercentageStr}
+          {Deals.get_double_percentage_str()}
         </Typography>
       </Box>
     </Stack>

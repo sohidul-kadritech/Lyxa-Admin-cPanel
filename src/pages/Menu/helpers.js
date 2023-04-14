@@ -284,7 +284,7 @@ export const validateProduct = (product) => {
   };
 };
 
-export function OngoingTag() {
+export function OngoingTag({ label }) {
   return (
     <Button
       variant="contained"
@@ -305,7 +305,7 @@ export function OngoingTag() {
         },
       }}
     >
-      Ongoing
+      {label}
     </Button>
   );
 }
