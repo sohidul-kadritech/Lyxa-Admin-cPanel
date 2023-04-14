@@ -137,7 +137,7 @@ export default function MenuPage() {
     if (menu === 'marketing') history.push('/marketing');
 
     if (menu === 'edit') {
-      setEditProduct(product);
+      setEditProduct(deepClone(product));
       setSidebar('add-item');
     }
 
