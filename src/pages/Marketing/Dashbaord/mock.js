@@ -44,6 +44,22 @@ export const barChartData = {
   ],
 };
 
+export const barChartData2 = {
+  labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: labels.map(() => Math.round(Math.random() * 200)),
+      backgroundColor: 'rgba(60, 172, 221, 1)',
+    },
+    {
+      label: 'Dataset 2',
+      data: labels.map(() => Math.round(Math.random() * 200)),
+      backgroundColor: 'rgba(221, 60, 105, 1)',
+    },
+  ],
+};
+
 export const areaChartData = {
   labels,
   datasets: [
@@ -51,9 +67,9 @@ export const areaChartData = {
       fill: true,
       label: 'Dataset 2',
       data: labels.map(() => Math.round(Math.random() * 200)),
-      borderColor: 'rgba(21, 191, 202, 1)',
+      borderColor: 'rgba(126, 130, 153, 1)',
       borderWidth: 1,
-      backgroundColor: 'rgba(21, 191, 202, .3)',
+      backgroundColor: 'rgba(126, 130, 153, 0.15)',
     },
   ],
 };

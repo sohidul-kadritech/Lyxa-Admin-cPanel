@@ -11,15 +11,19 @@ import { useHistory, useParams } from 'react-router-dom';
 // project import
 import BreadCrumbs from '../../../components/Common/BreadCrumb2';
 import PageButton from '../../../components/Common/PageButton';
+import ChartBox from '../../../components/StyledCharts/ChartBox';
+import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
+import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
 import Wrapper from '../../../components/Wrapper';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import ProductsInfoList from './ProductsInfoList';
-import { ChartBox, IncreaseDecreaseTag, InfoBox, StyledBox, ViewMoreTag, dateRangeItit, gData } from './helpers';
+import { ViewMoreTag, dateRangeItit, gData } from './helpers';
 import { ProductsInfoListData } from './mock';
 
 const mTypeMap = {
@@ -237,7 +241,7 @@ export default function MarketingDashboard() {
       </Stack>
       <BreadCrumbs items={breadCrumbItems} />
       <Grid container spacing={6.5} pb={3}>
-        <InfoBox
+        <InfoCard
           title="Ongoing Promotions on Items"
           value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
           Tag={<ViewMoreTag />}
@@ -245,7 +249,7 @@ export default function MarketingDashboard() {
           md={4}
           lg={4}
         />
-        <InfoBox
+        <InfoCard
           title="Order Increase with Discounts"
           value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
           Tag={
@@ -260,7 +264,7 @@ export default function MarketingDashboard() {
           md={4}
           lg={4}
         />
-        <InfoBox
+        <InfoCard
           title="Customer Increase with Discounts"
           value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
           Tag={
