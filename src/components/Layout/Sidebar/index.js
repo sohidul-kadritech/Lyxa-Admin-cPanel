@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { ReactComponent as Logo } from '../../../assets/icons/lyxa-sidebar-logo.svg';
-import { shop_menu_items } from '../../../common/sidebarItems';
+import { shop_menu_items } from '../../../common/sidebar_menu_items';
 import MenuList from './MenuList';
 
 export default function Sidebar() {
@@ -38,7 +38,7 @@ export default function Sidebar() {
           Lyxa Manager
         </Typography>
       </Box>
-      <Stack>
+      <Stack pb={8.5}>
         {shop_menu_items.map((list, index) => (
           <MenuList key={index} menuList={list} />
         ))}

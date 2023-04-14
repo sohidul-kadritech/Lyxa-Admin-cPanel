@@ -32,7 +32,7 @@ export const shop_menu_items = [
       {
         label: 'Financials',
         icon: FinancialIcon,
-        to: '/',
+        to: '/financials',
       },
     ],
   },
@@ -78,6 +78,31 @@ export const shop_menu_items = [
         label: 'Users',
         icon: UsersIcon,
         to: '/',
+      },
+    ],
+  },
+  {
+    title: 'No Icons',
+    menu: [
+      {
+        label: 'My Shop',
+        to: '/shops/list',
+      },
+      {
+        label: 'Menu Old',
+        to: '/products/list',
+      },
+      {
+        label: 'App Wallet',
+        to: '/add-wallet/shop-transactions',
+      },
+      {
+        label: 'Credentials',
+        to: '/shop/credentials/list',
+      },
+      {
+        label: 'Categories Old',
+        to: '/categories/list',
       },
     ],
   },

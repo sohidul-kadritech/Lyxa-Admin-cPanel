@@ -74,6 +74,7 @@ import DisplaySettings from '../pages/Display';
 import FilterContainers from '../pages/Display/FilterContainer';
 import ListContainers from '../pages/Display/ListContainer';
 import TagsAndCusines from '../pages/Display/Tags';
+import Financials from '../pages/Financials';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import MenuPage from '../pages/Menu';
 import NotificationsList from '../pages/Notifications/NotificationsList';
@@ -335,6 +336,9 @@ const shopRoutes = [
   // marketing
   { path: '/marketing', component: Marketing },
   { path: '/marketing/dashboard/:type/:id', component: MarketingDashboard },
+
+  // financials
+  { path: '/financials', component: Financials },
 
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },

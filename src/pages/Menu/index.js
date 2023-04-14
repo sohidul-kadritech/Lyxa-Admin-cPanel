@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
-import { Drawer } from '@mui/material';
+import { Box, Drawer, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -9,7 +10,9 @@ import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
 import PageTop from '../../components/Common/PageTop';
+import { deepClone } from '../../helpers/deepClone';
 import dropSort from '../../helpers/dropSort';
+import { local_product_search } from '../../helpers/localSearch';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -29,6 +32,7 @@ export default function MenuPage() {
   const [render, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
   const [category_open, set_category_open] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
 
   const [newProductCategory, setNewProductCategory] = useState(null);
   const [editProduct, setEditProduct] = useState({});
@@ -36,6 +40,7 @@ export default function MenuPage() {
 
   // products
   const [categories, setCategories] = useState([]);
+  const [searchCategories, setSearchCategories] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
   const productsQuery = useQuery(
@@ -138,6 +143,13 @@ export default function MenuPage() {
     }
   };
 
+  // product search
+  const onSearch = (str) => {
+    setSearchValue(str);
+    const categories = deepClone(productsQuery?.data?.data?.productsGroupByCategory || []);
+    setSearchCategories(local_product_search(str, categories));
+  };
+
   // sort products
   const categorySortingMutation = useMutation((data) => AXIOS.post(Api.SORT_CATEGORIES, data));
 
@@ -181,7 +193,7 @@ export default function MenuPage() {
       {!productsQuery?.isLoading && (
         <>
           <Searchbar
-            searchPlaceHolder="Search 24 items"
+            searchPlaceHolder="Search items"
             onMenuClick={(value) => {
               setSidebar(value);
             }}
@@ -194,19 +206,25 @@ export default function MenuPage() {
               zIndex: '999',
               backgroundColor: '#fbfbfb',
             }}
+            setSearchValue={onSearch}
+            searchValue={searchValue}
           />
-          <CategoryContainer
-            category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
-            onProductMenuClick={onProductMenuClick}
-            gOpen={category_open}
-          />
-          <CategoryContainer
-            category={createCatagory(favorites, 'favorites')}
-            onProductMenuClick={onProductMenuClick}
-            gOpen={category_open}
-          />
+          {searchValue === '' && (
+            <>
+              <CategoryContainer
+                category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
+                onProductMenuClick={onProductMenuClick}
+                gOpen={category_open}
+              />
+              <CategoryContainer
+                category={createCatagory(favorites, 'favorites')}
+                onProductMenuClick={onProductMenuClick}
+                gOpen={category_open}
+              />
+            </>
+          )}
           <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
-            {categories.map((category) => (
+            {(searchValue !== '' ? searchCategories : categories).map((category) => (
               <Draggable key={category?.category?._id}>
                 <CategoryContainer
                   gOpen={category_open}
@@ -221,6 +239,13 @@ export default function MenuPage() {
               </Draggable>
             ))}
           </Container>
+          {searchValue !== '' && !searchCategories?.length && (
+            <Box>
+              <Typography variant="h5" textAlign="center">
+                No results found
+              </Typography>
+            </Box>
+          )}
         </>
       )}
       <Drawer open={Boolean(sidebar)} anchor="right">
