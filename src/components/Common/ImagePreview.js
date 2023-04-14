@@ -49,7 +49,7 @@ const imageSx = {
   borderRadius: '50%',
 };
 
-export default function ImagePreview({ progress, files }) {
+export default function ImagePreview({ progress, files, readOnly }) {
   const [render, setRender] = useState(false);
 
   const deletePhoto = (fileIndex, files) => {
@@ -72,9 +72,12 @@ export default function ImagePreview({ progress, files }) {
         >
           <IconButton
             color="primary"
-            sx={deleteButtonSx}
+            sx={{ ...deleteButtonSx, ...(readOnly && { pointerEvents: 'none' }) }}
             disabled={(progress && progress < 100) || undefined}
             onClick={() => {
+              if (readOnly) {
+                return;
+              }
               deletePhoto(index, files);
               setRender(!render);
             }}

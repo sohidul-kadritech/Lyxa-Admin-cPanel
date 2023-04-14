@@ -33,18 +33,66 @@ const fieldContainerSx = {
   padding: '14px 0',
 };
 
-// eslint-disable-next-line no-unused-vars
 export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
+
+  console.log('rendering');
 
   const [render, setRender] = useState(false);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  const [product, setProduct] = useState(getProductInit(shop, newProductCategory));
   const [hasAttribute, setHasAttribute] = useState('');
   const [hasInventory, setHasInventory] = useState(false);
+
+  const converEditProduct = (product) => {
+    const data = {
+      category: product?.category._id,
+      images: product?.images?.map((url) => ({
+        preview: url,
+      })),
+    };
+
+    // food type
+    if (product?.type === 'food') {
+      if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
+        setHasAttribute('yes');
+      }
+    } else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
+      setHasInventory(true);
+    }
+
+    return {
+      ...product,
+      ...data,
+    };
+  };
+
+  const [product, setProduct] = useState(
+    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
+  );
+
+  // addons
+  const productsQuery = useQuery(
+    ['single-shop-products', { shopId: shop?._id }],
+    () =>
+      AXIOS.get(Api.ALL_PRODUCT, {
+        params: {
+          page: 1,
+          pageSize: 100,
+          sortBy: 'desc',
+          searchKey: '',
+          type: 'all',
+          productVisibility: true,
+          shop: shop?._id,
+          status: 'active',
+        },
+      }),
+    {
+      staleTime: minInMiliSec(10),
+    }
+  );
 
   // categories
   const categoriesQuery = useQuery(
@@ -71,58 +119,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }
   );
 
-  // addons
-  const productsQuery = useQuery(
-    ['single-shop-products', { shopId: shop?._id }],
-    () =>
-      AXIOS.get(Api.ALL_PRODUCT, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          sortBy: 'desc',
-          searchKey: '',
-          type: 'all',
-          productVisibility: true,
-          shop: shop?._id,
-          status: 'active',
-        },
-      }),
-    {
-      staleTime: minInMiliSec(10),
-    }
-  );
-
-  const converEditProduct = (product) => {
-    const data = {
-      category: product?.category._id,
-      images: product?.images?.map((url) => ({
-        preview: url,
-      })),
-      addons: [],
-    };
-
-    // food type
-    if (product?.type === 'food') {
-      if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
-        setHasAttribute('yes');
-      }
-
-      product?.addons?.forEach((pId) => {
-        const product = productsQuery?.data?.data?.products?.find((p) => p?._id === pId);
-        if (product) {
-          data.addons.push(product);
-        }
-      });
-    } else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
-      setHasInventory(true);
-    }
-
-    return {
-      ...product,
-      ...data,
-    };
-  };
-
   useEffect(() => {
     if (categoriesQuery.data?.status) {
       setCategories(
@@ -131,11 +127,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           prev
       );
     }
-
-    if (productsQuery?.data?.status && editProduct?._id) {
-      setProduct(converEditProduct(editProduct));
-    }
-  }, [productsQuery?.data?.status]);
+  }, []);
 
   // loading
   const __loading = categoriesQuery.isLoading || productsQuery.isLoading;
@@ -294,7 +286,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           files: product.images,
           helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
           helperText2: 'Pixels: Minimum 320 for width and height',
-          disabled: productReadonly,
+          readOnly: productReadonly,
         }}
       />
       {/* price */}
@@ -389,6 +381,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             multiple: true,
             label: 'Choose',
             maxHeight: '200px',
+            console: console.log(product?.addons),
             options: productsQuery?.data?.data?.products || [],
             value: product?.addons || [],
             getOptionLabel: (option) => option?.name || '',

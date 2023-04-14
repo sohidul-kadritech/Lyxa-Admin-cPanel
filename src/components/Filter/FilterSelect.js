@@ -43,9 +43,10 @@ const StyledSelect = styled(Select)(({ theme }) => ({
     outline: '0',
   },
 
-  '&.Mui-readOnly': {
-    '.MuiSvgIcon-root': {
-      visibility: 'hidden',
+  '&.Mui-readOnly, &.MuiInputBase-readOnly': {
+    pointerEvents: 'none',
+    '& .MuiSvgIcon-root': {
+      visibility: 'hidden!important',
     },
   },
 }));

@@ -82,7 +82,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             )}
             {inputProps.helperText2 && <Typography variant="body3">{inputProps.helperText2}</Typography>}
           </Box>
-          {inputProps.files?.length > 0 && <ImagePreview files={inputProps.files} />}
+          {inputProps.files?.length > 0 && <ImagePreview files={inputProps.files} readOnly={inputProps.readOnly} />}
           {inputProps.disabled && <LoadingOverlay />}
         </Stack>
       )}

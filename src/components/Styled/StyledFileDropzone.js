@@ -27,7 +27,11 @@ const defaultStyle = {
   cursor: 'pointer',
 };
 
-export default function StyledFileDropzone({ text, classes, ...args }) {
+const readonlyS = {
+  pointerEvents: 'none',
+};
+
+export default function StyledFileDropzone({ text, classes, readOnly, ...args }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     maxSize: 1000 * 1000,
     ...args,
@@ -38,8 +42,9 @@ export default function StyledFileDropzone({ text, classes, ...args }) {
       ...(isFocused ? focusedStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
+      ...(readOnly ? readonlyS : {}),
     }),
-    [isFocused, isDragAccept, isDragReject]
+    [isFocused, isDragAccept, isDragReject, readOnly]
   );
 
   return (

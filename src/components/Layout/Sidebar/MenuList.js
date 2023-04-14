@@ -23,15 +23,7 @@ export default function MenuList({ menuList }) {
       </Typography>
       <Stack>
         {menuList?.menu?.map(({ to, icon: Icon, label }, index) => (
-          <NavLink
-            to={to}
-            exact
-            key={index}
-            className={(isActive) => {
-              console.log(isActive, to);
-              return `sidebar-menu-item`;
-            }}
-          >
+          <NavLink to={to} exact key={index} className={() => `sidebar-menu-item`}>
             {Icon && <Icon />}
             <Typography
               variant="body2"
