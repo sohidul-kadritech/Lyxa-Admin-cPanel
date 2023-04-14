@@ -1,6 +1,6 @@
 import { Box, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import StyledBox from '../../components/StyledCharts/StyledBox';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
 import PriceItem from './PriceItem';
 

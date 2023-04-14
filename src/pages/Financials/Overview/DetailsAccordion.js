@@ -1,6 +1,6 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Stack, Tooltip, Typography, styled } from '@mui/material';
-import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   flexDirection: 'row-reverse',

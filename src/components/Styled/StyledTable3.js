@@ -13,7 +13,7 @@ const StyledGrid3 = styled(DataGrid)(({ theme }) => ({
   },
 
   '& .MuiDataGrid-columnHeader': {
-    padding: '0 24px',
+    padding: '0px 6px',
 
     '&:focus-within': {
       outline: 'none',
@@ -45,9 +45,14 @@ const StyledGrid3 = styled(DataGrid)(({ theme }) => ({
   },
 
   '& .MuiDataGrid-cell': {
-    fontSize: '17px',
     borderBottom: `1px dashed ${theme.palette.custom.border}`,
-    padding: '0px 24px',
+    padding: '0px 6px',
+
+    '&.MuiDataGrid-cellContent': {
+      fontWeight: '500',
+      fontSize: '15px',
+      lineHeight: '18px',
+    },
 
     '&:focus-within': {
       outline: 'none',

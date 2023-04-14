@@ -1,0 +1,42 @@
+export const data = [
+  {
+    _id: '1',
+    invoiceId: '1BFGT5',
+    status: 'Not Paid',
+    amount: '$440',
+    createdAt: 'April 7, 2020',
+    deadline: 'April 17, 2020',
+  },
+  {
+    _id: '12',
+    invoiceId: '1BFGT5',
+    status: 'Not Paid',
+    amount: '$440',
+    createdAt: 'April 7, 2020',
+    deadline: 'April 17, 2020',
+  },
+  {
+    _id: '13',
+    invoiceId: '1BFGT5',
+    status: 'Not Paid',
+    amount: '$440',
+    createdAt: 'April 7, 2020',
+    deadline: 'April 17, 2020',
+  },
+  {
+    _id: '14',
+    invoiceId: '1BFGT5',
+    status: 'Not Paid',
+    amount: '$440',
+    createdAt: 'April 7, 2020',
+    deadline: 'April 17, 2020',
+  },
+  {
+    _id: '15',
+    invoiceId: '1BFGT5',
+    status: 'Not Paid',
+    amount: '$440',
+    createdAt: 'April 7, 2020',
+    deadline: 'April 17, 2020',
+  },
+];
