@@ -36,7 +36,7 @@ export default function BundleProducts({ onClose, rewardBundle }) {
         {(productsQuery.data?.data?.products || skeletons_count).map((product, index, array) => (
           <ProductCard
             loading={productsQuery?.isLoading}
-            key={product?._id}
+            key={product?._id || index}
             product={product}
             currency={currency}
             sx={{

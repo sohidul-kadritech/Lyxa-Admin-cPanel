@@ -5,6 +5,7 @@ import ShopPreview from '../../../components/Common/ShopPreview';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import PageSkeleton from './RestaurantsSkeleton';
 
 // eslint-disable-next-line no-unused-vars
 const skeletons = new Array(4).fill(0);
@@ -17,6 +18,14 @@ export default function Restaurants({ onClose, tagId }) {
       },
     })
   );
+
+  if (shopsQuery.isLoading) {
+    return (
+      <SidebarContainer title="Categories: Resturants" onClose={onClose}>
+        <PageSkeleton />
+      </SidebarContainer>
+    );
+  }
 
   return (
     <SidebarContainer title="Categories: Resturants" onClose={onClose}>
@@ -33,7 +42,7 @@ export default function Restaurants({ onClose, tagId }) {
           <ShopPreview shop={shop} loading={shopsQuery?.isLoading} />
         </Box>
       ))}
-      {!shopsQuery.isLoading && !shopsQuery?.data?.data?.shop?.length && (
+      {!shopsQuery?.data?.data?.shop?.length && (
         <Typography
           variant="h6"
           pt={4}
