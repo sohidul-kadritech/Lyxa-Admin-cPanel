@@ -1,8 +1,12 @@
+/* eslint-disable no-unused-vars */
 import { Stack } from '@mui/material';
-import React from 'react';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import FilterDate from '../../components/Filter/FilterDate';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import { deepClone } from '../../helpers/deepClone';
+import { Throttler } from '../../helpers/throttle';
 
 const listFilterOptions = [
   {
@@ -16,23 +20,33 @@ const listFilterOptions = [
 ];
 
 export default function CommonFilters({ filtersValue, setFiltersValue, searchPlaceHolder }) {
+  const Throttle = new Throttler(300);
+  const [localValue, setLocalValue] = useState(deepClone(filtersValue));
+
+  useEffect(() => {
+    Throttle.exec(() => {
+      setFiltersValue(deepClone(localValue));
+    });
+  }, [localValue]);
+
   return (
     <Stack direction="row" alignItems="center" gap="20px" pb={6.5}>
       <StyledSearchBar
         fullWidth
         placeholder={searchPlaceHolder}
-        value={filtersValue.searchKey}
+        value={localValue.searchKey}
         onChange={(e) => {
-          setFiltersValue((prev) => ({ ...prev, searchKey: e.target.value }));
+          setLocalValue((prev) => ({ ...prev, searchKey: e.target.value }));
         }}
       />
       {/* start date */}
       <FilterDate
         tooltip="Start Date"
-        value={filtersValue.date.start}
+        maxDate={moment(localValue.date.end).subtract(1, 'day')}
+        value={localValue.date.start}
         size="sm"
         onChange={(e) => {
-          setFiltersValue((prev) => ({
+          setLocalValue((prev) => ({
             ...prev,
             date: {
               ...prev.date,
@@ -44,10 +58,11 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
       {/* end date */}
       <FilterDate
         tooltip="End Date"
-        value={filtersValue.date.end}
+        minDate={moment(localValue.date.start).add(1, 'day')}
+        value={localValue.date.end}
         size="sm"
         onChange={(e) => {
-          setFiltersValue((prev) => ({
+          setLocalValue((prev) => ({
             ...prev,
             date: {
               ...prev.date,
@@ -59,7 +74,7 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
       {/* end date */}
       <FilterSelect
         items={listFilterOptions}
-        value={filtersValue.status}
+        value={localValue.status}
         placeholder="Status"
         tooltip="Status"
         size="sm"
@@ -67,7 +82,7 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          setFiltersValue((prev) => ({ ...prev, status: e.target.value }));
+          setLocalValue((prev) => ({ ...prev, status: e.target.value }));
         }}
       />
     </Stack>

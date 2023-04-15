@@ -182,25 +182,29 @@ export default function ContainerList({ containerType }) {
             <Tab label="Grocery" />
             <Tab label="Pharmacy" />
           </Tabs>
-          {listQuery.isLoading ? (
-            <ListPageSkeleton pageType={containerType} />
-          ) : (
-            <Box pt={7}>
-              <CommonFilters
-                filtersValue={filters}
-                setFiltersValue={setFilters}
-                searchPlaceHolder={`Search ${listQuery.data?.data?.listContainer?.length || 0} items`}
-              />
-              {/* table */}
-              <ContainerTable
-                items={items}
-                loading={listQuery.isLoading}
-                onDrop={dropSort}
-                handleMenuClick={threeDotHandler}
-                containerType={containerType}
-              />
-            </Box>
-          )}
+          <Box pt={7}>
+            <CommonFilters
+              filtersValue={filters}
+              setFiltersValue={setFilters}
+              searchPlaceHolder={`Search${
+                listQuery.data?.data?.listContainer?.length ? ` ${listQuery.data?.data?.listContainer?.length}` : ''
+              } items`}
+            />
+            {listQuery.isLoading ? (
+              <ListPageSkeleton pageType={containerType} />
+            ) : (
+              <Box>
+                {/* table */}
+                <ContainerTable
+                  items={items}
+                  loading={listQuery.isLoading}
+                  onDrop={dropSort}
+                  handleMenuClick={threeDotHandler}
+                  containerType={containerType}
+                />
+              </Box>
+            )}
+          </Box>
         </Box>
       </Box>
       {/* sidebar */}

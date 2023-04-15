@@ -47,8 +47,8 @@ function Column({ pageType }) {
 
 export default function ListPageSkeleton({ pageType }) {
   return (
-    <Stack>
-      <Stack direction="row" height={35} gap={3} mb={11} mt={7}>
+    <Stack mb={11} mt={7}>
+      {/* <Stack direction="row" height={35} gap={3} >
         <Skeleton
           sx={{
             flex: 3,
@@ -69,7 +69,7 @@ export default function ListPageSkeleton({ pageType }) {
             flex: 1,
           }}
         />
-      </Stack>
+      </Stack> */}
       {/* table */}
       <Stack gap={10} direction="row" mb={7}>
         <Skeleton
