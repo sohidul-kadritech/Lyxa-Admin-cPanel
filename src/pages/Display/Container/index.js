@@ -8,7 +8,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 // project import
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
-import Wrapper from '../../../components/Wrapper';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -156,12 +155,8 @@ export default function ContainerList({ containerType }) {
   };
 
   return (
-    <Wrapper
-      sx={{
-        paddingTop: 0,
-      }}
-    >
-      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
+    <Box pb={8.5}>
+      <Box>
         <PageTop
           backButtonLabel="Back to Display"
           backTo="/display"
@@ -235,6 +230,6 @@ export default function ContainerList({ containerType }) {
           });
         }}
       />
-    </Wrapper>
+    </Box>
   );
 }

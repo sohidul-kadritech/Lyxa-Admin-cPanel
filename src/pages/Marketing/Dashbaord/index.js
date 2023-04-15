@@ -1,23 +1,20 @@
 /* eslint-disable no-unused-vars */
 // third party
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Button, Unstable_Grid2 as Grid, Stack } from '@mui/material';
+import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import PageTop from '../../../components/Common/PageTop';
 
 // project import
-import BreadCrumbs from '../../../components/Common/BreadCrumb2';
-import PageButton from '../../../components/Common/PageButton';
 import ChartBox from '../../../components/StyledCharts/ChartBox';
 import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
-import Wrapper from '../../../components/Wrapper';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
@@ -213,33 +210,16 @@ export default function MarketingDashboard() {
   ];
 
   return (
-    <Wrapper
-      sx={{
-        paddingTop: '70px',
-        paddingBottom: '110px',
-        background: '#FBFBFB !important',
-        height: '100%',
-        overflowY: 'scroll',
-      }}
-    >
-      <Stack direction="row" justifyContent="space-between" alignItems="center" pt={8}>
-        <PageButton
-          label="Back to Marketing"
-          to={params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing'}
-          startIcon={<KeyboardBackspaceIcon />}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={singleShopQuery.isLoading}
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-        >
-          Manage Promotions
-        </Button>
-      </Stack>
-      <BreadCrumbs items={breadCrumbItems} />
+    <Box>
+      <PageTop
+        breadcrumbItems={breadCrumbItems}
+        backButtonLabel="Back to Marketing"
+        backTo={params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing'}
+        addButtonLabel="Manage Promotions"
+        onAdd={() => {
+          setIsModalOpen(true);
+        }}
+      />
       <Grid container spacing={6.5} pb={3}>
         <InfoCard
           title="Ongoing Promotions on Items"
@@ -361,6 +341,6 @@ export default function MarketingDashboard() {
           }}
         />
       </MSettingsModal>
-    </Wrapper>
+    </Box>
   );
 }

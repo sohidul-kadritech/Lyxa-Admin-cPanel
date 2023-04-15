@@ -10,6 +10,8 @@ import { ReactComponent as SettingsIcon } from '../assets/icons/menu-icons/setti
 import { ReactComponent as RatingIcon } from '../assets/icons/menu-icons/star.svg';
 import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/usrs.svg';
 
+/* ======== shop ======== */
+
 export const shop_menu_items = [
   {
     title: 'Management',
@@ -103,6 +105,225 @@ export const shop_menu_items = [
       {
         label: 'Categories Old',
         to: '/categories/list',
+      },
+    ],
+  },
+];
+
+/* ======== admin ======== */
+
+export const admin_menu_items = [
+  {
+    title: 'Management',
+    menu: [
+      {
+        label: 'Dashboard',
+        icon: DashBoardIcon,
+        to: '/dashboard',
+      },
+    ],
+  },
+  {
+    title: 'Order',
+    menu: [
+      {
+        label: 'Orders',
+        icon: OrderIcon,
+        to: '/orders/list',
+      },
+      {
+        label: 'Cancelled Orders',
+        to: '/orders/list/cancel',
+      },
+      {
+        label: 'Flagged Orders',
+        to: '/orders/list/flagged',
+        badgeId: 'sidebar-item-flagged-orders',
+      },
+    ],
+  },
+  {
+    title: 'Sellers & Shop',
+    menu: [
+      {
+        label: 'Sellers List',
+        to: '/seller/list',
+      },
+
+      {
+        label: 'Sellers Add',
+        to: '/seller/add',
+      },
+
+      {
+        label: 'Shops List',
+        to: '/shops/list',
+      },
+      {
+        label: 'Shops Add',
+        to: '/shops/add',
+      },
+    ],
+  },
+  {
+    title: 'Products',
+    menu: [
+      {
+        label: 'Products List',
+        to: '/products/list',
+      },
+      {
+        label: 'Product Add',
+        to: '/products/add',
+      },
+      {
+        label: 'Unit Types',
+        to: '/products/unit-types',
+      },
+    ],
+  },
+  {
+    title: 'User & Delivery',
+    menu: [
+      {
+        label: 'User',
+        to: '/users/list',
+      },
+      {
+        label: 'Delivery Boy List',
+        to: '/deliveryman/list',
+      },
+      {
+        label: 'Delivery Boy Add',
+        to: '/deliveryman/add',
+      },
+    ],
+  },
+  {
+    title: 'Finance',
+    menu: [
+      {
+        label: 'Lyxa Pay',
+        to: '/lyxa-pay',
+      },
+      {
+        label: 'Seller TRX',
+        to: '/add-wallet/seller-transactions',
+      },
+      {
+        label: 'Delivery TRX',
+        to: '/add-wallet/delivery-transactions',
+      },
+      {
+        label: 'Transactions',
+        to: '/admin/transactions',
+      },
+    ],
+  },
+  {
+    title: 'Notification & Chat',
+    menu: [
+      {
+        label: 'Notifications List',
+        to: '/admin/notifications/list',
+      },
+      {
+        label: 'Notifications Add',
+        to: '/admin/send-notifications',
+      },
+      {
+        label: 'Chat',
+        to: '/customer-support',
+        badgeId: 'sidebar-item-chat-badges',
+      },
+    ],
+  },
+  {
+    title: 'Need Design',
+    menu: [
+      {
+        label: 'Deals List',
+        to: '/deals/list',
+      },
+      {
+        label: 'Deals Add',
+        to: '/deals/add',
+      },
+      {
+        label: 'VAT',
+        to: '/vat',
+      },
+      {
+        label: 'Admins List',
+        to: '/admin/list',
+      },
+      {
+        label: 'Admins Add',
+        to: '/admin/create',
+      },
+      {
+        label: 'Categories List',
+        to: '/categories/list',
+      },
+      {
+        label: 'User App',
+        to: '/terms-and-conditions/user-app',
+      },
+      {
+        label: 'Shop App',
+        to: '/terms-and-conditions/shop-app',
+      },
+      {
+        label: 'Delivery App',
+        to: '/terms-and-conditions/delivery-app',
+      },
+      {
+        label: 'Display',
+        to: '/display',
+      },
+      {
+        label: 'Settings',
+        to: '/admin/settings2',
+      },
+      {
+        label: 'Admin Settings',
+        to: '/admin/settings',
+      },
+      {
+        label: 'App Settings',
+        to: '/app/settings',
+      },
+      {
+        label: 'Percentage Settings',
+        to: '/percentage-setting',
+      },
+      {
+        label: 'Reward Settings',
+        to: '/admin/settings/reward-settings',
+      },
+      {
+        label: 'Admin Log',
+        to: '/admin/percentage-settings-history',
+      },
+      {
+        label: 'Default Message',
+        to: '/admin/default-chat-message',
+      },
+      {
+        label: 'Support Reasons',
+        to: '/settings/support-reasons',
+      },
+      {
+        label: 'Ratings',
+        to: '/settings/ratings',
+      },
+      {
+        label: 'Cancel Reason',
+        to: '/admin/cancel-reason',
+      },
+      {
+        label: 'Database Collection',
+        to: '/admin/database/collections',
       },
     ],
   },

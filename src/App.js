@@ -22,7 +22,6 @@ import Authmiddleware from './routes/middleware/Authmiddleware';
 
 // layouts Format
 import NonAuthLayout from './components/NonAuthLayout';
-import VeritcalLayout from './components/VerticalLayout';
 
 // Import scss
 import './assets/scss/theme.scss';
@@ -181,7 +180,8 @@ export default function App() {
           routeList?.map((route) => (
             <Authmiddleware
               path={route.path}
-              layout={account_type === 'shop' ? NewLayout : VeritcalLayout}
+              // layout={account_type === 'shop' ? NewLayout : VeritcalLayout}
+              layout={NewLayout}
               component={route.component}
               key={route.path}
               isAuthProtected

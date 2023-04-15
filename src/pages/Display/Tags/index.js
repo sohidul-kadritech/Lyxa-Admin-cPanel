@@ -7,7 +7,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 // project import
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
-import Wrapper from '../../../components/Wrapper';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -118,12 +117,8 @@ export default function TagsAndCusines() {
   });
 
   return (
-    <Wrapper
-      sx={{
-        paddingTop: 0,
-      }}
-    >
-      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
+    <Box>
+      <Box>
         <PageTop
           breadcrumbItems={breadcrumbItems}
           backButtonLabel="Back to Display"
@@ -225,6 +220,6 @@ export default function TagsAndCusines() {
           });
         }}
       />
-    </Wrapper>
+    </Box>
   );
 }

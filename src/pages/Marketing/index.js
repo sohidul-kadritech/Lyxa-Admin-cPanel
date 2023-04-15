@@ -13,7 +13,6 @@ import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
 // import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
-import Wrapper from '../../components/Wrapper';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import MCard from './MarketingCard';
@@ -217,89 +216,81 @@ export default function Marketing() {
     !rewardSettingsQuery.isFetchedAfterMount ||
     shopQuery.isLoading;
 
-  // console.log(freeDeliverySettingsQuery?.data);
-
   return (
-    <Wrapper
-      sx={{
-        paddingTop: '70px',
-        paddingBottom: '60px',
-      }}
-    >
-      <Box sx={{ height: '100%', overflowY: 'scroll', pt: 20, pb: 16 }}>
-        <Grid
-          container
-          spacing={8}
-          flexWrap="wrap"
-          sx={{
-            marginRight: '0px',
-          }}
-        >
+    <Box sx={{ pt: 8.5 }}>
+      <Grid
+        container
+        spacing={8}
+        flexWrap="wrap"
+        sx={{
+          marginRight: '0px',
+        }}
+      >
+        <Grid md={6} lg={4}>
+          <MCard
+            description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
+            title="Discounted Items"
+            icon={DiscountIcon}
+            loading={__loading || discountSettingsQuery?.isFetching}
+            disabled={appliedDeals.percentage || !activeDeals.percentage}
+            status={getPromotionStatus(discountSettingsQuery, 'percentage')}
+            ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+            onOpen={() => {
+              if (!appliedDeals.percentage && activeDeals.percentage && !__loading) {
+                openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
+              }
+            }}
+          />
+        </Grid>
+        <Grid md={6} lg={4}>
+          <MCard
+            description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
+            title="Buy 1, Get 1 Free"
+            icon={BuyIcon}
+            loading={__loading || doubleDealSettingsQuery.isFetching}
+            disabled={appliedDeals.double_menu || !activeDeals.double_menu}
+            status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu')}
+            ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+            onOpen={() => {
+              if (!__loading && !appliedDeals.double_menu && activeDeals.double_menu) {
+                openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
+              }
+            }}
+          />
+        </Grid>
+        <Grid md={6} lg={4}>
+          <MCard
+            description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
+            title="$0 Delivery Fee"
+            loading={__loading || freeDeliverySettingsQuery?.isFetching}
+            disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
+            status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery')}
+            ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+            icon={DeliveryIcon}
+            onOpen={() => {
+              if (!__loading && !appliedDeals.free_delivery && activeDeals.free_delivery) {
+                openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
+              }
+            }}
+          />
+        </Grid>
+        {adminShop?.shopType && (
           <Grid md={6} lg={4}>
             <MCard
-              description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
-              title="Discounted Items"
-              icon={DiscountIcon}
-              loading={__loading || discountSettingsQuery?.isFetching}
-              disabled={appliedDeals.percentage || !activeDeals.percentage}
-              status={getPromotionStatus(discountSettingsQuery, 'percentage')}
-              ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+              description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
+              title="Loyalty Points"
+              loading={__loading || rewardSettingsQuery.isFetching}
+              status={getPromotionStatus(rewardSettingsQuery)}
+              icon={LoyaltyIcon}
               onOpen={() => {
-                if (!appliedDeals.percentage && activeDeals.percentage && !__loading) {
-                  openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
+                if (!rewardSettingsQuery.isLoading) {
+                  openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
                 }
               }}
             />
           </Grid>
-          <Grid md={6} lg={4}>
-            <MCard
-              description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
-              title="Buy 1, Get 1 Free"
-              icon={BuyIcon}
-              loading={__loading || doubleDealSettingsQuery.isFetching}
-              disabled={appliedDeals.double_menu || !activeDeals.double_menu}
-              status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu')}
-              ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
-              onOpen={() => {
-                if (!__loading && !appliedDeals.double_menu && activeDeals.double_menu) {
-                  openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
-                }
-              }}
-            />
-          </Grid>
-          <Grid md={6} lg={4}>
-            <MCard
-              description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
-              title="$0 Delivery Fee"
-              loading={__loading || freeDeliverySettingsQuery?.isFetching}
-              disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
-              status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery')}
-              ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
-              icon={DeliveryIcon}
-              onOpen={() => {
-                if (!__loading && !appliedDeals.free_delivery && activeDeals.free_delivery) {
-                  openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
-                }
-              }}
-            />
-          </Grid>
-          {adminShop?.shopType && (
-            <Grid md={6} lg={4}>
-              <MCard
-                description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
-                title="Loyalty Points"
-                loading={__loading || rewardSettingsQuery.isFetching}
-                status={getPromotionStatus(rewardSettingsQuery)}
-                icon={LoyaltyIcon}
-                onOpen={() => {
-                  if (!rewardSettingsQuery.isLoading) {
-                    openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
-                  }
-                }}
-              />
-            </Grid>
-          )}
-          {/* <Grid md={6} lg={4}>
+        )}
+        {/* <Grid md={6} lg={4}>
             <MCard
               description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
               title="Promotions"
@@ -309,22 +300,21 @@ export default function Marketing() {
               }}
             />
           </Grid> */}
-        </Grid>
-        {/* settings modal */}
-        <MSettingsModal open={Boolean(currentModal)}>
-          <MarketingSettings
-            shop={currentShop}
-            creatorType={adminShop?.shopType ? 'shop' : 'admin'}
-            marketingType={currentModal}
-            onDelete={() => {
-              setCurrentModal(null);
-            }}
-            onClose={() => {
-              setCurrentModal(null);
-            }}
-          />
-        </MSettingsModal>
-      </Box>
-    </Wrapper>
+      </Grid>
+      {/* settings modal */}
+      <MSettingsModal open={Boolean(currentModal)}>
+        <MarketingSettings
+          shop={currentShop}
+          creatorType={adminShop?.shopType ? 'shop' : 'admin'}
+          marketingType={currentModal}
+          onDelete={() => {
+            setCurrentModal(null);
+          }}
+          onClose={() => {
+            setCurrentModal(null);
+          }}
+        />
+      </MSettingsModal>
+    </Box>
   );
 }

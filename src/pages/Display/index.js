@@ -2,7 +2,6 @@
 import { Box } from '@mui/material';
 import PageList from '../../components/Common/PageList';
 import PageTop from '../../components/Common/PageTop';
-import Wrapper from '../../components/Wrapper';
 
 const pagesList = [
   {
@@ -25,16 +24,17 @@ const pagesList = [
 
 export default function DisplaySettings() {
   return (
-    <Wrapper
-      sx={{
-        paddingTop: 0,
-        height: 'auto',
-      }}
-    >
-      <Box className="page-content2">
-        <PageTop title="Display" subtitle="Customize admin settings" />
-        <PageList items={pagesList} />
-      </Box>
-    </Wrapper>
+    // <Wrapper
+    //   sx={{
+    //     paddingTop: 0,
+    //     height: 'auto',
+    //   }}
+    // >
+
+    // </Wrapper>
+    <Box>
+      <PageTop title="Display" subtitle="Customize admin settings" />
+      <PageList items={pagesList} />
+    </Box>
   );
 }

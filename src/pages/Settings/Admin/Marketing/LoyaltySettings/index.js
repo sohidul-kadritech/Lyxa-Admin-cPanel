@@ -7,7 +7,6 @@ import { useMutation, useQuery } from 'react-query';
 import ConfirmModal from '../../../../../components/Common/ConfirmModal';
 import PageTop from '../../../../../components/Common/PageTop';
 import Taglist from '../../../../../components/Common/Taglist';
-import Wrapper from '../../../../../components/Wrapper';
 import { successMsg } from '../../../../../helpers/successMsg';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
@@ -227,12 +226,8 @@ export default function LoyaltySettings() {
   };
 
   return (
-    <Wrapper
-      sx={{
-        paddingTop: 0,
-      }}
-    >
-      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
+    <Box>
+      <Box>
         <PageTop backButtonLabel="Back to Marketing" backTo="/admin/settings2/marketing" title="Loyalty Points" />
         {settingsQuery.isLoading ? (
           <SkeletonLoader />
@@ -409,6 +404,6 @@ export default function LoyaltySettings() {
         onCancel={confirmAction.onCancel}
         onConfirm={confirmAction.onConfirm}
       />
-    </Wrapper>
+    </Box>
   );
 }

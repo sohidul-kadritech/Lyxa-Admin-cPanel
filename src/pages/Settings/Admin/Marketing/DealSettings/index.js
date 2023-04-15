@@ -9,7 +9,6 @@ import ConfirmModal from '../../../../../components/Common/ConfirmModal';
 import PageTop from '../../../../../components/Common/PageTop';
 import Taglist from '../../../../../components/Common/Taglist';
 import StyledSwitchList from '../../../../../components/Styled/StyledSwitchList';
-import Wrapper from '../../../../../components/Wrapper';
 import { deepClone } from '../../../../../helpers/deepClone';
 import { successMsg } from '../../../../../helpers/successMsg';
 import * as Api from '../../../../../network/Api';
@@ -201,12 +200,8 @@ export default function DealSettings() {
   };
 
   return (
-    <Wrapper
-      sx={{
-        paddingTop: 0,
-      }}
-    >
-      <Box className="page-content2" sx={{ height: '100vh', overflowY: 'scroll' }}>
+    <Box>
+      <Box>
         {/* top */}
         <PageTop title="Deals" backButtonLabel="Back to Marketing" backTo="/admin/settings2/marketing" />
         {settingsQuery.isLoading ? (
@@ -363,6 +358,6 @@ export default function DealSettings() {
         onCancel={confirmAction.onCancel}
         onConfirm={confirmAction.onConfirm}
       />
-    </Wrapper>
+    </Box>
   );
 }
