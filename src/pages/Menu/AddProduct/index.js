@@ -19,6 +19,7 @@ import AXIOS from '../../../network/axios';
 import {
   attributeOptions,
   attributeTypeAvailableOptions,
+  converEditProduct,
   createProductData,
   dietryOptions,
   getAttrOptionsValues,
@@ -37,37 +38,12 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
 
-  console.log('rendering');
-
   const [render, setRender] = useState(false);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
   const [hasAttribute, setHasAttribute] = useState('');
   const [hasInventory, setHasInventory] = useState(false);
-
-  const converEditProduct = (product) => {
-    const data = {
-      category: product?.category._id,
-      images: product?.images?.map((url) => ({
-        preview: url,
-      })),
-    };
-
-    // food type
-    if (product?.type === 'food') {
-      if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
-        setHasAttribute('yes');
-      }
-    } else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
-      setHasInventory(true);
-    }
-
-    return {
-      ...product,
-      ...data,
-    };
-  };
 
   const [product, setProduct] = useState(
     editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
@@ -126,6 +102,16 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
           prev
       );
+    }
+
+    if (editProduct?._id) {
+      if (product?.type === 'food') {
+        if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
+          setHasAttribute('yes');
+        }
+      } else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
+        setHasInventory(true);
+      }
     }
   }, []);
 
@@ -341,7 +327,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 } else {
                   product.attributes.push(productAttrInit);
                 }
-
                 setRender(!render);
               },
             }}

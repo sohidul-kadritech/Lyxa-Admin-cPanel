@@ -195,6 +195,20 @@ export const getProductInit = (shop, categoryId) => {
   return data;
 };
 
+export const converEditProduct = (product) => {
+  const data = {
+    category: product?.category._id,
+    images: product?.images?.map((url) => ({
+      preview: url,
+    })),
+  };
+
+  return {
+    ...product,
+    ...data,
+  };
+};
+
 // validate
 export const validateCategory = (category) => {
   const status = {
