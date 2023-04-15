@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+import moment from 'moment';
 import FilterDate from '../Filter/FilterDate';
 
 export default function DateRange({ range, setRange }) {
@@ -6,6 +7,7 @@ export default function DateRange({ range, setRange }) {
     <Stack direction="row" alignItems="center" gap={2}>
       <FilterDate
         value={range?.start}
+        maxDate={moment(range.end).subtract(1, 'day')}
         tooltip="Start Date"
         size="sm"
         onChange={(e) => {
@@ -14,6 +16,7 @@ export default function DateRange({ range, setRange }) {
       />
       <FilterDate
         value={range?.end}
+        minDate={moment(range.start).add(1, 'day')}
         tooltip="End Date"
         size="sm"
         onChange={(e) => {

@@ -840,6 +840,7 @@ export default function MarketingSettings({
               <Stack gap={2.5}>
                 <Typography variant="body2">Start Date</Typography>
                 <FilterDate
+                  maxDate={moment(duration.end).subtract(1, 'day')}
                   value={duration.start}
                   onChange={(e) => {
                     setDuration((prev) => ({ ...prev, start: e._d }));
@@ -850,6 +851,7 @@ export default function MarketingSettings({
               <Stack gap={2.5}>
                 <Typography variant="body2">End Date</Typography>
                 <FilterDate
+                  minDate={moment(duration.start).add(1, 'day')}
                   value={duration.end}
                   onChange={(e) => {
                     setDuration((prev) => ({ ...prev, end: e._d }));
