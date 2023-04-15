@@ -120,6 +120,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             blurOnSelect={!inputProps.multiple}
             {...(inputProps || {})}
             sx={{
+              ...(inputProps.readOnly && { pointerEvents: 'none' }),
               '&:has(.MuiInputBase-input:focus)': {
                 width: '370px',
                 top: 0,

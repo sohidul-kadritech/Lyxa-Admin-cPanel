@@ -156,6 +156,8 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
+  console.log(props);
+
   return (
     <StyledSelect
       blurOnSelect

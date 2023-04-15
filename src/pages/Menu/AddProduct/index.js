@@ -361,12 +361,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             sx: fieldContainerSx,
           }}
           inputProps={{
-            disabled: productReadonly,
-            open: productReadonly ? false : undefined,
+            readOnly: productReadonly,
+            // open: productReadonly ? false : undefined,
             multiple: true,
             label: 'Choose',
             maxHeight: '200px',
-            console: console.log(product?.addons),
             options: productsQuery?.data?.data?.products || [],
             value: product?.addons || [],
             getOptionLabel: (option) => option?.name || '',
