@@ -1,9 +1,11 @@
 // thrid party
 import { Cached, CalendarToday, ChevronRight, NotificationsPaused, PlayCircleFilledWhite } from '@mui/icons-material';
-import { Box, Button, Paper, Skeleton, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Paper, Skeleton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 
 function StatusTag({ status }) {
+  const matches = useMediaQuery('(max-width: 1400px)');
+
   let Icon;
   let color;
   let background;
@@ -31,7 +33,7 @@ function StatusTag({ status }) {
       variant="contained"
       startIcon={<Icon />}
       sx={{
-        fontSize: '15px',
+        fontSize: matches ? '11px' : '15px',
         lineHeight: '24px',
         background,
         color,
@@ -51,6 +53,7 @@ function StatusTag({ status }) {
 
 export default function MCard({ icon: Icon, title, description, onOpen, disabled, ongoingBy, status, loading }) {
   const theme = useTheme();
+  const matches = useMediaQuery('(max-width: 1400px)');
 
   if (loading) {
     return (
@@ -117,7 +120,7 @@ export default function MCard({ icon: Icon, title, description, onOpen, disabled
                 variant="contained"
                 color="secondary"
                 sx={{
-                  fontSize: '13px',
+                  fontSize: matches ? '11px' : '13px',
                   lineHeight: '20px',
                   background: '#F6F8FA',
                   color: '#5E97A9',
