@@ -188,13 +188,6 @@ export default function App() {
               exact
             />
           ))}
-        <Route
-          path={'/newLayout'}
-          exact
-          render={() => {
-            return <NewLayout />;
-          }}
-        />
       </Switch>
     </Router>
   );

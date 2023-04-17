@@ -11,7 +11,6 @@ import { ReactComponent as RatingIcon } from '../assets/icons/menu-icons/star.sv
 import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/usrs.svg';
 
 /* ======== shop ======== */
-
 export const shop_menu_items = [
   {
     title: 'Management',
@@ -110,8 +109,71 @@ export const shop_menu_items = [
   },
 ];
 
-/* ======== admin ======== */
+/* ======== seller ======== */
+export const seller_menu_items = [
+  {
+    title: 'Management',
+    menu: [
+      {
+        label: 'Dashboard',
+        to: '/dashboard',
+      },
+      {
+        label: 'Orders',
+        to: '/orders/list',
+      },
+    ],
+  },
+  {
+    title: 'Shop',
+    menu: [
+      {
+        label: 'Shop List',
+        to: '/shops/list',
+      },
+      {
+        label: 'Shop Add',
+        to: '/shops/add',
+      },
+    ],
+  },
+  {
+    title: 'Products',
+    menu: [
+      {
+        label: 'List',
+        to: '/products/list',
+      },
+      {
+        label: 'Add',
+        to: '/products/add',
+      },
+    ],
+  },
+  {
+    title: 'Arbiatry',
+    menu: [
+      {
+        label: 'Shops TRX',
+        to: `/app-wallet/seller/shops-transactions`,
+      },
+      {
+        label: 'Categories List',
+        to: '/seller/credentials/list',
+      },
+      {
+        label: 'Categories Add',
+        to: '/admin/create',
+      },
+      {
+        label: 'List',
+        to: '/categories/list',
+      },
+    ],
+  },
+];
 
+/* ======== admin ======== */
 export const admin_menu_items = [
   {
     title: 'Management',
@@ -239,6 +301,60 @@ export const admin_menu_items = [
     ],
   },
   {
+    title: 'Terms & Conditions',
+    menu: [
+      {
+        label: 'User App',
+        to: '/terms-and-conditions/user-app',
+      },
+      {
+        label: 'Shop App',
+        to: '/terms-and-conditions/shop-app',
+      },
+      {
+        label: 'Delivery App',
+        to: '/terms-and-conditions/delivery-app',
+      },
+    ],
+  },
+  {
+    title: 'Settings',
+    menu: [
+      {
+        label: 'Settings',
+        to: '/admin/settings2',
+      },
+      {
+        label: 'Admin Settings',
+        to: '/admin/settings',
+      },
+      {
+        label: 'App Settings',
+        to: '/app/settings',
+      },
+      {
+        label: 'Percentage Settings',
+        to: '/percentage-setting',
+      },
+      {
+        label: 'Reward Settings',
+        to: '/admin/settings/reward-settings',
+      },
+      {
+        label: 'Default Message',
+        to: '/admin/default-chat-message',
+      },
+      {
+        label: 'Support Reasons',
+        to: '/settings/support-reasons',
+      },
+      {
+        label: 'Database Collection',
+        to: '/admin/database/collections',
+      },
+    ],
+  },
+  {
     title: 'Need Design',
     menu: [
       {
@@ -265,53 +381,14 @@ export const admin_menu_items = [
         label: 'Categories List',
         to: '/categories/list',
       },
-      {
-        label: 'User App',
-        to: '/terms-and-conditions/user-app',
-      },
-      {
-        label: 'Shop App',
-        to: '/terms-and-conditions/shop-app',
-      },
-      {
-        label: 'Delivery App',
-        to: '/terms-and-conditions/delivery-app',
-      },
+
       {
         label: 'Display',
         to: '/display',
       },
       {
-        label: 'Settings',
-        to: '/admin/settings2',
-      },
-      {
-        label: 'Admin Settings',
-        to: '/admin/settings',
-      },
-      {
-        label: 'App Settings',
-        to: '/app/settings',
-      },
-      {
-        label: 'Percentage Settings',
-        to: '/percentage-setting',
-      },
-      {
-        label: 'Reward Settings',
-        to: '/admin/settings/reward-settings',
-      },
-      {
         label: 'Admin Log',
         to: '/admin/percentage-settings-history',
-      },
-      {
-        label: 'Default Message',
-        to: '/admin/default-chat-message',
-      },
-      {
-        label: 'Support Reasons',
-        to: '/settings/support-reasons',
       },
       {
         label: 'Ratings',
@@ -320,10 +397,6 @@ export const admin_menu_items = [
       {
         label: 'Cancel Reason',
         to: '/admin/cancel-reason',
-      },
-      {
-        label: 'Database Collection',
-        to: '/admin/database/collections',
       },
     ],
   },
