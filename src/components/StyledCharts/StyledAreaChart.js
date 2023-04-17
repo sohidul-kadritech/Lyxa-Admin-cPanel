@@ -6,6 +6,27 @@ export const options = {
   legend: {
     display: false,
   },
+  scales: {
+    xAxes: [
+      {
+        gridLines: {
+          display: false,
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 10,
+        },
+      },
+    ],
+    yAxes: [
+      {
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 6,
+        },
+      },
+    ],
+  },
 };
 
 export default function StyledAreaChart({ data }) {
