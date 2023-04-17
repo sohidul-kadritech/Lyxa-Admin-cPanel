@@ -2,7 +2,7 @@
 // third party
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -19,6 +19,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
+import PageSkeleton from './PageSkeleton';
 import ProductsInfoList from './ProductsInfoList';
 import { ViewMoreTag, dateRangeItit, gData } from './helpers';
 import { ProductsInfoListData } from './mock';
@@ -37,6 +38,7 @@ export default function MarketingDashboard() {
   const adminShop = useSelector((store) => store.Login.admin);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(adminShop);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const singleShopQuery = useQuery(
     [`single-shop-${params?.shopId}`],
@@ -179,7 +181,6 @@ export default function MarketingDashboard() {
         },
       })
   );
-  console.log(loyalityGraphQuery.data);
 
   const pData = gData(
     loyalityGraphQuery?.data?.data?.info || [],
@@ -209,6 +210,21 @@ export default function MarketingDashboard() {
     },
   ];
 
+  // loading
+  const __loading =
+    loyalityGraphQuery.isLoading ||
+    amountGraphQuery.isLoading ||
+    customerGraphQuery.isLoading ||
+    ordersGraphQuery.isLoading ||
+    singleShopQuery.isLoading ||
+    marketingInfoQuery.isLoading;
+
+  useEffect(() => {
+    if (!__loading) {
+      setIsInitialLoad(false);
+    }
+  }, [__loading]);
+
   return (
     <Box>
       <PageTop
@@ -220,110 +236,119 @@ export default function MarketingDashboard() {
           setIsModalOpen(true);
         }}
       />
-      <Grid container spacing={6.5} pb={3}>
-        <InfoCard
-          title="Ongoing Promotions on Items"
-          value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
-          Tag={<ViewMoreTag />}
-          sm={6}
-          md={4}
-          lg={4}
-        />
-        <InfoCard
-          title="Order Increase with Discounts"
-          value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
-          Tag={
-            <IncreaseDecreaseTag
-              status={
-                marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth > 0 ? 'increase' : 'decrease'
-              }
-              amount={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0)}%`}
-            />
-          }
-          sm={6}
-          md={4}
-          lg={4}
-        />
-        <InfoCard
-          title="Customer Increase with Discounts"
-          value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
-          Tag={
-            <IncreaseDecreaseTag
-              status={
-                marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth > 0
-                  ? 'increase'
-                  : 'decrease'
-              }
-              amount={`${Math.round(
-                marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
-              )}%`}
-            />
-          }
-          sm={6}
-          md={4}
-          lg={4}
-        />
-        {params?.type === 'reward' && (
-          <>
-            <Grid sm={12} md={12} lg={5}>
-              <StyledBox>
-                <ProductsInfoList
-                  items={ProductsInfoListData}
-                  onVeiwMore={() => {
-                    console.log('Clicked');
-                  }}
-                />
-              </StyledBox>
-            </Grid>
-            <ChartBox
-              chartHeight={325}
-              dateRange={loyalityRange}
-              setDateRange={setLoyalityRange}
-              loading={loyalityGraphQuery.isLoading}
-              title="Loyalty points usage"
-              sm={12}
-              md={12}
-              lg={7}
-            >
-              <StyledBarChart data={pGraphData} />
-            </ChartBox>
-          </>
-        )}
-        <ChartBox
-          chartHeight={245}
-          dateRange={orderRange}
-          setDateRange={setOrderRange}
-          title="Orders"
-          sm={12}
-          loading={ordersGraphQuery.isLoading}
-        >
-          <StyledAreaChartfrom data={oGraphData} />
-        </ChartBox>
-        <ChartBox
-          chartHeight={325}
-          dateRange={customerRange}
-          setDateRange={setCustomerRange}
-          loading={customerGraphQuery.isLoading}
-          title="Customers"
-          sm={12}
-          md={12}
-          lg={6}
-        >
-          <StyledBarChart data={cGraphData} />
-        </ChartBox>
-        <ChartBox
-          chartHeight={325}
-          dateRange={amountRange}
-          setDateRange={setAmountRange}
-          loading={amountGraphQuery.isLoading}
-          title="Amount spent"
-          sm={12}
-          md={12}
-          lg={6}
-        >
-          <StyledAreaChartfrom data={aGraphData} />
-        </ChartBox>
-      </Grid>
+      {__loading && isInitialLoad ? (
+        <PageSkeleton />
+      ) : (
+        <Grid container spacing={6.5} pb={3}>
+          <InfoCard
+            title="Ongoing Promotions on Items"
+            value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
+            Tag={<ViewMoreTag />}
+            sm={6}
+            md={4}
+            lg={4}
+          />
+          <InfoCard
+            title="Order Increase with Discounts"
+            value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
+            Tag={
+              <IncreaseDecreaseTag
+                status={
+                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth > 0
+                    ? 'increase'
+                    : 'decrease'
+                }
+                amount={`${Math.round(
+                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0
+                )}%`}
+              />
+            }
+            sm={6}
+            md={4}
+            lg={4}
+          />
+          <InfoCard
+            title="Customer Increase with Discounts"
+            value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
+            Tag={
+              <IncreaseDecreaseTag
+                status={
+                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth > 0
+                    ? 'increase'
+                    : 'decrease'
+                }
+                amount={`${Math.round(
+                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
+                )}%`}
+              />
+            }
+            sm={6}
+            md={4}
+            lg={4}
+          />
+          {params?.type === 'reward' && (
+            <>
+              <Grid sm={12} md={12} lg={5}>
+                <StyledBox>
+                  <ProductsInfoList
+                    items={ProductsInfoListData}
+                    onVeiwMore={() => {
+                      console.log('Clicked');
+                    }}
+                  />
+                </StyledBox>
+              </Grid>
+              <ChartBox
+                chartHeight={325}
+                dateRange={loyalityRange}
+                setDateRange={setLoyalityRange}
+                loading={loyalityGraphQuery.isLoading}
+                title="Loyalty points usage"
+                sm={12}
+                md={12}
+                lg={7}
+              >
+                <StyledBarChart data={pGraphData} />
+              </ChartBox>
+            </>
+          )}
+          <ChartBox
+            chartHeight={245}
+            dateRange={orderRange}
+            setDateRange={setOrderRange}
+            title="Orders"
+            sm={12}
+            loading={ordersGraphQuery.isLoading}
+          >
+            <StyledAreaChartfrom data={oGraphData} />
+          </ChartBox>
+          <ChartBox
+            chartHeight={325}
+            dateRange={customerRange}
+            setDateRange={setCustomerRange}
+            loading={customerGraphQuery.isLoading}
+            title="Customers"
+            sm={12}
+            md={12}
+            lg={6}
+          >
+            <StyledBarChart data={cGraphData} />
+          </ChartBox>
+          <ChartBox
+            chartHeight={325}
+            dateRange={amountRange}
+            setDateRange={setAmountRange}
+            loading={amountGraphQuery.isLoading}
+            title="Amount spent"
+            sm={12}
+            md={12}
+            lg={6}
+          >
+            <StyledAreaChartfrom data={aGraphData} />
+          </ChartBox>
+        </Grid>
+      )}
+
       <MSettingsModal open={Boolean(isModalOpen)}>
         <MarketingSettings
           shop={currentShop}
