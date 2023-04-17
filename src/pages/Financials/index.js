@@ -2,6 +2,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import Banking from './Banking';
 import Invoices from './Invoices';
 import Overview from './Overview';
 
@@ -34,10 +35,19 @@ export default function Financials() {
         index={1}
         value={currentTab}
         sx={{
-          padding: 0,
+          paddingTop: 7.5,
         }}
       >
         <Invoices />
+      </TabPanel>
+      <TabPanel
+        index={2}
+        value={currentTab}
+        sx={{
+          paddingTop: 7.5,
+        }}
+      >
+        <Banking />
       </TabPanel>
     </Box>
   );

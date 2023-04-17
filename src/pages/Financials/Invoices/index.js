@@ -9,7 +9,6 @@ export default function Invoices() {
       padding
       sx={{
         padding: '16px 20px',
-        marginTop: '30px',
       }}
     >
       <Typography variant="body1" fontWeight={600} pb={3}>
