@@ -196,6 +196,7 @@ export default function ContainerList({ containerType }) {
                   onDrop={dropSort}
                   handleMenuClick={threeDotHandler}
                   containerType={containerType}
+                  minWidth={containerType === 'list' ? '950px' : '900px'}
                 />
               </Box>
             )}

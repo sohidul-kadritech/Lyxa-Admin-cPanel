@@ -25,6 +25,7 @@ export default function Layout({ children }) {
             paddingLeft: 12.5,
             paddingRight: 12.5,
             height: 'calc(100vh - 67px)',
+            width: matches ? '100vw' : 'calc(100vw - 230px)',
             overflowY: 'scroll',
             backgroundColor: '#fbfbfb',
           }}

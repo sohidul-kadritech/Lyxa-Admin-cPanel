@@ -44,7 +44,7 @@ const typeLabels = {
   shop: 'Shop',
 };
 
-export default function ContainerTable({ items, loading, handleMenuClick, onDrop, containerType }) {
+export default function ContainerTable({ items, loading, handleMenuClick, onDrop, containerType, minWidth }) {
   const theme = useTheme();
 
   const allColumns = [
@@ -151,15 +151,21 @@ export default function ContainerTable({ items, loading, handleMenuClick, onDrop
   }
 
   return (
-    <Box position="relative">
-      {loading && <LoadingOverlay />}
-      <StyledTable4
-        columns={allColumns}
-        rows={items}
-        getRowKey={(row) => row?._id}
-        noRowsMessage={loading ? 'Loading ...' : 'No List Containers'}
-        onDrop={onDrop}
-      />
+    <Box
+      sx={{
+        overflowX: 'scroll',
+      }}
+    >
+      <Box position="relative" minWidth={minWidth}>
+        {loading && <LoadingOverlay />}
+        <StyledTable4
+          columns={allColumns}
+          rows={items}
+          getRowKey={(row) => row?._id}
+          noRowsMessage={loading ? 'Loading ...' : 'No List Containers'}
+          onDrop={onDrop}
+        />
+      </Box>
     </Box>
   );
 }

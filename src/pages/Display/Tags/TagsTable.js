@@ -159,15 +159,21 @@ export default function TagsTable({
   }
 
   return (
-    <Box position="relative">
-      {loading && <LoadingOverlay />}
-      <StyledTable4
-        columns={allColumns}
-        rows={items}
-        getRowKey={(row) => row?._id}
-        onDrop={onDrop}
-        noRowsMessage={loading ? 'Loading ...' : 'No Tags or Cuisines'}
-      />
+    <Box
+      sx={{
+        overflowX: 'scroll',
+      }}
+    >
+      <Box position="relative" minWidth="930px">
+        {loading && <LoadingOverlay />}
+        <StyledTable4
+          columns={allColumns}
+          rows={items}
+          getRowKey={(row) => row?._id}
+          onDrop={onDrop}
+          noRowsMessage={loading ? 'Loading ...' : 'No Tags or Cuisines'}
+        />
+      </Box>
     </Box>
   );
 }
