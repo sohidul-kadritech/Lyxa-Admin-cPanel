@@ -38,7 +38,7 @@ export default function Product({ product, onMenuClick, ...props }) {
     }
   );
 
-  const stockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STATUS, data), {
+  const stockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STOCK, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
     },
@@ -53,22 +53,12 @@ export default function Product({ product, onMenuClick, ...props }) {
       });
     } else if (menu === 'soldOut') {
       stockMutation.mutate({
-        id: product?._id,
+        productId: product?._id,
         stockQuantity: 0,
       });
     } else {
       onMenuClick(menu, product);
     }
-  };
-
-  const handlePriceChange = (event) => {
-    product.price = event.target.value;
-
-    productMutation.mutate({
-      id: product?._id,
-      price: event.target.value,
-      action: 'price',
-    });
   };
 
   return (
@@ -116,13 +106,10 @@ export default function Product({ product, onMenuClick, ...props }) {
       {/* right */}
       <Stack direction="row" alignItems="center" gap={4}>
         <StyledInput
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
           type="number"
           min={1}
           value={product?.price}
-          onChange={handlePriceChange}
+          readOnly
           InputProps={{
             startAdornment: <InputAdornment position="end">$</InputAdornment>,
           }}
