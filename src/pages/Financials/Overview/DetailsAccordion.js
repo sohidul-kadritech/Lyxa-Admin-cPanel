@@ -1,5 +1,6 @@
 import { ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Stack, Tooltip, Typography, styled } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Tooltip, Typography, styled } from '@mui/material';
+import { useRef, useState } from 'react';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
@@ -10,6 +11,10 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
 
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(0deg)',
+  },
+
+  '&.icon-hidden .MuiAccordionSummary-expandIconWrapper': {
+    visibility: 'hidden',
   },
 
   '& .MuiSvgIcon-root': {
@@ -48,15 +53,21 @@ export default function DetailsAccordion({
   tooltip,
   ...props
 }) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef();
+
   return (
     <StyledAccordion
-      expanded={isOpen}
-      onChange={(e, closed) => {
-        onChange(closed);
+      expanded={open}
+      onChange={() => {
+        setOpen((prev) => (containerRef.current?.childNodes?.length === 0 ? false : !prev));
       }}
       {...props}
     >
-      <StyledAccordionSummary expandIcon={<ExpandMore />}>
+      <StyledAccordionSummary
+        // className={`${containerRef.current?.childNodes?.length === 0 ? 'icon-hidden' : ''}`}
+        expandIcon={<ExpandMore />}
+      >
         <Stack direction="row" alignItems="center" justifyContent="space-between" flex={1}>
           <Stack direction="row" alignItems="center" gap={2.5}>
             <Typography variant="body1" fontWeight={600}>
@@ -78,7 +89,7 @@ export default function DetailsAccordion({
           paddingBottom: '20px',
         }}
       >
-        {children}
+        <Box ref={containerRef}>{children}</Box>
       </AccordionDetails>
     </StyledAccordion>
   );

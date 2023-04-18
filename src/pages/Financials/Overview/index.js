@@ -1,12 +1,21 @@
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable no-unused-vars */
+// third party
 import { Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
+
+// local
 import ChartBox from '../../../components/StyledCharts/ChartBox';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChart from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import { areaChartData, barChartData2, lineChartData } from '../../Marketing/Dashbaord/mock';
 import PayoutDetails from './PayoutDetails';
 
@@ -16,11 +25,47 @@ const dateRangeItit = {
 };
 
 export default function Overview() {
-  // charts
+  const shop = useSelector((store) => store.Login.admin);
+
   const [revenueRange, setRevenueRange] = useState({ ...dateRangeItit });
   const [payoutRange, setPayoutRange] = useState({ ...dateRangeItit });
-  const [uRange, setURange] = useState({ ...dateRangeItit });
+  const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const [refundRange, setrefundRange] = useState({ ...dateRangeItit });
+
+  const shopDashboardQuery = useQuery(
+    ['shop-dashboard', { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end }],
+    () =>
+      AXIOS.get(Api.GET_SHOP_DASHBOARD_SUMMARY, {
+        params: { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end },
+      })
+  );
+
+  const shopTransactionsQuery = useQuery(
+    [`single-shop-transations`, { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end }],
+    () =>
+      AXIOS.post(Api.SHOP_TRX, {
+        page: 1,
+        pageSize: 500,
+        pagingRange: 5,
+        tnxFilter: {
+          adminBy: '',
+          type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
+          searchKey: '',
+          amountBy: 'asc',
+          amountRange: 0,
+          amountRangeType: '>',
+          startDate: paymentDetailsRange.start,
+          endDate: paymentDetailsRange.end,
+        },
+        shopId: shop?._id,
+        sortBy: 'desc',
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
 
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
@@ -29,7 +74,7 @@ export default function Overview() {
       </ChartBox>
       <Grid xs={12}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end">
-          <DateRange setRange={setURange} range={uRange} />
+          <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
         </Stack>
       </Grid>
       <InfoCard
@@ -42,7 +87,10 @@ export default function Overview() {
       />
       <InfoCard
         title="Total Orders"
-        value={14}
+        value={`${
+          shopDashboardQuery?.data?.data?.summary?.totalCancelOrder +
+          shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder
+        }`}
         Tag={<IncreaseDecreaseTag status="increase" amount="11%" />}
         sm={6}
         md={4}
@@ -56,7 +104,10 @@ export default function Overview() {
         md={4}
         lg={4}
       />
-      <PayoutDetails />
+      <PayoutDetails
+        paymentDetails={shopDashboardQuery?.data?.data?.summary}
+        transactionDetails={shopTransactionsQuery?.data?.data?.summary}
+      />
       <ChartBox
         chartHeight={325}
         dateRange={payoutRange}
