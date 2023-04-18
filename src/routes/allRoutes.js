@@ -79,6 +79,7 @@ import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import MenuPage from '../pages/Menu';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
+import ShopProfile from '../pages/Profile';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -90,7 +91,7 @@ import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndCondi
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
 
-const adminRoutes = [
+export const adminRoutes = [
   // dashboard
   { path: '/dashboard', component: Dashboard },
 
@@ -237,7 +238,7 @@ const adminRoutes = [
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
-const customerServiceRoutes = [
+export const customerServiceRoutes = [
   // orders
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
@@ -262,7 +263,7 @@ const customerServiceRoutes = [
   { path: '/', exact: true, component: () => <Redirect to="/orders/list" /> },
 ];
 
-const sellerRoutes = [
+export const sellerRoutes = [
   // dashboard
   { path: '/dashboard', component: Dashboard },
   // orders
@@ -298,52 +299,42 @@ const sellerRoutes = [
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
-const shopRoutes = [
-  // dashboard
+export const shopRoutes = [
   { path: '/dashboard', component: Dashboard },
 
-  // orders
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
 
-  // shop
   { path: '/shops/list', component: ShopList },
   { path: '/shops/details/:id', component: ShopDetails },
 
-  // products
   { path: '/products/list', component: ProductList },
   { path: '/products/list2', component: MenuPage },
   { path: '/products/add', component: ProductAdd },
   { path: '/products/edit/:id', component: ProductAdd },
   { path: '/products/details/:id', component: ProductDetails },
 
-  // app wallet
   {
     path: '/add-wallet/shop-transactions',
     component: SingleShopTransactions,
   },
 
-  // credentials
   { path: '/shop/credentials/list', component: ShopCredentialsList },
   { path: '/admin/create', component: CreateAdmin },
 
-  // catagories
   { path: '/categories/list', component: CategoryList },
   { path: '/categories/add', component: CategoryAdd },
   { path: '/categories/edit/:id', component: CategoryAdd },
   { path: '/category/details/:id', component: CategoryDetails },
 
-  // marketing
   { path: '/marketing', component: Marketing },
   { path: '/marketing/dashboard/:type/:id', component: MarketingDashboard },
 
-  // financials
   { path: '/financials', component: Financials },
+  { path: '/profile', component: ShopProfile },
 
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
-const authRoutes = [{ path: '/login', component: Login }];
-
-export { adminRoutes, authRoutes, customerServiceRoutes, shopRoutes, sellerRoutes };
+export const authRoutes = [{ path: '/login', component: Login }];

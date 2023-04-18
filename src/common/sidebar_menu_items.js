@@ -68,7 +68,7 @@ export const shop_menu_items = [
       {
         label: 'Profile',
         icon: ProfileIcon,
-        to: '/',
+        to: '/profile',
       },
       {
         label: 'Hours',
