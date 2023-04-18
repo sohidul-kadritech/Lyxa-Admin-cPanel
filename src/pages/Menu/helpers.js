@@ -11,6 +11,10 @@ export const addMenuOptions = [
     label: 'Add category',
     value: 'add-category',
   },
+  {
+    label: 'Add sub category ',
+    value: 'add-sub-category',
+  },
 ];
 
 export const getProductMenuOptions = (product, shopFavourites) => [
