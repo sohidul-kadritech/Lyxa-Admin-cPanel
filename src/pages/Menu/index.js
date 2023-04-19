@@ -21,7 +21,7 @@ import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
 import AddSubCategory from './AddSubCategory';
 import CategoryContainer from './List/CategoryContainer';
-import MenuPageSkeleton from './MenuPageSkeleton';
+import PageSkeleton from './PageSkeleton';
 import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
 import { OngoingTag, createCatagory } from './helpers';
@@ -195,7 +195,7 @@ export default function MenuPage() {
           backgroundColor: '#fbfbfb',
         }}
       />
-      {productsQuery?.isLoading && <MenuPageSkeleton />}
+      {productsQuery?.isLoading && <PageSkeleton />}
       {!productsQuery?.isLoading && (
         <>
           <Searchbar

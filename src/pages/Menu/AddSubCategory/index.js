@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
@@ -10,6 +10,7 @@ import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import PageSkeleton from './PageSkeleton';
 import SubCategoryList from './SubCategoryList';
 import { addSubCategoriesInit, createCategoriesData, validateAddSubCategories } from './helpers';
 
@@ -50,15 +51,30 @@ export default function AddSubCategory({ onClose, editCategory }) {
     }
   );
 
+  useEffect(() => {
+    if (categoriesQuery.data?.status) {
+      setCategories(
+        (prev) =>
+          categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
+          prev
+      );
+    }
+  }, []);
+
   // add sub categoreis mutation
   const addSubCategoryMutation = useMutation((data) => AXIOS.post(Api.ADD_SUB_CATEGORY, data), {
     onSuccess: (data) => {
       console.log(data);
+
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        onClose();
+      }
     },
   });
 
   const onSubmit = () => {
-    const filteredCategories = subCategory.subCategories.filter((category) => !!category?.name?.trim());
+    const filteredCategories = subCategory.categories.filter((category) => !!category?.name?.trim());
 
     if (filteredCategories?.length < 1) {
       successMsg('Must have at least 1 sub category');
@@ -66,7 +82,7 @@ export default function AddSubCategory({ onClose, editCategory }) {
     }
 
     // mutating state to ensure latest value
-    subCategory.subCategories = filteredCategories;
+    subCategory.categories = filteredCategories;
     setRender(!render);
 
     const validationStatus = validateAddSubCategories(subCategory);
@@ -76,71 +92,78 @@ export default function AddSubCategory({ onClose, editCategory }) {
       return;
     }
 
-    const categoriesData = createCategoriesData(subCategory);
-
-    // categoriesData?.mutate()
-    categoriesData.subCategories.forEach((category) => {
-      addSubCategoryMutation.mutate(category);
-    });
+    addSubCategoryMutation.mutate(createCategoriesData(subCategory));
   };
 
   return (
-    <SidebarContainer title="Add Category" onClose={onClose}>
-      <Box>
-        {/* name */}
-        <StyledFormField
-          label="Category"
-          intputType="select"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
-          inputProps={{
-            name: 'category',
-            value: subCategory.categoryId,
-            items: categories || [],
-            onChange: (e) => {
-              setSubCategory((prev) => ({ ...prev, categoryId: e.target.value }));
-            },
-          }}
-        />
-      </Box>
-      <Box sx={fieldContainerSx}>
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: '600',
-            fontSize: '15px',
-            lineHeight: '18px',
-            pb: 2.5,
-          }}
-        >
-          Sub-Category
-        </Typography>
-        <SubCategoryList
-          subCategories={subCategory.subCategories}
-          onDelete={(item) => {
-            setSubCategory((prev) => ({
-              ...prev,
-              subCategories: prev.subCategories.filter((category) => category?.id !== item?.id),
-            }));
-          }}
-        />
-      </Box>
-      <Stack
-        height="100%"
-        sx={{
-          height: 'auto',
-          position: 'absolute',
-          left: '0',
-          right: '0',
-          bottom: '0',
-          padding: '24px 16px',
-        }}
-      >
-        <Button variant="contained" color="primary" startIcon={<DropIcon />} fullWidth onClick={onSubmit}>
-          Save Item
-        </Button>
-      </Stack>
+    <SidebarContainer title="Add Sub-Category" onClose={onClose}>
+      {categoriesQuery?.isLoading && <PageSkeleton />}
+      {!categoriesQuery?.isLoading && (
+        <Box>
+          <Box>
+            {/* name */}
+            <StyledFormField
+              label="Category"
+              intputType="select"
+              containerProps={{
+                sx: fieldContainerSx,
+              }}
+              inputProps={{
+                name: 'category',
+                value: subCategory.categoryId,
+                items: categories || [],
+                onChange: (e) => {
+                  setSubCategory((prev) => ({ ...prev, categoryId: e.target.value }));
+                },
+              }}
+            />
+          </Box>
+          <Box sx={fieldContainerSx}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: '600',
+                fontSize: '15px',
+                lineHeight: '18px',
+                pb: 2.5,
+              }}
+            >
+              Sub-Category
+            </Typography>
+            <SubCategoryList
+              subCategories={subCategory.categories}
+              onDelete={(item) => {
+                setSubCategory((prev) => ({
+                  ...prev,
+                  categories: prev.categories.filter((category) => category?.id !== item?.id),
+                }));
+              }}
+            />
+          </Box>
+          <Stack
+            height="100%"
+            sx={{
+              height: 'auto',
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              bottom: '0',
+              padding: '24px 16px',
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<DropIcon />}
+              fullWidth
+              disabled={addSubCategoryMutation.isLoading}
+              onClick={onSubmit}
+            >
+              Add Items
+            </Button>
+          </Stack>
+        </Box>
+      )}
     </SidebarContainer>
   );
 }

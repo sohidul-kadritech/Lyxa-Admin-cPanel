@@ -27,8 +27,8 @@ import {
   productAttrInit,
   validateProduct,
 } from '../helpers';
-import PageSkeleton from './AddProductSkeleton';
 import AttributeList from './AttributeList';
+import PageSkeleton from './PageSkeleton';
 
 const fieldContainerSx = {
   padding: '14px 0',
