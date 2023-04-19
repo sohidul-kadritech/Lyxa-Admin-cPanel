@@ -1,13 +1,11 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
+import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
 import PriceItem from './PriceItem';
 
-export default function Payout({ paymentDetails, transactionDetails }) {
-  const shop = useSelector((store) => store.Login.admin);
+export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
 
   return (
@@ -76,19 +74,13 @@ export default function Payout({ paymentDetails, transactionDetails }) {
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
+            titleAmount={`-$${Math.abs(paymentDetails?.totalDropGet)?.toFixed(2)}`}
+            titleAmountStatus="minus"
             isOpen={currentExpanedTab === 1}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 1 : -1);
             }}
-          >
-            <Stack gap={2}>
-              <PriceItem
-                title="10% of total order excluding delivery"
-                amount={`-$${paymentDetails?.totalDropGet?.toFixed(2)}`}
-                amountStatus="minus"
-              />
-            </Stack>
-          </DetailsAccordion>
+          ></DetailsAccordion>
           {/* Other payments */}
           <DetailsAccordion
             title="Other Payments"
@@ -100,14 +92,19 @@ export default function Payout({ paymentDetails, transactionDetails }) {
               seCurrentExpanedTab(closed ? 2 : -1);
             }}
           >
-            <Stack gap={2}>
-              <PriceItem title="Promotion: free delivery (store side)" amount="-$25" amountStatus="minus" />
-            </Stack>
+            {paymentDetails?.freeDeliveryShopCut > 0 && (
+              <PriceItem
+                title="Promotion: free delivery"
+                amount={`-$${paymentDetails?.freeDeliveryShopCut?.toFixed(2)}`}
+                amountStatus="minus"
+              />
+            )}
           </DetailsAccordion>
-          {/* free delivery */}
-          {shop?.haveOwnDeliveryBoy && (
+          {/* delivery */}
+          {paymentDetails?.orderValue?.deliveryFee > 0 && (
             <DetailsAccordion
               title="Delivery fee"
+              titleAmount={`$${paymentDetails?.orderValue?.deliveryFee}`}
               tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
@@ -116,17 +113,15 @@ export default function Payout({ paymentDetails, transactionDetails }) {
                 seCurrentExpanedTab(closed ? 2 : -1);
               }}
             >
-              <Stack gap={2}>
-                <PriceItem title="Promotion: free delivery (store side)" amount="-$25" amountStatus="minus" />
-              </Stack>
+              <PriceItem title="Cash" amount={`$${paymentDetails?.orderValue?.deliveryFeeCash}`} />
+              <PriceItem title="Online" amount={`$${paymentDetails?.orderValue?.deliveryFeeOnline}`} />
+              <PriceItem title="Rider tip" amount={`$${paymentDetails?.orderValue?.deliveryFeeOnline}`} />
             </DetailsAccordion>
           )}
-          {/* total payout */}
+          {/* points cashback */}
           <DetailsAccordion
             title="Points cashback"
-            titleAmount={`$${(transactionDetails?.totalShopDeliveryFee + transactionDetails?.toalShopProfile)?.toFixed(
-              2
-            )}`}
+            titleAmount={`$${paymentDetails?.orderValue?.pointsCashback?.toFixed(2)}`}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
@@ -141,9 +136,7 @@ export default function Payout({ paymentDetails, transactionDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Payout"
-            titleAmount={`$${(transactionDetails?.totalShopDeliveryFee + transactionDetails?.toalShopProfile)?.toFixed(
-              2
-            )}`}
+            titleAmount={`$${(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile)?.toFixed(2)}`}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"

@@ -64,10 +64,7 @@ export default function DetailsAccordion({
       }}
       {...props}
     >
-      <StyledAccordionSummary
-        // className={`${containerRef.current?.childNodes?.length === 0 ? 'icon-hidden' : ''}`}
-        expandIcon={<ExpandMore />}
-      >
+      <StyledAccordionSummary expandIcon={<ExpandMore />}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" flex={1}>
           <Stack direction="row" alignItems="center" gap={2.5}>
             <Typography variant="body1" fontWeight={600}>

@@ -184,7 +184,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
     productMutation.mutate({
       ...productData,
-      // stockQuantity: hasInventory ? product?.stockQuantity : '',
     });
     setLoading(false);
   };

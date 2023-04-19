@@ -10,7 +10,6 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
 import { ProductOverlayTag, getProductMenuOptions } from '../helpers';
-// import { Button } from 'bootstrap';
 
 export default function Product({ product, onMenuClick, ...props }) {
   const { favorites, setEditProduct } = useContext(ProductsContext);

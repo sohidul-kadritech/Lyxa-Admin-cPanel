@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 // third party
@@ -40,32 +41,34 @@ export default function Overview() {
       })
   );
 
-  const shopTransactionsQuery = useQuery(
-    [`single-shop-transations`, { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end }],
-    () =>
-      AXIOS.post(Api.SHOP_TRX, {
-        page: 1,
-        pageSize: 500,
-        pagingRange: 5,
-        tnxFilter: {
-          adminBy: '',
-          type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
-          searchKey: '',
-          amountBy: 'asc',
-          amountRange: 0,
-          amountRangeType: '>',
-          startDate: paymentDetailsRange.start,
-          endDate: paymentDetailsRange.end,
-        },
-        shopId: shop?._id,
-        sortBy: 'desc',
-      }),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    }
-  );
+  console.log(shopDashboardQuery);
+
+  // const shopTransactionsQuery = useQuery(
+  //   [`single-shop-transations`, { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end }],
+  //   () =>
+  //     AXIOS.post(Api.SHOP_TRX, {
+  //       page: 1,
+  //       pageSize: 500,
+  //       pagingRange: 5,
+  //       tnxFilter: {
+  //         adminBy: '',
+  //         type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
+  //         searchKey: '',
+  //         amountBy: 'asc',
+  //         amountRange: 0,
+  //         amountRangeType: '>',
+  //         startDate: paymentDetailsRange.start,
+  //         endDate: paymentDetailsRange.end,
+  //       },
+  //       shopId: shop?._id,
+  //       sortBy: 'desc',
+  //     }),
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //   }
+  // );
 
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
@@ -79,7 +82,12 @@ export default function Overview() {
       </Grid>
       <InfoCard
         title="Total Payout"
-        value="$2551"
+        value={`$${
+          Math.round(
+            shopDashboardQuery?.data?.data?.summary?.orderValue?.deliveryFee +
+              shopDashboardQuery?.data?.data?.summary?.toalShopProfile
+          ) || 0
+        }`}
         Tag={<IncreaseDecreaseTag status="increase" amount="29%" />}
         sm={6}
         md={4}
@@ -89,7 +97,7 @@ export default function Overview() {
         title="Total Orders"
         value={`${
           shopDashboardQuery?.data?.data?.summary?.totalCancelOrder +
-          shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder
+            shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder || 0
         }`}
         Tag={<IncreaseDecreaseTag status="increase" amount="11%" />}
         sm={6}
@@ -106,7 +114,7 @@ export default function Overview() {
       />
       <PayoutDetails
         paymentDetails={shopDashboardQuery?.data?.data?.summary}
-        transactionDetails={shopTransactionsQuery?.data?.data?.summary}
+        // transactionDetails={shopTransactionsQuery?.data?.data?.summary}
       />
       <ChartBox
         chartHeight={325}
