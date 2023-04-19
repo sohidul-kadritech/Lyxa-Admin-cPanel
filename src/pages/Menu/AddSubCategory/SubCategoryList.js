@@ -1,22 +1,18 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
 import { useState } from 'react';
-import CloseButton from '../../components/Common/CloseButton';
-import StyledInput from '../../components/Styled/StyledInput';
+import CloseButton from '../../../components/Common/CloseButton';
+import StyledInput from '../../../components/Styled/StyledInput';
+import { getSubCategoryInit } from './helpers';
 
-const categoryInt = {
-  name: '',
-};
-
-// eslint-disable-next-line no-unused-vars
 export default function SubCategoryList({ subCategories, onDelete }) {
   const [render, setRender] = useState(false);
 
   return (
     <Box>
       <Stack gap={4} mb={4}>
-        {subCategories.map((category, index) => (
-          <Stack key={index} direction="row" alignItems="center" justifyContent="space-between" gap={4}>
+        {subCategories.map((category) => (
+          <Stack key={category?.id} direction="row" alignItems="center" justifyContent="space-between" gap={4}>
             <StyledInput
               type="text"
               value={category?.name}
@@ -33,8 +29,7 @@ export default function SubCategoryList({ subCategories, onDelete }) {
                 padding: 0,
               }}
               onClick={() => {
-                subCategories.splice(index, 1);
-                setRender(!render);
+                onDelete(category);
               }}
             />
           </Stack>
@@ -50,7 +45,7 @@ export default function SubCategoryList({ subCategories, onDelete }) {
           lineHeight: '17px',
         }}
         onClick={() => {
-          subCategories.push({ ...categoryInt });
+          subCategories.push(getSubCategoryInit());
           setRender(!render);
         }}
       >

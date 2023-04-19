@@ -185,7 +185,7 @@ export default function MenuPage() {
   return (
     <ProductsContext.Provider value={ContextObj}>
       <PageTop
-        title="Menu"
+        title={`Menu (${shop?.shopName})`}
         tag={Deals.deals.hasActiveDeal ? <OngoingTag label={Deals.get_promotion_str()} /> : undefined}
         sx={{
           position: 'sticky',
