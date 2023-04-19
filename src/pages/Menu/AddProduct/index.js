@@ -43,7 +43,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const [categories, setCategories] = useState([]);
 
   const [hasAttribute, setHasAttribute] = useState('');
-  const [hasInventory, setHasInventory] = useState(false);
+  // const [hasInventory, setHasInventory] = useState(false);
 
   const [product, setProduct] = useState(
     editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
@@ -109,9 +109,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
           setHasAttribute('yes');
         }
-      } else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
-        setHasInventory(true);
       }
+
+      // else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
+      //   setHasInventory(true);
+      // }
     }
   }, []);
 
@@ -182,7 +184,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
     productMutation.mutate({
       ...productData,
-      stockQuantity: hasInventory ? product?.stockQuantity : '',
+      // stockQuantity: hasInventory ? product?.stockQuantity : '',
     });
     setLoading(false);
   };
@@ -432,14 +434,17 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
               Inventory
             </Typography>
             <StyledSwitch
-              checked={hasInventory}
+              checked={product?.isStockEnabled}
               readOnly={productReadonly}
               onChange={(e) => {
-                setHasInventory(e.target.checked);
+                if (productReadonly) {
+                  return;
+                }
+                setProduct((prev) => ({ ...prev, isStockEnabled: e.target.checked }));
               }}
             />
           </Stack>
-          {hasInventory && (
+          {product?.isStockEnabled && (
             <Stack gap={3.5} alignItems="center" direction="row">
               <StyledInput
                 value={product?.stockQuantity}

@@ -213,6 +213,7 @@ export default function MenuPage() {
             }}
             setSearchValue={onSearch}
             searchValue={searchValue}
+            shopType={shop?.shopType}
           />
           {searchValue === '' && (
             <>

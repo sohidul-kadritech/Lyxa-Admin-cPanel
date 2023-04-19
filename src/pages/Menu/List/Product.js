@@ -9,7 +9,8 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
-import { getProductMenuOptions } from '../helpers';
+import { ProductOverlayTag, getProductMenuOptions } from '../helpers';
+// import { Button } from 'bootstrap';
 
 export default function Product({ product, onMenuClick, ...props }) {
   const { favorites, setEditProduct } = useContext(ProductsContext);
@@ -39,8 +40,13 @@ export default function Product({ product, onMenuClick, ...props }) {
   );
 
   const stockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STOCK, data), {
-    onSuccess: (data) => {
+    onSuccess: (data, args) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        console.log(args.stockQuantity);
+        product.stockQuantity = args.stockQuantity;
+        product.isStockEnabled = false;
+      }
     },
   });
 
@@ -51,10 +57,10 @@ export default function Product({ product, onMenuClick, ...props }) {
         productVisibility: !product?.productVisibility,
         action: 'visibility',
       });
-    } else if (menu === 'soldOut') {
+    } else if (menu === 'stock') {
       stockMutation.mutate({
         productId: product?._id,
-        stockQuantity: 0,
+        stockQuantity: product?.stockQuantity < 1 ? 1 : 0,
       });
     } else {
       onMenuClick(menu, product);
@@ -86,7 +92,16 @@ export default function Product({ product, onMenuClick, ...props }) {
             cursor: '-webkit-grab',
           }}
         />
-        <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 66, height: 52 }} />
+        <Box
+          sx={{
+            position: 'relative',
+          }}
+        >
+          <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 66, height: 52 }}>
+            {product?.name?.charAt(0)}
+          </Avatar>
+          {product.stockQuantity < 1 && <ProductOverlayTag label="Out of Stock" color="#DD5B63" />}
+        </Box>
         <Stack gap={0.5}>
           <Typography variant="body4" fontWeight={600}>
             {product?.name}

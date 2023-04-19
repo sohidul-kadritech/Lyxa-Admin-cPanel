@@ -1,21 +1,64 @@
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { getImageUrl } from '../../helpers/images';
 
+// components
+export function ProductOverlayTag({ label, color }) {
+  return (
+    <Box
+      sx={{
+        width: '100%',
+        height: '100%',
+        background: 'rgba(255, 255, 255, 0.5)',
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <span
+        style={{
+          fontWeight: '500',
+          fontSize: '8px',
+          lineHeight: '20px',
+          color,
+          background: '#fff',
+          borderRadius: '8px',
+          width: '62px',
+          display: 'inline-flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {label}
+      </span>
+    </Box>
+  );
+}
+
 // menu options
-export const addMenuOptions = [
-  {
-    label: 'Add item',
-    value: 'add-item',
-  },
-  {
-    label: 'Add category',
-    value: 'add-category',
-  },
-  {
-    label: 'Add sub category ',
-    value: 'add-sub-category',
-  },
-];
+export const getAddMenuOptions = (shopType) => {
+  const options = [
+    {
+      label: 'Add item',
+      value: 'add-item',
+    },
+    {
+      label: 'Add category',
+      value: 'add-category',
+    },
+  ];
+
+  if (shopType !== 'food') {
+    options.push({
+      label: 'Add sub category ',
+      value: 'add-sub-category',
+    });
+  }
+
+  return options;
+};
 
 export const getProductMenuOptions = (product, shopFavourites) => [
   {
@@ -27,8 +70,8 @@ export const getProductMenuOptions = (product, shopFavourites) => [
     value: 'marketing',
   },
   {
-    label: 'Mark as sold out',
-    value: 'soldOut',
+    label: product?.stockQuantity < 1 ? 'Set stock available' : 'Mark as sold out',
+    value: 'stock',
   },
   {
     label: product?.productVisibility ? 'Deactivate' : 'Active',
@@ -101,6 +144,7 @@ export const productInit = {
   addons: [],
   dietary: [],
   note: '',
+  isStockEnabled: false,
   stockQuantity: 1,
 };
 

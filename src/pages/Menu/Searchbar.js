@@ -4,7 +4,7 @@ import { Button, Stack } from '@mui/material';
 import { ReactComponent as CollapseIcon } from '../../assets/icons/collapse.svg';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
-import { addMenuOptions } from './helpers';
+import { getAddMenuOptions } from './helpers';
 
 // styled button
 function StyledButton({ ...props }) {
@@ -15,7 +15,7 @@ function StyledButton({ ...props }) {
   );
 }
 
-function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse, onMenuClick, ...props }) {
+function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse, onMenuClick, shopType, ...props }) {
   return (
     <Stack direction="row" alignItems="center" gap="15px" pb={6.5} {...props}>
       <StyledSearchBar
@@ -37,7 +37,11 @@ function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse,
       >
         <CollapseIcon />
       </Button>
-      <ThreeDotsMenu handleMenuClick={onMenuClick} menuItems={addMenuOptions} ButtonComponent={StyledButton} />
+      <ThreeDotsMenu
+        handleMenuClick={onMenuClick}
+        menuItems={getAddMenuOptions(shopType)}
+        ButtonComponent={StyledButton}
+      />
     </Stack>
   );
 }
