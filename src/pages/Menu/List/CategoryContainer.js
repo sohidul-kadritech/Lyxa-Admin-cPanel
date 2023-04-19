@@ -1,8 +1,10 @@
-import { Add, ExpandMore } from '@mui/icons-material';
+/* eslint-disable import/no-named-as-default */
+import { Add, Edit, ExpandMore } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
   Box,
   Button,
   Stack,
@@ -14,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
+import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -45,6 +48,7 @@ const accodionSx = {
 
 export default function CategoryContainer({
   category,
+  setEditCategory,
   isOridanryCategory,
   onProductMenuClick,
   setNewProductCategory,
@@ -54,6 +58,7 @@ export default function CategoryContainer({
   const theme = useTheme();
   const shop = useSelector((store) => store.Login.admin);
   const [open, setOpen] = useState(!!category?.sortedProducts?.length);
+  const [render, setRender] = useState(false);
 
   const bestSellerMutation = useMutation((status) =>
     AXIOS.post(Api.EDIT_SHOP_BEST_SELLER, {
@@ -68,6 +73,15 @@ export default function CategoryContainer({
       isActive: status,
     })
   );
+
+  const categoriesMutation = useMutation((data) => AXIOS.post(Api.EDIT_CATEGORY, data), {
+    onSuccess: (data, args) => {
+      if (data?.status) {
+        category.category.status = args.status;
+        setRender(!render);
+      }
+    },
+  });
 
   useEffect(() => {
     if (gOpen !== null) {
@@ -96,21 +110,36 @@ export default function CategoryContainer({
               }}
               className="drag-handler"
             />
-            <Box>
-              <Typography variant="body4" fontWeight={600} color="textPrimary" display="block" pb={1.5}>
-                {category?.category?.name}
-              </Typography>
-              <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
-                {isOridanryCategory ? `${category?.sortedProducts?.length} items` : '3 items (max) '}
-              </Typography>
-            </Box>
+            <Stack direction="row" alignItems="center" gap={5}>
+              {shop?.shopType !== 'food' && (
+                <Avatar
+                  src={category?.category?.category?.image}
+                  alt={category?.category?.category?.name}
+                  variant="rounded"
+                  sx={{ width: 66, height: 52 }}
+                >
+                  {category?.category?.category?.name?.charAt(0) || 'C'}
+                </Avatar>
+              )}
+              <Box>
+                <Typography variant="body4" fontWeight={600} color="textPrimary" display="block" pb={1.5}>
+                  {category?.category?.name}
+                </Typography>
+                <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
+                  {isOridanryCategory ? `${category?.sortedProducts?.length} items` : '3 items (max) '}
+                </Typography>
+              </Box>
+            </Stack>
           </Stack>
-          {!isOridanryCategory && (
-            <Box
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
+          <Stack
+            direction="row"
+            alignItems="center"
+            gap={5}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            {!isOridanryCategory && (
               <StyledSwitch
                 checked={category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive}
                 onChange={(e) => {
@@ -123,8 +152,34 @@ export default function CategoryContainer({
                   }
                 }}
               />
-            </Box>
-          )}
+            )}
+            {isOridanryCategory && (
+              <>
+                <StyledIconButton
+                  color="primary"
+                  onClick={() => {
+                    setEditCategory(category?.category);
+                  }}
+                  sx={{
+                    '& .MuiSvgIcon-root': {
+                      color: 'inherit',
+                    },
+                  }}
+                >
+                  <Edit />
+                </StyledIconButton>
+                <StyledSwitch
+                  checked={category?.category?.status === 'active'}
+                  onChange={(e) => {
+                    categoriesMutation.mutate({
+                      id: category?.category?._id,
+                      status: e.target.checked ? 'active' : 'inactive',
+                    });
+                  }}
+                />
+              </>
+            )}
+          </Stack>
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails sx={detailsSx}>

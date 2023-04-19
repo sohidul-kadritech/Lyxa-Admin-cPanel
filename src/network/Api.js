@@ -68,6 +68,7 @@ export const ADD_CATEGORY = `${ADMIN_ENDPOINT}/category/add-category`;
 export const GET_ALL_CATEGORY = `${ADMIN_ENDPOINT}/category`;
 export const SINGLE_CATEGORY = `${ADMIN_ENDPOINT}/category/get-single-category`;
 export const EDIT_CATEGORY = `${ADMIN_ENDPOINT}/category/update`;
+// export const DELETE_CATEGORY = `${ADMIN_ENDPOINT}/category/update`;
 export const SORT_CATEGORIES = `${ADMIN_ENDPOINT}/category/sort`;
 
 // SUB CATEGORY

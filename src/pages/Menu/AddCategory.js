@@ -1,8 +1,12 @@
-import { Box, Button, Stack } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { Box, Button } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg';
 import { ReactComponent as DropIcon } from '../../assets/icons/down.svg';
+import { confirmActionInit } from '../../assets/staticData';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { getImageUrl } from '../../helpers/images';
@@ -18,15 +22,38 @@ const fieldContainerSx = {
 const getCategoryInit = (shopType) => ({
   name: '',
   image: shopType === 'food' ? undefined : [],
-  type: '',
+  type: shopType,
   note: '',
 });
+
+const getEditCategoryData = (editCategory, shopType) => {
+  const category = {
+    name: editCategory?.category.name || '',
+    type: shopType,
+    note: editCategory?.category.note || '',
+  };
+
+  if (shopType === 'food') {
+    return category;
+  }
+
+  return {
+    ...category,
+    image: [{ preview: editCategory?.category?.image }],
+  };
+};
 
 export default function AddCategory({ onClose, editCategory }) {
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
-  const [category, setCategory] = useState(editCategory || getCategoryInit(shop?.shopType));
+
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(confirmActionInit);
   const [loading, setLoading] = useState(false);
+
+  const [category, setCategory] = useState(
+    editCategory?._id ? getEditCategoryData(editCategory, shop?.shopType) : getCategoryInit(shop?.shopType)
+  );
 
   // input handler
   const commonChangeHandler = (e) => {
@@ -50,7 +77,7 @@ export default function AddCategory({ onClose, editCategory }) {
   // categoryMutation
   const categoryMutation = useMutation(
     (data) => {
-      const API = editCategory ? Api.EDIT_CATEGORY : Api.ADD_CATEGORY;
+      const API = editCategory?._id ? Api.EDIT_CATEGORY : Api.ADD_CATEGORY;
       return AXIOS.post(API, data);
     },
     {
@@ -67,12 +94,10 @@ export default function AddCategory({ onClose, editCategory }) {
   );
 
   const onSubmit = async () => {
-    category.type = shop?.shopType;
     const valid = validateCategory(category);
 
     if (!valid?.status) {
       successMsg(valid?.msg);
-      console.log('triggerd');
       return;
     }
 
@@ -89,100 +114,114 @@ export default function AddCategory({ onClose, editCategory }) {
       }
     }
 
-    console.log(imgUrl);
-
     categoryMutation.mutate({
       ...category,
       image: imgUrl,
+      id: editCategory?._id,
     });
+
     setLoading(false);
   };
 
   return (
-    <SidebarContainer title="Add Category" onClose={onClose}>
-      <Box>
-        {/* name */}
-        <StyledFormField
-          label="Name"
-          intputType="text"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
-          inputProps={{
-            type: 'text',
-            name: 'name',
-            value: category.name,
-            onChange: commonChangeHandler,
-          }}
-        />
-        {/* photo */}
-        {shop?.shopType !== 'food' && (
+    <>
+      <SidebarContainer title="Add Category" onClose={onClose}>
+        <Box>
+          {/* name */}
           <StyledFormField
-            label="Photo"
-            intputType="file"
+            label="Name"
+            intputType="text"
             containerProps={{
               sx: fieldContainerSx,
             }}
             inputProps={{
-              onDrop,
-              accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
-              maxSize: 1000 * 1000,
-              text: 'Drag and drop or chose photo',
-              files: category.image,
-              helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
-              helperText2: 'Pixels: Minimum 320 for width and height',
+              type: 'text',
+              name: 'name',
+              value: category.name,
+              onChange: commonChangeHandler,
             }}
           />
-        )}
-        {/* description */}
-        <StyledFormField
-          label={
-            <span>
-              Notes
-              <span
-                style={{
-                  color: '#7E8299',
-                }}
-              >
-                {' '}
-                (only visible to you)
+          {/* photo */}
+          {shop?.shopType !== 'food' && (
+            <StyledFormField
+              label="Photo"
+              intputType="file"
+              containerProps={{
+                sx: fieldContainerSx,
+              }}
+              inputProps={{
+                onDrop,
+                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
+                maxSize: 1000 * 1000,
+                text: 'Drag and drop or chose photo',
+                files: category.image,
+                helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
+                helperText2: 'Pixels: Minimum 320 for width and height',
+              }}
+            />
+          )}
+          {/* note */}
+          <StyledFormField
+            label={
+              <span>
+                Notes
+                <span
+                  style={{
+                    color: '#7E8299',
+                  }}
+                >
+                  {' '}
+                  (only visible to you)
+                </span>
               </span>
-            </span>
-          }
-          intputType="textarea"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
-          inputProps={{
-            name: 'description',
-            value: category.description,
-            onChange: commonChangeHandler,
-            multiline: true,
-          }}
-        />
-      </Box>
-      <Stack
-        height="100%"
-        sx={{
-          height: 'auto',
-          position: 'absolute',
-          left: '0',
-          right: '0',
-          bottom: '0',
-          padding: '24px 16px',
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<DropIcon />}
-          fullWidth
-          onClick={onSubmit}
-          disabled={categoryMutation?.isLoading || loading}
-        >
-          Save Item
-        </Button>
-      </Stack>
-    </SidebarContainer>
+            }
+            intputType="textarea"
+            containerProps={{
+              sx: fieldContainerSx,
+            }}
+            inputProps={{
+              name: 'note',
+              value: category.note,
+              onChange: commonChangeHandler,
+              multiline: true,
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<DropIcon />}
+            fullWidth
+            onClick={onSubmit}
+            disabled={categoryMutation?.isLoading || loading}
+            sx={{
+              marginTop: '14px',
+            }}
+          >
+            Save Item
+          </Button>
+        </Box>
+        {editCategory?._id && (
+          <Button
+            disableRipple
+            variant="text"
+            color="error"
+            startIcon={<DeleteIcon />}
+            fullWidth
+            sx={{
+              marginTop: '20px',
+            }}
+          >
+            Delete Category
+          </Button>
+        )}
+      </SidebarContainer>
+      <ConfirmModal
+        message={confirmAction.message}
+        isOpen={confirmModal}
+        blurClose
+        onCancel={confirmAction.onCancel}
+        onConfirm={confirmAction.onConfirm}
+      />
+    </>
   );
 }

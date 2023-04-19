@@ -41,35 +41,6 @@ export default function Overview() {
       })
   );
 
-  console.log(shopDashboardQuery);
-
-  // const shopTransactionsQuery = useQuery(
-  //   [`single-shop-transations`, { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end }],
-  //   () =>
-  //     AXIOS.post(Api.SHOP_TRX, {
-  //       page: 1,
-  //       pageSize: 500,
-  //       pagingRange: 5,
-  //       tnxFilter: {
-  //         adminBy: '',
-  //         type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
-  //         searchKey: '',
-  //         amountBy: 'asc',
-  //         amountRange: 0,
-  //         amountRangeType: '>',
-  //         startDate: paymentDetailsRange.start,
-  //         endDate: paymentDetailsRange.end,
-  //       },
-  //       shopId: shop?._id,
-  //       sortBy: 'desc',
-  //     }),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //   }
-  // );
-
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
       <ChartBox chartHeight={300} dateRange={revenueRange} setDateRange={setRevenueRange} title="Total Revenue" sm={12}>
@@ -112,10 +83,7 @@ export default function Overview() {
         md={4}
         lg={4}
       />
-      <PayoutDetails
-        paymentDetails={shopDashboardQuery?.data?.data?.summary}
-        // transactionDetails={shopTransactionsQuery?.data?.data?.summary}
-      />
+      <PayoutDetails paymentDetails={shopDashboardQuery?.data?.data?.summary} />
       <ChartBox
         chartHeight={325}
         dateRange={payoutRange}

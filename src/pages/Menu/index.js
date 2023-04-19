@@ -45,6 +45,7 @@ export default function MenuPage() {
 
   // products
   const [categories, setCategories] = useState([]);
+  const [editCategory, setEditCategory] = useState({});
   const [searchCategories, setSearchCategories] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
@@ -233,6 +234,11 @@ export default function MenuPage() {
                     <CategoryContainer
                       gOpen={category_open}
                       category={category}
+                      setEditCategory={(editCategory) => {
+                        console.log(editCategory);
+                        setEditCategory(editCategory);
+                        setSidebar('add-category');
+                      }}
                       onProductMenuClick={onProductMenuClick}
                       isOridanryCategory
                       setNewProductCategory={(categoryId) => {
@@ -291,8 +297,10 @@ export default function MenuPage() {
         )}
         {sidebar === 'add-category' && (
           <AddCategory
+            editCategory={editCategory}
             onClose={() => {
               setSidebar(null);
+              setEditCategory({});
             }}
           />
         )}
