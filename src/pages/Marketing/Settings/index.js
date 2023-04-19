@@ -102,6 +102,8 @@ export default function MarketingSettings({
     }
   );
 
+  // console.log(shop);
+
   // deal settings query
   const dealSettingsQuery = useQuery(
     ['deal-settings', { type: shop?.shopType === 'food' ? 'restaurant' : shop?.shopType }],
@@ -300,15 +302,16 @@ export default function MarketingSettings({
       }
 
       if (marketingType === 'percentage') {
+        const discountAmount = (item?.price / 100) * item?.discountPercentage;
         return {
           id: item?._id,
           discountPercentage: item?.discountPercentage,
-          discountPrice: item?.price - (item?.price / 100) * item?.discountPercentage,
-          discount: (item?.price / 100) * item?.discountPercentage,
+          discountPrice:
+            item?.price - (shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount),
+          discount: shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount,
         };
       }
 
-      // double_menu
       return {
         id: item?._id,
       };
@@ -371,6 +374,8 @@ export default function MarketingSettings({
       },
     }
   );
+
+  console.log(shop);
 
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
     ? dealSettingsQuery?.data?.data?.dealSetting[0]?.percentageBundle
@@ -556,6 +561,9 @@ export default function MarketingSettings({
           return <>--</>;
         }
 
+        // for percentage only
+        const discountAmount = (params?.row?.price / 100) * params?.row?.discountPercentage;
+
         return (
           <Stack direction="row" alignItems="center" gap={1.5}>
             <Stack direction="row" alignItems="center" gap={1.5}>
@@ -570,7 +578,10 @@ export default function MarketingSettings({
               {marketingType === 'percentage' && (
                 <Typography variant="body1" color={theme.palette.text.danger}>
                   {currency}{' '}
-                  {(params?.row?.price - (params?.row?.price / 100) * params?.row?.discountPercentage)?.toFixed(2)}{' '}
+                  {(
+                    params?.row?.price -
+                    (shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount)
+                  )?.toFixed(2)}{' '}
                 </Typography>
               )}
               {/* double_menu */}
