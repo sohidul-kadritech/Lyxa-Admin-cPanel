@@ -28,8 +28,8 @@ export default function Product({ product, isInsideBestSellers, isInsideFavorite
     {
       onSuccess: (data, args) => {
         if (data?.status) {
-          if (args.action === 'visibility') {
-            product.productVisibility = args.productVisibility;
+          if (args.action === 'status') {
+            product.status = args.status;
             successMsg(data?.message, 'success');
           }
           setRender(render);
@@ -52,11 +52,11 @@ export default function Product({ product, isInsideBestSellers, isInsideFavorite
   });
 
   const handleMenuClick = (menu) => {
-    if (menu === 'visibility') {
+    if (menu === 'status') {
       productMutation.mutate({
         id: product?._id,
-        productVisibility: !product?.productVisibility,
-        action: 'visibility',
+        status: product?.status === 'active' ? 'inactive' : 'active',
+        action: 'status',
       });
     } else if (menu === 'stock') {
       stockMutation.mutate({
@@ -103,7 +103,10 @@ export default function Product({ product, isInsideBestSellers, isInsideFavorite
           <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 66, height: 52 }}>
             {product?.name?.charAt(0)}
           </Avatar>
-          {product.stockQuantity < 1 && <ProductOverlayTag label="Out of Stock" color="#DD5B63" />}
+          {product?.status === 'inactive' && <ProductOverlayTag label="Deactivated" color="#363636" />}
+          {product.stockQuantity < 1 && product?.status === 'active' && (
+            <ProductOverlayTag label="Out of Stock" color="#DD5B63" />
+          )}
         </Box>
         <Stack gap={0.5}>
           <Stack direction="row" alignItems="center" justifyContent="start" gap={1.5}>

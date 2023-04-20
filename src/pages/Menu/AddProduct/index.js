@@ -43,7 +43,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const [categories, setCategories] = useState([]);
 
   const [hasAttribute, setHasAttribute] = useState('');
-  // const [hasInventory, setHasInventory] = useState(false);
 
   const [product, setProduct] = useState(
     editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
@@ -88,11 +87,29 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     {
       staleTime: minInMiliSec(10),
       onSuccess: (data) => {
+        // ConstructionOutlined
+        console.log(data);
         setCategories(
           (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
         );
       },
     }
+  );
+
+  const subCategoriesQuery = useQuery(
+    [
+      'all-sub-categories-by-category-id',
+      {
+        categoryId: product?.category,
+      },
+    ],
+    () =>
+      AXIOS.get(Api.GET_ALL_SUB_CATEGORY, {
+        params: {
+          status: 'active',
+          categoryId: product?.category,
+        },
+      })
   );
 
   useEffect(() => {
@@ -110,10 +127,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           setHasAttribute('yes');
         }
       }
-
-      // else if (product?.stockQuantity !== null && product?.stockQuantity !== '') {
-      //   setHasInventory(true);
-      // }
     }
   }, []);
 
@@ -122,7 +135,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   // input handler
   const commonChangeHandler = (e) => {
-    setProduct((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (e.target.name === 'category' && shop?.shopType !== 'food') {
+      setProduct((prev) => ({ ...prev, [e.target.name]: e.target.value, subCategory: '' }));
+    } else {
+      setProduct((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    }
   };
 
   const onDrop = (acceptedFiles) => {
@@ -196,6 +213,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     );
   }
 
+  console.log(product);
+
   return (
     <SidebarContainer title="Add Items" onClose={onClose}>
       {/* name */}
@@ -243,6 +262,29 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           readOnly: Boolean(newProductCategory) || productReadonly,
         }}
       />
+      {/* sub-category */}
+      {shop?.shopType !== 'food' && (
+        <StyledFormField
+          label="Sub-Category"
+          intputType="select"
+          containerProps={{
+            sx: fieldContainerSx,
+          }}
+          inputProps={{
+            name: 'subCategory',
+            value: product?.subCategory,
+            items: subCategoriesQuery?.data?.data?.subCategories || [],
+            onChange: commonChangeHandler,
+            readOnly: Boolean(newProductCategory) || productReadonly,
+            disabled: subCategoriesQuery.isLoading,
+            getLabel: (item) => item?.name,
+            getKey: (item) => item?._id,
+            getValue: (item) => item?._id,
+            getDisplayValue: (value) =>
+              subCategoriesQuery?.data?.data?.subCategories?.find((category) => category?._id === value)?.name || '',
+          }}
+        />
+      )}
       {/* description */}
       <StyledFormField
         label="Description"
