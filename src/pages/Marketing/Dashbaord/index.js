@@ -15,13 +15,14 @@ import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import PageSkeleton from './PageSkeleton';
 import ProductsInfoList from './ProductsInfoList';
-import { ViewMoreTag, dateRangeItit, gData } from './helpers';
+import { ViewMoreTag, dateRangeItit } from './helpers';
 import { ProductsInfoListData } from './mock';
 
 const mTypeMap = {
@@ -81,7 +82,7 @@ export default function MarketingDashboard() {
       })
   );
 
-  const oData = gData(
+  const oData = generateGraphData(
     ordersGraphQuery?.data?.data?.info || [],
     (item) => item.order,
     (item) => moment(item?.date).format('MMMM DD')
@@ -116,7 +117,7 @@ export default function MarketingDashboard() {
       })
   );
 
-  const cData = gData(
+  const cData = generateGraphData(
     customerGraphQuery?.data?.data?.info || [],
     (item) => item.customer,
     (item) => moment(item?.date).format('MMMM DD')
@@ -148,7 +149,7 @@ export default function MarketingDashboard() {
       })
   );
 
-  const aData = gData(
+  const aData = generateGraphData(
     amountGraphQuery?.data?.data?.info || [],
     (item) => item.amount,
     (item) => moment(item?.date).format('MMMM DD')
@@ -182,7 +183,7 @@ export default function MarketingDashboard() {
       })
   );
 
-  const pData = gData(
+  const pData = generateGraphData(
     loyalityGraphQuery?.data?.data?.info || [],
     (item) => item.amountSpent,
     (item) => moment(item?.date).format('MMMM DD')

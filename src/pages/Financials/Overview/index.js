@@ -2,7 +2,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 // third party
-import { Unstable_Grid2 as Grid, Stack } from '@mui/material';
+import { Button, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -19,6 +19,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { areaChartData, barChartData2, lineChartData } from '../../Marketing/Dashbaord/mock';
 import PayoutDetails from './PayoutDetails';
+import PriceItem from './PriceItem';
 
 const dateRangeItit = {
   end: moment().format('YYYY-MM-DD'),
@@ -27,12 +28,16 @@ const dateRangeItit = {
 
 export default function Overview() {
   const shop = useSelector((store) => store.Login.admin);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency);
+  // const currency = c.code;
+  // console.log(c);
 
-  const [revenueRange, setRevenueRange] = useState({ ...dateRangeItit });
-  const [payoutRange, setPayoutRange] = useState({ ...dateRangeItit });
+  const [orderAmountRange, setOrderAmountRange] = useState({ ...dateRangeItit });
+  const [profitRange, setProfitRange] = useState({ ...dateRangeItit });
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const [refundRange, setrefundRange] = useState({ ...dateRangeItit });
 
+  // summary
   const shopDashboardQuery = useQuery(
     ['shop-dashboard', { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end }],
     () =>
@@ -41,19 +46,68 @@ export default function Overview() {
       })
   );
 
+  // order amount graph
+  const orderAmountGraphQuery = useQuery(
+    ['shop-order-amount-graph', { startDate: orderAmountRange.start, endDate: orderAmountRange.end }],
+    () =>
+      AXIOS.get(Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, {
+        params: { startDate: orderAmountRange.start, endDate: orderAmountRange.end },
+      })
+  );
+
+  // order amount graph
+  const profitGraphQuery = useQuery(
+    ['shop-profit-graph', { startDate: profitRange.start, endDate: profitRange.end }],
+    () =>
+      AXIOS.get(Api.GET_SHOP_DASHBOARD_PROFIT_GRAPH, {
+        params: { startDate: profitRange.start, endDate: profitRange.end },
+      })
+  );
+
+  const marketingSpentAmount =
+    shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDiscount +
+    shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice +
+    shopDashboardQuery?.data?.data?.summary?.orderValue?.totalRewardAmount +
+    shopDashboardQuery?.data?.data?.summary?.freeDeliveryShopCut;
+
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
-      <ChartBox chartHeight={300} dateRange={revenueRange} setDateRange={setRevenueRange} title="Total Revenue" sm={12}>
+      <ChartBox
+        chartHeight={300}
+        dateRange={orderAmountRange}
+        setDateRange={setOrderAmountRange}
+        title="Total Order Amount"
+        sm={12}
+      >
         <StyledAreaChart data={areaChartData} />
       </ChartBox>
       <Grid xs={12}>
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+          <Button
+            variant="outlined"
+            sx={{
+              color: '#404040',
+              padding: '7px 15px',
+              fontSize: '13px',
+              lineHeight: '20px',
+              fontWeight: 500,
+              background: '#F6F8FA',
+            }}
+            onClick={() => {
+              setPaymentDetailsRange({
+                end: moment().format('YYYY-MM-DD'),
+                start: moment().subtract(1, 'd').format('YYYY-MM-DD'),
+              });
+            }}
+          >
+            Daily Profit
+          </Button>
           <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
         </Stack>
       </Grid>
       <InfoCard
-        title="Total Payout"
-        value={`$${
+        title="Total Profit"
+        value={`${currency?.symbol_native} ${
           Math.round(
             shopDashboardQuery?.data?.data?.summary?.orderValue?.deliveryFee +
               shopDashboardQuery?.data?.data?.summary?.toalShopProfile
@@ -76,19 +130,41 @@ export default function Overview() {
         lg={4}
       />
       <InfoCard
-        title="Customer Refund"
-        value="$12"
+        title="Marketing Spent"
+        isDropdown
+        value={`${currency?.symbol_native} ${marketingSpentAmount || 0}`}
         Tag={<IncreaseDecreaseTag status="decrement" amount="9%" />}
         sm={6}
         md={4}
         lg={4}
-      />
+      >
+        <Stack gap={3}>
+          {/* {shopDashboardQuery?.datapaymentDetails?.orderValue?.totalDiscount > 0 && ( */}
+          <PriceItem title="Discount" amount={shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDiscount} />
+          {/* )} */}
+          {/* {(shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice > 0 || true) && ( */}
+          <PriceItem
+            title="Buy 1 Get 1"
+            amount={shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice}
+          />
+          {/* )} */}
+          {/* {(shopDashboardQuery?.data?.data?.summary?.orderValue?.totalRewardAmount > 0 || true) && ( */}
+          <PriceItem
+            title="Loyalty points"
+            amount={shopDashboardQuery?.data?.data?.summary?.orderValue?.totalRewardAmount}
+          />
+          {/* )} */}
+          {/* {shopDashboardQuery?.data?.data?.summary?.freeDeliveryShopCut > 0 && ( */}
+          <PriceItem title="Free delivery" amount={shopDashboardQuery?.data?.data?.summary?.freeDeliveryShopCut} />
+          {/* )} */}
+        </Stack>
+      </InfoCard>
       <PayoutDetails paymentDetails={shopDashboardQuery?.data?.data?.summary} />
       <ChartBox
         chartHeight={325}
-        dateRange={payoutRange}
-        setDateRange={setPayoutRange}
-        title="Payout details"
+        dateRange={profitRange}
+        setDateRange={setProfitRange}
+        title="Profit details"
         sm={12}
         xl={6}
       >

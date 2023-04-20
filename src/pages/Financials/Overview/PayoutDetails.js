@@ -29,41 +29,41 @@ export default function Payout({ paymentDetails }) {
             title="Order Amount"
             tooltip="The fees you earn depend on how your customer order and receive their order. 
             VAT inclusivea"
-            titleAmount={`$${(
+            titleAmount={
               paymentDetails?.orderValue?.productAmount -
               (paymentDetails?.orderValue?.totalDiscount +
                 paymentDetails?.orderValue?.totalDoubleMenuItemPrice +
                 paymentDetails?.orderValue?.totalRewardAmount)
-            )?.toFixed(2)}`}
+            }
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 0 : -1);
             }}
           >
             {paymentDetails?.orderValue?.productAmountCash > 0 && (
-              <PriceItem title="Cash" amount={`$${paymentDetails?.orderValue?.productAmountCash?.toFixed(2)}`} />
+              <PriceItem title="Cash" amount={paymentDetails?.orderValue?.productAmountCash} />
             )}
             {paymentDetails?.orderValue?.productAmountOnline > 0 && (
-              <PriceItem title="Online" amount={`$${paymentDetails?.orderValue?.productAmountOnline?.toFixed(2)}`} />
+              <PriceItem title="Online" amount={paymentDetails?.orderValue?.productAmountOnline} />
             )}
             {paymentDetails?.orderValue?.totalDiscount > 0 && (
               <PriceItem
                 title="Discount applied"
-                amount={`-$${paymentDetails?.orderValue?.totalDiscount?.toFixed(2)}`}
+                amount={paymentDetails?.orderValue?.totalDiscount}
                 amountStatus="minus"
               />
             )}
             {paymentDetails?.orderValue?.totalDoubleMenuItemPrice > 0 && (
               <PriceItem
                 title="Buy 1 Get 1"
-                amount={`-$${paymentDetails?.orderValue?.totalDoubleMenuItemPrice?.toFixed(2)}`}
+                amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
                 amountStatus="minus"
               />
             )}
             {paymentDetails?.orderValue?.totalRewardAmount > 0 && (
               <PriceItem
                 title="Loyalty points"
-                amount={`-$${paymentDetails?.orderValue?.totalRewardAmount?.toFixed(2)}`}
+                amount={paymentDetails?.orderValue?.totalRewardAmount}
                 amountStatus="minus"
               />
             )}
@@ -74,7 +74,7 @@ export default function Payout({ paymentDetails }) {
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
-            titleAmount={`-$${Math.abs(paymentDetails?.totalDropGet)?.toFixed(2)}`}
+            titleAmount={Math.abs(paymentDetails?.totalDropGet)}
             titleAmountStatus="minus"
             isOpen={currentExpanedTab === 1}
             onChange={(closed) => {
@@ -95,7 +95,7 @@ export default function Payout({ paymentDetails }) {
             {paymentDetails?.freeDeliveryShopCut > 0 && (
               <PriceItem
                 title="Promotion: free delivery"
-                amount={`-$${paymentDetails?.freeDeliveryShopCut?.toFixed(2)}`}
+                amount={paymentDetails?.freeDeliveryShopCut}
                 amountStatus="minus"
               />
             )}
@@ -104,7 +104,7 @@ export default function Payout({ paymentDetails }) {
           {paymentDetails?.orderValue?.deliveryFee > 0 && (
             <DetailsAccordion
               title="Delivery fee"
-              titleAmount={`$${paymentDetails?.orderValue?.deliveryFee}`}
+              titleAmount={paymentDetails?.orderValue?.deliveryFee}
               tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
@@ -113,15 +113,15 @@ export default function Payout({ paymentDetails }) {
                 seCurrentExpanedTab(closed ? 2 : -1);
               }}
             >
-              <PriceItem title="Cash" amount={`$${paymentDetails?.orderValue?.deliveryFeeCash}`} />
-              <PriceItem title="Online" amount={`$${paymentDetails?.orderValue?.deliveryFeeOnline}`} />
-              <PriceItem title="Rider tip" amount={`$${paymentDetails?.orderValue?.deliveryFeeOnline}`} />
+              <PriceItem title="Cash" amount={paymentDetails?.orderValue?.deliveryFeeCash} />
+              <PriceItem title="Online" amount={paymentDetails?.orderValue?.deliveryFeeOnline} />
+              <PriceItem title="Rider tip" amount={paymentDetails?.orderValue?.deliveryFeeOnline} />
             </DetailsAccordion>
           )}
           {/* points cashback */}
           <DetailsAccordion
             title="Points cashback"
-            titleAmount={`$${paymentDetails?.orderValue?.pointsCashback?.toFixed(2)}`}
+            titleAmount={paymentDetails?.orderValue?.pointsCashback}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
@@ -136,7 +136,7 @@ export default function Payout({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Payout"
-            titleAmount={`$${(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile)?.toFixed(2)}`}
+            titleAmount={paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
@@ -151,15 +151,15 @@ export default function Payout({ paymentDetails }) {
             {paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile > 0 && (
               <PriceItem
                 title="Paid"
-                amount={`$${(
+                amount={
                   paymentDetails?.orderValue?.deliveryFee +
                   paymentDetails?.toalShopProfile -
                   paymentDetails?.totalShopUnsettle
-                )?.toFixed(2)}`}
+                }
               />
             )}
             {paymentDetails?.totalShopUnsettle > 0 && (
-              <PriceItem title="Unpaid" amount={`$${paymentDetails?.totalShopUnsettle?.toFixed(2)}`} />
+              <PriceItem title="Unpaid" amount={paymentDetails?.totalShopUnsettle} />
             )}
           </DetailsAccordion>
         </Box>

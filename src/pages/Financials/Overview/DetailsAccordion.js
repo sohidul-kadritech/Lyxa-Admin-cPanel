@@ -1,6 +1,7 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Tooltip, Typography, styled } from '@mui/material';
 import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
@@ -55,6 +56,7 @@ export default function DetailsAccordion({
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   return (
     <StyledAccordion
@@ -64,7 +66,10 @@ export default function DetailsAccordion({
       }}
       {...props}
     >
-      <StyledAccordionSummary expandIcon={<ExpandMore />}>
+      <StyledAccordionSummary
+        // className={`${containerRef.current?.childNodes?.length === 0 ? 'icon-hidden' : ''}`}
+        expandIcon={<ExpandMore />}
+      >
         <Stack direction="row" alignItems="center" justifyContent="space-between" flex={1}>
           <Stack direction="row" alignItems="center" gap={2.5}>
             <Typography variant="body1" fontWeight={600}>
@@ -75,7 +80,7 @@ export default function DetailsAccordion({
             </Tooltip>
           </Stack>
           <Typography variant="body1" fontWeight={600} color={titleAmountStatus === 'minus' ? 'error' : undefined}>
-            {titleAmount}
+            {currency} {(titleAmount || 0).toFixed(2)}
           </Typography>
         </Stack>
       </StyledAccordionSummary>

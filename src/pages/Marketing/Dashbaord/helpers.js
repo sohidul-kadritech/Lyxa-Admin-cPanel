@@ -20,19 +20,6 @@ export const dateRangeItit = {
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
 
-export const gData = (items, getData, getLabel) => {
-  const labels = [];
-  const data = [];
-
-  items.forEach((item) => {
-    // labels.push();
-    labels.push(getLabel(item));
-    data.push(getData(item));
-  });
-
-  return { labels, data };
-};
-
 // export function DateRange({ range, setRange }) {
 //   return (
 //     <Stack direction="row" alignItems="center" gap={2}>
