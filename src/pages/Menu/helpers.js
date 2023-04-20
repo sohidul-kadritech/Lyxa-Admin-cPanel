@@ -156,38 +156,6 @@ export const attrItemInit = {
   price: '',
 };
 
-export const createCatagory = (data, type) => {
-  if (type === 'bestseller') {
-    return {
-      category: {
-        _id: 'bestsellerItems',
-        name: 'Best sellers',
-        isUnsortable: true,
-        isShopBestSellers: true,
-      },
-      sortedProducts:
-        data?.bestSellerItems?.map((item) => ({
-          ...item?._id,
-          totalSold: item?.totalSold,
-          isUnsortable: true,
-        })) || [],
-    };
-  }
-
-  return {
-    category: {
-      _id: 'shopfavoriteItems',
-      name: 'Favourites',
-      isUnsortable: true,
-      isShopFavorites: true,
-    },
-    sortedProducts:
-      data?.map((item) => ({
-        ...item?.product,
-      })) || [],
-  };
-};
-
 export const createProductData = async (product, shop, isEditProduct) => {
   const imgUrl = await getImageUrl(product?.images[0]);
 

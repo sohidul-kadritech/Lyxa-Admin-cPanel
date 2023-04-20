@@ -15,7 +15,7 @@ import { ProductsContext } from '../ProductContext';
 import { ProductOverlayTag, getProductMenuOptions, isBestSellerOrFavorite } from '../helpers';
 
 export default function ProductItem({ product, isInsideBestSellers, isInsideFavorites, ...props }) {
-  const { favorites, setEditProduct, bestSellers, setFavorites } = useContext(ProductsContext);
+  const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
 
   const theme = useTheme();
   const history = useHistory();
@@ -30,15 +30,11 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
         action: undefined,
       }),
     {
-      onSuccess: (data, args) => {
+      onSuccess: (data) => {
+        successMsg(data?.message, data?.status ? 'success' : undefined);
         if (data?.status) {
-          if (args.action === 'status') {
-            product.status = args.status;
-            successMsg(data?.message, 'success');
-          }
           setRender(render);
-        } else {
-          successMsg(data?.message);
+          setUpdatedProduct(data?.data?.product || {});
         }
       },
     }
@@ -46,11 +42,10 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
 
   // stock update
   const stockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STOCK, data), {
-    onSuccess: (data, args) => {
+    onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
-        product.stockQuantity = args.stockQuantity;
-        product.isStockEnabled = false;
+        setUpdatedProduct(data?.data?.product || {});
       }
     },
   });

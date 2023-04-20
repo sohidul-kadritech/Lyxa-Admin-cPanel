@@ -20,10 +20,11 @@ import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
 import AddSubCategory from './AddSubCategory';
 import CategoryItem from './List/CategoryItem';
+import { createCatagory } from './List/helpers';
 import PageSkeleton from './PageSkeleton';
 import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
-import { OngoingTag, createCatagory } from './helpers';
+import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
   const searchThrottler = new Throttler(200);
@@ -40,6 +41,7 @@ export default function MenuPage() {
   const [newProductCategory, setNewProductCategory] = useState(null);
   const [editProduct, setEditProduct] = useState({});
   const [productReadonly, setProductReadonly] = useState(false);
+  const [updatedProduct, setUpdatedProduct] = useState({});
 
   // products
   const [categories, setCategories] = useState([]);
@@ -60,7 +62,7 @@ export default function MenuPage() {
       staleTime: 1000 * 60 * 5,
       onSuccess: (data) => {
         setCategories((prev) => data?.data?.productsGroupByCategory || prev);
-        setFavorites((prev) => createCatagory(data?.data?.shopFavouriteItems || [], 'favorites') || prev);
+        setFavorites((prev) => createCatagory(data?.data || {}, 'favorites') || prev);
         setBestSellers((prev) => createCatagory(data?.data || {}, 'bestseller') || prev);
       },
     }
@@ -69,7 +71,7 @@ export default function MenuPage() {
   useEffect(() => {
     if (productsQuery?.data?.status) {
       setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
-      setFavorites((prev) => createCatagory(productsQuery?.data?.data?.shopFavouriteItems || [], 'favorites') || prev);
+      setFavorites((prev) => createCatagory(productsQuery?.data?.data || {}, 'favorites') || prev);
       setBestSellers((prev) => createCatagory(productsQuery?.data?.data || {}, 'bestseller') || prev);
     }
   }, []);
@@ -102,13 +104,15 @@ export default function MenuPage() {
       setFavorites,
       editProduct,
       bestSellers,
+      updatedProduct,
+      setUpdatedProduct,
       setEditProduct: (product, readonly) => {
         setEditProduct(product);
         setSidebar('add-item');
         setProductReadonly(readonly);
       },
     }),
-    [favorites]
+    [favorites, updatedProduct]
   );
 
   return (

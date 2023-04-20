@@ -60,10 +60,6 @@ export default function CategoryItem({
     return category?.sortedProducts || [];
   };
 
-  if (!isOridanryCategory) {
-    console.log(category);
-  }
-
   return (
     <StyledAccordion
       expanded={open}
