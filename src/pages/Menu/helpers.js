@@ -78,7 +78,9 @@ export const getProductMenuOptions = (product, shopFavourites) => [
     value: 'visibility',
   },
   {
-    label: shopFavourites?.find((item) => item?.product?._id === product?._id) ? 'Remove favourite' : 'Add favourite',
+    label: shopFavourites?.sortedProducts?.find((item) => item?._id === product?._id)
+      ? 'Remove favourite'
+      : 'Add favourite',
     value: 'favourite',
   },
 ];
@@ -256,7 +258,6 @@ export const converEditProduct = (product) => {
     ...data,
   };
 };
-
 // validate
 export const validateCategory = (category) => {
   const status = {
@@ -284,7 +285,6 @@ export const validateCategory = (category) => {
   };
 };
 
-// validate
 export const validateProduct = (product) => {
   const status = {
     status: false,
@@ -371,3 +371,24 @@ export function OngoingTag({ label }) {
     </Button>
   );
 }
+
+export const isBestSellerOrFavorite = (bestSellers, favorites, product) => {
+  const status = {
+    isBestSeller: false,
+    isFavorite: false,
+  };
+
+  bestSellers.sortedProducts?.forEach((item) => {
+    if (item?._id === product?._id) {
+      status.isBestSeller = true;
+    }
+  });
+
+  favorites.sortedProducts?.forEach((item) => {
+    if (item?._id === product?._id) {
+      status.isFavorite = true;
+    }
+  });
+
+  return status;
+};
