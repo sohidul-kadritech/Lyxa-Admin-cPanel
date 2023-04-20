@@ -23,9 +23,9 @@ export class ShopDeals {
     };
 
     shop?.marketings.forEach((obj) => {
-      if (obj?.type === 'free_delivery' && obj?.isActive) {
-        deals.free_delivery = true;
-        deals.hasActiveDeal = true;
+      if (obj?.type === 'free_delivery') {
+        deals.free_delivery = obj?.isActive;
+        deals.hasActiveDeal = obj?.isActive;
       } else {
         deals[obj?.type].isActive = obj?.isActive;
         deals[obj?.type].isEntireMenu = obj?.itemSelectionType === 'multiple';

@@ -37,6 +37,7 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
 
 const detailsSx = {
   paddingBottom: '30px',
+  paddingLeft: '30px',
 };
 
 const accodionSx = {
@@ -88,6 +89,15 @@ export default function CategoryContainer({
       setOpen(gOpen);
     }
   }, [gOpen]);
+
+  const product = () => {
+    if (category?.sortedProducts === undefined) console.log('====>', category);
+    return category?.sortedProducts || [];
+  };
+
+  if (!isOridanryCategory) {
+    console.log(category);
+  }
 
   return (
     <Accordion
@@ -141,9 +151,11 @@ export default function CategoryContainer({
           >
             {!isOridanryCategory && (
               <StyledSwitch
-                checked={category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive}
+                checked={
+                  category?.category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive
+                }
                 onChange={(e) => {
-                  if (category?.isShopBestSellers) {
+                  if (category?.category?.isShopBestSellers) {
                     bestSellerMutation.mutate(e.target.checked);
                     shop.bestSeller.isActive = e.target.checked;
                   } else {
@@ -184,9 +196,11 @@ export default function CategoryContainer({
       </StyledAccordionSummary>
       <AccordionDetails sx={detailsSx}>
         <ProductsContainer
-          products={category?.sortedProducts}
+          products={product()}
           onProductMenuClick={onProductMenuClick}
           fromSearch={fromSearch}
+          isInsideFavorites={category?.category?.isShopFavorites}
+          isInsideBestSellers={category?.category?.isShopBestSellers}
         />
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>

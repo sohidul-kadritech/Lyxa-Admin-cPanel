@@ -7,7 +7,7 @@ export const getSubCategoryInit = () => ({
 
 export const addSubCategoriesInit = {
   categoryId: '',
-  subCategories: [getSubCategoryInit(), getSubCategoryInit()],
+  categories: [getSubCategoryInit(), getSubCategoryInit()],
 };
 
 export const validateAddSubCategories = (addSubCategories) => {
@@ -23,7 +23,7 @@ export const validateAddSubCategories = (addSubCategories) => {
     };
   }
 
-  addSubCategories?.subCategories?.forEach((category) => {
+  addSubCategories?.categories?.forEach((category) => {
     const fmtName = category?.name?.replaceAll(' ', '_').toLowerCase();
 
     if (name_map[fmtName]) {
@@ -46,10 +46,10 @@ export const validateAddSubCategories = (addSubCategories) => {
 };
 
 export const createCategoriesData = (addSubCategories) => ({
-  ...addSubCategories,
-  subCategories: addSubCategories?.subCategories?.map((category, index) => ({
+  subCategories: addSubCategories?.categories?.map((category, index) => ({
     name: category?.name,
     status: 'active',
-    slug: `${category?.name}${Math.round(Math.random() * (100 + index))}`,
+    slug: `${category?.name?.toLowerCase().replaceAll(' ', '_')}${Math.round(Math.random() * (100 + index))}`,
+    categoryId: addSubCategories?.categoryId,
   })),
 });

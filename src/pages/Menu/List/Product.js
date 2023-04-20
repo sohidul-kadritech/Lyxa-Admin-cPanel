@@ -2,6 +2,7 @@
 import { Avatar, Box, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
+import { useSelector } from 'react-redux';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledInput from '../../../components/Styled/StyledInput';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
@@ -9,13 +10,14 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
-import { ProductOverlayTag, getProductMenuOptions } from '../helpers';
+import { ProductOverlayTag, getProductMenuOptions, isBestSellerOrFavorite } from '../helpers';
 
-export default function Product({ product, onMenuClick, ...props }) {
-  const { favorites, setEditProduct } = useContext(ProductsContext);
+export default function Product({ product, isInsideBestSellers, isInsideFavorites, onMenuClick, ...props }) {
+  const { favorites, setEditProduct, bestSellers } = useContext(ProductsContext);
 
   const theme = useTheme();
   const [render, setRender] = useState(false);
+  const shop = useSelector((store) => store.Login.admin);
 
   const productMutation = useMutation(
     (data) =>
@@ -66,6 +68,8 @@ export default function Product({ product, onMenuClick, ...props }) {
     }
   };
 
+  const isBestSellerAndFavorite = isBestSellerOrFavorite(bestSellers, favorites, product);
+
   return (
     <Stack
       direction="row"
@@ -102,9 +106,32 @@ export default function Product({ product, onMenuClick, ...props }) {
           {product.stockQuantity < 1 && <ProductOverlayTag label="Out of Stock" color="#DD5B63" />}
         </Box>
         <Stack gap={0.5}>
-          <Typography variant="body4" fontWeight={600}>
-            {product?.name}
-          </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="start" gap={1.5}>
+            <Typography variant="body4" fontWeight={600}>
+              {product?.name}
+            </Typography>
+            {shop.shopType === 'food' && (
+              <>
+                {isBestSellerAndFavorite.isFavorite && !isInsideFavorites && (
+                  <Typography variant="body4" fontWeight={600} fontStyle="italic" color="error">
+                    Favourite
+                  </Typography>
+                )}
+                {isBestSellerAndFavorite.isBestSeller && !isInsideBestSellers && (
+                  <Typography
+                    variant="body4"
+                    fontWeight={600}
+                    fontStyle="italic"
+                    sx={{
+                      color: '#5BBD4E',
+                    }}
+                  >
+                    Bestseller
+                  </Typography>
+                )}
+              </>
+            )}
+          </Stack>
           <Typography variant="body4" color={theme.palette.text.secondary2}>
             {`${product?.seoDescription?.slice(0, 50)}${product?.seoDescription?.length > 50 ? '...' : ''}`}
           </Typography>

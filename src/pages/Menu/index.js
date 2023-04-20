@@ -21,7 +21,7 @@ import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
 import AddSubCategory from './AddSubCategory';
 import CategoryContainer from './List/CategoryContainer';
-import MenuPageSkeleton from './MenuPageSkeleton';
+import PageSkeleton from './PageSkeleton';
 import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
 import { OngoingTag, createCatagory } from './helpers';
@@ -33,7 +33,6 @@ export default function MenuPage() {
   const shop = useSelector((store) => store.Login.admin);
   const Deals = useMemo(() => new ShopDeals(shop), []);
 
-  // const [hasMarketing, setHasMarketing] = useState(false);
   const [render, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
   const [category_open, set_category_open] = useState(null);
@@ -45,9 +44,11 @@ export default function MenuPage() {
 
   // products
   const [categories, setCategories] = useState([]);
+  const [favorites, setFavorites] = useState({});
+  const [bestSellers, setBestSellers] = useState({});
+
   const [editCategory, setEditCategory] = useState({});
   const [searchCategories, setSearchCategories] = useState([]);
-  const [favorites, setFavorites] = useState([]);
 
   const productsQuery = useQuery(
     ['category-wise-products', { shopId: shop?._id }],
@@ -61,7 +62,8 @@ export default function MenuPage() {
       staleTime: 1000 * 60 * 5,
       onSuccess: (data) => {
         setCategories((prev) => data?.data?.productsGroupByCategory || prev);
-        setFavorites((prev) => data?.data?.shopFavouriteItems || prev);
+        setFavorites((prev) => createCatagory(data?.data?.shopFavouriteItems || [], 'favorites') || prev);
+        setBestSellers((prev) => createCatagory(data?.data || {}, 'bestseller') || prev);
       },
     }
   );
@@ -69,7 +71,7 @@ export default function MenuPage() {
   useEffect(() => {
     if (productsQuery?.data?.status) {
       setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
-      setFavorites((prev) => productsQuery?.data?.data?.shopFavouriteItems || prev);
+      setFavorites((prev) => createCatagory(productsQuery?.data?.data?.shopFavouriteItems || [], 'favorites') || prev);
     }
   }, []);
 
@@ -88,48 +90,60 @@ export default function MenuPage() {
 
   const handleFavouriteChange = (product) => {
     // remove item
-    if (favorites?.find((item) => item?.product?._id === product?._id)) {
-      const newList = [];
+    if (favorites.sortedProducts?.find((item) => item?._id === product?._id)) {
+      const updateToApiList = [];
       let i = 1;
 
-      setFavorites((prev) =>
-        prev?.filter((item) => {
-          if (item?.product?._id !== product?._id) {
-            newList.push({
-              product: item?.product?._id,
+      setFavorites((prev) => {
+        const newList = prev?.sortedProducts?.filter((item) => {
+          if (item?._id !== product?._id) {
+            updateToApiList.push({
+              product: item?._id,
               sortingOrder: i,
             });
 
             i++;
+
+            return true;
           }
-          return item?.product?._id !== product?._id;
-        })
-      );
+
+          return false;
+        });
+
+        return {
+          ...prev,
+          sortedProducts: newList,
+        };
+      });
 
       favoriteMutation.mutate({
-        products: newList,
+        products: updateToApiList,
       });
+
       return;
     }
 
     // item already full
-    if (favorites?.length >= 3) {
+    if (favorites?.sortedProducts?.length >= 3) {
       successMsg('Favourites items is already full');
       return;
     }
 
     // add item
-    const l = favorites?.length + 1 || 0;
-    setFavorites((prev) => [...prev, { sortingOrder: l, product }]);
+    const newFavouritesList = [...favorites?.sortedProducts, product];
 
-    const newList = favorites?.map((item, index) => ({
-      product: item?.product?._id,
+    setFavorites((prev) => ({
+      ...prev,
+      sortedProducts: newFavouritesList,
+    }));
+
+    const updateToApiList = newFavouritesList.map((item, index) => ({
+      product: item?._id,
       sortingOrder: index + 1,
     }));
-    newList.push({ product: product?._id, sortingOrder: l });
 
     favoriteMutation.mutate({
-      products: newList,
+      products: updateToApiList,
     });
   };
 
@@ -179,6 +193,7 @@ export default function MenuPage() {
         setSidebar('add-item');
         setProductReadonly(true);
       },
+      bestSellers,
     }),
     [favorites]
   );
@@ -195,7 +210,7 @@ export default function MenuPage() {
           backgroundColor: '#fbfbfb',
         }}
       />
-      {productsQuery?.isLoading && <MenuPageSkeleton />}
+      {productsQuery?.isLoading && <PageSkeleton />}
       {!productsQuery?.isLoading && (
         <>
           <Searchbar
@@ -218,16 +233,21 @@ export default function MenuPage() {
           />
           {searchValue === '' && (
             <>
-              <CategoryContainer
-                category={createCatagory(productsQuery?.data?.data || {}, 'bestseller')}
-                onProductMenuClick={onProductMenuClick}
-                gOpen={category_open}
-              />
-              <CategoryContainer
-                category={createCatagory(favorites, 'favorites')}
-                onProductMenuClick={onProductMenuClick}
-                gOpen={category_open}
-              />
+              {shop.shopType === 'food' && (
+                <>
+                  <CategoryContainer
+                    category={bestSellers}
+                    onProductMenuClick={onProductMenuClick}
+                    gOpen={category_open}
+                  />
+                  <CategoryContainer
+                    category={favorites}
+                    onProductMenuClick={onProductMenuClick}
+                    gOpen={category_open}
+                  />
+                </>
+              )}
+
               <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
                 {categories.map((category) => (
                   <Draggable key={category?.category?._id}>
