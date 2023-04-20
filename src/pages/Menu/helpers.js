@@ -74,8 +74,8 @@ export const getProductMenuOptions = (product, shopFavourites) => [
     value: 'stock',
   },
   {
-    label: product?.productVisibility ? 'Deactivate' : 'Active',
-    value: 'visibility',
+    label: product?.status === 'active' ? 'Deactivate' : 'Active',
+    value: 'status',
   },
   {
     label: shopFavourites?.sortedProducts?.find((item) => item?._id === product?._id)
@@ -139,6 +139,7 @@ export const productInit = {
   type: '',
   shop: '',
   category: '',
+  subCategory: '',
   seoDescription: '',
   price: '',
   images: [],
@@ -202,10 +203,14 @@ export const createProductData = async (product, shop, isEditProduct) => {
   let addons = product?.addons;
   let attributes = product?.attributes;
   let dietry = product?.dietry;
+  let subCategory = product?.subCategory;
 
   if (shop?.shopType === 'food') {
     stockQuantity = undefined;
+    subCategory = undefined;
+
     addons = product?.addons?.map((p) => p?._id);
+
     if (attributes[0]) {
       attributes[0].items = attributes[0].items.filter((item) => item.name && item.extraPrice);
     }
@@ -224,6 +229,7 @@ export const createProductData = async (product, shop, isEditProduct) => {
     dietry,
     addons,
     attributes,
+    subCategory,
     id: isEditProduct ? product?._id : undefined,
   };
 };
@@ -291,6 +297,8 @@ export const validateProduct = (product) => {
     msg: null,
   };
 
+  // console.log(product);
+
   if (!product?.type) {
     status.msg = 'Product type cannot be empty';
     return status;
@@ -303,6 +311,11 @@ export const validateProduct = (product) => {
 
   if (!product?.category) {
     status.msg = 'Product category cannot be empty';
+    return status;
+  }
+
+  if (product?.type !== 'food' && !product?.subCategory) {
+    status.msg = 'Product Sub-Category can not be emtpy';
     return status;
   }
 

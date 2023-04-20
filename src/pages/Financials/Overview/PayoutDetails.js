@@ -17,10 +17,10 @@ export default function Payout({ paymentDetails }) {
         }}
       >
         <Typography variant="body1" fontWeight={600} pb={2}>
-          Payout Breakdown
+          Profit Breakdown
         </Typography>
         <Typography variant="body4" color="#737373">
-          Expected payout is scheduled on March 2, 2020. Usually, payments deposit in 1-3 business days, but the exact
+          Expected profit is scheduled on March 2, 2020. Usually, payments deposit in 1-3 business days, but the exact
           time may vary based on your bank.
         </Typography>
         <Box pt={2.5}>

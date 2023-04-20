@@ -21,6 +21,7 @@ import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ProductsContainer from './ProductsContainer';
+import SubCategoriesContainer from './SubCategoryContainer';
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   padding: '0',
@@ -136,7 +137,9 @@ export default function CategoryContainer({
                   {category?.category?.name}
                 </Typography>
                 <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
-                  {isOridanryCategory ? `${category?.sortedProducts?.length} items` : '3 items (max) '}
+                  {shop?.shopType === 'food' &&
+                    (isOridanryCategory ? `${category?.sortedProducts?.length} items` : '3 items (max) ')}
+                  {shop?.shopType !== 'food' && `${category?.subCategories?.length} sub categories`}
                 </Typography>
               </Box>
             </Stack>
@@ -195,13 +198,18 @@ export default function CategoryContainer({
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails sx={detailsSx}>
-        <ProductsContainer
-          products={product()}
-          onProductMenuClick={onProductMenuClick}
-          fromSearch={fromSearch}
-          isInsideFavorites={category?.category?.isShopFavorites}
-          isInsideBestSellers={category?.category?.isShopBestSellers}
-        />
+        {/* type food */}
+        {shop?.shopType === 'food' && (
+          <ProductsContainer
+            products={product()}
+            onProductMenuClick={onProductMenuClick}
+            fromSearch={fromSearch}
+            isInsideFavorites={category?.category?.isShopFavorites}
+            isInsideBestSellers={category?.category?.isShopBestSellers}
+          />
+        )}
+        {/* type grocery and pharmacy */}
+        {shop?.shopType !== 'food' && <SubCategoriesContainer subCategories={category?.subCategories} />}
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>
             <Button

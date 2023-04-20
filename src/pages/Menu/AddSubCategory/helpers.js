@@ -50,6 +50,6 @@ export const createCategoriesData = (addSubCategories) => ({
     name: category?.name,
     status: 'active',
     slug: `${category?.name?.toLowerCase().replaceAll(' ', '_')}${Math.round(Math.random() * (100 + index))}`,
-    categoryId: addSubCategories?.categoryId,
+    category: addSubCategories?.categoryId,
   })),
 });
