@@ -147,7 +147,21 @@ export default function Payout({ paymentDetails }) {
             sx={{
               borderBottom: '0',
             }}
-          ></DetailsAccordion>
+          >
+            {paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile > 0 && (
+              <PriceItem
+                title="Paid"
+                amount={`$${(
+                  paymentDetails?.orderValue?.deliveryFee +
+                  paymentDetails?.toalShopProfile -
+                  paymentDetails?.totalShopUnsettle
+                )?.toFixed(2)}`}
+              />
+            )}
+            {paymentDetails?.totalShopUnsettle > 0 && (
+              <PriceItem title="Unpaid" amount={`$${paymentDetails?.totalShopUnsettle?.toFixed(2)}`} />
+            )}
+          </DetailsAccordion>
         </Box>
       </StyledBox>
     </Grid>
