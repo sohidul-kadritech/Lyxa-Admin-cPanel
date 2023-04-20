@@ -1,17 +1,6 @@
 /* eslint-disable import/no-named-as-default */
 import { Add, Edit, ExpandMore } from '@mui/icons-material';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Avatar,
-  Box,
-  Button,
-  Stack,
-  Typography,
-  styled,
-  useTheme,
-} from '@mui/material';
+import { AccordionDetails, Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -21,41 +10,16 @@ import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ProductsContainer from './ProductsContainer';
-import SubCategoriesContainer from './SubCategoryContainer';
+import SubCategoriesContainer from './SubCategoriesContainer';
+import { StyledAccordion, StyledAccordionSummary } from './helpers';
 
-const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  padding: '0',
-  background: 'transparent',
-  borderBottom: '1px solid #EEEEEE',
-  '& .MuiSvgIcon-root': {
-    color: theme.palette.text.primary,
-  },
-  '& .MuiAccordionSummary-content': {
-    marginTop: '13px',
-    marginBottom: '13px',
-  },
-}));
-
-const detailsSx = {
-  paddingBottom: '30px',
-  paddingLeft: '30px',
-};
-
-const accodionSx = {
-  background: 'transparent',
-  '&:before': {
-    display: 'none',
-  },
-};
-
-export default function CategoryContainer({
+export default function CategoryItem({
   category,
   setEditCategory,
   isOridanryCategory,
-  onProductMenuClick,
   setNewProductCategory,
   gOpen,
-  fromSearch,
+  asSearchResult,
 }) {
   const theme = useTheme();
   const shop = useSelector((store) => store.Login.admin);
@@ -101,13 +65,12 @@ export default function CategoryContainer({
   }
 
   return (
-    <Accordion
+    <StyledAccordion
       expanded={open}
       onChange={(e, closed) => {
         setOpen(closed);
       }}
       sx={{
-        ...accodionSx,
         borderBottom: open ? '1px solid #EEEEEE' : null,
         backgroundColor: '#fbfbfb',
       }}
@@ -197,19 +160,17 @@ export default function CategoryContainer({
           </Stack>
         </Stack>
       </StyledAccordionSummary>
-      <AccordionDetails sx={detailsSx}>
-        {/* type food */}
+      <AccordionDetails>
         {shop?.shopType === 'food' && (
           <ProductsContainer
             products={product()}
-            onProductMenuClick={onProductMenuClick}
-            fromSearch={fromSearch}
+            asSearchResult={asSearchResult}
             isInsideFavorites={category?.category?.isShopFavorites}
             isInsideBestSellers={category?.category?.isShopBestSellers}
           />
         )}
-        {/* type grocery and pharmacy */}
         {shop?.shopType !== 'food' && <SubCategoriesContainer subCategories={category?.subCategories} />}
+
         {isOridanryCategory && (
           <Box pl={8.5} pt={2.5}>
             <Button
@@ -226,6 +187,6 @@ export default function CategoryContainer({
           </Box>
         )}
       </AccordionDetails>
-    </Accordion>
+    </StyledAccordion>
   );
 }

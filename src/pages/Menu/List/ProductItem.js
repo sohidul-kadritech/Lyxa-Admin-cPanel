@@ -3,22 +3,26 @@ import { Avatar, Box, InputAdornment, Stack, Typography, useTheme } from '@mui/m
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledInput from '../../../components/Styled/StyledInput';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
+import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
 import { ProductOverlayTag, getProductMenuOptions, isBestSellerOrFavorite } from '../helpers';
 
-export default function Product({ product, isInsideBestSellers, isInsideFavorites, onMenuClick, ...props }) {
-  const { favorites, setEditProduct, bestSellers } = useContext(ProductsContext);
+export default function ProductItem({ product, isInsideBestSellers, isInsideFavorites, ...props }) {
+  const { favorites, setEditProduct, bestSellers, setFavorites } = useContext(ProductsContext);
 
   const theme = useTheme();
+  const history = useHistory();
   const [render, setRender] = useState(false);
   const shop = useSelector((store) => store.Login.admin);
 
+  // status update
   const productMutation = useMutation(
     (data) =>
       AXIOS.post(Api.EDIT_PRODUCT, {
@@ -40,35 +44,122 @@ export default function Product({ product, isInsideBestSellers, isInsideFavorite
     }
   );
 
+  // stock update
   const stockMutation = useMutation((data) => AXIOS.post(Api.UPDATE_PRODUCT_STOCK, data), {
     onSuccess: (data, args) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
-        console.log(args.stockQuantity);
         product.stockQuantity = args.stockQuantity;
         product.isStockEnabled = false;
       }
     },
   });
 
+  // favourite update
+  const favoriteMutation = useMutation(
+    (data) =>
+      AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, {
+        shopId: shop?._id,
+        ...data,
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
+
+  const handleFavouriteChange = (product) => {
+    // remove item
+    if (favorites.sortedProducts?.find((item) => item?._id === product?._id)) {
+      const updateToApiList = [];
+      let i = 1;
+
+      setFavorites((prev) => {
+        const newList = prev?.sortedProducts?.filter((item) => {
+          if (item?._id !== product?._id) {
+            updateToApiList.push({
+              product: item?._id,
+              sortingOrder: i,
+            });
+
+            i++;
+
+            return true;
+          }
+
+          return false;
+        });
+
+        return {
+          ...prev,
+          sortedProducts: newList,
+        };
+      });
+
+      favoriteMutation.mutate({
+        products: updateToApiList,
+      });
+
+      return;
+    }
+
+    // item already full
+    if (favorites?.sortedProducts?.length >= 3) {
+      successMsg('Favourites items is already full');
+      return;
+    }
+
+    // add item
+    const newFavouritesList = [...(favorites?.sortedProducts || []), product];
+
+    setFavorites((prev) => ({
+      ...prev,
+      sortedProducts: newFavouritesList,
+    }));
+
+    const updateToApiList = newFavouritesList.map((item, index) => ({
+      product: item?._id,
+      sortingOrder: index + 1,
+    }));
+
+    favoriteMutation.mutate({
+      products: updateToApiList,
+    });
+  };
+
+  // handle menu click
   const handleMenuClick = (menu) => {
+    if (menu === 'marketing') history.push('/marketing');
+
+    if (menu === 'edit') {
+      setEditProduct(deepClone(product));
+    }
+
+    if (menu === 'favourite') {
+      handleFavouriteChange(product);
+    }
+
     if (menu === 'status') {
       productMutation.mutate({
         id: product?._id,
         status: product?.status === 'active' ? 'inactive' : 'active',
         action: 'status',
       });
-    } else if (menu === 'stock') {
+    }
+
+    if (menu === 'stock') {
       stockMutation.mutate({
         productId: product?._id,
         stockQuantity: product?.stockQuantity < 1 ? 1 : 0,
       });
-    } else {
-      onMenuClick(menu, product);
     }
   };
 
-  const isBestSellerAndFavorite = isBestSellerOrFavorite(bestSellers, favorites, product);
+  const isBestSellerAndFavorite =
+    shop?.shopType === 'food'
+      ? isBestSellerOrFavorite(bestSellers, favorites, product)
+      : { isFavorite: false, isBestSeller: false };
 
   return (
     <Stack
@@ -77,7 +168,7 @@ export default function Product({ product, isInsideBestSellers, isInsideFavorite
       justifyContent="space-between"
       bgcolor="#fbfbfb"
       onClick={() => {
-        setEditProduct(product);
+        setEditProduct(product, true);
       }}
       {...props}
     >
