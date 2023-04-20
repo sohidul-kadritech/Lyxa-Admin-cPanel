@@ -15,9 +15,10 @@ import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecre
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChart from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
+import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import { areaChartData, barChartData2, lineChartData } from '../../Marketing/Dashbaord/mock';
+import { lineChartData } from '../../Marketing/Dashbaord/mock';
 import PayoutDetails from './PayoutDetails';
 import PriceItem from './PriceItem';
 
@@ -51,18 +52,55 @@ export default function Overview() {
     ['shop-order-amount-graph', { startDate: orderAmountRange.start, endDate: orderAmountRange.end }],
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, {
-        params: { startDate: orderAmountRange.start, endDate: orderAmountRange.end },
+        params: { startDate: orderAmountRange.start, endDate: orderAmountRange.end, type: 'normal' },
       })
   );
+
+  const orderAmountData = generateGraphData(
+    orderAmountGraphQuery?.data?.data?.info || [],
+    (item) => item.revenue,
+    (item) => moment(item?.date).format('MMMM DD')
+  );
+
+  const areaChartData = {
+    labels: orderAmountData.labels,
+    datasets: [
+      {
+        fill: true,
+        label: 'Amount',
+        data: orderAmountData.data,
+        borderColor: 'rgba(126, 130, 153, 1)',
+        borderWidth: 1,
+        backgroundColor: 'rgba(126, 130, 153, 0.15)',
+      },
+    ],
+  };
 
   // order amount graph
   const profitGraphQuery = useQuery(
     ['shop-profit-graph', { startDate: profitRange.start, endDate: profitRange.end }],
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_PROFIT_GRAPH, {
-        params: { startDate: profitRange.start, endDate: profitRange.end },
+        params: { startDate: profitRange.start, endDate: profitRange.end, type: 'normal' },
       })
   );
+
+  const profitData = generateGraphData(
+    orderAmountGraphQuery?.data?.data?.info || [],
+    (item) => item.payout,
+    (item) => moment(item?.date).format('MMMM DD')
+  );
+
+  const profitChartData = {
+    labels: profitData.labels,
+    datasets: [
+      {
+        label: 'Profit',
+        data: profitData.data,
+        backgroundColor: 'rgba(60, 172, 221, 1)',
+      },
+    ],
+  };
 
   const marketingSpentAmount =
     shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDiscount +
@@ -73,6 +111,7 @@ export default function Overview() {
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
       <ChartBox
+        loading={orderAmountGraphQuery?.isLoading}
         chartHeight={300}
         dateRange={orderAmountRange}
         setDateRange={setOrderAmountRange}
@@ -161,6 +200,7 @@ export default function Overview() {
       </InfoCard>
       <PayoutDetails paymentDetails={shopDashboardQuery?.data?.data?.summary} />
       <ChartBox
+        loading={profitGraphQuery.isLoading}
         chartHeight={325}
         dateRange={profitRange}
         setDateRange={setProfitRange}
@@ -168,7 +208,7 @@ export default function Overview() {
         sm={12}
         xl={6}
       >
-        <StyledBarChart data={barChartData2} />
+        <StyledBarChart data={profitChartData} />
       </ChartBox>
       <ChartBox
         chartHeight={325}
