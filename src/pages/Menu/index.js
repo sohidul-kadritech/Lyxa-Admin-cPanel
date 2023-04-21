@@ -1,35 +1,35 @@
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
-import { Box, Drawer, Typography } from '@mui/material';
+import { Drawer } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
 import PageTop from '../../components/Common/PageTop';
 import { ShopDeals } from '../../helpers/ShopDeals';
-import { deepClone } from '../../helpers/deepClone';
 import dropSort from '../../helpers/dropSort';
 import { local_product_search } from '../../helpers/localSearch';
-import { successMsg } from '../../helpers/successMsg';
+// import { successMsg } from '../../helpers/successMsg';
 import { Throttler } from '../../helpers/throttle';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
 import AddSubCategory from './AddSubCategory';
-import CategoryContainer from './List/CategoryContainer';
+import CategoryItem from './List/CategoryItem';
+import { createCatagory } from './List/helpers';
 import PageSkeleton from './PageSkeleton';
 import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
-import { OngoingTag, createCatagory } from './helpers';
+import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
   const searchThrottler = new Throttler(200);
 
-  const history = useHistory();
+  // const history = useHistory();
   const shop = useSelector((store) => store.Login.admin);
   const Deals = useMemo(() => new ShopDeals(shop), []);
 
@@ -41,6 +41,7 @@ export default function MenuPage() {
   const [newProductCategory, setNewProductCategory] = useState(null);
   const [editProduct, setEditProduct] = useState({});
   const [productReadonly, setProductReadonly] = useState(false);
+  const [updatedProduct, setUpdatedProduct] = useState({});
 
   // products
   const [categories, setCategories] = useState([]);
@@ -48,7 +49,6 @@ export default function MenuPage() {
   const [bestSellers, setBestSellers] = useState({});
 
   const [editCategory, setEditCategory] = useState({});
-  const [searchCategories, setSearchCategories] = useState([]);
 
   const productsQuery = useQuery(
     ['category-wise-products', { shopId: shop?._id }],
@@ -62,7 +62,7 @@ export default function MenuPage() {
       staleTime: 1000 * 60 * 5,
       onSuccess: (data) => {
         setCategories((prev) => data?.data?.productsGroupByCategory || prev);
-        setFavorites((prev) => createCatagory(data?.data?.shopFavouriteItems || [], 'favorites') || prev);
+        setFavorites((prev) => createCatagory(data?.data || {}, 'favorites') || prev);
         setBestSellers((prev) => createCatagory(data?.data || {}, 'bestseller') || prev);
       },
     }
@@ -71,102 +71,17 @@ export default function MenuPage() {
   useEffect(() => {
     if (productsQuery?.data?.status) {
       setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
-      setFavorites((prev) => createCatagory(productsQuery?.data?.data?.shopFavouriteItems || [], 'favorites') || prev);
+      setFavorites((prev) => createCatagory(productsQuery?.data?.data || {}, 'favorites') || prev);
+      setBestSellers((prev) => createCatagory(productsQuery?.data?.data || {}, 'bestseller') || prev);
     }
   }, []);
-
-  const favoriteMutation = useMutation(
-    (data) =>
-      AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, {
-        shopId: shop?._id,
-        ...data,
-      }),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    }
-  );
-
-  const handleFavouriteChange = (product) => {
-    // remove item
-    if (favorites.sortedProducts?.find((item) => item?._id === product?._id)) {
-      const updateToApiList = [];
-      let i = 1;
-
-      setFavorites((prev) => {
-        const newList = prev?.sortedProducts?.filter((item) => {
-          if (item?._id !== product?._id) {
-            updateToApiList.push({
-              product: item?._id,
-              sortingOrder: i,
-            });
-
-            i++;
-
-            return true;
-          }
-
-          return false;
-        });
-
-        return {
-          ...prev,
-          sortedProducts: newList,
-        };
-      });
-
-      favoriteMutation.mutate({
-        products: updateToApiList,
-      });
-
-      return;
-    }
-
-    // item already full
-    if (favorites?.sortedProducts?.length >= 3) {
-      successMsg('Favourites items is already full');
-      return;
-    }
-
-    // add item
-    const newFavouritesList = [...favorites?.sortedProducts, product];
-
-    setFavorites((prev) => ({
-      ...prev,
-      sortedProducts: newFavouritesList,
-    }));
-
-    const updateToApiList = newFavouritesList.map((item, index) => ({
-      product: item?._id,
-      sortingOrder: index + 1,
-    }));
-
-    favoriteMutation.mutate({
-      products: updateToApiList,
-    });
-  };
-
-  const onProductMenuClick = (menu, product) => {
-    if (menu === 'marketing') history.push('/marketing');
-
-    if (menu === 'edit') {
-      setEditProduct(deepClone(product));
-      setSidebar('add-item');
-    }
-
-    if (menu === 'favourite') {
-      handleFavouriteChange(product);
-    }
-  };
 
   // product search
   const onSearch = (str) => {
     setSearchValue(str);
 
     searchThrottler.exec(() => {
-      const categories = deepClone(productsQuery?.data?.data?.productsGroupByCategory || []);
-      setSearchCategories(local_product_search(str, categories));
+      setCategories(local_product_search(str, categories));
     });
   };
 
@@ -188,14 +103,16 @@ export default function MenuPage() {
       favorites,
       setFavorites,
       editProduct,
-      setEditProduct: (product) => {
+      bestSellers,
+      updatedProduct,
+      setUpdatedProduct,
+      setEditProduct: (product, readonly) => {
         setEditProduct(product);
         setSidebar('add-item');
-        setProductReadonly(true);
+        setProductReadonly(readonly);
       },
-      bestSellers,
     }),
-    [favorites]
+    [favorites, updatedProduct]
   );
 
   return (
@@ -231,35 +148,29 @@ export default function MenuPage() {
             searchValue={searchValue}
             shopType={shop?.shopType}
           />
-          {searchValue === '' && (
-            <>
-              {shop.shopType === 'food' && (
-                <>
-                  <CategoryContainer
-                    category={bestSellers}
-                    onProductMenuClick={onProductMenuClick}
-                    gOpen={category_open}
-                  />
-                  <CategoryContainer
-                    category={favorites}
-                    onProductMenuClick={onProductMenuClick}
-                    gOpen={category_open}
-                  />
-                </>
-              )}
+          <>
+            {shop.shopType === 'food' && searchValue === '' && (
+              <>
+                <CategoryItem category={bestSellers} gOpen={category_open} />
+                <CategoryItem category={favorites} gOpen={category_open} />
+              </>
+            )}
 
-              <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
-                {categories.map((category) => (
+            <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
+              {categories.map((category) => {
+                if (searchValue !== '' && !category?.category?.category?.matched) {
+                  return null;
+                }
+                return (
                   <Draggable key={category?.category?._id}>
-                    <CategoryContainer
+                    <CategoryItem
+                      asSearchResult={searchValue !== ''}
                       gOpen={category_open}
                       category={category}
                       setEditCategory={(editCategory) => {
-                        console.log(editCategory);
                         setEditCategory(editCategory);
                         setSidebar('add-category');
                       }}
-                      onProductMenuClick={onProductMenuClick}
                       isOridanryCategory
                       setNewProductCategory={(categoryId) => {
                         setNewProductCategory(categoryId);
@@ -267,38 +178,10 @@ export default function MenuPage() {
                       }}
                     />
                   </Draggable>
-                ))}
-              </Container>
-            </>
-          )}
-
-          {searchValue !== '' && (
-            <>
-              <Box>
-                {searchCategories.map((category) => (
-                  <CategoryContainer
-                    fromSearch
-                    key={category?.category?._id}
-                    gOpen={category_open}
-                    category={category}
-                    onProductMenuClick={onProductMenuClick}
-                    isOridanryCategory
-                    setNewProductCategory={(categoryId) => {
-                      setNewProductCategory(categoryId);
-                      setSidebar('add-item');
-                    }}
-                  />
-                ))}
-              </Box>
-              {!searchCategories?.length && (
-                <Box>
-                  <Typography variant="h5" textAlign="center">
-                    No results found
-                  </Typography>
-                </Box>
-              )}
-            </>
-          )}
+                );
+              })}
+            </Container>
+          </>
         </>
       )}
       <Drawer open={Boolean(sidebar)} anchor="right">

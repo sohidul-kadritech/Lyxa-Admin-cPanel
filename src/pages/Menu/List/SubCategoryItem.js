@@ -1,24 +1,12 @@
 /* eslint-disable import/no-named-as-default */
 import { Edit, ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Typography, styled } from '@mui/material';
+import { Accordion, AccordionDetails, Box, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import ProductsContainer from './ProductsContainer';
-
-const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  padding: '0',
-  background: 'transparent',
-  borderBottom: '1px solid #EEEEEE',
-  '& .MuiSvgIcon-root': {
-    color: theme.palette.text.primary,
-  },
-  '& .MuiAccordionSummary-content': {
-    marginTop: '13px',
-    marginBottom: '13px',
-  },
-}));
+import { StyledAccordionSummary } from './helpers';
 
 const detailsSx = {
   paddingBottom: '30px',
@@ -32,7 +20,7 @@ const accodionSx = {
   },
 };
 
-export default function SubCategory({ category, onProductMenuClick, gOpen, fromSearch }) {
+export default function SubCategoryItem({ category, onProductMenuClick, gOpen, fromSearch }) {
   const [open, setOpen] = useState(!!category?.sortedProducts?.length);
   console.log(category);
 
@@ -71,7 +59,7 @@ export default function SubCategory({ category, onProductMenuClick, gOpen, fromS
             <Stack direction="row" alignItems="center" gap={5}>
               <Box>
                 <Typography variant="body4" fontWeight={600} color="textPrimary" display="block" pb={1.5}>
-                  {category?.sortedProducts?.name}
+                  {category?.subCategory?.name}
                 </Typography>
               </Box>
             </Stack>

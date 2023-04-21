@@ -1,37 +1,28 @@
 export const local_product_search = (qString, pairs) => {
-  const result = [];
   let name;
-  let hasMatchedChild;
 
   pairs?.forEach((pair) => {
     name = (pair?.category?.category?.name || '').toUpperCase();
-    hasMatchedChild = false;
-
     if (name.search(qString.toUpperCase()) !== -1) {
-      result.push(pair);
+      pair.category.category.matched = true;
+      pair?.sortedProducts?.forEach((product) => {
+        product.matched = true;
+      });
     } else {
+      pair.category.category.matched = false;
+
       pair?.sortedProducts?.forEach((product) => {
         name = (product?.name || '').toUpperCase();
 
         if (name.search(qString.toUpperCase()) !== -1) {
-          hasMatchedChild = true;
+          product.matched = true;
+          pair.category.category.matched = true;
         } else {
-          product.didNotMatch = true;
+          product.matched = false;
         }
       });
-
-      if (hasMatchedChild) {
-        result.push(pair);
-      }
     }
   });
 
-  return result.map((pair) => {
-    pair.sortedProducts = pair.sortedProducts.filter((product) => !product.didNotMatch);
-    return pair;
-  });
+  return pairs;
 };
-
-// if search key in category display whole category
-// if not in category search in products
-// if keep only products what have the search key
