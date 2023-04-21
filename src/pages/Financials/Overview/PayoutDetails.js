@@ -1,5 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
+import moment from 'moment';
 import { useState } from 'react';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
@@ -20,8 +21,8 @@ export default function Payout({ paymentDetails }) {
           Profit Breakdown
         </Typography>
         <Typography variant="body4" color="#737373">
-          Expected profit is scheduled on March 2, 2020. Usually, payments deposit in 1-3 business days, but the exact
-          time may vary based on your bank.
+          Expected profit is scheduled on {moment().endOf('week').calendar()}. Usually, payments deposit in 1-3 business
+          days, but the exact time may vary based on your bank.
         </Typography>
         <Box pt={2.5}>
           {/* order amount */}
@@ -68,6 +69,7 @@ export default function Payout({ paymentDetails }) {
               />
             )}
           </DetailsAccordion>
+
           {/* lyxa fees */}
           <DetailsAccordion
             title="Lyxa fees"
@@ -81,25 +83,29 @@ export default function Payout({ paymentDetails }) {
               seCurrentExpanedTab(closed ? 1 : -1);
             }}
           ></DetailsAccordion>
+
           {/* Other payments */}
-          <DetailsAccordion
-            title="Other Payments"
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%. 
-            VAT inclusive"
-            isOpen={currentExpanedTab === 2}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 2 : -1);
-            }}
-          >
-            {paymentDetails?.freeDeliveryShopCut > 0 && (
+          {paymentDetails?.freeDeliveryShopCut > 0 && (
+            <DetailsAccordion
+              title="Other Payments"
+              tooltip="Fee for Lyxa-powered deliveries: 20%
+          Shop-powered deliveries: 10%. 
+          VAT inclusive"
+              titleAmount={paymentDetails?.freeDeliveryShopCut}
+              titleAmountStatus="minus"
+              isOpen={currentExpanedTab === 2}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 2 : -1);
+              }}
+            >
               <PriceItem
                 title="Promotion: free delivery"
                 amount={paymentDetails?.freeDeliveryShopCut}
                 amountStatus="minus"
               />
-            )}
-          </DetailsAccordion>
+            </DetailsAccordion>
+          )}
+
           {/* delivery */}
           {paymentDetails?.orderValue?.deliveryFee > 0 && (
             <DetailsAccordion
@@ -119,20 +125,22 @@ export default function Payout({ paymentDetails }) {
             </DetailsAccordion>
           )}
           {/* points cashback */}
-          <DetailsAccordion
-            title="Points cashback"
-            titleAmount={paymentDetails?.orderValue?.pointsCashback}
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%. 
-            VAT inclusive"
-            isOpen={currentExpanedTab === 3}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 3 : -1);
-            }}
-            sx={{
-              borderBottom: '0',
-            }}
-          ></DetailsAccordion>
+          {paymentDetails?.orderValue?.pointsCashback > 0 && (
+            <DetailsAccordion
+              title="Points cashback"
+              titleAmount={paymentDetails?.orderValue?.pointsCashback}
+              tooltip="Fee for Lyxa-powered deliveries: 20%
+          Shop-powered deliveries: 10%. 
+          VAT inclusive"
+              isOpen={currentExpanedTab === 3}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 3 : -1);
+              }}
+              sx={{
+                borderBottom: '0',
+              }}
+            ></DetailsAccordion>
+          )}
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"

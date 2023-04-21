@@ -276,7 +276,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             items: subCategoriesQuery?.data?.data?.subCategories || [],
             onChange: commonChangeHandler,
             readOnly: Boolean(newProductCategory) || productReadonly,
-            disabled: subCategoriesQuery.isLoading,
+            disabled: subCategoriesQuery.isLoading || !product?.category,
             getLabel: (item) => item?.name,
             getKey: (item) => item?._id,
             getValue: (item) => item?._id,

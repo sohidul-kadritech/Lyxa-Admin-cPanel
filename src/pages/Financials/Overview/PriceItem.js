@@ -10,7 +10,7 @@ export default function PriceItem({ title, amount, amountStatus }) {
         {title}
       </Typography>
       <Typography variant="body1" fontWeight={600} color={amountStatus === 'minus' ? 'error' : undefined}>
-        {currency} {(amount || 0).toFixed(2)}
+        {amountStatus === 'minus' ? '-' : ''} {currency} {(amount || 0).toFixed(2)}
       </Typography>
     </Stack>
   );
