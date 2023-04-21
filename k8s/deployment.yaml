@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: drop-admin
-          image: gcr.io/for-poc-325210/drop-admin:v78
+          image: gcr.io/for-poc-325210/drop-admin:v70
           imagePullPolicy: Always
           ports:
             - containerPort: 30038
