@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
@@ -20,6 +20,7 @@ const fieldContainerSx = {
 
 export default function AddSubCategory({ onClose, editCategory, newSubCategoryId }) {
   const shop = useSelector((store) => store.Login.admin);
+  const queryClient = useQueryClient();
 
   const [subCategory, setSubCategory] = useState(getAddSubCategoriesInit(newSubCategoryId));
   const [successCounter, setSuccessCounter] = useState(0);
@@ -65,9 +66,11 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
   const addSubCategoryMutation = useMutation((data) => AXIOS.post(Api.ADD_SUB_CATEGORY, data), {
     onSuccess: (data) => {
       console.log(data);
-
       successMsg(data?.message, data?.status ? 'success' : undefined);
+
       if (data?.status) {
+        queryClient.invalidateQueries(['category-wise-products']);
+
         onClose();
       }
     },
