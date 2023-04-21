@@ -270,6 +270,12 @@ input[type='number'] {
   cursor: -webkit-grab;
 }
 
+.grabable {
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
 .sidebar-menu-item {
   padding: 16px 26px;
   border-left: 4px solid transparent;

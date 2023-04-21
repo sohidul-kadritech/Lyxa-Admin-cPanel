@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
@@ -7,13 +8,7 @@ import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
 import ProductItem from './ProductItem';
 
-export default function ProductsContainer({
-  products,
-  onProductMenuClick,
-  isInsideFavorites,
-  isInsideBestSellers,
-  asSearchResult,
-}) {
+export default function ProductsContainer({ products, isInsideFavorites, isInsideBestSellers, asSearchResult }) {
   const [render, setRender] = useState(false);
   const sortingMutation = useMutation((data) => AXIOS.post(Api.SORT_PRODUCTS, data));
 
@@ -30,8 +25,12 @@ export default function ProductsContainer({
     setRender(!render);
   };
 
+  if (products?.length === 0) {
+    return <></>;
+  }
+
   return (
-    <Container onDrop={asSearchResult ? () => {} : onDrop} lockAxis="y" dragHandleSelector=".drag-handler-chlid">
+    <Container onDrop={asSearchResult ? () => {} : onDrop} lockAxis="y" dragHandleSelector=".drag-handler-product">
       {products.map((product, index, array) => {
         if (asSearchResult && !product.matched) {
           return null;
@@ -56,7 +55,6 @@ export default function ProductsContainer({
                 borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
                 cursor: 'pointer',
               }}
-              onMenuClick={onProductMenuClick}
             />
           </Draggable>
         );

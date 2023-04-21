@@ -12,16 +12,16 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import PageSkeleton from './PageSkeleton';
 import SubCategoryList from './SubCategoryList';
-import { addSubCategoriesInit, createCategoriesData, validateAddSubCategories } from './helpers';
+import { createCategoriesData, getAddSubCategoriesInit, validateAddSubCategories } from './helpers';
 
 const fieldContainerSx = {
   padding: '14px 0',
 };
 
-export default function AddSubCategory({ onClose, editCategory }) {
+export default function AddSubCategory({ onClose, editCategory, newSubCategoryId }) {
   const shop = useSelector((store) => store.Login.admin);
 
-  const [subCategory, setSubCategory] = useState(addSubCategoriesInit);
+  const [subCategory, setSubCategory] = useState(getAddSubCategoriesInit(newSubCategoryId));
   const [successCounter, setSuccessCounter] = useState(0);
   const [categories, setCategories] = useState();
   const [render, setRender] = useState(false);
@@ -101,7 +101,7 @@ export default function AddSubCategory({ onClose, editCategory }) {
       {!categoriesQuery?.isLoading && (
         <Box>
           <Box>
-            {/* name */}
+            {/* category */}
             <StyledFormField
               label="Category"
               intputType="select"
@@ -112,6 +112,7 @@ export default function AddSubCategory({ onClose, editCategory }) {
                 name: 'category',
                 value: subCategory.categoryId,
                 items: categories || [],
+                readOnly: Boolean(newSubCategoryId),
                 onChange: (e) => {
                   setSubCategory((prev) => ({ ...prev, categoryId: e.target.value }));
                 },

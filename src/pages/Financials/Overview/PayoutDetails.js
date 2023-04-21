@@ -135,7 +135,7 @@ export default function Payout({ paymentDetails }) {
           ></DetailsAccordion>
           {/* total payout */}
           <DetailsAccordion
-            title="Total Payout"
+            title="Total Profit"
             titleAmount={paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 

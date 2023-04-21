@@ -18,6 +18,7 @@ export default function CategoryItem({
   setEditCategory,
   isOridanryCategory,
   setNewProductCategory,
+  setNewSubCategoryId,
   gOpen,
   asSearchResult,
 }) {
@@ -157,17 +158,18 @@ export default function CategoryItem({
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails>
-        {shop?.shopType === 'food' && (
+        {shop?.shopType === 'food' ? (
           <ProductsContainer
             products={product()}
             asSearchResult={asSearchResult}
             isInsideFavorites={category?.category?.isShopFavorites}
             isInsideBestSellers={category?.category?.isShopBestSellers}
           />
+        ) : (
+          <SubCategoriesContainer gOpen={gOpen} subCategories={category?.subCategories} />
         )}
-        {shop?.shopType !== 'food' && <SubCategoriesContainer subCategories={category?.subCategories} />}
-
-        {isOridanryCategory && (
+        {/* add product */}
+        {isOridanryCategory && shop?.shopType === 'food' && (
           <Box pl={8.5} pt={2.5}>
             <Button
               variant="contained"
@@ -179,6 +181,22 @@ export default function CategoryItem({
               }}
             >
               Add items
+            </Button>
+          </Box>
+        )}
+        {/* add sub-category */}
+        {shop?.shopType !== 'food' && (
+          <Box pl={8.5} pt={6}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<Add />}
+              onClick={() => {
+                setNewSubCategoryId(category?.category?.category?._id);
+              }}
+            >
+              Add Sub-Category
             </Button>
           </Box>
         )}
