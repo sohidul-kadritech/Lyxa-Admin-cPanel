@@ -1,106 +1,99 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import PropTypes from "prop-types";
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from "reactstrap";
+import React, { useEffect, useState } from 'react';
+import { connect, useSelector } from 'react-redux';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal } from 'reactstrap';
 
-import { useHistory } from "react-router-dom";
-
-//i18n
-import { withTranslation } from "react-i18next";
+// i18n
 // Redux
-import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
+import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
+import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject';
 
 // users
-import user1 from "../../../assets/images/users/user-4.jpg";
-import { logoutAdmin } from "./../../../store/auth/login/actions";
 
-const ProfileMenu = props => {
+import ChangePassword from '../ChangePassword';
+
+function ProfileMenu() {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false);
 
-  const [username, setusername] = useState("Admin");
-  // const { accessToken } = useSelector(state => state.login);
+  // eslint-disable-next-line no-unused-vars
+  const { loading, status } = useSelector((state) => state.Profile);
+  const {
+    admin: { name, account_type, shopName = '' },
+  } = useSelector((state) => state.Login);
 
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const [isChangePass, setIsChangePass] = useState(false);
+  // const history = useHistory();
 
-  
-
-  useEffect(
-    () => {
-      if (localStorage.getItem("authUser")) {
-        if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-          const obj = JSON.parse(localStorage.getItem("authUser"));
-          setusername(obj.displayName);
-        } else if (
-          process.env.REACT_APP_DEFAULTAUTH === "fake" ||
-          process.env.REACT_APP_DEFAULTAUTH === "jwt"
-        ) {
-          const obj = JSON.parse(localStorage.getItem("authUser"));
-          setusername(obj.username);
-        }
-      }
-    },
-    [props.success]
-  );
+  useEffect(() => {
+    if (status) {
+      setIsChangePass(false);
+    }
+  }, [status]);
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("admin");
+    // remove all cookies
+    const authCookies = getCookiesAsObject();
+    setCookiesAsObject(authCookies, 0);
     window.location.reload(true);
-    // history.push("/login", {replace: true})
   };
 
   return (
-    <React.Fragment>
-      <Dropdown
-        isOpen={menu}
-        toggle={() => setMenu(!menu)}
-        className="d-inline-block"
+    <>
+      <div>
+        <span>{account_type === 'shop' ? shopName : name}</span>
+
+        <Dropdown isOpen={menu} toggle={() => setMenu(!menu)} className="d-inline-block">
+          <DropdownToggle className="btn header-item waves-effect" id="page-header-user-dropdown" tag="button">
+            <i className="fas fa-user-circle" style={{ fontSize: '24px' }} aria-hidden="true"></i>
+          </DropdownToggle>
+          <DropdownMenu className="dropdown-menu-end">
+            <DropdownItem tag="a" onClick={() => setIsChangePass(!isChangePass)}>
+              <i className="fa fa-lock font-size-16 align-baseline me-2" />
+              Change Password
+            </DropdownItem>
+            <div className="dropdown-divider" />
+            <p className="dropdown-item cursor-pointer" onClick={logout}>
+              <i className="fa fa-power-off font-size-16 align-baseline me-2 text-danger" />
+              <span>Logout</span>
+            </p>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
+
+      {/* CHANGE PASSWORD */}
+      <Modal
+        isOpen={isChangePass}
+        toggle={() => {
+          setIsChangePass(!isChangePass);
+        }}
+        centered
       >
-        <DropdownToggle
-          className="btn header-item waves-effect"
-          id="page-header-user-dropdown"
-          tag="button"
-        >
-          <img
-            className="rounded-circle header-profile-user"
-            src={user1}
-            alt="Header Avatar"
-          />
-        </DropdownToggle>
-        <DropdownMenu className="dropdown-menu-end">
-          <DropdownItem tag="a" href="/profile">
-            {" "}<i className="bx bx-user font-size-16 align-middle me-1" />
-            {props.t("Profile")}{" "}
-          </DropdownItem>
-          <div className="dropdown-divider" />
-          <p className="dropdown-item cursor-pointer" onClick={logout}>
-            <i className="bx bx-power-off font-size-16 align-middle me-1 text-danger" />
-            <span>Logout</span>
-          </p>
-        </DropdownMenu>
-      </Dropdown>
-    </React.Fragment>
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Change Password</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setIsChangePass(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <ChangePassword />
+        </div>
+      </Modal>
+    </>
   );
-};
+}
 
-ProfileMenu.propTypes = {
-  success: PropTypes.any,
-  t: PropTypes.any,
-};
-
-const mapStatetoProps = state => {
+const mapStatetoProps = (state) => {
   const { error, success } = state.Profile;
   return { error, success };
 };
 
-export default withRouter(
-  connect(mapStatetoProps, {})(withTranslation()(ProfileMenu))
-);
+export default withRouter(connect(mapStatetoProps, {})(ProfileMenu));

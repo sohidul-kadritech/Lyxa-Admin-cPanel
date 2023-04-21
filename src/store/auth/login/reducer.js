@@ -1,40 +1,39 @@
-import {
-  LOGIN_USER,
-  LOGIN_SUCCESS,
-  LOGOUT_USER,
-  LOGOUT_USER_SUCCESS,
-  API_ERROR
-} from "./actionTypes";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import { API_ERROR, LOGIN_SUCCESS, LOGIN_USER, LOGOUT_USER, LOGOUT_USER_SUCCESS, SET_ADMIN } from './actionTypes';
 
 const initialState = {
-  error: "",
+  error: '',
   loading: false,
-  admin: localStorage.getItem("admin")
-    ? JSON.parse(localStorage.getItem("admin"))
-    : null,
-  message: "",
-  accessToken: localStorage.getItem("accessToken")
-    ? localStorage.getItem("accessToken")
-    : null
+  admin: {},
+  message: '',
 };
 
 const login = (state = initialState, action) => {
   switch (action.type) {
+    case SET_ADMIN:
+      return {
+        ...state,
+        admin: action.payload,
+      };
+
     case LOGIN_USER:
       return {
         ...state,
-        loading: true
+        loading: true,
+        error: null,
+        message: null,
       };
 
     case LOGIN_SUCCESS:
-      const { admin, accessToken, message } = action.payload;
+      const { admin, message } = action.payload;
 
       return {
         ...state,
         loading: false,
         admin,
-        accessToken,
-        message
+        message,
+        error: null,
       };
 
     case LOGOUT_USER:
@@ -44,7 +43,7 @@ const login = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        accessToken: null
+        accessToken: null,
       };
 
     case API_ERROR:

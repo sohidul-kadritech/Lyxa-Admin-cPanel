@@ -1,815 +1,341 @@
-import PropTypes from 'prop-types'
-import React, { useState } from "react"
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import AlternateEmailOutlinedIcon from '@mui/icons-material/AlternateEmailOutlined';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import MopedOutlinedIcon from '@mui/icons-material/MopedOutlined';
+import PaymentIcon from '@mui/icons-material/Payment';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
+import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
+import SettingsInputSvideoIcon from '@mui/icons-material/SettingsInputSvideo';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
+import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
+import { TextField } from '@mui/material';
+import React, { lazy, Suspense, useEffect } from 'react';
 import MetaTags from 'react-meta-tags';
+import { useDispatch, useSelector } from 'react-redux';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
+import styled from 'styled-components';
+import noPhoto from '../../assets/images/noPhoto.jpg';
+import GlobalWrapper from '../../components/GlobalWrapper';
+import InfoTwo from '../../components/InfoTwo';
+import InfoTwoWrapper from '../../components/InfoTwoWrapper';
+import { MAP_URL } from '../../network/Api';
 import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Card,
-  CardBody,
-  Input,
-  Dropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu
-} from "reactstrap"
-import { Link } from "react-router-dom"
+  getDashboardSummary,
+  updateDashboardCardEndDate,
+  updateDashboardCardStartDate,
+} from '../../store/Dashboard/dashboardAction';
 
-// Custom Scrollbar
-import SimpleBar from "simplebar-react";
+const AdminDashboard = lazy(() => import('../../components/AdminDashboard'));
+const SellerDashboard = lazy(() => import('../../components/SellerDashboard'));
+const ShopDashboard = lazy(() => import('../../components/ShopDashboard'));
 
-// import images
-import servicesIcon1 from "../../assets/images/services-icon/01.png";
-import servicesIcon2 from "../../assets/images/services-icon/02.png";
-import servicesIcon3 from "../../assets/images/services-icon/03.png";
-import servicesIcon4 from "../../assets/images/services-icon/04.png";
-import user2 from "../../assets/images/users/user-2.jpg";
-import user3 from "../../assets/images/users/user-3.jpg";
-import user4 from "../../assets/images/users/user-4.jpg";
-import user5 from "../../assets/images/users/user-5.jpg";
-import user6 from "../../assets/images/users/user-6.jpg";
-import smimg1 from "../../assets/images/small/img-1.jpg";
-import smimg2 from "../../assets/images/small/img-2.jpg";
+function Dashboard() {
+  const dispatch = useDispatch();
 
-// Charts
-import LineAreaChart from "../AllCharts/apex/lineareachart";
-import RadialChart from "../AllCharts/apex/apexdonut";
-import Apexdonut from "../AllCharts/apex/apexdonut1";
-import SparkLine from "../AllCharts/sparkline/sparkline";
-import SparkLine1 from "../AllCharts/sparkline/sparkline1";
-import Salesdonut from "../AllCharts/apex/salesdonut";
+  const {
+    dashboardData: { summary = {}, top_activity },
+    startDate,
+    endDate,
+    loading,
+  } = useSelector((state) => state.dashboardReducer);
 
-import GlobalWrapper from "../../components/GlobalWrapper";
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
-import "chartist/dist/scss/chartist.scss";
+  useEffect(() => {
+    if (startDate || endDate) {
+      dispatch(
+        getDashboardSummary(
+          account_type === 'admin' && adminType !== 'customerService'
+            ? 'admin'
+            : account_type === 'seller'
+            ? 'seller'
+            : 'shop'
+        )
+      );
+    }
+  }, [startDate, endDate]);
 
-//i18n
-import { withTranslation } from "react-i18next"
-
-const Dashboard = props => {
-  const [menu, setMenu] = useState(false)
-  const toggle = () => {
-    setMenu(!menu)
-  }
   return (
-    <React.Fragment>
-      <div className="page-content">
-        <GlobalWrapper>
-
-          <MetaTags>
-            <title>Drop</title>
-          </MetaTags>
-          <Container fluid>
-            <div className="page-title-box">
+    <div className="page-content">
+      <GlobalWrapper>
+        <MetaTags>
+          <title>Lyxa</title>
+        </MetaTags>
+        <Container fluid>
+          <Card className="page-title-box p-0">
+            <CardBody
+              style={{
+                boxShadow: '0 4px 2px -2px lightgray',
+                padding: '10px 15px',
+              }}
+            >
               <Row className="align-items-center">
-                <Col md={8}>
-                  <h6 className="page-title">Dashboard</h6>
-                  <ol className="breadcrumb m-0">
-                    <li className="breadcrumb-item active">Welcome to Drop Dashboard</li>
-                  </ol>
+                <Col md={account_type === 'shop' ? 9 : 6}>
+                  {account_type === 'admin' ? (
+                    <>
+                      <h6 className="page-title text-danger">Dashboard</h6>
+                      <ol className="breadcrumb m-0">
+                        <li className="breadcrumb-item active">Welcome to Lyxa Dashboard</li>
+                      </ol>
+                    </>
+                  ) : account_type === 'seller' ? (
+                    <SellerInfo />
+                  ) : (
+                    <ShopInfo />
+                  )}
                 </Col>
-
-                <Col md="4">
-                  <div className="float-end d-none d-md-block">
-                    <Dropdown isOpen={menu} toggle={toggle}>
-                      <DropdownToggle color="primary" className="btn btn-primary dropdown-toggle waves-effect waves-light">
-                        <i className="mdi mdi-cog me-2"></i> Settings
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem tag="a" href="#">Action</DropdownItem>
-                        <DropdownItem tag="a" href="#">Another action</DropdownItem>
-                        <DropdownItem tag="a" href="#">Something else here</DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem tag="a" href="#">Separated link</DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
+                <Col md={account_type === 'shop' ? 3 : 6}>
+                  <div className={`d-flex ${account_type === 'shop' && 'flex-column'}`}>
+                    <DateFilter className=" me-2 ">
+                      <div className="date-label">
+                        <small>Start</small>
+                        <h5>Date</h5>
+                      </div>
+                      <TextField
+                        type="date"
+                        className="form-control"
+                        id="example-time-input"
+                        variant="standard"
+                        format="YYYY-MM-DD"
+                        value={startDate}
+                        onChange={(e) => dispatch(updateDashboardCardStartDate(e.target.value))}
+                      />
+                    </DateFilter>
+                    <DateFilter className={`${account_type !== 'shop' && 'ps-3'}`}>
+                      <div className="date-label">
+                        <small>End</small>
+                        <h5>Date</h5>
+                      </div>
+                      <TextField
+                        type="date"
+                        className="form-control"
+                        id="example-time-input"
+                        variant="standard"
+                        format="YYYY-MM-DD"
+                        value={endDate}
+                        onChange={(e) => dispatch(updateDashboardCardEndDate(e.target.value))}
+                      />
+                    </DateFilter>
                   </div>
                 </Col>
               </Row>
-            </div>
-            <Row>
-              <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon1} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Orders
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        1,685{" "}
-                        <i className="mdi mdi-arrow-up text-success ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-success">
-                        <p className="mb-0">+ 12%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon2} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Revenue
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        52,368{" "}
-                        <i className="mdi mdi-arrow-down text-danger ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-danger">
-                        <p className="mb-0">- 28%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
+            </CardBody>
+          </Card>
 
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon3} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Average Price
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        15.8{" "}
-                        <i className="mdi mdi-arrow-up text-success ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-info">
-                        <p className="mb-0"> 00%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
+          {loading && <div className="text-center">{/* <Spinner animation="border" color="success" /> */}</div>}
 
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={3} md={6}>
-                <Card className="mini-stat bg-primary text-white">
-                  <CardBody>
-                    <div className="mb-4">
-                      <div className="float-start mini-stat-img me-4">
-                        <img src={servicesIcon4} alt="" />
-                      </div>
-                      <h5 className="font-size-16 text-uppercase mt-0 text-white-50">
-                        Product Sold
-                      </h5>
-                      <h4 className="fw-medium font-size-24">
-                        2436{" "}
-                        <i className="mdi mdi-arrow-up text-success ms-2"></i>
-                      </h4>
-                      <div className="mini-stat-label bg-warning">
-                        <p className="mb-0">+ 84%</p>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="float-end">
-                        <Link to="#" className="text-white-50">
-                          <i className="mdi mdi-arrow-right h5"></i>
-                        </Link>
-                      </div>
-                      <p className="text-white-50 mb-0 mt-1">Since last month</p>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col xl={9}>
-                <Card>
-                  <CardBody>
-                    <h4 className="card-title mb-4">Monthly Earning</h4>
-                    <Row>
-                      <Col lg={7}>
-                        <div>
-                          <LineAreaChart />
-                        </div>
-                      </Col>
-                      <Col lg={5}>
-                        <Row>
-                          <Col md={6}>
-                            <div className="text-center">
-                              <p className="text-muted mb-4">This month</p>
-                              <h3>$34,252</h3>
-                              <p className="text-muted mb-5">
-                                It will be as simple as in fact it will be
-                                occidental.
-                              </p>
-                              <RadialChart />
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="text-center">
-                              <p className="text-muted mb-4">Last month</p>
-                              <h3>$36,253</h3>
-                              <p className="text-muted mb-5">
-                                It will be as simple as in fact it will be
-                                occidental.
-                              </p>
-                              <Apexdonut />
-                            </div>
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-
-              <Col xl={3}>
-                <Card>
-                  <CardBody>
-                    <div>
-                      <h4 className="card-title mb-4">Sales Analytics</h4>
-                    </div>
-                    <div className="wid-peity mb-4">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div>
-                            <p className="text-muted">Online</p>
-                            <h5 className="mb-4">1,542</h5>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-4">
-                            <SparkLine />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="wid-peity mb-4">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div>
-                            <p className="text-muted">Offline</p>
-                            <h5 className="mb-4">6,451</h5>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-4">
-                            <SparkLine1 />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div>
-                            <p className="text-muted">Marketing</p>
-                            <h5>84,574</h5>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-4">
-                            <SparkLine />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col xl={3}>
-                <Card>
-                  <CardBody>
-                    <h4 className="card-title mb-4">Sales Report</h4>
-                    <div className="cleafix">
-                      <p className="float-start">
-                        <i className="mdi mdi-calendar me-1 text-primary"></i> Jan
-                        01 - Jan 31
-                      </p>
-                      <h5 className="font-18 text-end">$4230</h5>
-                    </div>
-                    <div id="ct-donut" className="ct-chart wid pt-4">
-                      <Salesdonut />
-                    </div>
-                    <div className="mt-4">
-                      <table className="table mb-0">
-                        <tbody>
-                          <tr>
-                            <td>
-                              <span className="badge bg-primary">Desk</span>
-                            </td>
-                            <td>Desktop</td>
-                            <td className="text-end">54.5%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <span className="badge bg-success">Mob</span>
-                            </td>
-                            <td>Mobile</td>
-                            <td className="text-end">28.0%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <span className="badge bg-warning">Tab</span>
-                            </td>
-                            <td>Tablets</td>
-                            <td className="text-end">17.5%</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={4}>
-                <Card>
-                  <CardBody>
-                    <h4 className="card-title mb-4">Activity</h4>
-                    <ol className="activity-feed">
-                      <li className="feed-item">
-                        <div className="feed-item-list">
-                          <span className="date">Jan 22</span>
-                          <span className="activity-text">
-                            Responded to need “Volunteer Activities”
-                          </span>
-                        </div>
-                      </li>
-                      <li className="feed-item">
-                        <div className="feed-item-list">
-                          <span className="date">Jan 20</span>
-                          <span className="activity-text">
-                            At vero eos et accusamus et iusto odio dignissimos
-                            ducimus qui deleniti atque...
-                            <Link to="#" className="text-success">
-                              Read more
-                            </Link>
-                          </span>
-                        </div>
-                      </li>
-                      <li className="feed-item">
-                        <div className="feed-item-list">
-                          <span className="date">Jan 19</span>
-                          <span className="activity-text">
-                            Joined the group “Boardsmanship Forum”
-                          </span>
-                        </div>
-                      </li>
-                      <li className="feed-item">
-                        <div className="feed-item-list">
-                          <span className="date">Jan 17</span>
-                          <span className="activity-text">
-                            Responded to need “In-Kind Opportunity”
-                          </span>
-                        </div>
-                      </li>
-                      <li className="feed-item">
-                        <div className="feed-item-list">
-                          <span className="date">Jan 16</span>
-                          <span className="activity-text">
-                            Sed ut perspiciatis unde omnis iste natus error sit
-                            rem.
-                          </span>
-                        </div>
-                      </li>
-                    </ol>
-                    <div className="text-center">
-                      <Link to="#" className="btn btn-primary">
-                        Load More
-                      </Link>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-
-              <Col xl={5}>
-                <Row>
-                  <Col md={6}>
-                    <Card className="text-center">
-                      <CardBody>
-                        <div className="py-4">
-                          <i className="ion ion-ios-checkmark-circle-outline display-4 text-success"></i>
-
-                          <h5 className="text-primary mt-4">Order Successful</h5>
-                          <p className="text-muted">
-                            Thanks you so much for your order.
-                          </p>
-                          <div className="mt-4">
-                            <Link to="" className="btn btn-primary btn-sm">
-                              Chack Status
-                            </Link>
-                          </div>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <Col md={6}>
-                    <Card className="bg-primary">
-                      <CardBody>
-                        <div className="text-center text-white py-4">
-                          <h5 className="mt-0 mb-4 text-white-50 font-size-16">
-                            Top Product Sale
-                          </h5>
-                          <h1>1452</h1>
-                          <p className="font-size-14 pt-1">Computer</p>
-                          <p className="text-white-50 mb-0">
-                            At solmen va esser necessi far uniform myth...{" "}
-                            <Link to="#" className="text-white">
-                              View more
-                            </Link>
-                          </p>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={12}>
-                    <Card>
-                      <CardBody>
-                        <h4 className="card-title mb-4">Client Reviews</h4>
-                        <p className="text-muted mb-3 pb-4">
-                          " Everyone realizes why a new common language would be
-                          desirable one could refuse to pay expensive translators
-                          it would be necessary. "
-                        </p>
-                        <div className="float-end mt-2">
-                          <Link to="#" className="text-primary">
-                            <i className="mdi mdi-arrow-right h5"></i>
-                          </Link>
-                        </div>
-                        <h6 className="mb-0">
-                          {" "}
-                          <img
-                            src={user3}
-                            alt=""
-                            className="avatar-sm rounded-circle me-2"
-                          />{" "}
-                          James Athey
-                        </h6>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col xl={8}>
-                <Card>
-                  <CardBody>
-                    <h4 className="card-title mb-4">Latest Transaction</h4>
-                    <div className="table-responsive">
-                      <table className="table table-hover table-centered table-nowrap mb-0">
-                        <thead>
-                          <tr>
-                            <th scope="col">(#) Id</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col" colSpan="2">
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <th scope="row">#14256</th>
-                            <td>
-                              <div>
-                                <img
-                                  src={user2}
-                                  alt=""
-                                  className="avatar-xs rounded-circle me-2"
-                                />{" "}
-                                Philip Smead
-                              </div>
-                            </td>
-                            <td>15/1/2018</td>
-                            <td>$94</td>
-                            <td>
-                              <span className="badge bg-success">
-                                Delivered
-                              </span>
-                            </td>
-                            <td>
-                              <div>
-                                <Link to="#" className="btn btn-primary btn-sm">
-                                  Edit
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">#14257</th>
-                            <td>
-                              <div>
-                                <img
-                                  src={user3}
-                                  alt=""
-                                  className="avatar-xs rounded-circle me-2"
-                                />{" "}
-                                Brent Shipley
-                              </div>
-                            </td>
-                            <td>16/1/2019</td>
-                            <td>$112</td>
-                            <td>
-                              <span className="badge bg-warning">Pending</span>
-                            </td>
-                            <td>
-                              <div>
-                                <Link to="#" className="btn btn-primary btn-sm">
-                                  Edit
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">#14258</th>
-                            <td>
-                              <div>
-                                <img
-                                  src={user4}
-                                  alt=""
-                                  className="avatar-xs rounded-circle me-2"
-                                />{" "}
-                                Robert Sitton
-                              </div>
-                            </td>
-                            <td>17/1/2019</td>
-                            <td>$116</td>
-                            <td>
-                              <span className="badge bg-success">
-                                Delivered
-                              </span>
-                            </td>
-                            <td>
-                              <div>
-                                <Link to="#" className="btn btn-primary btn-sm">
-                                  Edit
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">#14259</th>
-                            <td>
-                              <div>
-                                <img
-                                  src={user5}
-                                  alt=""
-                                  className="avatar-xs rounded-circle me-2"
-                                />{" "}
-                                Alberto Jackson
-                              </div>
-                            </td>
-                            <td>18/1/2019</td>
-                            <td>$109</td>
-                            <td>
-                              <span className="badge bg-danger">Cancel</span>
-                            </td>
-                            <td>
-                              <div>
-                                <Link to="#" className="btn btn-primary btn-sm">
-                                  Edit
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">#14260</th>
-                            <td>
-                              <div>
-                                <img
-                                  src={user6}
-                                  alt=""
-                                  className="avatar-xs rounded-circle me-2"
-                                />{" "}
-                                David Sanchez
-                              </div>
-                            </td>
-                            <td>19/1/2019</td>
-                            <td>$120</td>
-                            <td>
-                              <span className="badge bg-success">
-                                Delivered
-                              </span>
-                            </td>
-                            <td>
-                              <div>
-                                <Link to="#" className="btn btn-primary btn-sm">
-                                  Edit
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">#14261</th>
-                            <td>
-                              <div>
-                                <img
-                                  src={user2}
-                                  alt=""
-                                  className="avatar-xs rounded-circle me-2"
-                                />{" "}
-                                Philip Smead
-                              </div>
-                            </td>
-                            <td>15/1/2018</td>
-                            <td>$94</td>
-                            <td>
-                              <span className="badge bg-warning">Pending</span>
-                            </td>
-                            <td>
-                              <div>
-                                <Link to="#" className="btn btn-primary btn-sm">
-                                  Edit
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={4}>
-                <Card>
-                  <CardBody>
-                    <h4 className="card-title mb-4">Chat</h4>
-                    <div className="chat-conversation">
-                      <SimpleBar style={{ height: "365px" }}>
-                        <ul
-                          className="conversation-list"
-                          data-simplebar
-                          style={{ maxHeight: "367px" }}
-                        >
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:00</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Hello!</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="Female"
-                              />
-                              <span className="time">10:01</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>
-                                  Hi, How are you? What about our next meeting?
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix">
-                            <div className="chat-avatar">
-                              <img
-                                src={user2}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:04</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">John Deo</span>
-                                <p>Yeah everything is fine</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:05</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name">Smith</span>
-                                <p>Wow that's great</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li className="clearfix odd">
-                            <div className="chat-avatar">
-                              <img
-                                src={user3}
-                                className="avatar-xs rounded-circle"
-                                alt="male"
-                              />
-                              <span className="time">10:08</span>
-                            </div>
-                            <div className="conversation-text">
-                              <div className="ctext-wrap">
-                                <span className="user-name mb-2">Smith</span>
-
-                                <img
-                                  src={smimg1}
-                                  alt=""
-                                  height="48"
-                                  className="rounded me-2"
-                                />
-                                <img
-                                  src={smimg2}
-                                  alt=""
-                                  height="48"
-                                  className="rounded"
-                                />
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </SimpleBar>
-
-                      <Row className="mt-3 pt-1">
-                        <Col md="9" className="chat-inputbar col-8">
-                          <Input
-                            type="text"
-                            className="chat-input"
-                            placeholder="Enter your text"
-                          />
-                        </Col>
-                        <Col md="3" className="chat-send col-4">
-                          <div className="d-grid">
-                            <Button
-                              type="submit"
-                              color="success"
-                              className="btn-block"
-                            >
-                              Send
-                            </Button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
-
-        </GlobalWrapper>
-
-      </div>
-
-    </React.Fragment>
-  )
+          <div>
+            {account_type === 'admin' ? (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AdminDashboard summary={summary} topActivity={top_activity} />
+              </Suspense>
+            ) : account_type === 'seller' ? (
+              <Suspense fallback={<div>Loading...</div>}>
+                <SellerDashboard summary={summary} />
+              </Suspense>
+            ) : (
+              <Suspense fallback={<div>Loading...</div>}>
+                <ShopDashboard summary={summary} />
+              </Suspense>
+            )}
+          </div>
+        </Container>
+      </GlobalWrapper>
+    </div>
+  );
 }
 
-Dashboard.propTypes = {
-  t: PropTypes.any
+const DateFilter = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+
+  .date-label {
+    width: 65px;
+  }
+`;
+
+const InfoWrapper = styled.div`
+  .img_wrapper {
+    width: 80px;
+    height: 80px;
+    img {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #dd5f5f;
+    }
+  }
+
+  .text-capitalize {
+    background-color: #f3f3f3;
+    padding: 5px 13px;
+    border-radius: 15px;
+    margin-bottom: 0 !important;
+  }
+`;
+
+function SellerInfo() {
+  const {
+    admin: {
+      profile_photo,
+      name,
+      company_name,
+      status,
+      sellerType,
+      addressSeller: { address, latitude, longitude },
+      phone_number,
+      email,
+    },
+  } = useSelector((state) => state.Login);
+
+  return (
+    <InfoWrapper>
+      <Row>
+        <Col md={2} className="px-0 d-flex align-items-center justify-content-center">
+          <div className="img_wrapper">
+            <img
+              className="rounded-circle avatar-xl cursor-pointer"
+              style={{ borderRadius: 200, width: 90, height: 90, objectFit: 'cover' }}
+              alt="Seller"
+              src={!profile_photo ? noPhoto : profile_photo}
+            />
+          </div>
+        </Col>
+        <Col md={10}>
+          <div className="d-flex align-items-center pb-1">
+            <h5 className="me-2">
+              Welcome, <span className="text-danger">{company_name}</span>
+            </h5>
+            <h6 className="text-capitalize mx-3">{`Status - ${status}`}</h6>
+            <h6 className="text-capitalize">{sellerType}</h6>
+          </div>
+          <InfoTwoWrapper>
+            <InfoTwo value={`${name}`} Icon={PersonOutlineOutlinedIcon} name="Manager" />
+            <InfoTwo
+              value={`${address}`}
+              mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
+              Icon={RoomOutlinedIcon}
+              name="Location"
+            />
+            <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} name="Phone" />
+            <InfoTwo name="Email" classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+          </InfoTwoWrapper>
+        </Col>
+      </Row>
+    </InfoWrapper>
+  );
 }
 
-export default withTranslation()(Dashboard)
+function ShopInfo() {
+  const {
+    admin: {
+      shopLogo,
+      shopStatus,
+      shopType,
+      isFeatured,
+      cuisineType,
+      shopName,
+      phone_number,
+      shopStartTimeText,
+      shopEndTimeText,
+      email,
+      rating,
+      minOrderAmount,
+      expensive,
+      haveOwnDeliveryBoy,
+      deliveryFee,
+      deals,
+      address: { address, latitude, longitude },
+    },
+  } = useSelector((state) => state.Login);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+
+  return (
+    <InfoWrapper>
+      <Row>
+        <Col md={1} className="px-0 d-flex align-items-center justify-content-center">
+          <div className="img_wrapper">
+            <img
+              style={{ borderRadius: 200, width: 90, height: 90, objectFit: 'cover' }}
+              className="rounded-circle avatar-xl cursor-pointer"
+              alt="Seller"
+              src={!shopLogo ? noPhoto : shopLogo}
+            />
+          </div>
+        </Col>
+        <Col md={10}>
+          <div className="d-flex align-items-center pb-1">
+            <h5>
+              Welcome, <span className="text-danger me-2">{shopName}</span>
+            </h5>
+            <h6 className="text-capitalize me-1">{`Status - ${shopStatus}`}</h6>
+            <h6 className="text-capitalize me-1">{shopType}</h6>
+            <h6 className="text-capitalize me-1">{`Featured - ${isFeatured ? 'Yes' : 'No'}`}</h6>
+            <h6 className="text-capitalize me-1">{`Cuisines - ${
+              cuisineType.length > 0 ? cuisineType[0]?.name : 'N/A'
+            }`}</h6>
+          </div>
+
+          <Row className="pt-2">
+            <Col lg={4}>
+              <InfoTwoWrapper>
+                <InfoTwo
+                  mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
+                  value={address}
+                  Icon={RoomOutlinedIcon}
+                  name="Location"
+                />
+                <InfoTwo
+                  value={`Mon to Fri - ${shopStartTimeText} ${
+                    shopStartTimeText.split(':')[0] < 12 ? 'AM' : 'PM'
+                  } - ${shopEndTimeText} ${shopEndTimeText.split(':')[0] < 12 ? 'AM' : 'PM'}`}
+                  Icon={AccessTimeOutlinedIcon}
+                  name="Open"
+                />
+                <InfoTwo name="Phone" value={phone_number} Icon={LocalPhoneOutlinedIcon} />
+                <InfoTwo name="Email" classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+              </InfoTwoWrapper>
+            </Col>
+
+            <Col lg={4}>
+              <InfoTwoWrapper>
+                <InfoTwo name="Min Order" value={`${minOrderAmount} ${currency}`} Icon={StorefrontOutlinedIcon} />
+                <InfoTwo
+                  value={`${
+                    rating === 4
+                      ? 'Excellent'
+                      : rating === 3
+                      ? 'Very good'
+                      : rating === 2
+                      ? 'Good'
+                      : rating === 1
+                      ? 'Bad'
+                      : ''
+                  }`}
+                  name="Rating"
+                  Icon={SentimentSatisfiedOutlinedIcon}
+                />
+                <InfoTwo
+                  name="Price Range"
+                  value={`${expensive === 1 ? '$' : expensive === 2 ? '$$' : expensive === '3' ? '$$$' : '$$$$'}`}
+                  Icon={WorkHistoryOutlinedIcon}
+                />
+              </InfoTwoWrapper>
+            </Col>
+
+            <Col lg={4}>
+              <InfoTwoWrapper>
+                <InfoTwo name="Delivery Type" value={`${haveOwnDeliveryBoy ? 'Self' : 'Lyxa'}`} Icon={PaymentIcon} />
+                <InfoTwo name="Delivery Fee" value={`${deliveryFee}`} Icon={MopedOutlinedIcon} />
+                <InfoTwo name="No Deals" value={deals.length || ''} Icon={SettingsInputSvideoIcon} />
+              </InfoTwoWrapper>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </InfoWrapper>
+  );
+}
+
+export default Dashboard;

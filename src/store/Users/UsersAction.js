@@ -1,12 +1,8 @@
-import { toast } from "react-toastify";
-import {
-  ADD_USER,
-  ALL_USERS,
-  EDIT_USER,
-  USER_TRANSACTIONS,
-} from "../../network/Api";
-import requestApi from "../../network/httpRequest";
-import * as actionType from "../actionType";
+/* eslint-disable default-param-last */
+import { successMsg } from '../../helpers/successMsg';
+import { ALL_USERS, USER_ORDERS, USER_STATUS, USER_TRANSACTIONS } from '../../network/Api';
+import requestApi from '../../network/httpRequest';
+import * as actionType from '../actionType';
 
 // USERS LIST
 
@@ -23,15 +19,13 @@ export const userList =
 
         const { data } = await requestApi().request(ALL_USERS, {
           params: {
-             searchKey,
+            searchKey,
             page,
             pageSize: 30,
             sortBy: sortByKey.value,
             status: statusKey.value,
           },
         });
-
-        // console.log("users-----", data);
 
         if (data.status) {
           dispatch({
@@ -59,9 +53,8 @@ export const userList =
 // TRANSACTIONS
 
 export const userTransactions =
-  (refresh = false, id, page = 1) =>
+  (id, page = 1) =>
   async (dispatch, getState) => {
-    // console.log({id})
     try {
       const { startDate, endDate, sortBy } = getState().usersReducer;
 
@@ -79,7 +72,6 @@ export const userTransactions =
           sortBy: sortBy.value,
         },
       });
-      console.log({ data });
 
       if (data.status) {
         dispatch({
@@ -117,7 +109,6 @@ export const updateTransStartDate = (startDate) => (dispatch) => {
 };
 
 export const updateTransEndDate = (date) => (dispatch) => {
-  // console.log({date})
   dispatch({
     type: actionType.UPDATE_END_DATE,
     payload: date,
@@ -149,4 +140,84 @@ export const updateSearchKey = (value) => (dispatch) => {
     type: actionType.UPDATE_USERS_SEARCH_KEY,
     payload: value,
   });
+};
+
+// USER ORDERS
+
+export const getUserAllOrder =
+  (refresh = false, userId, page = 1) =>
+  async (dispatch, getState) => {
+    const { orders } = getState().usersReducer;
+
+    if (orders.length < 1 || refresh) {
+      try {
+        dispatch({
+          type: actionType.USER_ORDERS_REQUEST_SEND,
+        });
+
+        const {
+          data: { status, error, data = null },
+        } = await requestApi().request(USER_ORDERS, {
+          params: {
+            userId,
+            page,
+            pageSize: 50,
+          },
+        });
+
+        if (status) {
+          dispatch({
+            type: actionType.USER_ORDERS_REQUEST_SUCCESS,
+            payload: data,
+          });
+        } else {
+          dispatch({
+            type: actionType.USER_ORDERS_REQUEST_FAIL,
+            payload: error,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: actionType.USER_ORDERS_REQUEST_FAIL,
+          payload: error.message,
+        });
+      }
+    }
+  };
+
+// UPDATE USER STATUS
+
+export const updateUserStatus = (userId, status) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.UPDATE_USER_STATUS_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(USER_STATUS, {
+      method: 'POST',
+      data: {
+        id: userId,
+        status,
+      },
+    });
+
+    if (data.status) {
+      successMsg(data.message, 'success');
+      dispatch({
+        type: actionType.UPDATE_USER_STATUS_REQUEST_SUCCESS,
+        payload: data.data,
+      });
+    } else {
+      dispatch({
+        type: actionType.UPDATE_USER_STATUS_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (e) {
+    successMsg(e.message);
+    dispatch({
+      type: actionType.UPDATE_USER_STATUS_REQUEST_FAIL,
+      payload: e.error,
+    });
+  }
 };

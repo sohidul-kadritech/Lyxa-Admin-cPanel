@@ -1,27 +1,30 @@
-import moment from "moment";
-import * as actionType from "../actionType";
+/* eslint-disable default-param-last */
+import moment from 'moment';
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
   orders: [],
   status: false,
-  typeKey: { label: "All", value: "all" },
-  sortByKey: { label: "Desc", value: "desc" },
-  startDate: moment().format("YYYY-MM-DD"),
-  endDate: moment().add(1, "M").format("YYYY-MM-DD"),
+  typeKey: { label: 'All', value: 'all' },
+  sortByKey: { label: 'Desc', value: 'desc' },
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().endOf('month').format('YYYY-MM-DD'),
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  orderType: { label: 'All', value: 'all' },
+  orderSearchKey: '',
+  activeDelieryBoys: [],
 };
 
 const orderReducer = (state = initialState, action) => {
   const { payload, type } = action;
 
   switch (type) {
-
     case actionType.ALL_ORDERS_REQUEST_SEND:
       return {
         ...state,
@@ -39,15 +42,111 @@ const orderReducer = (state = initialState, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true
+        status: true,
       };
 
-      case actionType.ALL_ORDERS_REQUEST_FAIL:
+    case actionType.ALL_ORDERS_REQUEST_FAIL:
       return {
         ...state,
         error: payload,
+        loading: false,
       };
 
+    // UPDATE STATUS
+
+    case actionType.ORDER_UPDATE_STATUS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ORDER_UPDATE_STATUS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.ORDER_UPDATE_STATUS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // SEND FLAG
+
+    case actionType.SEND_ORDER_FLAG_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.SEND_ORDER_FLAG_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.SEND_ORDER_FLAG_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // DELETE FLAG
+
+    case actionType.DELETE_ORDER_FLAG_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.DELETE_ORDER_FLAG_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.DELETE_ORDER_FLAG_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // CANCEL ORDER
+
+    case actionType.CANCEL_ORDER_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.CANCEL_ORDER_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.CANCEL_ORDER_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
 
     // FILTERS
     case actionType.UPDATE_ORDER_SORT_BY_FILTER:
@@ -70,6 +169,43 @@ const orderReducer = (state = initialState, action) => {
       return {
         ...state,
         typeKey: payload,
+      };
+
+    case actionType.UPDATE_ORDER_BY_SHOP_TYPE:
+      return {
+        ...state,
+        orderType: payload,
+      };
+
+    case actionType.UPDATE_ORDER_SEARCH_KEY:
+      return {
+        ...state,
+        orderSearchKey: payload,
+      };
+
+    // ACTIVE DELIVERY BOSY
+
+    case actionType.ACTIVE_DELIVERY_MANS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ACTIVE_DELIVERY_MANS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        activeDelieryBoys: payload,
+        status: false,
+      };
+
+    case actionType.ACTIVE_DELIVERY_MANS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
 
     default:

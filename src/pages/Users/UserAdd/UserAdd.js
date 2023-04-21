@@ -1,11 +1,7 @@
 import React from 'react';
 
-const UserAdd = () => {
-    return (
-        <div>
-            
-        </div>
-    );
-};
+function UserAdd() {
+  return <div></div>;
+}
 
 export default UserAdd;

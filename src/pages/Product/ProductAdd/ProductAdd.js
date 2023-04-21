@@ -1,148 +1,77 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
+import { Autocomplete, Box, Paper, TextField, Tooltip } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react';
+import Dropzone from 'react-dropzone';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, CardTitle, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
+import styled from 'styled-components';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
 
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-} from "reactstrap";
-import {
-  Autocomplete,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-} from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllSeller } from "../../../store/Seller/sellerAction";
-import {
-  getAllCategory,
-  getAllSubCategory,
-  updateCategoryShopType,
-} from "../../../store/Category/categoryAction";
-import styled from "styled-components";
-import Dropzone from "react-dropzone";
-import { toast } from "react-toastify";
-import {
-  addProduct,
-  editProduct,
-  getAllProduct,
-} from "../../../store/Product/productAction";
-import { getAllShop } from "../../../store/Shop/shopAction";
-import { useParams, useHistory, useLocation, Link } from "react-router-dom";
-import requestApi from "../../../network/httpRequest";
-import { IMAGE_UPLOAD, SINGLE_PRODUCT } from "../../../network/Api";
-import { foodTypeOptions2 } from "../../../assets/staticData";
-import { updateShopType } from "./../../../store/Shop/shopAction";
+import { getAllCategory, getAllSubCategory, updateCategoryShopType } from '../../../store/Category/categoryAction';
 
-const ProductAdd = () => {
+import { foodTypeOptions2, shopTypeOptions2 } from '../../../assets/staticData';
+import formatBytes from '../../../common/imageFormatBytes';
+import AutocompletedInput from '../../../components/AutocompletedInput';
+import ProductAutocompleted from '../../../components/ProductAutocompleted';
+import SelectOption from '../../../components/SelectOption';
+import { callApi } from '../../../components/SingleApiCall';
+import { successMsg } from '../../../helpers/successMsg';
+import { IMAGE_UPLOAD, SINGLE_PRODUCT } from '../../../network/Api';
+import requestApi from '../../../network/httpRequest';
+import { addProduct, editProduct, getAllProduct, updateProductSearchKey } from '../../../store/Product/productAction';
+import { getAllShop, updateShopSearchKey, updateShopType } from '../../../store/Shop/shopAction';
+import { getAllUnitType } from '../../../store/unitType/unitTypeAction';
+
+function ProductAdd() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { categories, subCategories } = useSelector(
-    (state) => state.categoryReducer
-  );
-  const { shops, typeKey } = useSelector((state) => state.shopReducer);
+  const { categories: allCategories, subCategories } = useSelector((state) => state.categoryReducer);
+  const { shops, searchKey, typeKey } = useSelector((state) => state.shopReducer);
 
-  const { loading, products, status } = useSelector(
-    (state) => state.productReducer
-  );
+  const { unitTypes } = useSelector((state) => state.unitTypeReducer);
+
+  const { loading, products, status, searchKey: productSearchKey } = useSelector((state) => state.productReducer);
 
   const [shop, setShop] = useState(null);
-  const [cuisines, setCuisines] = useState(null);
-  const [cuisineSearchKey, setCuisineSearchKey] = useState("");
-  const [searchShopKey, setSearchShopKey] = useState("");
+  const [categories, setCategories] = useState([]);
+  // const [cuisines, setCuisines] = useState(null);
+  const [cuisineSearchKey, setCuisineSearchKey] = useState('');
   const [category, setCategory] = useState(null);
-  const [searchCategoryKey, setSearchCategoryKey] = useState("");
+  const [searchCategoryKey, setSearchCategoryKey] = useState('');
   const [subCategory, setSubCategory] = useState(null);
-  const [searchSubCatKey, setSearchSubCatKey] = useState("");
-  const [tags, setTags] = useState({
-    items: [],
-    value: "",
-  });
-  const [name, setName] = useState("");
-  const [foodType, setFoodType] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [price, setPrice] = useState(0);
-  const [type, setType] = useState("");
-  const [seoTitle, setSeoTitle] = useState("");
-  const [seoDescription, setSeoDescription] = useState("");
-  const [visibility, setVisibility] = useState(false);
-  const [activeStatus, setActiveStatus] = useState("");
+  const [searchSubCatKey, setSearchSubCatKey] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [name, setName] = useState('');
+  const [foodType, setFoodType] = useState('');
+  const [discount, setDiscount] = useState('');
+  const [price, setPrice] = useState('');
+  const [type, setType] = useState('');
+
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [isNeedAddon, setIsNeedAddon] = useState(false);
   const [addons, setAddons] = useState([]);
-  const [productSearchKey, setProductSearchKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isNeedAttribute, setIsNeedAttribute] = useState(false);
-  const [attributeName, setAttributeName] = useState("");
+  const [attributeName, setAttributeName] = useState('');
   const [isRequiredAttribute, setIsRequiredAttribute] = useState(false);
+  const [isMultipleAttribute, setIsMultipleAttribute] = useState(false);
+  const [unit, setUnit] = useState('');
   const [attributes, setAttributes] = useState([]);
   const [attributeItems, setAttributeItems] = useState([
     {
-      name: "",
+      name: '',
       extraPrice: 0,
     },
   ]);
 
-  // console.log({ attributes });
-
-  useEffect(() => {
-    if (id) {
-      const findProduct = products.find((item) => item._id == id);
-
-      if (findProduct) {
-        console.log({ findProduct });
-        setProductValue(findProduct);
-      } else {
-        callApi(id);
-      }
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (searchParams) {
-      const shopId = searchParams.get("shopId");
-      if (shopId) {
-        const findShop = shops.find((item) => item._id == shopId);
-        setShop(findShop);
-      }
-    }
-  }, [searchParams]);
-
-  // CALL API FOR SINGLE PRODUCT
-
-  const callApi = async (pId) => {
-    if (pId) {
-      const { data } = await requestApi().request(SINGLE_PRODUCT, {
-        params: {
-          id: pId,
-        },
-      });
-
-      if (data.status) {
-        setProductValue(data.data.product);
-      }
-    } else {
-      history.push("/products/list", { replace: true });
-    }
-  };
+  const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
 
   // SET PRODUCT VALUE
   const setProductValue = (product) => {
@@ -151,19 +80,19 @@ const ProductAdd = () => {
       name,
       images,
       price,
-      productVisibility,
       seoDescription,
-      tags,
-      seoTitle,
       shop,
       subCategory,
       type,
       foodType,
       addons,
       attributes,
-      status,
       discount,
+      unit,
+      quantity,
     } = product;
+
+    const findUnit = unitTypes?.find((item) => item.name === unit);
 
     setShop(shop);
     setCategory(category);
@@ -172,34 +101,93 @@ const ProductAdd = () => {
     setDiscount(discount);
     setPrice(price);
     setType(type);
-    setSeoTitle(seoTitle);
-    setSeoDescription(seoDescription);
-    setVisibility(productVisibility);
-    setFoodType(foodType ?? "");
-    setTags({
-      ...tags,
-      items: tags,
-    });
+    dispatch(updateCategoryShopType(type));
+    setDescription(seoDescription);
+    setFoodType(foodType);
     setImage(images[0]);
     setAddons(addons);
     setAttributes(attributes);
-    setActiveStatus(status);
+    setUnit(findUnit);
+    setQuantity(quantity);
+    setSearchCategoryKey(category?.name || '');
   };
 
-  // ALL CATEGORY LIST
+  useEffect(() => {
+    if (id) {
+      const findProduct = products.find((item) => item._id === id);
+
+      if (findProduct) {
+        setProductValue(findProduct);
+        console.log(findProduct);
+      } else {
+        (async function getProduct() {
+          const data = await callApi(id, SINGLE_PRODUCT, 'product');
+          if (data) {
+            setProductValue(data);
+            console.log(data);
+          } else {
+            history.push('/products/list', { replace: true });
+          }
+        })();
+      }
+    }
+  }, [id]);
 
   useEffect(() => {
-    if(type){
-      dispatch(getAllCategory(true));
+    dispatch(getAllUnitType(true));
+    dispatch(getAllCategory(true, account_type));
+  }, []);
+
+  // FIND SHOP BY SHOP ID
+
+  useEffect(() => {
+    if (searchParams.get('shopId') || account_type === 'shop') {
+      const shopId = searchParams.get('shopId');
+      let shop = null;
+      // eslint-disable-next-line no-unused-expressions
+      shopId ? (shop = shopId) : (shop = accountId);
+      if (shop) {
+        const findShop = shops?.find((item) => item._id === shop);
+        if (findShop) {
+          setType(findShop?.shopType);
+          setShop(findShop);
+          dispatch(updateCategoryShopType(findShop?.shopType));
+        } else {
+          (async function getProduct() {
+            const data = await callApi(id, SINGLE_PRODUCT, 'product');
+            if (data) {
+              setProductValue(data);
+            } else {
+              history.push('/products/list', { replace: true });
+            }
+          })();
+        }
+      }
     }
-  }, [type]);
+  }, [searchParams, account_type]);
+
+  // ALL CATEGORY LIST
+  // useEffect(() => {
+  //   if (type) {
+  //     dispatch(getAllCategory(true));
+  //   }
+  // }, [type]);
+
+  useEffect(() => {
+    if (shop && allCategories?.length) {
+      const shopCatagories = allCategories.filter((item) => item?.shop?._id === shop?._id);
+      setCategories(shopCatagories);
+    }
+  }, [shop]);
 
   // ALL SHOP LIST
   useEffect(() => {
-    if (type) {
+    if (account_type === 'shop') {
       dispatch(getAllShop(true));
+    } else if ((typeKey || searchKey) && type) {
+      dispatch(getAllShop(true, account_type === 'seller' ? accountId : null));
     }
-  }, [type]);
+  }, [type, typeKey, searchKey, account_type]);
 
   // ALL SUB CATEGORY LIST
 
@@ -208,115 +196,6 @@ const ProductAdd = () => {
       dispatch(getAllSubCategory(true, category._id));
     }
   }, [category]);
-
-  // useEffect(() => {
-  //   if (shop) {
-  //     dispatch(getAllProduct(true, shop._id));
-  //   }
-  // }, [shop]);
-
-  // TAGS
-
-  const handleTagAdd = (evt) => {
-    // console.log(evt.key);
-    if (["Enter", "Tab", ","].includes(evt.key)) {
-      evt.preventDefault();
-
-      let value = tags.value.trim();
-
-      if (value) {
-        setTags({
-          items: [...tags.items, tags.value],
-          value: "",
-        });
-      }
-    }
-  };
-
-  // TAG CHANGE
-
-  const handleTagChange = (evt) => {
-    setTags({
-      ...tags,
-      value: evt.target.value,
-    });
-    // console.log(tags);
-  };
-
-  const handleTagDelete = (item) => {
-    setTags({
-      ...tags,
-      items: tags.items.filter((i) => i != item),
-    });
-  };
-
-  // VALIDATION
-
-  const submitProduct = () => {
-    if (
-      !category ||
-      !name ||
-      price <= 0 ||
-      !type ||
-      !seoTitle ||
-      !seoDescription ||
-      tags.items.length < 1 ||
-      !shop
-    ) {
-      return errorMessage("Please fill all required fields");
-    }
-
-    if (!image) {
-       return errorMessage("Please Upload Image");
-    }
-
-    // console.log(parseInt(minDeliveryTime), maxDeliveryTime)
-    uploadImage();
-  };
-
-  const uploadImage = async () => {
-    if (typeof image === "string") {
-      submitData(image);
-    } else {
-      try {
-        setIsLoading(true);
-        let formData = new FormData();
-        formData.append("image", image);
-        // console.log({formData})
-        const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
-          data: formData,
-        });
-        // console.log("image upload", data)
-        setIsLoading(false);
-        if (data.status) {
-          // submitData(data.data.url);
-          submitData(data.data.url);
-        } else {
-
-          return errorMessage(data.error)
-        }
-      } catch (error) {
-        setIsLoading(false);
-        return errorMessage(error.message)
-      }
-    }
-  };
-
-  // ERROR MESSAGE
-
-  const errorMessage = (msg) =>{
-    toast.warn(msg, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  }
 
   // SUBMIT DATA TO SERVER
   const submitData = (url) => {
@@ -328,24 +207,21 @@ const ProductAdd = () => {
       foodType,
       shop: shop._id,
       images: [url],
-      category: category._id,
+      category: category.category,
       subCategory: subCategory?._id,
-      seoTitle,
-      seoDescription,
-      tags: tags.items,
+      seoDescription: description,
       attributes,
       addons: addonsData,
-      cuisines
+      // cuisines,
+      unit: unit?.name,
+      quantity,
     };
 
-    // console.log({data})
     if (id) {
       dispatch(
         editProduct({
           ...data,
           id,
-          productVisibility: visibility,
-          status: activeStatus,
         })
       );
     } else {
@@ -353,25 +229,56 @@ const ProductAdd = () => {
     }
   };
 
-  // ADD CHOICE ITEM SINGLE
+  // eslint-disable-next-line consistent-return
+  const uploadImage = async () => {
+    if (typeof image === 'string') {
+      submitData(image);
+    } else {
+      try {
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append('image', image);
 
+        const { data } = await requestApi().request(IMAGE_UPLOAD, {
+          method: 'POST',
+          data: formData,
+        });
+
+        setIsLoading(false);
+        if (data.status) {
+          submitData(data.data.url);
+        } else {
+          return successMsg(data.error, 'error');
+        }
+      } catch (error) {
+        setIsLoading(false);
+        return successMsg(error.message, 'error');
+      }
+    }
+  };
+
+  // VALIDATION
+  // eslint-disable-next-line consistent-return
+  const submitProduct = (e) => {
+    e.preventDefault();
+
+    if (!image) {
+      return successMsg('Please Upload Image', 'error');
+    }
+
+    uploadImage();
+  };
+
+  // ADD CHOICE ITEM SINGLE
+  // eslint-disable-next-line consistent-return
   const addAttributeItem = () => {
-    if (attributeItems[attributeItems.length - 1].name == "") {
-      return toast.warn("Please Fillup Previous Input Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    if (attributeItems[attributeItems.length - 1].name === '') {
+      return successMsg('Please Fillup Previous Input Fields', 'error');
     }
     setAttributeItems([
       ...attributeItems,
       {
-        name: "",
+        name: '',
         extraPrice: 0,
       },
     ]);
@@ -380,13 +287,12 @@ const ProductAdd = () => {
   // REMOVE CHOICE ITEM FROM
 
   const removeAttributeItem = (i) => {
-    let list = [...attributeItems];
+    const list = [...attributeItems];
     list.splice(i, 1);
     setAttributeItems(list);
   };
 
   // HANDLE CHOICE ITEM INPUT CHANGE
-
   const attributeItemChange = (e, index) => {
     const { name, value } = e.target;
     const list = [...attributeItems];
@@ -395,43 +301,26 @@ const ProductAdd = () => {
   };
 
   // ADD CHOICE
-
+  // eslint-disable-next-line consistent-return
   const addAttribute = () => {
     if (!attributeName) {
-      return toast.warn("Please add attribute name", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return successMsg('Please add attribure name', 'error');
     }
-    if (attributeItems[attributeItems.length - 1].name == "") {
-      return toast.warn("Please add atleast one item", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    if (attributeItems[attributeItems.length - 1].name === '') {
+      return successMsg('Please at least one item', 'error');
     }
     const data = {
       name: attributeName,
       required: isRequiredAttribute,
+      select: isMultipleAttribute ? 'multiple' : 'single',
       items: attributeItems,
     };
     setAttributes([...attributes, data]);
-    setAttributeName("");
+    setAttributeName('');
     setIsRequiredAttribute(false);
     setAttributeItems([
       {
-        name: "",
+        name: '',
         extraPrice: 0,
       },
     ]);
@@ -440,7 +329,7 @@ const ProductAdd = () => {
   // REMOVE ATTRIBUTE
 
   const removeAttribute = (i) => {
-    let list = [...attributes];
+    const list = [...attributes];
     list.splice(i, 1);
     setAttributes(list);
   };
@@ -449,21 +338,16 @@ const ProductAdd = () => {
   useEffect(() => {
     if (status) {
       if (id) {
-        history.push("/products/list");
+        history.push('/products/list');
       } else {
         setShop(null);
         setCategory(null);
         setSubCategory(null);
-        setName("");
-        setDiscount(0);
-        setPrice(0);
-        setSeoTitle("");
-        setSeoDescription("");
-        setTags({
-          items: [],
-          value: "",
-        });
-        setType("")
+        setName('');
+        setDiscount('');
+        setPrice('');
+        setDescription('');
+        setType('');
 
         setAttributes([]);
         setAddons([]);
@@ -471,32 +355,21 @@ const ProductAdd = () => {
         setIsNeedAddon(false);
         setAttributeItems([
           {
-            name: "",
+            name: '',
             extraPrice: 0,
           },
         ]);
         setImage(null);
+        setUnit(null);
         window.scroll(0, 0);
       }
     }
   }, [status]);
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
-
   // IMAGE
 
-  const handleAcceptedFiles = (files, type) => {
+  const handleAcceptedFiles = (files) => {
+    // console.log(files);
     files.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -508,41 +381,48 @@ const ProductAdd = () => {
   };
 
   // ADD ADDON
-
+  // eslint-disable-next-line consistent-return
   const addAddonProduct = (item) => {
-    console.log(item);
     if (item) {
+      const isExist = addons.filter((i) => i._id === item._id);
+
+      if (isExist.length > 0) {
+        return successMsg('Already added.Try another');
+      }
+
       setAddons([...addons, item]);
     }
+    // setSelectedAddon(item)
   };
 
   // REMOVE ADDON
 
   const removeAddon = (i) => {
-    let list = [...addons];
+    const list = [...addons];
     list.splice(i, 1);
     setAddons(list);
   };
 
+  // GET ALL Product
+
+  useEffect(() => {
+    if (productSearchKey) {
+      dispatch(getAllProduct(true));
+    }
+  }, [productSearchKey]);
+
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={id ? "Edit" : "Add"}
-              title="Product"
-              //   loading={loading}
-              //   callList={callShopList}
-              isRefresh={false}
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem={id ? 'Edit' : 'Add'} title="Product" isRefresh={false} />
 
-            <Card>
-              <CardBody>
-                <CardTitle>Product Informations</CardTitle>
-                <hr />
+          <Card>
+            <CardBody>
+              <CardTitle>Product Informations</CardTitle>
+              <hr />
 
+              <Form onSubmit={submitProduct}>
                 <Row>
                   <Col lg={6}>
                     <div className="mb-4">
@@ -550,149 +430,186 @@ const ProductAdd = () => {
                         id="name"
                         label="Name"
                         variant="outlined"
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         autoComplete="off"
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                         required
                       />
                     </div>
+
                     <div className="mb-4">
-                      <FormControl fullWidth required>
-                        <InputLabel id="demo-simple-select-label">
-                          Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={type}
-                          label="Type"
-                          onChange={(event) => {
-                            setType(event.target.value);
-                            dispatch(updateShopType(event.target.value));
-                            dispatch(updateCategoryShopType(event.target.value));
-                            setShop(null);
-                            
-                          }}
-                        >
-                          <MenuItem value="food">Restaurant</MenuItem>
-                          <MenuItem value="pharmacy">Pharmacy</MenuItem>
-                          <MenuItem value="grocery">Grocery</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className="mb-4">
-                      <Autocomplete
-                        disabled={id || !type ? true : false}
-                        className="cursor-pointer"
-                        value={shop}
-                        onChange={(event, newValue) => {
-                          setShop(newValue);
-                          setAddons([]);
-                          console.log("new", newValue);
+                      <SelectOption
+                        label="Type"
+                        value={type}
+                        onChange={(event) => {
+                          setType(event.target.value);
+                          dispatch(updateShopType(event.target.value));
+                          dispatch(updateCategoryShopType(event.target.value));
+                          setShop(null);
+                          setCategory(null);
                         }}
-                        getOptionLabel={(option) =>option.shopName }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchShopKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchShopKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={shops.length > 0 ? shops : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Shop" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                            key={option._id}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.shopBanner}
-                              alt=""
-                            />
-                            {option.shopName}
-                          </Box>
-                        )}
+                        options={shopTypeOptions2}
+                        disabled={!!(searchParams.get('shopId') || id || account_type === 'shop')}
                       />
                     </div>
-
-                    {shop && shop.isCuisine && shop.cuisineType.length > 1 && (
+                    <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
+                      <div className="mb-4">
+                        <AutocompletedInput
+                          value={shop || null}
+                          onChange={(event, newValue) => setShop(newValue)}
+                          searchKey={searchKey}
+                          onInputChange={(event, newInputValue) => dispatch(updateShopSearchKey(newInputValue))}
+                          list={shops}
+                          disabled={!!(!type || id || searchParams.get('shopId') || account_type === 'shop')}
+                          type="shop"
+                          showImg
+                        />
+                      </div>
+                    </Tooltip>
+                    {/* remove cusinsen */}
+                    {type !== 'food' && (
                       <div className="mb-4">
                         <Autocomplete
                           className="cursor-pointer"
-                          value={cuisines}
+                          value={unit || null}
                           onChange={(event, newValue) => {
-                            setCuisines(newValue);
-                            console.log("new", newValue);
+                            setUnit(newValue);
                           }}
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : option
-                          }
-                          isOptionEqualToValue={(option, value) =>option == value}
+                          getOptionLabel={(option) => (option.name ? option.name : '')}
+                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
                           inputValue={cuisineSearchKey}
                           onInputChange={(event, newInputValue) => {
                             setCuisineSearchKey(newInputValue);
-                            // console.log("input value", newInputValue);
                           }}
                           id="controllable-states-demo"
-                          options={shop?.cuisineType?.length > 0 ? shop?.cuisineType : []}
-                          sx={{ width: "100%" }}
+                          options={unitTypes.length > 0 ? unitTypes : []}
+                          sx={{ width: '100%' }}
                           renderInput={(params) => (
-                            <TextField {...params} label="Select a Cuisine" />
+                            <TextField {...params} label="Select a Unit" required name="cuisine" />
                           )}
                           renderOption={(props, option) => (
                             <Box
                               component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
                               {...props}
-                              key={option}
+                              key={option?._id}
                             >
-                              {option?.name ||  option}
+                              {option?.name}
+                            </Box>
+                          )}
+                        />
+                      </div>
+                    )}
+                    {type === 'food' && shop?.shopType === 'food' && (
+                      <div className="mb-4">
+                        <SelectOption
+                          label="Food Type"
+                          value={foodType}
+                          onChange={(event) => {
+                            setFoodType(event.target.value);
+                          }}
+                          options={foodTypeOptions2}
+                        />
+                      </div>
+                    )}
+
+                    {type && type !== 'food' && (
+                      <div className="mb-4">
+                        <TextField
+                          id="quantity"
+                          label="Quantity"
+                          variant="outlined"
+                          style={{ width: '100%' }}
+                          placeholder="Ender quantity"
+                          autoComplete="off"
+                          value={quantity}
+                          onChange={(event) => setQuantity(event.target.value)}
+                          required
+                          type="number"
+                        />
+                      </div>
+                    )}
+                  </Col>
+                  <Col lg={6}>
+                    <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
+                      <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          required
+                          value={category || null}
+                          disabled={!type || !shop}
+                          onChange={(event, newValue) => {
+                            setCategory(newValue);
+                          }}
+                          getOptionLabel={(option) => (option?.category?.name ? option?.category?.name : '')}
+                          isOptionEqualToValue={(option, value) => option?.category?._id === value?._id}
+                          inputValue={searchCategoryKey}
+                          onInputChange={(event, newInputValue) => {
+                            console.log(event, newInputValue);
+                            if (event) {
+                              setSearchCategoryKey(newInputValue);
+                            }
+                          }}
+                          id="controllable-states-demo"
+                          options={categories.length > 0 ? categories : []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              value={searchCategoryKey}
+                              label="Select a category"
+                              required
+                              name="category"
+                            />
+                          )}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option._id}
+                            >
+                              {option?.category?.name}
+                            </Box>
+                          )}
+                        />
+                      </div>
+                    </Tooltip>
+
+                    {category && type !== 'food' && (
+                      <div className="mb-4">
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={subCategory || null}
+                          onChange={(event, newValue) => {
+                            setSubCategory(newValue);
+                          }}
+                          getOptionLabel={(option) => (option.name ? option.name : '')}
+                          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+                          inputValue={searchSubCatKey}
+                          onInputChange={(event, newInputValue) => {
+                            setSearchSubCatKey(newInputValue);
+                          }}
+                          id="controllable-states-demo"
+                          options={subCategories.length > 0 ? subCategories : []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => <TextField {...params} label="Select a Sub Category" />}
+                          renderOption={(props, option) => (
+                            <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                              {option.name}
                             </Box>
                           )}
                         />
                       </div>
                     )}
 
-                    {type === "food" && shop?.shopType === "food" && (
-                      <div className="mb-4">
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Food Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={foodType}
-                            label="Food Type"
-                            onChange={(event) => {
-                              setFoodType(event.target.value);
-                            }}
-                          >
-                            {foodTypeOptions2.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </div>
-                    )}
                     <div className="mb-4">
                       <TextField
                         id="netPrice"
                         label="Net Price"
                         variant="outlined"
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         autoComplete="off"
                         value={price}
                         onChange={(event) => setPrice(event.target.value)}
@@ -702,210 +619,13 @@ const ProductAdd = () => {
                     </div>
                     <div className="mb-4">
                       <TextField
-                        id="previousPrice"
-                        label="Discount"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        placeholder="Ender Discount Percentage"
-                        autoComplete="off"
-                        value={discount}
-                        onChange={(event) => setDiscount(event.target.value)}
-                        required
-                        type="number"
-                      />
-                    </div>
-
-                    {id && (
-                      <div className="mb-4">
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Visibility
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={visibility}
-                            label="Type"
-                            onChange={(event) =>
-                              setVisibility(event.target.value)
-                            }
-                          >
-                            <MenuItem value="true">True</MenuItem>
-                            <MenuItem value="false">False</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </div>
-                    )}
-                    {id && (
-                      <div className="mb-4">
-                        <FormControl fullWidth required>
-                          <InputLabel id="demo-simple-select-label">
-                            Status
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={activeStatus}
-                            label="Type"
-                            onChange={(event) =>
-                              setActiveStatus(event.target.value)
-                            }
-                          >
-                            <MenuItem value="active">Active</MenuItem>
-                            <MenuItem value="inactive">Inactive</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </div>
-                    )}
-                  </Col>
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <Autocomplete
-                        className="cursor-pointer"
-                        value={category}
-                        disabled={!type ? true : false}
-                        onChange={(event, newValue) => {
-                          setCategory(newValue);
-                          // console.log("new", newValue);
-                        }}
-                        getOptionLabel={(option) => option.name 
-                        }
-                        isOptionEqualToValue={(option, value) =>
-                          option._id == value._id
-                        }
-                        inputValue={searchCategoryKey}
-                        onInputChange={(event, newInputValue) => {
-                          setSearchCategoryKey(newInputValue);
-                          // console.log("input value", newInputValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={categories.length > 0 ? categories : []}
-                        sx={{ width: "100%" }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select a Category" />
-                        )}
-                        renderOption={(props, option) => (
-                          <Box
-                            component="li"
-                            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                            {...props}
-                          >
-                            <img
-                              loading="lazy"
-                              width="60"
-                              src={option.image}
-                              alt=""
-                            />
-                            {option.name}
-                          </Box>
-                        )}
-                      />
-                    </div>
-                    {category && (
-                      <div className="mb-4">
-                        <Autocomplete
-                          className="cursor-pointer"
-                          value={subCategory}
-                          onChange={(event, newValue) => {
-                            setSubCategory(newValue);
-                            // console.log("new", newValue);
-                          }}
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={(option, value) =>
-                            option.id == value.id
-                          }
-                          inputValue={searchSubCatKey}
-                          onInputChange={(event, newInputValue) => {
-                            setSearchSubCatKey(newInputValue);
-                            // console.log("input value", newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={
-                            subCategories.length > 0 ? subCategories : []
-                          }
-                          sx={{ width: "100%" }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select a Sub Category"
-                            />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                            >
-                              <img
-                                loading="lazy"
-                                width="60"
-                                src={option.image}
-                                alt=""
-                              />
-                              {option.name}
-                            </Box>
-                          )}
-                        />
-                      </div>
-                    )}
-
-                    <div className="mb-4">
-                      <TextField
                         id="seo"
-                        label="SEO Title"
+                        label="Description"
                         variant="outlined"
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         autoComplete="off"
-                        value={seoTitle}
-                        onChange={(event) => setSeoTitle(event.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <TextField
-                        id="seoTag"
-                        label="SEO Tags"
-                        variant="outlined"
-                        placeholder="type tag name then press enter"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        onKeyDown={handleTagAdd}
-                        onChange={handleTagChange}
-                        value={tags?.value}
-                        //   onChange={(event) => setName(event.target.value)}
-                        required
-                      />
-                      {tags.items.length > 0 && (
-                        <Paper className="mt-4 p-3">
-                          {tags.items.map((item, index) => (
-                            <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() => handleTagDelete(item)}
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          ))}
-                        </Paper>
-                      )}
-                    </div>
-
-                    <div className="mb-4">
-                      <TextField
-                        id="seo"
-                        label="SEO Description"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        autoComplete="off"
-                        value={seoDescription}
-                        onChange={(event) =>
-                          setSeoDescription(event.target.value)
-                        }
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
                         required
                         multiline
                         rows={2}
@@ -914,427 +634,375 @@ const ProductAdd = () => {
                   </Col>
                 </Row>
 
-                {/* ATTRIBUTE */}
-                <Row className="mt-3">
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={isNeedAttribute}
-                            id="flexCheckDefault"
-                            onChange={(e) =>
-                              setIsNeedAttribute(e.target.checked)
-                            }
-                          />
-                          <label
-                            className="form-check-label ms-1"
-                            style={{ fontSize: "16px" }}
-                            htmlFor="flexCheckDefault"
-                          >
-                            Attribute(s)
-                          </label>
-                        </div>
-                      </div>
-
-                      {isNeedAttribute && (
-                        <div>
-                          <Row className="mt-2">
-                            <Col sm={8}>
-                              <TextField
-                                id="Attribute name"
-                                label="Attribute Name"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                                autoComplete="off"
-                                value={attributeName}
-                                onChange={(e) =>
-                                  setAttributeName(e.target.value)
-                                }
-                                type="text"
+                {type === 'food' && (
+                  <>
+                    {/* ATTRIBUTE */}
+                    <Row className="mt-3">
+                      <Col lg={6}>
+                        <div className="mb-4">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value={isNeedAttribute}
+                                id="flexCheckDefault"
+                                onChange={(e) => setIsNeedAttribute(e.target.checked)}
                               />
-                            </Col>
-                            <Col sm={4}>
-                              <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value={isRequiredAttribute}
-                                  id="flexCheckDefault"
-                                  onChange={(e) =>
-                                    setIsRequiredAttribute(e.target.checked)
-                                  }
-                                />
-                                <label
-                                  className="form-check-label ms-1"
-                                  style={{ fontSize: "16px" }}
-                                  htmlFor="flexCheckDefault"
-                                >
-                                  Required
-                                </label>
-                              </div>
-                            </Col>
-                          </Row>
-                          {attributeItems.map((item, index) => (
-                            <Row className="mt-3" key={index}>
-                              <Col sm={6}>
-                                <TextField
-                                  id="variant name"
-                                  label="Name"
-                                  name="name"
-                                  variant="outlined"
-                                  style={{ width: "100%" }}
-                                  autoComplete="off"
-                                  value={item?.name}
-                                  onChange={(event) =>
-                                    attributeItemChange(event, index)
-                                  }
-                                  type="text"
-                                />
-                              </Col>
-                              <Col sm={6} className="mt-3 mt-sm-0 d-flex">
-                                <TextField
-                                  id="variant extra price"
-                                  name="extraPrice"
-                                  label="Extra Price"
-                                  variant="outlined"
-                                  style={{ width: "100%" }}
-                                  autoComplete="off"
-                                  value={item?.extraPrice}
-                                  onChange={(event) =>
-                                    attributeItemChange(event, index)
-                                  }
-                                  type="number"
-                                />
-                                {attributeItems.length > 1 && (
-                                  <i
-                                    className="fas fa-trash cursor-pointer ms-1"
-                                    style={{ color: "red", fontSize: "18px" }}
-                                    onClick={() => removeAttributeItem(index)}
-                                  ></i>
-                                )}
-                              </Col>
-                              {attributeItems.length - 1 === index && (
-                                <div>
-                                  <Button
-                                    outline={true}
-                                    color="primary"
-                                    className="mt-2"
-                                    onClick={addAttributeItem}
-                                  >
-                                    Add Item
-                                  </Button>
-                                </div>
-                              )}
-                            </Row>
-                          ))}
-
-                          <div className="mt-3 text-center">
-                            <Button
-                              outline={true}
-                              color="success"
-                              size="lg"
-                              className="px-5"
-                              onClick={addAttribute}
-                            >
-                              Add
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Col>
-                  <Col lg={6}>
-                    {attributes.length > 0 && (
-                      <div className="mb-4">
-                        <Paper className="py-2">
-                          <h5 className="text-center">Attributes List</h5>
-                          <hr />
-                          {attributes.length > 0 &&
-                            attributes.map((attribute, index) => (
-                              <ul
-                                key={index}
-                                style={{ listStyleType: "square" }}
+                              <label
+                                className="form-check-label ms-1"
+                                style={{ fontSize: '16px' }}
+                                htmlFor="flexCheckDefault"
                               >
-                                <li>
-                                  <div className="d-flex justify-content-between">
-                                    <span
-                                      style={{
-                                        fontSize: "15px",
-                                        fontWeight: "500",
-                                      }}
+                                Attribute(s)
+                              </label>
+                            </div>
+                          </div>
+
+                          {isNeedAttribute && (
+                            <div>
+                              <Row className="mt-2">
+                                <Col sm={8}>
+                                  <TextField
+                                    id="Attribute name"
+                                    label="Attribute Name"
+                                    variant="outlined"
+                                    style={{ width: '100%' }}
+                                    autoComplete="off"
+                                    value={attributeName}
+                                    onChange={(e) => setAttributeName(e.target.value)}
+                                    type="text"
+                                  />
+                                </Col>
+                                <Col sm={4}>
+                                  <div className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      value={isRequiredAttribute}
+                                      id="flexCheckDefault2"
+                                      onChange={(e) => setIsRequiredAttribute(e.target.checked)}
+                                    />
+                                    <label
+                                      className="form-check-label ms-1"
+                                      style={{ fontSize: '16px' }}
+                                      htmlFor="flexCheckDefault2"
                                     >
-                                      {attribute.name}
-                                      {attribute.required ? "(Required)" : ""}
-                                    </span>
-                                    <i
-                                      className="fas fa-trash cursor-pointer me-3"
-                                      style={{
-                                        color: "#BD381C",
-                                        fontSize: "15px",
-                                      }}
-                                      onClick={() => removeAttribute(index)}
-                                    ></i>
+                                      Required
+                                    </label>
                                   </div>
-                                </li>
-                                {attribute.items.map((item, index) => (
-                                  <ul key={index}>
+
+                                  <div className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      value={isMultipleAttribute}
+                                      id="flexCheckDefault3"
+                                      onChange={(e) => setIsMultipleAttribute(e.target.checked)}
+                                    />
+                                    <label
+                                      className="form-check-label ms-1"
+                                      style={{ fontSize: '16px' }}
+                                      htmlFor="flexCheckDefault3"
+                                    >
+                                      Multiple
+                                    </label>
+                                  </div>
+                                </Col>
+                              </Row>
+                              {attributeItems.map((item, index) => (
+                                <Row className="mt-3" key={index}>
+                                  <Col sm={6}>
+                                    <TextField
+                                      id="variant name"
+                                      label="Name"
+                                      name="name"
+                                      variant="outlined"
+                                      style={{ width: '100%' }}
+                                      autoComplete="off"
+                                      value={item?.name}
+                                      onChange={(event) => attributeItemChange(event, index)}
+                                      type="text"
+                                    />
+                                  </Col>
+                                  <Col sm={6} className="mt-3 mt-sm-0 d-flex">
+                                    <TextField
+                                      id="variant extra price"
+                                      name="extraPrice"
+                                      label="Extra Price"
+                                      variant="outlined"
+                                      style={{ width: '100%' }}
+                                      autoComplete="off"
+                                      value={item?.extraPrice}
+                                      onChange={(event) => attributeItemChange(event, index)}
+                                      type="number"
+                                    />
+                                    {attributeItems.length > 1 && (
+                                      <i
+                                        className="fas fa-trash cursor-pointer ms-1"
+                                        style={{
+                                          color: 'red',
+                                          fontSize: '18px',
+                                        }}
+                                        onClick={() => removeAttributeItem(index)}
+                                      ></i>
+                                    )}
+                                  </Col>
+                                  {attributeItems.length - 1 === index && (
+                                    <div>
+                                      <Button outline color="primary" className="mt-2" onClick={addAttributeItem}>
+                                        Add Item
+                                      </Button>
+                                    </div>
+                                  )}
+                                </Row>
+                              ))}
+
+                              <div className="mt-3 text-center">
+                                <Button outline color="success" size="lg" className="px-5" onClick={addAttribute}>
+                                  Add
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </Col>
+                      <Col lg={6}>
+                        {attributes.length > 0 && (
+                          <div className="mb-4">
+                            <Paper className="py-2">
+                              <h5 className="text-center">Attributes List</h5>
+                              <hr />
+                              {attributes.length > 0 &&
+                                attributes.map((attribute, index) => (
+                                  <ul key={index} style={{ listStyleType: 'square' }}>
                                     <li>
-                                      <span>{item.name}-</span>
-                                      <span className="ms-1">
-                                        {item.extraPrice}
-                                      </span>
+                                      <div className="d-flex justify-content-between">
+                                        <span
+                                          style={{
+                                            fontSize: '15px',
+                                            fontWeight: '500',
+                                          }}
+                                        >
+                                          {`${attribute.name} ${attribute.required ? '(Required)' : ''} ${
+                                            attribute.select === 'multiple' ? '(Multiple)' : '(Single)'
+                                          }`}
+                                        </span>
+                                        <i
+                                          className="fas fa-trash cursor-pointer me-3"
+                                          style={{
+                                            color: '#BD381C',
+                                            fontSize: '15px',
+                                          }}
+                                          onClick={() => removeAttribute(index)}
+                                        ></i>
+                                      </div>
+                                    </li>
+                                    {attribute.items.map((item) => (
+                                      <ul key={item.name}>
+                                        <li>
+                                          <span>{item.name}-</span>
+                                          <span className="ms-1">{item.extraPrice}</span>
+                                        </li>
+                                      </ul>
+                                    ))}
+                                  </ul>
+                                ))}
+                            </Paper>
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
+
+                    {/* ADDON */}
+
+                    <Row className="mt-4">
+                      <Col lg={6}>
+                        <div className="mb-4">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value={isNeedAddon}
+                                id="flexCheckDefault3"
+                                onChange={(e) => setIsNeedAddon(e.target.checked)}
+                              />
+                              <label
+                                className="form-check-label ms-1"
+                                style={{ fontSize: '16px' }}
+                                htmlFor="flexCheckDefault3"
+                              >
+                                Addon(s)
+                              </label>
+                            </div>
+                          </div>
+
+                          {isNeedAddon && (
+                            <ProductAutocompleted
+                              onChange={(event, newValue) => {
+                                addAddonProduct(newValue);
+                              }}
+                              searchKey={productSearchKey}
+                              onInputChange={(event, newInputValue) => dispatch(updateProductSearchKey(newInputValue))}
+                              list={products}
+                              required={false}
+                            />
+                          )}
+                        </div>
+                      </Col>
+                      <Col lg={6}>
+                        {addons.length > 0 && (
+                          <div className="mb-4">
+                            <Paper className="py-2">
+                              <h5 className="text-center">Addons List</h5>
+                              <hr />
+                              {addons.length > 0 &&
+                                addons.map((item, index) => (
+                                  <ul key={Math.random()} style={{ listStyleType: 'square' }}>
+                                    <li>
+                                      <div className="d-flex justify-content-between">
+                                        <div>
+                                          <img loading="lazy" width="60" src={item.images[0]} alt="" />
+                                          <span
+                                            style={{
+                                              fontSize: '15px',
+                                              fontWeight: '500',
+                                              marginLeft: '10px',
+                                            }}
+                                          >
+                                            {item.name}
+                                          </span>
+                                        </div>
+                                        <i
+                                          className="fas fa-trash cursor-pointer me-3"
+                                          style={{
+                                            color: '#BD381C',
+                                            fontSize: '15px',
+                                          }}
+                                          onClick={() => removeAddon(index)}
+                                        ></i>
+                                      </div>
                                     </li>
                                   </ul>
                                 ))}
-                              </ul>
-                            ))}
-                        </Paper>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-
-                {/* ADDON */}
-
-                <Row className="mt-4">
-                  <Col lg={6}>
-                    <div className="mb-4">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={isNeedAddon}
-                            id="flexCheckDefault"
-                            onChange={(e) => setIsNeedAddon(e.target.checked)}
-                          />
-                          <label
-                            className="form-check-label ms-1"
-                            style={{ fontSize: "16px" }}
-                            htmlFor="flexCheckDefault"
-                          >
-                            Addon(s)
-                          </label>
-                        </div>
-                      </div>
-
-                      {isNeedAddon && (
-                        <Autocomplete
-                          className="cursor-pointer"
-                          // value={addon}
-                          onChange={(event, newValue) =>
-                            addAddonProduct(newValue)
-                          }
-                          getOptionLabel={(option) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={(option, value) =>
-                            option._id == value._id
-                          }
-                          inputValue={productSearchKey}
-                          onInputChange={(event, newInputValue) => {
-                            setProductSearchKey(newInputValue);
-                            // console.log("input value", newInputValue);
-                          }}
-                          id="controllable-states-demo"
-                          options={products.length > 0 ? products : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params) => (
-                            <TextField {...params} label="Select Products" />
-                          )}
-                          renderOption={(props, option) => (
-                            <Box
-                              component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                              {...props}
-                              key={option._id}
-                            >
-                              <img
-                                loading="lazy"
-                                width="60"
-                                src={option.images[0]}
-                                alt=""
-                              />
-                              {option.name}
-                            </Box>
-                          )}
-                        />
-                      )}
-                    </div>
-                  </Col>
-                  <Col lg={6}>
-                    {addons.length > 0 && (
-                      <div className="mb-4">
-                        <Paper className="py-2">
-                          <h5 className="text-center">Addons List</h5>
-                          <hr />
-                          {addons.length > 0 &&
-                            addons.map((item, index) => (
-                              <ul
-                                key={index}
-                                style={{ listStyleType: "square" }}
-                              >
-                                <li>
-                                  <div className="d-flex justify-content-between">
-                                    <div>
-                                      <img
-                                        loading="lazy"
-                                        width="60"
-                                        src={item.images[0]}
-                                        alt=""
-                                      />
-                                      <span
-                                        style={{
-                                          fontSize: "15px",
-                                          fontWeight: "500",
-                                          marginLeft: "10px",
-                                        }}
-                                      >
-                                        {item.name}
-                                      </span>
-                                    </div>
-                                    <i
-                                      className="fas fa-trash cursor-pointer me-3"
-                                      style={{
-                                        color: "#BD381C",
-                                        fontSize: "15px",
-                                      }}
-                                      onClick={() => removeAddon(index)}
-                                    ></i>
-                                  </div>
-                                </li>
-                              </ul>
-                            ))}
-                        </Paper>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
+                            </Paper>
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
+                  </>
+                )}
 
                 <Row>
                   <Col>
                     <Label>Product Images</Label>
                     <div className="mb-5">
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles);
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
+                      <Dropzone
+                        onDrop={(acceptedFiles) => {
+                          handleAcceptedFiles(acceptedFiles);
+                        }}
+                        accept=".jpg, .jpeg, .png"
+                        maxSize={1000 * 1000}
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div className="dropzone">
+                            <div className="dz-message needsclick" {...getRootProps()}>
+                              <input {...getInputProps()} />
+                              <div className="mb-3">
+                                <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                               </div>
+                              <h4>Drop files here or click to upload.</h4>
+                              <Declaration>
+                                <small>* Max Image size allowed 1 Mb.</small>
+                              </Declaration>
                             </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {image && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        image.preview ? image.preview : image
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {image.name
-                                        ? image.name
-                                        : "Product Image"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {image.formattedSize &&
-                                          image.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
+                          </div>
+                        )}
+                      </Dropzone>
+                      <div className="dropzone-previews mt-3" id="file-previews">
+                        {image && (
+                          <Card
+                            className="
+                          mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
+                          "
+                          >
+                            <div className="p-2">
+                              <Row className="align-items-center position-relative">
+                                <Col className="col-auto">
+                                  <img
+                                    data-dz-thumbnail=""
+                                    // height="80"
                                     style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
+                                      maxWidth: '80px',
                                     }}
-                                  >
-                                    <i
-                                      onClick={() => setImage(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          )}
-                        </div>
-                      </Form>
+                                    className=" bg-light"
+                                    src={image.preview ? image.preview : image}
+                                    alt=""
+                                  />
+                                </Col>
+                                <Col>
+                                  <Link to="#" className="text-muted font-weight-bold">
+                                    {image.name ? image.name : 'Product Image'}
+                                  </Link>
+                                  <p className="mb-0">
+                                    <strong>{image.formattedSize && image.formattedSize}</strong>
+                                  </p>
+                                </Col>
+
+                                <div
+                                  className="position-absolute"
+                                  style={{
+                                    left: '0px',
+                                    top: '0px',
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                  }}
+                                >
+                                  <i
+                                    onClick={() => setImage(null)}
+                                    className="mdi mdi-delete text-danger "
+                                    style={{
+                                      fontSize: '25px',
+                                      cursor: 'pointer',
+                                    }}
+                                  ></i>
+                                </div>
+                              </Row>
+                            </div>
+                          </Card>
+                        )}
+                      </div>
                     </div>
                   </Col>
                 </Row>
 
                 <div className="my-5 d-flex justify-content-center">
-                  <Button
-                    onClick={submitProduct}
-                    color="primary"
-                    className="px-5"
-                    disabled={loading || isLoading}
-                  >
+                  <Button type="submit" color="primary" className="px-5" disabled={loading || isLoading}>
                     {loading || isLoading ? (
-                      <Spinner
-                        animation="border"
-                        variant="info"
-                        size="sm"
-                      ></Spinner>
+                      <Spinner animation="border" variant="info" size="sm"></Spinner>
                     ) : id ? (
-                      "Edit"
+                      'Save'
                     ) : (
-                      "Add"
+                      'Add'
                     )}
                   </Button>
                 </div>
-              </CardBody>
-            </Card>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+              </Form>
+            </CardBody>
+          </Card>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
+
+const Declaration = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: bold;
+`;
 
 export default ProductAdd;

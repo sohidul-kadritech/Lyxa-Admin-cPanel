@@ -1,21 +1,36 @@
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import AppDemo from './AppDemo';
-import App from './App';
-import { BrowserRouter } from "react-router-dom"
-import { Provider } from "react-redux"
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import store from "./store"
+import App from './App';
+import store from './store';
+import ThemeProvider from './theme';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 ReactDOM.render(
-  // <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>
-  // </React.StrictMode>,
-  ,document.getElementById('root')
+  <Provider store={store}>
+    <ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </BrowserRouter>
+      </LocalizationProvider>
+    </ThemeProvider>
+  </Provider>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

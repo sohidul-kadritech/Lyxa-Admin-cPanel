@@ -1,4 +1,6 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
@@ -16,9 +18,9 @@ const initialState = {
   subHasNextPage: true,
   subCurrentPage: 1,
   subHasPreviousPage: false,
-  subSearchKey: "",
-  subStatusKey: { label: "All", value: "all" },
-  shopType: 'all'
+  subSearchKey: '',
+  subStatusKey: { label: 'All', value: 'all' },
+  shopType: 'all',
 };
 
 const categoryReducer = (state = initialState, action) => {
@@ -45,7 +47,6 @@ const categoryReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        status: false,
         error: payload,
       };
 
@@ -91,9 +92,7 @@ const categoryReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_CATEGORY_REQUEST_SUCCESS:
-      const updateData = state.categories.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const updateData = state.categories.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -118,10 +117,10 @@ const categoryReducer = (state = initialState, action) => {
         status: false,
       };
 
-      case actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY:
+    case actionType.UPTATE_CATEGORY_SHOP_TYEP_KEY:
       return {
         ...state,
-        shopType: payload
+        shopType: payload,
       };
 
     // ADD SUB CATEGORY
@@ -183,8 +182,8 @@ const categoryReducer = (state = initialState, action) => {
         loading: false,
       };
 
-      // EDIT SUB CATEGORY 
-      case actionType.EDIT_SUB_CATEGORY_REQUEST_SEND:
+    // EDIT SUB CATEGORY
+    case actionType.EDIT_SUB_CATEGORY_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -192,9 +191,7 @@ const categoryReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_SUB_CATEGORY_REQUEST_SUCCESS:
-      const update = state.subCategories.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const update = state.subCategories.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -211,42 +208,40 @@ const categoryReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // DELETE 
-      case actionType.DELETE_SUB_CATEGORY_REQUEST_SEND:
-        return {
-          ...state,
-          loading: true,
-          status: false,
-        };
-  
-      case actionType.DELETE_SUB_CATEGORY_REQUEST_SUCCESS:
-        const filered = state.subCategories.filter((item) =>
-          item._id != payload._id 
-        );
-  
-        return {
-          ...state,
-          loading: false,
-          status: true,
-          subCategories: filered,
-          error: null,
-        };
-      case actionType.DELETE_SUB_CATEGORY_REQUEST_FAIL:
-        return {
-          ...state,
-          loading: false,
-          status: false,
-          error: payload,
-        };
+    // DELETE
+    case actionType.DELETE_SUB_CATEGORY_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
 
-      case actionType.UPDATE_SEARCH_KEY:
+    case actionType.DELETE_SUB_CATEGORY_REQUEST_SUCCESS:
+      const filered = state.subCategories.filter((item) => item._id !== payload._id);
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        subCategories: filered,
+        error: null,
+      };
+    case actionType.DELETE_SUB_CATEGORY_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
+    case actionType.UPDATE_SEARCH_KEY:
       return {
         ...state,
         loading: false,
         subSearchKey: payload,
       };
 
-      case actionType.UPDATE_STATUS_KEY:
+    case actionType.UPDATE_STATUS_KEY:
       return {
         ...state,
         loading: false,

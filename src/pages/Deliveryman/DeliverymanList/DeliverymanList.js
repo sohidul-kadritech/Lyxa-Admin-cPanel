@@ -1,36 +1,39 @@
-import React, { useEffect } from "react";
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import Select from 'react-select';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Card, CardBody, Col, Container, Modal, Row, Spinner } from 'reactstrap';
+import noPhoto from '../../../assets/images/noPhoto.jpg';
 import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "reactstrap";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Tooltip from "@mui/material/Tooltip";
-import AppPagination from "../../../components/AppPagination";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import styled from "styled-components";
-import Select from "react-select";
-import {
+  liveStatusOptionsOfRider,
   productStatusOptions,
-  sellerStatusOptions,
-  sortByOptions,
-} from "../../../assets/staticData";
+  riderSortByOptions,
+  shiftOptions,
+} from '../../../assets/staticData';
+import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+import Info from '../../../components/Info';
+import Map from '../../../components/Map';
+import Search from '../../../components/Search';
+import TableImgItem from '../../../components/TableImgItem';
+import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
+import TrackingDeliveryBoy from '../../../components/TrackingDeliveryBoy';
+
 import {
   allDeliveryMan,
+  riderCurrentLocation,
   updateDeliveryManSearchKey,
+  updateDeliveryManShift,
   updateDeliveryManSortByKey,
   updateDeliveryManStatusKey,
-} from "../../../store/DeliveryMan/DeliveryManAction";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom';
-import Search from './../../../components/Search';
+  updateRiderLiveStatus,
+} from '../../../store/DeliveryMan/DeliveryManAction';
 
-const DeliverymanList = () => {
+function DeliverymanList() {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -39,198 +42,276 @@ const DeliverymanList = () => {
     sortByKey,
     statusKey,
     searchKey,
+    shift,
     deliveryMans,
     paging,
     hasNextPage,
     hasPreviousPage,
     currentPage,
+    liveStatus,
+    currentLocation,
   } = useSelector((state) => state.deliveryManReducer);
 
-  useEffect(() => {
-    if (sortByKey || statusKey || searchKey) {
-      callDeliveryManList(true);
-    }
-  }, [sortByKey, statusKey, searchKey]);
+  const [track, setTrack] = useState(false);
+  const [openActiveStatus, setOpenActiveStatus] = useState(false);
+  const [id, setId] = useState(null);
+  const [deliveryBoyName, setDeliveryBoyName] = useState('');
+  const [rider, setRider] = useState(null);
 
   const callDeliveryManList = (refresh = false) => {
     dispatch(allDeliveryMan(refresh));
   };
 
+  useEffect(() => {
+    if (sortByKey || statusKey || searchKey || liveStatus || shift) {
+      callDeliveryManList(true);
+    }
+  }, [sortByKey, statusKey, searchKey, liveStatus, shift]);
+
+  // HANDLE MENU ITEM
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/deliveryman/edit/${item._id}`);
+    } else if (menu === 'Current Location') {
+      setTrack(true);
+      dispatch(riderCurrentLocation(item?._id));
+      setRider(item);
+    } else if (menu === 'Active Status') {
+      setOpenActiveStatus(true);
+      setId(item._id);
+      setDeliveryBoyName(item?.name);
+    }
+  };
+
+  const goToDetails = (id) => {
+    history.push(`/deliveryman/details/${id}`);
+  };
 
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={"List"}
-              title="Deliveryman"
-              loading={loading}
-              callList={callDeliveryManList}
-              isAddNew={true}
-              addNewRoute="deliveryman/add"
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb
+            maintitle="Lyxa"
+            breadcrumbItem="List"
+            title="Deliveryman"
+            loading={loading}
+            callList={callDeliveryManList}
+            isAddNew
+            addNewRoute="deliveryman/add"
+          />
 
-            <Card>
-              <CardBody>
-                <Row className="d-flex justify-content-between">
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Sort By</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sortByOptions}
-                        classNamePrefix="select2-selection"
-                        value={sortByKey}
-                        onChange={(e) =>
-                          dispatch(updateDeliveryManSortByKey(e))
-                        }
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Status</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={productStatusOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={statusKey}
-                        onChange={(e) =>
-                          dispatch(updateDeliveryManStatusKey(e))
-                        }
-                        defaultValue={""}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-                <Row className="d-flex justify-content-center">
-                  <Col lg={8}>
-                    <Search dispatchFunc={updateDeliveryManSearchKey} />
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
+          <Card>
+            <CardBody>
+              <Row className="d-flex justify-content-between">
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Sort By</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={riderSortByOptions}
+                      classNamePrefix="select2-selection"
+                      value={sortByKey}
+                      onChange={(e) => dispatch(updateDeliveryManSortByKey(e))}
+                    />
+                  </div>
+                </Col>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Live Status</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={liveStatusOptionsOfRider}
+                      classNamePrefix="select2-selection"
+                      required
+                      value={liveStatus}
+                      onChange={(e) => dispatch(updateRiderLiveStatus(e))}
+                      defaultValue=""
+                    />
+                  </div>
+                </Col>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Status</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={productStatusOptions}
+                      classNamePrefix="select2-selection"
+                      required
+                      value={statusKey}
+                      onChange={(e) => dispatch(updateDeliveryManStatusKey(e))}
+                      defaultValue=""
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <Row className="d-flex justify-content-center">
+                <Col lg={8}>
+                  <Search dispatchFunc={updateDeliveryManSearchKey} placeholder="Search by id or name" />
+                </Col>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Shift</label>
+                    <Select
+                      palceholder="Select shift"
+                      options={shiftOptions}
+                      classNamePrefix="select2-selection"
+                      required
+                      value={shift}
+                      onChange={(e) => {
+                        dispatch(updateDeliveryManShift(e));
+                      }}
+                      defaultValue=""
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
 
-            <Card>
-              <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4"> Deliveryman List</CardTitle>
-                <hr />
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Name</Th>
-                      <Th>Phone</Th>
-                      <Th>Status</Th>
-                      <Th>Action</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {deliveryMans.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
+          <Card>
+            <CardBody>
+              <Table id="tech-companies-1" className="table table-hover text-center">
+                <Thead>
+                  <Tr>
+                    <Th>Rider</Th>
+                    <Th>Email</Th>
+                    <Th>Phone</Th>
+                    <Th>Shift</Th>
+                    <Th>Status</Th>
+                    <Th>Current availability</Th>
+                    <Th>Orders</Th>
+                    <Th>Action</Th>
+                  </Tr>
+                </Thead>
+                <Tbody style={{ position: 'relative' }}>
+                  {deliveryMans.map((item) => (
+                    <Tr
+                      key={item?._id}
+                      className="align-middle cursor-pointer"
+                      style={{
+                        fontSize: '15px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      <Th onClick={() => goToDetails(item?._id)}>
+                        <TableImgItem
+                          img={item?.image ? item?.image : noPhoto}
+                          name={item?.name}
+                          id={item?.autoGenId}
+                          status={item?.liveStatus === 'online' ? 'active' : 'inactive'}
+                        />
+                      </Th>
+                      <Td onClick={() => goToDetails(item?._id)}>{item?.email}</Td>
+                      <Td onClick={() => goToDetails(item?._id)}>{item?.number}</Td>
+                      <Td className="text-capitalize" onClick={() => goToDetails(item?._id)}>
+                        {item?.shift}
+                      </Td>
+                      <Td onClick={() => goToDetails(item?._id)}>
+                        {`${item?.status === 'active' ? 'Active' : 'Inactive'}`}
+                      </Td>
+                      <Td onClick={() => goToDetails(item?._id)}>
+                        <span
+                          className={`${item?.availability ? 'active-status' : 'inactive-status'}`}
+                          style={{ padding: '5px 14px' }}
                         >
-                          <Th>{item?.name}</Th>
-                          <Td>{item.number}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-0 me-lg-2 button"
-                                  onClick={() =>
-                                    history.push(`/deliveryman/edit/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button me-0 me-lg-2"
-                                  onClick={() =>
-                                    history.push(`/deliveryman/details/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
-                            </div>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>
-                )}
-                {!loading && deliveryMans.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Data!</h4>
-                  </div>
-                )}
-              </CardBody>
-            </Card>
-
-            <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(allDeliveryMan(true, page))}
-                  />
+                          {item?.availability ? 'Available' : 'Busy'}
+                        </span>
+                      </Td>
+                      <Td onClick={() => goToDetails(item?._id)}>{item?.totalOrder}</Td>
+                      <Td>
+                        <ThreeDotsMenu
+                          handleMenuClick={(menu) => handleMenu(menu, item)}
+                          menuItems={['Edit', 'Current Location', 'Active Status']}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              {loading && <CircularLoader />}
+              {!loading && deliveryMans.length < 1 && (
+                <div className="text-center">
+                  <h4>No Data!</h4>
                 </div>
-              </Col>
-            </Row>
-          </Container>
+              )}
+            </CardBody>
+          </Card>
+
+          <Row>
+            <Col xl={12}>
+              <div className="d-flex justify-content-center">
+                <AppPagination
+                  paging={paging}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  currentPage={currentPage}
+                  lisener={(page) => dispatch(allDeliveryMan(true, page))}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      {/* ACTIVE STATUS OF DELIVERY BOY */}
+      <Modal isOpen={openActiveStatus} toggle={() => setOpenActiveStatus(!openActiveStatus)} centered>
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">{`${deliveryBoyName} Activity`}</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setOpenActiveStatus(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-      </GlobalWrapper>
-    </React.Fragment>
+        <div className="modal-body py-1">
+          <TrackingDeliveryBoy riderId={id} />
+        </div>
+      </Modal>
+
+      {/* DELIVERY BOY CURRENT LOCATION */}
+      <Modal
+        isOpen={track}
+        toggle={() => {
+          setTrack(!track);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Delivery Boy Current Location.</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setTrack(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body py-1">
+          <div className="my-3">
+            <Info title="Name" value={rider?.name} />
+            <Info title="Checking time" value={moment(new Date()).format('MMMM Do YYYY, h:mm:ss a')} />
+          </div>
+          {loading && <Spinner className="text-center" color="success" />}
+          {currentLocation?.lat && currentLocation?.lng ? (
+            <Map lat={currentLocation?.lat} lng={currentLocation?.lng} />
+          ) : (
+            <h5 className="text-center">No location found!</h5>
+          )}
+        </div>
+      </Modal>
+    </GlobalWrapper>
   );
-};
-
-const SearchWrapper = styled.div`
-  border: 1px solid lightgray;
-  border-radius: 6px;
-  width: 100%;
-  padding: 2px 7px;
-  @media (max-width: 1200px) {
-    width: 100%;
-  }
-  .search__wrapper {
-    /* padding: 7px 10px; */
-    display: flex;
-    align-items: center;
-    i {
-      font-size: 15px;
-    }
-    input {
-      border: none;
-      color: black !important;
-    }
-
-
-  }
-`;
+}
 
 export default DeliverymanList;

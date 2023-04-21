@@ -1,84 +1,62 @@
-import { toast } from 'react-toastify';
-import { ADD_DEAL, ALL_DEAL_FOR_ADD, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
+import { successMsg } from '../../helpers/successMsg';
+import { ADD_DEAL, ALL_DEAL_FOR_ADD, ALL_TAG, DELETE_DEAL, EDIT_DEAL, GET_ALL_DEAL } from '../../network/Api';
 import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType';
 
 // ADD
 
 export const addDeal = (values) => async (dispatch) => {
-    console.log({ values });
-    try {
+  try {
+    dispatch({
+      type: actionType.ADD_DEAL_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(ADD_DEAL, {
+      method: 'POST',
+      data: values,
+    });
+
+    if (data.status) {
+      successMsg(data.message, 'success');
+
       dispatch({
-        type: actionType.ADD_DEAL_REQUEST_SEND,
+        type: actionType.ADD_DEAL_REQUEST_SUCCESS,
+        payload: data.data.deal,
       });
-      const { data } = await requestApi().request(ADD_DEAL, {
-        method: "POST",
-        data: values,
-      });
-  
-      console.log({ data });
-  
-      if (data.status) {
-        toast.success(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-  
-        dispatch({
-          type: actionType.ADD_DEAL_REQUEST_SUCCESS,
-          payload: data.data.deal,
-        });
-      } else {
-        toast.warn(data.error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        dispatch({
-          type: actionType.ADD_DEAL_REQUEST_FAIL,
-          payload: data.error,
-        });
-      }
-    } catch (error) {
+    } else {
+      successMsg(data.message, 'error');
       dispatch({
         type: actionType.ADD_DEAL_REQUEST_FAIL,
-        payload: error.message,
+        payload: data.error,
       });
     }
-  };
+  } catch (error) {
+    successMsg(error.message, 'error');
+    dispatch({
+      type: actionType.ADD_DEAL_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
-  // GET ALL
+// GET ALL
 
-  export const getAllDeal = (refresh = false) => async (dispatch,getState) => {
-    const {deals,type} = getState().dealReducer;
+export const getAllDeal =
+  (refresh = false) =>
+  async (dispatch, getState) => {
+    const { deals, type } = getState().dealReducer;
 
-    if(deals.length < 1 || refresh) {
-
+    if (deals.length < 1 || refresh) {
       try {
         dispatch({
           type: actionType.ALL_DEAL_REQUEST_SEND,
         });
-        const { data } = await requestApi().request(GET_ALL_DEAL,{
-          params:{
+        const { data } = await requestApi().request(GET_ALL_DEAL, {
+          params: {
             type,
-          }
+          },
         });
-    
-        console.log({ data });
-    
-        if (data.status) {
 
+        if (data.status) {
           dispatch({
             type: actionType.ALL_DEAL_REQUEST_SUCCESS,
             payload: data.data.deals,
@@ -95,169 +73,160 @@ export const addDeal = (values) => async (dispatch) => {
           payload: error.message,
         });
       }
-
     }
   };
 
-  // EDIT 
+// EDIT
 
-  export const editDeal = (values) => async (dispatch) => {
-    console.log({ values });
-    try {
-      dispatch({
-        type: actionType.EDIT_DEAL_REQUEST_SEND,
-      });
-      const { data } = await requestApi().request(EDIT_DEAL, {
-        method: "POST",
-        data: values,
-      });
-  
-      console.log({ data });
-  
-      if (data.status) {
-        toast.success(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-  
-        setTimeout(()=>{
-          dispatch({
-            type: actionType.EDIT_DEAL_REQUEST_SUCCESS,
-            payload: data.data.deal,
-          });
-        },450)
-      } else {
-        toast.warn(data.error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+export const editDeal = (values) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.EDIT_DEAL_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(EDIT_DEAL, {
+      method: 'POST',
+      data: values,
+    });
+
+    if (data.status) {
+      successMsg(data.message, 'success');
+      setTimeout(() => {
         dispatch({
-          type: actionType.EDIT_DEAL_REQUEST_FAIL,
-          payload: data.error,
+          type: actionType.EDIT_DEAL_REQUEST_SUCCESS,
+          payload: data.data.deal,
         });
-      }
-    } catch (error) {
+      }, 450);
+    } else {
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.EDIT_DEAL_REQUEST_FAIL,
-        payload: error.message,
+        payload: data.error,
       });
     }
-  };
+  } catch (error) {
+    dispatch({
+      type: actionType.EDIT_DEAL_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
 
-  // DELETE 
+// DELETE
 
-  export const deleteDeal = (id) => async (dispatch) => {
-  
-    try {
+export const deleteDeal = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.DELETE_DEAL_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(DELETE_DEAL, {
+      method: 'POST',
+      data: {
+        id,
+      },
+    });
+
+    if (data.status) {
+      successMsg(data.message, 'success');
+
       dispatch({
-        type: actionType.DELETE_DEAL_REQUEST_SEND,
+        type: actionType.DELETE_DEAL_REQUEST_SUCCESS,
+        payload: data.data.deal,
       });
-      const { data } = await requestApi().request(DELETE_DEAL, {
-        method: "POST",
-        data: id,
-      });
-  
-      console.log({ data });
-  
-      if (data.status) {
-        toast.success(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-  
-
-          dispatch({
-            type: actionType.DELETE_DEAL_REQUEST_SUCCESS,
-            payload: data.data.deal,
-          });
-  
-      } else {
-        toast.warn(data.error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        dispatch({
-          type: actionType.DELETE_DEAL_REQUEST_FAIL,
-          payload: data.error,
-        });
-      }
-    } catch (error) {
+    } else {
+      successMsg(data.error, 'error');
       dispatch({
         type: actionType.DELETE_DEAL_REQUEST_FAIL,
-        payload: error.message,
+        payload: data.error,
       });
     }
-  };
-
-  // GET ALL FOR SHOP AND PRODUCCT
-
-  export const getAllDealForAdd = (type, shopType) => async (dispatch,getState) => {
-    console.log({type, shopType})
-      try {
-        dispatch({
-          type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND,
-        });
-        const { data } = await requestApi().request(ALL_DEAL_FOR_ADD,{
-          params:{
-            type,
-            shopType: shopType === "food" ? "restaurant" : shopType,
-          }
-        });
-    
-        console.log({ data });
-    
-        if (data.status) {
-
-          dispatch({
-            type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SUCCESS,
-            payload: data.data.deals,
-          });
-        } else {
-          dispatch({
-            type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
-            payload: data.error,
-          });
-        }
-      } catch (error) {
-        dispatch({
-          type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
-          payload: error.message,
-        });
-      }
-
-    
-  };
-
-
-  // FILTER UPDATE r
-
-  export const updateShopFilter = (value) =>dispatch =>{
+  } catch (error) {
     dispatch({
-      type: actionType.UPDATE_DEAL_TYPE_KEY,
-      payload: value
-    })
+      type: actionType.DELETE_DEAL_REQUEST_FAIL,
+      payload: error.message,
+    });
   }
+};
+
+// GET ALL FOR SHOP AND PRODUCCT
+
+export const getAllDealForAdd = (type, shopType) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(ALL_DEAL_FOR_ADD, {
+      params: {
+        type,
+        shopType: shopType === 'food' ? 'restaurant' : shopType,
+      },
+    });
+
+    if (data.status) {
+      dispatch({
+        type: actionType.ALL_DEAL_FOR_ADD_REQUEST_SUCCESS,
+        payload: data.data.deals,
+      });
+    } else {
+      dispatch({
+        type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ALL_DEAL_FOR_ADD_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// FILTER UPDATE
+
+export const updateShopFilter = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_DEAL_TYPE_KEY,
+    payload: value,
+  });
+};
+
+// GET ALL TAGS
+export const getAllTags = (typeValue) => async (dispatch, getState) => {
+  const { tagSearchKey } = getState().dealReducer;
+  try {
+    dispatch({
+      type: actionType.ALL_TAG_REQUEST_SEND,
+    });
+    const { data } = await requestApi().request(ALL_TAG, {
+      params: {
+        page: 1,
+        pageSize: 100,
+        searchKey: tagSearchKey,
+        type: typeValue,
+      },
+    });
+
+    if (data.status) {
+      dispatch({
+        type: actionType.ALL_TAG_REQUEST_SUCCESS,
+        payload: data.data.tags,
+      });
+    } else {
+      dispatch({
+        type: actionType.ALL_TAG_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ALL_TAG_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+export const updateTagsSearchKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_TAG_SEARCH_KEY,
+    payload: value,
+  });
+};

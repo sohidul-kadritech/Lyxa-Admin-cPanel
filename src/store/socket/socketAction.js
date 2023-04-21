@@ -1,9 +1,16 @@
-import { SOCKET_CONNECTION } from "../../network/Api";
-import * as actionType from "../actionType";
-import io from "socket.io-client";
+import { io } from 'socket.io-client';
+import getCookiesAsObject from '../../helpers/cookies/getCookiesAsObject';
+import { SOCKET_CONNECTION } from '../../network/Api';
+import * as actionType from '../actionType';
 
 export const socketConnect = () => async (dispatch, getState) => {
   const { socket: oldSocket } = getState().socketReducer;
+  let accessToken;
+
+  if (document.cookie.length) {
+    const { access_token } = getCookiesAsObject();
+    accessToken = access_token || null;
+  }
 
   if (!oldSocket) {
     try {
@@ -11,39 +18,23 @@ export const socketConnect = () => async (dispatch, getState) => {
         type: actionType.SOCKET_CONNECT_SEND,
       });
 
-      const socket = io('www.example.com', {
-        transports: ["websocket"],
-        query: {
-          authorization: "authorization",
-          token: localStorage.getItem("accessToken"),
-          type: "admin",
-          platform: "web",
-        },
+      const socket = io(SOCKET_CONNECTION, {
+        transports: ['websocket'],
       });
 
-      console.log({ socket });
-
-      if (socket.connected) {
-        socket.on("connect", () => {
-          console.log("socket connected");
-          dispatch({
-            type: actionType.SOCKET_CONNECT_SUCCESS,
-            payload: socket,
-          });
-
-          socket.emit("online", {
-            token: "b",
-            type: "admin",
-            platform: "web",
-          });
-        });
-      }else {
-        console.log("not connect")
+      socket.on('connect', () => {
+        console.log('socket connected');
         dispatch({
-          type: actionType.SOCKET_CONNECT_FAIL,
-          payload: "socket not connected",
+          type: actionType.SOCKET_CONNECT_SUCCESS,
+          payload: socket,
         });
-      }
+
+        socket.emit('join_drop', {
+          token: accessToken,
+          type: 'admin',
+          platform: 'app',
+        });
+      });
     } catch (error) {
       dispatch({
         type: actionType.SOCKET_CONNECT_FAIL,

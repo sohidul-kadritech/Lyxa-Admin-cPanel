@@ -1,24 +1,26 @@
-import * as actionType from "../actionType";
-import  moment  from 'moment';
+/* eslint-disable default-param-last */
+import moment from 'moment';
+import * as actionType from '../actionType';
 
 const initialState = {
   laoding: false,
   users: [],
   message: null,
   error: null,
-  sortByKey: { label: "Desc", value: "desc" },
-  searchKey: "",
-  statusKey: { label: "All", value: "all" },
+  sortByKey: { label: 'Desc', value: 'desc' },
+  searchKey: '',
+  statusKey: { label: 'All', value: 'all' },
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
   status: false,
-  sortBy: { label: "ASC", value: "ASC" },
-  startDate: moment().format('YYYY-MM-DD'),
-  endDate: moment().add(1, 'M').format('YYYY-MM-DD'),
-  transactionList: []
+  sortBy: { label: 'DESC', value: 'desc' },
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().endOf('month').format('YYYY-MM-DD'),
+  transactionList: [],
+  orders: [],
 };
 
 const usersReducer = (state = initialState, action) => {
@@ -57,7 +59,7 @@ const usersReducer = (state = initialState, action) => {
         errro: payload,
       };
 
-      // TRANSACTIONS
+    // TRANSACTIONS
 
     case actionType.USER_TRANSACTIONS_REQUEST_SEND:
       return {
@@ -103,15 +105,15 @@ const usersReducer = (state = initialState, action) => {
         searchKey: payload,
       };
 
-      // UPDATE USER STATUS KEY 
+    // UPDATE USER STATUS KEY
 
-      case actionType.UPDATE_STATUS_KEY:
+    case actionType.UPDATE_STATUS_KEY:
       return {
         ...state,
         statusKey: payload,
       };
 
-      case actionType.UPDATE_START_DATE:
+    case actionType.UPDATE_START_DATE:
       return {
         ...state,
         startDate: payload,
@@ -123,11 +125,60 @@ const usersReducer = (state = initialState, action) => {
         endDate: payload,
       };
 
-      case actionType.UPDATE_SORT_BY_KEY:
-        return {
-          ...state,
-          sortBy: payload,
-        };
+    case actionType.UPDATE_SORT_BY_KEY:
+      return {
+        ...state,
+        sortBy: payload,
+      };
+
+    case actionType.USER_ORDERS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.USER_ORDERS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        orders: payload.orders,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: false,
+      };
+
+    case actionType.USER_ORDERS_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionType.UPDATE_USER_STATUS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.UPDATE_USER_STATUS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.UPDATE_USER_STATUS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
 
     default:
       return state;

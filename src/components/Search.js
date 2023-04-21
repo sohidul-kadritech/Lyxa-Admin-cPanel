@@ -1,11 +1,9 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import styled from "styled-components";
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 
-const Search = ({ dispatchFunc }) => {
+function Search({ dispatchFunc, placeholder = 'Search here...' }) {
   // SEARCH
-
-//   console.log({dispatchFunc})
 
   const dispatch = useDispatch();
 
@@ -18,14 +16,10 @@ const Search = ({ dispatchFunc }) => {
         func(args[0]);
       }, delay);
     };
-    // console.log("yes....");
   };
 
   // SEARCH INPUT CHANGE
-
   const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
     dispatch(dispatchFunc(event.target.value));
   };
 
@@ -41,7 +35,7 @@ const Search = ({ dispatchFunc }) => {
           <input
             className="form-control"
             type="search"
-            placeholder="Search Here..."
+            placeholder={placeholder}
             id="search"
             onChange={searchKeyListener}
           />
@@ -49,7 +43,7 @@ const Search = ({ dispatchFunc }) => {
       </SearchWrapper>
     </div>
   );
-};
+}
 
 const SearchWrapper = styled.div`
   border: 1px solid lightgray;

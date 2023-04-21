@@ -1,339 +1,261 @@
-import React, { useEffect, useState } from "react";
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import React, { useEffect, useState } from 'react';
+import Flatpickr from 'react-flatpickr';
+import { useDispatch, useSelector } from 'react-redux';
+import Select from 'react-select';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Button, Card, CardBody, Col, Container, Modal, Row } from 'reactstrap';
+import { sortByOptions } from '../../../assets/staticData';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
 import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Modal,
-  Row,
-} from "reactstrap";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import Flatpickr from "react-flatpickr";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import Select from "react-select";
-import { sortByOptions } from "../../../assets/staticData";
-import { useSelector, useDispatch } from "react-redux";
-import {
+  getAllDropPay,
+  updateDropPayEndDate,
   updateDropPaySortByKey,
   updateDropPayStartDate,
-  updateDropPayEndDate,
-  getAllDropPay,
-  addUserAmount,
-  withdrawUserAmount,
-} from "../../../store/DropPay/dropPayAction";
-import { Autocomplete, Box, TextField } from "@mui/material";
-import { userList } from "../../../store/Users/UsersAction";
-import { toast } from "react-toastify";
+  updateLyxaPaySearchKey,
+} from '../../../store/DropPay/dropPayAction';
 
-const DropPayList = () => {
+import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
+import Search from '../../../components/Search';
+import TableImgItem from '../../../components/TableImgItem';
+import UserCradit from '../../../components/UserCradit';
+import { getDashboardSummary } from '../../../store/Dashboard/dashboardAction';
+
+function DropPayList() {
   const dispatch = useDispatch();
 
-  const { loading, pays, sortByKey, startDate, endDate, status } = useSelector(
-    (state) => state.dropPayReducer
-  );
-  const { users } = useSelector((state) => state.usersReducer);
+  const {
+    loading,
+    credits,
+    sortByKey,
+    startDate,
+    endDate,
+    status,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+    searchKey: dropPaySearchKey,
+  } = useSelector((state) => state.dropPayReducer);
+  const {
+    dashboardData: { summary = {} },
+  } = useSelector((state) => state.dashboardReducer);
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   const [balAddModal, setBalAddModal] = useState(false);
-  const [userSearchKey, setUserSearchKey] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [adminNote, setAdminNote] = useState("");
-  const [userNote, setUserNote] = useState("");
-  const [amount, setAmount] = useState(0);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
 
   useEffect(() => {
-    if(sortByKey || startDate || endDate){
-      callDropPayList(true)
-    }
-  }, [sortByKey,startDate,endDate]);
+    dispatch(
+      getDashboardSummary(
+        account_type === 'admin' && adminType !== 'customerService'
+          ? 'admin'
+          : account_type === 'seller'
+          ? 'seller'
+          : 'shop'
+      )
+    );
+  }, [credits]);
 
-  useEffect(() => {
-    if (balAddModal) {
-      dispatch(userList(true));
-    }
-  }, [balAddModal]);
-
-  const callDropPayList = (refresh = false) =>{
+  const callDropPayList = (refresh = false) => {
     dispatch(getAllDropPay(refresh));
-  }
-
-  // ADD/ REMOVE BALANCE
-
-  const submitBalance = (type) => {
-    if (!selectedUser) {
-      return toast.warn("Please select a User", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    if (!amount) {
-      return toast.warn("Please add amount", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    if (!userNote) {
-      return toast.warn("Please Type user Note", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-
-    submitData(type);
   };
 
-  const submitData = (type) => {
-    const data = {
-      userId: selectedUser._id,
-      amount,
-      userNote,
-      adminNote,
-    };
-
-    if (type === "add") {
-      dispatch(addUserAmount(data));
-    } else {
-      dispatch(withdrawUserAmount(data));
+  useEffect(() => {
+    if (sortByKey || startDate || endDate || dropPaySearchKey) {
+      callDropPayList(true);
     }
-  };
+  }, [sortByKey, startDate, endDate, dropPaySearchKey]);
 
-  useEffect(()=>{
-    if(status){
-      setBalAddModal(false)
+  useEffect(() => {
+    if (status) {
+      setBalAddModal(false);
+      callDropPayList(true);
     }
-  },[status])
+  }, [status]);
 
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={"Drop Pay"}
-              loading={loading}
-              callList={callDropPayList}
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem="Lyxa Pay" loading={loading} callList={callDropPayList} />
+          <Card>
+            <CardBody>
+              <Row>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Sort By</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={sortByOptions}
+                      classNamePrefix="select2-selection"
+                      value={sortByKey}
+                      onChange={(e) => dispatch(updateDropPaySortByKey(e))}
+                    />
+                  </div>
+                </Col>
 
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Sort By</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sortByOptions}
-                        classNamePrefix="select2-selection"
-                        value={sortByKey}
-                        onChange={(e) => dispatch(updateDropPaySortByKey(e))}
-                      />
-                    </div>
-                  </Col>
-
-                  <Col lg={8}>
-                    <div className="d-flex my-3 my-md-0 ">
-                      <div className=" w-100">
-                        <label>Start Date</label>
-                        <div className="form-group mb-0 w-100">
-                          <Flatpickr
-                            className="form-control d-block"
-                            id="startDate"
-                            placeholder="Start Date"
-                            value={startDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateDropPayStartDate(dateStr))
-                            }
-                            options={{
-                              altInput: true,
-                              altFormat: "F j, Y",
-                              dateFormat: "Y-m-d",
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="ms-2 w-100">
-                        <label>End Date</label>
-                        <div className="form-group mb-0">
-                          <Flatpickr
-                            className="form-control w-100"
-                            id="endDate"
-                            placeholder="Select End Date"
-                            value={endDate}
-                            onChange={(selectedDates, dateStr, instance) =>
-                              dispatch(updateDropPayEndDate(dateStr))
-                            }
-                            options={{
-                              altInput: true,
-                              altFormat: "F j, Y",
-                              dateFormat: "Y-m-d",
-                            }}
-                          />
-                        </div>
+                <Col lg={8}>
+                  <div className="d-flex my-3 my-md-0 ">
+                    <div className=" w-100">
+                      <label>Start Date</label>
+                      <div className="form-group mb-0 w-100">
+                        <Flatpickr
+                          className="form-control d-block"
+                          id="startDate"
+                          placeholder="Start Date"
+                          value={startDate}
+                          onChange={(selectedDates, dateStr) => dispatch(updateDropPayStartDate(dateStr))}
+                          options={{
+                            altInput: true,
+                            altFormat: 'F j, Y',
+                            dateFormat: 'Y-m-d',
+                          }}
+                        />
                       </div>
                     </div>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
+                    <div className="ms-2 w-100">
+                      <label>End Date</label>
+                      <div className="form-group mb-0">
+                        <Flatpickr
+                          className="form-control w-100"
+                          id="endDate"
+                          placeholder="Select End Date"
+                          value={endDate}
+                          onChange={(selectedDates, dateStr) => dispatch(updateDropPayEndDate(dateStr))}
+                          options={{
+                            altInput: true,
+                            altFormat: 'F j, Y',
+                            dateFormat: 'Y-m-d',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
 
-            <Card>
-              <CardBody>
-                <div className="d-flex justify-content-between">
-                  <CardTitle>Drop Pay List</CardTitle>
-
-                  <Button
-                    outline={true}
-                    color="success"
-                    onClick={() => setBalAddModal(!balAddModal)}
-                  >
-                    Add/Remove Credit
-                  </Button>
+              <Row className="d-flex justify-content-center">
+                <Col lg={8}>
+                  <Search dispatchFunc={updateLyxaPaySearchKey} placeholder="Search by id or customer name or email" />
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          {/* TABLE */}
+          <Card>
+            <CardBody>
+              <div className="d-flex justify-content-between">
+                <h4>{`Total Lyxa Earning: ${summary?.totalDropEarning ?? 0} ${currency}`}</h4>
+                <Button outline color="success" onClick={() => setBalAddModal(!balAddModal)}>
+                  Add/Remove Credit
+                </Button>
+              </div>
+              <hr />
+              <Table id="tech-companies-1" className="table  table-hover text-center">
+                <Thead>
+                  <Tr>
+                    <Th>Customer</Th>
+                    <Th>Email</Th>
+                    <Th>Amount</Th>
+                    <Th>Deposit by</Th>
+                    <Th>Date</Th>
+                  </Tr>
+                </Thead>
+                <Tbody style={{ position: 'relative' }}>
+                  {credits.map((item) => (
+                    <Tr
+                      key={item?.autoGenId}
+                      className="align-middle"
+                      style={{
+                        fontSize: '15px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      <Th>
+                        <TableImgItem altImg={AccountBalanceIcon} name={item?.user?.name} id={item?.autoGenId} />
+                      </Th>
+                      <Td>{item?.user?.email}</Td>
+                      <Td
+                        className={
+                          item?.type === 'userBalanceAddAdmin' || item?.type === 'userCancelOrderGetWallet'
+                            ? 'active-status'
+                            : item?.type === 'userBalanceWithdrawAdmin'
+                            ? 'inactive-status'
+                            : ''
+                        }
+                      >{`${
+                        item?.type === 'userBalanceAddAdmin' || item?.type === 'userCancelOrderGetWallet'
+                          ? '+'
+                          : item?.type === 'userBalanceWithdrawAdmin'
+                          ? '-'
+                          : ''
+                      }${item?.amount}`}</Td>
+                      <Td>{item?.type === 'userPayAfterReceivedOrderByCard' ? 'Card' : 'Lyxa'}</Td>
+                      <Td>{new Date(item?.createdAt).toLocaleDateString()}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              {loading && (
+                <div className="text-center">
+                  <CircularLoader />
                 </div>
-              </CardBody>
-            </Card>
-          </Container>
+              )}
+              {!loading && credits?.length < 1 && (
+                <div className="text-center">
+                  <h4>No Data!</h4>
+                </div>
+              )}
+            </CardBody>
+          </Card>
+
+          <Row>
+            <Col xl={12}>
+              <div className="d-flex justify-content-center">
+                <AppPagination
+                  paging={paging}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  currentPage={currentPage}
+                  lisener={(page) => dispatch(getAllDropPay(true, page))}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      {/* ADD / REMOVE BALANCE */}
+      <Modal
+        isOpen={balAddModal}
+        toggle={() => {
+          setBalAddModal(!balAddModal);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Add/Remove User Cradit</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setBalAddModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-
-        {/* ADD / REMOVE BALANCE */}
-
-        <Modal
-          isOpen={balAddModal}
-          toggle={() => {
-            setBalAddModal(!balAddModal);
-          }}
-          centered={true}
-        >
-          <div className="modal-header">
-            <h5 className="modal-title mt-0">Add/Remove User Cradit</h5>
-            <button
-              type="button"
-              onClick={() => {
-                setBalAddModal(false);
-              }}
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <div className="mb-4">
-              <Autocomplete
-                className="cursor-pointer"
-                onChange={(event, newValue) => {
-                  console.log(newValue);
-                  setSelectedUser(newValue);
-                }}
-                getOptionLabel={(option) => option.name}
-                isOptionEqualToValue={(option, value) =>
-                  option._id == value._id
-                }
-                inputValue={userSearchKey}
-                onInputChange={(event, newInputValue) => {
-                  setUserSearchKey(newInputValue);
-                  // console.log("input value", newInputValue);
-                }}
-                id="controllable-states-demo"
-                options={users.length > 0 ? users : []}
-                sx={{ width: "100%" }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select a User" />
-                )}
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    {...props}
-                    key={option._id}
-                  >
-                    {option.name}
-                  </Box>
-                )}
-              />
-            </div>
-            <div className="mb-4">
-              <TextField
-                id="name"
-                label="Amount"
-                variant="outlined"
-                style={{ width: "100%" }}
-                autoComplete="off"
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-                required
-                type="number"
-              />
-            </div>
-            <div className="mb-4">
-              <TextField
-                id="note"
-                label="Admin Note"
-                variant="outlined"
-                style={{ width: "100%" }}
-                autoComplete="off"
-                value={adminNote}
-                onChange={(event) => setAdminNote(event.target.value)}
-                required
-                type="text"
-              />
-            </div>
-            <div className="mb-4">
-              <TextField
-                id="note"
-                label="user Note"
-                variant="outlined"
-                style={{ width: "100%" }}
-                autoComplete="off"
-                value={userNote}
-                onChange={(event) => setUserNote(event.target.value)}
-                required
-                type="text"
-              />
-            </div>
-            <div className="d-flex justify-content-center mt-3">
-              <Button
-                color="primary"
-                disabled={loading}
-                className="px-4"
-                onClick={() => submitBalance("add")}
-              >
-                Add
-              </Button>
-              <Button
-                color="primary"
-                disabled={loading}
-                className="px-4 ms-3"
-                onClick={() => submitBalance("remove")}
-              >
-                Remove
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      </GlobalWrapper>
-    </React.Fragment>
+        <div className="modal-body">
+          <UserCradit />
+        </div>
+      </Modal>
+    </GlobalWrapper>
   );
-};
+}
 
 export default DropPayList;

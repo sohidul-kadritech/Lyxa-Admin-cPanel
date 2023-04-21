@@ -1,41 +1,33 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import Breadcrumb from "../../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../../components/GlobalWrapper";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-  Button,
-  Label,
-  Form,
-} from "reactstrap";
-import { useParams, useHistory, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import requestApi from "../../../../network/httpRequest";
-import { IMAGE_UPLOAD, SINGLE_CATEGORY } from "../../../../network/Api";
-import Lightbox from "react-image-lightbox";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Tooltip from "@mui/material/Tooltip";
-import Select from "react-select";
-import Dropzone from "react-dropzone";
-import { toast } from "react-toastify";
+/* eslint-disable max-len */
+import React, { useEffect, useState } from 'react';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import Lightbox from 'react-image-lightbox';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import Select from 'react-select';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Button, Card, CardBody, CardTitle, Col, Container, Label, Row, Spinner } from 'reactstrap';
+import { statusOptions, statusOptions2 } from '../../../../assets/staticData';
+import AppPagination from '../../../../components/AppPagination';
+import CircularLoader from '../../../../components/CircularLoader';
+import Breadcrumb from '../../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../../components/GlobalWrapper';
+import Info from '../../../../components/Info';
+import Search from '../../../../components/Search';
+import ThreeDotsMenu from '../../../../components/ThreeDotsMenu';
+import { successMsg } from '../../../../helpers/successMsg';
+import { SINGLE_CATEGORY } from '../../../../network/Api';
+import requestApi from '../../../../network/httpRequest';
 import {
   addSubCategory,
-  getAllSubCategory,
-  editSubCategory,
-  updateSubCatStatusKey,
-  updateSubCatSearchKey,
   deleteSubCategory,
-} from "../../../../store/Category/categoryAction";
-import AppPagination from "../../../../components/AppPagination";
-import SweetAlert from "react-bootstrap-sweetalert";
+  editSubCategory,
+  getAllSubCategory,
+  updateSubCatSearchKey,
+  updateSubCatStatusKey,
+} from '../../../../store/Category/categoryAction';
 
-const CategoryDetails = () => {
+function CategoryDetails() {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -55,38 +47,40 @@ const CategoryDetails = () => {
 
   const [category, setCategory] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedImg, setSelectedImg] = useState("");
+  const [selectedImg, setSelectedImg] = useState('');
 
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [activeStatus, setActiveStatus] = useState("");
-  const [image, setImage] = useState("");
+  const [name, setName] = useState('');
+  const [slug, setSlug] = useState('');
+  const [activeStatus, setActiveStatus] = useState('');
+
   const [subCatId, setSubCatId] = useState(null);
   const [confirm_alert, setconfirm_alert] = useState(false);
   const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState('');
+  const [dynamic_description, setdynamic_description] = useState('');
 
-  const options = [
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-  ];
+  // Call Api for single Category
+  const callApi = async (catId) => {
+    const { data } = await requestApi().request(SINGLE_CATEGORY, {
+      params: {
+        id: catId,
+      },
+    });
 
-  const filterOptions = [
-    { label: "All", value: "all" },
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-  ];
+    if (data.status) {
+      setCategory(data.data.category);
+    } else {
+      history.push('/categories/list', { replace: true });
+    }
+  };
 
   useEffect(() => {
     if (id) {
-      const findCategory = categories.find((cat) => cat._id == id);
+      const findCategory = categories.find((cat) => cat._id === id);
       console.log({ findCategory });
       if (findCategory) {
         setCategory(findCategory);
       } else {
-        // console.log("api------------");
         callApi(id);
       }
       //   GET ALL SUB CATEGORY
@@ -94,8 +88,12 @@ const CategoryDetails = () => {
     }
   }, [id]);
 
-  // GET SUB CATEGORY LIST
+  // eslint-disable-next-line default-param-last
+  const callSubCategoryList = (refresh = false, catId) => {
+    dispatch(getAllSubCategory(refresh, catId));
+  };
 
+  // GET SUB CATEGORY LIST
   useEffect(() => {
     if (id) {
       if (subSearchKey || subStatusKey) {
@@ -104,155 +102,25 @@ const CategoryDetails = () => {
     }
   }, [id, subSearchKey, subStatusKey]);
 
-  // Call Api for single Category
-
-  const callApi = async (catId) => {
-    const { data } = await requestApi().request(SINGLE_CATEGORY, {
-      params: {
-        id: catId,
-      },
-    });
-    // console.log("from api", data);
-
-    if (data.status) {
-      setCategory(data.data.category);
-    } else {
-      history.push("/categories/list", { replace: true });
-    }
-  };
-
-  const callSubCategoryList = (refresh = false, catId) => {
-    dispatch(getAllSubCategory(refresh, catId));
-  };
-
   // EDIT SUB CATEGORY
 
   const handleEditSubCategory = (subId) => {
-
     setSubCatId(subId);
-    const findSubCategory = subCategories.find((sub) => sub._id == subId);
+    const findSubCategory = subCategories.find((sub) => sub._id === subId);
 
-    const { name, slug, status, image } = findSubCategory;
-    const findStatus = options.find((op) => op.value == status);
+    const { name, slug, status } = findSubCategory;
+    const findStatus = statusOptions2.find((op) => op.value === status);
 
     setName(name);
     setSlug(slug);
-    setImage(image);
     setActiveStatus(findStatus);
 
     window.scroll(0, 0);
   };
 
-  // DEBOUNCE SEARCH
-
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      // const context = this;
-      timer = setTimeout(() => {
-        func(args[0]);
-      }, delay);
-    };
-    // console.log("yes....");
-  };
-
-  const handleSearchChange = (event) => {
-    // console.log("event", event.target.value)
-    // setOpen(true);
-    dispatch(updateSubCatSearchKey(event.target.value));
-  };
-
-  const searchKeyListener = debounce(handleSearchChange, 300);
-
-  //   SUBMIT SUB CATEGORY
-
-  const submitSubCategory = () => {
-    if (!name) {
-      return toast.warn("Please Enter  Name", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    if (!slug) {
-      return toast.warn("Please Enter Slug", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    if (!activeStatus) {
-      return toast.warn("Please  Select Status", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    if (!image) {
-      return toast.warn("Please  Select Image", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-
-    uploadImage();
-  };
-
-  // UPLOAD IMAGE
-
-  const uploadImage = async () => {
-    if (typeof image === "string") {
-      submitData(image);
-    } else {
-      try {
-        setIsLoading(true);
-        let formData = new FormData();
-        formData.append("image", image);
-        // console.log({formData})
-        const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
-          data: formData,
-        });
-        // console.log("image upload", data)
-        if (data.status) {
-          // submitData(data.data.url);
-          setIsLoading(false);
-          submitData(data.data.url);
-        } else {
-          console.log(data.error);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-  };
-
   // SUBMIT DATA
-
-  const submitData = (url) => {
-    const newSlug = slug.split(" ").join("");
+  const submitData = () => {
+    const newSlug = slug.split(' ').join('');
 
     if (subCatId) {
       dispatch(
@@ -261,7 +129,6 @@ const CategoryDetails = () => {
           name,
           status: activeStatus.value,
           slug: newSlug,
-          image: url,
           category: id,
         })
       );
@@ -271,48 +138,38 @@ const CategoryDetails = () => {
           name,
           status: activeStatus.value,
           slug: newSlug,
-          image: url,
           categoryId: id,
         })
       );
     }
   };
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  //   SUBMIT SUB CATEGORY
+  // eslint-disable-next-line consistent-return
+  const submitSubCategory = () => {
+    if (!name) {
+      return successMsg('Enter Name');
+    }
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
+    if (!activeStatus) {
+      return successMsg('Select Status');
+    }
+
+    submitData();
+  };
+
+  // UPLOAD IMAGE
 
   // IMAGE
-
-  const handleAcceptedFiles = (files, type) => {
-    files.map((file) =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-        formattedSize: formatBytes(file.size),
-      })
-    );
-
-    setImage(files[0]);
-  };
 
   // SUCCESS
 
   useEffect(() => {
     if (status) {
-      setName("");
-      setSlug("");
-      setActiveStatus("");
+      setName('');
+      setSlug('');
+      setActiveStatus('');
       setSubCatId(null);
-      setImage(null)
     }
   }, [status]);
 
@@ -322,106 +179,113 @@ const CategoryDetails = () => {
     dispatch(deleteSubCategory(subId));
   };
 
+  // HANDLE CHANGE NAME
+
+  const handleChangeName = (e) => {
+    setName(e.target.value);
+
+    const generateSlug = e.target.value + Math.round(Math.random() * 100);
+    setSlug(generateSlug);
+  };
+
+  // HANDLE MENU
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Delete') {
+      setconfirm_alert(true);
+    } else {
+      handleEditSubCategory(item._id);
+    }
+  };
+
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={"Details"}
-              title="Category"
-              loading={loading}
-              callList={callSubCategoryList}
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb
+            maintitle="Lyxa"
+            breadcrumbItem="Details"
+            title="Category"
+            loading={loading}
+            callList={callSubCategoryList}
+          />
+
+          {isOpen && (
+            <Lightbox
+              mainSrc={selectedImg}
+              enableZoom
+              imageCaption="img"
+              onCloseRequest={() => {
+                setIsOpen(!isOpen);
+              }}
             />
+          )}
 
-            {isOpen && (
-              <Lightbox
-                mainSrc={selectedImg}
-                enableZoom={true}
-                imageCaption="img"
-                onCloseRequest={() => {
-                  setIsOpen(!isOpen);
-                }}
-              />
-            )}
+          {success_dlg ? (
+            <SweetAlert
+              success
+              title={dynamic_title}
+              onConfirm={() => {
+                setsuccess_dlg(false);
+              }}
+            >
+              {dynamic_description}
+            </SweetAlert>
+          ) : null}
 
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
-
-            <Row>
-              <Col lg={7}>
-                <Card>
-                  <CardBody>
-                    <div
-                      className="d-flex justify-content-between pb-2 w-100"
-                      style={{ borderBottom: "1px solid lightgray" }}
+          <Row>
+            <Col lg={7}>
+              <Card>
+                <CardBody>
+                  <div
+                    className="d-flex justify-content-between pb-2 w-100"
+                    style={{ borderBottom: '1px solid lightgray' }}
+                  >
+                    <h5>Category Details</h5>
+                    <button
+                      type="button"
+                      onClick={() => history.push(`/categories/edit/${id}`)}
+                      className="btn btn-success"
                     >
-                      <h5>Category Details</h5>
-                      <button
-                        onClick={() => history.push(`/categories/edit/${id}`)}
-                        className="btn btn-success"
-                      >
-                        Edit
-                      </button>
-                    </div>
+                      Edit
+                    </button>
+                  </div>
 
-                    <Row className="pt-3">
+                  <Row className="pt-3">
+                    {category?.image && (
                       <Col md={6}>
-                        {category ? (
-                          <div className="d-flex justify-content-center align-items-center flex-wrap ">
-                            <img
-                              className="rounded-circle avatar-xl cursor-pointer"
-                              alt="partner"
-                              src={category?.image}
-                              onClick={() => {
-                                setSelectedImg(category?.image);
-                                setIsOpen(true);
-                              }}
-                            />
-                          </div>
-                        ) : null}
-                      </Col>
-                      <Col md={6} className=" mt-5 mt-md-0">
-                        <div className="ps-4 ">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{category?.name}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Slug:</h5>
-                            <Value>{category?.slug}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Type:</h5>
-                            <Value>{category?.type}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Status:</h5>
-                            <Value>{category?.status}</Value>
-                          </Details>
+                        <div className="d-flex justify-content-center align-items-center flex-wrap ">
+                          <img
+                            className="rounded-circle avatar-xl cursor-pointer"
+                            alt="partner"
+                            src={category?.image}
+                            onClick={() => {
+                              setSelectedImg(category?.image);
+                              setIsOpen(true);
+                            }}
+                          />
                         </div>
                       </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
+                    )}
+                    <Col md={category?.image ? 6 : 12} className=" mt-5 mt-md-0">
+                      <div className="ps-4 ">
+                        <Info title="Name" value={category?.name} />
+                        <Info title="Type" value={category?.type} />
+                        <Info title="Status" value={category?.status} />
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
 
+          {category?.type !== 'food' && (
             <Row>
               <Col xl={6}>
                 <Card>
                   <CardBody>
-                    <h5>{subCatId ? "Edit" : "Add"} Sub Category</h5>
+                    <h5>{subCatId ? 'Edit' : 'Add'} Sub Category</h5>
                     <hr />
                     <div>
                       <div className="mb-2">
@@ -431,17 +295,7 @@ const CategoryDetails = () => {
                           type="text"
                           placeholder="Enter Sub Category Name"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <Label>Slug</Label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Enter Sub Category Slug"
-                          value={slug}
-                          onChange={(e) => setSlug(e.target.value)}
+                          onChange={handleChangeName}
                         />
                       </div>
                       <div className="mb-2">
@@ -451,122 +305,21 @@ const CategoryDetails = () => {
                             setActiveStatus(event);
                           }}
                           value={activeStatus}
-                          defaultValue={""}
+                          defaultValue=""
                           palceholder="Select Shop Type"
-                          options={options}
+                          options={statusOptions2}
                           classNamePrefix="select2-selection"
                           required
                         />
                       </div>
-                      <div className="mb-3">
-                        <Label>Upload Image</Label>
-                        <div>
-                          <Form>
-                            <Dropzone
-                              onDrop={(acceptedFiles) => {
-                                handleAcceptedFiles(acceptedFiles);
-                              }}
-                            >
-                              {({ getRootProps, getInputProps }) => (
-                                <div className="dropzone">
-                                  <div
-                                    className="dz-message needsclick"
-                                    {...getRootProps()}
-                                    // onClick={() => setmodal_fullscreen(true)}
-                                  >
-                                    <input {...getInputProps()} />
-                                    <div className="mb-3">
-                                      <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                    </div>
-                                    <h4>Drop files here or click to upload.</h4>
-                                  </div>
-                                </div>
-                              )}
-                            </Dropzone>
-                            <div
-                              className="dropzone-previews mt-3"
-                              id="file-previews"
-                            >
-                              {image && (
-                                <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                                  <div className="p-2">
-                                    <Row className="align-items-center position-relative">
-                                      <Col className="col-auto">
-                                        <img
-                                          data-dz-thumbnail=""
-                                          // height="80"
-                                          style={{
-                                            maxWidth: "80px",
-                                          }}
-                                          className=" bg-light"
-                                          src={
-                                            image.preview
-                                              ? image.preview
-                                              : image
-                                          }
-                                          alt=""
-                                        />
-                                      </Col>
-                                      <Col>
-                                        <Link
-                                          to="#"
-                                          className="text-muted font-weight-bold"
-                                        >
-                                          {image.name
-                                            ? image.name
-                                            : "Product Image"}
-                                        </Link>
-                                        <p className="mb-0">
-                                          <strong>
-                                            {image.formattedSize &&
-                                              image.formattedSize}
-                                          </strong>
-                                        </p>
-                                      </Col>
-
-                                      <div
-                                        className="position-absolute"
-                                        style={{
-                                          left: "0px",
-                                          top: "0px",
-                                          width: "100%",
-                                          display: "flex",
-                                          justifyContent: "flex-end",
-                                        }}
-                                      >
-                                        <i
-                                          onClick={() => setImage(null)}
-                                          className="mdi mdi-delete text-danger "
-                                          style={{
-                                            fontSize: "25px",
-                                            cursor: "pointer",
-                                          }}
-                                        ></i>
-                                      </div>
-                                    </Row>
-                                  </div>
-                                </Card>
-                              )}
-                            </div>
-                          </Form>
-                        </div>
-                      </div>
                       <div className="d-flex justify-content-center">
-                        <Button
-                          onClick={submitSubCategory}
-                          color="success"
-                          className="px-5"
-                        >
+                        <Button onClick={submitSubCategory} color="success" className="px-5">
                           {loading ? (
-                            <Spinner
-                              animation="border"
-                              variant="info"
-                              size="sm"
-                            />
+                            <Spinner animation="border" variant="info" size="sm" />
                           ) : subCatId ? (
-                            "Edit"
+                            'Edit'
                           ) : (
-                            "Add"
+                            'Add'
                           )}
                         </Button>
                       </div>
@@ -583,7 +336,7 @@ const CategoryDetails = () => {
                           <label className="control-label">Status</label>
                           <Select
                             palceholder="Select Status"
-                            options={filterOptions}
+                            options={statusOptions}
                             classNamePrefix="select2-selection"
                             required
                             value={subStatusKey}
@@ -592,19 +345,7 @@ const CategoryDetails = () => {
                         </div>
                       </Col>
                       <Col lg={8}>
-                        <label className="control-label">Search</label>
-                        <SearchWrapper>
-                          <div className="search__wrapper">
-                            <i className="fa fa-search" />
-                            <input
-                              className="form-control"
-                              type="search"
-                              placeholder="Search Subcategory..."
-                              id="search"
-                              onChange={searchKeyListener}
-                            />
-                          </div>
-                        </SearchWrapper>
+                        <Search dispatchFunc={updateSubCatSearchKey} />
                       </Col>
                     </Row>
                   </CardBody>
@@ -614,98 +355,57 @@ const CategoryDetails = () => {
                   <CardBody>
                     <CardTitle className="h4 mb-2">Sub Category List</CardTitle>
 
-                    <Table
-                      id="tech-companies-1"
-                      className="table table__wrapper table-striped table-bordered table-hover text-center"
-                    >
+                    <Table id="tech-companies-1" className="table table-hover text-center">
                       <Thead>
                         <Tr>
-                          <Th>Image</Th>
+                          <Th>SL</Th>
                           <Th>Name</Th>
                           <Th>Status</Th>
                           <Th>Action</Th>
                         </Tr>
                       </Thead>
-                      <Tbody style={{ position: "relative" }}>
-                        {subCategories.map((item, index) => {
-                          return (
-                            <Tr
-                              key={index}
-                              className="align-middle"
-                              style={{
-                                fontSize: "15px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              <Th style={{ height: "50px", maxWidth: '100px' }}>
-                           
-                                  <img
-                                    onClick={() => {
-                                      setSelectedImg(item?.image);
-                                      setIsOpen(true);
-                                    }}
-                                    className="img-fluid cursor-pointer"
-                                    alt=""
-                                    src={item.image}
-                                    style={{
-                                      width: "100%",
-                                      height: "100%",
-                                      objectFit: "contain",
-                                    }}
-                                  />
-                                
-                              </Th>
+                      <Tbody style={{ position: 'relative' }}>
+                        {subCategories.map((item, index) => (
+                          <Tr
+                            key={item._id}
+                            className="align-middle"
+                            style={{
+                              fontSize: '15px',
+                              fontWeight: '500',
+                            }}
+                          >
+                            <Td style={{ height: '50px', maxWidth: '100px' }}>{index + 1}</Td>
 
-                              <Td>{item.name}</Td>
-                              <Td>{item.status}</Td>
-                              <Td>
-                                <div>
-                                  <Tooltip title="Edit">
-                                    <button
-                                      className="btn btn-success me-3 button"
-                                      onClick={() =>
-                                        handleEditSubCategory(item._id)
-                                      }
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
-                                  </Tooltip>
-                                  <Tooltip title="Delete">
-                                    <button
-                                      className="btn btn-danger button"
-                                      onClick={() => setconfirm_alert(true)}
-                                    >
-                                      <i className="fa fa-trash" />
-                                    </button>
-                                  </Tooltip>
-                                  {confirm_alert ? (
-                                    <SweetAlert
-                                      title="Are you sure?"
-                                      warning
-                                      showCancel
-                                      confirmButtonText="Yes, delete it!"
-                                      confirmBtnBsStyle="success"
-                                      cancelBtnBsStyle="danger"
-                                      onConfirm={() => {
-                                        handleDelete(item._id);
-                                        setconfirm_alert(false);
-                                        setsuccess_dlg(true);
-                                        setdynamic_title("Deleted");
-                                        setdynamic_description(
-                                          "Your file has been deleted."
-                                        );
-                                      }}
-                                      onCancel={() => setconfirm_alert(false)}
-                                    >
-                                      Are You Sure! You want to delete this
-                                      Shop.
-                                    </SweetAlert>
-                                  ) : null}
-                                </div>
-                              </Td>
-                            </Tr>
-                          );
-                        })}
+                            <Th>{item?.name}</Th>
+                            <Td>{item?.status}</Td>
+                            <Td>
+                              <ThreeDotsMenu
+                                handleMenuClick={(menu) => handleMenu(menu, item)}
+                                menuItems={['Edit', 'Delete']}
+                              />
+                              {confirm_alert ? (
+                                <SweetAlert
+                                  title="Are you sure?"
+                                  warning
+                                  showCancel
+                                  confirmButtonText="Yes, delete it!"
+                                  confirmBtnBsStyle="success"
+                                  cancelBtnBsStyle="danger"
+                                  onConfirm={() => {
+                                    handleDelete(item._id);
+                                    setconfirm_alert(false);
+                                    setsuccess_dlg(true);
+                                    setdynamic_title('Deleted');
+                                    setdynamic_description('Your file has been deleted.');
+                                  }}
+                                  onCancel={() => setconfirm_alert(false)}
+                                >
+                                  Are You Sure! You want to delete this Sub Category.
+                                </SweetAlert>
+                              ) : null}
+                            </Td>
+                          </Tr>
+                        ))}
                       </Tbody>
                     </Table>
                     {!loading && subCategories.length < 1 && (
@@ -715,67 +415,27 @@ const CategoryDetails = () => {
                     )}
                     {loading && (
                       <div className="text-center">
-                        <Spinner animation="border" variant="info" />
+                        <CircularLoader />
                       </div>
                     )}
                   </CardBody>
                 </Card>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col xl={12}>
                 <div className="d-flex justify-content-center">
                   <AppPagination
                     paging={subPaging}
                     hasNextPage={subHasNextPage}
                     hasPreviousPage={subHasPreviousPage}
                     currentPage={subCurrentPage}
-                    lisener={(page) =>
-                      dispatch(callSubCategoryList(true, id, page))
-                    }
+                    lisener={(page) => dispatch(callSubCategoryList(true, id, page))}
                   />
                 </div>
               </Col>
             </Row>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+          )}
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
-
-const Details = styled.div`
-  display: flex;
-  /* justify-content: space-between; */
-`;
-
-const Value = styled.h5`
-  color: lightcoral;
-  font-style: italic;
-  font-weight: 500;
-  margin-left: 4px;
-  /* padding-left: 5px; */
-`;
-
-const SearchWrapper = styled.div`
-  border: 1px solid lightgray;
-  border-radius: 6px;
-  width: 100%;
-  padding: 2px 7px;
-
-  .search__wrapper {
-    /* padding: 7px 10px; */
-    display: flex;
-    align-items: center;
-    i {
-      font-size: 15px;
-    }
-    input {
-      border: none;
-      color: black !important;
-    }
-  }
-`;
+}
 
 export default CategoryDetails;

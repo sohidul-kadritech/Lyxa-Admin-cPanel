@@ -1,125 +1,27 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable default-param-last */
+import { actionTypes } from 'redux-form';
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
-  requests: [
-    {
-      _id: "629f8ac46846009d811c58a6",
-      user: {
-        sellerStatus: "pending",
-        _id: "6268ba07e3c4e3e6f7de6445",
-        name: "Testing Dev",
-        gender: "male",
-        email: "erwerwrwrwr@gmail.com",
-        password: "$2b$10$2AteQ4uNHnpARsbjOjH.Le/G6WdOChk0e0OtnmmiLj0q3k3rI6Sqq",
-        address: [
-          "628dec55f18926db8f29d6df",
-          "628ded5f1c6de05236aaffa2",
-          "628dedbc9b9268bc9f0c2c8e",
-          "628e0e03132cc004deeecc0a"
-        ],
-        status: "approved",
-        dob: "2022-04-17T00:00:00.000Z",
-        account_type: "user",
-        createdAt: "2022-04-27T03:35:35.264Z",
-        updatedAt: "2022-05-25T11:07:47.967Z",
-        "__v": 0
-      },
-      reasonMessage: "order",
-      status: "accepted",
-      chats: [
-        {
-          user: {
-            sellerStatus: "pending",
-            _id: "6268ba07e3c4e3e6f7de6445",
-            name: "Testing Dev",
-            gender: "male",
-            email: "erwerwrwrwr@gmail.com",
-            password: "$2b$10$2AteQ4uNHnpARsbjOjH.Le/G6WdOChk0e0OtnmmiLj0q3k3rI6Sqq",
-            address: [
-              "628dec55f18926db8f29d6df",
-              "628ded5f1c6de05236aaffa2",
-              "628dedbc9b9268bc9f0c2c8e",
-              "628e0e03132cc004deeecc0a"
-            ],
-            status: "approved",
-            dob: "2022-04-17T00:00:00.000Z",
-            account_type: "user",
-            createdAt: "2022-04-27T03:35:35.264Z",
-            updatedAt: "2022-05-25T11:07:47.967Z",
-            __v: 0
-          },
-          admin: {
-            _id: "6297a882d8171ce2de578018",
-            name: "Super Active",
-            email: "admin@gmail.com",
-            status: "active",
-            number: "923335555555",
-            password: "$2b$10$5fRRSSwgxuyr.sS21AqSzezk3ka9w2qKeAHZjRhyD5bvZERuEvy3e",
-            createdAt: "2022-06-01T17:57:22.984Z",
-            updatedAt: "2022-06-01T17:57:22.984Z"
-          },
-          message: "Hi, I am admin. How can i help you.",
-          type: "admin",
-          _id: "629f945bf6ca0017746e57fa",
-          createdAt: "2022-06-07T18:09:31.552Z",
-          updatedAt: "2022-06-07T18:09:31.552Z"
-        }
-      ],
-      createdAt: "2022-06-07T17:28:37.010Z",
-      updatedAt: "2022-06-07T18:09:31.553Z",
-      __v: 1,
-      acceptedAt: "2022-06-07T18:09:31.541Z",
-      admin: {
-        _id: "6297a882d8171ce2de578018",
-        name: "Super Active",
-        email: "admin@gmail.com",
-        status: "active",
-        number: "923335555555",
-        password: "$2b$10$5fRRSSwgxuyr.sS21AqSzezk3ka9w2qKeAHZjRhyD5bvZERuEvy3e",
-        createdAt: "2022-06-01T17:57:22.984Z",
-        updatedAt: "2022-06-01T17:57:22.984Z"
-      }
-    },
-    {
-      _id: "629f8aa32419a81d1ff2eecd",
-      user: {
-        sellerStatus: "pending",
-        _id: "6268ba07e3c4e3e6f7de6445",
-        name: "Testing Dev",
-        gender: "male",
-        email: "erwerwrwrwr@gmail.com",
-        password: "$2b$10$2AteQ4uNHnpARsbjOjH.Le/G6WdOChk0e0OtnmmiLj0q3k3rI6Sqq",
-        address: [
-          "628dec55f18926db8f29d6df",
-          "628ded5f1c6de05236aaffa2",
-          "628dedbc9b9268bc9f0c2c8e",
-          "628e0e03132cc004deeecc0a"
-        ],
-        status: "approved",
-        dob: "2022-04-17T00:00:00.000Z",
-        account_type: "user",
-        createdAt: "2022-04-27T03:35:35.264Z",
-        updatedAt: "2022-05-25T11:07:47.967Z",
-        __v: 0
-      },
-      reasonMessage: "order",
-      status: "pending",
-      chats: [],
-      createdAt: "2022-06-07T17:28:03.582Z",
-      updatedAt: "2022-06-07T17:28:03.582Z",
-      __v: 0
-    }
-  ],
+  chatRequests: [],
   status: false,
-  typeKey: { label: "All", value: "all" },
-  sortByKey: { label: "Desc", value: "desc" },
+  typeKey: { label: 'All', value: 'all' },
+  sortByKey: { label: 'Desc', value: 'desc' },
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  selectedMsg: '',
+  isSelected: true,
+  isSendingMsg: false,
+  isChatClose: false,
+  isChatAccepted: false,
+  orderChatSearchKey: '',
+  openChats: 0,
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -131,26 +33,27 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
+        status: false,
       };
 
     case actionType.ALL_CHAT_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
-        // chats: payload.request,
+        chatRequests: payload.list,
         paginate: payload.paginate,
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true,
+        status: false,
       };
 
     case actionType.ALL_CHAT_REQUEST_FAIL:
       return {
         ...state,
         error: payload,
-        loading: false
+        loading: false,
       };
 
     case actionType.ACCEPT_CHAT_REQUEST_SEND:
@@ -162,21 +65,76 @@ const chatReducer = (state = initialState, action) => {
       };
 
     case actionType.ACCEPT_CHAT_REQUEST_SUCCESS:
-      const updateData = state.chats.map((item) =>
-        item._id === payload._id ? payload : item
-      );
       return {
         ...state,
         loading: false,
         status: true,
-        chats: updateData,
+        isChatAccepted: true,
+        chatRequests: state.chatRequests.map((item) => (item._id === payload._id ? payload : item)),
+      };
+
+    case actionTypes.SET_CHAT_ACCEPT:
+      return {
+        ...state,
+        isChatAccepted: payload,
       };
 
     case actionType.ACCEPT_CHAT_REQUEST_FAIL:
       return {
         ...state,
         error: payload,
-        loading: false
+        loading: false,
+      };
+
+    case actionType.SEND_MSG_TO_USER_REQUEST_SEND:
+      return {
+        ...state,
+        isSendingMsg: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.SEND_MSG_TO_USER_REQUEST_SUCCESS:
+      return {
+        ...state,
+        status: true,
+        isSendingMsg: false,
+        // chatRequests: state.chatRequests.map((item) =>
+        //   item._id === payload._id ? { ...item, chats: [...item?.chats, payload] } : item
+        // ),
+      };
+
+    case actionType.SEND_MSG_TO_USER_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        isSendingMsg: false,
+        status: false,
+      };
+
+    case actionType.REJECT_CHAT_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.REJECT_CHAT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        chatRequests: state.chatRequests.map((item) =>
+          item._id === payload._id ? { ...item, status: payload.status } : item
+        ),
+      };
+
+    case actionType.REJECT_CHAT_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        loading: false,
       };
 
     // FILTERS
@@ -192,6 +150,69 @@ const chatReducer = (state = initialState, action) => {
         typeKey: payload,
       };
 
+    case actionType.SELECT_DEFAULT_MSG:
+      return {
+        ...state,
+        selectedMsg: payload,
+      };
+
+    case actionType.CLOSE_CONVERSATION_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        isChatClose: false,
+      };
+
+    case actionType.CLOSE_CONVERSATION_REQUEST_SUCCESS:
+      return {
+        ...state,
+        isChatClose: true,
+        isChatAccepted: false,
+        loading: false,
+      };
+
+    case actionType.CLOSE_CONVERSATION_REQUEST_FAIL:
+      return {
+        ...state,
+        isChatClose: false,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.SET_STATUS_FALSE:
+      return {
+        ...state,
+        status: false,
+        isChatClose: false,
+      };
+
+    case actionType.UPDATE_ORDER_CHAT_SEARCH_KEY:
+      return {
+        ...state,
+        orderChatSearchKey: payload,
+      };
+
+    // UNSEEN CHAT REQUESTS
+    case actionType.OPEN_CHATS_VALUE: {
+      return {
+        ...state,
+        openChats: payload,
+      };
+    }
+
+    case actionType.OPEN_CHATS_INCREMENT_VALUE: {
+      return {
+        ...state,
+        openChats: state.openChats + 1,
+      };
+    }
+
+    case actionType.OPEN_CHATS_DECREMENT_VALUE: {
+      return {
+        ...state,
+        openChats: state.openChats - 1,
+      };
+    }
     default:
       return state;
   }

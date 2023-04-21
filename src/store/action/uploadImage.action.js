@@ -10,9 +10,7 @@
 // // INITIALIZES CLOCK ON SERVER
 // export const uploadMultipleImage = () => async (dispatch, getState) => {
 
-
 //   try {
-
 
 //     dispatch({
 //       type: actionType.UPLOAD_IMAGE_REQUEST_SEND
@@ -29,14 +27,12 @@
 //       formData.append('images', selectedFiles[key])
 //     }
 
-
 //     const result = await fetch(MULTIPLE_IMAGE_UPLOAD, {
 //       method: 'POST',
 //       body: formData,
 //     });
 
 //     const response = await result.json();
-
 
 //     console.log(response)
 
@@ -49,14 +45,12 @@
 
 //     }
 
-
 //     if (response.status) {
 //       dispatch({
 //         type: actionType.UPLOAD_IMAGE_REQUEST_SUCCESS,
 //         payload: response.data.imageList,
 //       })
 //     }
-
 
 //   } catch (error) {
 //     console.log(error);

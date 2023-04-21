@@ -1,24 +1,21 @@
+// will be used as global font for the whole app
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-// .ril-close{
-//     background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIj48cGF0aCBkPSJtIDEsMyAxLjI1LC0xLjI1IDcuNSw3LjUgNy41LC03LjUgMS4yNSwxLjI1IC03LjUsNy41IDcuNSw3LjUgLTEuMjUsMS4yNSAtNy41LC03LjUgLTcuNSw3LjUgLTEuMjUsLTEuMjUgNy41LC03LjUgLTcuNSwtNy41IHoiIGZpbGw9IiNGRkYiLz48L3N2Zz4=")
-//         no-repeat center !important;
-// }
-
-
-.button{
-    width: 30px;
-    height: 30px;
-    padding: 6px 0px;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 12px;
-    line-height: 1.42857;
+.button {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
 }
 
-.tag__wrapper{
+.tag__wrapper {
   background-color: #d4d5d6;
   display: inline-block;
   font-size: 14px;
@@ -47,6 +44,258 @@
   }
 }
 
-.hover-shadow:hover{
+.hover-shadow:hover {
   box-shadow: 0px 0px 5px 0px rgba(198, 188, 188, 0.75);
+}
+
+.imgSetting {
+  object-fit: contain;
+  width: 10rem;
+  border-radius: 10px;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+}
+
+.value {
+  color: #343a40;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.image__wrapper {
+  height: 75px;
+  max-width: 170px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 1200px) {
+    max-width: 100%;
+  }
+}
+
+input[type='date']:required:invalid::-webkit-datetime-edit {
+  color: transparent;
+}
+
+input[type='date']:focus::-webkit-datetime-edit {
+  color: #000000 !important;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.table-data-hover {
+  .table-hover tbody tr:hover td,
+  .table-hover tbody tr:hover th {
+    color: green !important;
+  }
+}
+
+.card-height {
+  height: 400px;
+  overflow: hidden scroll;
+}
+.active-status {
+  background-color: #e1f4d0;
+  color: #56ca00;
+  border-radius: 6px;
+  padding: 1px 2px;
+}
+
+.inactive-status {
+  background-color: #ffcfce;
+  color: #ff0000;
+  border-radius: 6px;
+  padding: 1px 2px;
+}
+
+.refused-inactive-status {
+  background-color: #ececec;
+  color: #1c1c1c;
+  border-radius: 6px;
+  padding: 1px 2px;
+}
+
+.img-tag {
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
+  left: 0px;
+  text-transform: capitalize;
+  text-align: center;
+  padding: 6px 0px;
+  background: #e1f4d0;
+  font-size: 12px;
+}
+
+.img-tag-active {
+  color: #56ca00;
+}
+
+.img-tag-inactive {
+  background: #ffcfce;
+  color: #ff0000;
+}
+
+.orderStatus {
+  background-color: #fff9bd;
+  color: #eac300;
+  border-radius: 6px;
+  padding: 1px 2px;
+}
+
+table th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+table th:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+table > thead {
+  background-color: #f5f4f4;
+
+  tr {
+    border-bottom: transparent !important;
+  }
+}
+
+.table :not(:first-child) {
+  border-top: none !important;
+}
+
+.table > tbody:last-child {
+  border-bottom: transparent !important;
+}
+
+.link {
+  &:hover {
+    text-decoration: underline;
+    font-weight: 500;
+  }
+}
+
+.header-logo-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: #df1e32;
+  vertical-align: sub;
+  padding-left: 8px;
+  line-height: 1;
+}
+
+#side-menu {
+  > li p {
+    position: relative;
+
+    > .cs-badge {
+      font-size: 9px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 16px;
+      background: #f7c137;
+      position: absolute;
+      top: 2px;
+      right: -20px;
+      color: #000000;
+    }
+
+    .cs-badge:empty {
+      display: none;
+    }
+  }
+}
+
+.PhoneInput {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  appearance: none;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.PhoneInputInput {
+  border: 0;
+}
+
+// =================== overriding styles for designing the app ** will remove later
+body {
+  background: #fff;
+  font-family: 'Inter', sans-serif;
+  color: #363636;
+  scrollbar-color: transparent transparent;
+}
+
+@keyframes refreshIconSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.refresh-animate .MuiButton-endIcon {
+  animation: refreshIconSpin 800ms linear infinite forwards;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.drag-handler {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.grabable {
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.sidebar-menu-item {
+  padding: 16px 26px;
+  border-left: 4px solid transparent;
+  transition: all 230ms ease 0s;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  &:hover,
+  &.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #fff !important;
+  }
+}
+
+.page-content {
+  padding: 0;
+  padding-top: 35px;
+}
+
+.page-content2 {
+  padding-top: 35px;
 }

@@ -1,11 +1,15 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
   deals: [],
   status: false,
-  type: 'all'
+  type: 'all',
+  tags: [],
+  tagSearchKey: '',
 };
 
 const dealReducer = (state = initialState, action) => {
@@ -47,9 +51,7 @@ const dealReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_DEAL_REQUEST_SUCCESS:
-      const updateData = state.deals.map((item) =>
-        item._id === payload._id ? payload : item
-      );
+      const updateData = state.deals.map((item) => (item._id === payload._id ? payload : item));
       return {
         ...state,
         loading: false,
@@ -75,9 +77,7 @@ const dealReducer = (state = initialState, action) => {
       };
 
     case actionType.DELETE_DEAL_REQUEST_SUCCESS:
-      const filteredData = state.deals.filter(
-        (item) => item._id !== payload._id
-      );
+      const filteredData = state.deals.filter((item) => item._id !== payload._id);
       return {
         ...state,
         loading: false,
@@ -116,8 +116,9 @@ const dealReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // GET DEAL FOR ADD 
-      case actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND:
+    // GET DEAL FOR ADD
+
+    case actionType.ALL_DEAL_FOR_ADD_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -139,7 +140,38 @@ const dealReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      case actionType.UPDATE_DEAL_TYPE_KEY:
+    // GET ALL TAG
+
+    case actionType.ALL_TAG_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ALL_TAG_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        tags: payload,
+        status: false,
+      };
+
+    case actionType.ALL_TAG_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.UPDATE_TAG_SEARCH_KEY:
+      return {
+        ...state,
+        tagSearchKey: payload,
+      };
+
+    case actionType.UPDATE_DEAL_TYPE_KEY:
       return {
         ...state,
         type: payload,

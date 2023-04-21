@@ -1,46 +1,43 @@
-import React, { useEffect, useState } from "react";
-import Breadcrumb from "../../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../../components/GlobalWrapper";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "reactstrap";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { useDispatch, useSelector } from "react-redux";
-import Tooltip from "@mui/material/Tooltip";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 
-import {
-  getAllCategory,
-  setCatStatusFalse,
-  updateCategoryShopType,
-} from "../../../../store/Category/categoryAction";
-import AppPagination from "./../../../../components/AppPagination";
-import Lightbox from "react-image-lightbox";
-import { useHistory } from "react-router-dom";
-import { shopTypeOptions } from "../../../../assets/staticData";
-import { FormControl, InputLabel, MenuItem,Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import Lightbox from 'react-image-lightbox';
+import { useHistory } from 'react-router-dom';
+import noPhoto from '../../../../assets/images/noPhoto.jpg';
+import { shopTypeOptions } from '../../../../assets/staticData';
+import AppPagination from '../../../../components/AppPagination';
+import CircularLoader from '../../../../components/CircularLoader';
+import Breadcrumb from '../../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../../components/GlobalWrapper';
+import TableImgItem from '../../../../components/TableImgItem';
+import ThreeDotsMenu from '../../../../components/ThreeDotsMenu';
+import { getAllCategory, setCatStatusFalse, updateCategoryShopType } from '../../../../store/Category/categoryAction';
 
-const CategoryList = () => {
+function CategoryList() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const {
-    loading,
-    categories,
-    paging,
-    hasNextPage,
-    hasPreviousPage,
-    currentPage,
-    shopType,
-  } = useSelector((state) => state.categoryReducer);
+  const { loading, categories, paging, hasNextPage, hasPreviousPage, currentPage, shopType } = useSelector(
+    (state) => state.categoryReducer
+  );
 
   const [isZoom, setIsZoom] = useState(false);
-  const [catImg, setCatImg] = useState("");
+  const [catImg] = useState('');
+
+  const { account_type, shopType: adminShopType, sellerType } = useSelector((store) => store.Login.admin);
+
+  useEffect(() => {
+    if (account_type === 'shop' || account_type === 'seller') {
+      dispatch(updateCategoryShopType(adminShopType || sellerType));
+    }
+  }, [account_type]);
+
+  const callCategoryList = (refresh = false) => {
+    dispatch(getAllCategory(refresh, account_type));
+  };
 
   useEffect(() => {
     if (shopType) {
@@ -49,172 +46,148 @@ const CategoryList = () => {
     }
   }, [shopType]);
 
-  const callCategoryList = (refresh = false) => {
-    dispatch(getAllCategory(refresh));
+  // HANDLE MENU
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/categories/edit/${item?._id}`);
+    } else {
+      history.push(`/category/details/${item._id}`);
+    }
   };
 
+  console.log(categories);
+
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={"List"}
-              title="Category"
-              loading={loading}
-              callList={callCategoryList}
-              isAddNew={true}
-              addNewRoute={"categories/add"}
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb
+            maintitle="Lyxa"
+            breadcrumbItem="List"
+            title="Category"
+            loading={loading}
+            callList={callCategoryList}
+            isAddNew={account_type === 'shop'}
+            addNewRoute="categories/add"
+          />
+
+          {isZoom ? (
+            <Lightbox
+              mainSrc={catImg}
+              enableZoom
+              onCloseRequest={() => {
+                setIsZoom(!isZoom);
+              }}
             />
+          ) : null}
 
-            {isZoom ? (
-              <Lightbox
-                mainSrc={catImg}
-                enableZoom={true}
-                onCloseRequest={() => {
-                  setIsZoom(!isZoom);
-                }}
-              />
-            ) : null}
+          <Row>
+            <Col lg={4}>
+              <Card>
+                <CardBody>
+                  <FormControl fullWidth required>
+                    <InputLabel id="demo-simple-select-label">Shop Type</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={shopType}
+                      label="Shop Type"
+                      disabled={account_type === 'shop' || account_type === 'seller'}
+                      onChange={(event) => {
+                        dispatch(updateCategoryShopType(event.target.value));
+                      }}
+                    >
+                      {shopTypeOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
 
-            <Row>
-              <Col lg={4}>
-                <Card>
-                  <CardBody>
-                    <FormControl fullWidth required>
-                      <InputLabel id="demo-simple-select-label">
-                        Shop Type
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={shopType}
-                        label="Shop Type"
-                        onChange={(event) => {
-                          dispatch(updateCategoryShopType(event.target.value));
-                        }}
-                      >
-                        {shopTypeOptions.map((option, index) => (
-                          <MenuItem key={index} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
+          <Card>
+            <CardBody>
+              <CardTitle className="h4"> Category List</CardTitle>
+              <Table id="tech-companies-1" className="table table-hover text-center">
+                <Thead>
+                  <Tr>
+                    <Th>Image/Name</Th>
+                    <Th>Type</Th>
+                    <Th>Shop</Th>
+                    <Th>Status</Th>
+                    {account_type === 'shop' && <Th>Action</Th>}
+                  </Tr>
+                </Thead>
+                <Tbody style={{ position: 'relative' }}>
+                  {categories.map((item, index) => (
+                    <Tr
+                      key={index}
+                      className="align-middle"
+                      style={{
+                        fontSize: '15px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      <Th>
+                        <TableImgItem
+                          img={`${item?.category?.image ? item?.category?.image : noPhoto}`}
+                          name={item?.category?.name}
+                        />
+                      </Th>
 
-            <Card>
-              <CardBody>
-                <CardTitle className="h4"> Category List</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Image</Th>
-                      <Th>Name</Th>
-                      <Th>Slug</Th>
-                      <Th>Type</Th>
-                      <Th>Status</Th>
-                      <Th>Action</Th>
+                      <Td>{item?.category?.type}</Td>
+                      <Td>{!item?.shop?.shopName ? 'N/A' : item?.shop?.shopName}</Td>
+                      <Td>
+                        <div className={`${item?.category?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                          {item?.category?.status}
+                        </div>
+                      </Td>
+                      {account_type === 'shop' && (
+                        <Td>
+                          <ThreeDotsMenu
+                            handleMenuClick={(menu) => handleMenu(menu, item)}
+                            menuItems={['Edit', 'Details']}
+                          />
+                        </Td>
+                      )}
                     </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {categories.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th style={{ height: "50px", maxWidth: "150px" }}>
-                            <img
-                              onClick={() => {
-                                setIsZoom(true);
-                                setCatImg(item.image);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt=""
-                              src={item.image}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain",
-                              }}
-                            />
-                          </Th>
-
-                          <Td>{item.name}</Td>
-                          <Td>{item.slug}</Td>
-                          <Td>{item.type}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-3 button"
-                                  onClick={() =>
-                                    history.push(`/categories/edit/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button"
-                                  onClick={() =>
-                                    history.push(
-                                      `/category/details/${item._id}`
-                                    )
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
-                            </div>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-                {/* {loading && (
-                    <Spinner
-                      style={{ position: "fixed", left: "50%", top: "50%" }}
-                      animation="border"
-                      variant="info"
-                    />
-                  )} */}
-              </CardBody>
-            </Card>
-
-            <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllCategory(true, page))}
-                  />
+                  ))}
+                </Tbody>
+              </Table>
+              {loading && (
+                <div className="text-center">
+                  <CircularLoader animation="border" variant="info" />
                 </div>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+              )}
+              {!loading && categories.length < 1 && (
+                <div className="text-center">
+                  <h4>No category add yet!</h4>
+                </div>
+              )}
+            </CardBody>
+          </Card>
+
+          <Row>
+            <Col xl={12}>
+              <div className="d-flex justify-content-center">
+                <AppPagination
+                  paging={paging}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  currentPage={currentPage}
+                  lisener={(page) => dispatch(getAllCategory(true, account_type, page))}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default CategoryList;

@@ -1,30 +1,22 @@
-import React from "react";
-import { Container } from "reactstrap";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import TableForList from './../../../components/TableForList';
+import React from 'react';
+import { Container } from 'reactstrap';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+import TableForList from '../../../components/TableForList';
 
-const AdminLogHistory = () => {
+function AdminLogHistory() {
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem="Admin Log History"
-              title='App Wallet'
-              // loading={loading}
-              // callList={callTransList}
-            />
-            <div>
-              <TableForList />
-            </div>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem="Admin Log History" />
+          <div>
+            <TableForList />
+          </div>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default AdminLogHistory;

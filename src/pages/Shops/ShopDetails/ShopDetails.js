@@ -1,117 +1,125 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import styled from "styled-components";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import { SINGLE_SHOP } from "../../../network/Api";
-import requestApi from "../../../network/httpRequest";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-  Form,
-  Label,
-  Modal,
-} from "reactstrap";
+/* eslint-disable no-unsafe-optional-chaining */
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, Col, Container, Label, Modal, Row } from 'reactstrap';
+import styled from 'styled-components';
 
-import Lightbox from "react-image-lightbox";
 import {
-  deleteProduct,
-  getAllProduct,
-} from "../../../store/Product/productAction";
-import AppPagination from "../../../components/AppPagination";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { FormControlLabel, Paper, Switch, Tooltip } from "@mui/material";
-import SweetAlert from "react-bootstrap-sweetalert";
-import { ShopLiveStatus } from "../../../store/Shop/shopAction";
-import DealForAdd from "../../../components/DealForAdd";
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Switch,
+  Typography,
+} from '@mui/material';
 
-const ShopDetails = () => {
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import AlternateEmailOutlinedIcon from '@mui/icons-material/AlternateEmailOutlined';
+import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined';
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import DeliveryDiningOutlinedIcon from '@mui/icons-material/DeliveryDiningOutlined';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FastfoodOutlinedIcon from '@mui/icons-material/FastfoodOutlined';
+import FeaturedPlayListOutlinedIcon from '@mui/icons-material/FeaturedPlayListOutlined';
+import FoodBankOutlinedIcon from '@mui/icons-material/FoodBankOutlined';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import PaymentIcon from '@mui/icons-material/Payment';
+import ProductionQuantityLimitsOutlinedIcon from '@mui/icons-material/ProductionQuantityLimitsOutlined';
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
+import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
+import StoreOutlinedIcon from '@mui/icons-material/StoreOutlined';
+import TagOutlinedIcon from '@mui/icons-material/TagOutlined';
+import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
+import Lightbox from 'react-image-lightbox';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import DealForAdd from '../../../components/DealForAdd';
+import FlagsAndReviews from '../../../components/FlagsAndReviews';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+import InfoTwo from '../../../components/InfoTwo';
+import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
+import { callApi } from '../../../components/SingleApiCall';
+import { successMsg } from '../../../helpers/successMsg';
+import { API_URL, DOWNLOAD_PRODUCT_TEMPLATE, MAP_URL, SINGLE_SHOP, UPLOAD_PRODUCT_FILE } from '../../../network/Api';
+import requestApi from '../../../network/httpRequest';
+import {
+  ShopLiveStatus,
+  addShopMaxDiscont,
+  deleteDealOfShop,
+  setAsFeaturedShop,
+  updateShopIsUpdated,
+  updateShopStatus,
+} from '../../../store/Shop/shopAction';
+// eslint-disable-next-line import/extensions
+import ReviewTable from '../../../components/ReviewTable.js';
+
+import { getAllAppSettings } from '../../../store/Settings/settingsAction';
+
+// const marketingTypesInit = {
+//   free_delivery: false,
+//   double_menu: false,
+//   percentage: false,
+//   reward: false,
+// };
+
+function ShopDetails() {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { shops, status } = useSelector((state) => state.shopReducer);
-  const {
-    paging,
-    hasNextPage,
-    hasPreviousPage,
-    currentPage,
-    loading,
-    products,
-  } = useSelector((state) => state.productReducer);
-
+  const { appSettingsOptions } = useSelector((state) => state.settingsReducer);
+  const { shops, status, isUpdated, loading } = useSelector((state) => state.shopReducer);
   const [shop, setShop] = useState(null);
-
+  const [liveStatus, setLiveStatus] = useState(false);
+  const [modalCenter, setModalCenter] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
-  const [activeStatus, setActiveStatus] = useState(false);
-  const [modalCenter, setModalCenter] = useState(false);
+  const [isImportProductOpen, setIsImportProductOpen] = useState(false);
+  const [productsFile, setProductsFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { account_type } = useSelector((store) => store.Login.admin);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+
+  const getShop = async () => {
+    const data = await callApi(id, SINGLE_SHOP, 'shop');
+    console.log(data);
+    if (data) {
+      const activeStatus = data?.liveStatus === 'online';
+      setLiveStatus(activeStatus);
+      setShop(data);
+    } else {
+      history.push('/shops/list', { replace: true });
+    }
+  };
 
   useEffect(() => {
     if (id) {
-      dispatch(getAllProduct(true, id));
-      const findShop = shops.find((item) => item._id == id);
+      const findShop = shops.find((item) => item._id === id);
       if (findShop) {
-        console.log({ findShop });
-        const activeStatus = findShop.liveStatus == "live" ? true : false;
-        setActiveStatus(activeStatus);
+        const activeStatus = findShop?.liveStatus === 'online';
+        setLiveStatus(activeStatus);
         setShop(findShop);
       } else {
-        callApi(id);
+        getShop();
       }
-    } else {
-      history.push("/shop/list", { replace: true });
     }
-  }, [id]);
-
-  const callApi = async (shopId) => {
-    const { data } = await requestApi().request(SINGLE_SHOP, {
-      params: {
-        id: shopId,
-      },
-    });
-    // console.log(banner)
-    if (data.status) {
-      console.log(data.data.shop);
-      const activeStatus = data.data.shop.liveStatus == "live" ? true : false;
-      setActiveStatus(activeStatus);
-      setShop(data.data.shop);
-    }
-  };
-
-  const handleDelete = (id) => {
-    dispatch(deleteProduct(id));
-  };
-
-  // ADD PRODUCT
-
-  const addProduct = () => {
-    history.push({
-      pathname: "/products/add",
-      search: `?shopId=${id}`,
-      // state: { detail: 'some_value' }
-    });
-  };
+  }, [id, isUpdated]);
 
   // CHANGE LIVE STATUS
-
   const changeLiveStatus = (e) => {
-    setActiveStatus(e.target.checked);
+    setLiveStatus(e.target.checked);
     const status = e.target.checked;
     dispatch(
       ShopLiveStatus({
         id: shop._id,
-        liveStatus: status ? "online" : "offline",
+        liveStatus: status ? 'online' : 'busy',
       })
     );
   };
@@ -119,486 +127,617 @@ const ShopDetails = () => {
   useEffect(() => {
     if (status) {
       setModalCenter(false);
-      callApi(shop._id);
+      (async function getShop() {
+        const data = await callApi(shop?._id, SINGLE_SHOP, 'shop');
+
+        if (data) {
+          const activeStatus = data?.liveStatus === 'online';
+          setLiveStatus(activeStatus);
+          setShop(data);
+        }
+      })();
     }
   }, [status]);
 
+  const [maxDiscountModal, setMaxDiscountModal] = useState(false);
+  const [newMaxDiscount, setNewMaxDiscount] = useState('');
+
+  const updateShopMaxDiscount = () => {
+    dispatch(addShopMaxDiscont({ shopId: shop._id, maxDiscount: newMaxDiscount }));
+  };
+
+  useEffect(() => {
+    if (appSettingsOptions.maxDiscount.length === 0) {
+      dispatch(getAllAppSettings());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isUpdated) {
+      setMaxDiscountModal(false);
+      dispatch(updateShopIsUpdated(false));
+    }
+  }, [isUpdated]);
+
+  // SET AS FEATURED
+  const setAsFeatured = () => {
+    dispatch(
+      setAsFeaturedShop({
+        id: shop._id,
+        isFeatured: !shop?.isFeatured,
+      })
+    );
+  };
+
+  // DELETE DEAL
+  const deleteDeal = (dealId) => {
+    dispatch(
+      deleteDealOfShop({
+        shopId: id,
+        dealId,
+      })
+    );
+  };
+
+  // UPDATE SHOP STATUS
+  // eslint-disable-next-line consistent-return
+  const updateActiveStatus = () => {
+    if (shop?.seller?.status === 'inactive') {
+      return successMsg('Seller is inactive. Please contact with your seller.', 'error');
+    }
+    dispatch(
+      updateShopStatus({
+        id: shop?._id,
+        status: shop?.shopStatus === 'active' ? 'inactive' : 'active',
+      })
+    );
+  };
+
+  const updatePriceRange = (value) => (value === 1 ? '$' : value === 2 ? '$$' : value === '3' ? '$$$' : '$$$$');
+
+  // DOWNLOAD PRODUCT TEMPLATE
+  const downloadProductTemplate = async () => {
+    try {
+      // eslint-disable-next-line no-unused-vars
+      const { data } = await requestApi().request(DOWNLOAD_PRODUCT_TEMPLATE, {
+        params: {
+          sellerId: shop?.seller?._id,
+        },
+      });
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  // IMPORT PRODUCT FILE
+  // eslint-disable-next-line consistent-return
+  const submitProductFile = async () => {
+    if (!productsFile) {
+      return successMsg('Upload products file');
+    }
+    const fileExt = productsFile.name.split('.');
+    const validExts = ['xlsx', 'xls'];
+    const checkExt = validExts.includes(fileExt[1]);
+    if (!checkExt) {
+      return successMsg('Upload valid products file');
+    }
+
+    const formData = new FormData();
+    formData.append('shopId', shop?._id);
+    formData.append('file', productsFile);
+
+    try {
+      setIsLoading(true);
+      const { data } = await requestApi().request(UPLOAD_PRODUCT_FILE, {
+        method: 'POST',
+        data: formData,
+      });
+
+      console.log(data);
+
+      if (data?.data?.products.length > 0) {
+        setIsLoading(false);
+        successMsg(data?.message, 'success');
+        setIsImportProductOpen(false);
+      } else {
+        setIsLoading(false);
+        successMsg('No products file found', 'error');
+      }
+    } catch (e) {
+      setIsLoading(false);
+      console.log(e.message);
+    }
+  };
+
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={"Details"}
-              title="Shop"
-              loading={loading}
-              isRefresh={false}
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem="Details" title="Shop" isRefresh={false} />
+          {isOpen && (
+            <Lightbox
+              mainSrc={selectedImg}
+              enableZoom
+              imageCaption="img"
+              onCloseRequest={() => {
+                setIsOpen(!isOpen);
+              }}
             />
-
-            {isOpen && (
-              <Lightbox
-                mainSrc={selectedImg}
-                enableZoom={true}
-                imageCaption="img"
-                onCloseRequest={() => {
-                  setIsOpen(!isOpen);
-                }}
-              />
-            )}
-
-            {success_dlg ? (
-              <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-            ) : null}
-
-            <Row>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <Row>
-                      <div className="d-flex justify-content-between align-items-center w-100 pb-1">
-                        <h4>Shop</h4>
-                        <div className="d-flex align-items-center">
-                          <Button
-                            outline={true}
-                            color="success"
-                            onClick={() => {
-                              setModalCenter(!modalCenter);
-                              document.body.classList.add("no_padding");
-                            }}
-                            className="me-3"
-                          >
-                            Add Deal
-                          </Button>
-                          <Switch
-                            checked={activeStatus}
-                            onChange={changeLiveStatus}
-                            inputProps={{ "aria-label": "controlled" }}
-                          />
-                          <Label className="mt-2">
-                            {activeStatus ? "Online" : "Offline"}
-                          </Label>
-                        </div>
-                      </div>
-                      <hr />
-                    </Row>
-                    <Row>
-                      <Col
-                        lg={4}
-                        className="d-flex justify-content-center align-items-center"
+          )}
+          <Card>
+            <CardBody>
+              <HeaderWrapper>
+                <h4>Shop</h4>
+                <div className="d-flex flex-wrap  align-items-center">
+                  <Button outline color="success" onClick={downloadProductTemplate} className="me-3">
+                    <TemplateButton
+                      href={`${API_URL}${DOWNLOAD_PRODUCT_TEMPLATE}?sellerId=${shop?.seller?._id}`}
+                      target="_blank"
+                    >
+                      Download Product Template
+                    </TemplateButton>
+                  </Button>
+                  <Button
+                    outline
+                    color="success"
+                    onClick={() => setIsImportProductOpen(!isImportProductOpen)}
+                    className="me-3"
+                  >
+                    Import Products
+                  </Button>
+                  <Button outline color="success" onClick={() => setMaxDiscountModal(true)} className="me-3">
+                    Add Max Discount
+                  </Button>
+                  {account_type === 'admin' && (
+                    <>
+                      <Button
+                        outline
+                        color="success"
+                        onClick={() => {
+                          // setCurrentMarketing('percentage');
+                          history.push(`/shops/marketing/${shop?._id}`, shop);
+                        }}
+                        className="me-3"
                       >
-                        <div>
+                        Marketing Settings
+                      </Button>
+                      <Button outline color="success" onClick={setAsFeatured} className="me-3">
+                        {!shop?.isFeatured ? 'Set as featured' : 'Remove featured'}
+                      </Button>
+                      <Button outline color="success" onClick={updateActiveStatus} className="me-3">
+                        {shop?.shopStatus === 'active' ? 'Inactive' : 'Activate'}
+                      </Button>
+                    </>
+                  )}
+                  <div>
+                    <Switch
+                      checked={liveStatus}
+                      onChange={changeLiveStatus}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                    <Label className="mt-2">{liveStatus ? 'Online' : 'Busy'}</Label>
+                  </div>
+                </div>
+              </HeaderWrapper>
+              <hr />
+              <Row>
+                <Col xl={4}>
+                  <InfoTwoWrapper>
+                    <InfoTwo
+                      Icon={ApartmentOutlinedIcon}
+                      value={`${shop?.seller?.name}`}
+                      name="Seller"
+                      link={account_type === 'admin' ? `/seller/details/${shop?.seller?._id}` : ''}
+                    />
+                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopName}`} name="Shop Name" />
+                    <InfoTwo Icon={LocalPhoneOutlinedIcon} value={shop?.phone_number} name="Phone" />
+                    <InfoTwo
+                      Icon={AlternateEmailOutlinedIcon}
+                      value={shop?.email}
+                      name="Email"
+                      classes="text-lowercase"
+                    />
+                    <InfoTwo
+                      Icon={RoomOutlinedIcon}
+                      value={shop?.address.address}
+                      mapLink={`${MAP_URL}?z=10&t=m&q=loc:${shop?.address?.latitude}+${shop?.address?.longitude}`}
+                      name="Location"
+                    />
+                    <InfoTwo
+                      value={`Mon to Fri - ${shop?.shopStartTimeText} ${
+                        shop?.shopStartTimeText.split(':')[0] < 12 ? 'AM' : 'PM'
+                      } - ${shop?.shopEndTimeText} ${shop?.shopEndTimeText.split(':')[0] < 12 ? 'AM' : 'PM'}`}
+                      Icon={AccessTimeOutlinedIcon}
+                      name="Available"
+                    />
+                    <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType}`} name="Shop Type" />
+                    <InfoTwo
+                      Icon={AccountBalanceWalletOutlinedIcon}
+                      value={`${shop?.paymentOption?.join(', ')}`}
+                      name="Payment Options"
+                    />
+                  </InfoTwoWrapper>
+                </Col>
+                <Col xl={4}>
+                  <InfoTwoWrapper>
+                    <InfoTwo value={`${shop?.shopStatus}`} Icon={AutorenewOutlinedIcon} name="Status" />
+                    <InfoTwo
+                      value={`${
+                        shop?.rating === 4
+                          ? 'Excellent'
+                          : shop?.rating === 3
+                          ? 'Very good'
+                          : shop?.rating === 2
+                          ? 'Good'
+                          : shop?.rating === 1
+                          ? 'Bad'
+                          : ''
+                      }`}
+                      Icon={SentimentSatisfiedOutlinedIcon}
+                      name="Rating"
+                    />
+                    <InfoTwo
+                      Icon={ProductionQuantityLimitsOutlinedIcon}
+                      value={`${shop?.totalOrder}`}
+                      name="Total Orders"
+                    />
+                    <InfoTwo
+                      Icon={FeaturedPlayListOutlinedIcon}
+                      value={`${shop?.isFeatured ? 'Yes' : 'No'}`}
+                      name="Featured"
+                    />
+                    <InfoTwo
+                      Icon={WorkHistoryOutlinedIcon}
+                      value={`${shop?.minOrderAmount} ${currency}`}
+                      name="Minimum Order"
+                    />
+                    {shop?.haveOwnDeliveryBoy && (
+                      <InfoTwo Icon={PaymentIcon} value={`${shop?.deliveryFee ?? 0} ${currency}`} name="Delivery Fee" />
+                    )}
+                    <InfoTwo
+                      Icon={DeliveryDiningOutlinedIcon}
+                      value={`${shop?.freeDelivery ? 'Yes' : 'No'}`}
+                      name="Free Delivery"
+                    />
+                    <InfoTwo
+                      Icon={PaidOutlinedIcon}
+                      value={`${shop?.maxDiscount ? shop?.maxDiscount : 0}`}
+                      name={`Max Discount (${currency})`}
+                    />
+                  </InfoTwoWrapper>
+                </Col>
+                <Col xl={4}>
+                  <InfoTwoWrapper>
+                    {shop?.foodType && (
+                      <InfoTwo Icon={FoodBankOutlinedIcon} value={`${shop?.foodType}`} name="Food Type" />
+                    )}
+                    <InfoTwo
+                      Icon={FeaturedPlayListOutlinedIcon}
+                      value={`${shop?.orderValue?.productAmount / shop?.orderValue?.count || 0}`}
+                      name="Average Order Value"
+                    />
+
+                    <InfoTwo
+                      Icon={PaidOutlinedIcon}
+                      value={`${updatePriceRange(shop?.expensive)}`}
+                      name="Price Range"
+                    />
+
+                    {shop?.tags?.length > 0 && (
+                      <InfoTwo
+                        Icon={TagOutlinedIcon}
+                        value={`${shop?.tags?.map((item) => item).join(', ')}`}
+                        name="Tags"
+                      />
+                    )}
+                    {shop?.cuisineType?.length > 0 && (
+                      <InfoTwo
+                        Icon={FastfoodOutlinedIcon}
+                        value={`${shop?.cuisineType?.map((item) => item.name).join(', ')}`}
+                        name="Cuisines"
+                      />
+                    )}
+                    <InfoTwo Icon={AccountBalanceOutlinedIcon} value={`${shop?.bank_name}`} name="Bank Name" />
+                    <InfoTwo
+                      Icon={AccountBalanceWalletOutlinedIcon}
+                      value={`${shop?.account_name}`}
+                      name="Bank Account Name"
+                    />
+                    <InfoTwo Icon={SavingsOutlinedIcon} value={`${shop?.account_number}`} name="Bank Account No" />
+                  </InfoTwoWrapper>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          {/* SHOP FLAGS AND REVIEWS */}
+          <Row className="mb-3">
+            <Col xl={6}>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                  <Typography>Order Reviews</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ReviewTable reviews={shop?.reviews} isFromOrder={false} />
+                </AccordionDetails>
+              </Accordion>
+            </Col>
+            <Col xl={6}>
+              <FlagsAndReviews flags={shop?.flags} />
+            </Col>
+          </Row>
+          {/* SHOP PHOTOS */}
+          <Row className="mb-5">
+            <Col xl={6}>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                  <Typography>Shop Photos</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {shop?.shopBanner || shop?.shopPhotos || shop?.shopLogo ? (
+                    <Row>
+                      <Col md={6}>
+                        <ImageWrapper
+                          style={{
+                            width: '100%',
+                            height: '200px',
+                            padding: '10px 0px',
+                          }}
+                        >
                           <img
-                            className="rounded-circle avatar-xl cursor-pointer"
+                            className="img-fluid cursor-pointer cursor-pointer"
                             alt="partner"
                             src={shop?.shopLogo}
                             onClick={() => {
                               setIsOpen(true);
                               setSelectedImg(shop?.shopLogo);
                             }}
+                            width="100%"
+                            // eslint-disable-next-line react/no-unknown-property
+                            lazy="loading"
                           />
-                        </div>
+                          <small>Shop Logo</small>
+                        </ImageWrapper>
                       </Col>
-                      <Col
-                        lg={8}
-                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                      >
-                        <div className="ps-4">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{shop?.shopName}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Start Time:</h5>
-                            <Value>{shop?.shopStartTimeText}</Value>
-                          </Details>
-                          <Details>
-                            <h5>End Time:</h5>
-                            <Value>{shop?.shopEndTimeText}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Shop Type:</h5>
-                            <Value>{shop?.shopType}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Delivery:</h5>
-                            <Value>{shop?.delivery}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Minimum Order:</h5>
-                            <Value>{shop?.minOrderAmount}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Status:</h5>
-                            <Value>{shop?.shopStatus}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Free Delivery:</h5>
-                            <Value>{shop?.freeDelivery ? "Yes" : "No"}</Value>
-                          </Details>
-                          {shop?.foodType && (
-                            <Details>
-                              <h5>Food Type:</h5>
-                              <Value>{shop?.foodType}</Value>
-                            </Details>
-                          )}
-                          <Details>
-                            <h5>Address:</h5>
-                            <Value>{shop?.address.address}</Value>
-                          </Details>
-                          {shop?.deliveryFeePerKm && <Details>
-                            <h5>Delivery Fee(per/km):</h5>
-                            <Value>{shop?.deliveryFeePerKm}</Value>
-                          </Details>}
-                          {shop?.dropChargePerKm && <Details>
-                            <h5>Drop Charge(per/km):</h5>
-                            <Value>{shop?.dropChargePerKm}</Value>
-                          </Details>}
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xl={6}>
-                <Card>
-                  <CardBody>
-                    <Row>
-                      <div className="d-flex justify-content-between align-items-center w-100 pb-1">
-                        <h4>Seller</h4>
-                        <button
-                          onClick={() =>
-                            history.push(`/seller/details/${shop?.seller?._id}`)
-                          }
-                          className="btn btn-success"
-                        >
-                          Details
-                        </button>
-                      </div>
-                      <hr />
-                    </Row>
-                    <Row>
-                      <Col
-                        lg={4}
-                        className="d-flex justify-content-center align-items-center"
-                      >
-                        <div>
-                          <img
-                            className="rounded-circle avatar-xl cursor-pointer"
-                            alt="partner"
-                            src={shop?.seller?.profile_photo}
-                            onClick={() => {
-                              setIsOpen(true);
-                              setSelectedImg(shop?.seller?.profile_photo);
-                            }}
-                          />
-                        </div>
-                      </Col>
-                      <Col
-                        lg={8}
-                        className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                      >
-                        <div className="ps-4">
-                          <Details>
-                            <h5>Name:</h5>
-                            <Value>{shop?.seller?.name}</Value>
-                          </Details>
-                          <Details>
-                            <h5>Phone:</h5>
-                            <Value>{shop?.seller?.phone_number}</Value>
-                          </Details>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col lg={8}>
-                {shop?.shopBanner || shop?.shopPhotos ? (
-                  <Card>
-                    <CardBody>
-                      <div>
-                        <CardTitle>Shop Photos</CardTitle>
-                        <hr />
-                      </div>
-                      <Row>
-                        <Col md={6}>
-                          {shop.shopBanner ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(shop?.shopBanner);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="Veltrix"
-                                src={shop?.shopBanner}
-                                width="100%"
-                              />
-                              <small>Shop Banner</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                        <Col md={6}>
-                          {shop.shopPhotos ? (
-                            <ImageWrapper
-                              style={{
-                                width: "100%",
-                                height: "200px",
-                                padding: "10px 0px",
-                              }}
-                            >
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(shop?.shopPhotos[0]);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt="Veltrix"
-                                src={shop?.shopPhotos[0]}
-                                width="100%"
-                              />
-                              <small>Shop Photos</small>
-                            </ImageWrapper>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </Card>
-                ) : null}
-              </Col>
-              {shop?.deals.length > 0 && (
-                <Col lg={4}>
-                  <div className="mb-4">
-                    <Paper className="py-2">
-                      <h5 className="text-center">Deals List</h5>
-                      <hr />
-                      {shop.deals.length > 0 &&
-                        shop.deals.map((deal, index) => (
-                          <ul key={index} style={{ listStyleType: "square" }}>
-                            <li>
-                              <div className="d-flex justify-content-between">
-                                <span
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "500",
-                                  }}
-                                >
-                                  {deal.name}
-                                  {`-(${deal.status})`}
-                                </span>
-                              </div>
-                            </li>
-
-                            <ul>
-                              <li>
-                                <span>{deal.type}-</span>
-                                <span className="ms-1">
-                                  {deal.option}
-                                  {deal.percentage && `(${deal.percentage}%)`}
-                                </span>
-                              </li>
-                            </ul>
-                          </ul>
-                        ))}
-                    </Paper>
-                  </div>
-                </Col>
-              )}
-            </Row>
-
-            <Card>
-              <CardBody>
-                <div className="d-flex justify-content-between align-items-center ">
-                  <CardTitle className="h4"> Product List</CardTitle>
-
-                  <Button color="success" onClick={addProduct} className="ms-3">
-                    Add Product
-                  </Button>
-                </div>
-                <hr className="my-2" />
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Image</Th>
-                      <Th>Name</Th>
-                      <Th>Shop Name</Th>
-                      <Th>Price</Th>
-                      <Th>Status</Th>
-                      <Th>Action</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {products &&
-                      products.length > 0 &&
-                      products.map((item, index) => {
-                        return (
-                          <Tr
-                            key={index}
-                            className="align-middle"
+                      <Col md={6}>
+                        {shop.shopBanner ? (
+                          <ImageWrapper
                             style={{
-                              fontSize: "15px",
-                              fontWeight: "500",
+                              width: '100%',
+                              height: '200px',
+                              padding: '10px 0px',
                             }}
                           >
-                            <Th style={{ height: "50px", maxWidth: "150px" }}>
-                              <img
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setSelectedImg(item?.images[0]);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item?.images[0]}
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(shop?.shopBanner);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt="shop banner"
+                              src={shop?.shopBanner}
+                              width="100%"
+                              // eslint-disable-next-line react/no-unknown-property
+                              lazy="loading"
+                            />
+                            <small>Shop Banner</small>
+                          </ImageWrapper>
+                        ) : null}
+                      </Col>
+                      <Col md={4}>
+                        {shop.shopPhotos ? (
+                          <ImageWrapper
+                            style={{
+                              width: '100%',
+                              height: '200px',
+                              padding: '10px 0px',
+                            }}
+                          >
+                            <img
+                              onClick={() => {
+                                setIsOpen(true);
+                                setSelectedImg(shop?.shopPhotos[0]);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt="shopPhoto"
+                              src={shop?.shopPhotos[0]}
+                              width="100%"
+                            />
+                            <small>Shop Photos</small>
+                          </ImageWrapper>
+                        ) : null}
+                      </Col>
+                    </Row>
+                  ) : (
+                    <h5 className="text-center">No Photos</h5>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            </Col>
+            <Col xl={6}>
+              <div className="mb-4">
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                    <Typography>Deals</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {shop?.deals?.length > 0 ? (
+                      shop?.deals?.map((deal, index) => (
+                        <ul key={index} style={{ listStyleType: 'square' }}>
+                          <li>
+                            <div className="d-flex justify-content-between px-3">
+                              <span
                                 style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
+                                  fontSize: '15px',
+                                  fontWeight: '500',
                                 }}
-                              />
-                            </Th>
+                              >
+                                {deal?.name}
+                                {`-(${deal?.status})`}
+                              </span>
+                              <i
+                                className="fa fa-trash cursor-pointer"
+                                style={{ color: 'red' }}
+                                onClick={() => deleteDeal(deal?._id)}
+                              ></i>
+                            </div>
+                          </li>
 
-                            <Td>{item?.name}</Td>
-                            <Td>{item?.shop?.shopName}</Td>
-                            <Td>
-                              <p>{item?.price}</p>
-                              <p>{item?.shopEndTimeText}</p>
-                            </Td>
-                            <Td>{item?.status}</Td>
-                            <Td>
-                              <div>
-                                <Tooltip title="Edit">
-                                  <button
-                                    className="btn btn-success me-3 button"
-                                    onClick={() =>
-                                      history.push(
-                                        `/products/edit/${item?._id}`
-                                      )
-                                    }
-                                  >
-                                    <i className="fa fa-edit" />
-                                  </button>
-                                </Tooltip>
-                                <Tooltip title="Delete">
-                                  <button
-                                    className="btn btn-danger button"
-                                    onClick={() => {
-                                      setconfirm_alert(true);
-                                    }}
-                                  >
-                                    <i className="fa fa-trash" />
-                                  </button>
-                                </Tooltip>
-                                {confirm_alert ? (
-                                  <SweetAlert
-                                    title="Are you sure?"
-                                    warning
-                                    showCancel
-                                    confirmButtonText="Yes, delete it!"
-                                    confirmBtnBsStyle="success"
-                                    cancelBtnBsStyle="danger"
-                                    onConfirm={() => {
-                                      handleDelete(item?._id);
-                                      setconfirm_alert(false);
-                                      setsuccess_dlg(true);
-                                      setdynamic_title("Deleted");
-                                      setdynamic_description(
-                                        "Your file has been deleted."
-                                      );
-                                    }}
-                                    onCancel={() => setconfirm_alert(false)}
-                                  >
-                                    You want to delete this Product.
-                                  </SweetAlert>
-                                ) : null}
-                              </div>
-                            </Td>
-                          </Tr>
-                        );
-                      })}
-                  </Tbody>
-                </Table>
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="info" />
-                  </div>
-                )}
-                {!loading && products.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Data</h4>
-                  </div>
-                )}
-              </CardBody>
-            </Card>
-            <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllProduct(true, id, page))}
-                  />
-                </div>
-              </Col>
-            </Row>
-          </Container>
+                          <ul>
+                            <li>
+                              <span>{deal?.type}-</span>
+                              <span className="ms-1">
+                                {deal?.option}
+                                {deal?.percentage && `(${deal?.percentage}%)`}
+                              </span>
+                            </li>
+                          </ul>
+                        </ul>
+                      ))
+                    ) : (
+                      <h5 className="text-center"> No Deals </h5>
+                    )}
+                  </AccordionDetails>
+                </Accordion>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+      {/* DEAL */}
+      <Modal
+        isOpen={modalCenter}
+        toggle={() => {
+          setModalCenter(!modalCenter);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Add Deal</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setModalCenter(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        {/* DEAL */}
-
-        <Modal
-          isOpen={modalCenter}
-          toggle={() => {
-            setModalCenter(!modalCenter);
-          }}
-          centered={true}
-        >
-          <div className="modal-header">
-            <h5 className="modal-title mt-0">Add Deal</h5>
-            <button
-              type="button"
+        <div className="modal-body">
+          <DealForAdd type="shop" item={shop} shopType={shop?.shopType} />
+        </div>
+      </Modal>
+      {/* Import Product */}
+      <Modal
+        isOpen={isImportProductOpen}
+        toggle={() => {
+          setIsImportProductOpen(!isImportProductOpen);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Import Products File</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setIsImportProductOpen(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <div className="d-flex flex-column">
+            <label>Upload excel sheet</label>
+            <input
+              type="file"
+              onChange={(e) => setProductsFile(e.target.files[0])}
+              title="select file"
+              required
+              accept=".xlsx,.xls"
+            />
+          </div>
+          <Button onClick={submitProductFile} className="mt-3 px-4" color="success" disabled={isLoading}>
+            {isLoading ? 'Importing...' : 'Import'}
+          </Button>
+        </div>
+      </Modal>
+      {/* Max discoutn */}
+      <Modal
+        isOpen={maxDiscountModal}
+        toggle={() => {
+          setMaxDiscountModal(false);
+        }}
+        centered
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Add Max Discount</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setMaxDiscountModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <Stack spacing={6}>
+            <FormControl fullWidth>
+              <InputLabel>Max Discount</InputLabel>
+              <Select
+                fullWidth
+                label="Max Discount"
+                value={newMaxDiscount}
+                onChange={(e) => {
+                  setNewMaxDiscount(e.target.value);
+                }}
+              >
+                {appSettingsOptions.maxDiscount.map((item) => (
+                  <MenuItem value={item}>{item}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={loading}
               onClick={() => {
-                setModalCenter(false);
+                updateShopMaxDiscount();
               }}
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
             >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <DealForAdd type="shop" item={shop} shopType={shop?.shopType} />
-          </div>
-        </Modal>
-      </GlobalWrapper>
-    </React.Fragment>
+              Update
+            </Button>
+          </Stack>
+        </div>
+      </Modal>
+      {/* marketing modal */}
+      {/* <MSettingsModal open={Boolean(currentMarketing)}>
+        <MarketingSettings
+          shop={shop}
+          creatorType="admin"
+          marketingType={currentMarketing}
+          closeModal={() => {
+            setCurrentMarketing(null);
+          }}
+        />
+      </MSettingsModal> */}
+    </GlobalWrapper>
   );
-};
+}
 
 const ImageWrapper = styled.div`
   text-align: center;
+  border: 1px solid lightgray;
+  border-radius: 5px;
   img {
     object-fit: contain;
     width: 100%;
@@ -606,17 +745,23 @@ const ImageWrapper = styled.div`
   }
 `;
 
-const Details = styled.div`
+const HeaderWrapper = styled.div`
   display: flex;
-  /* justify-content: space-between; */
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 5px;
+
+  @media (max-width: 790px) {
+    flex-direction: column;
+  }
 `;
 
-const Value = styled.h5`
-  color: lightcoral;
-  font-style: italic;
-  font-weight: 500;
-  margin-left: 4px;
-  /* padding-left: 5px; */
+const TemplateButton = styled.a`
+  color: #02a499;
+  &:hover {
+    color: white;
+  }
 `;
 
 export default ShopDetails;

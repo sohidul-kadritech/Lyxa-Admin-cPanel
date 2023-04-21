@@ -1,450 +1,423 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-} from "reactstrap";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import Switch from "react-switch";
-import Dropzone from "react-dropzone";
-import Chip from "@mui/material/Chip";
-import Paper from "@mui/material/Paper";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllSeller } from "../../../store/Seller/sellerAction";
+/* eslint-disable no-unused-vars */
+/* eslint-disable radix */
 import {
   Autocomplete,
   Box,
+  Checkbox,
   FormControl,
   InputLabel,
+  ListItemText,
   MenuItem,
+  OutlinedInput,
   Select,
   TextField,
-} from "@mui/material";
-import { toast } from "react-toastify";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import React, { useEffect, useMemo, useState } from 'react';
+import Dropzone from 'react-dropzone';
+import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { useQuery } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
 import {
-  addCuisine,
-  addShop,
-  editShop,
-  getAllCuisine,
-} from "../../../store/Shop/shopAction";
-import { useHistory, useParams, Link, useLocation } from "react-router-dom";
-import PlacesAutocomplete from "react-places-autocomplete";
-import {
-  geocodeByAddress,
-  geocodeByPlaceId,
-  getLatLng,
-} from "react-places-autocomplete";
-import {
-  cuisinesList,
-  foodTypeOptions,
   liveStatusOptions,
-  shopDeliveryOptions,
-  shopStatusOptions2,
-  shopTypeOptions2,
-  productVisibility,
-} from "../../../assets/staticData";
-import requestApi from "../../../network/httpRequest";
-import { IMAGE_UPLOAD, SINGLE_SHOP } from "../../../network/Api";
+  priceRangeOptions,
+  shopDietaryOptions,
+  shopPaymentOptions,
+  statusOptions2,
+} from '../../../assets/staticData';
+import formatBytes from '../../../common/imageFormatBytes';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import { IMAGE_UPLOAD, SINGLE_SELLER, SINGLE_SHOP } from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import requestApi from '../../../network/httpRequest';
+import { getAllSeller, updateSellerSearchKey } from '../../../store/Seller/sellerAction';
+import { addShop, editShop, getAllCuisine, getAllTags, updateShopSearchKey } from '../../../store/Shop/shopAction';
 
-const ShopAdd = () => {
+import { callApi } from '../../../components/SingleApiCall';
+
+function ShopAdd() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
 
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const { sellers } = useSelector((state) => state.sellerReducer);
-  const { loading, status, shops, cuisines } = useSelector(
-    (state) => state.shopReducer
-  );
+  const { sellers, searchKey: searchSellerKey } = useSelector((state) => state.sellerReducer);
+  const { loading, status, shops, cuisines, tags: allTags, searchKey } = useSelector((state) => state.shopReducer);
 
-  const [tags, setTags] = useState({
-    items: [],
-    value: "",
-  });
+  const [tags, setTags] = useState([]);
+  const [shop, setShop] = useState({});
 
   const [seller, setSeller] = useState(null);
-  const [searchSellerKey, setSearchSellerKey] = useState("");
-  const [shopType, setShopType] = useState("");
-  const [shopStartTime, setShopStartTime] = useState("");
-  const [shopEndTime, setShopEndTime] = useState("");
-  const [shopName, setShopName] = useState("");
+  const [shopStartTime, setShopStartTime] = useState('');
+  const [shopEndTime, setShopEndTime] = useState('');
+  const [shopName, setShopName] = useState('');
   const [shopLogo, setShopLogo] = useState(null);
   const [shopBanner, setShopBanner] = useState(null);
-  const [shopPhotos, setShopPhotos] = useState(null);
-  const [shopStatus, setShopStatus] = useState("");
-  const [delivery, setDelivery] = useState("");
-  const [minOrderAmount, setMinOrderAmount] = useState(0);
-  const [foodType, setFoodType] = useState("");
-
-  const [selectedAddress, setSelectedAddress] = useState("");
-  const [address, setAddress] = useState("");
+  const [shopStatus, setShopStatus] = useState('');
+  const [minOrderAmount, setMinOrderAmount] = useState('');
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [address, setAddress] = useState('');
   const [latLng, setLatLng] = useState({});
-  const [fullAddress, setFullAddress] = useState("");
-  const [pinCode, setPinCode] = useState("");
-  const [isCuisine, setIsCuisine] = useState(false);
-  const [liveStatus, setLiveStatus] = useState("");
-  const [freeDelivery, setFreeDelivery] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
+  const [fullAddress, setFullAddress] = useState('');
+  const [pinCode, setPinCode] = useState('');
+  const [liveStatus, setLiveStatus] = useState('');
+  const [expensive, setExpensive] = useState('');
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCuisines, setSelectedCuisines] = useState([]);
-  const [searchCuisineKey, setSearchCuisineKey] = useState("");
+  const [searchCuisineKey, setSearchCuisineKey] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [deliveryType, setDeliveryType] = useState('');
+  const [deliveryFee, setDeliveryFee] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [accountNum, setAccountNum] = useState('');
+  const [dietaryType, setdietaryType] = useState([]);
+  const [orderCapacity, setOrderCapacity] = useState('');
+  const [paymentOption, setpaymentOption] = useState([]);
+
+  const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
+
+  console.log(dietaryType);
 
   // GET SELLER
-
   useEffect(() => {
     dispatch(getAllSeller(true));
-  }, []);
+  }, [searchSellerKey]);
 
   // GET CUISINES
-
   useEffect(() => {
-    if (isCuisine) {
+    if (seller?.sellerType === 'food') {
       dispatch(getAllCuisine(true));
     }
-  }, [isCuisine]);
+  }, [seller?.sellerType === 'food']);
 
-  useEffect(() => {
-    if (id) {
-      const findShop = shops.find((item) => item._id == id);
-      if (findShop) {
-        console.log({ findShop });
-        updateData(findShop);
-      } else {
-        // console.log("call api-------");
-        callApi(id);
-      }
-    }
-  }, [id]);
-
-  const callApi = async (shopId) => {
-    const { data } = await requestApi().request(SINGLE_SHOP, {
-      params: {
-        id: shopId,
-      },
-    });
-    // console.log(banner)
-    if (data.status) {
-      console.log("single shop from api", data.data.shop);
-      updateData(data.data.shop);
-    } else {
-      history.push("/shop/list", { replace: true });
-    }
+  const handleAddressSelect = (address, placeId) => {
+    setSelectedAddress(address);
+    geocodeByAddress(address);
+    geocodeByPlaceId(placeId)
+      .then((results) => setAddress(results[0]))
+      .catch((error) => console.error('Error', error));
   };
-  // FIND SELLER
-  useEffect(() => {
-    if (searchParams) {
-      const sellerId = searchParams.get("sellerId");
-      if (sellerId) {
-        const findSeller = sellers.find((item) => item._id == sellerId);
-        setSeller(findSeller);
-      }
-    }
-  }, [searchParams]);
 
   // UPDATE DATA
-  const updateData = async (values) => {
+  const updateData = (values) => {
     const {
-      delivery,
-      seller: { _id: sellerId },
+      seller,
       minOrderAmount,
       shopBanner,
       shopEndTimeText,
       shopLogo,
       shopName,
-      shopPhotos,
       shopStartTimeText,
       shopStatus,
-      shopType,
-      foodType,
       tags,
+      tagsId,
       liveStatus,
-      freeDelivery,
-      address
+      address,
+      email,
+      phone_number,
+      cuisineType,
+      dietaryType,
+      expensive,
+      deliveryFee,
+      haveOwnDeliveryBoy,
+      account_name,
+      account_number,
+      bank_name,
+      orderCapacity,
+      paymentOption,
     } = values;
-
-    const findSeller =  sellers.find((s) => s._id == sellerId);
-    // console.log({sellerId})
-
+    setOrderCapacity(orderCapacity === 0 ? '' : orderCapacity);
+    setEmail(email);
+    setPhone(phone_number);
     setShopLogo(shopLogo);
     setShopBanner(shopBanner);
-    setShopPhotos(shopPhotos[0]);
-    setSeller(findSeller);
-    setFoodType(foodType);
-    setShopType(shopType);
+    setSeller(seller);
     setShopStartTime(shopStartTimeText);
     setShopEndTime(shopEndTimeText);
     setShopName(shopName);
     setShopStatus(shopStatus);
-    setDelivery(delivery);
     setMinOrderAmount(minOrderAmount);
-    setTags({
-      items: tags,
-      value: "",
-    });
     setLiveStatus(liveStatus);
-    setFreeDelivery(freeDelivery);
-    setPinCode(address.pin)
-    handleAddressSelect(address.address, address.placeId)
+    setPinCode(address.pin);
+    handleAddressSelect(address.address, address.placeId);
+    setSelectedCuisines(cuisineType);
+    setExpensive(expensive);
+    setDeliveryFee(haveOwnDeliveryBoy ? deliveryFee : 0);
+    setDeliveryType(haveOwnDeliveryBoy ? 'self' : 'drop');
+    setBankName(bank_name);
+    setAccountName(account_name);
+    setAccountNum(account_number);
+    setdietaryType(dietaryType || []);
+    setpaymentOption(paymentOption);
   };
 
-  // TAGS
+  useEffect(async () => {
+    if (id) {
+      const findShop = shops.find((item) => item._id === id);
 
-  const handleTagAdd = (evt) => {
-    // console.log(evt.key);
-    if (["Enter", "Tab", ","].includes(evt.key)) {
-      evt.preventDefault();
-
-      let value = tags.value.trim();
-
-      if (value) {
-        setTags({
-          items: [...tags.items, tags.value],
-          value: "",
-        });
-      }
-    }
-  };
-
-  const handleTagChange = (evt) => {
-    setTags({
-      ...tags,
-      value: evt.target.value,
-    });
-    // console.log(tags);
-  };
-
-  const handleTagDelete = (item) => {
-    setTags({
-      ...tags,
-      items: tags.items.filter((i) => i != item),
-    });
-  };
-
-  // SUBMIT SELLER
-
-  const submitShop = () => {
-    if (!seller) {
-      return warningMessage('Select a seller');
-    }
-    if (
-      !shopType ||
-      !shopStartTime ||
-      !shopEndTime ||
-      !shopName ||
-      !shopStatus ||
-      !delivery ||
-      minOrderAmount <= 0 ||
-      tags.items.length < 1 ||
-      (!id && !pinCode) ||
-      !liveStatus
-    ) {
-      return warningMessage('Fillup All Required Fields');
-    }
-
-    if (!id && !address) {
-      return warningMessage('Select Shop Address')
-    }
-    if (!shopLogo || !shopBanner || !shopPhotos) {
-      return warningMessage('Choose Image')
-    }
-
-
-    uploadImages();
-
-    // submitData();
-  };
-
-  const uploadImages = async () => {
-    let logoUrl = null;
-    let bannerUrl = null;
-    let photosUrl = null;
-    setIsLoading(true);
-    if (shopLogo) {
-      if (typeof shopLogo == "string") {
-        logoUrl = shopLogo;
+      if (findShop) {
+        updateData(findShop);
+        setShop(findShop);
       } else {
-        logoUrl = await imageUploadToServer(shopLogo);
+        // callApi(id, SINGLE_SHOP,);
+        const data = await callApi(id, SINGLE_SHOP, 'shop');
+        if (data) {
+          console.log({ data });
+          updateData(data);
+          setShop(data);
+        } else {
+          history.push('/shops/list', { replace: true });
+        }
       }
     }
-    if (shopBanner) {
-      if (typeof shopBanner == "string") {
-        bannerUrl = shopBanner;
-      } else {
-        bannerUrl = await imageUploadToServer(shopBanner);
-      }
-    }
-    if (shopPhotos) {
-      if (typeof shopPhotos == "string") {
-        photosUrl = shopPhotos;
-      } else {
-        photosUrl = await imageUploadToServer(shopPhotos);
-      }
-    }
+  }, [id]);
 
-    if (logoUrl && bannerUrl && photosUrl) {
-      setIsLoading(false);
-      submitData(logoUrl, bannerUrl, photosUrl);
+  // FIND SELLER
+  useEffect(async () => {
+    if (searchParams.get('sellerId') || account_type === 'seller') {
+      const paramsId = searchParams.get('sellerId');
+      let sellerId = null;
+      // eslint-disable-next-line no-unused-expressions
+      paramsId ? (sellerId = paramsId) : (sellerId = accountId);
+      if (sellerId) {
+        const findSeller = sellers.find((item) => item._id === sellerId);
+        if (findSeller) {
+          setSeller(findSeller);
+        } else {
+          const data = await callApi(id, SINGLE_SELLER, 'seller');
+          if (data) {
+            setSeller(data);
+          } else {
+            history.push('/shops/list', { replace: true });
+          }
+        }
+      }
+    }
+  }, [searchParams, account_type]);
+
+  // GET ALL TAGS
+  useEffect(() => {
+    if (seller || searchKey) {
+      dispatch(getAllTags(true, seller?.sellerType));
+    }
+  }, [seller, searchKey]);
+
+  // handle dietry change
+  const handleDietryChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setdietaryType(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    );
+  };
+
+  const handlePaymentTypeChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setpaymentOption(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    );
+  };
+
+  // TAGS ADD
+  const handleTagChange = (item) => {
+    if (item) {
+      setTags((prev) => [...prev, item]);
     }
   };
+
+  const handleTagDelete = (tag) => {
+    setTags((prev) => prev.filter((item) => item?._id !== tag?._id));
+  };
+
+  const getMinutes = (s) => s.split(':').reduce((acc, curr) => acc * 60 + +curr, 0);
 
   //  UPLAOD IMAGE TO SERVER
-
+  // eslint-disable-next-line consistent-return
   const imageUploadToServer = async (image) => {
     try {
-      let formData = new FormData();
-      formData.append("image", image);
-      // console.log({formData})
+      const formData = new FormData();
+      formData.append('image', image);
+
       const { data } = await requestApi().request(IMAGE_UPLOAD, {
-        method: "POST",
+        method: 'POST',
         data: formData,
       });
-      // console.log("image upload", data)
+
       if (data.status) {
-        // submitData(data.data.url);
         return data.data.url;
-      } else {
-        console.log(data.error);
       }
+      successMsg(data.error);
     } catch (error) {
       console.log(error.message);
     }
   };
 
   // DISPACTH DATA
+  const submitData = (logoUrl, bannerUrl) => {
+    const cuisinesList = selectedCuisines?.map((item) => item?._id);
 
-  const submitData = (logoUrl, bannerUrl, photosUrl) => {
-    // console.log("given data---", data);
-    const cuisinesList = selectedCuisines?.map(item => item?._id)
+    const data = {
+      shopStartTime,
+      shopEndTime,
+      shopName,
+      password,
+      isCuisine: seller.sellerType === 'food',
+      minOrderAmount,
+      email,
+      phone_number: phone,
+      shopType: seller.sellerType,
+      shopLogo: logoUrl,
+      shopBanner: bannerUrl,
+      shopStatus,
+      shopDescription: 'desrcriptions',
+      tags: tags.map((item) => item?.name),
+      tagsId: tags.map((item) => item?._id),
+      orderCapacity: orderCapacity === '' ? '0' : orderCapacity,
+      paymentOption,
+      liveStatus,
+      cuisineType: cuisinesList,
+      dietaryType,
+      expensive,
+      deliveryType,
+      deliveryFee: deliveryType === 'self' ? parseInt(deliveryFee) : 0,
+      shopAddress: {
+        address: fullAddress,
+        latitude: latLng.lat,
+        longitude: latLng.lng,
+        city,
+        state,
+        country,
+        placeId: address?.place_id,
+        pin: pinCode,
+        primary: true,
+        note: '',
+      },
+      bank_name: bankName,
+      account_name: accountName,
+      account_number: accountNum,
+    };
+
     if (id) {
       dispatch(
         editShop({
           id,
-          shopType: shopType,
-          foodType:
-            shopType == "food"
-              ? foodType
-              : shopType == "grocery"
-              ? "supermarkets"
-              : "food cut",
-          shopStartTime,
-          shopEndTime,
-          shopName,
-          shopLogo: logoUrl,
-          shopBanner: bannerUrl,
-          shopPhotos: photosUrl,
-          shopStatus: shopStatus,
-          shopDescription: "desrcriptions",
-          delivery: delivery,
-          tags: tags.items,
-          minOrderAmount,
-          liveStatus: liveStatus,
-           freeDelivery,
-          isCuisine,
-          cuisineType: cuisinesList,
-          shopAddress: {
-            address: fullAddress,
-            latitude: latLng.lat,
-            longitude: latLng.lng,
-            city,
-            state,
-            country,
-            placeId: address?.place_id,
-            pin: pinCode,
-            primary: true,
-            note: "",
-          }
+          ...data,
         })
       );
     } else {
       dispatch(
         addShop({
-          shopAddress: {
-            address: fullAddress,
-            latitude: latLng.lat,
-            longitude: latLng.lng,
-            city,
-            state,
-            country,
-            placeId: address?.place_id,
-            pin: pinCode,
-            primary: true,
-            note: "",
-          },
           seller: seller._id,
-          shopName,
-          shopType: shopType,
-          shopStartTime,
-          shopEndTime,
-          shopStatus: shopStatus,
-          delivery: delivery,
-          minOrderAmount,
-          tags: tags.items,
-          shopLogo: logoUrl,
-          shopBanner: bannerUrl,
-          shopPhotos: photosUrl,
-          foodType:
-            shopType == "food"
-              ? foodType
-              : shopType == "grocery"
-              ? "supermarkets"
-              : "",
-          shopDescription: "desrcriptions",
-          isCuisine,
-          cuisineType: cuisinesList,
-          liveStatus: liveStatus,
+          ...data,
         })
       );
     }
   };
 
-  // ADDRESS CHANGE
+  const uploadImages = async () => {
+    let logoUrl = null;
+    let bannerUrl = null;
+    setIsLoading(true);
+    if (shopLogo) {
+      if (typeof shopLogo === 'string') {
+        logoUrl = shopLogo;
+      } else {
+        logoUrl = await imageUploadToServer(shopLogo);
+      }
+    }
+    if (shopBanner) {
+      if (typeof shopBanner === 'string') {
+        bannerUrl = shopBanner;
+      } else {
+        bannerUrl = await imageUploadToServer(shopBanner);
+      }
+    }
 
-  const handleAddressChange = (address) => {
-    // console.log("address", address);
-    setSelectedAddress(address);
+    if (logoUrl && bannerUrl) {
+      setIsLoading(false);
+      submitData(logoUrl, bannerUrl);
+    }
   };
 
-  const handleAddressSelect = (address, placeId) => {
-    // console.log("select-------------", address, placeId);
+  // SUBMIT SELLER
+  // eslint-disable-next-line consistent-return
+  const submitShop = (e) => {
+    e.preventDefault();
+    if (!seller) {
+      return successMsg('Select a seller');
+    }
+    if (seller?.sellerType === 'food' && tags.length < 1) {
+      return successMsg('Please Add Shop Tag');
+    }
+
+    if (!id && !address) {
+      return successMsg('Select Shop Address');
+    }
+    if (!shopLogo || !shopBanner) {
+      return successMsg('Choose Image');
+    }
+
+    if (deliveryType === 'self' && deliveryFee < 0) {
+      return successMsg('Enter Delivery fee');
+    }
+
+    if (paymentOption?.length < 1) {
+      return successMsg('Select at least one payment method');
+    }
+
+    const getStartSec = getMinutes(shopStartTime);
+    const getEndSec = getMinutes(shopEndTime);
+    let diff = (getEndSec - getStartSec) / 60;
+    if (diff < 0) {
+      diff = 24 + diff;
+    }
+
+    if (diff > 24) {
+      return successMsg('Shop Start and End time are wrong');
+    }
+
+    uploadImages();
+
+    // submitData();
+  };
+
+  // ADDRESS CHANGE
+  const handleAddressChange = (address) => {
     setSelectedAddress(address);
-    geocodeByAddress(address);
-    geocodeByPlaceId(placeId)
-      .then((results) => setAddress(results[0]))
-      .catch((error) => console.error("Error", error));
   };
 
   // GET LAT LNG
-
   useEffect(() => {
     if (address) {
-      const {
-        geometry: { location },
-        address_components,
-        formatted_address,
-      } = address;
+      const { address_components, formatted_address } = address;
       getLatLng(address).then((latlng) => setLatLng(latlng));
       setFullAddress(formatted_address);
 
-      address_components.forEach((address_component) => {
-        if (address_component.types.includes("country")) {
-          setCountry(address_component.long_name);
-        } else if (address_component.types.includes("locality")) {
+      address_components?.forEach((address_component) => {
+        if (address_component?.types?.includes('country')) {
+          setCountry(address_component?.long_name);
+        } else if (address_component.types.includes('locality')) {
           setCity(address_component.long_name);
-        } else if (address_component.types.includes("sublocality")) {
+        } else if (address_component.types.includes('sublocality')) {
           setState(address_component.long_name);
         }
       });
@@ -452,55 +425,40 @@ const ShopAdd = () => {
   }, [address]);
 
   // SUCCESS
-
   useEffect(() => {
     if (status) {
       if (id) {
-        history.push("/shops/list");
+        history.push('/shops/list');
       } else {
         setSeller(null);
-        setShopType("");
-        setShopStartTime("");
-        setShopEndTime("");
-        setShopName("");
-        setShopStatus("");
-        setDelivery("");
+        setShopStartTime('');
+        setShopEndTime('');
+        setShopName('');
+        setShopStatus('');
         setMinOrderAmount(0);
         setTags({
           items: [],
-          value: "",
+          value: '',
         });
-        setSelectedAddress("");
-        setPinCode("");
+        setSelectedAddress('');
+        setPinCode('');
         setShopLogo(null);
         setShopBanner(null);
-        setShopPhotos(null);
-        setFoodType("");
         setSelectedCuisines([]);
-        setSearchCuisineKey("");
-        setLiveStatus("");
-        setIsCuisine(false);
-        setFreeDelivery("")
+        setSearchCuisineKey('');
+        setLiveStatus('');
+        setEmail('');
+        setPassword('');
+        setPhone('');
+        setBankName('');
+        setAccountName('');
+        setAccountNum('');
         window.scroll(0, 0);
       }
     }
   }, [status]);
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
-
   // IMAGE
-
   const handleAcceptedFiles = (files, type) => {
     files.map((file) =>
       Object.assign(file, {
@@ -509,118 +467,105 @@ const ShopAdd = () => {
       })
     );
 
-    if (type === "logo") {
+    if (type === 'logo') {
       setShopLogo(files[0]);
-    } else if (type === "banner") {
-      setShopBanner(files[0]);
     } else {
-      setShopPhotos(files[0]);
+      setShopBanner(files[0]);
     }
   };
 
-
-  // CUISINES ADD
-
+  // eslint-disable-next-line consistent-return
   const addNewCuisine = (item) => {
-    // console.log({ item });
-    setSelectedCuisines([...selectedCuisines, item]);
+    if (item) {
+      const isExist = selectedCuisines.find((cuisine) => cuisine._id === item._id);
+      if (isExist) {
+        return successMsg('Cuisine already added');
+      }
+      setSelectedCuisines([...selectedCuisines, item]);
+    }
   };
 
   // CUISINE REMOVE
-
   const handleCuisineDelete = (index) => {
-    let list = [...selectedCuisines];
-    list.splice(index,1)
-    setSelectedCuisines(list)
+    const list = [...selectedCuisines];
+    list.splice(index, 1);
+    setSelectedCuisines(list);
   };
 
-  const warningMessage = (message) =>{
-    toast.warn(message, {
-      // position: "bottom-right",
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  }
+  const tagsQuery = useQuery(
+    [
+      `tags-cusines-${seller?.sellerType}`,
+      {
+        shopType: seller?.sellerType,
+        status: 'active',
+      },
+    ],
+    () =>
+      AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
+        params: {
+          page: 1,
+          pageSize: 500,
+          sortBy: 'asc',
+          shopType: seller?.sellerType,
+          status: 'active',
+        },
+      }),
+    {
+      enabled: (id && !!shop?._id) || !id,
+      onSuccess: (data) => {
+        if (id) {
+          setTags(data?.data?.tags?.filter((item) => shop?.tagsId?.includes(item?._id)) || []);
+        }
+      },
+    }
+  );
 
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={id ? "Edit" : "Add"}
-              title="Shop"
-              // loading={loading}
-              // callList={callCarList}
-              isRefresh={false}
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb
+            maintitle="Lyxa"
+            breadcrumbItem={id ? 'Edit' : 'Add'}
+            title={id ? shopName : 'Shop'}
+            isRefresh={false}
+          />
 
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col lg={6}>
-                    <Autocomplete
-                      className="cursor-pointer"
-                      // disabled={id ? true : false}
-                      value={seller}
-                      onChange={(event, newValue) => {
-                        setSeller(newValue);
-                        // console.log("new", newValue);
-                      }}
-                      getOptionLabel={(option, index) =>
-                        option.name ? option.name : ""
-                      }
-                      isOptionEqualToValue={
-                        (option, value) => option?._id == value?._id
-                        // console.log({value})
-                      }
-                      inputValue={searchSellerKey}
-                      onInputChange={(event, newInputValue) => {
-                        setSearchSellerKey(newInputValue);
-                        // console.log("input value", newInputValue);
-                      }}
-                      id="controllable-states-demo"
-                      options={sellers.length > 0 ? sellers : []}
-                      sx={{ width: "100%" }}
-                      renderInput={(params, index) => (
-                        <TextField {...params} label="Select a Seller" />
-                      )}
-                      renderOption={(props, option) => (
-                        <Box
-                          component="li"
-                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                          {...props}
-                          key={option._id}
-                        >
-                          <img
-                            loading="lazy"
-                            width="60"
-                            src={option.profile_photo}
-                            alt=""
-                          />
-                          {option.name}
-                        </Box>
-                      )}
-                    />
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardBody>
+          <Card>
+            <CardBody>
+              <Form onSubmit={submitShop}>
                 <Row className="pb-3 ">
                   <div className="mb-3">
                     <h5>Shop Informations</h5>
                     <hr />
                   </div>
                   <Col lg={6}>
+                    <div className="mb-4">
+                      <Autocomplete
+                        className="cursor-pointer"
+                        disabled={!!(id || searchParams.get('sellerId') || account_type === 'seller')}
+                        value={seller || null}
+                        onChange={(event, newValue) => {
+                          setSeller(newValue);
+                        }}
+                        getOptionLabel={(option) => option.company_name}
+                        isOptionEqualToValue={(option, value) => option?.company_name === value?.company_name}
+                        inputValue={searchSellerKey}
+                        onInputChange={(event, newInputValue) => {
+                          dispatch(updateSellerSearchKey(newInputValue));
+                        }}
+                        id="controllable-states-demo"
+                        options={sellers.length > 0 ? sellers : []}
+                        sx={{ width: '100%' }}
+                        renderInput={(params) => <TextField {...params} label="Select a Seller" required />}
+                        renderOption={(props, option) => (
+                          <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props} key={option?._id}>
+                            <img loading="lazy" width="60" src={option?.profile_photo} alt="" />
+                            {option?.company_name}
+                          </Box>
+                        )}
+                      />
+                    </div>
                     <div className="mb-4">
                       <TextField
                         type="text"
@@ -632,49 +577,254 @@ const ShopAdd = () => {
                         onChange={(e) => setShopName(e.target.value)}
                       />
                     </div>
-
                     <div className="mb-4">
                       <TextField
-                        className="form-control"
                         type="time"
+                        className="form-control"
                         id="example-time-input"
+                        label="Start At"
                         required
                         value={shopStartTime}
-                        label="Open At"
                         onChange={(e) => setShopStartTime(e.target.value)}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
                       />
                     </div>
-
                     <div className="mb-4">
                       <TextField
                         type="time"
                         className="form-control"
-                        // id="example-time-input"
+                        id="example-time-input"
                         label="Close At"
                         required
                         value={shopEndTime}
                         onChange={(e) => setShopEndTime(e.target.value)}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
                       />
                     </div>
 
                     <div className="mb-4">
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Status
-                        </InputLabel>
+                      <FormControl fullWidth required>
+                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
                         <Select
+                          required
                           id="demo-simple-select"
                           value={shopStatus}
                           onChange={(e) => setShopStatus(e.target.value)}
                           label="Status"
                         >
-                          {shopStatusOptions2.map((item, index) => (
+                          {statusOptions2.map((item, index) => (
                             <MenuItem key={index} value={item.value}>
                               {item.label}
                             </MenuItem>
                           ))}
                         </Select>
                       </FormControl>
+                    </div>
+
+                    <div className="mb-4">
+                      <PlacesAutocomplete
+                        value={selectedAddress}
+                        onChange={handleAddressChange}
+                        onSelect={handleAddressSelect}
+                        onError={(error) => {
+                          console.log(error);
+                        }}
+                        clearItemsOnError
+                        shouldFetchSuggestions={selectedAddress.length > 3}
+                        googleCallbackName="myCallbackFunc"
+                      >
+                        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                          <div>
+                            <TextField
+                              {...getInputProps({
+                                placeholder: 'Search Places ...',
+                                className: 'location-search-input',
+                              })}
+                              type="text"
+                              required
+                              id="outlined-required"
+                              label="Address"
+                              className="form-control"
+                              value={selectedAddress}
+                            />
+                            <div
+                              className="autocomplete-dropdown-container"
+                              style={{
+                                fontSize: '14px',
+                                fontFamily: 'emoji',
+                                color: 'black',
+                              }}
+                            >
+                              {loading && <div>Loading...</div>}
+                              {suggestions.map((suggestion) => {
+                                const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item';
+                                const style = suggestion.active
+                                  ? {
+                                      backgroundColor: '#fafafa',
+                                      cursor: 'pointer',
+                                    }
+                                  : {
+                                      backgroundColor: '#ffffff',
+                                      cursor: 'pointer',
+                                    };
+                                return (
+                                  <div
+                                    {...getSuggestionItemProps(suggestion, {
+                                      className,
+                                      style,
+                                    })}
+                                    key={Math.random()}
+                                  >
+                                    <i className="ti-location-pin me-1" style={{ color: 'black' }} />
+                                    <span>{suggestion.description}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </PlacesAutocomplete>
+                    </div>
+
+                    <div className="mb-4">
+                      <TextField
+                        className="form-control"
+                        type="number"
+                        placeholder="Enter Zip Code"
+                        required
+                        label="Zip Code"
+                        value={pinCode}
+                        onChange={(e) => setPinCode(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <FormControl required fullWidth>
+                        <InputLabel id="demo-simple-select-label">Delivery Type</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={deliveryType}
+                          onChange={(e) => {
+                            setDeliveryType(e.target.value);
+                            setDeliveryFee(0);
+                          }}
+                          label="Delivery  Type"
+                        >
+                          <MenuItem value="self">Self</MenuItem>
+                          <MenuItem value="drop">Drop</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+
+                    {deliveryType === 'self' && (
+                      <div className="mb-4">
+                        <TextField
+                          type="number"
+                          name="deliveryFee"
+                          className="form-control"
+                          placeholder="Enter delivery fee"
+                          required
+                          label="Delivery Fee"
+                          value={deliveryFee}
+                          onChange={(e) => setDeliveryFee(e.target.value)}
+                        />
+                      </div>
+                    )}
+                    <div className="mb-4">
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="outlined-basic"
+                        label="Account Number"
+                        variant="outlined"
+                        placeholder="Enter Account Number"
+                        value={accountNum}
+                        onChange={(e) => setAccountNum(e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="outlined-basic"
+                        label="Account Name"
+                        variant="outlined"
+                        placeholder="Enter Account Name"
+                        value={accountName}
+                        onChange={(e) => setAccountName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <FormControl sx={{ width: '100%' }}>
+                      <InputLabel>Select Payment Options</InputLabel>
+                      <Select
+                        multiple
+                        value={paymentOption}
+                        onChange={handlePaymentTypeChange}
+                        input={<OutlinedInput label="Select Payment Type" />}
+                        renderValue={(selected) => {
+                          const showValue = [];
+                          selected.forEach((seletedItem) => {
+                            showValue.push(shopPaymentOptions.find((item) => item.value === seletedItem).label);
+                          });
+                          return showValue.join(', ');
+                        }}
+                      >
+                        {shopPaymentOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            <Checkbox checked={paymentOption.indexOf(option.value) > -1} />
+                            <ListItemText primary={option.label} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Col>
+                  <Col lg={6} className="mt-4 mt-lg-0">
+                    <div className="mb-4">
+                      <TextField
+                        type="email"
+                        name="email"
+                        className="form-control"
+                        placeholder="Enter Shop Email"
+                        required
+                        label="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <TextField
+                        id="password"
+                        label={`${id ? 'New Password' : 'Password'}`}
+                        variant="outlined"
+                        style={{ width: '100%' }}
+                        autoComplete="off"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        required={!id}
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <TextField
+                        type="number"
+                        name="phone"
+                        className="form-control"
+                        placeholder="Enter Shop phone"
+                        required
+                        label="Phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                      />
                     </div>
 
                     <div className="mb-4">
@@ -689,191 +839,44 @@ const ShopAdd = () => {
                       />
                     </div>
 
-          
-                        <div className="mb-4">
-                          <PlacesAutocomplete
-                            value={selectedAddress}
-                            onChange={handleAddressChange}
-                            onSelect={handleAddressSelect}
-                            onError={(error) => {
-                              console.log(error);
-                            }}
-                            clearItemsOnError={true}
-                            shouldFetchSuggestions={selectedAddress.length > 3}
-                          >
-                            {({
-                              getInputProps,
-                              suggestions,
-                              getSuggestionItemProps,
-                              loading,
-                            }) => (
-                              <div>
-                                <TextField
-                                  {...getInputProps({
-                                    placeholder: "Search Places ...",
-                                    className: "location-search-input",
-                                  })}
-                                  type="text"
-                                  required
-                                  id="outlined-required"
-                                  label="Address"
-                                  className="form-control"
-                                  value={selectedAddress}
-                                />
-                                <div
-                                  className="autocomplete-dropdown-container"
-                                  style={{
-                                    fontSize: "14px",
-                                    fontFamily: "emoji",
-                                    color: "black",
-                                  }}
-                                >
-                                  {loading && <div>Loading...</div>}
-                                  {suggestions.map((suggestion, index) => {
-                                    const className = suggestion.active
-                                      ? "suggestion-item--active"
-                                      : "suggestion-item";
-
-                                    // inline style for demonstration purpose
-                                    const style = suggestion.active
-                                      ? {
-                                          backgroundColor: "#fafafa",
-                                          cursor: "pointer",
-                                        }
-                                      : {
-                                          backgroundColor: "#ffffff",
-                                          cursor: "pointer",
-                                        };
-                                    return (
-                                      <div
-                                        // style={{padding: "20px 0px !important"}}
-                                        {...getSuggestionItemProps(suggestion, {
-                                          className,
-                                          style,
-                                        })}
-                                        key={index}
-                                      >
-                                        <i
-                                          className="ti-location-pin me-1"
-                                          style={{ color: "black" }}
-                                        />
-                                        <span>{suggestion.description}</span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                          </PlacesAutocomplete>
-                        </div>
-
-                        <div className="mb-4">
-                          <TextField
-                            className="form-control"
-                            type="number"
-                            placeholder="Enter Pin Code"
-                            required
-                            label="Pin Code"
-                            value={pinCode}
-                            onChange={(e) => setPinCode(e.target.value)}
-                          />
-                        </div>
-                  
-             
-                      {!id && <div className="mb-4">
-                        <FormControl required fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Free Delivery
-                          </InputLabel>
-                          <Select
-                            id="demo-simple-select"
-                            value={freeDelivery}
-                            onChange={(e) => setFreeDelivery(e.target.value)}
-                            label="Free Delivery"
-                          >
-                            {productVisibility.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </div>}
-                 
-                  </Col>
-                  <Col lg={6} className="mt-4 mt-lg-0">
-                    <div className="mb-4">
-                      <FormControl required fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Shop Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={shopType}
-                          onChange={(e) => setShopType(e.target.value)}
-                          label="Shop Type"
-                        >
-                          {shopTypeOptions2.map((item, index) => (
-                            <MenuItem key={index} value={item.value}>
-                              {item.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-
-                    {shopType == "food" && (
-                      <div className="mb-4">
-                        <FormControl required fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Food Type
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={foodType}
-                            onChange={(e) => setFoodType(e.target.value)}
-                            label="Food Type"
-                          >
-                            {foodTypeOptions.map((item, index) => (
-                              <MenuItem key={index} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </div>
-                    )}
-
                     <div className="mb-4">
                       <div>
-                        <div className="d-flex justify-content-end">
-                          {foodType?.value == "restaurants" && (
-                            <span style={{ color: "red" }}>
-                              Must add one cuisine
-                            </span>
+                        <Autocomplete
+                          className="cursor-pointer"
+                          value={tags || null}
+                          onChange={(event, newValue) => {
+                            handleTagChange(newValue);
+                          }}
+                          disabled={!seller}
+                          getOptionLabel={(option) => (option.name ? option.name : '')}
+                          isOptionEqualToValue={(option, value) => option === value}
+                          inputValue={searchKey}
+                          onInputChange={(event, newInputValue) => {
+                            dispatch(updateShopSearchKey(newInputValue));
+                          }}
+                          id="controllable-states-demo"
+                          options={tagsQuery.data?.data?.tags?.filter((item) => item?.type === 'tag') || []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => <TextField {...params} label="Select a Tag" name="tag" />}
+                          renderOption={(props, option) => (
+                            <Box
+                              component="li"
+                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                              {...props}
+                              key={option?._id}
+                            >
+                              {option?.name}
+                            </Box>
                           )}
-                        </div>
-                        <TextField
-                          value={tags.value}
-                          placeholder="Type Tag Name and press `Enter`..."
-                          onKeyDown={handleTagAdd}
-                          onChange={handleTagChange}
-                          className="form-control"
-                          label="tag"
                         />
                       </div>
-                      {tags.items.length > 0 && (
+
+                      {tags.length > 0 && (
                         <Paper className="mt-4 p-3">
-                          {tags.items.map((item, index) => (
+                          {tags.map((item, index) => (
                             <div className="tag__wrapper" key={index}>
-                              {item}
-                              <button
-                                type="button"
-                                className="button"
-                                onClick={() => handleTagDelete(item)}
-                              >
+                              {item?.name}
+                              <button type="button" className="button" onClick={() => handleTagDelete(item)}>
                                 &times;
                               </button>
                             </div>
@@ -884,32 +887,9 @@ const ShopAdd = () => {
 
                     <div className="mb-4">
                       <FormControl required fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Delivery Type
-                        </InputLabel>
+                        <InputLabel id="demo-simple-select-label">Live Status</InputLabel>
                         <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                         
-                          value={delivery}
-                          onChange={(e) => setDelivery(e.target.value)}
-                          label="Delivery  Type"
-                        >
-                          {shopDeliveryOptions.map((item, index) => (
-                            <MenuItem key={index} value={item.value}>
-                              {item.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-
-                    <div className="mb-4">
-                      <FormControl required fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Live Status
-                        </InputLabel>
-                        <Select
+                          required
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
                           value={liveStatus}
@@ -925,59 +905,75 @@ const ShopAdd = () => {
                       </FormControl>
                     </div>
 
-                    {(foodType == "restaurants" && !id) && (
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          value={isCuisine}
-                          id="flexCheckDefault"
-                          onChange={(e) => setIsCuisine(e.target.checked)}
-                        />
-                        <label
-                          className="form-check-label ms-1"
-                          style={{ fontSize: "16px" }}
-                          htmlFor="flexCheckDefault"
+                    <div className="mb-4">
+                      <FormControl required fullWidth>
+                        <InputLabel id="demo-simple-select-label">Price Range</InputLabel>
+                        <Select
+                          required
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={expensive}
+                          onChange={(e) => setExpensive(e.target.value)}
+                          label="Price range"
                         >
-                          Is Cuisine?
-                        </label>
-                      </div>
-                    )}
-
-                    {isCuisine && (
+                          {priceRangeOptions.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                              {item.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="outlined-basic"
+                        label="Bank Name"
+                        variant="outlined"
+                        placeholder="Enter Bank Name"
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="outlined-basic"
+                        label="Order Capacity"
+                        variant="outlined"
+                        placeholder="Enter Order Capacity"
+                        value={orderCapacity}
+                        type="number"
+                        onChange={(e) => setOrderCapacity(e.target.value)}
+                        required
+                      />
+                    </div>
+                    {seller?.sellerType === 'food' && (
                       <div className="mb-3">
                         <Autocomplete
                           className="cursor-pointer"
                           onChange={(event, newValue) => {
                             addNewCuisine(newValue);
-                            // console.log("new", newValue);
                           }}
-                          getOptionLabel={(option, index) =>
-                            option.name ? option.name : ""
-                          }
-                          isOptionEqualToValue={
-                            (option, value) => option._id == value._id
-                            // console.log({value})
-                          }
+                          getOptionLabel={(option) => (option.name ? option.name : '')}
+                          isOptionEqualToValue={(option, value) => option._id === value._id}
                           inputValue={searchCuisineKey}
                           onInputChange={(event, newInputValue) => {
                             setSearchCuisineKey(newInputValue);
-                            // console.log("input value", newInputValue);
                           }}
                           id="controllable-states-demo"
-                          options={cuisines.length > 0 ? cuisines : []}
-                          sx={{ width: "100%" }}
-                          renderInput={(params, index) => (
-                            <TextField {...params} label="Select Cuisine" />
-                          )}
+                          options={tagsQuery.data?.data?.tags?.filter((item) => item?.type === 'cuisine') || []}
+                          sx={{ width: '100%' }}
+                          renderInput={(params) => <TextField {...params} label="Select Cuisine" />}
                           renderOption={(props, option) => (
                             <Box
                               component="li"
-                              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
                               {...props}
                               key={option._id}
                             >
-                              {option.name}
+                              {option?.name}
                             </Box>
                           )}
                         />
@@ -986,12 +982,8 @@ const ShopAdd = () => {
                           <Paper className="mt-4 p-3">
                             {selectedCuisines.map((item, index) => (
                               <div className="tag__wrapper" key={index}>
-                                {item.name}
-                                <button
-                                  type="button"
-                                  className="button"
-                                  onClick={() => handleCuisineDelete(index)}
-                                >
+                                {item?.name}
+                                <button type="button" className="button" onClick={() => handleCuisineDelete(index)}>
                                   &times;
                                 </button>
                               </div>
@@ -1000,323 +992,232 @@ const ShopAdd = () => {
                         )}
                       </div>
                     )}
+
+                    {seller?.sellerType === 'food' && (
+                      <FormControl sx={{ width: '100%' }}>
+                        <InputLabel>Select Dietary Type</InputLabel>
+                        <Select
+                          multiple
+                          value={dietaryType}
+                          onChange={handleDietryChange}
+                          input={<OutlinedInput label="Select Dietary Type" />}
+                          renderValue={(selected) => {
+                            const showValue = [];
+                            selected.forEach((seletedItem) => {
+                              showValue.push(shopDietaryOptions.find((item) => item.value === seletedItem).label);
+                            });
+                            return showValue.join(', ');
+                          }}
+                        >
+                          {shopDietaryOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              <Checkbox checked={dietaryType.indexOf(option.value) > -1} />
+                              <ListItemText primary={option.label} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
                   </Col>
                 </Row>
 
+                {/* IMAGES */}
                 <Row className="mt-4">
                   <Col xl={6}>
                     <Label>Shop Logo</Label>
                     <div className="mb-5">
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles, "logo");
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                      <Dropzone
+                        onDrop={(acceptedFiles) => {
+                          handleAcceptedFiles(acceptedFiles, 'logo');
+                        }}
+                        accept=".jpg, .jpeg, .png"
+                        maxSize={1000 * 1000}
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div className="dropzone">
+                            <div
+                              className="dz-message needsclick"
+                              {...getRootProps()}
+                              // onClick={() => setmodal_fullscreen(true)}
+                            >
+                              <input {...getInputProps()} />
+                              <div className="mb-3">
+                                <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                              </div>
+                              <h4>Drop files here or click to upload.</h4>
+                              <small
+                                style={{
+                                  fontSize: '16px',
+                                  fontWeight: 'bold',
+                                }}
                               >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
+                                * Max Image size allowed Id 1 Mb.
+                              </small>
                             </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {shopLogo && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        shopLogo.preview
-                                          ? shopLogo.preview
-                                          : shopLogo
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {shopLogo.name
-                                        ? shopLogo.name
-                                        : "Shop Logo"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {shopLogo.formattedSize &&
-                                          shopLogo.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
+                          </div>
+                        )}
+                      </Dropzone>
+                      <div className="dropzone-previews mt-3" id="file-previews">
+                        {shopLogo && (
+                          <Card
+                            className="
+                          mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
+                          "
+                          >
+                            <div className="p-2">
+                              <Row className="align-items-center position-relative">
+                                <Col className="col-auto">
+                                  <img
+                                    data-dz-thumbnail=""
+                                    // height="80"
                                     style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
+                                      maxWidth: '80px',
                                     }}
-                                  >
-                                    <i
-                                      onClick={() => setShopLogo(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          )}
-                        </div>
-                      </Form>
+                                    className=" bg-light"
+                                    src={shopLogo.preview ? shopLogo.preview : shopLogo}
+                                    alt=""
+                                  />
+                                </Col>
+                                <Col>
+                                  <Link to="#" className="text-muted font-weight-bold">
+                                    {shopLogo.name ? shopLogo.name : 'Shop Logo'}
+                                  </Link>
+                                  <p className="mb-0">
+                                    <strong>{shopLogo.formattedSize && shopLogo.formattedSize}</strong>
+                                  </p>
+                                </Col>
+
+                                <div
+                                  className="position-absolute"
+                                  style={{
+                                    left: '0px',
+                                    top: '0px',
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                  }}
+                                >
+                                  <i
+                                    onClick={() => setShopLogo(null)}
+                                    className="mdi mdi-delete text-danger "
+                                    style={{
+                                      fontSize: '25px',
+                                      cursor: 'pointer',
+                                    }}
+                                  ></i>
+                                </div>
+                              </Row>
+                            </div>
+                          </Card>
+                        )}
+                      </div>
                     </div>
                   </Col>
                   <Col xl={6}>
                     <Label>Shop Banner</Label>
                     <div className="mb-5">
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles, "banner");
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
+                      <Dropzone
+                        onDrop={(acceptedFiles) => {
+                          handleAcceptedFiles(acceptedFiles, 'banner');
+                        }}
+                        accept=".jpg, .jpeg, .png"
+                        maxSize={1000 * 1000}
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div className="dropzone">
+                            <div className="dz-message needsclick" {...getRootProps()}>
+                              <input {...getInputProps()} />
+                              <div className="mb-3">
+                                <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                              </div>
+                              <h4>Drop files here or click to upload.</h4>
+                              <small
+                                style={{
+                                  fontSize: '16px',
+                                  fontWeight: 'bold',
+                                }}
                               >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
+                                * Max Image size allowed Id 1 Mb.
+                              </small>
                             </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {shopBanner && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        shopBanner.preview
-                                          ? shopBanner.preview
-                                          : shopBanner
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {shopBanner.name
-                                        ? shopBanner.name
-                                        : "Shop Banner"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {shopBanner.formattedSize &&
-                                          shopBanner.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
+                          </div>
+                        )}
+                      </Dropzone>
+                      <div className="dropzone-previews mt-3" id="file-previews">
+                        {shopBanner && (
+                          <Card
+                            className="
+                          mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
+                          "
+                          >
+                            <div className="p-2">
+                              <Row className="align-items-center position-relative">
+                                <Col className="col-auto">
+                                  <img
+                                    data-dz-thumbnail=""
                                     style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
+                                      maxWidth: '80px',
                                     }}
-                                  >
-                                    <i
-                                      onClick={() => setShopBanner(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          )}
-                        </div>
-                      </Form>
-                    </div>
-                  </Col>
-                </Row>
+                                    className=" bg-light"
+                                    src={shopBanner.preview ? shopBanner.preview : shopBanner}
+                                    alt=""
+                                  />
+                                </Col>
+                                <Col>
+                                  <Link to="#" className="text-muted font-weight-bold">
+                                    {shopBanner.name ? shopBanner.name : 'Shop Banner'}
+                                  </Link>
+                                  <p className="mb-0">
+                                    <strong>{shopBanner.formattedSize && shopBanner.formattedSize}</strong>
+                                  </p>
+                                </Col>
 
-                <Row>
-                  <Col xl={6}>
-                    <Label>Shop Photos</Label>
-                    <div className="mb-5">
-                      <Form>
-                        <Dropzone
-                          onDrop={(acceptedFiles) => {
-                            handleAcceptedFiles(acceptedFiles, "photos");
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                <div
+                                  className="position-absolute"
+                                  style={{
+                                    left: '0px',
+                                    top: '0px',
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                  }}
+                                >
+                                  <i
+                                    onClick={() => setShopBanner(null)}
+                                    className="mdi mdi-delete text-danger "
+                                    style={{
+                                      fontSize: '25px',
+                                      cursor: 'pointer',
+                                    }}
+                                  ></i>
                                 </div>
-                                <h4>Drop files here or click to upload.</h4>
-                              </div>
+                              </Row>
                             </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {shopPhotos && (
-                            <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
-                              <div className="p-2">
-                                <Row className="align-items-center position-relative">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      // height="80"
-                                      style={{
-                                        maxWidth: "80px",
-                                      }}
-                                      className=" bg-light"
-                                      src={
-                                        shopPhotos.preview
-                                          ? shopPhotos.preview
-                                          : shopPhotos
-                                      }
-                                      alt=""
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {shopPhotos.name
-                                        ? shopPhotos.name
-                                        : "Shop Photos"}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>
-                                        {shopPhotos.formattedSize &&
-                                          shopPhotos.formattedSize}
-                                      </strong>
-                                    </p>
-                                  </Col>
-
-                                  <div
-                                    className="position-absolute"
-                                    style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                    }}
-                                  >
-                                    <i
-                                      onClick={() => setShopPhotos(null)}
-                                      className="mdi mdi-delete text-danger "
-                                      style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
-                                      }}
-                                    ></i>
-                                  </div>
-                                </Row>
-                              </div>
-                            </Card>
-                          )}
-                        </div>
-                      </Form>
+                          </Card>
+                        )}
+                      </div>
                     </div>
                   </Col>
                 </Row>
 
                 <div className="my-5 d-flex justify-content-center">
-                  <Button
-                    disabled={loading || isLoading}
-                    onClick={submitShop}
-                    color="primary"
-                    className="px-5"
-                  >
+                  <Button disabled={loading || isLoading} type="submit" color="primary" className="px-5">
                     {loading || isLoading ? (
-                      <Spinner
-                        animation="border"
-                        variant="info"
-                        size="sm"
-                      ></Spinner>
+                      <Spinner animation="border" variant="info" size="sm"></Spinner>
                     ) : id ? (
-                      "Edit"
+                      'Save'
                     ) : (
-                      "Add"
+                      'Add'
                     )}
                   </Button>
                 </div>
-              </CardBody>
-            </Card>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+              </Form>
+            </CardBody>
+          </Card>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
-
-
+}
 
 export default ShopAdd;

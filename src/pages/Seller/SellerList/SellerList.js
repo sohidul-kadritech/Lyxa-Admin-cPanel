@@ -1,53 +1,36 @@
-import React, { useEffect, useState } from "react";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
+import React, { useEffect, useState } from 'react';
+import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
+
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
+import Lightbox from 'react-image-lightbox';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import Select from 'react-select';
+import noPhoto from '../../../assets/images/noPhoto.jpg';
+import { shopTypeOptions, sortByOptions, statusOptions } from '../../../assets/staticData';
+import AppPagination from '../../../components/AppPagination';
+import CircularLoader from '../../../components/CircularLoader';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+import Search from '../../../components/Search';
+import TableImgItem from '../../../components/TableImgItem';
+import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
 import {
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "reactstrap";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Tooltip from "@mui/material/Tooltip";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  deleteSeller,
   getAllSeller,
   setSellerStatusFalse,
   updateSellerSearchKey,
   updateSellerSortByKey,
   updateSellerStatusKey,
-  updateSellerSubTypeKey,
   updateSellerType,
-} from "../../../store/Seller/sellerAction";
-import AppPagination from "../../../components/AppPagination";
-import Lightbox from "react-image-lightbox";
-import { useHistory } from "react-router-dom";
-import SweetAlert from "react-bootstrap-sweetalert";
-import styled from "styled-components";
-import {
-  sellerStatusOptions,
-  sellerSubTypeOptions,
-  sellerTypeOptions,
-  shopTypeOptions,
-  sortByOptions,
-} from "../../../assets/staticData";
-import Select from "react-select";
-import Search from "../../../components/Search";
+} from '../../../store/Seller/sellerAction';
 
-const SellerList = () => {
+function SellerList() {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const [isZoom, setIsZoom] = useState(false);
-  const [sellerImg, setSellerImg] = useState("");
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
+  const [sellerImg] = useState('');
 
   const {
     loading,
@@ -60,257 +43,187 @@ const SellerList = () => {
     searchKey,
     statusKey,
     typeKey,
-    subTypeKey,
   } = useSelector((state) => state.sellerReducer);
-
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
   useEffect(() => {
     dispatch(setSellerStatusFalse());
   }, []);
-
-  useEffect(() => {
-    if(sortByKey || searchKey || statusKey || typeKey || subTypeKey){
-      
-    callSellerList(true);
-    }else{
-      callSellerList()
-    }
-  },[sortByKey, searchKey, statusKey, typeKey, subTypeKey]);
 
   const callSellerList = (refresh = false) => {
     dispatch(getAllSeller(refresh));
   };
 
+  useEffect(() => {
+    if (sortByKey || searchKey || statusKey || typeKey) {
+      callSellerList(true);
+    } else {
+      callSellerList();
+    }
+  }, [sortByKey, searchKey, statusKey, typeKey]);
+
+  const handleMenu = (menu, item) => {
+    if (menu === 'Edit') {
+      history.push(`/seller/edit/${item._id}`);
+    }
+  };
+
+  const goToDetails = (id) => {
+    history.push(`/seller/details/${id}`);
+  };
 
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={"List"}
-              title="Seller"
-              loading={loading}
-              callList={callSellerList}
-              isAddNew={true}
-              addNewRoute="seller/add"
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb
+            maintitle="Lyxa"
+            breadcrumbItem="List"
+            title="Seller"
+            loading={loading}
+            callList={callSellerList}
+            isAddNew={adminType === 'admin' && account_type === 'admin'}
+            addNewRoute="seller/add"
+          />
+
+          {isZoom ? (
+            <Lightbox
+              mainSrc={sellerImg}
+              enableZoom
+              onCloseRequest={() => {
+                setIsZoom(!isZoom);
+              }}
             />
+          ) : null}
 
-            {isZoom ? (
-              <Lightbox
-                mainSrc={sellerImg}
-                enableZoom={true}
-                onCloseRequest={() => {
-                  setIsZoom(!isZoom);
-                }}
-              />
-            ) : null}
-
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Sort By</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sortByOptions}
-                        classNamePrefix="select2-selection"
-                        value={sortByKey}
-                        onChange={(e) => dispatch(updateSellerSortByKey(e))}
-                      />
-                    </div>
-                  </Col>
-
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Type</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sellerTypeOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={typeKey}
-                        onChange={(e) => dispatch(updateSellerType(e))}
-                        defaultValue={""}
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Status</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sellerStatusOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={statusKey}
-                        onChange={(e) => dispatch(updateSellerStatusKey(e))}
-                        defaultValue={""}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-                <Row className="d-flex justify-content-center">
-                  <Col lg={4}>
-                    <div className="mb-4">
-                      <label className="control-label">Sub Type</label>
-                      <Select
-                        palceholder="Select Status"
-                        options={sellerSubTypeOptions}
-                        classNamePrefix="select2-selection"
-                        required
-                        value={subTypeKey}
-                        onChange={(e) => dispatch(updateSellerSubTypeKey(e))}
-                        defaultValue={""}
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={8}>
-                    <Search dispatchFunc={updateSellerSearchKey} />
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardBody>
-                <Row className="mb-3">
-                  <Col md={3} className="text-end" />
-                </Row>
-                <CardTitle className="h4"> Seller List</CardTitle>
-                <Table
-                  id="tech-companies-1"
-                  className="table table__wrapper table-striped table-bordered table-hover text-center"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>Image</Th>
-                      <Th>Name</Th>
-                      <Th>Email</Th>
-                      <Th>Phone</Th>
-                      <Th>Company Name</Th>
-                      <Th>Status</Th>
-                      <Th>Action</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody style={{ position: "relative" }}>
-                    {sellers.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          className="align-middle"
-                          style={{
-                            fontSize: "15px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          <Th style={{ height: "50px",maxWidth: '150px' }}>
-                   
-                              <img
-                                onClick={() => {
-                                  setIsZoom(true);
-                                  setSellerImg(item.profile_photo);
-                                }}
-                                className="img-fluid cursor-pointer"
-                                alt=""
-                                src={item?.profile_photo}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                }}
-                              />
-                  
-                          </Th>
-
-                          <Td>{item?.name}</Td>
-                          <Td>{item?.email}</Td>
-                          <Td>{item.phone_number}</Td>
-                          <Td>{item.company_name}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>
-                            <div>
-                              <Tooltip title="Edit">
-                                <button
-                                  className="btn btn-success me-0 me-xl-2 button"
-                                  onClick={() =>
-                                    history.push(`/seller/edit/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
-                              </Tooltip>
-                              <Tooltip title="Details">
-                                <button
-                                  className="btn btn-info button me-0 me-xl-2"
-                                  onClick={() =>
-                                    history.push(`/seller/details/${item._id}`)
-                                  }
-                                >
-                                  <i className="fa fa-eye" />
-                                </button>
-                              </Tooltip>
-                            </div>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-                {loading && (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="info" />
+          <Card>
+            <CardBody>
+              <Row>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Sort By</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={sortByOptions}
+                      classNamePrefix="select2-selection"
+                      value={sortByKey}
+                      onChange={(e) => dispatch(updateSellerSortByKey(e))}
+                    />
                   </div>
-                )}
-                {!loading && sellers.length < 1 && (
-                  <div className="text-center">
-                    <h4>No Data!</h4>
-                  </div>
-                )}
-              </CardBody>
-            </Card>
+                </Col>
 
-            <Row>
-              <Col xl={12}>
-                <div className="d-flex justify-content-center">
-                  <AppPagination
-                    paging={paging}
-                    hasNextPage={hasNextPage}
-                    hasPreviousPage={hasPreviousPage}
-                    currentPage={currentPage}
-                    lisener={(page) => dispatch(getAllSeller(true, page))}
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Type</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={shopTypeOptions}
+                      classNamePrefix="select2-selection"
+                      required
+                      value={typeKey}
+                      onChange={(e) => dispatch(updateSellerType(e))}
+                      defaultValue=""
+                    />
+                  </div>
+                </Col>
+                <Col lg={4}>
+                  <div className="mb-4">
+                    <label className="control-label">Status</label>
+                    <Select
+                      palceholder="Select Status"
+                      options={statusOptions}
+                      classNamePrefix="select2-selection"
+                      required
+                      value={statusKey}
+                      onChange={(e) => dispatch(updateSellerStatusKey(e))}
+                      defaultValue=""
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <Row className="d-flex justify-content-center">
+                <Col lg={8}>
+                  <Search
+                    dispatchFunc={updateSellerSearchKey}
+                    placeholder="Search by id or company name or email or phone number or NID"
                   />
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
-  );
-};
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
 
-const SearchWrapper = styled.div`
-  border: 1px solid lightgray;
-  border-radius: 6px;
-  width: 100%;
-  padding: 2px 7px;
-  @media (max-width: 1200px) {
-    width: 100%;
-  }
-  .search__wrapper {
-    /* padding: 7px 10px; */
-    display: flex;
-    align-items: center;
-    i {
-      font-size: 15px;
-    }
-    input {
-      border: none;
-      color: black !important;
-    }
-  }
-`;
+          <Card>
+            <CardBody>
+              <Table id="tech-companies-1" className="table table__wrapper  table-hover text-center">
+                <Thead>
+                  <Tr>
+                    <Th>Company</Th>
+                    <Th>Email</Th>
+                    <Th>Phone</Th>
+                    <Th>Status</Th>
+                    <Th>Created At</Th>
+                    <Th>Action</Th>
+                  </Tr>
+                </Thead>
+                <Tbody style={{ position: 'relative' }}>
+                  {sellers.map((item) => (
+                    <Tr
+                      key={Math.random()}
+                      className="align-middle cursor-pointer"
+                      style={{
+                        fontSize: '15px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      <Th className="d-flex" onClick={() => goToDetails(item?._id)}>
+                        <TableImgItem
+                          img={`${item?.profile_photo ? item?.profile_photo : noPhoto}`}
+                          altImg={RoomOutlinedIcon}
+                          name={item?.company_name}
+                          id={item?.autoGenId}
+                        />
+                      </Th>
+
+                      <Td onClick={() => goToDetails(item?._id)}>{item?.email}</Td>
+                      <Td onClick={() => goToDetails(item?._id)}>{item?.phone_number}</Td>
+                      <Td onClick={() => goToDetails(item?._id)}>
+                        <div className={`${item?.status === 'active' ? 'active-status' : 'inactive-status'}`}>
+                          {`${item?.status === 'active' ? 'Active' : 'Inactive'}`}
+                        </div>
+                      </Td>
+                      <Td onClick={() => goToDetails(item?._id)}>{new Date(item?.createdAt).toLocaleDateString()}</Td>
+                      <Td>
+                        <ThreeDotsMenu handleMenuClick={(menu) => handleMenu(menu, item)} menuItems={['Edit']} />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              {loading && <CircularLoader />}
+              {!loading && sellers.length < 1 && (
+                <div className="text-center">
+                  <h4>No Data!</h4>
+                </div>
+              )}
+            </CardBody>
+          </Card>
+
+          <Row>
+            <Col xl={12}>
+              <div className="d-flex justify-content-center">
+                <AppPagination
+                  paging={paging}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  currentPage={currentPage}
+                  lisener={(page) => dispatch(getAllSeller(true, page))}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </GlobalWrapper>
+  );
+}
 
 export default SellerList;

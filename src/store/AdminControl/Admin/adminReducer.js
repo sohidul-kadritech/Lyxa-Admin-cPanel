@@ -1,10 +1,14 @@
-import * as actionType from "../../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../../actionType';
 
 const initialState = {
   loading: false,
   admins: [],
   error: null,
   status: false,
+  sellerCredentials: [],
+  shopCredentials: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -68,11 +72,7 @@ const adminReducer = (state = initialState, action) => {
         status: false,
       };
     case actionType.DELETE_ADMIN_REQUEST_SUCCESS:
-      let index = state.admins
-        .map((x) => {
-          return x._id;
-        })
-        .indexOf(payload?._id);
+      const index = state.admins.map((x) => x._id).indexOf(payload?._id);
       state.admins.splice(index, 1);
 
       return {
@@ -99,9 +99,7 @@ const adminReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_ADMIN_REQUEST_SUCCESS:
-      const updateData = state.admins.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const updateData = state.admins.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -124,6 +122,146 @@ const adminReducer = (state = initialState, action) => {
       return {
         ...state,
         status: false,
+      };
+
+    // ADD SELLER CREDENTIAL
+
+    case actionType.ADD_SELLER_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ADD_SELLER_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.ADD_SELLER_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.GET_SELLER_CREDENTIALS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.GET_SELLER_CREDENTIALS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        sellerCredentials: payload,
+      };
+
+    case actionType.GET_SELLER_CREDENTIALS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        sellerCredentials: payload,
+      };
+
+    case actionType.REMOVE_SELLER_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    // ADD SHOP CREDENTIAL
+
+    case actionType.ADD_SHOP_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ADD_SHOP_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+      };
+
+    case actionType.ADD_SHOP_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.GET_SHOP_CREDENTIALS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.GET_SHOP_CREDENTIALS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shopCredentials: payload,
+      };
+
+    case actionType.GET_SHOP_CREDENTIALS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
+
+    case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        shopCredentials: payload,
+      };
+
+    case actionType.REMOVE_SHOP_CREDENTIAL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
 
     default:

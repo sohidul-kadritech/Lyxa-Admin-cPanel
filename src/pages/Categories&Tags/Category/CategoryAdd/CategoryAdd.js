@@ -1,181 +1,142 @@
-import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Form,
-  Label,
-  Row,
-  Spinner,
-} from "reactstrap";
-import Breadcrumb from "../../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../../components/GlobalWrapper";
-import Select from "react-select";
-import Dropzone from "react-dropzone";
-import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import { addCategory } from "../../../../store/Category/categoryAction";
-import { useParams, useHistory, Link } from "react-router-dom";
-import requestApi from "./../../../../network/httpRequest";
+/* eslint-disable max-len */
+import React, { useEffect, useState } from 'react';
+import Dropzone from 'react-dropzone';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import Select from 'react-select';
+import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
+import Breadcrumb from '../../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../../components/GlobalWrapper';
+import requestApi from '../../../../network/httpRequest';
+import { addCategory, editCategory } from '../../../../store/Category/categoryAction';
 
-import { SINGLE_CATEGORY } from "../../../../network/Api";
-import { editCategory } from "./../../../../store/Category/categoryAction";
-import { IMAGE_UPLOAD } from './../../../../network/Api';
-import { shopTypeOptions2 } from "../../../../assets/staticData";
+import { shopTypeOptions2 } from '../../../../assets/staticData';
+import formatBytes from '../../../../common/imageFormatBytes';
+import { callApi } from '../../../../components/SingleApiCall';
+import { successMsg } from '../../../../helpers/successMsg';
+import { IMAGE_UPLOAD, SINGLE_CATEGORY } from '../../../../network/Api';
 
-const CategoryAdd = () => {
-  
-
+function CategoryAdd() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
 
-  const { loading, status, categories } = useSelector(
-    (state) => state.categoryReducer
-  );
+  const { loading, status, categories } = useSelector((state) => state.categoryReducer);
 
-  const [name, setName] = useState("");
+  const { account_type, shopType = '' } = useSelector((store) => store.Login.admin);
+
+  const [name, setName] = useState('');
   const [type, setType] = useState(null);
-  const [slug, setSlug] = useState("");
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (account_type === 'shop' && !id) {
+      const findType = shopTypeOptions2.find((item) => item.value === shopType);
+      setType(findType);
+    }
+  }, [account_type]);
+
+  // SET DATA TO STATE
+  const setCategoryData = (item) => {
+    const {
+      name,
+      type,
+      category: { image },
+    } = item;
+
+    const findTypeObj = shopTypeOptions2.find((x) => x.value === type);
+    setName(name);
+    setType(findTypeObj);
+    setImage(image);
+  };
+
+  useEffect(async () => {
     if (id) {
-      const findCat = categories.find((item) => item._id == id);
-      // console.log({ findAdmin });
+      const findCat = categories.find((item) => item._id === id);
+
       if (findCat) {
-         setCategoryData(findCat)
-        
+        setCategoryData(findCat);
       } else {
-        callApi(id);
+        const data = await callApi(id, SINGLE_CATEGORY, 'category');
+        if (data) {
+          setCategoryData(data);
+        } else {
+          history.push('/categories/list', { replace: true });
+        }
       }
     }
   }, [id]);
 
-  // CALL API FOR SINGLE ADMIN
-
-  const callApi = async (id) => {
-    const { data } = await requestApi().request(SINGLE_CATEGORY, {
-      params: {
-        id
-      },
-    });
-    // console.log("from api", data);
-
-    if (data.status) {
-      setCategoryData(data.data.category)
+  // SUBMIT DATA
+  const submitData = (url) => {
+    const data = {
+      name,
+      image: url,
+      type: type.value,
+      userType: account_type,
+    };
+    if (id) {
+      dispatch(
+        editCategory({
+          ...data,
+          id,
+        })
+      );
     } else {
-      history.push("/categories/list", { replace: true });
+      dispatch(addCategory(data));
     }
-  };
-
-  // SET DATA TO STATE
-
-  const setCategoryData = (item) => {
-    const { name, type, slug, image } = item;
-
-    const findTypeObj = shopTypeOptions2.find((x) => x.value == type);
-    //  console.log({adminEmail})
-    setName(name);
-    setType(findTypeObj);
-    setSlug(slug);
-    setImage(image)
-  }
-
-  // HANDLE SUBMIT
-
-  const handleSubmit = () => {
-    if (!name || !type || !slug) {
-      return toast.warn("Please Fill Up All Fields", {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-
-    uploadImage()
-
-    
   };
 
   const uploadImage = async () => {
-    
-    if(typeof image === 'string') {
+    if (typeof image === 'string') {
       submitData(image);
-    }else{
+    } else {
       try {
-        setIsLoading(true)
-        let formData = new FormData();
-        formData.append("image", image);
-        // console.log({formData})
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append('image', image);
+
         const { data } = await requestApi().request(IMAGE_UPLOAD, {
-          method: "POST",
+          method: 'POST',
           data: formData,
         });
-        // console.log("image upload", data)
+
+        setIsLoading(false);
         if (data.status) {
-          // submitData(data.data.url);
-          setIsLoading(false)
           submitData(data.data.url);
         } else {
-          console.log(data.error);
+          successMsg(data.error, 'error');
         }
       } catch (error) {
-        console.log(error.message);
+        successMsg(error, 'error');
       }
     }
   };
 
-  // SUBMIT DATA 
-
-  const submitData = (url) =>{
-    const newSlug = slug.split(" ").join("");
-    if (id) {
-      dispatch(
-        editCategory({
-          id,
-          name,
-          slug: newSlug,
-          image: url,
-          type: type.value,
-        })
-      );
-    } else {
-      dispatch(
-        addCategory({
-          name,
-          slug: newSlug,
-          image: url,
-          type: type.value,
-        })
-      );
+  // HANDLE SUBMIT
+  // eslint-disable-next-line consistent-return
+  const handleSubmit = () => {
+    if (!name) {
+      return successMsg('Enter category name', 'error');
     }
-  }
+    if (!type) {
+      return successMsg('Enter category type', 'error');
+    }
+    if (type.value !== 'food' && !image) {
+      return successMsg('Upload Image', 'error');
+    }
 
-  /**
-   * Formats the size
-   */
-   function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
+    if (image) {
+      uploadImage();
+    } else {
+      submitData();
+    }
+  };
 
   // IMAGE
 
-  const handleAcceptedFiles = (files, type) => {
+  const handleAcceptedFiles = (files) => {
     files.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -191,110 +152,92 @@ const CategoryAdd = () => {
       if (id) {
         history.goBack();
       } else {
-        setName("");
-        setSlug("");
-        setType(null);
-        setImage(null)
+        setName('');
+        setType(account_type !== 'shop' ? null : type);
+        setImage(null);
         window.scroll(0, 0);
       }
     }
   }, [status]);
 
+  // HANDLE CHANGE NAME
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem={id ? "Update" : "Add"}
-              title="Category"
-              // loading={loading}
-              // callList={callCarList}
-              isRefresh={false}
-            />
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem={id ? 'Update' : 'Add'} title="Category" isRefresh={false} />
 
-            <Card>
-              <CardBody>
-                <div className="mb-3">
-                  <h5>Category Informations</h5>
-                  <hr />
-                </div>
-                <Row>
-                  <Col lg={6}>
-                    <div>
-                      <Label>Name</Label>
-                      <input
-                        className="form-control"
-                        type="text"
-                        placeholder="Enter Category Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                    </div>
-                  </Col>
+          <Card>
+            <CardBody>
+              <div className="mb-3">
+                <h5>Category Informations</h5>
+                <hr />
+              </div>
+              <Row>
+                <Col lg={6}>
+                  <div>
+                    <Label>Name</Label>
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="Enter Category Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                </Col>
+                {account_type !== 'shop' && account_type !== 'seller' && (
                   <Col lg={6} className="mt-3 mt-lg-0">
                     <Label>Shop Type</Label>
                     <Select
-                      // value={country}
                       onChange={(event) => {
                         setType(event);
                       }}
                       value={type}
-                      defaultValue={""}
+                      defaultValue=""
                       palceholder="Select Shop Type"
                       options={shopTypeOptions2}
                       classNamePrefix="select2-selection"
                       required
                     />
                   </Col>
-                </Row>
+                )}
+              </Row>
 
-                <Row className="mt-3">
-                  <Col lg={6}>
-                    <div>
-                      <Label>Slug</Label>
-                      <input
-                        className="form-control"
-                        type="text"
-                        placeholder="Enter Category Slug"
-                        value={slug}
-                        onChange={(event) => setSlug(event.target.value)}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-
+              {type?.value !== 'food' && (
                 <Row className="my-4">
                   <Col>
                     <Label>Category Image</Label>
-                    <div >
+                    <div>
                       <Form>
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles);
                           }}
+                          accept=".jpg, .jpeg, .png"
+                          maxSize={1000 * 1000}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                                // onClick={() => setmodal_fullscreen(true)}
-                              >
+                              <div className="dz-message needsclick" {...getRootProps()}>
                                 <input {...getInputProps()} />
                                 <div className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
                                 </div>
                                 <h4>Drop files here or click to upload.</h4>
+                                <small
+                                  style={{
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                  }}
+                                >
+                                  * Max Image size allowed Id 1 Mb.
+                                </small>
                               </div>
                             </div>
                           )}
                         </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
+                        <div className="dropzone-previews mt-3" id="file-previews">
                           {image && (
                             <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete">
                               <div className="p-2">
@@ -304,48 +247,38 @@ const CategoryAdd = () => {
                                       data-dz-thumbnail=""
                                       // height="80"
                                       style={{
-                                        maxWidth: "80px",
+                                        maxWidth: '80px',
                                       }}
                                       className=" bg-light"
-                                      src={
-                                        image.preview ? image.preview : image
-                                      }
+                                      src={image.preview ? image.preview : image}
                                       alt=""
                                     />
                                   </Col>
                                   <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {image.name
-                                        ? image.name
-                                        : "Product Image"}
+                                    <Link to="#" className="text-muted font-weight-bold">
+                                      {image.name ? image.name : 'Product Image'}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>
-                                        {image.formattedSize &&
-                                          image.formattedSize}
-                                      </strong>
+                                      <strong>{image.formattedSize && image.formattedSize}</strong>
                                     </p>
                                   </Col>
 
                                   <div
                                     className="position-absolute"
                                     style={{
-                                      left: "0px",
-                                      top: "0px",
-                                      width: "100%",
-                                      display: "flex",
-                                      justifyContent: "flex-end",
+                                      left: '0px',
+                                      top: '0px',
+                                      width: '100%',
+                                      display: 'flex',
+                                      justifyContent: 'flex-end',
                                     }}
                                   >
                                     <i
                                       onClick={() => setImage(null)}
                                       className="mdi mdi-delete text-danger "
                                       style={{
-                                        fontSize: "25px",
-                                        cursor: "pointer",
+                                        fontSize: '25px',
+                                        cursor: 'pointer',
                                       }}
                                     ></i>
                                   </div>
@@ -358,34 +291,25 @@ const CategoryAdd = () => {
                     </div>
                   </Col>
                 </Row>
+              )}
 
-                <div className="my-4 d-flex justify-content-center">
-                  <Button
-                    color="primary"
-                    className="px-5"
-                    onClick={handleSubmit}
-                    disabled={loading || isLoading}
-                  >
-                    {loading || isLoading ? (
-                      <Spinner
-                        animation="border"
-                        variant="info"
-                        size="sm"
-                      ></Spinner>
-                    ) : id ? (
-                      "Update"
-                    ) : (
-                      "Add"
-                    )}
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+              <div className="my-4 d-flex justify-content-center">
+                <Button color="primary" className="px-5" onClick={handleSubmit} disabled={loading || isLoading}>
+                  {loading || isLoading ? (
+                    <Spinner animation="border" variant="info" size="sm"></Spinner>
+                  ) : id ? (
+                    'Update'
+                  ) : (
+                    'Add'
+                  )}
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default CategoryAdd;

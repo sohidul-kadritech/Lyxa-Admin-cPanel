@@ -1,4 +1,6 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
@@ -10,11 +12,11 @@ const initialState = {
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
-  sortByKey: { label: "Desc", value: "desc" },
-  searchKey: "",
-  statusKey: { label: "All", value: "all" },
-  typeKey: { label: "All", value: "all" },
-  subTypeKey: { label: "All", value: "all" },
+  sortByKey: { label: 'Desc', value: 'desc' },
+  searchKey: '',
+  statusKey: { label: 'All', value: 'all' },
+  typeKey: { label: 'All', value: 'all' },
+  subTypeKey: { label: 'All', value: 'all' },
 };
 
 const sellerReducer = (state = initialState, action) => {
@@ -88,9 +90,7 @@ const sellerReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_SELLER_REQUEST_SUCCESS:
-      const updateData = state.sellers.map((item) =>
-        item._id == payload._id ? payload : item
-      );
+      const updateData = state.sellers.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -117,7 +117,7 @@ const sellerReducer = (state = initialState, action) => {
       };
 
     case actionType.DELETE_SELLER_REQUEST_SUCCESS:
-      const filered = state.sellers.filter((item) => item._id != payload._id);
+      const filered = state.sellers.filter((item) => item._id !== payload._id);
 
       return {
         ...state,
@@ -171,6 +171,43 @@ const sellerReducer = (state = initialState, action) => {
         ...state,
         searchKey: payload,
       };
+
+    //  DROP CHARGE
+
+    case actionType.ADD_SELLER_DROP_CHARGE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.ADD_SELLER_DROP_CHARGE_REQUEST_SUCCESS:
+      const updateCharge = state.sellers.map((item) =>
+        item._id === payload._id
+          ? {
+              ...item,
+              dropPercentage: payload.dropPercentage,
+              dropPercentageType: payload.dropPercentageType,
+            }
+          : item
+      );
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        sellers: updateCharge,
+        error: null,
+      };
+    case actionType.ADD_SELLER_DROP_CHARGE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
+    // ADD CREDENTIAL
 
     default:
       return state;

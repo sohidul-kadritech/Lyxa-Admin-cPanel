@@ -1,28 +1,22 @@
-import * as actionTypes from "../actionType";
-import {
-  DELETE_BANNER_REQUEST_SEND,
-  DELETE_BANNER_REQUEST_SUCCESS,
-  GET_DELETED_BANNER_DATA,
-  DELETE_BANNER_REQUEST_FAIL,
-  EDIT_BANNER_REQUEST_SEND,
-} from "./../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionTypes from '../actionType';
+import { DELETE_BANNER_REQUEST_FAIL, DELETE_BANNER_REQUEST_SEND, DELETE_BANNER_REQUEST_SUCCESS } from '../actionType';
 
 const initialState = {
   loading: false,
   list: [],
   error: null,
-  type: "all"
-
+  type: 'all',
 };
 
 const bannerReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
-
     case actionTypes.BANNER_FILTER_SELECT:
       return {
         ...state,
-        type: payload
+        type: payload,
       };
 
     case actionTypes.BANNER_REQUEST_SEND:
@@ -37,7 +31,7 @@ const bannerReducer = (state = initialState, action) => {
         loading: false,
         list: payload,
         error: null,
-        status: false
+        status: false,
       };
 
     case actionTypes.BANNER_REQUEST_ADD:
@@ -63,7 +57,7 @@ const bannerReducer = (state = initialState, action) => {
       };
 
     case DELETE_BANNER_REQUEST_SUCCESS:
-      const filtered = state.list.filter((banner) => banner._id != payload);
+      const filtered = state.list.filter((banner) => banner._id !== payload);
       return {
         ...state,
         loading: false,
@@ -89,9 +83,7 @@ const bannerReducer = (state = initialState, action) => {
       };
 
     case actionTypes.GET_EDITED_BANNER:
-      const updateData = state.list.map((item) =>
-        item._id === payload._id ? payload : item
-      );
+      const updateData = state.list.map((item) => (item._id === payload._id ? payload : item));
 
       return {
         ...state,
@@ -101,12 +93,6 @@ const bannerReducer = (state = initialState, action) => {
         list: updateData,
       };
 
-    // case actionTypes.OPEN_EDIT_PAGE:
-    //     return {
-    //         ...state,
-    //         editDone: false
-    //     }
-
     case actionTypes.EDIT_BANNER_REQUEST_FAIL:
       return {
         ...state,
@@ -115,14 +101,12 @@ const bannerReducer = (state = initialState, action) => {
         error: payload,
       };
 
-
     // BANNER ADD
-
     case actionTypes.BANNER_ADD_REQUEST_SENT:
       return {
         ...state,
         loading: true,
-        status: false
+        status: false,
       };
 
     case actionTypes.BANNER_ADD_REQUEST_SUCCESS:

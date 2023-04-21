@@ -1,10 +1,12 @@
-import * as actionType from "../../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import * as actionType from '../../actionType';
 
 const initialState = {
   loading: false,
   roles: [],
   message: null,
-  error: null
+  error: null,
 };
 
 export const roleReducer = (state = initialState, action) => {
@@ -17,14 +19,14 @@ export const roleReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
-        message: null
+        message: null,
       };
     case actionType.CREATE_ADMIN_ROLE_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
         message: payload,
-        error: null
+        error: null,
       };
 
     case actionType.GET_CREATED_ADMIN_ROLE:
@@ -33,7 +35,7 @@ export const roleReducer = (state = initialState, action) => {
         loading: false,
         roles: [...state.roles, payload],
         message: null,
-        error: null
+        error: null,
       };
 
     case actionType.CREATE_ADMIN_ROLE_REQUEST_FAIL:
@@ -41,7 +43,7 @@ export const roleReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         message: null,
-        error: payload
+        error: payload,
       };
 
     //   GET ALL ROLE
@@ -51,7 +53,7 @@ export const roleReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
-        message: null
+        message: null,
       };
 
     case actionType.GET_ALL_ROLE_REQUEST_SUCCESS:
@@ -60,7 +62,7 @@ export const roleReducer = (state = initialState, action) => {
         loading: false,
         error: null,
         message: null,
-        roles: payload
+        roles: payload,
       };
 
     case actionType.GET_ALL_ROLE_REQUEST_FAIL:
@@ -68,7 +70,7 @@ export const roleReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
-        message: null
+        message: null,
       };
 
     // EDIT ADMIN ROLE
@@ -78,19 +80,17 @@ export const roleReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
-        message: null
+        message: null,
       };
 
     case actionType.EDIT_ADMIN_ROLE_REQUEST_SUCCESS:
-      const updateData = state.roles.map(
-        item => (item.id === payload.role.id ? payload.role : item)
-      );
+      const updateData = state.roles.map((item) => (item.id === payload.role.id ? payload.role : item));
       return {
         ...state,
         loading: false,
         error: null,
         message: payload.message,
-        roles: updateData
+        roles: updateData,
       };
 
     case actionType.EDIT_ADMIN_ROLE_REQUEST_FAIL:
@@ -98,7 +98,7 @@ export const roleReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
-        message: null
+        message: null,
       };
 
     //  DELETE ROLE
@@ -106,26 +106,24 @@ export const roleReducer = (state = initialState, action) => {
     case actionType.DELETE_ROLE_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case actionType.DELETE_ROLE_REQUEST_SUCCESS:
-      const data = state.roles.map(
-        item => (item.id === payload.role.id ? payload.role : item)
-      );
+      const data = state.roles.map((item) => (item.id === payload.role.id ? payload.role : item));
       return {
         ...state,
         loading: false,
         roles: data,
         message: payload.message,
-        error: null
+        error: null,
       };
     case actionType.DELETE_ROLE_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
         message: null,
-        error: payload
+        error: payload,
       };
 
     // RESTORE ROLE
@@ -133,26 +131,24 @@ export const roleReducer = (state = initialState, action) => {
     case actionType.RESTORE_ROLE_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case actionType.RESTORE_ROLE_REQUEST_SUCCESS:
-      const newData = state.roles.map(
-        item => (item.id === payload.role.id ? payload.role : item)
-      );
+      const newData = state.roles.map((item) => (item.id === payload.role.id ? payload.role : item));
       return {
         ...state,
         loading: false,
         roles: newData,
         message: payload.message,
-        error: null
+        error: null,
       };
     case actionType.RESTORE_ROLE_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
         message: null,
-        error: payload
+        error: payload,
       };
 
     default:

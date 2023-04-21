@@ -1,29 +1,47 @@
-import React from "react";
-import { Container } from "reactstrap";
-import Breadcrumb from "../../../components/Common/Breadcrumb";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import TableForList from './../../../components/TableForList';
-const PaymentHistory = () => {
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Table, Tbody, Th, Thead, Tr } from 'react-super-responsive-table';
+import { Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
+import Breadcrumb from '../../../components/Common/Breadcrumb';
+import GlobalWrapper from '../../../components/GlobalWrapper';
+
+function PaymentHistory() {
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+
   return (
-    <React.Fragment>
-      <GlobalWrapper>
-        <div className="page-content">
-          <Container fluid={true}>
-            <Breadcrumb
-              maintitle="Drop"
-              breadcrumbItem="Admin Log History"
-              title='App Wallet'
-              // loading={loading}
-              // callList={callTransList}
-            />
-            <div>
-              <TableForList />
-            </div>
-          </Container>
-        </div>
-      </GlobalWrapper>
-    </React.Fragment>
+    <GlobalWrapper>
+      <div className="page-content">
+        <Container fluid>
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem="Payment History" title="App Wallet" />
+          <Card>
+            <CardBody>
+              <Row className="mb-3">
+                <Col md={3} className="text-end" />
+              </Row>
+              <CardTitle className="h4"> Transactions </CardTitle>
+
+              <Table
+                id="tech-companies-1"
+                className="table table__wrapper table-striped table-bordered table-hover text-center"
+              >
+                <Thead>
+                  <Tr>
+                    <Th>User name & Type</Th>
+                    <Th>ID</Th>
+                    <Th>Amount ({currency})</Th>
+                    <Th>Transactions Type</Th>
+                    <Th>Date</Th>
+                    <Th>Amin name & Type</Th>
+                  </Tr>
+                </Thead>
+                <Tbody style={{ position: 'relative' }}></Tbody>
+              </Table>
+            </CardBody>
+          </Card>
+        </Container>
+      </div>
+    </GlobalWrapper>
   );
-};
+}
 
 export default PaymentHistory;

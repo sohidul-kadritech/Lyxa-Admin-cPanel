@@ -1,34 +1,34 @@
-import PropTypes from "prop-types"
-import React from "react"
-import { connect } from "react-redux"
-import { withRouter } from "react-router-dom"
+import React from 'react';
+import { connect, useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-//i18n
-import { withTranslation } from "react-i18next"
-import SidebarContent from "./SidebarContent"
+// i18n
+import { adminMenuItem, customerServiceMenuItem, sellerMenuItem, shopMenuItem } from '../../assets/SideMenuItem';
+import SidebarContent from './SidebarContent';
 
-const Sidebar = props => {
+function Sidebar() {
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+
   return (
-    <React.Fragment>
-      <div className="vertical-menu">
-        <div data-simplebar className="h-100">
-           <SidebarContent />
-        </div>
+    <div className="vertical-menu">
+      <div data-simplebar className="h-100">
+        <SidebarContent
+          list={
+            account_type === 'admin' && adminType === 'admin'
+              ? adminMenuItem
+              : account_type === 'admin' && adminType === 'customerService'
+              ? customerServiceMenuItem
+              : account_type === 'seller'
+              ? sellerMenuItem
+              : shopMenuItem
+          }
+        />
       </div>
-    </React.Fragment>
-  )
+    </div>
+  );
 }
 
-Sidebar.propTypes = {
-  type: PropTypes.string,
-}
-
-const mapStatetoProps = state => {
-  return {
-    layout: state.Layout,
-  }
-}
-export default connect(
-  mapStatetoProps,
-  {}
-)(withRouter(withTranslation()(Sidebar)))
+const mapStatetoProps = (state) => ({
+  layout: state.Layout,
+});
+export default connect(mapStatetoProps, {})(withRouter(Sidebar));

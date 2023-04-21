@@ -1,18 +1,37 @@
-import * as actionType from "../actionType";
+/* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
+import moment from 'moment';
+import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
   error: null,
   deliveryMans: [],
   status: false,
-  sortByKey: { label: "Desc", value: "desc" },
-  statusKey: { label: "All", value: "all" },
-  searchKey: "",
+  sortByKey: { label: 'Order Number(+)', value: 'desc' },
+  statusKey: { label: 'All', value: 'all' },
+  searchKey: '',
   paginate: null,
   paging: [],
   hasNextPage: true,
   currentPage: 1,
   hasPreviousPage: false,
+  orders: [],
+  riderAllActivity: [],
+  totalActiveTime: { hour: 0, minutes: 0 },
+  statusPaginate: null,
+  statusPaging: [],
+  statusHasNextPage: true,
+  statusCurrentPage: 1,
+  statusHasPreviousPage: false,
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().endOf('month').format('YYYY-MM-DD'),
+  liveStatus: { label: 'All', value: 'all' },
+  shift: '',
+  currentLocation: {
+    lat: null,
+    lng: null,
+  },
 };
 
 const deliveryManReducer = (state = initialState, action) => {
@@ -41,7 +60,7 @@ const deliveryManReducer = (state = initialState, action) => {
         error: payload,
       };
 
-      // GET ALL
+    // GET ALL
 
     case actionType.ALL_DELIVERY_MAN_REQUEST_SEND:
       return {
@@ -71,9 +90,9 @@ const deliveryManReducer = (state = initialState, action) => {
         loading: false,
       };
 
-      // EDIT 
+    // EDIT
 
-      case actionType.EDIT_DELIVERY_MAN_REQUEST_SEND:
+    case actionType.EDIT_DELIVERY_MAN_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -81,7 +100,7 @@ const deliveryManReducer = (state = initialState, action) => {
         status: false,
       };
     case actionType.EDIT_DELIVERY_MAN_REQUEST_SUCCESS:
-      const updateData = state.deliveryMans.map(man => man._id === payload._id ? payload : man)
+      const updateData = state.deliveryMans.map((man) => (man._id === payload._id ? payload : man));
       return {
         ...state,
         loading: false,
@@ -110,10 +129,120 @@ const deliveryManReducer = (state = initialState, action) => {
         statusKey: payload,
       };
 
-      case actionType.UPDATE_SEARCH_KEY:
+    case actionType.UPDATE_RIDER_SEARCH_KEY:
       return {
         ...state,
         searchKey: payload,
+      };
+
+    case actionType.UPDATE_RIDER_STATUS:
+      return {
+        ...state,
+        shift: payload,
+      };
+
+    case actionType.SET_STATUS_FALSE:
+      return {
+        ...state,
+        status: false,
+      };
+
+    case actionType.UPDATE_RIDER_LIVE_STATUS:
+      return {
+        ...state,
+        liveStatus: payload,
+      };
+
+    // ORDERS
+    case actionType.DELIVERYBOY_ORDERS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.DELIVERYBOY_ORDERS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        orders: payload.orders,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+      };
+
+    case actionType.DELIVERYBOY_ORDERS_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionType.TRACK_DELIVERY_MAN_REQUEST_SEND:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+        status: false,
+      };
+
+    case actionType.TRACK_DELIVERY_MAN_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        riderAllActivity: payload.activities,
+        deliveryBoySummery: payload.deliveryBoySummery,
+        statusPaginate: payload.paginate,
+        statusPaging: payload.paginate.metadata.paging,
+        statusHasNextPage: payload.paginate.metadata.hasNextPage,
+        statusCurrentPage: payload.paginate.metadata.page.currentPage,
+        statusHasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: true,
+      };
+
+    case actionType.TRACK_DELIVERY_MAN_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      };
+
+    case actionType.UPDATE_ACTIVITY_START_DATE:
+      return {
+        ...state,
+        startDate: payload,
+      };
+    case actionType.UPDATE_ACTIVITY_END_DATE:
+      return {
+        ...state,
+        endDate: payload,
+      };
+
+    // CURRENT LOCATION
+
+    case actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        currentLocation: {
+          lat: payload[1],
+          lng: payload[0],
+        },
+      };
+
+    case actionType.DELIVERY_MAN_CURRENT_LOCATION_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
 
     default:

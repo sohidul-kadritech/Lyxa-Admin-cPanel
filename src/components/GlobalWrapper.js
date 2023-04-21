@@ -1,29 +1,20 @@
-import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Box } from '@mui/material';
 
-const GlobalWrapper = ({ children }) => {
-  //   console.log(children);
-  const history = useHistory();
-
-  const { accessToken } = useSelector(state => state.Login);
-
-  useEffect(
-    () => {
-      // console.log("accessToken",accessToken);
-
-      if (!accessToken) {
-        history.replace("/login");
-      }
-    },
-    [accessToken]
-  );
-
+function GlobalWrapper({ children }) {
   return (
-    <div>
+    <Box
+    // pr={{
+    //   xl: padding ? 10 : 0,
+    //   lg: padding ? 5 : 0,
+    // }}
+    // pl={{
+    //   xl: padding ? 10 : 0,
+    //   lg: padding ? 5 : 0,
+    // }}
+    >
       {children}
-    </div>
+    </Box>
   );
-};
+}
 
 export default GlobalWrapper;
