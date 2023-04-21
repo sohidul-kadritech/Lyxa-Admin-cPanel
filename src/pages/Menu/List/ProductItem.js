@@ -173,13 +173,7 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="drag-handler-chlid"
-          style={{
-            color: product?.isUnsortable ? '#AFAFAE' : '#363636',
-            cursor: 'move',
-            cursor: 'grab',
-            cursor: '-webkit-grab',
-          }}
+          className="drag-handler-product grabable"
         />
         <Box
           sx={{

@@ -327,6 +327,27 @@ export const validateProduct = (product) => {
   };
 };
 
+export const validateSubCategory = (subCategory) => {
+  const status = {
+    status: false,
+    msg: null,
+  };
+
+  if (!subCategory?.category) {
+    status.msg = 'Sub-Category must a parent category';
+    return status;
+  }
+
+  if (!subCategory?.name?.trim()) {
+    status.msg = 'Sub-Category name cannot be empty';
+    return status;
+  }
+
+  return {
+    status: true,
+  };
+};
+
 export function OngoingTag({ label }) {
   return (
     <Button

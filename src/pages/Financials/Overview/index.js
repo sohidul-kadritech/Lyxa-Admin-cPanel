@@ -158,7 +158,7 @@ export default function Overview() {
         lg={4}
       />
       <InfoCard
-        title="Total Orders"
+        title="Orders"
         value={`${
           shopDashboardQuery?.data?.data?.summary?.totalCancelOrder +
             shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder || 0
@@ -214,7 +214,7 @@ export default function Overview() {
         chartHeight={325}
         dateRange={refundRange}
         setDateRange={setrefundRange}
-        title="Customer refunds"
+        title="Marketing Spent"
         sm={12}
         xl={6}
       >

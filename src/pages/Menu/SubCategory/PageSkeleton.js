@@ -23,15 +23,26 @@ function InputField({ type }) {
   );
 }
 
-export default function PageSkeleton() {
+export default function PageSkeleton({ isEdit }) {
   return (
     <Stack
       sx={{
         width: '368px',
       }}
     >
-      <InputField type="input" />
-      <InputField type="list" />
+      {!isEdit && (
+        <>
+          <InputField type="input" />
+          <InputField type="list" />
+        </>
+      )}
+
+      {isEdit && (
+        <>
+          <InputField type="input" />
+          <InputField type="input" />
+        </>
+      )}
     </Stack>
   );
 }

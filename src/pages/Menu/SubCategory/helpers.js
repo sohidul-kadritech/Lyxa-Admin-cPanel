@@ -5,10 +5,10 @@ export const getSubCategoryInit = () => ({
   id: uniqueId(),
 });
 
-export const addSubCategoriesInit = {
-  categoryId: '',
+export const getAddSubCategoriesInit = (categoryId) => ({
+  categoryId: categoryId || '',
   categories: [getSubCategoryInit(), getSubCategoryInit()],
-};
+});
 
 export const validateAddSubCategories = (addSubCategories) => {
   let message = null;

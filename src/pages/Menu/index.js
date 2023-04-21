@@ -12,24 +12,23 @@ import PageTop from '../../components/Common/PageTop';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import dropSort from '../../helpers/dropSort';
 import { local_product_search } from '../../helpers/localSearch';
-// import { successMsg } from '../../helpers/successMsg';
 import { Throttler } from '../../helpers/throttle';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
-import AddSubCategory from './AddSubCategory';
 import CategoryItem from './List/CategoryItem';
 import { createCatagory } from './List/helpers';
 import PageSkeleton from './PageSkeleton';
 import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
+import AddSubCategory from './SubCategory/AddSubCategory';
+import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
   const searchThrottler = new Throttler(200);
 
-  // const history = useHistory();
   const shop = useSelector((store) => store.Login.admin);
   const Deals = useMemo(() => new ShopDeals(shop), []);
 
@@ -49,6 +48,9 @@ export default function MenuPage() {
   const [bestSellers, setBestSellers] = useState({});
 
   const [editCategory, setEditCategory] = useState({});
+  const [newSubCategoryId, setNewSubCategoryId] = useState(null);
+
+  const [editSubCategory, setEditSubCategory] = useState({});
 
   const productsQuery = useQuery(
     ['category-wise-products', { shopId: shop?._id }],
@@ -102,14 +104,22 @@ export default function MenuPage() {
     () => ({
       favorites,
       setFavorites,
-      editProduct,
+
       bestSellers,
+
       updatedProduct,
       setUpdatedProduct,
+
+      editProduct,
       setEditProduct: (product, readonly) => {
         setEditProduct(product);
         setSidebar('add-item');
         setProductReadonly(readonly);
+      },
+
+      setEditSubCategory: (subCategory) => {
+        setEditSubCategory(subCategory);
+        setSidebar('edit-sub-category');
       },
     }),
     [favorites, updatedProduct]
@@ -176,6 +186,10 @@ export default function MenuPage() {
                         setNewProductCategory(categoryId);
                         setSidebar('add-item');
                       }}
+                      setNewSubCategoryId={(categoryId) => {
+                        setNewSubCategoryId(categoryId);
+                        setSidebar('add-sub-category');
+                      }}
                     />
                   </Draggable>
                 );
@@ -209,7 +223,18 @@ export default function MenuPage() {
         )}
         {sidebar === 'add-sub-category' && (
           <AddSubCategory
+            newSubCategoryId={newSubCategoryId}
             onClose={() => {
+              setSidebar(null);
+              setNewSubCategoryId(null);
+            }}
+          />
+        )}
+        {sidebar === 'edit-sub-category' && (
+          <EditSubCategory
+            editSubCategory={editSubCategory}
+            onClose={() => {
+              setEditSubCategory({});
               setSidebar(null);
             }}
           />

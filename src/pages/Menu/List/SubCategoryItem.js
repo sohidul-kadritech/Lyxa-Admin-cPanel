@@ -1,28 +1,22 @@
 /* eslint-disable import/no-named-as-default */
 import { Edit, ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, Box, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { AccordionDetails, Box, Stack, Typography, useTheme } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import { ProductsContext } from '../ProductContext';
 import ProductsContainer from './ProductsContainer';
-import { StyledAccordionSummary } from './helpers';
+import { StyledAccordion, StyledAccordionSummary } from './helpers';
 
-const detailsSx = {
-  paddingBottom: '30px',
-  paddingLeft: '30px',
-};
+export default function SubCategoryItem({ subCategory, gOpen, fromSearch }) {
+  const theme = useTheme();
 
-const accodionSx = {
-  background: 'transparent',
-  '&:before': {
-    display: 'none',
-  },
-};
-
-export default function SubCategoryItem({ category, onProductMenuClick, gOpen, fromSearch }) {
-  const [open, setOpen] = useState(!!category?.sortedProducts?.length);
-  console.log(category);
+  const { setEditSubCategory } = useContext(ProductsContext);
+  const [open, setOpen] = useState(!!subCategory?.sortedProducts?.length);
 
   useEffect(() => {
     if (gOpen !== null) {
@@ -31,35 +25,49 @@ export default function SubCategoryItem({ category, onProductMenuClick, gOpen, f
   }, [gOpen]);
 
   const product = () => {
-    if (category?.sortedProducts === undefined) console.log('====>', category);
-    return category?.sortedProducts || [];
+    if (subCategory?.sortedProducts === undefined) console.log('====>', subCategory);
+    return subCategory?.sortedProducts || [];
   };
 
+  // categoryMutation
+  const subCategoryMutation = useMutation(
+    (data) =>
+      AXIOS.post(Api.EDIT_SUB_CATEGORY, {
+        ...(subCategory?.subCategory || {}),
+        id: subCategory?.subCategory?._id,
+        ...data,
+      }),
+    {
+      onSuccess: (data, args) => {
+        console.log(data);
+        if (data?.status) {
+          subCategory.subCategory.status = args.status;
+        }
+      },
+    }
+  );
+
   return (
-    <Accordion
+    <StyledAccordion
       expanded={open}
       onChange={(e, closed) => {
         setOpen(closed);
       }}
       sx={{
-        ...accodionSx,
-        borderBottom: open ? '1px solid #EEEEEE' : null,
         backgroundColor: '#fbfbfb',
       }}
     >
       <StyledAccordionSummary expandIcon={<ExpandMore />}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" paddingRight={6}>
           <Stack direction="row" alignItems="center" gap={5}>
-            <HandleIcon
-              style={{
-                color: category?.category?.isUnsortable ? '#AFAFAE' : '#363636',
-              }}
-              className="drag-handler"
-            />
+            <HandleIcon className="drag-handler-sub-category grabable" />
             <Stack direction="row" alignItems="center" gap={5}>
               <Box>
                 <Typography variant="body4" fontWeight={600} color="textPrimary" display="block" pb={1.5}>
-                  {category?.subCategory?.name}
+                  {subCategory?.subCategory?.name}
+                </Typography>
+                <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
+                  {subCategory?.sortedProducts?.length || 0} Items
                 </Typography>
               </Box>
             </Stack>
@@ -75,7 +83,9 @@ export default function SubCategoryItem({ category, onProductMenuClick, gOpen, f
             <>
               <StyledIconButton
                 color="primary"
-                onClick={() => {}}
+                onClick={() => {
+                  setEditSubCategory(subCategory?.subCategory);
+                }}
                 sx={{
                   '& .MuiSvgIcon-root': {
                     color: 'inherit',
@@ -84,20 +94,34 @@ export default function SubCategoryItem({ category, onProductMenuClick, gOpen, f
               >
                 <Edit />
               </StyledIconButton>
-              <StyledSwitch checked={category?.category?.status === 'active'} onChange={() => {}} />
+              <StyledSwitch
+                checked={subCategory?.subCategory?.status === 'active'}
+                onChange={(e) => {
+                  subCategoryMutation.mutate({
+                    status: e.target.checked ? 'active' : 'inactive',
+                  });
+                }}
+              />
             </>
           </Stack>
         </Stack>
       </StyledAccordionSummary>
-      <AccordionDetails sx={detailsSx}>
-        <ProductsContainer
-          products={product()}
-          onProductMenuClick={onProductMenuClick}
-          fromSearch={fromSearch}
-          isInsideFavorites={category?.category?.isShopFavorites}
-          isInsideBestSellers={category?.category?.isShopBestSellers}
-        />
+      <AccordionDetails>
+        <ProductsContainer products={product()} fromSearch={fromSearch} />
+        {/* <Box pl={8.5} pt={6}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<Add />}
+            onClick={() => {
+              // setNewSubCategoryId(category?.category?.category?._id);
+            }}
+          >
+            Add Product
+          </Button>
+        </Box> */}
       </AccordionDetails>
-    </Accordion>
+    </StyledAccordion>
   );
 }
