@@ -80,7 +80,7 @@ export default function DetailsAccordion({
             </Tooltip>
           </Stack>
           <Typography variant="body1" fontWeight={600} color={titleAmountStatus === 'minus' ? 'error' : undefined}>
-            {currency} {(titleAmount || 0).toFixed(2)}
+            {titleAmountStatus === 'minus' ? '-' : ''} {currency} {(titleAmount || 0).toFixed(2)}
           </Typography>
         </Stack>
       </StyledAccordionSummary>
