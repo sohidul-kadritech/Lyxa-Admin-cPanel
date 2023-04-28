@@ -15,7 +15,7 @@ import InputBox from './InputBox';
 import CategoryList from './RewardCategoryList';
 import SkeletonLoader from './SkeletonLoader';
 import StyledContainer from './StyledContainer';
-import { confirmActionInit, validateRewardBundle, validateRewardCategory } from './helpers';
+import { breadcrumbItems, confirmActionInit, validateRewardBundle, validateRewardCategory } from './helpers';
 
 const getRewardInit = {
   amount: '',
@@ -228,7 +228,11 @@ export default function LoyaltySettings() {
   return (
     <Box>
       <Box>
-        <PageTop backButtonLabel="Back to Marketing" backTo="/admin/settings2/marketing" title="Loyalty Points" />
+        <PageTop
+          breadcrumbItems={breadcrumbItems}
+          backButtonLabel="Back to Marketing"
+          backTo="/admin/settings2/marketing"
+        />
         {settingsQuery.isLoading ? (
           <SkeletonLoader />
         ) : (

@@ -83,6 +83,7 @@ import ShopProfile from '../pages/Profile';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
+import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
@@ -208,6 +209,7 @@ export const adminRoutes = [
   { path: '/admin/settings2/marketing', component: AdminMarketingSettings },
   { path: '/admin/settings2/marketing/loyalty', component: AdminLoyaltySettings },
   { path: '/admin/settings2/marketing/deals', component: AdminDealSettings },
+  { path: '/admin/settings2/marketing/featured', component: AdminFeaturedSettings },
 
   // terms and conditions
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },

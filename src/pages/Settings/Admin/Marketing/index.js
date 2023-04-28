@@ -12,6 +12,10 @@ const pagesList = [
     label: 'Deals',
     to: '/admin/settings2/marketing/deals',
   },
+  {
+    label: 'Featured',
+    to: '/admin/settings2/marketing/featured',
+  },
 ];
 
 export default function AdminMarketingSettings() {

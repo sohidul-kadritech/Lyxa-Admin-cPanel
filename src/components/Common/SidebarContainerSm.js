@@ -10,7 +10,7 @@ export default function SidebarContainer({ onClose, title, children }) {
       sx={{
         minWidth: '400px',
         maxWidth: '400px',
-        paddingLeft: '16px',
+        paddingLeft: '20px',
         paddingRight: '20px',
         paddingTop: '60px',
         position: 'relative',

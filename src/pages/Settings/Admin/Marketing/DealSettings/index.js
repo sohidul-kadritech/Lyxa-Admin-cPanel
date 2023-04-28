@@ -33,6 +33,12 @@ const dealTypes = [
   },
 ];
 
+const breadcrumbItems = [
+  { label: 'Settings', to: '/admin/settings2' },
+  { label: 'Marketing', to: '/admin/settings2/marketing' },
+  { label: 'Deals', to: '#' },
+];
+
 export default function DealSettings() {
   const [backupState, setBackupState] = useState({});
   const [runQuery, setRunQuery] = useState(true);
@@ -203,7 +209,12 @@ export default function DealSettings() {
     <Box>
       <Box>
         {/* top */}
-        <PageTop title="Deals" backButtonLabel="Back to Marketing" backTo="/admin/settings2/marketing" />
+        <PageTop
+          // title="Deals"
+          backButtonLabel="Back to Marketing"
+          backTo="/admin/settings2/marketing"
+          breadcrumbItems={breadcrumbItems}
+        />
         {settingsQuery.isLoading ? (
           <SkeletonLoader />
         ) : (

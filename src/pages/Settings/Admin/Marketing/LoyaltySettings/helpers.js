@@ -43,3 +43,9 @@ export const confirmActionInit = {
   onConfirm: () => {},
   onCancel: () => {},
 };
+
+export const breadcrumbItems = [
+  { label: 'Settings', to: '/admin/settings2' },
+  { label: 'Marketing', to: '/admin/settings2/marketing' },
+  { label: 'Loyalty', to: '#' },
+];
