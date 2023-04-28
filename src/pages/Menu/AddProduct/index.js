@@ -222,46 +222,52 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   return (
     <SidebarContainer title="Add Items" onClose={onClose}>
       {shop?.shopType === 'food' && (
-        <Tabs
-          value={currentTab}
+        <Box
           sx={{
-            paddingBottom: 5,
-          }}
-          onChange={(event, newValue) => {
-            setCurrentTab(newValue);
+            position: 'sticky',
+            top: '75px',
+            background: '#fff',
+            zIndex: '999',
           }}
         >
-          <Tab
-            label="Details"
-            sx={tabSx}
-            onClick={() => {
-              document?.getElementById('add-product-details')?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          <Tabs
+            value={currentTab}
+            sx={{
+              paddingBottom: 5,
             }}
-          />
-          <Tab
-            label="Features"
-            sx={tabSx}
-            onClick={() => {
-              document?.getElementById('add-product-features')?.scrollIntoView({ behavior: 'smooth' });
+            onChange={(event, newValue) => {
+              setCurrentTab(newValue);
             }}
-          />
-          <Tab
-            sx={tabSx}
-            label="Dietary"
-            onClick={() => {
-              document?.getElementById('add-product-dietry')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          />
-        </Tabs>
+          >
+            <Tab
+              label="Details"
+              sx={tabSx}
+              onClick={() => {
+                document?.getElementById('add-product-details')?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+              }}
+            />
+            <Tab
+              label="Features"
+              sx={tabSx}
+              onClick={() => {
+                document?.getElementById('add-product-features')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
+            <Tab
+              sx={tabSx}
+              label="Dietary"
+              onClick={() => {
+                document?.getElementById('add-product-dietry')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
+          </Tabs>
+        </Box>
       )}
       {/* name */}
       <Box sx={fieldContainerSx} id="add-product-details">
         <StyledFormField
           label="Name"
           intputType="text"
-          // containerProps={{
-          //   sx: fieldContainerSx,
-          // }}
           inputProps={{
             type: 'text',
             name: 'name',

@@ -174,7 +174,7 @@ export default function CategoryItem({
         )}
         {/* add product */}
         {isOridanryCategory && shop?.shopType === 'food' && (
-          <Box pl={8.5} pt={2.5}>
+          <Box pl={8.5} pt={2.5} pb={2.5}>
             <Button
               variant="contained"
               color="primary"
@@ -190,7 +190,7 @@ export default function CategoryItem({
         )}
         {/* add sub-category */}
         {shop?.shopType !== 'food' && (
-          <Box pl={8.5} pt={6}>
+          <Box pl={8.5} pt={2.5} pb={2.5}>
             <Button
               variant="contained"
               color="primary"

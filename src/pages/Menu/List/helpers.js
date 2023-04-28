@@ -27,8 +27,14 @@ export const StyledAccordion = styled(Accordion)(() => ({
     display: 'none',
   },
 
+  '&.Mui-expanded': {
+    margin: '0 !important',
+  },
+
   '& .MuiAccordionDetails-root': {
-    paddingBottom: '30px',
+    // paddingBottom: '30px',
+    paddingTop: '0',
+    paddingBottom: '0',
     paddingLeft: '30px',
     paddingRight: '30px',
   },
