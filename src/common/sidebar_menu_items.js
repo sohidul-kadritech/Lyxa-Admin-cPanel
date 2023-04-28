@@ -73,7 +73,7 @@ export const shop_menu_items = [
       {
         label: 'Hours',
         icon: HoursIcon,
-        to: '/',
+        to: '/hours',
       },
       {
         label: 'Users',

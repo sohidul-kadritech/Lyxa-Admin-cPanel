@@ -3,7 +3,7 @@ import { Box, styled, TextField, Tooltip } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 
 const StyledInput = styled(TextField)(({ theme }) => ({
-  '.MuiOutlinedInput-root': {
+  '& .MuiOutlinedInput-root': {
     padding: '12px 15px 12px 22px',
     maxWidth: '190px',
     borderRadius: '45px',

@@ -36,7 +36,8 @@ export const StyledAccordion = styled(Accordion)(() => ({
     paddingTop: '0',
     paddingBottom: '0',
     paddingLeft: '30px',
-    paddingRight: '30px',
+    // paddingRight: '30px',
+    paddingRight: '0px',
   },
 }));
 
