@@ -1,5 +1,5 @@
 // third party
-import { Box, Drawer, Stack, Typography, styled } from '@mui/material';
+import { Box, Button, Drawer, Stack, Typography, styled } from '@mui/material';
 
 // project import
 import { useState } from 'react';
@@ -56,6 +56,35 @@ export default function FeaturedSettings() {
             </Typography>
             <SettingsTable rows={settingsData} onEdit={onEdit} />
           </StyledBox>
+        </Stack>
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          gap={4}
+          sx={{
+            mt: 9,
+            pb: 12,
+          }}
+        >
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              // discardChanges();
+            }}
+          >
+            Discard
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            // disabled={updateSettingsMutation.isLoading}
+            onClick={() => {
+              // updateSettings();
+            }}
+          >
+            Save Changes
+          </Button>
         </Stack>
       </Box>
       <Drawer open={Boolean(sidebar)} anchor="right">

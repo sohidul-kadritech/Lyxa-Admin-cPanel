@@ -115,3 +115,17 @@ export const GroupHeader = styled('div')(({ theme }) => ({
   padding: '8px 45px 8px 16px',
   backgroundColor: theme.palette.background.secondary,
 }));
+
+export const featuredDurationTypes = [
+  { label: '1 week', value: '1-week' },
+  { label: '2 week', value: '2-week' },
+  { label: '3 week', value: '3-week' },
+  { label: '4 week', value: '4-week' },
+];
+
+export const featuredDurationAmountMap = {
+  '1-week': 20,
+  '2-week': 40,
+  '3-week': 55,
+  '4-week': 65,
+};

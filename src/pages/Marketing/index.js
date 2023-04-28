@@ -11,7 +11,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { ReactComponent as BuyIcon } from '../../assets/icons/buy-icon.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon.svg';
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
-// import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
+import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -275,31 +275,34 @@ export default function Marketing() {
           />
         </Grid>
         {adminShop?.shopType && (
-          <Grid md={6} lg={4}>
-            <MCard
-              description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
-              title="Loyalty Points"
-              loading={__loading || rewardSettingsQuery.isFetching}
-              status={getPromotionStatus(rewardSettingsQuery)}
-              icon={LoyaltyIcon}
-              onOpen={() => {
-                if (!rewardSettingsQuery.isLoading) {
-                  openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
-                }
-              }}
-            />
-          </Grid>
+          <>
+            <Grid md={6} lg={4}>
+              <MCard
+                description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
+                title="Loyalty Points"
+                loading={__loading || rewardSettingsQuery.isFetching}
+                status={getPromotionStatus(rewardSettingsQuery)}
+                icon={LoyaltyIcon}
+                onOpen={() => {
+                  if (!rewardSettingsQuery.isLoading) {
+                    openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
+                  }
+                }}
+              />
+            </Grid>
+            <Grid md={6} lg={4}>
+              <MCard
+                description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
+                title="Promotions"
+                loading={__loading || rewardSettingsQuery.isFetching}
+                icon={PromoIcon}
+                onOpen={() => {
+                  openHandler('featured', {});
+                }}
+              />
+            </Grid>
+          </>
         )}
-        {/* <Grid md={6} lg={4}>
-            <MCard
-              description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
-              title="Promotions"
-              icon={PromoIcon}
-              onOpen={() => {
-                console.log('opened');
-              }}
-            />
-          </Grid> */}
       </Grid>
       {/* settings modal */}
       <MSettingsModal open={Boolean(currentModal)}>

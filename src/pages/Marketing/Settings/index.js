@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
@@ -24,6 +25,8 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import BannerPreview from './BannerPreview';
 import ProductTable from './ProductTable';
+
+import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import {
   CommonTitle,
   GroupHeader,
@@ -32,6 +35,8 @@ import {
   createGroupedDataRow,
   createGroupedList,
   durationInit,
+  featuredDurationAmountMap,
+  featuredDurationTypes,
   itemSelectOptions,
 } from './helpers';
 
@@ -128,6 +133,8 @@ export default function MarketingSettings({
   const [spendLimit, setSpendLimit] = useState('');
   const [products, setProducts] = useState([]);
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
+
+  const [featuredDuration, setFeaturedDuration] = useState('1-week');
 
   const setLocalData = (data) => {
     setProducts(data?.products);
@@ -375,7 +382,7 @@ export default function MarketingSettings({
     }
   );
 
-  console.log(shop);
+  // console.log(shop);
 
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
     ? dealSettingsQuery?.data?.data?.dealSetting[0]?.percentageBundle
@@ -692,6 +699,7 @@ export default function MarketingSettings({
               {marketingType === 'percentage' && 'Discounted Items'}
               {marketingType === 'double_menu' && 'Buy 1, Get 1 Free'}
               {marketingType === 'free_delivery' && '$0 Delivery fee'}
+              {marketingType === 'featured' && 'Featured'}
             </Typography>
             <Typography variant="body2" color={theme.palette.text.primary2}>
               {marketingType === 'reward' &&
@@ -702,263 +710,302 @@ export default function MarketingSettings({
                 "Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost"}
               {marketingType === 'free_delivery' &&
                 'Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales.'}
+              {marketingType === 'featured' &&
+                "Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."}
             </Typography>
           </Box>
-          {/* products */}
-          {marketingType !== 'free_delivery' && (
-            <StyledAccordion
-              Title={<ItemsTitle />}
-              isOpen={currentExpanedTab === 0}
-              onChange={(closed) => {
-                seCurrentExpanedTab(closed ? 0 : -1);
-              }}
-              disabled={isPageDisabled || productsQuery?.isLoading}
-            >
-              <Box position="relative">
-                <StyledRadioGroup
-                  color="primary"
-                  items={itemSelectOptions.filter((item) => entireMenu || item.value !== 'multiple')}
-                  value={itemSelectType}
-                  onChange={onProductSelectChange}
-                />
-                {itemSelectType === 'multiple' && (marketingType === 'reward' || marketingType === 'percentage') && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      zIndex: '99',
-                      bottom: '-6px',
-                      left: '130px',
-                    }}
-                  >
-                    <FilterSelect
-                      items={
-                        marketingType === 'reward'
-                          ? rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []
-                          : shopPercentageDeals || []
-                      }
-                      placeholder={marketingType === 'reward' ? '0%' : 'Select Percentage'}
-                      getKey={(item) => item}
-                      getValue={(item) => item}
-                      getLabel={(item) => item}
-                      getDisplayValue={(value) => `${value}`}
-                      onChange={(e) => {
-                        products.forEach((product) => {
-                          if (marketingType === 'reward') {
-                            product.rewardBundle = Number(e.target.value);
-                          } else {
-                            product.discountPercentage = Number(e.target.value);
+          {marketingType !== 'featured' ? (
+            <Box>
+              {/* products */}
+              {marketingType !== 'free_delivery' && (
+                <StyledAccordion
+                  Title={<ItemsTitle />}
+                  isOpen={currentExpanedTab === 0}
+                  onChange={(closed) => {
+                    seCurrentExpanedTab(closed ? 0 : -1);
+                  }}
+                  disabled={isPageDisabled || productsQuery?.isLoading}
+                >
+                  <Box position="relative">
+                    <StyledRadioGroup
+                      color="primary"
+                      items={itemSelectOptions.filter((item) => entireMenu || item.value !== 'multiple')}
+                      value={itemSelectType}
+                      onChange={onProductSelectChange}
+                    />
+                    {itemSelectType === 'multiple' && (marketingType === 'reward' || marketingType === 'percentage') && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          zIndex: '99',
+                          bottom: '-6px',
+                          left: '130px',
+                        }}
+                      >
+                        <FilterSelect
+                          items={
+                            marketingType === 'reward'
+                              ? rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []
+                              : shopPercentageDeals || []
                           }
-                        });
-                        setGlobalRewardBundle(Number(e.target.value));
-                        setHasChanged(true);
+                          placeholder={marketingType === 'reward' ? '0%' : 'Select Percentage'}
+                          getKey={(item) => item}
+                          getValue={(item) => item}
+                          getLabel={(item) => item}
+                          getDisplayValue={(value) => `${value}`}
+                          onChange={(e) => {
+                            products.forEach((product) => {
+                              if (marketingType === 'reward') {
+                                product.rewardBundle = Number(e.target.value);
+                              } else {
+                                product.discountPercentage = Number(e.target.value);
+                              }
+                            });
+                            setGlobalRewardBundle(Number(e.target.value));
+                            setHasChanged(true);
+                            setHasGlobalChange(true);
+                          }}
+                          value={globalRewardBundle}
+                          sx={{
+                            minWidth: '80px',
+                            '& .MuiInputBase-input': {
+                              fontWeight: '500',
+                              fontSize: '15px',
+                              lineHeight: '24px',
+                              paddingTop: '6px',
+                              paddingBottom: '6px',
+                              textAlign: 'center',
+                            },
+                          }}
+                        />
+                      </Box>
+                    )}
+                  </Box>
+                  <Box pt={5}>
+                    <Box
+                      sx={{
+                        overflowX: 'scroll',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          minHeight: '0px',
+                          height: `${products?.length > 0 ? '500px' : '200px'}`,
+                          minWidth: '850px',
+                        }}
+                      >
+                        <ProductTable
+                          columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
+                          rows={createGroupedDataRow(products || [])}
+                        />
+                      </Box>
+                    </Box>
+                    {/* add new */}
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{
+                        paddingLeft: '20px',
+                        paddingRight: '20px',
+                        paddingTop: '20px',
+                      }}
+                    >
+                      <Button
+                        disableRipple
+                        className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
+                        variant="text"
+                        color="primary"
+                        onClick={() => {
+                          setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
+                          setHasChanged(true);
+                          setHasGlobalChange(true);
+                        }}
+                      >
+                        + Add items
+                      </Button>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: '500',
+                          fontSize: '13px',
+                          lineHeight: '16px',
+                        }}
+                      >
+                        {products?.length} items
+                      </Typography>
+                    </Stack>
+                  </Box>
+                </StyledAccordion>
+              )}
+              {/* duration */}
+              <StyledAccordion
+                isOpen={currentExpanedTab === 1}
+                onChange={(closed) => {
+                  seCurrentExpanedTab(closed ? 1 : -1);
+                }}
+                Title={
+                  <CommonTitle
+                    title="Duration"
+                    subTitle={
+                      currentExpanedTab === 1
+                        ? 'Please choose the date range during which your items will be running.'
+                        : `${moment(duration.start).format('MMMM, D, YYYY')} - ${moment(duration.end).format(
+                            'MMMM, D, YYYY'
+                          )}`
+                    }
+                  />
+                }
+                // sx={isPageDisabled ? disabledSx : {}}
+                disabled={isPageDisabled}
+              >
+                <Stack direction="row" alignItems="center" gap={5} pt={1}>
+                  <Stack gap={2.5}>
+                    <Typography variant="body2">Start Date</Typography>
+                    <FilterDate
+                      maxDate={moment(duration.end).subtract(1, 'day')}
+                      value={duration.start}
+                      onChange={(e) => {
+                        setDuration((prev) => ({ ...prev, start: e._d }));
                         setHasGlobalChange(true);
                       }}
-                      value={globalRewardBundle}
-                      sx={{
-                        minWidth: '80px',
-                        '& .MuiInputBase-input': {
-                          fontWeight: '500',
-                          fontSize: '15px',
-                          lineHeight: '24px',
-                          paddingTop: '6px',
-                          paddingBottom: '6px',
-                          textAlign: 'center',
-                        },
+                    />
+                  </Stack>
+                  <Stack gap={2.5}>
+                    <Typography variant="body2">End Date</Typography>
+                    <FilterDate
+                      minDate={moment(duration.start).add(1, 'day')}
+                      value={duration.end}
+                      onChange={(e) => {
+                        setDuration((prev) => ({ ...prev, end: e._d }));
+                        setHasGlobalChange(true);
                       }}
                     />
-                  </Box>
-                )}
-              </Box>
-              <Box pt={5}>
-                <Box
-                  sx={{
-                    overflowX: 'scroll',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      minHeight: '0px',
-                      height: `${products?.length > 0 ? '500px' : '200px'}`,
-                      minWidth: '850px',
-                    }}
-                  >
-                    <ProductTable
-                      columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
-                      rows={createGroupedDataRow(products || [])}
-                    />
-                  </Box>
-                </Box>
-                {/* add new */}
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  sx={{
-                    paddingLeft: '20px',
-                    paddingRight: '20px',
-                    paddingTop: '20px',
-                  }}
-                >
-                  <Button
-                    disableRipple
-                    className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
-                    variant="text"
-                    color="primary"
-                    onClick={() => {
-                      setProducts((prev) => [...prev, { _id: `${Math.random()}` }]);
-                      setHasChanged(true);
-                      setHasGlobalChange(true);
-                    }}
-                  >
-                    + Add items
-                  </Button>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontWeight: '500',
-                      fontSize: '13px',
-                      lineHeight: '16px',
-                    }}
-                  >
-                    {products?.length} items
-                  </Typography>
+                  </Stack>
                 </Stack>
-              </Box>
-            </StyledAccordion>
-          )}
-          {/* duration */}
-          <StyledAccordion
-            isOpen={currentExpanedTab === 1}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 1 : -1);
-            }}
-            Title={
-              <CommonTitle
-                title="Duration"
-                subTitle={
-                  currentExpanedTab === 1
-                    ? 'Please choose the date range during which your items will be running.'
-                    : `${moment(duration.start).format('MMMM, D, YYYY')} - ${moment(duration.end).format(
-                        'MMMM, D, YYYY'
-                      )}`
-                }
-              />
-            }
-            // sx={isPageDisabled ? disabledSx : {}}
-            disabled={isPageDisabled}
-          >
-            <Stack direction="row" alignItems="center" gap={5} pt={1}>
-              <Stack gap={2.5}>
-                <Typography variant="body2">Start Date</Typography>
-                <FilterDate
-                  maxDate={moment(duration.end).subtract(1, 'day')}
-                  value={duration.start}
-                  onChange={(e) => {
-                    setDuration((prev) => ({ ...prev, start: e._d }));
-                    setHasGlobalChange(true);
-                  }}
-                />
-              </Stack>
-              <Stack gap={2.5}>
-                <Typography variant="body2">End Date</Typography>
-                <FilterDate
-                  minDate={moment(duration.start).add(1, 'day')}
-                  value={duration.end}
-                  onChange={(e) => {
-                    setDuration((prev) => ({ ...prev, end: e._d }));
-                    setHasGlobalChange(true);
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </StyledAccordion>
-          {/* spend limit */}
-          <StyledAccordion
-            isOpen={currentExpanedTab === 2}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 2 : -1);
-            }}
-            Title={
-              <CommonTitle
-                title="Spend Limit"
-                subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
-              />
-            }
-            disabled={isPageDisabled}
-          >
-            <Stack direction="row" alignItems="center" gap={5} pt={1}>
-              <FormControlLabel
-                sx={{
-                  '& .MuiTypography-root': {
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    color: theme.palette.text.danger,
-                  },
+              </StyledAccordion>
+              {/* spend limit */}
+              <StyledAccordion
+                isOpen={currentExpanedTab === 2}
+                onChange={(closed) => {
+                  seCurrentExpanedTab(closed ? 2 : -1);
                 }}
-                label="Set maximum weekly spending limit"
-                control={
-                  <Checkbox
+                Title={
+                  <CommonTitle
+                    title="Spend Limit"
+                    subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
+                  />
+                }
+                disabled={isPageDisabled}
+              >
+                <Stack direction="row" alignItems="center" gap={5} pt={1}>
+                  <FormControlLabel
                     sx={{
-                      '&.Mui-checked': {
+                      '& .MuiTypography-root': {
+                        fontWeight: '500',
+                        fontSize: '14px',
+                        lineHeight: '20px',
                         color: theme.palette.text.danger,
                       },
                     }}
-                    checked={spendLimitChecked}
+                    label="Set maximum weekly spending limit"
+                    control={
+                      <Checkbox
+                        sx={{
+                          '&.Mui-checked': {
+                            color: theme.palette.text.danger,
+                          },
+                        }}
+                        checked={spendLimitChecked}
+                        onChange={(event) => {
+                          setSpendLimitChecked(event.target.checked);
+                          setHasGlobalChange(true);
+                        }}
+                      />
+                    }
+                  />
+                  <StyledInput
+                    type="number"
+                    sx={{
+                      width: '100%',
+                      maxWidth: '280px',
+
+                      '& .MuiInputBase-root': {
+                        padding: '12px 17px 12px 22px',
+                      },
+
+                      '& .MuiInputBase-input': {
+                        padding: 0,
+                        textAlign: 'left',
+
+                        '&::placeholder': {
+                          opacity: 1,
+                          color: '#737373',
+                        },
+                      },
+
+                      '& .MuiTypography-root': {
+                        fontWeight: '500',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        color: theme.palette.text.danger,
+                      },
+
+                      '& .MuiInputAdornment-positionStart': {
+                        p: {
+                          paddingRight: '6px',
+                        },
+                      },
+                    }}
+                    disabled={!spendLimitChecked}
+                    placeholder="Max amount"
+                    value={spendLimit}
                     onChange={(event) => {
-                      setSpendLimitChecked(event.target.checked);
+                      setSpendLimit(event.target.value);
                       setHasGlobalChange(true);
                     }}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                      endAdornment: <InputAdornment position="end">/week</InputAdornment>,
+                    }}
+                  />
+                </Stack>
+              </StyledAccordion>
+            </Box>
+          ) : (
+            <Box>
+              <StyledAccordion
+                isOpen={currentExpanedTab === 0}
+                onChange={(closed) => {
+                  seCurrentExpanedTab(closed ? 0 : -1);
+                }}
+                Title={
+                  <CommonTitle
+                    title="Duration"
+                    subTitle="Choose the time period during which your items will be featured."
                   />
                 }
-              />
-              <StyledInput
-                type="number"
-                sx={{
-                  width: '100%',
-                  maxWidth: '280px',
-
-                  '& .MuiInputBase-root': {
-                    padding: '12px 17px 12px 22px',
-                  },
-
-                  '& .MuiInputBase-input': {
-                    padding: 0,
-                    textAlign: 'left',
-
-                    '&::placeholder': {
-                      opacity: 1,
-                      color: '#737373',
-                    },
-                  },
-
-                  '& .MuiTypography-root': {
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    color: theme.palette.text.danger,
-                  },
-
-                  '& .MuiInputAdornment-positionStart': {
-                    p: {
-                      paddingRight: '6px',
-                    },
-                  },
-                }}
-                disabled={!spendLimitChecked}
-                placeholder="Max amount"
-                value={spendLimit}
-                onChange={(event) => {
-                  setSpendLimit(event.target.value);
-                  setHasGlobalChange(true);
-                }}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                  endAdornment: <InputAdornment position="end">/week</InputAdornment>,
-                }}
-              />
-            </Stack>
-          </StyledAccordion>
+                disabled={isPageDisabled}
+              >
+                <OptionsSelect
+                  items={featuredDurationTypes}
+                  value={featuredDuration}
+                  onChange={(value) => {
+                    setFeaturedDuration(value);
+                  }}
+                />
+              </StyledAccordion>
+              {/* featured spend amount */}
+              <Stack gap={2} pt={5}>
+                <Typography variant="body1" fontWeight={600}>
+                  Amount
+                </Typography>
+                <Typography variant="h5" fontSize={32} lineHeight={1}>
+                  ${featuredDurationAmountMap[featuredDuration]}
+                </Typography>
+              </Stack>
+            </Box>
+          )}
         </Box>
         {!loyaltySettingsQuery.isLoading && (
           <Box
