@@ -1,5 +1,5 @@
 // third party
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -34,10 +34,16 @@ const fieldContainerSx = {
   padding: '14px 0',
 };
 
+const tabSx = {
+  padding: '8px 12px',
+  textTransform: 'none',
+};
+
 export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
 
+  const [currentTab, setCurrentTab] = useState(0);
   const [render, setRender] = useState(false);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -213,25 +219,58 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     );
   }
 
-  console.log(product);
-
   return (
     <SidebarContainer title="Add Items" onClose={onClose}>
+      {shop?.shopType === 'food' && (
+        <Tabs
+          value={currentTab}
+          sx={{
+            paddingBottom: 5,
+          }}
+          onChange={(event, newValue) => {
+            setCurrentTab(newValue);
+          }}
+        >
+          <Tab
+            label="Details"
+            sx={tabSx}
+            onClick={() => {
+              document?.getElementById('add-product-details')?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }}
+          />
+          <Tab
+            label="Features"
+            sx={tabSx}
+            onClick={() => {
+              document?.getElementById('add-product-features')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          />
+          <Tab
+            sx={tabSx}
+            label="Dietary"
+            onClick={() => {
+              document?.getElementById('add-product-dietry')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          />
+        </Tabs>
+      )}
       {/* name */}
-      <StyledFormField
-        label="Name"
-        intputType="text"
-        containerProps={{
-          sx: fieldContainerSx,
-        }}
-        inputProps={{
-          type: 'text',
-          name: 'name',
-          value: product.name,
-          onChange: commonChangeHandler,
-          readOnly: productReadonly,
-        }}
-      />
+      <Box sx={fieldContainerSx} id="add-product-details">
+        <StyledFormField
+          label="Name"
+          intputType="text"
+          // containerProps={{
+          //   sx: fieldContainerSx,
+          // }}
+          inputProps={{
+            type: 'text',
+            name: 'name',
+            value: product.name,
+            onChange: commonChangeHandler,
+            readOnly: productReadonly,
+          }}
+        />
+      </Box>
       {/* type */}
       <StyledFormField
         label="Type"
@@ -334,23 +373,26 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         }}
       />
       {/* attributes */}
-      {shop?.shopType === 'food' && (
-        <StyledFormField
-          label="Attributes"
-          intputType="optionsSelect"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
-          inputProps={{
-            value: hasAttribute,
-            items: attributeOptions,
-            onChange: (value) => {
-              setHasAttribute(value);
-            },
-            readOnly: productReadonly,
-          }}
-        />
-      )}
+      <Box sx={fieldContainerSx} id="add-product-features">
+        {shop?.shopType === 'food' && (
+          <StyledFormField
+            label="Attributes"
+            intputType="optionsSelect"
+            // containerProps={{
+            //   : fieldContainerSx,
+            // }}
+            inputProps={{
+              value: hasAttribute,
+              items: attributeOptions,
+              onChange: (value) => {
+                setHasAttribute(value);
+              },
+              readOnly: productReadonly,
+            }}
+          />
+        )}
+      </Box>
+
       {hasAttribute === 'yes' && (
         <Box>
           <StyledFormField
@@ -437,29 +479,32 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         />
       )}
       {/* dietry options */}
-      {shop?.shopType === 'food' && (
-        <StyledFormField
-          label="Dietary"
-          intputType="optionsSelect"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
-          inputProps={{
-            readOnly: productReadonly,
-            value: product?.dietary,
-            multiple: true,
-            items: dietryOptions,
-            onChange: (value) => {
-              if (product?.dietary?.includes(value)) {
-                product.dietary = product?.dietary?.filter((item) => item !== value) || [];
-              } else {
-                product?.dietary.push(value);
-              }
-              setRender(!render);
-            },
-          }}
-        />
-      )}
+      <Box sx={fieldContainerSx} id="add-product-dietry">
+        {shop?.shopType === 'food' && (
+          <StyledFormField
+            label="Dietary"
+            intputType="optionsSelect"
+            // containerProps={{
+            //  ,
+            // }}
+            inputProps={{
+              readOnly: productReadonly,
+              value: product?.dietary,
+              multiple: true,
+              items: dietryOptions,
+              onChange: (value) => {
+                if (product?.dietary?.includes(value)) {
+                  product.dietary = product?.dietary?.filter((item) => item !== value) || [];
+                } else {
+                  product?.dietary.push(value);
+                }
+                setRender(!render);
+              },
+            }}
+          />
+        )}
+      </Box>
+
       {/*  inventory */}
       {shop?.shopType !== 'food' && (
         <Box sx={fieldContainerSx}>

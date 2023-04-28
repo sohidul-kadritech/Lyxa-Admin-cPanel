@@ -24,7 +24,7 @@ export default function CategoryItem({
 }) {
   const theme = useTheme();
   const shop = useSelector((store) => store.Login.admin);
-  const [open, setOpen] = useState(!!category?.sortedProducts?.length);
+  const [open, setOpen] = useState(!!category?.sortedProducts?.length || !!category?.subCategories?.length);
   const [render, setRender] = useState(false);
 
   const bestSellerMutation = useMutation((status) =>
@@ -79,7 +79,7 @@ export default function CategoryItem({
               style={{
                 color: category?.category?.isUnsortable ? '#AFAFAE' : '#363636',
               }}
-              className="drag-handler"
+              className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler'}`}
             />
             <Stack direction="row" alignItems="center" gap={5}>
               {shop?.shopType !== 'food' && (
@@ -166,7 +166,11 @@ export default function CategoryItem({
             isInsideBestSellers={category?.category?.isShopBestSellers}
           />
         ) : (
-          <SubCategoriesContainer gOpen={gOpen} subCategories={category?.subCategories} />
+          <SubCategoriesContainer
+            gOpen={gOpen}
+            subCategories={category?.subCategories}
+            asSearchResult={asSearchResult}
+          />
         )}
         {/* add product */}
         {isOridanryCategory && shop?.shopType === 'food' && (

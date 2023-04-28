@@ -12,7 +12,7 @@ import { ProductsContext } from '../ProductContext';
 import ProductsContainer from './ProductsContainer';
 import { StyledAccordion, StyledAccordionSummary } from './helpers';
 
-export default function SubCategoryItem({ subCategory, gOpen, fromSearch }) {
+export default function SubCategoryItem({ subCategory, gOpen, asSearchResult }) {
   const theme = useTheme();
 
   const { setEditSubCategory } = useContext(ProductsContext);
@@ -60,7 +60,7 @@ export default function SubCategoryItem({ subCategory, gOpen, fromSearch }) {
       <StyledAccordionSummary expandIcon={<ExpandMore />}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" paddingRight={6}>
           <Stack direction="row" alignItems="center" gap={5}>
-            <HandleIcon className="drag-handler-sub-category grabable" />
+            <HandleIcon className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler-sub-category grabable'}`} />
             <Stack direction="row" alignItems="center" gap={5}>
               <Box>
                 <Typography variant="body4" fontWeight={600} color="textPrimary" display="block" pb={1.5}>
@@ -107,7 +107,7 @@ export default function SubCategoryItem({ subCategory, gOpen, fromSearch }) {
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails>
-        <ProductsContainer products={product()} fromSearch={fromSearch} />
+        <ProductsContainer products={product()} asSearchResult={asSearchResult} />
         {/* <Box pl={8.5} pt={6}>
           <Button
             variant="contained"

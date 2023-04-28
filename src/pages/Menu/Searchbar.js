@@ -2,15 +2,37 @@
 import { Add } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import { ReactComponent as CollapseIcon } from '../../assets/icons/collapse.svg';
+import { ReactComponent as FileAddIcon } from '../../assets/icons/file-add-icon.svg';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
-import { getAddMenuOptions } from './helpers';
+import { bulkItemOptions, getAddMenuOptions } from './helpers';
 
 // styled button
-function StyledButton({ ...props }) {
+function AddMenuButton({ ...props }) {
   return (
     <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
       Add
+    </Button>
+  );
+}
+
+// styled button
+function BulkItemsButton({ ...props }) {
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      size="small"
+      sx={{
+        minWidth: 'auto',
+        flexShrink: 0,
+        gap: 2,
+      }}
+      startIcon={<FileAddIcon />}
+      {...props}
+    >
+      {' '}
+      Bulk Items
     </Button>
   );
 }
@@ -26,6 +48,7 @@ function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse,
           setSearchValue(e.target.value);
         }}
       />
+      <ThreeDotsMenu handleMenuClick={() => {}} menuItems={bulkItemOptions} ButtonComponent={BulkItemsButton} />
       <Button
         onClick={onCollapse}
         variant="contained"
@@ -40,7 +63,7 @@ function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse,
       <ThreeDotsMenu
         handleMenuClick={onMenuClick}
         menuItems={getAddMenuOptions(shopType)}
-        ButtonComponent={StyledButton}
+        ButtonComponent={AddMenuButton}
       />
     </Stack>
   );

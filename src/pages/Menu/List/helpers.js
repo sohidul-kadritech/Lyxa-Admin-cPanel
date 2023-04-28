@@ -1,9 +1,14 @@
 import { Accordion, AccordionSummary, styled } from '@mui/material';
 
 export const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  padding: '0',
+  padding: '0 20px 0 20px',
   background: 'transparent',
   borderBottom: '1px solid #EEEEEE',
+  borderRadius: '8px',
+
+  '&:hover': {
+    background: theme.palette.grey[100],
+  },
 
   '& .MuiSvgIcon-root': {
     color: theme.palette.text.primary,
@@ -25,6 +30,7 @@ export const StyledAccordion = styled(Accordion)(() => ({
   '& .MuiAccordionDetails-root': {
     paddingBottom: '30px',
     paddingLeft: '30px',
+    paddingRight: '30px',
   },
 }));
 

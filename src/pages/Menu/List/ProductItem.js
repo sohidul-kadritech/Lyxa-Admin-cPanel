@@ -14,7 +14,7 @@ import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
 import { ProductOverlayTag, getProductMenuOptions, isBestSellerOrFavorite } from '../helpers';
 
-export default function ProductItem({ product, isInsideBestSellers, isInsideFavorites, ...props }) {
+export default function ProductItem({ product, isInsideBestSellers, isInsideFavorites, asSearchResult, ...props }) {
   const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
 
   const theme = useTheme();
@@ -161,10 +161,15 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
       direction="row"
       alignItems="center"
       justifyContent="space-between"
-      bgcolor="#fbfbfb"
+      // bgcolor="#fbfbfb"
+      pl={5}
+      pr={5}
       onClick={() => {
         setEditProduct(product, true);
       }}
+      // sx={{
+
+      // }}
       {...props}
     >
       {/* left */}
@@ -173,7 +178,7 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="drag-handler-product grabable"
+          className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler-product grabable'}`}
         />
         <Box
           sx={{

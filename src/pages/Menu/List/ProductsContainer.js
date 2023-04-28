@@ -30,30 +30,34 @@ export default function ProductsContainer({ products, isInsideFavorites, isInsid
   }
 
   return (
-    <Container onDrop={asSearchResult ? () => {} : onDrop} lockAxis="y" dragHandleSelector=".drag-handler-product">
+    <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler-product">
       {products.map((product, index, array) => {
         if (asSearchResult && !product.matched) {
           return null;
         }
 
-        console.log(updatedProduct);
-
         if (product._id === updatedProduct?._id) {
           // eslint-disable-next-line no-param-reassign
           product = updatedProduct;
           array[index] = updatedProduct;
-          console.log('changed');
         }
 
         return (
           <Draggable key={product?._id}>
             <ProductItem
+              asSearchResult={asSearchResult}
               product={product}
               isInsideFavorites={isInsideFavorites}
               isInsideBestSellers={isInsideBestSellers}
               sx={{
                 borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
                 cursor: 'pointer',
+                backgroundColor: '#fbfbfb',
+                borderRadius: '8px',
+
+                '&:hover': {
+                  bgcolor: '#f5f5f5',
+                },
               }}
             />
           </Draggable>
