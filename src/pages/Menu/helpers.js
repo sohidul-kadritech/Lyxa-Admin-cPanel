@@ -85,6 +85,17 @@ export const getProductMenuOptions = (product, shopFavourites) => [
   },
 ];
 
+export const bulkItemOptions = [
+  {
+    label: 'Upload',
+    value: 'upload',
+  },
+  {
+    label: 'Download',
+    value: 'download',
+  },
+];
+
 export const attributeOptions = [
   {
     label: 'Yes',

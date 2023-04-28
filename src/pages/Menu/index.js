@@ -11,8 +11,7 @@ import { Container, Draggable } from 'react-smooth-dnd';
 import PageTop from '../../components/Common/PageTop';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import dropSort from '../../helpers/dropSort';
-import { local_product_search } from '../../helpers/localSearch';
-import { Throttler } from '../../helpers/throttle';
+import { local_product_category_search, local_product_category_subCategory_search } from '../../helpers/localSearch';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
@@ -27,7 +26,7 @@ import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
-  const searchThrottler = new Throttler(200);
+  // const searchThrottler = new Throttler(100);
 
   const shop = useSelector((store) => store.Login.admin);
   const Deals = useMemo(() => new ShopDeals(shop), []);
@@ -82,9 +81,11 @@ export default function MenuPage() {
   const onSearch = (str) => {
     setSearchValue(str);
 
-    searchThrottler.exec(() => {
-      setCategories(local_product_search(str, categories));
-    });
+    if (shop?.shopType === 'food') {
+      setCategories(local_product_category_search(str, categories));
+    } else {
+      setCategories(local_product_category_subCategory_search(str, categories));
+    }
   };
 
   // sort products
@@ -104,19 +105,15 @@ export default function MenuPage() {
     () => ({
       favorites,
       setFavorites,
-
       bestSellers,
-
       updatedProduct,
       setUpdatedProduct,
-
       editProduct,
       setEditProduct: (product, readonly) => {
         setEditProduct(product);
         setSidebar('add-item');
         setProductReadonly(readonly);
       },
-
       setEditSubCategory: (subCategory) => {
         setEditSubCategory(subCategory);
         setSidebar('edit-sub-category');
@@ -171,6 +168,7 @@ export default function MenuPage() {
                 if (searchValue !== '' && !category?.category?.category?.matched) {
                   return null;
                 }
+
                 return (
                   <Draggable key={category?.category?._id}>
                     <CategoryItem
