@@ -3,7 +3,7 @@ import { successMsg } from '../../helpers/successMsg';
 import {
   ADD_CATEGORY,
   ADD_SUB_CATEGORY,
-  DELETE_SUB_CAT,
+  DELETE_SUB_CATEGORY,
   EDIT_CATEGORY,
   EDIT_SUB_CATEGORY,
   GET_ALL_CATEGORY,
@@ -253,7 +253,7 @@ export const deleteSubCategory = (id) => async (dispatch) => {
     dispatch({
       type: actionType.DELETE_SUB_CATEGORY_REQUEST_SEND,
     });
-    const { data } = await requestApi().request(DELETE_SUB_CAT, {
+    const { data } = await requestApi().request(DELETE_SUB_CATEGORY, {
       method: 'POST',
       data: { id },
     });

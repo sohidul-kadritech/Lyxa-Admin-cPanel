@@ -123,6 +123,18 @@ export default function AddCategory({ onClose, editCategory }) {
     setLoading(false);
   };
 
+  // delete category
+  const deleteCategoryMutation = useMutation((data) => AXIOS.post(Api.DELETE_CATEGORY, { id: editCategory?._id }), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+
+      if (data?.status) {
+        queryClient.invalidateQueries('category-wise-products');
+        onClose();
+      }
+    },
+  });
+
   return (
     <>
       <SidebarContainer title="Add Category" onClose={onClose}>
@@ -206,6 +218,8 @@ export default function AddCategory({ onClose, editCategory }) {
             variant="text"
             color="error"
             startIcon={<DeleteIcon />}
+            onClick={deleteCategoryMutation.mutate}
+            disabled={deleteCategoryMutation.isLoading}
             fullWidth
             sx={{
               marginTop: '20px',

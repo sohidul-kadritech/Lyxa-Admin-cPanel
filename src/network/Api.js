@@ -71,14 +71,14 @@ export const ADD_CATEGORY = `${ADMIN_ENDPOINT}/category/add-category`;
 export const GET_ALL_CATEGORY = `${ADMIN_ENDPOINT}/category`;
 export const SINGLE_CATEGORY = `${ADMIN_ENDPOINT}/category/get-single-category`;
 export const EDIT_CATEGORY = `${ADMIN_ENDPOINT}/category/update`;
-// export const DELETE_CATEGORY = `${ADMIN_ENDPOINT}/category/update`;
+export const DELETE_CATEGORY = `${ADMIN_ENDPOINT}/category/delete`;
 export const SORT_CATEGORIES = `${ADMIN_ENDPOINT}/category/sort`;
 
 // SUB CATEGORY
 export const ADD_SUB_CATEGORY = `${ADMIN_ENDPOINT}/sub-category/add`;
 export const EDIT_SUB_CATEGORY = `${ADMIN_ENDPOINT}/sub-category/update`;
 export const GET_ALL_SUB_CATEGORY = `${ADMIN_ENDPOINT}/sub-category/get-all-subcategory-by-category-id`;
-export const DELETE_SUB_CAT = `${ADMIN_ENDPOINT}/sub-category/delete`;
+export const DELETE_SUB_CATEGORY = `${ADMIN_ENDPOINT}/sub-category/delete`;
 export const SUB_CATEGORY_SORTING = `${ADMIN_ENDPOINT}/sub-category/sort`;
 
 // SELLER

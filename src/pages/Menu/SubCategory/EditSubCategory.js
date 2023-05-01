@@ -82,6 +82,21 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
     });
   };
 
+  // delete category
+  const deleteCategoryMutation = useMutation(
+    (data) => AXIOS.post(Api.DELETE_SUB_CATEGORY, { id: editSubCategory?._id }),
+    {
+      onSuccess: (data) => {
+        successMsg(data?.message, data?.status ? 'success' : undefined);
+
+        if (data?.status) {
+          queryClient.invalidateQueries('category-wise-products');
+          onClose();
+        }
+      },
+    }
+  );
+
   return (
     <>
       <SidebarContainer title="Edit Sub-Category" onClose={onClose}>
@@ -124,15 +139,15 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
               }}
             />
             <Stack
-              height="100%"
-              sx={{
-                height: 'auto',
-                position: 'absolute',
-                left: '0',
-                right: '0',
-                bottom: '0',
-                padding: '24px 16px',
-              }}
+            // height="100%"
+            // sx={{
+            //   height: 'auto',
+            //   position: 'absolute',
+            //   left: '0',
+            //   right: '0',
+            //   bottom: '0',
+            //   padding: '24px 16px',
+            // }}
             >
               <Button
                 variant="contained"
@@ -152,6 +167,8 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
                 variant="text"
                 color="error"
                 startIcon={<DeleteIcon />}
+                onClick={deleteCategoryMutation.mutate}
+                disabled={deleteCategoryMutation.isLoading}
                 fullWidth
                 sx={{
                   marginTop: '20px',
