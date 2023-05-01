@@ -48,7 +48,7 @@ export default function MarketingSpentChart() {
       {
         label: 'Discount',
         data: chartdata.discount,
-        borderColor: 'rgba(21, 191, 202, 1)',
+        borderColor: 'rgba(221, 91, 99, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },
@@ -69,7 +69,7 @@ export default function MarketingSpentChart() {
       {
         label: 'Free Delivery',
         data: chartdata.freeDelivery,
-        borderColor: 'rgba(123, 191, 240, 1)',
+        borderColor: 'rgba(255, 176, 23, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },

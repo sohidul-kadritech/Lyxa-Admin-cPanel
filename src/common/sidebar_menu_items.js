@@ -5,7 +5,6 @@ import { ReactComponent as MarketingIcon } from '../assets/icons/menu-icons/mark
 import { ReactComponent as MenuIcon } from '../assets/icons/menu-icons/menu.svg';
 import { ReactComponent as OrderIcon } from '../assets/icons/menu-icons/order.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icons/menu-icons/profile.svg';
-import { ReactComponent as ServicesIcon } from '../assets/icons/menu-icons/services.svg';
 import { ReactComponent as SettingsIcon } from '../assets/icons/menu-icons/settings.svg';
 import { ReactComponent as RatingIcon } from '../assets/icons/menu-icons/star.svg';
 import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/usrs.svg';
@@ -25,11 +24,11 @@ export const shop_menu_items = [
         icon: MarketingIcon,
         to: '/marketing',
       },
-      {
-        label: 'Services',
-        icon: ServicesIcon,
-        to: '/',
-      },
+      // {
+      //   label: 'Services',
+      //   icon: ServicesIcon,
+      //   to: '/',
+      // },
       {
         label: 'Financials',
         icon: FinancialIcon,
@@ -104,6 +103,10 @@ export const shop_menu_items = [
       {
         label: 'Categories Old',
         to: '/categories/list',
+      },
+      {
+        label: 'New Orders',
+        to: '/new-orders',
       },
     ],
   },

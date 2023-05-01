@@ -159,6 +159,11 @@ export default function Payout({ paymentDetails }) {
             {paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile > 0 && (
               <PriceItem
                 title="Paid"
+                console={console.log(
+                  paymentDetails?.orderValue?.deliveryFee,
+                  paymentDetails?.toalShopProfile,
+                  paymentDetails?.totalShopUnsettle
+                )}
                 amount={
                   paymentDetails?.orderValue?.deliveryFee +
                   paymentDetails?.toalShopProfile -

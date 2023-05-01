@@ -26,6 +26,8 @@ export default function OrderAmountChart() {
       })
   );
 
+  // console.log(orderAmountGraphQuery?.data);
+
   const orderAmountData = generateGraphData(
     orderAmountGraphQuery?.data?.data?.info || [],
     (item) => item.revenue,

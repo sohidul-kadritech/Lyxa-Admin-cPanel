@@ -15,7 +15,7 @@ import NewLayout from './components/Layout';
 import { getAllAppSettings } from './store/Settings/settingsAction';
 
 // Import Routes all
-import { adminRoutes, authRoutes, customerServiceRoutes, sellerRoutes, shopRoutes } from './routes/allRoutes';
+import { adminRoutes, authRoutes, customerServiceRoutes, sellerRoutes, shopRoutes } from './routes/all_routes';
 
 // Import all middleware
 import Authmiddleware from './routes/middleware/Authmiddleware';

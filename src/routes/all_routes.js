@@ -78,6 +78,7 @@ import Financials from '../pages/Financials';
 import ShopHourSettings from '../pages/Hours';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import MenuPage from '../pages/Menu';
+import NewOrders from '../pages/NewOrder';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 import ShopProfile from '../pages/Profile';
@@ -336,7 +337,7 @@ export const shopRoutes = [
   { path: '/financials', component: Financials },
   { path: '/profile', component: ShopProfile },
   { path: '/hours', component: ShopHourSettings },
-
+  { path: '/new-orders', component: NewOrders },
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
