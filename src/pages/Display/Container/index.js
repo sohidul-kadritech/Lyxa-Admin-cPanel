@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // thrid pary
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
@@ -131,8 +130,10 @@ export default function ContainerList({ containerType }) {
   });
 
   // three dot handler
+  // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
+  // eslint-disable-next-line no-unused-vars
   const threeDotHandler = (menu, item) => {
     if (menu === 'edit') {
       setCurrentItem(item);
@@ -194,9 +195,25 @@ export default function ContainerList({ containerType }) {
                   items={items}
                   loading={listQuery.isLoading}
                   onDrop={dropSort}
-                  handleMenuClick={threeDotHandler}
+                  // handleMenuClick={threeDotHandler}
                   containerType={containerType}
                   minWidth={containerType === 'list' ? '950px' : '900px'}
+                  onDelete={(item) => {
+                    setCurrentItem(item);
+                    setConfrimModal(true);
+                  }}
+                  onEdit={(item) => {
+                    setCurrentItem(item);
+                    setSidebarOpen(true);
+                  }}
+                  onStatusChange={(item) => {
+                    item.status = item?.status === 'active' ? 'inactive' : 'active';
+                    setRender((prev) => !prev);
+                    listEditMutation.mutate({
+                      id: item?._id,
+                      status: item.status,
+                    });
+                  }}
                 />
               </Box>
             )}

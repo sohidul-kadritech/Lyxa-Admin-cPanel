@@ -78,7 +78,14 @@ export default function AddCategory({ onClose, editCategory }) {
   const categoryMutation = useMutation(
     (data) => {
       const API = editCategory?._id ? Api.EDIT_CATEGORY : Api.ADD_CATEGORY;
-      return AXIOS.post(API, data);
+      return AXIOS.request({
+        url: API,
+        method: 'POST',
+        data,
+        params: {
+          userType: 'shop',
+        },
+      });
     },
     {
       onSuccess: (data) => {

@@ -1,9 +1,13 @@
 // thrid party
+import { Edit, Visibility } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Avatar, Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
+// eslint-disable-next-line import/no-named-as-default
+import StyledIconButton from '../../../components/Styled/StyledIconButton';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import StyledTable4 from '../../../components/Styled/StyledTable4';
-import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 
 const statusColorVariants = {
   inactive: {
@@ -16,27 +20,27 @@ const statusColorVariants = {
   },
 };
 
-const menuItems = [
-  {
-    label: 'Edit container',
-    value: 'edit',
-  },
-  {
-    label: 'Set Active',
-    value: 'status',
-  },
-  {
-    label: 'Delete',
-    value: 'delete',
-    sx: {
-      color: '#DD5B63',
+// const menuItems = [
+//   {
+//     label: 'Edit container',
+//     value: 'edit',
+//   },
+//   {
+//     label: 'Set Active',
+//     value: 'status',
+//   },
+//   {
+//     label: 'Delete',
+//     value: 'delete',
+//     sx: {
+//       color: '#DD5B63',
 
-      '&:hover': {
-        background: '#FEE2E2',
-      },
-    },
-  },
-];
+//       '&:hover': {
+//         background: '#FEE2E2',
+//       },
+//     },
+//   },
+// ];
 
 const typeLabels = {
   deal: 'Deal',
@@ -44,7 +48,17 @@ const typeLabels = {
   shop: 'Shop',
 };
 
-export default function ContainerTable({ items, loading, handleMenuClick, onDrop, containerType, minWidth }) {
+export default function ContainerTable({
+  items,
+  loading,
+  // handleMenuClick,
+  onDrop,
+  containerType,
+  minWidth,
+  onStatusChange,
+  onDelete,
+  onEdit,
+}) {
   const theme = useTheme();
 
   const allColumns = [
@@ -111,20 +125,60 @@ export default function ContainerTable({ items, loading, handleMenuClick, onDrop
       align: 'right',
       headerAlign: 'right',
       renderCell: (params) => (
-        <ThreeDotsMenu
-          handleMenuClick={(menu) => {
-            handleMenuClick(menu, params.row);
-          }}
-          menuItems={menuItems.map((item) => {
-            if (item.value === 'status') {
-              return {
-                value: 'status',
-                label: `Set ${params?.row?.status === 'active' ? 'Inactive' : 'Active'}`,
-              };
-            }
-            return item;
-          })}
-        />
+        // <ThreeDotsMenu
+        //   handleMenuClick={(menu) => {
+        //     handleMenuClick(menu, params.row);
+        //   }}
+        //   menuItems={menuItems.map((item) => {
+        //     if (item.value === 'status') {
+        //       return {
+        //         value: 'status',
+        //         label: `Set ${params?.row?.status === 'active' ? 'Inactive' : 'Active'}`,
+        //       };
+        //     }
+        //     return item;
+        //   })}
+        // />
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
+          {/* visbility */}
+          <StyledSwitch
+            console={console.log(params.row)}
+            checked={params?.row?.status === 'active'}
+            onChange={() => {
+              onStatusChange(params.row);
+            }}
+          />
+          {/* shops */}
+          <StyledIconButton
+            color="primary"
+            sx={{
+              marginLeft: '17px',
+            }}
+            onClick={() => {
+              // onViewShops(params.row);
+            }}
+          >
+            <Visibility />
+          </StyledIconButton>
+          {/* delete */}
+          <StyledIconButton
+            color="primary"
+            onClick={() => {
+              onDelete(params.row);
+            }}
+          >
+            <DeleteIcon />
+          </StyledIconButton>
+          {/* edit */}
+          <StyledIconButton
+            onClick={() => {
+              onEdit(params.row);
+            }}
+            color="primary"
+          >
+            <Edit />
+          </StyledIconButton>
+        </Stack>
       ),
     },
   ];
