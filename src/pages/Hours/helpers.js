@@ -1,50 +1,5 @@
-import { Box, Stack, Typography, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
-import StyledSwitch from '../../components/Styled/StyledSwitch';
-import StyledTimePicker from '../../components/Styled/StyledTimePicker';
-
-export function DaySettings({ day }) {
-  const [render, setRender] = useState(false);
-
-  return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
-      <Typography variant="body1" fontWeight={500}>
-        {day?.day}
-      </Typography>
-      <Stack direction="row" alignItems="center" gap={7.5}>
-        <StyledSwitch
-          color="primary"
-          checked={day?.isActive}
-          onChange={() => {
-            day.isActive = !day.isActive;
-            setRender(!render);
-          }}
-        />
-        <Box></Box>
-        <StyledTimePicker
-          size="sm"
-          value={day?.open}
-          onChange={(v) => {
-            day.open = v;
-            setRender(!render);
-          }}
-        />
-        <Typography variant="body1" fontWeight={500}>
-          to
-        </Typography>
-        <StyledTimePicker
-          size="sm"
-          value={day?.closed}
-          onChange={(v) => {
-            day.open = v;
-            setRender(!render);
-          }}
-        />
-      </Stack>
-    </Stack>
-  );
-}
 
 export const StyledBox = styled(Box)(() => ({
   background: '#fff',
@@ -53,8 +8,33 @@ export const StyledBox = styled(Box)(() => ({
 }));
 
 export const holidayHourInit = {
-  date: moment(),
+  date: moment().add(1, 'd'),
   isFullDayOff: false,
-  closedStart: moment().startOf('day'),
-  closedEnd: moment().endOf('day'),
+  closedStart: moment().startOf('day').add(10, 'h'),
+  closedEnd: moment().startOf('day').add(14, 'h'),
+};
+
+export const createMomentTimeFormat = (time = '') =>
+  moment().startOf('day').add(time?.slice(0, 2), 'h').add(time?.slice(3), 'm');
+
+export const validateSettings = (setttings) => {
+  const error = {
+    status: false,
+    message: '',
+  };
+
+  const holidayDateMap = {};
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const holiday of setttings.holidayHours) {
+    if (holidayDateMap[holiday.date]) {
+      error.message = 'Can not have multiple holidays on same day.';
+      return error;
+    }
+    holidayDateMap[holiday.date] = true;
+  }
+
+  return {
+    status: true,
+  };
 };
