@@ -118,6 +118,7 @@ const Typography = (theme) => ({
     fontSize: `${pxToRem(15)}rem`,
     lineHeight: `${pxToRem(18)}rem`,
     letterSpacing: '0px',
+    display: 'block',
   },
 });
 

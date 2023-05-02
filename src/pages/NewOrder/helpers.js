@@ -89,9 +89,11 @@ export function StyledOrderDetailBox({ title, children }) {
         padding: '12px 16px',
       }}
     >
-      <Typography variant="body4" display="block" pb={2} fontWeight={600}>
-        {title}
-      </Typography>
+      {title && (
+        <Typography variant="body4" display="block" pb={2} fontWeight={600}>
+          {title}
+        </Typography>
+      )}
       {children}
     </Box>
   );
