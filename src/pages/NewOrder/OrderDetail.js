@@ -2,19 +2,16 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 
-import Timeline from '@mui/lab/Timeline';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import CloseButton from '../../components/Common/CloseButton';
 import { StyledOrderDetailBox } from './helpers';
+import OrderTimeline from './OrderTimeline';
 
 // project import
 export default function OrderDetail({ order, onClose }) {
   const theme = useTheme();
+
+  console.log(order);
 
   return (
     <Box
@@ -80,28 +77,12 @@ export default function OrderDetail({ order, onClose }) {
           </StyledOrderDetailBox>
           {/* order timeline */}
           <StyledOrderDetailBox title="Order Timeline">
-            <Timeline>
-              <TimelineItem>
-                <TimelineSeparator>
-                  <TimelineDot />
-                  <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>Eat</TimelineContent>
-              </TimelineItem>
-              <TimelineItem>
-                <TimelineSeparator>
-                  <TimelineDot />
-                  <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>Code</TimelineContent>
-              </TimelineItem>
-              <TimelineItem>
-                <TimelineSeparator>
-                  <TimelineDot />
-                </TimelineSeparator>
-                <TimelineContent>Sleep</TimelineContent>
-              </TimelineItem>
-            </Timeline>
+            <OrderTimeline
+              orderTimeline={order?.timeline}
+              sx={{
+                paddingTop: '5px',
+              }}
+            />
           </StyledOrderDetailBox>
         </Stack>
       </Box>
