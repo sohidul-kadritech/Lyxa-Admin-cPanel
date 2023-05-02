@@ -1,5 +1,3 @@
-// third party
-
 // project import
 import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
@@ -37,7 +35,11 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
       field: 'paymentMethod',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography variant="body4" className="text-capitalize">
+          {row?.paymentMethod} {row?.selectPos !== 'no' ? '(Pos)' : ''}
+        </Typography>
+      ),
     },
     {
       showFor: ['ongoing', 'delivered', 'incomplete'],

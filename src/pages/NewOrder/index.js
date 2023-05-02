@@ -62,7 +62,7 @@ export default function NewOrders() {
         <Tab label="Delivered" sx={tabSx} />
         <Tab label="Incomplete" sx={tabSx} />
       </Tabs>
-      <SearchBar searchPlaceHolder="Search 24 items" queryParams={queryParams} setQueryParams={setQueryParams} />
+      <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
       <OrderTable
         orders={fiterOrders(ordersQuery?.data?.data.orders, orderFilterToTabValueMap[currentTab])}
         orderFilter={orderFilterToTabValueMap[currentTab]}

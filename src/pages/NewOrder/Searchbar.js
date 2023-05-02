@@ -1,14 +1,22 @@
 import { Stack } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterDate from '../../components/Filter/FilterDate';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { deepClone } from '../../helpers/deepClone';
+import { Throttler } from '../../helpers/throttle';
 import { sortOptions } from './helpers';
 
-export default function SearchBar({ searchPlaceHolder, queryParams }) {
+export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams }) {
+  const Throttle = new Throttler(300);
   const [localState, setLocalState] = useState(deepClone(queryParams));
+
+  useEffect(() => {
+    Throttle.exec(() => {
+      setQueryParams(deepClone(localState));
+    });
+  }, [localState]);
 
   return (
     <Stack direction="row" alignItems="center" gap="20px" pb={6.5}>
