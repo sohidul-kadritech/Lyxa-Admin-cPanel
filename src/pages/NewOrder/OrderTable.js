@@ -1,42 +1,37 @@
 // third party
 
 // project import
-import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import StyledTable from '../../components/Styled/StyledTable3';
-import { orderStatusMap, statusColorVariants } from './helpers';
+import { UserAvatar, getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
 
-export default function OrderTable({ orders = [], onRowClick }) {
+export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
+  const theme = useTheme();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+
   const columns = [
     {
+      showFor: ['ongoing', 'delivered', 'incomplete'],
       id: 1,
       headerName: 'ORDERS',
       field: 'orders',
-      flex: 1,
+      flex: orderFilter === 'incomplete' ? 1.5 : 1,
       sortable: false,
       minWidth: 270,
       renderCell: ({ row }) => (
-        <Stack direction="row" alignItems="center" gap={5}>
-          <Avatar alt="user-image" src={row?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
-            {row?.user?.name[0]}
-          </Avatar>
-          <Stack gap={1.5}>
-            <Typography variant="body4">{row?.user?.name}</Typography>
-            <Typography
-              variant="body4"
-              sx={{
-                fontSize: '13px',
-                lineHeight: '15px',
-                color: '#737373',
-              }}
-            >
-              {row?.orderId}
-            </Typography>
-          </Stack>
-        </Stack>
+        <UserAvatar
+          imgAlt="user-image"
+          imgUrl={row?.user?.profile_photo}
+          imgFallbackCharacter={row?.user?.name?.charAt(0)}
+          name={row?.user?.name}
+          subTitle={row?.orderId}
+        />
       ),
     },
     {
+      showFor: ['ongoing'],
       id: 2,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
@@ -45,15 +40,56 @@ export default function OrderTable({ orders = [], onRowClick }) {
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
+      showFor: ['ongoing', 'delivered', 'incomplete'],
       id: 3,
       headerName: 'DATE',
       field: 'createdAt',
       minWidth: 240,
       sortable: false,
-      flex: 1,
+      flex: orderFilter === 'incomplete' ? 1.5 : 1,
       renderCell: ({ value }) => <Typography variant="body4">{moment(value).format('MMM D, YYYY h:mm a')}</Typography>,
     },
     {
+      showFor: ['delivered'],
+      id: 3,
+      headerName: 'RIDER',
+      field: 'deliveryBoy',
+      minWidth: 270,
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => (
+        <UserAvatar
+          imgAlt="rider-image"
+          imgUrl={row?.deliveryBoy?.image}
+          imgFallbackCharacter={row?.deliveryBoy?.name?.charAt(0)}
+          name={row?.deliveryBoy?.name}
+        />
+      ),
+    },
+    {
+      showFor: ['delivered'],
+      id: 3,
+      headerName: 'RATING',
+      field: 'rating',
+      sortable: false,
+      flex: 1,
+      renderCell: () => (
+        <Typography
+          variant="body4"
+          fontWeight={600}
+          display="flex"
+          color={theme.palette.primary.main}
+          sx={{
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
+          {/* <StarIcon /> {review?.rating} */}_
+        </Typography>
+      ),
+    },
+    {
+      showFor: ['ongoing', 'incomplete'],
       id: 4,
       headerName: 'STATUS',
       field: 'orderStatus',
@@ -74,12 +110,19 @@ export default function OrderTable({ orders = [], onRowClick }) {
       ),
     },
     {
-      id: 4,
+      showFor: ['ongoing', 'delivered', 'incomplete'],
+      id: 5,
       headerName: 'PROFIT',
       field: 'profit',
       sortable: false,
+      align: 'right',
+      headerAlign: 'right',
       flex: 1,
-      renderCell: () => <Typography variant="body4">$230.00</Typography>,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">
+          {currency} {getOrderProfit(row)}
+        </Typography>
+      ),
     },
   ];
 
@@ -96,7 +139,7 @@ export default function OrderTable({ orders = [], onRowClick }) {
       }}
     >
       <StyledTable
-        columns={columns}
+        columns={columns.filter((column) => column.showFor.includes(orderFilter))}
         rows={orders}
         getRowId={(row) => row?._id}
         rowHeight={71}
@@ -105,6 +148,13 @@ export default function OrderTable({ orders = [], onRowClick }) {
           '& .MuiDataGrid-row': {
             cursor: 'pointer',
           },
+        }}
+        components={{
+          NoRowsOverlay: () => (
+            <Stack height="100%" alignItems="center" justifyContent="center">
+              No Order found
+            </Stack>
+          ),
         }}
       />
     </Box>

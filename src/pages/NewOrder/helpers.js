@@ -1,4 +1,6 @@
-import { Box, Typography, useTheme } from '@mui/material';
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable default-param-last */
+import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 
 export const orderStatusMap = {
@@ -65,7 +67,7 @@ export const sortOptions = [
   },
 ];
 
-export const getQueryParamsInit = (shopId) => ({
+export const queryParamsInit = {
   page: 1,
   pageSize: 25,
   sortBy: 'DESC',
@@ -73,10 +75,40 @@ export const getQueryParamsInit = (shopId) => ({
   startDate: moment().startOf('month').format('YYYY-MM-DD'),
   endDate: moment().format('YYYY-MM-DD'),
   searchKey: '',
-  shop: shopId,
+  shop: '',
   orderType: 'all',
   model: 'order',
-});
+};
+
+export const fiterOrders = (orders = [], filter) => {
+  const filters = {
+    ongoing: {
+      placed: true,
+      accepted_delivery_boy: true,
+      preparing: true,
+      ready_to_pickup: true,
+      order_on_the_way: true,
+    },
+
+    delivered: {
+      delivered: true,
+    },
+
+    incomplete: {
+      cancelled: true,
+      refused: true,
+    },
+  };
+
+  const cFilter = filters[filter];
+
+  return orders.filter((order) => cFilter && cFilter[order?.orderStatus]);
+};
+
+export const getOrderProfit = (order) => {
+  const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
+  return totalAmount - order?.dropCharge?.dropChargeFromOrder;
+};
 
 export function StyledOrderDetailBox({ title, children }) {
   const theme = useTheme();
@@ -96,5 +128,30 @@ export function StyledOrderDetailBox({ title, children }) {
       )}
       {children}
     </Box>
+  );
+}
+
+export function UserAvatar({ imgUrl, imgAlt, imgFallbackCharacter, name, subTitle }) {
+  return (
+    <Stack direction="row" alignItems="center" gap={5}>
+      <Avatar alt={imgAlt} src={imgUrl} sx={{ width: 36, height: 36 }}>
+        {imgFallbackCharacter}
+      </Avatar>
+      <Stack gap={1.5}>
+        <Typography variant="body4">{name}</Typography>
+        {subTitle && (
+          <Typography
+            variant="body4"
+            sx={{
+              fontSize: '13px',
+              lineHeight: '15px',
+              color: '#737373',
+            }}
+          >
+            {subTitle}
+          </Typography>
+        )}
+      </Stack>
+    </Stack>
   );
 }
