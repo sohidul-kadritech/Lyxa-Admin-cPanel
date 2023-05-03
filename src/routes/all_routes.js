@@ -83,10 +83,12 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 import ShopProfile from '../pages/Profile';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
+
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
+import ShopSettings2 from '../pages/Settings/Shop';
 import ShopDashboard from '../pages/ShopDashboard';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
@@ -340,6 +342,7 @@ export const shopRoutes = [
   { path: '/profile', component: ShopProfile },
   { path: '/hours', component: ShopHourSettings },
   { path: '/new-orders', component: NewOrders },
+  { path: '/shop/settings', component: ShopSettings2 },
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
