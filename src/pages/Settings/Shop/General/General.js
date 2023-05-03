@@ -1,5 +1,5 @@
-import { Box, Typography } from '@material-ui/core';
-import { Stack } from '@mui/material';
+// import { ,  } from '@material-ui';
+import { Box, Stack, Typography } from '@mui/material';
 
 // export.module
 export function General() {
