@@ -14,11 +14,6 @@ import OrderTable from './OrderTable';
 import SearchBar from './Searchbar';
 import { fiterOrders, queryParamsInit } from './helpers';
 
-const tabSx = {
-  padding: '8px 12px',
-  textTransform: 'none',
-};
-
 const orderFilterToTabValueMap = {
   0: 'ongoing',
   1: 'delivered',
@@ -56,11 +51,16 @@ export default function NewOrders() {
         }}
         sx={{
           paddingBottom: '30px',
+
+          '& .MuiTab-root': {
+            padding: '8px 12px',
+            textTransform: 'none',
+          },
         }}
       >
-        <Tab label="Ongoing" sx={tabSx} />
-        <Tab label="Delivered" sx={tabSx} />
-        <Tab label="Incomplete" sx={tabSx} />
+        <Tab label="Ongoing" />
+        <Tab label="Delivered" />
+        <Tab label="Incomplete" />
       </Tabs>
       <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
       <OrderTable

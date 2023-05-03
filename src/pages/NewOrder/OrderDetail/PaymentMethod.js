@@ -1,5 +1,7 @@
 import { Typography } from '@mui/material';
 import { ReactComponent as CashIcon } from '../../../assets/icons/cash.svg';
+import { ReactComponent as CreditIcon } from '../../../assets/icons/credit-card.svg';
+import { ReactComponent as LyaxPayIcon } from '../../../assets/icons/lyxa-pay.svg';
 import { StyledOrderDetailBox } from '../helpers';
 
 const paymentMethodLabelMap = {
@@ -8,7 +10,15 @@ const paymentMethodLabelMap = {
     icon: <CashIcon />,
   },
 
-  online: 'Wallet',
+  wallet: {
+    label: 'Lyxa pay',
+    icon: <LyaxPayIcon />,
+  },
+
+  card: {
+    label: 'Credit Card',
+    icon: <CreditIcon />,
+  },
 };
 
 export default function PaymentMethod({ method = '' }) {

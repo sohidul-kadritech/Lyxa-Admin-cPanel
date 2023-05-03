@@ -15,12 +15,8 @@ import PaymentDetails from './PaymentDetails';
 import PaymentMethod from './PaymentMethod';
 import Review from './Review';
 import Rider from './Rider';
+import OrderSummary from './Summary';
 import { reviews } from './mock';
-
-const tabSx = {
-  padding: '8px 12px',
-  textTransform: 'none',
-};
 
 export default function OrderDetail({ order, onClose }) {
   const admin = useSelector((store) => store.Login.admin);
@@ -88,9 +84,15 @@ export default function OrderDetail({ order, onClose }) {
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
             }}
+            sx={{
+              '& .MuiTab-root': {
+                padding: '8px 12px',
+                textTransform: 'none',
+              },
+            }}
           >
-            <Tab label="Order Detail" sx={tabSx} />
-            <Tab label="Review" sx={tabSx} />
+            <Tab label="Order Detail" />
+            <Tab label="Review" />
           </Tabs>
         </Box>
         {/* order detail */}
@@ -109,6 +111,7 @@ export default function OrderDetail({ order, onClose }) {
             {order?.orderFor === 'global' && order?.deliveryBoy && (
               <Rider rider={order?.deliveryBoy} isDelivered={order?.orderStatus === 'delivered'} />
             )}
+            <OrderSummary productsDetails={order?.productsDetails} />
             <PaymentMethod method={order?.paymentMethod} />
             {order?.summary?.reward?.points && admin?.account_type === 'admin' ? (
               <OrderReward points={order?.summary?.reward?.points} />

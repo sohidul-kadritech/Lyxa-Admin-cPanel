@@ -6,8 +6,8 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import { UserAvatar, getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
 
 export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
-  const theme = useTheme();
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const theme = useTheme();
 
   const columns = [
     {
@@ -34,6 +34,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
       flex: 1,
+      minWidth: 200,
       sortable: false,
       renderCell: ({ row }) => (
         <Typography variant="body4" className="text-capitalize">
