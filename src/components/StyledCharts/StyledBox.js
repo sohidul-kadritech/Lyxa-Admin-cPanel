@@ -12,7 +12,7 @@ export default function StyledBox({ children, loading, padding, sx }) {
         borderRadius: '7px',
         position: 'relative',
         overflow: 'hidden',
-        padding: padding ? '18px 18px 23px 20px' : '0px',
+        padding: padding ? '18px 16px' : '0px',
         ...sx,
       }}
     >

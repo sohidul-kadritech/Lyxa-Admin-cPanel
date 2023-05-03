@@ -20,6 +20,11 @@ export const shop_menu_items = [
         to: '/dashboard',
       },
       {
+        label: 'Dashboard',
+        icon: DashBoardIcon,
+        to: '/new-dashboard',
+      },
+      {
         label: 'Marketing',
         icon: MarketingIcon,
         to: '/marketing',
@@ -42,7 +47,7 @@ export const shop_menu_items = [
       {
         label: 'Order',
         icon: OrderIcon,
-        to: '/orders/list',
+        to: '/new-orders',
       },
       {
         label: 'Driver Rating',
@@ -105,8 +110,8 @@ export const shop_menu_items = [
         to: '/categories/list',
       },
       {
-        label: 'New Orders',
-        to: '/new-orders',
+        label: 'Old Orders',
+        to: '/orders/list',
       },
     ],
   },

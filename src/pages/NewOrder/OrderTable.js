@@ -2,8 +2,9 @@
 import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
-import { UserAvatar, getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
+import { getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
 
 export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();

@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable default-param-last */
-import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 
 export const orderStatusMap = {
@@ -128,30 +128,5 @@ export function StyledOrderDetailBox({ title, children }) {
       )}
       {children}
     </Box>
-  );
-}
-
-export function UserAvatar({ imgUrl, imgAlt, imgFallbackCharacter, name, subTitle }) {
-  return (
-    <Stack direction="row" alignItems="center" gap={5}>
-      <Avatar alt={imgAlt} src={imgUrl} sx={{ width: 36, height: 36 }}>
-        {imgFallbackCharacter}
-      </Avatar>
-      <Stack gap={1.5}>
-        <Typography variant="body4">{name}</Typography>
-        {subTitle && (
-          <Typography
-            variant="body4"
-            sx={{
-              fontSize: '13px',
-              lineHeight: '15px',
-              color: '#737373',
-            }}
-          >
-            {subTitle}
-          </Typography>
-        )}
-      </Stack>
-    </Stack>
   );
 }

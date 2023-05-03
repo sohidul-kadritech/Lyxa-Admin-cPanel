@@ -87,6 +87,7 @@ import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
+import ShopDashboard from '../pages/ShopDashboard';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
@@ -305,6 +306,7 @@ export const sellerRoutes = [
 
 export const shopRoutes = [
   { path: '/dashboard', component: Dashboard },
+  { path: '/new-dashboard', component: ShopDashboard },
 
   { path: '/orders/list', component: OrdersList },
   { path: '/orders/details/:id', component: OrderDetails },
