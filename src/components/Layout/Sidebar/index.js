@@ -1,18 +1,24 @@
 import { Box, Drawer, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { ReactComponent as Logo } from '../../../assets/icons/lyxa-sidebar-logo.svg';
-import { admin_menu_items, seller_menu_items, shop_menu_items } from '../../../common/sidebar_menu_items';
+import {
+  admin_menu_items,
+  customer_service_menu_items,
+  seller_menu_items,
+  shop_menu_items,
+} from '../../../common/sidebar_menu_items';
 import MenuList from './MenuList';
 
 export default function Sidebar({ sidebar, setSidebar }) {
   const matches = useMediaQuery('(max-width: 1100px)');
-  const { account_type } = useSelector((store) => store.Login.admin);
+  const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   // menu items
   let menuItems = [];
 
   if (account_type === 'shop') menuItems = shop_menu_items;
-  if (account_type === 'admin') menuItems = admin_menu_items;
+  if (account_type === 'admin')
+    menuItems = adminType !== 'customerService' ? admin_menu_items : customer_service_menu_items;
   if (account_type === 'seller') menuItems = seller_menu_items;
 
   return (

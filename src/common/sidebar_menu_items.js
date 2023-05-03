@@ -409,3 +409,51 @@ export const admin_menu_items = [
     ],
   },
 ];
+
+export const customer_service_menu_items = [
+  {
+    title: 'User & Delivery',
+    menu: [
+      {
+        label: 'User',
+        to: '/users/list',
+      },
+      {
+        label: 'Delivery Boy List',
+        to: '/deliveryman/list',
+      },
+    ],
+  },
+  {
+    title: 'Sellers & Shop',
+    menu: [
+      {
+        label: 'Sellers List',
+        to: '/seller/list',
+      },
+
+      {
+        label: 'Shops List',
+        to: '/shops/list',
+      },
+    ],
+  },
+  {
+    title: 'No Icons',
+    menu: [
+      {
+        label: 'Orders',
+        to: '/orders/list',
+      },
+      {
+        label: 'Drop Pay',
+        to: '/drop-pay',
+      },
+      {
+        label: 'Chat',
+        to: '/customer-support',
+        badgeId: 'sidebar-item-chat-badges',
+      },
+    ],
+  },
+];
