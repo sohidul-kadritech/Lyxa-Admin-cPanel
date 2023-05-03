@@ -26,7 +26,10 @@ export const SHOP_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/grap
 
 export const ADMIN_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/earnings`;
 export const SELLER_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/earnings`;
+
+// shop dashbaord
 export const SHOP_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/earnings`;
+export const SHOP_DASHBOARD_ORDER_BY_HOURS = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders-hourly`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;

@@ -8,6 +8,7 @@ export default function Orders() {
       <Grid container spacing={6.5}>
         <TotalOrdersChart />
         <ItemRanking />
+        {/* <OrderByHours /> */}
       </Grid>
     </Box>
   );
