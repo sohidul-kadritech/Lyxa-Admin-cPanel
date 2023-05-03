@@ -41,12 +41,12 @@ export default function EditField({ onClose, editItem }) {
           }}
         />
         <Box
-          sx={{
-            position: 'absolute',
-            bottom: '20px',
-            // padding: '20px',
-            width: '100%',
-          }}
+        // sx={{
+        //   position: 'absolute',
+        //   bottom: '20px',
+        //   padding: '20px',
+        //   width: '100%',
+        // }}
         >
           <Button
             variant="contained"

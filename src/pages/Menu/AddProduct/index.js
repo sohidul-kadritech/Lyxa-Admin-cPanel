@@ -379,8 +379,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         }}
       />
       {/* attributes */}
-      <Box sx={fieldContainerSx} id="add-product-features">
-        {shop?.shopType === 'food' && (
+      {shop?.shopType === 'food' && (
+        <Box sx={fieldContainerSx} id="add-product-features">
           <StyledFormField
             label="Attributes"
             intputType="optionsSelect"
@@ -396,8 +396,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
               readOnly: productReadonly,
             }}
           />
-        )}
-      </Box>
+        </Box>
+      )}
 
       {hasAttribute === 'yes' && (
         <Box>
@@ -485,14 +485,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         />
       )}
       {/* dietry options */}
-      <Box sx={fieldContainerSx} id="add-product-dietry">
-        {shop?.shopType === 'food' && (
+      {shop?.shopType === 'food' && (
+        <Box sx={fieldContainerSx} id="add-product-dietry">
           <StyledFormField
             label="Dietary"
             intputType="optionsSelect"
-            // containerProps={{
-            //  ,
-            // }}
             inputProps={{
               readOnly: productReadonly,
               value: product?.dietary,
@@ -508,9 +505,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
               },
             }}
           />
-        )}
-      </Box>
-
+        </Box>
+      )}
       {/*  inventory */}
       {shop?.shopType !== 'food' && (
         <Box sx={fieldContainerSx}>

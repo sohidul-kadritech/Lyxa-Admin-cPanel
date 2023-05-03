@@ -14,7 +14,7 @@ export default function SidebarContainer({ onClose, title, children }) {
         paddingRight: '20px',
         paddingTop: '60px',
         position: 'relative',
-        height: '100vh',
+        // height: '100vh',
       }}
     >
       <Stack
