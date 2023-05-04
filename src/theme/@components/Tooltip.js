@@ -13,6 +13,11 @@ export default function Tooltip() {
         backgroundColor: '#404040',
         maxWidth: '200px',
       },
+      arrow: {
+        '&::before': {
+          backgroundColor: '#404040',
+        },
+      },
     },
   };
 }

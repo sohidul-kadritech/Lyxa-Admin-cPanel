@@ -2,23 +2,23 @@
 import { Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+
+// project import
+import StyledBox from '../../../../components/StyledCharts/StyledBox';
 import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
 import OrderByHoursChart from './Chart';
 
-// project import
-import StyledBox from '../../../../components/StyledCharts/StyledBox';
+const tabValueToOrderTypeMap = { 0: 'delivered', 1: 'incomplete' };
 
 export default function OrdersByHour() {
   const [currentTab, setCurrentTab] = useState(0);
 
   const ordersGraph = useQuery(
-    ['order-by-hours'],
+    ['order-by-hours', { type: tabValueToOrderTypeMap[currentTab] }],
     () =>
       AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
-        params: {
-          type: 'delivered ',
-        },
+        params: { type: tabValueToOrderTypeMap[currentTab] },
       }),
     {
       onSuccess: (data) => {
@@ -34,7 +34,7 @@ export default function OrdersByHour() {
           padding: '8px 50px 18px 20px',
         }}
       >
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" justifyContent="space-between" pb={10}>
           <Typography variant="body1" fontWeight={600} pb={5}>
             Orders by Hour
           </Typography>
