@@ -1,6 +1,5 @@
 // thrid party
 import { Box, Tooltip, Typography } from '@mui/material';
-// import { createCharData, frequencyMap, getIndicatorStyle, weekdays } from './helpers';
 
 export const weekdays = {
   1: 'monday',

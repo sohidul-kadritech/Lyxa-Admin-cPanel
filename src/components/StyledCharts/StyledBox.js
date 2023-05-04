@@ -1,7 +1,7 @@
 import { Box, useTheme } from '@mui/material';
 import LoadingOverlay from '../Common/LoadingOverlay';
 
-export default function StyledBox({ children, loading, padding, sx }) {
+export default function StyledBox({ children, loading, padding, sx, ...props }) {
   const theme = useTheme();
 
   return (
@@ -12,9 +12,10 @@ export default function StyledBox({ children, loading, padding, sx }) {
         borderRadius: '7px',
         position: 'relative',
         overflow: 'hidden',
-        padding: padding ? '18px 16px' : '0px',
+        padding: padding ? '16px 18px' : '0px',
         ...sx,
       }}
+      {...props}
     >
       {loading && <LoadingOverlay />}
       {children}

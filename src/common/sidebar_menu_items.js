@@ -344,10 +344,10 @@ export const admin_menu_items = [
         label: 'Percentage Settings',
         to: '/percentage-setting',
       },
-      {
-        label: 'Reward Settings',
-        to: '/admin/settings/reward-settings',
-      },
+      // {
+      //   label: 'Reward Settings',
+      //   to: '/admin/settings/reward-settings',
+      // },
       {
         label: 'Default Message',
         to: '/admin/default-chat-message',
