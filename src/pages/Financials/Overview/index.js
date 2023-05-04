@@ -104,24 +104,16 @@ export default function Overview() {
         lg={4}
       >
         <Stack gap={3}>
-          {/* {shopDashboardQuery?.datapaymentDetails?.orderValue?.totalDiscount > 0 && ( */}
           <PriceItem title="Discount" amount={shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDiscount} />
-          {/* )} */}
-          {/* {(shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice > 0 || true) && ( */}
           <PriceItem
             title="Buy 1 Get 1"
             amount={shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice}
           />
-          {/* )} */}
-          {/* {(shopDashboardQuery?.data?.data?.summary?.orderValue?.totalRewardAmount > 0 || true) && ( */}
           <PriceItem
             title="Loyalty points"
             amount={shopDashboardQuery?.data?.data?.summary?.orderValue?.totalRewardAmount}
           />
-          {/* )} */}
-          {/* {shopDashboardQuery?.data?.data?.summary?.freeDeliveryShopCut > 0 && ( */}
           <PriceItem title="Free delivery" amount={shopDashboardQuery?.data?.data?.summary?.freeDeliveryShopCut} />
-          {/* )} */}
         </Stack>
       </InfoCard>
       <PayoutDetails paymentDetails={shopDashboardQuery?.data?.data?.summary} />

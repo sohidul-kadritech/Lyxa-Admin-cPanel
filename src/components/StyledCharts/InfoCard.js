@@ -21,7 +21,7 @@ const dropdownProps = {
   zIndex: 99,
 };
 
-export default function InfoCard({ value, title, Tag, isDropdown, children, ...props }) {
+export default function InfoCard({ value, title, Tag, isDropdown, children, valueSx, ...props }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
@@ -66,6 +66,7 @@ export default function InfoCard({ value, title, Tag, isDropdown, children, ...p
                 sx={{
                   lineHeight: '24px',
                   fontSize: '40px !important',
+                  ...valueSx,
                 }}
               >
                 {value}
