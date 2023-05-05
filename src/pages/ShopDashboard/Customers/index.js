@@ -1,6 +1,6 @@
 import { Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import { useState } from 'react';
-import TotalOrderChart from '../Orders/TotalOrdersChart';
+import TotalOrderChart from '../CommonAreaChart';
 import CustomerBreakdown from './CustomerBreakdown';
 import CustomerInfoCard from './Infocard';
 

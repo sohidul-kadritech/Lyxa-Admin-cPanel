@@ -14,17 +14,10 @@ const tabValueToOrderTypeMap = { 0: 'delivered', 1: 'incomplete' };
 export default function OrdersByHour() {
   const [currentTab, setCurrentTab] = useState(0);
 
-  const ordersGraph = useQuery(
-    ['order-by-hours', { type: tabValueToOrderTypeMap[currentTab] }],
-    () =>
-      AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
-        params: { type: tabValueToOrderTypeMap[currentTab] },
-      }),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    }
+  const ordersGraph = useQuery(['order-by-hours', { type: tabValueToOrderTypeMap[currentTab] }], () =>
+    AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
+      params: { type: tabValueToOrderTypeMap[currentTab] },
+    })
   );
 
   return (

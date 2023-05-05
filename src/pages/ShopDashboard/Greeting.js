@@ -1,8 +1,18 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
+// import getCookiesAsObject from '../../helpers/cookies/getCookiesAsObject';
+
+// let cookies;
+// if (document.cookie.length) cookies = getCookiesAsObject();
+
+// console.log(cookies);
 
 export default function Greeting() {
+  const shop = useSelector((store) => store.Login.admin);
+  console.log(shop);
+
   return (
     <Box>
       <Typography variant="h3" fontSize={22} lineHeight="26px">
@@ -14,26 +24,24 @@ export default function Greeting() {
           fontWeight={600}
           lineHeight="20px"
           display="flex"
-          sx={{
-            alignItems: 'center',
-            gap: 1,
-          }}
+          alignItems="center"
+          justifyContent="space-between"
+          gap={1}
         >
           <StarIcon />
-          4.2
+          {shop?.rating}
         </Typography>
         <Typography
           variant="body1"
           fontWeight={600}
           lineHeight="20px"
           display="flex"
-          sx={{
-            alignItems: 'center',
-            gap: 1,
-          }}
+          alignItems="center"
+          justifyContent="space-between"
+          gap={1}
         >
           <LocationIcon />
-          South, Lebanon
+          {shop?.address?.address}
         </Typography>
       </Stack>
     </Box>

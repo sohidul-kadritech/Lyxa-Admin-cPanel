@@ -22,7 +22,6 @@ export const ADMIN_DASHBOARD_USERS_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/us
 
 export const ADMIN_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/orders`;
 export const SELLER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/orders`;
-export const SHOP_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders`;
 
 export const ADMIN_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/earnings`;
 export const SELLER_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/earnings`;
@@ -30,6 +29,8 @@ export const SELLER_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/selle
 // shop dashbaord
 export const SHOP_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/earnings`;
 export const SHOP_DASHBOARD_ORDER_BY_HOURS = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders-hourly`;
+export const SHOP_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders`;
+export const SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders-issue`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;
