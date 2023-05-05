@@ -1,18 +1,13 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import { ReactComponent as SupremeIcon } from '../../../../../assets/icons/shop-settings-icons/supreme.svg';
-import { ShopAction2 } from '../../ShopAction/ShopAction2';
-// import { ShopAction } from '../ShopAction';
+import { ReactComponent as SupremeIcon } from '../../../../assets/icons/shop-settings-icons/supreme.svg';
+import { ShopAction2 } from '../ShopAction/ShopAction2';
 
 export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMethod, options, ...props }) {
   const theme = useTheme();
   console.log(buttonType);
   const boxSx = {
-    padding: '32px 56px 21px 30px',
     width: '100%',
     color: '#000',
-    backgroundColor: '#ffffff',
-    borderRadius: '7px',
-    marginBottom: '22px',
   };
   const TypoSx = {
     fontSize: '16px',
@@ -23,7 +18,7 @@ export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMe
     <Box sx={boxSx}>
       <Typography sx={TypoSx}>{title}</Typography>
       {isMethod && (
-        <Box sx={{ display: 'flex', justifyContent: 'start', gap: '12px', alignContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'start', gap: '12px', marginTop: '16px', alignContent: 'center' }}>
           <Typography sx={TypoSx}> {title2}</Typography>
           <Box
             sx={{

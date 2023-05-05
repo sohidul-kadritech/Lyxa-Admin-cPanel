@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
-// import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
-// import { EDIT_SHOP } from '../../../network/Api';
 import { Button, Divider, Stack } from '@mui/material';
-// import { useMutation } from 'react-query';
+import { cloneDeep } from 'lodash';
+import React, { useState } from 'react';
+import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 import PageTop from '../../../components/Common/PageTop';
 import { deepClone } from '../../../helpers/deepClone';
-import MinimumOrder from './MinimumOrder/MinimumOrder';
+import * as Api from '../../../network/Api';
+import Axios from '../../../network/axios';
+import MinimumOrder from './MinimumOrder';
 import { ShopSettingsSection2 } from './ShopSettingsSection/ShopSettingsSection2';
 import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 
 // data
 
-import { DeliverySettings, DietarySettings, PaymentInformationList, PriceRange } from './Helper/helper';
+import ConfirmModal from '../../../components/Common/ConfirmModal';
+import { successMsg } from '../../../helpers/successMsg';
+import { DeliverySettings, DietarySettings, PaymentInformationList, PriceRange } from './helper';
 
 function ShopSettings() {
   const shop = useSelector((store) => store.Login.admin);
@@ -26,45 +29,63 @@ function ShopSettings() {
   const [newDietary, setNewDietary] = useState(newShop?.dietary);
   const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount);
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
-  // const queryClient = useQueryClient();
+
+  const [has_unsaved_change, set_has_unsaved_change] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const updateShopSettings = () => {
     const oldShop = newShop;
     oldShop.shopAddress = newShop.address;
+    const newShopAddress = {
+      latitude: oldShop.shopAddress.latitude,
+      longitude: oldShop.shopAddress.longitude,
+      country: oldShop.shopAddress.country,
+      state: oldShop.shopAddress.state,
+      city: oldShop.shopAddress.city,
+      pin: oldShop.shopAddress.pin,
+      primary: false,
+      note: '',
+    };
+    console.log('address', newShopAddress);
+
     const dataBody = {
-      _id: newShop?._id,
+      ...oldShop,
+      id: newShop?._id,
       paymentOption: newPayMentInformation,
       expensive: newPriceRange,
       dietary: newDietary,
       haveOwnDeliveryBoy: OwnDeliveryBoy,
       minOrderAmount: minimumOrder,
-      shopAddress: newShop.address,
-      ...newShop,
+      shopAddress: newShopAddress,
     };
-
     console.log('body ; ', dataBody);
-
-    // Axios.post(Api.EDIT_SHOP, dataBody).then((res) => console.log(res));
+    return Axios.post(Api.EDIT_SHOP, dataBody);
   };
+  const updateData = useMutation(updateShopSettings, {
+    onSuccess: (data) => {
+      successMsg(data?.message, data.status ? 'success' : undefined);
+      if (data?.status) {
+        set_has_unsaved_change(false);
+      }
+    },
+  });
 
-  // const [updateData] = useMutation(updateShopSettings);
-
-  // console.log(isSuccess);
-  // console.log(isLoading);
-  // console.log(isError);
   const actionHandler = (isActive, title) => {
     const oldShop = newShop;
     const index = oldShop.paymentOption.indexOf(title.toLowerCase());
-
     if (index !== -1) oldShop.paymentOption.splice(index, 1); // remove 1 element at index
     else oldShop.paymentOption.push(title.toLowerCase());
-
     console.log('old shop', oldShop.paymentOption);
     setNewShop(oldShop);
     console.log(isActive);
-
     return !isActive;
   };
-
+  const populateStateFromShop = () => {
+    setNewPaymentInformation(newShop?.paymentOption);
+    setNewPriceRange(newShop?.expensive);
+    setNewDietary(newShop?.dietary);
+    setMinimumOrder(newShop?.minOrderAmount);
+    setOwnDeliveryBoy(newShop?.haveOwnDeliveryBoy);
+  };
   const buttonListGeneral = [
     {
       actionTitle: 'Allow customers to add special instructions to individual items',
@@ -72,119 +93,150 @@ function ShopSettings() {
       isChecked: true,
     },
   ];
-
-  const boxSx = {
-    padding: '0px 56px 0px 30px',
+  const boxSx2 = {
+    padding: '32px 56px 21px 30px',
+    borderRadius: '7px',
     width: '100%',
     color: '#000',
-    backgroundColor: '#ffffff',
-    borderRadius: '7px',
+    backgroundColor: '#fffff',
     marginBottom: '22px',
   };
-
   const TypoSx = {
     fontSize: '16px',
     fontWeight: 600,
   };
-
+  // Handle Incremented by one
   const incrementOrder = () => setMinimumOrder((prev) => prev + 1);
+  // Handle decremented by one
   const decrementOrder = () => setMinimumOrder((prev) => prev - 1);
-
+  // HandlePaymentInformation where we deal with muliple payment system
   const handlePaymentInformation = (value) => {
     if (newPayMentInformation.includes(value)) {
       setNewPaymentInformation((prev) => prev.filter((val) => val !== value));
     } else {
       setNewPaymentInformation((prev) => [...prev, value]);
     }
+    set_has_unsaved_change(true);
   };
   // Handle price range
   const handlePriceRange = (value) => {
     setNewPriceRange(value);
+    set_has_unsaved_change(true);
   };
+
+  // Handle Dietary information
   const handleDietary = (value) => {
     if (newDietary.includes(value)) {
       setNewDietary((prev) => prev.filter((val) => val !== value));
     } else {
       setNewDietary((prev) => [...prev, value]);
     }
+    set_has_unsaved_change(true);
   };
   const OwnDeliveryBoyHandler = (value) => {
     setOwnDeliveryBoy(value);
+    set_has_unsaved_change(true);
   };
 
   // updateShopSettings(false);
   return (
-    <Box sx={{ backgroundColor: '#fbfbfb', height: '100%' }}>
-      <PageTop title="Settings" />
-      <Box>
-        <ShopSettingsSection buttonType={1} title="General" isButton buttonList={buttonListGeneral} />
-        <ShopSettingsSection2
-          buttonType={2}
-          value={newPayMentInformation}
-          title="Payment Information"
-          options={PaymentInformationList}
-          action={handlePaymentInformation}
-          isButton
-          multiple
-        />
-
-        <Divider variant="middle" sx={{ margin: '20px 0px', background: '#000000' }} />
-        <ShopSettingsSection2
-          buttonType={2}
-          title="Price Range"
-          value={newPriceRange}
-          action={handlePriceRange}
-          options={PriceRange}
-          isButton
-        />
-        <ShopSettingsSection2
-          buttonType={2}
-          title="Dietary"
-          options={DietarySettings}
-          value={newDietary}
-          action={handleDietary}
-          isButton
-          multiple
-        />
-        <ShopSettingsSection2
-          buttonType={2}
-          title="Delivery Settings"
-          title2="Method"
-          value={OwnDeliveryBoy}
-          options={DeliverySettings}
-          action={OwnDeliveryBoyHandler}
-          isButton
-          readOnly
-        />
-
-        <Box sx={boxSx}>
-          <Divider variant="middle" sx={{ margin: '20px 0px', background: '#000000' }} />
-          <MinimumOrder
-            incrementOrder={incrementOrder}
-            decrementOrder={decrementOrder}
-            current={minimumOrder}
-            TypoSx={TypoSx}
-          />
+    <>
+      <Box sx={{ backgroundColor: '#fbfbfb', height: '100%' }}>
+        <PageTop title="Settings" />
+        <Box>
+          <ShopSettingsSection buttonType={1} title="General" isButton buttonList={buttonListGeneral} />
+          <Box sx={boxSx2}>
+            <ShopSettingsSection2
+              buttonType={2}
+              value={newPayMentInformation}
+              title="Payment Information"
+              options={PaymentInformationList}
+              action={handlePaymentInformation}
+              isButton
+              multiple
+            />
+            <Divider variant="middle" sx={{ margin: '20px 0px', background: '#000000' }} />
+            <ShopSettingsSection2
+              buttonType={2}
+              title="Price Range"
+              value={newPriceRange}
+              action={handlePriceRange}
+              options={PriceRange}
+              isButton
+            />
+          </Box>
+          <Box sx={boxSx2}>
+            <ShopSettingsSection2
+              buttonType={2}
+              title="Dietary"
+              options={DietarySettings}
+              value={newDietary}
+              action={handleDietary}
+              isButton
+              multiple
+            />
+          </Box>
+          <Box sx={boxSx2}>
+            <ShopSettingsSection2
+              buttonType={2}
+              title="Delivery Settings"
+              title2="Method"
+              value={OwnDeliveryBoy}
+              options={DeliverySettings}
+              action={OwnDeliveryBoyHandler}
+              isButton
+              readOnly
+              isMethod
+            />
+            <Divider variant="middle" sx={{ margin: '20px 0px', background: '#000000' }} />
+            <MinimumOrder
+              incrementOrder={incrementOrder}
+              decrementOrder={decrementOrder}
+              current={minimumOrder}
+              TypoSx={TypoSx}
+            />
+          </Box>
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            gap={4}
+            sx={{
+              mt: 9,
+              pb: 12,
+            }}
+          >
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                if (has_unsaved_change) {
+                  setIsConfirmModalOpen(true);
+                }
+              }}
+            >
+              Discard
+            </Button>
+            <Button onClick={updateData.mutate} variant="contained" color="primary" disabled={updateData.isLoading}>
+              Save Changes
+            </Button>
+          </Stack>
         </Box>
-
-        <Stack
-          direction="row"
-          justifyContent="flex-end"
-          gap={4}
-          sx={{
-            mt: 9,
-            pb: 12,
-          }}
-        >
-          <Button variant="outlined" color="primary">
-            Discard
-          </Button>
-          <Button onClick={updateShopSettings} variant="contained" color="primary">
-            Save Changes
-          </Button>
-        </Stack>
       </Box>
-    </Box>
+      <ConfirmModal
+        message="Your unsaved changes will be lost. Discard?"
+        isOpen={isConfirmModalOpen}
+        blurClose
+        onCancel={() => {
+          setIsConfirmModalOpen(false);
+        }}
+        onConfirm={() => {
+          populateStateFromShop();
+          setNewShop(cloneDeep(shop));
+          set_has_unsaved_change(false);
+          setIsConfirmModalOpen(false);
+        }}
+      />
+    </>
   );
 }
 export default ShopSettings;

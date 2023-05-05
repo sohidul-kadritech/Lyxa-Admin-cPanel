@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import OptionsSelect from '../../../../../components/Filter/OptionsSelect';
+import OptionsSelect from '../../../../components/Filter/OptionsSelect';
 
 export function ShopAction2({ actionSx, options, ...props }) {
   return (
