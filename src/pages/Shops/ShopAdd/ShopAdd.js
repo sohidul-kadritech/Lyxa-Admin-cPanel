@@ -637,7 +637,7 @@ function ShopAdd() {
                           console.log(error);
                         }}
                         clearItemsOnError
-                        shouldFetchSuggestions={selectedAddress.length > 3}
+                        shouldFetchSuggestions={selectedAddress?.length > 3}
                         googleCallbackName="myCallbackFunc"
                       >
                         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (

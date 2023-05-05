@@ -57,8 +57,6 @@ export default function Operations() {
     }
   );
 
-  console.log();
-
   console.log(query);
 
   return (
@@ -124,6 +122,19 @@ export default function Operations() {
           <ListItem label="Tue 2/20/2020" value="1h 6m" />
         </Stack>
       </InfoCard>
+
+      <InfoCard
+        title={
+          <CardTitle
+            title="Missed Orders"
+            tooltip="How many orders were reported by customers as having missing or incorrect items, resulting in refund being issued?"
+          />
+        }
+        value="25"
+        sm={6}
+        md={4}
+        lg={3}
+      />
     </Grid>
   );
 }
