@@ -1,7 +1,7 @@
 import { Box } from '@material-ui/core';
 import { Button, Divider, Stack } from '@mui/material';
 import { cloneDeep } from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 import PageTop from '../../../components/Common/PageTop';
@@ -18,8 +18,25 @@ import ConfirmModal from '../../../components/Common/ConfirmModal';
 import { successMsg } from '../../../helpers/successMsg';
 import { DeliverySettings, DietarySettings, PaymentInformationList, PriceRange } from './helper';
 
+const boxSx2 = {
+  padding: '32px 56px 21px 30px',
+  borderRadius: '7px',
+  width: '100%',
+  color: '#000',
+  backgroundColor: '#fffff',
+  marginBottom: '22px',
+};
+const TypoSx = {
+  fontSize: '16px',
+  fontWeight: 600,
+};
+
 function ShopSettings() {
-  const shop = useSelector((store) => store.Login.admin);
+  const shop = useSelector((store) => {
+    console.log('useSelector:', store);
+    return store.Login.admin;
+  });
+
   console.log('shop', shop);
 
   const [newShop, setNewShop] = useState(deepClone(shop));
@@ -45,6 +62,7 @@ function ShopSettings() {
       primary: false,
       note: '',
     };
+
     console.log('address', newShopAddress);
 
     const dataBody = {
@@ -60,10 +78,17 @@ function ShopSettings() {
     console.log('body ; ', dataBody);
     return Axios.post(Api.EDIT_SHOP, dataBody);
   };
+
   const updateData = useMutation(updateShopSettings, {
     onSuccess: (data) => {
       successMsg(data?.message, data.status ? 'success' : undefined);
       if (data?.status) {
+        shop.paymentOption = data?.data?.shop.paymentOption || shop.paymentOption;
+        shop.expensive = data?.data?.shop.expensive || shop.expensive;
+        shop.dietary = data?.data?.shop.dietary || shop.dietary;
+        shop.minOrderAmount = data?.data?.shop.minOrderAmount || shop.minOrderAmount;
+        shop.haveOwnDeliveryBoy = data?.data?.shop.haveOwnDeliveryBoy || shop.haveOwnDeliveryBoy;
+        console.log('Data Updated: ', data.data);
         set_has_unsaved_change(false);
       }
     },
@@ -79,13 +104,22 @@ function ShopSettings() {
     console.log(isActive);
     return !isActive;
   };
+
   const populateStateFromShop = () => {
-    setNewPaymentInformation(newShop?.paymentOption);
-    setNewPriceRange(newShop?.expensive);
-    setNewDietary(newShop?.dietary);
-    setMinimumOrder(newShop?.minOrderAmount);
-    setOwnDeliveryBoy(newShop?.haveOwnDeliveryBoy);
+    // setNewShop(shop);
+    setNewPaymentInformation(shop?.paymentOption);
+    setNewPriceRange(shop?.expensive);
+    setNewDietary(shop?.dietary);
+    setMinimumOrder(shop?.minOrderAmount);
+    setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
+    // setNewShop(shop);
   };
+
+  useEffect(() => {
+    console.log('ami use effecte achi: ');
+    populateStateFromShop();
+  }, []);
+
   const buttonListGeneral = [
     {
       actionTitle: 'Allow customers to add special instructions to individual items',
@@ -93,22 +127,18 @@ function ShopSettings() {
       isChecked: true,
     },
   ];
-  const boxSx2 = {
-    padding: '32px 56px 21px 30px',
-    borderRadius: '7px',
-    width: '100%',
-    color: '#000',
-    backgroundColor: '#fffff',
-    marginBottom: '22px',
-  };
-  const TypoSx = {
-    fontSize: '16px',
-    fontWeight: 600,
-  };
+
   // Handle Incremented by one
-  const incrementOrder = () => setMinimumOrder((prev) => prev + 1);
+  const incrementOrder = () => {
+    set_has_unsaved_change(true);
+    setMinimumOrder((prev) => prev + 1);
+  };
   // Handle decremented by one
-  const decrementOrder = () => setMinimumOrder((prev) => prev - 1);
+  const decrementOrder = () => {
+    set_has_unsaved_change(true);
+    setMinimumOrder((prev) => prev - 1);
+  };
+
   // HandlePaymentInformation where we deal with muliple payment system
   const handlePaymentInformation = (value) => {
     if (newPayMentInformation.includes(value)) {
@@ -118,6 +148,7 @@ function ShopSettings() {
     }
     set_has_unsaved_change(true);
   };
+
   // Handle price range
   const handlePriceRange = (value) => {
     setNewPriceRange(value);
@@ -133,12 +164,13 @@ function ShopSettings() {
     }
     set_has_unsaved_change(true);
   };
+
+  // Handle OwnDeliveryBoy
   const OwnDeliveryBoyHandler = (value) => {
     setOwnDeliveryBoy(value);
     set_has_unsaved_change(true);
   };
 
-  // updateShopSettings(false);
   return (
     <>
       <Box sx={{ backgroundColor: '#fbfbfb', height: '100%' }}>
