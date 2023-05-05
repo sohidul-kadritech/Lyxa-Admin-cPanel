@@ -8,6 +8,7 @@ import PriceItem from './PriceItem';
 
 export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
+  console.log(paymentDetails);
 
   return (
     <Grid xs={12}>
@@ -73,16 +74,25 @@ export default function Payout({ paymentDetails }) {
           {/* lyxa fees */}
           <DetailsAccordion
             title="Lyxa fees"
+            // tooltip="Fee for Lyxa-powered deliveries: 80%
+            // Shop-powered deliveries: 10%.
+            // VAT inclusive"
+            titleAmount={Math.abs(paymentDetails?.totalDropGet)}
+            titleAmountStatus="minus"
+            // isOpen={currentExpanedTab === 1}
+            // onChange={(closed) => {
+            //   seCurrentExpanedTab(closed ? 1 : -1);
+            // }}
+          />
+
+          {/* total vat */}
+          <DetailsAccordion
+            title="Total VAT"
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
-            titleAmount={Math.abs(paymentDetails?.totalDropGet)}
-            titleAmountStatus="minus"
-            isOpen={currentExpanedTab === 1}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 1 : -1);
-            }}
-          ></DetailsAccordion>
+            titleAmount={Math.abs(paymentDetails?.orderValue?.totalVat)}
+          />
 
           {/* Other payments */}
           {paymentDetails?.freeDeliveryShopCut > 0 && (
@@ -124,6 +134,7 @@ export default function Payout({ paymentDetails }) {
               <PriceItem title="Rider tip" amount={paymentDetails?.orderValue?.deliveryFeeOnline} />
             </DetailsAccordion>
           )}
+
           {/* points cashback */}
           {paymentDetails?.orderValue?.pointsCashback > 0 && (
             <DetailsAccordion
@@ -141,6 +152,7 @@ export default function Payout({ paymentDetails }) {
               }}
             ></DetailsAccordion>
           )}
+
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
@@ -159,11 +171,6 @@ export default function Payout({ paymentDetails }) {
             {paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile > 0 && (
               <PriceItem
                 title="Paid"
-                console={console.log(
-                  paymentDetails?.orderValue?.deliveryFee,
-                  paymentDetails?.toalShopProfile,
-                  paymentDetails?.totalShopUnsettle
-                )}
                 amount={
                   paymentDetails?.orderValue?.deliveryFee +
                   paymentDetails?.toalShopProfile -
