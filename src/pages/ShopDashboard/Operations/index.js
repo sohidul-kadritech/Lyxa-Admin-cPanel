@@ -1,8 +1,13 @@
 /* eslint-disable max-len */
 // third party
 import { Unstable_Grid2 as Grid, Stack, Tooltip, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
+import { dateRangeInit } from '../../../helpers/dateRangeInit';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 
 function ListItem({ label, value }) {
   return (
@@ -36,6 +41,25 @@ function CardTitle({ title, tooltip }) {
 // project import
 export default function Operations() {
   const theme = useTheme();
+  const [range] = useState({ ...dateRangeInit });
+
+  const query = useQuery(
+    [],
+    () =>
+      AXIOS.get(Api.GET_SHOP_DASHBOARD_SUMMARY, {
+        startDate: range.start,
+        endDate: range.end,
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
+
+  console.log();
+
+  console.log(query);
 
   return (
     <Grid container spacing={5}>

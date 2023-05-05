@@ -31,6 +31,8 @@ export const SHOP_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/gr
 export const SHOP_DASHBOARD_ORDER_BY_HOURS = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders-hourly`;
 export const SHOP_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders`;
 export const SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/orders-issue`;
+export const SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/customers-sales`;
+export const SHOP_DASHBOARD_CUSTOMER_INFO = `${ADMIN_ENDPOINT}/dashboard/shop/customers`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;
