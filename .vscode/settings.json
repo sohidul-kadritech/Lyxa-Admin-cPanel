@@ -12,6 +12,7 @@
   },
   //disable all built-in syntax checking
   "javascript.validate.enable": false,
+  // "prettier.trailingComma": "none",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
     "source.fixAll.tslint": true,

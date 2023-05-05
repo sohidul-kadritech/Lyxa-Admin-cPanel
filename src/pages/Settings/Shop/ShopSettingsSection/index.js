@@ -3,7 +3,7 @@ import { ShopAction } from '../ShopAction';
 
 export function General({ title, isButton, buttonList, buttonType }) {
   console.log(buttonType);
-  const generalSx = {
+  const boxSx = {
     padding: '32px 56px 21px 30px',
     width: '100%',
     color: '#000',
@@ -12,18 +12,18 @@ export function General({ title, isButton, buttonList, buttonType }) {
     marginBottom: '22px',
   };
 
-  const ActionSx = {
+  const btnSx = {
     margin: '22px 0px 0px 0px',
   };
 
-  const TypoSx = {
+  const typoSx = {
     fontSize: '16px',
     fontWeight: 600,
   };
 
   return (
-    <Box sx={generalSx}>
-      <Typography sx={TypoSx}>{title}</Typography>
+    <Box sx={boxSx}>
+      <Typography sx={typoSx}>{title}</Typography>
       {isButton && (
         <Box>
           {buttonType === 1 &&
@@ -33,7 +33,7 @@ export function General({ title, isButton, buttonList, buttonType }) {
                 title={btn.actionTitle}
                 action={btn.action}
                 isChecked={btn.isChecked}
-                actionSx={ActionSx}
+                actionSx={btnSx}
               />
             ))}
         </Box>

@@ -1,8 +1,8 @@
 export const PriceRange = [
-  { label: '$', value: '$' },
-  { label: '$$', value: '$$' },
-  { label: '$$$', value: '$$$' },
-  { label: '$$$$', value: '$$$$' },
+  { label: '$', value: 1 },
+  { label: '$$', value: 2 },
+  { label: '$$$', value: 3 },
+  { label: '$$$$', value: 4 },
 ];
 
 export const PaymentInformationList = [
@@ -13,8 +13,8 @@ export const PaymentInformationList = [
 ];
 
 export const DeliverySettings = [
-  { label: 'Store', value: 'store' },
-  { label: 'Lyxa', value: 'lyxa' },
+  { label: 'Store', value: true },
+  { label: 'Lyxa', value: false },
 ];
 
 export const DietarySettings = [

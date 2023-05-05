@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 // import { useSelector } from 'react-redux';
-
 import { Box } from '@material-ui/core';
 // import { EDIT_SHOP } from '../../../network/Api';
 import { Button, Divider, Stack } from '@mui/material';
+// import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 import PageTop from '../../../components/Common/PageTop';
 import { deepClone } from '../../../helpers/deepClone';
@@ -20,21 +20,44 @@ function ShopSettings() {
   console.log('shop', shop);
 
   const [newShop, setNewShop] = useState(deepClone(shop));
-  const [newPayMentInformation, setNewPaymentInformation] = useState([]);
-  const [newPriceRange, setNewPriceRange] = useState([]);
-  const [newDietary, setNewDietary] = useState([]);
-  const [minimumOrder, setMinimumOrder] = useState(25);
-  // const [currentTag, setCurrentTag] = useState(getTagInit(shopType, tag));
+  console.log('shop', newShop);
+  const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption);
+  const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive);
+  const [newDietary, setNewDietary] = useState(newShop?.dietary);
+  const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount);
+  const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
+  // const queryClient = useQueryClient();
+  const updateShopSettings = () => {
+    const oldShop = newShop;
+    oldShop.shopAddress = newShop.address;
+    const dataBody = {
+      _id: newShop?._id,
+      paymentOption: newPayMentInformation,
+      expensive: newPriceRange,
+      dietary: newDietary,
+      haveOwnDeliveryBoy: OwnDeliveryBoy,
+      minOrderAmount: minimumOrder,
+      shopAddress: newShop.address,
+      ...newShop,
+    };
 
-  console.log('new shop', newShop.paymentOption);
+    console.log('body ; ', dataBody);
+
+    // Axios.post(Api.EDIT_SHOP, dataBody).then((res) => console.log(res));
+  };
+
+  // const [updateData] = useMutation(updateShopSettings);
+
+  // console.log(isSuccess);
+  // console.log(isLoading);
+  // console.log(isError);
   const actionHandler = (isActive, title) => {
     const oldShop = newShop;
     const index = oldShop.paymentOption.indexOf(title.toLowerCase());
-    if (index !== -1) {
-      oldShop.paymentOption.splice(index, 1); // remove 1 element at index
-    } else {
-      oldShop.paymentOption.push(title.toLowerCase());
-    }
+
+    if (index !== -1) oldShop.paymentOption.splice(index, 1); // remove 1 element at index
+    else oldShop.paymentOption.push(title.toLowerCase());
+
     console.log('old shop', oldShop.paymentOption);
     setNewShop(oldShop);
     console.log(isActive);
@@ -50,19 +73,13 @@ function ShopSettings() {
     },
   ];
 
-  const generalSx = {
+  const boxSx = {
     padding: '0px 56px 0px 30px',
     width: '100%',
     color: '#000',
     backgroundColor: '#ffffff',
     borderRadius: '7px',
     marginBottom: '22px',
-  };
-
-  const updateShopSettings = (isTrue) => {
-    if (isTrue) setNewShop(deepClone(shop));
-    else return 0;
-    return 0;
   };
 
   const TypoSx = {
@@ -82,11 +99,7 @@ function ShopSettings() {
   };
   // Handle price range
   const handlePriceRange = (value) => {
-    if (newPriceRange.includes(value)) {
-      setNewPriceRange((prev) => prev.filter((val) => val !== value));
-    } else {
-      setNewPriceRange((prev) => [...prev, value]);
-    }
+    setNewPriceRange(value);
   };
   const handleDietary = (value) => {
     if (newDietary.includes(value)) {
@@ -95,7 +108,11 @@ function ShopSettings() {
       setNewDietary((prev) => [...prev, value]);
     }
   };
-  updateShopSettings(false);
+  const OwnDeliveryBoyHandler = (value) => {
+    setOwnDeliveryBoy(value);
+  };
+
+  // updateShopSettings(false);
   return (
     <Box sx={{ backgroundColor: '#fbfbfb', height: '100%' }}>
       <PageTop title="Settings" />
@@ -118,7 +135,6 @@ function ShopSettings() {
           value={newPriceRange}
           action={handlePriceRange}
           options={PriceRange}
-          multiple
           isButton
         />
         <ShopSettingsSection2
@@ -134,12 +150,14 @@ function ShopSettings() {
           buttonType={2}
           title="Delivery Settings"
           title2="Method"
+          value={OwnDeliveryBoy}
           options={DeliverySettings}
+          action={OwnDeliveryBoyHandler}
           isButton
           readOnly
         />
 
-        <Box sx={generalSx}>
+        <Box sx={boxSx}>
           <Divider variant="middle" sx={{ margin: '20px 0px', background: '#000000' }} />
           <MinimumOrder
             incrementOrder={incrementOrder}
@@ -161,7 +179,7 @@ function ShopSettings() {
           <Button variant="outlined" color="primary">
             Discard
           </Button>
-          <Button variant="contained" color="primary">
+          <Button onClick={updateShopSettings} variant="contained" color="primary">
             Save Changes
           </Button>
         </Stack>

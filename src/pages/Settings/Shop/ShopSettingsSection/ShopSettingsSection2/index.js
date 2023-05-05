@@ -6,7 +6,7 @@ import { ShopAction2 } from '../../ShopAction/ShopAction2';
 export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMethod, options, ...props }) {
   const theme = useTheme();
   console.log(buttonType);
-  const generalSx = {
+  const boxSx = {
     padding: '32px 56px 21px 30px',
     width: '100%',
     color: '#000',
@@ -20,7 +20,7 @@ export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMe
   };
 
   return (
-    <Box sx={generalSx}>
+    <Box sx={boxSx}>
       <Typography sx={TypoSx}>{title}</Typography>
       {isMethod && (
         <Box sx={{ display: 'flex', justifyContent: 'start', gap: '12px', alignContent: 'center' }}>
