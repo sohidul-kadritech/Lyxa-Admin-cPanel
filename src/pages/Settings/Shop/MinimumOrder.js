@@ -1,12 +1,15 @@
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
-// incrementOrder={incrementOrder} decrementOrder={decrementOrder} current={minimumOrder}
+import { useSelector } from 'react-redux';
+
 export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, current }) {
   const theme = useTheme();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
+  console.log('currency', currency);
   return (
     <Box>
-      <Typography sx={TypoSx}>Minimum order ($USD)</Typography>
+      <Typography sx={TypoSx}>Minimum order ({currency})</Typography>
       <Box
         sx={{
           marginTop: '15px',
@@ -21,11 +24,13 @@ export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, c
         }}
       >
         <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
-          <Button disableRipple={false} sx={{ fontSize: '32px', fontWeight: 600 }} onClick={decrementOrder}>
+          <Button disableRipple sx={{ fontSize: '32px', fontWeight: 600 }} onClick={decrementOrder}>
             -
           </Button>
-          <Typography sx={{ fontSize: '32px', fontWeight: 400, color: '#363636' }}>{current}</Typography>
-          <Button disableRipple={false} sx={{ fontSize: '32px' }} onClick={incrementOrder}>
+          <Typography sx={{ fontSize: { lg: '18px', md: '16px', xs: '16px' }, fontWeight: 400, color: '#363636' }}>
+            {current}
+          </Typography>
+          <Button disableRipple sx={{ fontSize: '32px' }} onClick={incrementOrder}>
             +
           </Button>
         </Stack>
