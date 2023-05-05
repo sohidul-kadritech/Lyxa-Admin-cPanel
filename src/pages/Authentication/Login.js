@@ -44,7 +44,11 @@ function Login(props) {
   useEffect(() => {
     if (admin?.account_type) {
       console.log('triggered');
-      history.push('/dashboard');
+      if (type === 'customerService') {
+        history.push('/orders/list');
+      } else {
+        history.push('/dashboard');
+      }
     }
   }, [admin]);
 
