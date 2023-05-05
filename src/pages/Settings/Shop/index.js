@@ -23,7 +23,7 @@ const boxSx2 = {
   borderRadius: '7px',
   width: '100%',
   color: '#000',
-  backgroundColor: '#fffff',
+  backgroundColor: '#ffffff',
   marginBottom: '22px',
 };
 const TypoSx = {
@@ -60,13 +60,14 @@ function ShopSettings() {
       city: oldShop.shopAddress.city,
       pin: oldShop.shopAddress.pin,
       primary: false,
-      note: '',
+      note: oldShop.shopAddress.note,
     };
 
-    console.log('address', newShopAddress);
+    console.log('new address', newShopAddress);
+    console.log('old address', oldShop.shopAddress);
 
     const dataBody = {
-      ...oldShop,
+      // ...oldShop,
       id: newShop?._id,
       paymentOption: newPayMentInformation,
       expensive: newPriceRange,

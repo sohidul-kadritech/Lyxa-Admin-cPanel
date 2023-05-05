@@ -95,6 +95,7 @@ import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTerms
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
 import Transactions from '../pages/Transactions/Transactions';
+import Users2 from '../pages/Users2';
 import Vat from '../pages/Vat';
 
 export const adminRoutes = [
@@ -343,6 +344,7 @@ export const shopRoutes = [
   { path: '/hours', component: ShopHourSettings },
   { path: '/new-orders', component: NewOrders },
   { path: '/shop/settings', component: ShopSettings2 },
+  { path: '/shop/users', component: Users2 },
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
