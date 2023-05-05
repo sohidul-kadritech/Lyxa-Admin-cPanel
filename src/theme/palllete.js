@@ -20,6 +20,10 @@ export default function GetPallete() {
       main: '#DD5B63',
       contrastText: '#ffffff',
     },
+    error: {
+      main: '#DD5B63',
+      contrastText: '#ffffff',
+    },
     text: {
       primary: '#363636',
       secondary: '#525252',

@@ -57,7 +57,7 @@ export const shop_menu_items = [
       {
         label: 'Settings',
         icon: SettingsIcon,
-        to: '/',
+        to: '/shop/settings',
       },
     ],
   },
