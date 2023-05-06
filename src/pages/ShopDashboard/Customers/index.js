@@ -76,7 +76,7 @@ export default function Customers() {
             <CustomerInfoCard
               title="Total customers"
               dotColor="#3CACDD"
-              amount={query?.data?.data?.totalCustomers}
+              amount={query?.data?.data?.totalCustomers || 0}
               isActive={currentTab === 'total'}
               index="total"
               onClick={handleTabChange}
@@ -84,7 +84,7 @@ export default function Customers() {
             <CustomerInfoCard
               title="New customers"
               dotColor="#50CD89"
-              amount={query?.data?.data?.newCustomers}
+              amount={query?.data?.data?.newCustomers || 0}
               isActive={currentTab === 'new'}
               index="new"
               onClick={handleTabChange}
@@ -92,7 +92,7 @@ export default function Customers() {
             <CustomerInfoCard
               title="Repeated customers"
               dotColor="#FF8C51"
-              amount={query?.data?.data?.repeatedCustomers}
+              amount={query?.data?.data?.repeatedCustomers || 0}
               isActive={currentTab === 'repeated'}
               index="repeated"
               onClick={handleTabChange}
@@ -100,7 +100,7 @@ export default function Customers() {
             <CustomerInfoCard
               title="Lapsed customers"
               dotColor="#8950FC"
-              amount={query?.data?.data?.lapsedCustomers}
+              amount={query?.data?.data?.lapsedCustomers || 0}
               index="lapsed"
               isActive={currentTab === 'lapsed'}
               onClick={handleTabChange}

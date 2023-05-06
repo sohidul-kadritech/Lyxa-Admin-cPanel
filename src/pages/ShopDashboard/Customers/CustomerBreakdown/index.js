@@ -9,25 +9,6 @@ import StyledBox from '../../../../components/StyledCharts/StyledBox';
 import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
 import StyledDoughnutChart from '../../../../components/StyledCharts/StyledPieChart';
 
-function AmountItem({ amount, title }) {
-  const theme = useTheme();
-
-  return (
-    <Box
-      sx={{
-        flex: 1,
-      }}
-    >
-      <Typography variant="inherit" fontSize={30} fontWeight={600} lineHeight={1} pb={1}>
-        {amount}
-      </Typography>
-      <Typography variant="body1" color={theme.palette.text.secondary2} fontWeight={600}>
-        {title}
-      </Typography>
-    </Box>
-  );
-}
-
 const customerTypeProps = {
   total: {
     graphTooltip: 'Total Customers',
@@ -62,6 +43,25 @@ const customerTypeProps = {
     average: 'lapsedCustomersAvgOrders',
   },
 };
+
+function AmountItem({ amount, title }) {
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        flex: 1,
+      }}
+    >
+      <Typography variant="inherit" fontSize={30} fontWeight={600} lineHeight={1} pb={1}>
+        {amount}
+      </Typography>
+      <Typography variant="body1" color={theme.palette.text.secondary2} fontWeight={600}>
+        {title}
+      </Typography>
+    </Box>
+  );
+}
 
 export default function CustomerBreakdown({ title, customerType, details = {} }) {
   const theme = useTheme();
@@ -132,7 +132,7 @@ export default function CustomerBreakdown({ title, customerType, details = {} })
               }}
             >
               <Typography variant="inherit" fontSize={30} fontWeight={600} lineHeight={1} pb={2}>
-                {(details[amount] / details?.totalCustomers) * 100}%
+                {(details[amount] / details?.totalCustomers) * 100 || 0}%
               </Typography>
               <Typography variant="body1" fontWeight={600} color={theme.palette.text.secondary2}>
                 of customer base
