@@ -9,7 +9,7 @@ export const couponTypeToTitleMap = {
 
 export const getCouponInit = (couponType) => ({
   couponType,
-  couponStatus: '',
+  couponStatus: 'active',
   couponName: '',
   couponDiscountType: '',
   couponValue: 25,
@@ -41,7 +41,7 @@ export const checkedInit = {
 
 export const validateCoupon = () => ({ status: true });
 
-export const createCouponUploaData = (coupon, checked) => {
+export const createCouponUploaData = (coupon, checked, couponType) => {
   const { couponAmountLimit, couponUserLimit, couponOrderLimit, couponMinimumOrderValue } = coupon;
 
   const data = {
@@ -50,6 +50,14 @@ export const createCouponUploaData = (coupon, checked) => {
     couponOrderLimit: checked.couponOrderLimit ? couponOrderLimit : 0,
     couponMinimumOrderValue: checked.couponMinimumOrderValue ? couponMinimumOrderValue : 0,
   };
+
+  if (couponType === 'individual_store') {
+    data.couponShops = coupon?.couponShops?.map((shop) => shop?._id);
+  }
+
+  if (couponType === 'individual_user') {
+    data.couponShops = coupon?.couponUsers?.map((shop) => shop?._id);
+  }
 
   return {
     ...coupon,

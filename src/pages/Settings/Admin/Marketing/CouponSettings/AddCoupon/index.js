@@ -1,7 +1,7 @@
 // thrid party
 import { Box, Button } from '@mui/material';
 import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../../../../assets/icons/down.svg';
 import SidebarContainer from '../../../../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../../../../components/Form/StyledFormField';
@@ -30,15 +30,30 @@ export default function AddCoupon({ onClose, couponType }) {
   };
 
   // shops query
-  // const shopsQuery = useQuery(['ALL_SHOP', { type: 'all' }], () =>
-  //   AXIOS.get(Api.ALL_SHOP, {
-  //     params: {
-  //       type: 'all',
-  //     },
-  //   })
-  // );
+  const shopsQuery = useQuery(['ALL_SHOP', { type: 'all' }], () =>
+    AXIOS.get(Api.ALL_SHOP, {
+      params: {
+        type: 'all',
+      },
+    })
+  );
 
-  // const shopsOptions = shopsQuery?.data?.data?.shops || [];
+  const shopsOptions = shopsQuery?.data?.data?.shops || [];
+
+  // shops query
+  const usersQuery = useQuery(['ALL_USERS', { type: 'all' }], () =>
+    AXIOS.get(Api.ALL_USERS, {
+      params: {
+        page: 1,
+        pageSize: 10000,
+        searchKey: '',
+        sortBy: 'desc',
+        status: 'all',
+      },
+    })
+  );
+
+  console.log(usersQuery?.data?.data);
 
   // coupon add
   const couponMutation = useMutation((data) => AXIOS.post(Api.ADD_COUPON, data), {
@@ -54,7 +69,7 @@ export default function AddCoupon({ onClose, couponType }) {
       return;
     }
 
-    const couponData = createCouponUploaData(coupon, checked);
+    const couponData = createCouponUploaData(coupon, checked, couponType);
     couponMutation.mutate(couponData);
   };
 
@@ -69,6 +84,29 @@ export default function AddCoupon({ onClose, couponType }) {
           name: 'couponName',
           value: coupon.couponName,
           onChange: commonChangeHandler,
+          sx: {
+            '& input': {
+              textTransform: 'uppercase',
+            },
+          },
+        }}
+      />
+      {/* user */}
+      <StyledFormField
+        label="User"
+        intputType="autocomplete"
+        inputProps={{
+          maxHeight: '300px',
+          options: usersQuery?.data?.data?.users,
+          value: (coupon?.couponUsers && coupon?.couponUsers[0]) || null,
+          isOptionEqualToValue: (option, value) => option?._id === value?._id,
+          getOptionLabel: (option) => option?.name,
+          sx: {
+            flex: 1,
+          },
+          onChange: (e, v) => {
+            setCoupon((prev) => ({ ...prev, couponUsers: [v] }));
+          },
         }}
       />
       {/* type */}
@@ -189,24 +227,26 @@ export default function AddCoupon({ onClose, couponType }) {
           onToggle: (event) => commonCheckHandler(event, 'couponMinimumOrderValue'),
         }}
       />
-      {/* min order */}
-      {/* <StyledFormField
+      {/* store */}
+      <StyledFormField
         label="Store name"
         intputType="autocomplete"
         inputProps={{
-          label: 'Choose',
           maxHeight: '110px',
           options: shopsOptions,
-          value: container.shops,
+          value: (coupon?.couponShops && coupon?.couponShops[0]) || null,
           isOptionEqualToValue: (option, value) => option?._id === value?._id,
           getOptionLabel: (option) => option?.shopName,
+          sx: {
+            flex: 1,
+          },
           onChange: (e, v) => {
-            setContainer((prev) => ({ ...prev, shops: v.map((item) => item) }));
+            setCoupon((prev) => ({ ...prev, couponShops: [v] }));
           },
         }}
-      /> */}
+      />
       {/* submit */}
-      <Box pt={10} pb={6}>
+      <Box pt={20} pb={6}>
         <Button
           variant="contained"
           color="primary"
