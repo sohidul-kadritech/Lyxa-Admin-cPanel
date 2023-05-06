@@ -37,6 +37,23 @@ const StyledInput = styled(TextField)(({ theme }) => ({
   },
 }));
 
+const variants = {
+  form: {
+    root: {
+      '& .MuiOutlinedInput-root': {
+        padding: '12px 10px 12px 18px',
+        maxWidth: 'initial',
+      },
+
+      '& .MuiInputBase-input': {
+        fontSize: '15px',
+        fontWeight: 500,
+        lineHeight: '20px',
+      },
+    },
+  },
+};
+
 const sizes = {
   md: {
     root: {
@@ -74,7 +91,7 @@ function Wrapper({ tooltip, children }) {
   return children;
 }
 
-export default function FilterDate({ value, onChange, size, sx, tooltip, ...props }) {
+export default function FilterDate({ value, onChange, size, variant, sx, tooltip, fullWidth, ...props }) {
   return (
     <Wrapper tooltip={tooltip}>
       <DesktopDatePicker
@@ -85,7 +102,9 @@ export default function FilterDate({ value, onChange, size, sx, tooltip, ...prop
         }}
         renderInput={(params) => (
           <StyledInput
+            fullWidth={fullWidth}
             sx={{
+              ...(variants[variant]?.root || {}),
               ...(sizes[size]?.root || {}),
               ...(sx || {}),
             }}

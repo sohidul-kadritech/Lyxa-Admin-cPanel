@@ -16,6 +16,10 @@ const pagesList = [
     label: 'Featured',
     to: '/admin/settings2/marketing/featured',
   },
+  {
+    label: 'Cupons',
+    to: '/admin/settings2/marketing/cupons',
+  },
 ];
 
 export default function AdminMarketingSettings() {

@@ -1,6 +1,7 @@
 import { Box, Checkbox, Stack, Typography, useTheme } from '@mui/material';
 import ImagePreview from '../Common/ImagePreview';
 import LoadingOverlay from '../Common/LoadingOverlay';
+import FilterDate from '../Filter/FilterDate';
 import FilterSelect from '../Filter/FilterSelect';
 import OptionsSelect from '../Filter/OptionsSelect';
 import StyledAutocomplete from '../Styled/StyledAutocomplete';
@@ -13,7 +14,15 @@ export default function StyledFormField({ containerProps, label, labelProps, int
   const theme = useTheme();
 
   return (
-    <Stack gap={2} {...(containerProps || {})}>
+    <Stack
+      gap={2}
+      {...(containerProps || {})}
+      sx={{
+        paddingTop: '12px',
+        paddingBottom: '12px',
+        ...(containerProps?.sx || {}),
+      }}
+    >
       {label && (
         <Typography
           variant="h5"
@@ -44,6 +53,25 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             },
           }}
         />
+      )}
+
+      {/* text field toggle */}
+      {intputType === 'text-toggle' && (
+        <Stack direction="row" alignItems="center" gap={5}>
+          <StyledInput
+            {...(inputProps || {})}
+            sx={{
+              '& input': {
+                paddingLeft: '18px',
+                paddingRight: '18px',
+                fontWeight: '500',
+                fontSize: '15px',
+                color: theme.palette.text.primary,
+                ...(inputProps?.sx || {}),
+              },
+            }}
+          />
+        </Stack>
       )}
 
       {/* textarea */}
@@ -153,10 +181,13 @@ export default function StyledFormField({ containerProps, label, labelProps, int
       )}
 
       {/* options select */}
-      {intputType === 'optionsSelect' && <OptionsSelect {...(inputProps || {})} />}
+      {intputType === 'optionsSelect' && <OptionsSelect {...inputProps} />}
 
-      {/* options select */}
-      {intputType === 'checkbox' && <StyledCheckboxList {...(inputProps || {})} />}
+      {/* select */}
+      {intputType === 'checkbox' && <StyledCheckboxList {...inputProps} />}
+
+      {/* date */}
+      {intputType === 'date' && <FilterDate {...inputProps} />}
     </Stack>
   );
 }

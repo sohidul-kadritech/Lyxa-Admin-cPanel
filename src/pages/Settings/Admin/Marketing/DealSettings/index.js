@@ -210,7 +210,6 @@ export default function DealSettings() {
       <Box>
         {/* top */}
         <PageTop
-          // title="Deals"
           backButtonLabel="Back to Marketing"
           backTo="/admin/settings2/marketing"
           breadcrumbItems={breadcrumbItems}
