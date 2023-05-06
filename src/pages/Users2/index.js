@@ -1,7 +1,13 @@
 import { Add } from '@mui/icons-material';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Drawer, Stack } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import { successMsg } from '../../helpers/successMsg';
+import { addShopCredential, getAllShopCredentials } from '../../store/AdminControl/Admin/adminAction';
+import AddUser from './AddUser';
+import UsersTable from './UsersTable';
 
 // styled button
 function AddMenuButton({ ...props }) {
@@ -13,11 +19,46 @@ function AddMenuButton({ ...props }) {
 }
 
 function Users2() {
+  const [open, setOpen] = useState(false);
+  const { loading, shopCredentials } = useSelector((state) => state.adminReducer);
+  const dispatch = useDispatch();
+  const { _id: accountId } = useSelector((store) => store.Login.admin);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  console.log(email, ' and ', password);
+  const callList = (refresh = false) => {
+    dispatch(getAllShopCredentials(refresh, accountId));
+  };
+  const updateData = (data) => {
+    const { email, password, repeated_password } = data;
+    setEmail(email);
+    setPassword(password);
+
+    // get data for shop credentials
+
+    if (password !== repeated_password) {
+      successMsg('Pasword not match please check again !');
+    } else {
+      dispatch(
+        addShopCredential({
+          email,
+          password,
+          shopId: accountId,
+          // eslint-disable-next-line prettier/prettier
+        }),
+      );
+      callList(true);
+    }
+  };
+
+  useEffect(() => {
+    callList(true);
+  }, []);
+
   return (
     <Box>
       <PageTop
         title="Users"
-        // tag={Deals.deals.hasActiveDeal ? <OngoingTag label={Deals.get_promotion_str()} /> : undefined}
         sx={{
           position: 'sticky',
           top: '-2px',
@@ -28,12 +69,15 @@ function Users2() {
       />
       <Stack direction="row" justifyContent="start" gap="17px">
         <StyledSearchBar sx={{ width: '319px' }} />
-        <AddMenuButton />
+        <AddMenuButton onClick={() => setOpen(true)} />
       </Stack>
 
-      {/* <Drawer open anchor="right">
-        <Typography>hello</Typography>
-      </Drawer> */}
+      <Box>
+        <UsersTable data={shopCredentials} loading={loading} />
+      </Box>
+      <Drawer open={open} anchor="right">
+        <AddUser addUser={updateData} onClose={() => setOpen(false)} />
+      </Drawer>
     </Box>
   );
 }
