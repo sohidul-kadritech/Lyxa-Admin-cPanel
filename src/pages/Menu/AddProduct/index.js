@@ -444,8 +444,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           />
         </Box>
       )}
+      {/* addons */}
+
       {shop?.shopType === 'food' && (
         <StyledFormField
+          console={console.log(product?.attributes)}
           label="Add-ons"
           intputType="autocomplete"
           containerProps={{
@@ -453,6 +456,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           }}
           inputProps={{
             readOnly: productReadonly,
+            disabled: product?.attributes?.reduce((prev, curr) => curr?.required || prev, false),
             // open: productReadonly ? false : undefined,
             multiple: true,
             label: 'Choose',

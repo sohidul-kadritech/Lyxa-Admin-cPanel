@@ -187,11 +187,11 @@ export const createProductData = async (product, shop, isEditProduct) => {
   if (shop?.shopType === 'food') {
     stockQuantity = undefined;
     subCategory = undefined;
-
     addons = product?.addons?.map((p) => p?._id);
 
     if (attributes[0]) {
       attributes[0].items = attributes[0].items.filter((item) => item.name && item.extraPrice);
+      addons = attributes[0].required ? [] : addons;
     }
   } else {
     dietry = undefined;
@@ -236,6 +236,7 @@ export const converEditProduct = (product) => {
     images: product?.images?.map((url) => ({
       preview: url,
     })),
+    attributes: product?.attributes?.length ? product?.attributes : [{ ...productAttrInit }],
   };
 
   return {
