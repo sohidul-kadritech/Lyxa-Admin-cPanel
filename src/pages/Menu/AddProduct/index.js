@@ -1,6 +1,6 @@
 // third party
 import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 
@@ -56,7 +56,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   // addons
   const productsQuery = useQuery(
-    ['single-shop-products', { shopId: shop?._id }],
+    ['ALL_PRODUCT', { shopId: shop?._id }],
     () =>
       AXIOS.get(Api.ALL_PRODUCT, {
         params: {
@@ -73,6 +73,20 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     {
       staleTime: minInMiliSec(10),
     }
+  );
+
+  const adddons = useMemo(
+    () =>
+      productsQuery?.data?.data?.products?.filter((p) => {
+        let flag = true;
+
+        p?.attributes?.forEach((a) => {
+          if (a?.required) flag = false;
+        });
+
+        return flag;
+      }),
+    [productsQuery?.data?.data?.products]
   );
 
   // categories
@@ -183,6 +197,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         successMsg(data?.message, data?.status ? 'success' : undefined);
         if (data?.status) {
           queryClient.invalidateQueries(['category-wise-products']);
+          queryClient.invalidateQueries(['ALL_PRODUCT']);
           onClose();
         }
       },
@@ -448,7 +463,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
       {shop?.shopType === 'food' && (
         <StyledFormField
-          console={console.log(product?.attributes)}
+          // console={console.log(product?.attributes)}
           label="Add-ons"
           intputType="autocomplete"
           containerProps={{
@@ -456,12 +471,12 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           }}
           inputProps={{
             readOnly: productReadonly,
-            disabled: product?.attributes?.reduce((prev, curr) => curr?.required || prev, false),
+            // disabled: product?.attributes?.reduce((prev, curr) => curr?.required || prev, false),
             // open: productReadonly ? false : undefined,
             multiple: true,
             label: 'Choose',
             maxHeight: '200px',
-            options: productsQuery?.data?.data?.products || [],
+            options: adddons,
             value: product?.addons || [],
             getOptionLabel: (option) => option?.name || '',
             isOptionEqualToValue: (option, value) => option?._id === value?._id,

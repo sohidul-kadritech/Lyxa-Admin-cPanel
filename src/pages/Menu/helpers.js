@@ -137,12 +137,17 @@ export const dietryOptions = [
   },
 ];
 
+export const attrItemInit = {
+  name: '',
+  price: '',
+};
+
 // state inits
 export const productAttrInit = {
   name: '',
   required: false,
   select: '',
-  items: [],
+  items: [{ ...attrItemInit }],
 };
 
 export const productInit = {
@@ -160,11 +165,6 @@ export const productInit = {
   note: '',
   isStockEnabled: false,
   stockQuantity: 1,
-};
-
-export const attrItemInit = {
-  name: '',
-  price: '',
 };
 
 export const createProductData = async (product, shop, isEditProduct) => {
@@ -191,7 +191,6 @@ export const createProductData = async (product, shop, isEditProduct) => {
 
     if (attributes[0]) {
       attributes[0].items = attributes[0].items.filter((item) => item.name && item.extraPrice);
-      addons = attributes[0].required ? [] : addons;
     }
   } else {
     dietry = undefined;

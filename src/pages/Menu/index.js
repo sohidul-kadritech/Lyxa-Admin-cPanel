@@ -26,8 +26,6 @@ import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
-  // const searchThrottler = new Throttler(100);
-
   const shop = useSelector((store) => store.Login.admin);
   const Deals = useMemo(() => new ShopDeals(shop), []);
 
