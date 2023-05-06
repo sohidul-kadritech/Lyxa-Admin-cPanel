@@ -30,6 +30,9 @@ const TypoSx = {
   fontSize: '16px',
   fontWeight: 600,
 };
+const section2Sx = {
+  width: '100%',
+};
 
 function ShopSettings() {
   const shop = useSelector((store) => {
@@ -40,44 +43,67 @@ function ShopSettings() {
   console.log('shop', shop);
 
   const [newShop, setNewShop] = useState(deepClone(shop));
+
   console.log('shop', newShop);
+
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption);
+
   const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive);
+
   const [newDietary, setNewDietary] = useState(newShop?.dietary);
+
   const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount);
+
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
 
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
+
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
   const updateShopSettings = () => {
-    const oldShop = newShop;
-    oldShop.shopAddress = newShop.address;
-    const newShopAddress = {
-      latitude: oldShop.shopAddress.latitude,
-      longitude: oldShop.shopAddress.longitude,
-      country: oldShop.shopAddress.country,
-      state: oldShop.shopAddress.state,
-      city: oldShop.shopAddress.city,
-      pin: oldShop.shopAddress.pin,
-      primary: false,
-      note: oldShop.shopAddress.note,
-    };
-
-    console.log('new address', newShopAddress);
-    console.log('old address', oldShop.shopAddress);
-
-    const dataBody = {
-      // ...oldShop,
-      id: newShop?._id,
-      paymentOption: newPayMentInformation,
-      expensive: newPriceRange,
-      dietary: newDietary,
-      haveOwnDeliveryBoy: OwnDeliveryBoy,
+    const data = {
+      id: shop?._id,
+      shopStartTime: shop?.shopStartTime,
+      shopEndTime: shop?.shopEndTime,
+      shopName: shop?.shopName,
+      password: '',
+      isCuisine: shop?.isCuisine,
       minOrderAmount: minimumOrder,
-      shopAddress: newShopAddress,
+      email: shop?.email,
+      phone_number: shop?.phone,
+      shopType: shop?.shopType,
+      shopLogo: shop?.shopLogo,
+      shopBanner: shop?.shopBanner,
+      shopStatus: shop?.shopStatus,
+      shopDescription: 'desrcriptions',
+      tags: shop?.tags,
+      tagsId: shop?.tagsId,
+      orderCapacity: shop?.orderCapacity,
+      paymentOption: newPayMentInformation,
+      dietary: newDietary,
+      liveStatus: shop?.liveStatus,
+      cuisineType: shop?.cuisinesList,
+      dietaryType: shop?.dietaryType,
+      expensive: newPriceRange,
+      deliveryType: shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
+      deliveryFee: shop?.deliveryFee,
+      shopAddress: {
+        address: shop?.address.address,
+        latitude: shop?.address.latitude,
+        longitude: shop?.address.longitude,
+        city: shop?.address.city,
+        state: shop?.address.state,
+        country: shop?.address.country,
+        placeId: shop?.address.placeId,
+        pin: shop?.address.pin,
+        primary: true,
+        note: shop?.address.note,
+      },
+      bank_name: shop?.bank_name,
+      account_name: shop?.account_name,
+      account_number: shop?.account_number,
     };
-    console.log('body ; ', dataBody);
-    return Axios.post(Api.EDIT_SHOP, dataBody);
+    return Axios.post(Api.EDIT_SHOP, data);
   };
 
   const updateData = useMutation(updateShopSettings, {
@@ -107,13 +133,11 @@ function ShopSettings() {
   };
 
   const populateStateFromShop = () => {
-    // setNewShop(shop);
     setNewPaymentInformation(shop?.paymentOption);
     setNewPriceRange(shop?.expensive);
     setNewDietary(shop?.dietary);
     setMinimumOrder(shop?.minOrderAmount);
     setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
-    // setNewShop(shop);
   };
 
   useEffect(() => {
@@ -180,6 +204,9 @@ function ShopSettings() {
           <ShopSettingsSection buttonType={1} title="General" isButton buttonList={buttonListGeneral} />
           <Box sx={boxSx2}>
             <ShopSettingsSection2
+              boxSx={{
+                paddingBottom: '29px',
+              }}
               buttonType={2}
               value={newPayMentInformation}
               title="Payment Information"
@@ -188,8 +215,11 @@ function ShopSettings() {
               isButton
               multiple
             />
-            <Divider variant="middle" sx={{ margin: '20px 0px', background: '#000000' }} />
+            <Divider variant="middle" sx={{ background: '#000000' }} />
             <ShopSettingsSection2
+              boxSx={{
+                paddingTop: '29px',
+              }}
               buttonType={2}
               title="Price Range"
               value={newPriceRange}
@@ -200,6 +230,7 @@ function ShopSettings() {
           </Box>
           <Box sx={boxSx2}>
             <ShopSettingsSection2
+              boxSx={section2Sx}
               buttonType={2}
               title="Dietary"
               options={DietarySettings}
@@ -211,6 +242,10 @@ function ShopSettings() {
           </Box>
           <Box sx={boxSx2}>
             <ShopSettingsSection2
+              boxSx={{
+                // width: '100%',
+                paddingBottom: '29px',
+              }}
               buttonType={2}
               title="Delivery Settings"
               title2="Method"
@@ -221,8 +256,11 @@ function ShopSettings() {
               readOnly
               isMethod
             />
-            <Divider variant="middle" sx={{ margin: '20px 0px', background: '#000000' }} />
+            <Divider variant="middle" sx={{ background: '#000000' }} />
             <MinimumOrder
+              boxSx={{
+                paddingTop: '21px',
+              }}
               incrementOrder={incrementOrder}
               decrementOrder={decrementOrder}
               current={minimumOrder}

@@ -2,13 +2,13 @@ import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, current }) {
+export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, current, ...props }) {
   const theme = useTheme();
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   console.log('currency', currency);
   return (
-    <Box>
+    <Box sx={props.boxSx}>
       <Typography sx={TypoSx}>Minimum order ({currency})</Typography>
       <Box
         sx={{

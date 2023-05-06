@@ -5,17 +5,14 @@ import { ShopAction2 } from '../ShopAction/ShopAction2';
 export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMethod, options, ...props }) {
   const theme = useTheme();
   console.log(buttonType);
-  const boxSx = {
-    width: '100%',
-    color: '#000',
-  };
+
   const TypoSx = {
     fontSize: '16px',
     fontWeight: 600,
   };
 
   return (
-    <Box sx={boxSx}>
+    <Box sx={props.boxSx}>
       <Typography sx={TypoSx}>{title}</Typography>
       {isMethod && (
         <Box sx={{ display: 'flex', justifyContent: 'start', gap: '12px', marginTop: '16px', alignContent: 'center' }}>
