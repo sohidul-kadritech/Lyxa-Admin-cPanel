@@ -322,3 +322,6 @@ export const ADD_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/add`;
 export const UPDATE_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/update`;
 export const DELETE_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/delete`;
 export const SORT_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/sort`;
+
+// COUPON
+export const ADD_COUPON = `${ADMIN_ENDPOINT}/coupon/add`;

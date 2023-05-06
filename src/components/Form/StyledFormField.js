@@ -9,6 +9,7 @@ import StyledCheckboxList from '../Styled/StyledCheckBoxList';
 import StyledChip from '../Styled/StyledChips';
 import StyledFileDropzone from '../Styled/StyledFileDropzone';
 import StyledInput from '../Styled/StyledInput';
+import StyledSwitch from '../Styled/StyledSwitch';
 
 export default function StyledFormField({ containerProps, label, labelProps, intputType, inputProps }) {
   const theme = useTheme();
@@ -58,19 +59,23 @@ export default function StyledFormField({ containerProps, label, labelProps, int
       {/* text field toggle */}
       {intputType === 'text-toggle' && (
         <Stack direction="row" alignItems="center" gap={5}>
-          <StyledInput
-            {...(inputProps || {})}
-            sx={{
-              '& input': {
-                paddingLeft: '18px',
-                paddingRight: '18px',
-                fontWeight: '500',
-                fontSize: '15px',
-                color: theme.palette.text.primary,
-                ...(inputProps?.sx || {}),
-              },
-            }}
-          />
+          <Box flex={1}>
+            <StyledInput
+              fullWidth
+              {...(inputProps || {})}
+              sx={{
+                '& input': {
+                  paddingLeft: '18px',
+                  paddingRight: '18px',
+                  fontWeight: '500',
+                  fontSize: '15px',
+                  color: theme.palette.text.primary,
+                  ...(inputProps?.sx || {}),
+                },
+              }}
+            />
+          </Box>
+          <StyledSwitch checked={inputProps?.checked} onChange={inputProps?.onToggle} />
         </Stack>
       )}
 
