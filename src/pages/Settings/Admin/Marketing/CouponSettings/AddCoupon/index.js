@@ -53,8 +53,6 @@ export default function AddCoupon({ onClose, couponType }) {
     })
   );
 
-  console.log(usersQuery?.data?.data);
-
   // coupon add
   const couponMutation = useMutation((data) => AXIOS.post(Api.ADD_COUPON, data), {
     onSuccess: (data) => {
@@ -92,23 +90,25 @@ export default function AddCoupon({ onClose, couponType }) {
         }}
       />
       {/* user */}
-      <StyledFormField
-        label="User"
-        intputType="autocomplete"
-        inputProps={{
-          maxHeight: '300px',
-          options: usersQuery?.data?.data?.users,
-          value: (coupon?.couponUsers && coupon?.couponUsers[0]) || null,
-          isOptionEqualToValue: (option, value) => option?._id === value?._id,
-          getOptionLabel: (option) => option?.name,
-          sx: {
-            flex: 1,
-          },
-          onChange: (e, v) => {
-            setCoupon((prev) => ({ ...prev, couponUsers: [v] }));
-          },
-        }}
-      />
+      {couponType === 'individual_user' && (
+        <StyledFormField
+          label="User"
+          intputType="autocomplete"
+          inputProps={{
+            maxHeight: '300px',
+            options: usersQuery?.data?.data?.users,
+            value: (coupon?.couponUsers && coupon?.couponUsers[0]) || null,
+            isOptionEqualToValue: (option, value) => option?._id === value?._id,
+            getOptionLabel: (option) => option?.name,
+            sx: {
+              flex: 1,
+            },
+            onChange: (e, v) => {
+              setCoupon((prev) => ({ ...prev, couponUsers: [v] }));
+            },
+          }}
+        />
+      )}
       {/* type */}
       <StyledFormField
         label="Type"
@@ -228,23 +228,25 @@ export default function AddCoupon({ onClose, couponType }) {
         }}
       />
       {/* store */}
-      <StyledFormField
-        label="Store name"
-        intputType="autocomplete"
-        inputProps={{
-          maxHeight: '110px',
-          options: shopsOptions,
-          value: (coupon?.couponShops && coupon?.couponShops[0]) || null,
-          isOptionEqualToValue: (option, value) => option?._id === value?._id,
-          getOptionLabel: (option) => option?.shopName,
-          sx: {
-            flex: 1,
-          },
-          onChange: (e, v) => {
-            setCoupon((prev) => ({ ...prev, couponShops: [v] }));
-          },
-        }}
-      />
+      {couponType === 'individual_store' && (
+        <StyledFormField
+          label="Store name"
+          intputType="autocomplete"
+          inputProps={{
+            maxHeight: '110px',
+            options: shopsOptions,
+            value: (coupon?.couponShops && coupon?.couponShops[0]) || null,
+            isOptionEqualToValue: (option, value) => option?._id === value?._id,
+            getOptionLabel: (option) => option?.shopName,
+            sx: {
+              flex: 1,
+            },
+            onChange: (e, v) => {
+              setCoupon((prev) => ({ ...prev, couponShops: [v] }));
+            },
+          }}
+        />
+      )}
       {/* submit */}
       <Box pt={20} pb={6}>
         <Button
