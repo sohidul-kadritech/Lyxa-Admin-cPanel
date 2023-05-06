@@ -82,7 +82,7 @@ export const shop_menu_items = [
       {
         label: 'Users',
         icon: UsersIcon,
-        to: '/',
+        to: '/shop/users',
       },
     ],
   },
