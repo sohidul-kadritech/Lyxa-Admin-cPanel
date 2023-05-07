@@ -23,6 +23,7 @@ function AddUser({ onClose, editCategory, ...props }) {
     console.log('added user data for credential: ', userData);
     props.addUser(userData);
   };
+
   return (
     <SidebarContainer title="Add User" onClose={onClose}>
       <Stack direction="column" alignContent="space-between" justifyContent="space-between" sx={{ height: '80vh' }}>

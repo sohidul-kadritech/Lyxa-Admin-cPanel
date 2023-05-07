@@ -26,10 +26,12 @@ function Users2() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   console.log(email, ' and ', password);
+
   const callList = (refresh = false) => {
     dispatch(getAllShopCredentials(refresh, accountId));
   };
-  const updateData = (data) => {
+
+  const updateData = async (data) => {
     const { email, password, repeated_password } = data;
     setEmail(email);
     setPassword(password);
@@ -38,16 +40,16 @@ function Users2() {
 
     if (password !== repeated_password) {
       successMsg('Pasword not match please check again !');
-    } else {
-      dispatch(
+    } else if (password === repeated_password) {
+      await dispatch(
         addShopCredential({
           email,
           password,
           shopId: accountId,
           // eslint-disable-next-line prettier/prettier
-        }),
+				})
       );
-      callList(true);
+      callList(false);
     }
   };
 
