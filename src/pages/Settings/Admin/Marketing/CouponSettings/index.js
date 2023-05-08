@@ -16,13 +16,11 @@ export default function CoponSettings() {
   const [filters, setFilters] = useState({ ...filtersInit });
   const [drawer, setDrawer] = useState(false);
 
-  const query = useQuery(['GET_COUPON', filters], () =>
+  const query = useQuery([Api.GET_COUPON, filters], () =>
     AXIOS.get(Api.GET_COUPON, {
       params: filters,
     })
   );
-
-  console.log(query?.data?.data?.coupons);
 
   return (
     <Box>
@@ -35,6 +33,7 @@ export default function CoponSettings() {
         value={currentTab}
         onChange={(event, newValue) => {
           setCurrentTab(newValue);
+          setFilters((prev) => ({ ...prev, couponType: tabValueToCouponTypeMap[newValue] }));
         }}
         sx={{
           '& .MuiTab-root': {

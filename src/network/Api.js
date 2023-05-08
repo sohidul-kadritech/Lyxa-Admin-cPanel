@@ -325,4 +325,6 @@ export const SORT_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/sort`;
 
 // COUPON
 export const ADD_COUPON = `${ADMIN_ENDPOINT}/coupon/add`;
+export const UPDATE_COUPON = `${ADMIN_ENDPOINT}/coupon/update`;
+export const DELETE_COUPON = `${ADMIN_ENDPOINT}/coupon/delete`;
 export const GET_COUPON = `${ADMIN_ENDPOINT}/coupon`;

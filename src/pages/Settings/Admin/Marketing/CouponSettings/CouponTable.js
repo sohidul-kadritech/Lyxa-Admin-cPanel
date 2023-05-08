@@ -3,12 +3,56 @@
 import { Edit } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import ConfirmModal from '../../../../../components/Common/ConfirmModal';
 import StyledIconButton from '../../../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
 import StyledTable from '../../../../../components/Styled/StyledTable3';
 import StyledBox from '../../../../../components/StyledCharts/StyledBox';
+import { successMsg } from '../../../../../helpers/successMsg';
+import * as Api from '../../../../../network/Api';
+import AXIOS from '../../../../../network/axios';
 
 export default function CouponTable({ rows = [] }) {
+  const queryClient = useQueryClient();
+
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [currentCoupon, setCurrentCoupon] = useState({});
+
+  const couponUpdateMutation = useMutation(
+    (data = {}) =>
+      AXIOS.post(Api.UPDATE_COUPON, {
+        ...data,
+        id: data?._id,
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        if (data?.status) {
+          queryClient.invalidateQueries([Api.GET_COUPON]);
+        }
+      },
+    }
+  );
+
+  const couponDeleteMutation = useMutation(
+    (data = {}) =>
+      AXIOS.post(Api.DELETE_COUPON, {
+        id: data?._id,
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          successMsg(data?.message, data?.status ? 'success' : undefined);
+          setConfirmModal(false);
+          setCurrentCoupon({});
+        }
+        queryClient.invalidateQueries([Api.GET_COUPON]);
+      },
+    }
+  );
+
   const columns = [
     {
       id: 1,
@@ -79,12 +123,24 @@ export default function CouponTable({ rows = [] }) {
       headerAlign: 'right',
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-          <StyledSwitch checked={params?.row?.couponStatus === 'active'} onChange={() => {}} />
-          <StyledIconButton color="primary" onClick={() => {}}>
-            <CloseIcon />
-          </StyledIconButton>
+          <StyledSwitch
+            checked={params?.row?.couponStatus === 'active'}
+            onChange={() => {
+              params.row.couponStatus = params.row.couponStatus === 'active' ? 'inactive' : 'active';
+              couponUpdateMutation.mutate(params?.row);
+            }}
+          />
           <StyledIconButton onClick={() => {}} color="primary">
             <Edit />
+          </StyledIconButton>
+          <StyledIconButton
+            color="primary"
+            onClick={() => {
+              setCurrentCoupon(params?.row);
+              setConfirmModal(true);
+            }}
+          >
+            <CloseIcon />
           </StyledIconButton>
         </Stack>
       ),
@@ -100,6 +156,19 @@ export default function CouponTable({ rows = [] }) {
       }}
     >
       <StyledTable autoHeight columns={columns} getRowId={(row) => row?._id} rows={rows} />
+      <ConfirmModal
+        isOpen={confirmModal}
+        onCancel={() => {
+          setConfirmModal(false);
+          setCurrentCoupon({});
+        }}
+        blurClose
+        loading={couponDeleteMutation.isLoading}
+        message="Are you sure you want to delete this coupon ?"
+        onConfirm={() => {
+          couponDeleteMutation.mutate(currentCoupon);
+        }}
+      />
     </StyledBox>
   );
 }
