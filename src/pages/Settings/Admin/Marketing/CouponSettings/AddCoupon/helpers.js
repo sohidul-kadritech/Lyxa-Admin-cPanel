@@ -64,3 +64,16 @@ export const createCouponUploaData = (coupon, checked, couponType) => {
     ...data,
   };
 };
+
+export const getCouponEditdData = (editCoupon) => editCoupon;
+
+export const getEditCouponChecked = (editCoupon) => {
+  const checked = { ...checkedInit };
+
+  if (!editCoupon?.couponAmountLimit) checked.couponAmountLimit = false;
+  if (!editCoupon?.couponUserLimit) checked.couponUserLimit = false;
+  if (!editCoupon?.couponOrderLimit) checked.couponOrderLimit = false;
+  if (!editCoupon?.couponMinimumOrderValue) checked.couponMinimumOrderValue = false;
+
+  return checked;
+};

@@ -15,8 +15,10 @@ import { breadcrumbItems, filtersInit, tabValueToCouponTypeMap } from './helpers
 
 export default function CoponSettings() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [filters, setFilters] = useState({ ...filtersInit });
   const [drawer, setDrawer] = useState(false);
+
+  const [filters, setFilters] = useState({ ...filtersInit });
+  const [editCoupon, setEditCoupon] = useState({});
 
   const query = useQuery([Api.GET_COUPON, filters], () =>
     AXIOS.get(Api.GET_COUPON, {
@@ -60,13 +62,25 @@ export default function CoponSettings() {
             setDrawer(true);
           }}
         />
-        {query.isLoading ? <PageLoader /> : <CouponTable rows={query?.data?.data?.coupons} />}
+        {query.isLoading ? (
+          <PageLoader />
+        ) : (
+          <CouponTable
+            rows={query?.data?.data?.coupons}
+            onEdit={(coupon) => {
+              setEditCoupon(coupon);
+              setDrawer(true);
+            }}
+          />
+        )}
       </Box>
       <Drawer open={Boolean(drawer)} anchor="right">
         <AddCoupon
           couponType={tabValueToCouponTypeMap[currentTab]}
+          editCoupon={editCoupon}
           onClose={() => {
             setDrawer(false);
+            setEditCoupon({});
           }}
         />
       </Drawer>

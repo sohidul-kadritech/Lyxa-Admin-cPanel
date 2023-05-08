@@ -16,7 +16,7 @@ import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
 import { getFormatedDuration } from './helpers';
 
-export default function CouponTable({ rows = [] }) {
+export default function CouponTable({ rows = [], onEdit }) {
   const queryClient = useQueryClient();
 
   const [confirmModal, setConfirmModal] = useState(false);
@@ -143,7 +143,12 @@ export default function CouponTable({ rows = [] }) {
               couponUpdateMutation.mutate(params?.row);
             }}
           />
-          <StyledIconButton onClick={() => {}} color="primary">
+          <StyledIconButton
+            onClick={() => {
+              onEdit(params?.row);
+            }}
+            color="primary"
+          >
             <Edit />
           </StyledIconButton>
           <StyledIconButton

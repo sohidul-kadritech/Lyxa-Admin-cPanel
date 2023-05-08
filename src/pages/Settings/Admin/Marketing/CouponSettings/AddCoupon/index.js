@@ -14,15 +14,18 @@ import {
   couponDiscountTypeOptions,
   couponTypeToTitleMap,
   createCouponUploaData,
+  getCouponEditdData,
   getCouponInit,
+  getEditCouponChecked,
   validateCoupon,
 } from './helpers';
 
-export default function AddCoupon({ onClose, couponType }) {
+export default function AddCoupon({ onClose, couponType, editCoupon }) {
   const queryClient = useQueryClient();
+  console.log(editCoupon);
 
-  const [coupon, setCoupon] = useState(getCouponInit(couponType));
-  const [checked, setChecked] = useState({ ...checkedInit });
+  const [coupon, setCoupon] = useState(editCoupon?._id ? getCouponEditdData(editCoupon) : getCouponInit(couponType));
+  const [checked, setChecked] = useState(editCoupon?._id ? getEditCouponChecked(editCoupon) : { ...checkedInit });
 
   // handlers
   const commonChangeHandler = (e) => {
@@ -61,15 +64,24 @@ export default function AddCoupon({ onClose, couponType }) {
   );
 
   // coupon add
-  const couponMutation = useMutation((data) => AXIOS.post(Api.ADD_COUPON, data), {
-    onSuccess: (data) => {
-      successMsg(data?.message, data?.status ? 'success' : undefined);
-      if (data?.status) {
-        onClose();
-        queryClient.invalidateQueries([Api.GET_COUPON]);
-      }
+  const couponMutation = useMutation(
+    (data) => {
+      const _api = editCoupon?._id ? Api.UPDATE_COUPON : Api.ADD_COUPON;
+      return AXIOS.post(_api, {
+        ...data,
+        id: editCoupon?._id,
+      });
     },
-  });
+    {
+      onSuccess: (data) => {
+        successMsg(data?.message, data?.status ? 'success' : undefined);
+        if (data?.status) {
+          onClose();
+          queryClient.invalidateQueries([Api.GET_COUPON]);
+        }
+      },
+    }
+  );
 
   const submitCoupon = () => {
     const valid = validateCoupon(coupon);
