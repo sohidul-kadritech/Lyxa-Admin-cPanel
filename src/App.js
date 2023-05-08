@@ -43,7 +43,7 @@ export default function App() {
   const { socket } = useSelector((state) => state.socketReducer);
 
   const {
-    admin: { account_type, adminType },
+    admin: { account_type, adminType, parentShop },
   } = useSelector((state) => state.Login);
   const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
 
@@ -71,12 +71,27 @@ export default function App() {
     }
 
     try {
+      console.log('parent shop', parentShop);
+      console.log('before loaded: ', ENDPOINT, ADMIN_DATA);
       const { data: respData } = await requestApi().request(ENDPOINT, requestOptions);
 
       if (respData?.status) {
-        ADMIN_DATA = respData?.data?.[accountType];
-        dispatch(setAdmin({ ...ADMIN_DATA, account_type: accountType } || {}));
+        const credentialParent =
+          respData?.data?.[accountType]?.parentShop || respData?.data?.[accountType]?.parentSeller;
+
+        if (credentialParent) {
+          const { data: respDataCred } = await requestApi().request(
+            `${ENDPOINT}?id=${credentialParent}`,
+            requestOptions,
+          );
+          ADMIN_DATA = respDataCred?.data?.[accountType];
+          dispatch(setAdmin({ ...ADMIN_DATA, credentialUserId: ADMIN_DATA._id, account_type: accountType } || {}));
+        } else {
+          ADMIN_DATA = respData?.data?.[accountType];
+          dispatch(setAdmin({ ...ADMIN_DATA, account_type: accountType } || {}));
+        }
       }
+      console.log('data is loaded: ', ENDPOINT, ADMIN_DATA);
       setAdminDataIsLoading(false);
     } catch (error) {
       console.log(error);

@@ -35,7 +35,7 @@ function Users2() {
   const [email, setEmail] = useState('');
 
   const [password, setPassword] = useState('');
-
+  // console.log('credentialUserID', credentialUserId);
   const { data, isLoading, isError } = useQuery(
     'get-shop-credentials',
     () =>
