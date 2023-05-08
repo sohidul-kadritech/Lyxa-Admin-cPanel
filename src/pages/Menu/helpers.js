@@ -189,8 +189,20 @@ export const createProductData = async (product, shop, isEditProduct) => {
     subCategory = undefined;
     addons = product?.addons?.map((p) => p?._id);
 
-    if (attributes[0]) {
-      attributes[0].items = attributes[0].items.filter((item) => item.name && item.extraPrice);
+    if (attributes?.length) {
+      const attrs = [];
+
+      attributes?.forEach((att) => {
+        const items = att?.items?.filter((item) => item.name && item.extraPrice);
+        if (items?.length) {
+          attrs.push({
+            ...att,
+            items,
+          });
+        }
+      });
+
+      attributes = attrs;
     }
   } else {
     dietry = undefined;
@@ -230,8 +242,10 @@ export const getProductInit = (shop, categoryId) => {
 };
 
 export const converEditProduct = (product) => {
+  console.log(product);
   const data = {
     category: product?.category._id,
+    subCategory: product?.subCategory?._id,
     images: product?.images?.map((url) => ({
       preview: url,
     })),

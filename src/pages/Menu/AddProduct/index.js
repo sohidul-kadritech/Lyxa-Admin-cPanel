@@ -602,6 +602,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           multiline: true,
         }}
       />
+      {/* {!productReadonly && ( */}
       <Box pt={6} pb={6}>
         <Button
           variant="contained"
@@ -619,6 +620,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           Save Item
         </Button>
       </Box>
+      {/* )} */}
     </SidebarContainer>
   );
 }

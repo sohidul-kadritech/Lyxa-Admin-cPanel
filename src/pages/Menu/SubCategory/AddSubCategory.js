@@ -144,17 +144,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
               }}
             />
           </Box>
-          <Stack
-            height="100%"
-            sx={{
-              height: 'auto',
-              position: 'absolute',
-              left: '0',
-              right: '0',
-              bottom: '0',
-              padding: '24px 16px',
-            }}
-          >
+          <Stack pt={10}>
             <Button
               variant="contained"
               color="primary"
