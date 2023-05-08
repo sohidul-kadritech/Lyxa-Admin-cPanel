@@ -246,7 +246,8 @@ function ShopInfo() {
       haveOwnDeliveryBoy,
       deliveryFee,
       deals,
-      address: { address, latitude, longitude },
+      address,
+      // address: { address, latitude, longitude },
     },
   } = useSelector((state) => state.Login);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
@@ -281,15 +282,15 @@ function ShopInfo() {
             <Col lg={4}>
               <InfoTwoWrapper>
                 <InfoTwo
-                  mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
-                  value={address}
+                  mapLink={`${MAP_URL}?z=10&t=m&q=loc:${address?.latitude}+${address?.longitude}`}
+                  value={address?.address}
                   Icon={RoomOutlinedIcon}
                   name="Location"
                 />
                 <InfoTwo
                   value={`Mon to Fri - ${shopStartTimeText} ${
-                    shopStartTimeText.split(':')[0] < 12 ? 'AM' : 'PM'
-                  } - ${shopEndTimeText} ${shopEndTimeText.split(':')[0] < 12 ? 'AM' : 'PM'}`}
+                    shopStartTimeText?.split(':')[0] < 12 ? 'AM' : 'PM'
+                  } - ${shopEndTimeText} ${shopEndTimeText?.split(':')[0] < 12 ? 'AM' : 'PM'}`}
                   Icon={AccessTimeOutlinedIcon}
                   name="Open"
                 />
@@ -328,7 +329,7 @@ function ShopInfo() {
               <InfoTwoWrapper>
                 <InfoTwo name="Delivery Type" value={`${haveOwnDeliveryBoy ? 'Self' : 'Lyxa'}`} Icon={PaymentIcon} />
                 <InfoTwo name="Delivery Fee" value={`${deliveryFee}`} Icon={MopedOutlinedIcon} />
-                <InfoTwo name="No Deals" value={deals.length || ''} Icon={SettingsInputSvideoIcon} />
+                <InfoTwo name="No Deals" value={deals?.length || ''} Icon={SettingsInputSvideoIcon} />
               </InfoTwoWrapper>
             </Col>
           </Row>

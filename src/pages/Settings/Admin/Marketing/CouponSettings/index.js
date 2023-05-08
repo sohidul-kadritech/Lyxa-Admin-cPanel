@@ -1,13 +1,15 @@
 // third party
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
-// project import
 import { useQuery } from 'react-query';
+
+// project import
 import PageTop from '../../../../../components/Common/PageTop';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
 import AddCoupon from './AddCoupon';
 import CouponTable from './CouponTable';
+import PageLoader from './PageLoader';
 import Searchbar from './Seachbar';
 import { breadcrumbItems, filtersInit, tabValueToCouponTypeMap } from './helpers';
 
@@ -49,14 +51,16 @@ export default function CoponSettings() {
       </Tabs>
       <Box pt={10}>
         <Searchbar
-          searchPlaceHolder="Search 24 items"
+          searchPlaceHolder={`Search ${
+            query?.data?.data?.coupons?.length ? `${query?.data?.data?.coupons?.length} ` : ''
+          }items `}
           filters={filters}
           setFilters={setFilters}
           onAdd={() => {
             setDrawer(true);
           }}
         />
-        <CouponTable rows={query?.data?.data?.coupons} />
+        {query.isLoading ? <PageLoader /> : <CouponTable rows={query?.data?.data?.coupons} />}
       </Box>
       <Drawer open={Boolean(drawer)} anchor="right">
         <AddCoupon

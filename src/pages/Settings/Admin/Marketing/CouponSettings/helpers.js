@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { dateRangeInit } from '../../../../../helpers/dateRangeInit';
 
 export const breadcrumbItems = [
@@ -42,3 +43,57 @@ export const statusOptions = [
     label: 'Inactive',
   },
 ];
+
+export const getFormatedDuration = (start, end) => {
+  // Convert strings to moment objects
+  const startDate = moment(start);
+  const endDate = moment(end);
+
+  // Calculate the difference between dates in days
+  const duration = moment.duration(endDate.diff(startDate));
+
+  // Convert days into months, weeks, and days
+  const months = Math.floor(duration.asMonths());
+  const weeks = Math.floor(duration.asWeeks()) % 4;
+  let days = Math.floor(duration.asDays()) % 7;
+  const hours = Math.floor(duration.asHours()) % 24;
+  const minutes = Math.floor(duration.asMinutes()) % 60;
+
+  // Build a string that represents the duration
+  let durationStr = '';
+
+  if (months) {
+    durationStr = `${months} month${months === 1 ? '' : 's'}`;
+
+    if (weeks) {
+      durationStr += ` ${weeks} week${weeks === 1 ? '' : 's'}`;
+    }
+
+    return durationStr;
+  }
+
+  if (weeks) {
+    durationStr += ` ${weeks} week${weeks === 1 ? '' : 's'}`;
+    days = Math.ceil(duration.asDays()) % 7;
+
+    if (days) {
+      durationStr += ` ${days} day${days === 1 ? '' : 's'}`;
+    }
+
+    return durationStr;
+  }
+
+  if (days || hours) {
+    if (days) {
+      durationStr += ` ${days} day${days === 1 ? '' : 's'}`;
+    }
+
+    if (hours) {
+      durationStr += ` ${hours} hour${hours === 1 ? '' : 's'}`;
+    }
+
+    return durationStr;
+  }
+
+  return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+};

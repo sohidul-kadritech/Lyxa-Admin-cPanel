@@ -2,7 +2,8 @@
 // project import
 import { Edit } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import ConfirmModal from '../../../../../components/Common/ConfirmModal';
@@ -13,6 +14,7 @@ import StyledBox from '../../../../../components/StyledCharts/StyledBox';
 import { successMsg } from '../../../../../helpers/successMsg';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
+import { getFormatedDuration } from './helpers';
 
 export default function CouponTable({ rows = [] }) {
   const queryClient = useQueryClient();
@@ -72,6 +74,17 @@ export default function CouponTable({ rows = [] }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
+      minWidth: 180,
+      renderCell: ({ row }) => (
+        <Stack gap={1.5}>
+          <Typography variant="body4">
+            {getFormatedDuration(row?.couponDuration?.start, row?.couponDuration?.end)}
+          </Typography>
+          <Typography variant="body4" color="#737373">
+            {getFormatedDuration(moment(), row?.couponDuration?.end)} left
+          </Typography>
+        </Stack>
+      ),
     },
     {
       id: 3,
@@ -118,7 +131,7 @@ export default function CouponTable({ rows = [] }) {
       headerName: ``,
       sortable: false,
       field: 'action',
-      flex: 0.9,
+      flex: 1,
       align: 'right',
       headerAlign: 'right',
       renderCell: (params) => (
@@ -148,14 +161,30 @@ export default function CouponTable({ rows = [] }) {
   ];
 
   return (
-    <StyledBox
-      padding
-      sx={{
-        paddingTop: '3px',
-        paddingBottom: '10px',
-      }}
-    >
-      <StyledTable autoHeight columns={columns} getRowId={(row) => row?._id} rows={rows} />
+    <>
+      <StyledBox
+        padding
+        sx={{
+          paddingTop: '3px',
+          paddingBottom: '10px',
+          overflowX: 'auto',
+          scrollbarWidth: 'thin',
+          scrollbarHeight: 'thin',
+
+          '&::-webkit-scrollbar': {
+            width: '6px',
+            height: '6px',
+          },
+        }}
+      >
+        <Box
+          sx={{
+            minWidth: '1070px',
+          }}
+        >
+          <StyledTable autoHeight columns={columns} getRowId={(row) => row?._id} rows={rows} rowHeight={71} />
+        </Box>
+      </StyledBox>
       <ConfirmModal
         isOpen={confirmModal}
         onCancel={() => {
@@ -169,6 +198,6 @@ export default function CouponTable({ rows = [] }) {
           couponDeleteMutation.mutate(currentCoupon);
         }}
       />
-    </StyledBox>
+    </>
   );
 }
