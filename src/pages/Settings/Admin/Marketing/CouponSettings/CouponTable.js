@@ -6,6 +6,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import ConfirmModal from '../../../../../components/Common/ConfirmModal';
 import StyledIconButton from '../../../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
@@ -16,8 +17,9 @@ import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
 import { getFormatedDuration } from './helpers';
 
-export default function CouponTable({ rows = [], onEdit }) {
+export default function CouponTable({ rows = [], onEdit, couponType }) {
   const queryClient = useQueryClient();
+  const history = useHistory();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [currentCoupon, setCurrentCoupon] = useState({});
@@ -67,7 +69,7 @@ export default function CouponTable({ rows = [], onEdit }) {
       renderCell: ({ row }) => <Typography variant="body4">{row?.couponName}</Typography>,
     },
     {
-      id: 2,
+      id: 3,
       headerName: `DURATION`,
       sortable: false,
       field: 'status',
@@ -87,7 +89,7 @@ export default function CouponTable({ rows = [], onEdit }) {
       ),
     },
     {
-      id: 3,
+      id: 4,
       headerName: `MIN ORDER`,
       sortable: false,
       field: 'couponMinimumOrderValue',
@@ -97,7 +99,7 @@ export default function CouponTable({ rows = [], onEdit }) {
       renderCell: ({ value }) => <Typography variant="body4">{value ? `$${value}` : '_'}</Typography>,
     },
     {
-      id: 4,
+      id: 5,
       headerName: `ORDER LIMIT`,
       sortable: false,
       field: 'couponOrderLimit',
@@ -107,7 +109,7 @@ export default function CouponTable({ rows = [], onEdit }) {
       renderCell: ({ value }) => <Typography variant="body4">{value || '_'}</Typography>,
     },
     {
-      id: 5,
+      id: 6,
       headerName: `AMOUNT LIMIT`,
       sortable: false,
       field: 'couponAmountLimit',
@@ -117,7 +119,7 @@ export default function CouponTable({ rows = [], onEdit }) {
       renderCell: ({ value }) => <Typography variant="body4">{value ? `$${value}` : '_'}</Typography>,
     },
     {
-      id: 6,
+      id: 7,
       headerName: `USER LIMIT`,
       sortable: false,
       field: 'couponUserLimit',
@@ -127,13 +129,14 @@ export default function CouponTable({ rows = [], onEdit }) {
       renderCell: ({ value }) => <Typography variant="body4">{value || '_'}</Typography>,
     },
     {
-      id: 7,
+      id: 8,
       headerName: ``,
       sortable: false,
       field: 'action',
       flex: 1,
       align: 'right',
       headerAlign: 'right',
+      minWidth: 150,
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
           <StyledSwitch
@@ -164,6 +167,61 @@ export default function CouponTable({ rows = [], onEdit }) {
       ),
     },
   ];
+
+  if (couponType === 'individual_store') {
+    columns.splice(1, 0, {
+      id: 2,
+      headerName: `STORE`,
+      sortable: false,
+      field: 'couponShops',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ value = [] }) => (
+        <Typography
+          sx={{
+            cursor: 'pointer',
+            maxWidth: '100%',
+          }}
+          variant="body4"
+          color="primary"
+          onClick={() => {
+            history.push(`/shops/details/${value[0]?._id}`);
+          }}
+        >
+          {value[0]?.shopName}
+        </Typography>
+      ),
+    });
+  }
+
+  if (couponType === 'individual_user') {
+    columns.splice(1, 0, {
+      id: 2,
+      headerName: `USER`,
+      sortable: false,
+      field: 'couponUsers',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ value = [] }) => (
+        <Typography
+          sx={{
+            cursor: 'pointer',
+            maxWidth: '100%',
+          }}
+          className="text-dots"
+          variant="body4"
+          color="primary"
+          onClick={() => {
+            history.push(`/users/details/${value[0]?._id}`);
+          }}
+        >
+          {value[0]?.name}
+        </Typography>
+      ),
+    });
+  }
 
   return (
     <>

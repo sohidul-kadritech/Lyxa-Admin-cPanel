@@ -303,3 +303,9 @@ input[type='number'] {
 .cursor-not-allowed {
   cursor: not-allowed;
 }
+
+.text-dots {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

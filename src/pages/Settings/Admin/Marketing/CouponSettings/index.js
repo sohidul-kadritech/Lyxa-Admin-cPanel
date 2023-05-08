@@ -67,6 +67,7 @@ export default function CoponSettings() {
         ) : (
           <CouponTable
             rows={query?.data?.data?.coupons}
+            couponType={tabValueToCouponTypeMap[currentTab]}
             onEdit={(coupon) => {
               setEditCoupon(coupon);
               setDrawer(true);
