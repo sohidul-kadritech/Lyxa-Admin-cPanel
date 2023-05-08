@@ -8,7 +8,7 @@ import StyledFormField from '../../components/Form/StyledFormField';
 const fieldContainerSx = {
   padding: '14px 0px 23px 0',
 };
-function AddUser({ onClose, editCategory, ...props }) {
+function AddUser({ onClose, editCategory, loading, ...props }) {
   const [userData, setUserData] = useState({});
 
   console.log(editCategory);
@@ -101,7 +101,14 @@ function AddUser({ onClose, editCategory, ...props }) {
             *Staff: Access to almost all pages, except for those related to payments, tax, user management, marking, and
             settings.
           </Typography>
-          <Button variant="contained" color="primary" onClick={onSubmitHandler} startIcon={<EmailOutlined />} fullWidth>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            onClick={onSubmitHandler}
+            startIcon={<EmailOutlined />}
+            fullWidth
+          >
             Add e-mail
           </Button>
         </Box>

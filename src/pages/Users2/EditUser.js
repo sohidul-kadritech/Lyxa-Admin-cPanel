@@ -1,21 +1,24 @@
 import { ArrowDownward } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 
 const fieldContainerSx = {
   padding: '14px 0px 23px 0',
 };
-function EditUser({ onClose, editUser }) {
-  //   const [wantToChangePass, setWantToChangePass] = useState(false);
-  //   const [name, setName] = useState('');
-  //   const [email, setEmail] = useState('');
-  //   const [password, setPassword] = useState('');
-  //   const [phoneNumber, setPhoneNumber] = useState('');
-  //   const [role, setRole] = useState('');
-  //   const [activeStatus, setActiveStatus] = useState('');
-  console.log(editUser);
+function EditUser({ onClose, editUser, ...props }) {
+  const [userData, setUserData] = useState(props.data);
+  const userEditOnBlurHandler = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  const onSubmitHandler = () => {
+    console.log('updated user data for credential: ', userData);
+    props.editUserHandler(userData);
+    onClose();
+  };
+
   const theme = useTheme();
   return (
     <SidebarContainer title="Edit User" onClose={onClose}>
@@ -27,6 +30,12 @@ function EditUser({ onClose, editUser }) {
             intputType="text"
             containerProps={{
               sx: fieldContainerSx,
+            }}
+            inputProps={{
+              type: 'text',
+              name: 'name',
+              value: userData.name,
+              onChange: userEditOnBlurHandler,
             }}
           />
           {/* email */}
@@ -44,7 +53,7 @@ function EditUser({ onClose, editUser }) {
               readOnly: true,
               type: 'email',
               name: 'email',
-              value: 'kelly@gmail.com',
+              value: userData.email,
             }}
           />
 
@@ -58,7 +67,7 @@ function EditUser({ onClose, editUser }) {
             inputProps={{
               type: 'password',
               name: 'new_password',
-              value: '',
+              onChange: userEditOnBlurHandler,
             }}
           />
           {/* confirm password */}
@@ -71,7 +80,7 @@ function EditUser({ onClose, editUser }) {
             inputProps={{
               type: 'password',
               name: 'confirm_new_password',
-              value: '',
+              onChange: userEditOnBlurHandler,
             }}
           />
         </Box>
@@ -88,7 +97,14 @@ function EditUser({ onClose, editUser }) {
             *Staff: Access to almost all pages, except for those related to payments, tax, user management, marking, and
             settings.
           </Typography>
-          <Button variant="contained" color="primary" startIcon={<ArrowDownward />} fullWidth>
+          <Button
+            onClick={onSubmitHandler}
+            disabled={props?.loading}
+            variant="contained"
+            color="primary"
+            startIcon={<ArrowDownward />}
+            fullWidth
+          >
             Save changes
           </Button>
         </Box>

@@ -40,7 +40,7 @@ function ShopSettings() {
     return store.Login.admin;
   });
 
-  console.log('shop', shop);
+  console.log('shop', shop.credentialUserId);
 
   const [newShop, setNewShop] = useState(deepClone(shop));
 
