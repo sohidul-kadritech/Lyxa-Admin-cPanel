@@ -51,7 +51,7 @@ const typeLabels = {
 export default function ContainerTable({
   items,
   loading,
-  // handleMenuClick,
+  onViewShops,
   onDrop,
   containerType,
   minWidth,
@@ -155,7 +155,7 @@ export default function ContainerTable({
               marginLeft: '17px',
             }}
             onClick={() => {
-              // onViewShops(params.row);
+              onViewShops(params.row);
             }}
           >
             <Visibility />

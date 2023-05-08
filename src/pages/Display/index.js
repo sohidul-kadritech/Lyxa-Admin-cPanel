@@ -24,14 +24,6 @@ const pagesList = [
 
 export default function DisplaySettings() {
   return (
-    // <Wrapper
-    //   sx={{
-    //     paddingTop: 0,
-    //     height: 'auto',
-    //   }}
-    // >
-
-    // </Wrapper>
     <Box>
       <PageTop title="Display" subtitle="Customize admin settings" />
       <PageList items={pagesList} />

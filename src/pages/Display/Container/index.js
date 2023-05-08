@@ -12,6 +12,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
 import ListPageSkeleton from '../ListPageSkeleton';
+import Restaurants from '../Restaurants';
 import AddContainer from './AddContainer';
 import ContainerTable from './ContainerTable';
 
@@ -57,7 +58,7 @@ export default function ContainerList({ containerType }) {
   }
 
   const queryClient = useQueryClient();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(null);
   const [filters, setFilters] = useState(filtersInit);
 
   // list query
@@ -137,7 +138,7 @@ export default function ContainerList({ containerType }) {
   const threeDotHandler = (menu, item) => {
     if (menu === 'edit') {
       setCurrentItem(item);
-      setSidebarOpen(true);
+      setSidebarOpen('add-item');
     }
 
     if (menu === 'status') {
@@ -163,7 +164,7 @@ export default function ContainerList({ containerType }) {
           backTo="/display"
           addButtonLabel="Create"
           onAdd={() => {
-            setSidebarOpen(true);
+            setSidebarOpen('add-item');
           }}
           breadcrumbItems={breadcrumbItems}
         />
@@ -204,7 +205,11 @@ export default function ContainerList({ containerType }) {
                   }}
                   onEdit={(item) => {
                     setCurrentItem(item);
-                    setSidebarOpen(true);
+                    setSidebarOpen('add-item');
+                  }}
+                  onViewShops={(item) => {
+                    setCurrentItem(item);
+                    setSidebarOpen('resturants');
                   }}
                   onStatusChange={(item) => {
                     item.status = item?.status === 'active' ? 'inactive' : 'active';
@@ -221,16 +226,27 @@ export default function ContainerList({ containerType }) {
         </Box>
       </Box>
       {/* sidebar */}
-      <Drawer anchor="right" open={sidebarOpen}>
-        <AddContainer
-          shopType={typeToTabIndexMap[currentTab]}
-          editContainer={currentItem}
-          containerType={containerType}
-          onClose={() => {
-            setSidebarOpen(false);
-            setCurrentItem({});
-          }}
-        />
+      <Drawer anchor="right" open={Boolean(sidebarOpen)}>
+        {sidebarOpen === 'add-item' ? (
+          <AddContainer
+            shopType={typeToTabIndexMap[currentTab]}
+            editContainer={currentItem}
+            containerType={containerType}
+            onClose={() => {
+              setSidebarOpen(null);
+              setCurrentItem({});
+            }}
+          />
+        ) : (
+          <Restaurants
+            id={currentItem?._id}
+            onClose={() => {
+              setSidebarOpen(null);
+              setCurrentItem({});
+            }}
+            type={containerType}
+          />
+        )}
       </Drawer>
       {/* confirmModal */}
       <ConfirmModal

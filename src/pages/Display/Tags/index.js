@@ -12,8 +12,8 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
 import ListPageSkeleton from '../ListPageSkeleton';
+import Restaurants from '../Restaurants';
 import AddTag from './AddTag';
-import Restaurants from './Restaurants';
 import TagsTable from './TagsTable';
 
 const breadcrumbItems = [
@@ -196,7 +196,8 @@ export default function TagsAndCusines() {
         )}
         {sidebar === 'restaurants' && (
           <Restaurants
-            tagId={currentTag?._id}
+            id={currentTag?._id}
+            type="tag"
             onClose={() => {
               setCurrentTag({});
               setSidebar(null);

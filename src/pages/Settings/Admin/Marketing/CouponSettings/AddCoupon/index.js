@@ -135,7 +135,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               Generate
             </Button>
           </Box>
-
           {/* user */}
           {couponType === 'individual_user' && (
             <StyledFormField
@@ -276,6 +275,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               onToggle: (event) => commonCheckHandler(event, 'couponMinimumOrderValue'),
             }}
           />
+
           {/* store */}
           {couponType === 'individual_store' && (
             <StyledFormField
@@ -296,6 +296,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               }}
             />
           )}
+
           {/* submit */}
           <Box pt={20} pb={6}>
             <Button

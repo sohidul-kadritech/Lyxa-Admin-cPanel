@@ -315,6 +315,7 @@ export const ADD_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/add`;
 export const UPDATE_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/update`;
 export const DELETE_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/delete`;
 export const SORT_LIST_CONTAINERS = `${ADMIN_ENDPOINT}/list-container/sort`;
+export const GET_LIST_CONTAINER_SHOPS = `${ADMIN_ENDPOINT}/list-container/shop`;
 
 // FILTER CONTAINERS
 export const GET_ALL_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container`;
@@ -322,6 +323,7 @@ export const ADD_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/add`;
 export const UPDATE_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/update`;
 export const DELETE_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/delete`;
 export const SORT_FILTER_CONTAINERS = `${ADMIN_ENDPOINT}/filter-container/sort`;
+export const GET_FILTER_CONTAINER_SHOPS = `${ADMIN_ENDPOINT}/filter-container/shop`;
 
 // COUPON
 export const ADD_COUPON = `${ADMIN_ENDPOINT}/coupon/add`;
