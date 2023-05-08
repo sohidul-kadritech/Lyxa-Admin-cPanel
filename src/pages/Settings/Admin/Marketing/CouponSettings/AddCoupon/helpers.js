@@ -39,7 +39,58 @@ export const checkedInit = {
   couponMinimumOrderValue: true,
 };
 
-export const validateCoupon = () => ({ status: true });
+export const validateCoupon = (coupon, couponType) => {
+  const error = {
+    status: false,
+    message: '',
+  };
+
+  // if (!coupon?.couponType) {
+  //   error.message = 'Coupon type is empty!';
+  //   return error;
+  // }
+
+  // if (!coupon?.couponStatus) {
+  //   error.message = 'Coupon status is empty!';
+  //   return error;
+  // }
+
+  if (!coupon?.couponName?.trim()) {
+    error.message = 'Coupon name cannot be empty!';
+    return error;
+  }
+
+  if (!coupon?.couponDiscountType) {
+    error.message = 'Coupon type cannot be empty!';
+    return error;
+  }
+
+  if (!coupon?.couponValue && coupon?.couponDiscountType !== 'free_delivery') {
+    error.message = 'Coupon value cannot be empty!';
+    return error;
+  }
+
+  if (couponType === 'individual_store') {
+    if (!coupon?.couponShops?.length) {
+      error.message = 'Coupon store cannot be empty!';
+      return error;
+    }
+  }
+
+  if (couponType === 'individual_user') {
+    if (!coupon?.couponUsers?.length) {
+      error.message = 'Coupon user cannot be empty!';
+      return error;
+    }
+  }
+
+  // if (!coupon?.couponDuration && coupon?.couponDiscountType !== 'free_delivery') {
+  //   error.message = 'Coupon value cannot be empty!';
+  //   return error;
+  // }
+
+  return { status: true };
+};
 
 export const createCouponUploaData = (coupon, checked, couponType) => {
   const { couponAmountLimit, couponUserLimit, couponOrderLimit, couponMinimumOrderValue } = coupon;

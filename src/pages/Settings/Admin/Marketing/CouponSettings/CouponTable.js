@@ -187,7 +187,20 @@ export default function CouponTable({ rows = [], onEdit }) {
             minWidth: '1070px',
           }}
         >
-          <StyledTable autoHeight columns={columns} getRowId={(row) => row?._id} rows={rows} rowHeight={71} />
+          <StyledTable
+            autoHeight
+            columns={columns}
+            getRowId={(row) => row?._id}
+            rows={rows}
+            rowHeight={71}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No Coupon found
+                </Stack>
+              ),
+            }}
+          />
         </Box>
       </StyledBox>
       <ConfirmModal

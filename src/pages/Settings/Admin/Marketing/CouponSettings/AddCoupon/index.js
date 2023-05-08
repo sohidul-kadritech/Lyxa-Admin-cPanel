@@ -1,5 +1,6 @@
 // thrid party
 import { Box, Button } from '@mui/material';
+import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../../../../assets/icons/down.svg';
@@ -22,7 +23,6 @@ import {
 
 export default function AddCoupon({ onClose, couponType, editCoupon }) {
   const queryClient = useQueryClient();
-  console.log(editCoupon);
 
   const [coupon, setCoupon] = useState(editCoupon?._id ? getCouponEditdData(editCoupon) : getCouponInit(couponType));
   const [checked, setChecked] = useState(editCoupon?._id ? getEditCouponChecked(editCoupon) : { ...checkedInit });
@@ -84,9 +84,10 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
   );
 
   const submitCoupon = () => {
-    const valid = validateCoupon(coupon);
+    const valid = validateCoupon(coupon, couponType);
 
     if (!valid.status) {
+      successMsg(valid?.message);
       return;
     }
 
@@ -186,6 +187,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             inputProps={{
               fullWidth: true,
               variant: 'form',
+              maxDate: moment(coupon?.couponDuration?.end).subtract(1, 'day'),
               value: coupon.couponDuration.start,
               onChange: (e) => {
                 setCoupon((prev) => ({
@@ -206,6 +208,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               fullWidth: true,
               variant: 'form',
               value: coupon.couponDuration.end,
+              minDate: moment(coupon?.couponDuration?.start).add(1, 'day'),
               onChange: (e) => {
                 setCoupon((prev) => ({
                   ...prev,
