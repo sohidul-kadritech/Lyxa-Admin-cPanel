@@ -192,11 +192,11 @@ export const createProductData = async (product, shop, isEditProduct) => {
     if (attributes?.length) {
       const attrs = [];
 
-      attributes?.forEach((att) => {
-        const items = att?.items?.filter((item) => item.name && item.extraPrice);
+      attributes?.forEach((attr) => {
+        const items = attr?.items?.filter((item) => item.name && item.extraPrice);
         if (items?.length) {
           attrs.push({
-            ...att,
+            ...attr,
             items,
           });
         }

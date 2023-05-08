@@ -6,6 +6,7 @@ const StyledInput = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     padding: '12px 15px 12px 22px',
     maxWidth: '190px',
+    minWidth: '135px',
     borderRadius: '45px',
     background: theme.palette.background.secondary,
 

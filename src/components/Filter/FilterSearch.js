@@ -14,7 +14,7 @@ const SearchBar = styled(OutlinedInput)(({ theme }) => ({
     background: theme.palette.grey[300],
   },
 
-  '.MuiSvgIcon-root': {
+  '& .MuiSvgIcon-root': {
     position: 'absolute',
     top: '6px',
     left: '6px',
@@ -32,7 +32,7 @@ const SearchBar = styled(OutlinedInput)(({ theme }) => ({
     },
   },
 
-  '.MuiInputBase-input': {
+  '& .MuiInputBase-input': {
     padding: '0px',
     width: '40px',
     height: '40px',
