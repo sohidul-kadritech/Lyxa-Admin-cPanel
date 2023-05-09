@@ -20,6 +20,6 @@ export const DeliverySettings = [
 export const DietarySettings = [
   { label: 'Vegetarian', value: 'vegetarian' },
   { label: 'Vegan', value: 'vegan' },
-  { label: 'Gluten-free', value: 'glue-free' },
+  { label: 'Gluten-free', value: 'gluten-free' },
   { label: 'Low-cal', value: 'low-cal' },
 ];

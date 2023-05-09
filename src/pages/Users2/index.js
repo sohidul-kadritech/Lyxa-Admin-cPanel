@@ -24,16 +24,9 @@ function AddMenuButton({ ...props }) {
 function Users2() {
   const [open, setOpen] = useState(false);
 
-  // const queryClient = useQueryClient();
-
   const [searchFilteredData, setSearchFilteredData] = useState([]);
-  // const [searchedText, setSearchedText] = useState('');
-
-  // console.log('filter text', searchedText.length);
 
   const shop = useSelector((store) => store.Login.admin);
-
-  console.log('===> shop: ', shop);
 
   const [email, setEmail] = useState('');
 
@@ -66,6 +59,7 @@ function Users2() {
       if (data?.status) {
         successMsg(data.message, 'success');
         refetch();
+        setOpen(false);
       } else {
         successMsg(data.message, 'error');
       }
@@ -152,20 +146,37 @@ function Users2() {
     const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
     // get data for shop credentials
 
+    if (!name) {
+      successMsg('Please provide your name!');
+      return;
+    }
+
+    if (!password) {
+      successMsg('Please provide your password!');
+      return;
+    }
+
+    if (!repeated_password) {
+      successMsg('Please provide your repeated password!');
+      return;
+    }
+
+    if (!email) {
+      successMsg('Please provide your email address!');
+      return;
+    }
+
     if (password !== repeated_password) {
       successMsg('Pasword not match please check again !');
-    } else if (
-      password === repeated_password &&
-      emailRegex.test(email) &&
-      name.length >= 0 &&
-      password.length >= 0 &&
-      repeated_password.length >= 0
-    ) {
-      addUser.mutate({ shopId: shop._id, name, email, password });
-      setOpen(false);
-    } else {
-      successMsg('Please fill the fields properly');
+      return;
     }
+
+    if (!emailRegex.test(email)) {
+      successMsg('email is not valid!');
+      return;
+    }
+
+    addUser.mutate({ shopId: shop._id, name, email, password });
   };
 
   return (
@@ -181,7 +192,7 @@ function Users2() {
         }}
       />
       <Stack direction="row" justifyContent="start" gap="17px">
-        <StyledSearchBar sx={{ width: '319px' }} onChange={onChangeSearchHandler} />
+        <StyledSearchBar sx={{ width: '319px' }} onChange={onChangeSearchHandler} placeholder="Search" />
         <AddMenuButton onClick={() => setOpen(true)} />
       </Stack>
       {isLoading && <MenuPageSkeleton />}
@@ -193,10 +204,11 @@ function Users2() {
               editUserHandler={editUserHandler}
               data={searchFilteredData}
               loading={isLoading}
+              editUserLoading={EditUserAction?.isLoading}
             />
           </Box>
           <Drawer open={open} anchor="right">
-            <AddUser loading={addUser.isLoading} addUser={addNewUser} onClose={() => setOpen(false)} />
+            <AddUser loading={addUser?.isLoading} addUser={addNewUser} onClose={() => setOpen(false)} />
           </Drawer>
         </>
       )}
