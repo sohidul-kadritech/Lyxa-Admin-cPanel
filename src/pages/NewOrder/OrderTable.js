@@ -9,7 +9,7 @@ import { getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
 export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
   const theme = useTheme();
-
+  console.log('order table: ', orders, 'order fileter: ', orderFilter);
   const columns = [
     {
       showFor: ['ongoing', 'delivered', 'incomplete'],

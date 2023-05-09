@@ -1,14 +1,61 @@
-import { Avatar, Box, IconButton, Stack, Typography, useTheme } from '@mui/material';
+import { AccessTime } from '@mui/icons-material';
+import { Avatar, Box, IconButton, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
+import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
+import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery2.svg';
+import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import PageTop from '../../components/Common/PageTop';
+import TabPanel from '../../components/Common/TabPanel';
+import FlaggedViews from './FlaggedViews';
+import ReviewViews from './ReviewView';
 import { CoverPhotoButton } from './helper';
+
+// const profileTabValueMap = {
+//   0: 'Flagged',
+//   1: 'Reviews',
+// };
+
+function ShopTab() {
+  const [currentTab, setCurrentTab] = useState(1);
+  return (
+    <Box>
+      <Tabs
+        value={currentTab}
+        onChange={(event, newValue) => {
+          setCurrentTab(newValue);
+        }}
+      >
+        <Tab label="Flagged" />
+        <Tab label="Reviews" />
+      </Tabs>
+      <TabPanel
+        index={0}
+        value={currentTab}
+        sx={{
+          padding: 0,
+        }}
+      >
+        {/* <Typography>Flagged</Typography> */}
+        <FlaggedViews />
+      </TabPanel>
+      <TabPanel
+        index={1}
+        value={currentTab}
+        sx={{
+          padding: 0,
+        }}
+      >
+        <ReviewViews />
+      </TabPanel>
+    </Box>
+  );
+}
 
 export default function ShopProfile() {
   const shop = useSelector((store) => store.Login.admin);
-  //   console.log(shop);
-  // eslint-disable-next-line no-unused-vars
   const theme = useTheme();
   return (
     <Box>
@@ -137,10 +184,79 @@ export default function ShopProfile() {
                       (100+ Reviews)
                     </Typography>
                   </Box>
+
+                  <Stack flexDirection="row" gap="16px" sx={{ marginTop: '20px' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        alignContents: 'center',
+                        gap: '6px',
+                        backgroundColor: '#F7F9FA',
+                        color: '#3F3D56',
+                        padding: '10px 16px',
+                        borderRadius: '7px',
+                      }}
+                    >
+                      <AccessTime sx={{ width: '17px', height: '17px' }} />
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>30-40min</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        alignContents: 'center',
+                        gap: '6px',
+                        backgroundColor: '#EFF8FA',
+                        color: '#15BFCA',
+                        padding: '10px 16px',
+                        borderRadius: '7px',
+                      }}
+                    >
+                      <RewardIcon style={{ width: '17px', height: '17px' }} />{' '}
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Rewards</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        alignContents: 'center',
+                        gap: '6px',
+                        backgroundColor: '#5BBD4E12',
+                        color: '#5BBD4E',
+                        padding: '10px 16px',
+                        borderRadius: '7px',
+                      }}
+                    >
+                      <DeliveryIcon style={{ width: '17px', height: '17px' }} />
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Free</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        alignContents: 'center',
+                        gap: '6px',
+                        backgroundColor: '#FCF9F0',
+                        color: '#F78C3F',
+                        padding: '10px 16px',
+                        borderRadius: '7px',
+                      }}
+                    >
+                      <CartIcon style={{ width: '17px', height: '17px' }} />
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Min. $3</Typography>
+                    </Box>
+                  </Stack>
                 </Box>
               </Box>
             </Box>
           </Stack>
+
+          {/* Profile tab here */}
+          <Box sx={{ marginTop: '53px' }}>
+            {' '}
+            <ShopTab />
+          </Box>
         </Box>
         {/* right */}
         <Box
