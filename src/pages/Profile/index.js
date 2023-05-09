@@ -1,5 +1,6 @@
-import { Avatar, Box, Stack } from '@mui/material';
+import { Avatar, Box, IconButton, Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import PageTop from '../../components/Common/PageTop';
 import { CoverPhotoButton } from './helper';
 
@@ -55,6 +56,10 @@ export default function ShopProfile() {
                   .reduce((prev, cur) => prev + cur.charAt(0), '')
                   .slice(0, 3)}
               </Avatar>
+              <IconButton color="secondary" aria-label="upload picture" component="label">
+                <input hidden accept="image/*" type="file" />
+                <CameraIcon />
+              </IconButton>
             </Box>
           </Stack>
         </Box>

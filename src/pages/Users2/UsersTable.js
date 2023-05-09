@@ -14,62 +14,78 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
   styled,
   tableCellClasses,
   useTheme,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import TableLoader from '../../components/Common/TableLoader';
 import EditUser from './EditUser';
 
+const cols = [
+  {
+    label: 'NAME',
+    align: 'left',
+  },
+  {
+    label: 'EMAIL',
+    align: 'left',
+  },
+  {
+    label: 'ACTION',
+    align: 'right',
+  },
+];
+const StyledTableRow = styled(TableRow)(() => ({
+  td: {
+    paddingLeft: '0px',
+    borderBottom: '1px dashed #E4E6EF',
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.primary.contrastText,
+    color: theme.palette.text.secondary2,
+    fontWeight: 600,
+    paddingLeft: '0px',
+    paddingTop: '0px',
+    borderBottom: '1px dashed #E4E6EF',
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
 function UsersTable({ data, loading, ...props }) {
+  const shop = useSelector((store) => store.Login.admin);
+
+  const credentialUserId = shop.credentialUserId || shop._id;
+
   const theme = useTheme();
-  //   const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
+
   const [editableData, setEditableData] = useState({});
-  console.log('data: ', data);
-  console.log('loading: ', loading);
-  const StyledTableRow = styled(TableRow)(() => ({
-    td: {
-      paddingLeft: '0px',
-      borderBottom: '1px dashed #E4E6EF',
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.primary.contrastText,
-      color: theme.palette.text.secondary2,
-      fontWeight: 600,
-      paddingLeft: '0px',
-      borderBottom: '1px dashed #E4E6EF',
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    },
-  }));
+  const [credentialData, setCredentialData] = useState(undefined);
 
-  const cols = [
-    {
-      label: 'NAME',
-      align: 'left',
-    },
-    {
-      label: 'EMAIL',
-      align: 'left',
-    },
-    {
-      label: 'ACTION',
-      align: 'right',
-    },
-  ];
+  const [removedUserId, setRemoveUserId] = useState('');
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  useEffect(() => {
+    const credentialUser = data.find((item) => item._id === credentialUserId);
+    setCredentialData(() => credentialUser || undefined);
+  }, [data]);
 
   const removeCredential = (id) => {
-    // dispatch(removeShopCredential(id));
     props.RemoveUserHandler({ shopId: id });
   };
 
@@ -101,57 +117,114 @@ function UsersTable({ data, loading, ...props }) {
             </TableBody>
           ) : (
             <TableBody>
+              {credentialData && (
+                <StyledTableRow>
+                  <StyledTableCell component="td">{credentialData?.name}</StyledTableCell>
+                  <StyledTableCell align="left">{credentialData?.email}</StyledTableCell>
+                  <StyledTableCell align="right">
+                    <Stack flexDirection="row" justifyContent="end" gap="10px">
+                      <Button
+                        onClick={() => {
+                          setOpen(() => {
+                            setEditableData(credentialData);
+                            return true;
+                          });
+                        }}
+                        sx={{
+                          minWidth: '32px',
+                          padding: '9px',
+                          height: '32px',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignContent: 'center',
+                          background: theme.palette.background.secondary,
+                        }}
+                      >
+                        <Edit sx={{ fontSize: '14px' }} />
+                      </Button>
+                      <Button
+                        onClick={() => removeCredential(credentialData?._id)}
+                        disabled
+                        sx={{
+                          minWidth: '32px',
+                          padding: '9px',
+                          height: '32px',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignContent: 'center',
+                          background: theme.palette.background.secondary,
+                        }}
+                      >
+                        <Close sx={{ fontSize: '14px' }} />
+                      </Button>
+                    </Stack>
+                  </StyledTableCell>
+                </StyledTableRow>
+              )}
               {data.length > 0 ? (
                 data.map((row, i) => (
-                  <StyledTableRow key={i}>
-                    <StyledTableCell component="td">{row?.name}</StyledTableCell>
-                    <StyledTableCell align="left">{row?.email}</StyledTableCell>
-                    <StyledTableCell align="right">
-                      <Stack flexDirection="row" justifyContent="end" gap="10px">
-                        <Button
-                          onClick={() => {
-                            setOpen(() => {
-                              setEditableData(row);
-                              return true;
-                            });
-                          }}
-                          sx={{
-                            minWidth: '32px',
-                            padding: '9px',
-                            height: '32px',
-                            borderRadius: '6px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignContent: 'center',
-                            background: theme.palette.background.secondary,
-                          }}
-                        >
-                          <Edit sx={{ fontSize: '14px' }} />
-                        </Button>
-                        <Button
-                          onClick={() => removeCredential(row?._id)}
-                          sx={{
-                            minWidth: '32px',
-                            padding: '9px',
-                            height: '32px',
-                            borderRadius: '6px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignContent: 'center',
-                            background: theme.palette.background.secondary,
-                          }}
-                        >
-                          <Close sx={{ fontSize: '14px' }} />
-                        </Button>
-                      </Stack>
-                    </StyledTableCell>
-                  </StyledTableRow>
+                  <Fragment key={i}>
+                    {row._id !== credentialData?._id && (
+                      <StyledTableRow>
+                        <StyledTableCell component="td">{row?.name}</StyledTableCell>
+                        <StyledTableCell align="left">{row?.email}</StyledTableCell>
+                        <StyledTableCell align="right">
+                          <Stack flexDirection="row" justifyContent="end" gap="10px">
+                            <Button
+                              onClick={() => {
+                                setOpen(() => {
+                                  setEditableData(row);
+                                  return true;
+                                });
+                              }}
+                              sx={{
+                                minWidth: '32px',
+                                padding: '9px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignContent: 'center',
+                                background: theme.palette.background.secondary,
+                              }}
+                            >
+                              <Edit sx={{ fontSize: '14px' }} />
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                setRemoveUserId(row._id);
+                                setIsConfirmModalOpen(true);
+                              }}
+                              // onClick={() => removeCredential(row?._id)}
+                              disabled={shop._id === row._id}
+                              sx={{
+                                minWidth: '32px',
+                                padding: '9px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignContent: 'center',
+                                background: theme.palette.background.secondary,
+                              }}
+                            >
+                              <Close sx={{ fontSize: '14px' }} />
+                            </Button>
+                          </Stack>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    )}
+                  </Fragment>
                 ))
               ) : (
                 <StyledTableRow>
                   {' '}
-                  <Stack height="100%" alignItems="center" justifyContent="center">
-                    No user credential
+                  <Stack height="100%" width="100%" alignItems="center" justifyContent="center">
+                    <Typography sx={{ textAlign: 'center', fontSize: '24px', fontWeight: 700 }}>
+                      No user credential
+                    </Typography>
                   </Stack>
                   {/* <Typography>No user credential</Typography> */}
                 </StyledTableRow>
@@ -168,6 +241,19 @@ function UsersTable({ data, loading, ...props }) {
           data={editableData}
         />
       </Drawer>
+
+      <ConfirmModal
+        message="Your unsaved changes will be lost. Discard?"
+        isOpen={isConfirmModalOpen}
+        blurClose
+        onCancel={() => {
+          setIsConfirmModalOpen(false);
+        }}
+        onConfirm={() => {
+          removeCredential(removedUserId);
+          setIsConfirmModalOpen(false);
+        }}
+      />
     </Box>
   );
 }

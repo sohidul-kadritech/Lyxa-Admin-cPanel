@@ -87,8 +87,12 @@ export default function App() {
           ADMIN_DATA = respDataCred?.data?.[accountType];
           dispatch(setAdmin({ ...ADMIN_DATA, credentialUserId: ADMIN_DATA._id, account_type: accountType } || {}));
         } else {
+          const cookies = getCookiesAsObject();
+          console.log('cookies: ', cookies.credentialUserId);
           ADMIN_DATA = respData?.data?.[accountType];
-          dispatch(setAdmin({ ...ADMIN_DATA, account_type: accountType } || {}));
+          dispatch(
+            setAdmin({ ...ADMIN_DATA, credentialUserId: cookies.credentialUserId, account_type: accountType } || {}),
+          );
         }
       }
       console.log('data is loaded: ', ENDPOINT, ADMIN_DATA);
