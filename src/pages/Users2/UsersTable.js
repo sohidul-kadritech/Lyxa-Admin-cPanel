@@ -235,7 +235,7 @@ function UsersTable({ data, loading, ...props }) {
       </TableContainer>
       <Drawer open={open} anchor="right">
         <EditUser
-          loading={loading}
+          loading={props?.editUserLoading}
           editUserHandler={props.editUserHandler}
           onClose={() => setOpen(false)}
           data={editableData}
@@ -243,7 +243,7 @@ function UsersTable({ data, loading, ...props }) {
       </Drawer>
 
       <ConfirmModal
-        message="Your unsaved changes will be lost. Discard?"
+        message="Are you confirm to remove the user?"
         isOpen={isConfirmModalOpen}
         blurClose
         onCancel={() => {
