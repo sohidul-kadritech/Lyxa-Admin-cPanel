@@ -1,13 +1,14 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import MenuPageSkeleton from '../Menu/PageSkeleton';
 import AddUser from './AddUser';
 import UsersTable from './UsersTable';
 
@@ -23,29 +24,33 @@ function AddMenuButton({ ...props }) {
 function Users2() {
   const [open, setOpen] = useState(false);
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const [searchFilteredData, setSearchFilteredData] = useState([]);
-  const [searchedText, setSearchedText] = useState('');
+  // const [searchedText, setSearchedText] = useState('');
 
-  console.log('filter text', searchedText.length);
+  // console.log('filter text', searchedText.length);
 
-  const { _id: accountId } = useSelector((store) => store.Login.admin);
+  const shop = useSelector((store) => store.Login.admin);
+
+  console.log('===> shop: ', shop);
 
   const [email, setEmail] = useState('');
 
   const [password, setPassword] = useState('');
-  // console.log('credentialUserID', credentialUserId);
-  const { data, isLoading, isError } = useQuery(
+
+  const { data, isLoading, isError, refetch } = useQuery(
     'get-shop-credentials',
     () =>
       // eslint-disable-next-line prettier/prettier
-      AXIOS.get(`${API_URL.GET_SHOP_CREDENTIALS}?id=${accountId}`),
+      AXIOS.get(`${API_URL.GET_SHOP_CREDENTIALS}?id=${shop._id}`),
     {
       onSuccess: (data) => {
         if (data?.status) {
-          console.log(data);
-          setSearchFilteredData(data?.data?.credentials?.credentials);
+          setSearchFilteredData([
+            ...(data?.data?.credentials?.credentials || []),
+            { ...shop, name: shop.name ? shop.name : shop.account_name, isParentUser: true },
+          ]);
         } else {
           successMsg(data.message, 'error');
         }
@@ -60,29 +65,37 @@ function Users2() {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data.message, 'success');
-        queryClient.invalidateQueries('get-shop-credentials');
+        refetch();
       } else {
         successMsg(data.message, 'error');
       }
     },
   });
-  const EditUserAction = useMutation((data) => AXIOS.post(API_URL.UPDATE_SHOP_CREDENTIAL, data), {
-    onSuccess: (data) => {
-      if (data?.status) {
-        successMsg(data.message, 'success');
-        queryClient.invalidateQueries('get-shop-credentials');
-      } else {
-        successMsg(data.message, 'error');
-      }
+  const EditUserAction = useMutation(
+    (data) => AXIOS.post(API_URL.UPDATE_SHOP_CREDENTIAL, { isParentUser: undefined, ...data }),
+    {
+      onSuccess: (data, args) => {
+        console.log('args: ', args);
+        if (data?.status) {
+          successMsg(data.message, 'success');
+
+          if (args?.isParentUser) {
+            shop.name = args?.name;
+          }
+          refetch();
+        } else {
+          successMsg(data.message, 'error');
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
     },
-  });
+  );
 
   const DeleteUser = useMutation((data) => AXIOS.post(API_URL.REMOVE_SHOP_CREDENTIAL, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data.message, 'success');
-        // callList(false);
-        queryClient.invalidateQueries('get-shop-credentials');
+        refetch();
       } else {
         successMsg(data.message, 'error');
       }
@@ -92,8 +105,8 @@ function Users2() {
   const RemoveUserHandler = (data) => {
     DeleteUser.mutate(data);
   };
+
   const onChangeSearchHandler = (e) => {
-    setSearchedText(e.target.value);
     if (e.target.value !== '') {
       setSearchFilteredData(
         searchFilteredData.filter(
@@ -105,30 +118,25 @@ function Users2() {
         ),
       );
     } else if (e.target.value === '') {
-      setSearchFilteredData(data?.data?.credentials?.credentials ? data?.data?.credentials?.credentials : []);
+      setSearchFilteredData([
+        ...data.data.credentials.credentials,
+        { ...shop, name: shop.name ? shop.name : shop.account_name },
+      ]);
     }
   };
 
   console.log(email, ' and ', password);
 
   const editUserHandler = (data) => {
-    const { name, new_password, confirm_new_password, _id } = data;
+    console.log(data);
+    const { name, new_password, confirm_new_password, _id, isParentUser } = data;
 
-    console.log(
-      'edited data found: ',
-      name,
-      'new password ',
-      new_password,
-      'confirm password',
-      confirm_new_password,
-      ' id: ',
-      // eslint-disable-next-line prettier/prettier
-      _id,
-    );
+    const tempNewPass = new_password || '';
+    const tempconfirmPass = confirm_new_password || '';
 
-    const newData = { id: _id, name, password: new_password?.length > 0 ? new_password : '' };
-    console.log(newData);
-    if (confirm_new_password === new_password) {
+    const newData = { id: _id, name, password: tempNewPass, isParentUser };
+
+    if (tempNewPass === tempconfirmPass) {
       EditUserAction.mutate(newData);
       // setOpen(false)
     } else successMsg("Passsword doesn't match");
@@ -136,8 +144,11 @@ function Users2() {
 
   const addNewUser = async (data) => {
     const { name, email, password, repeated_password } = data;
+
     setEmail(email);
+
     setPassword(password);
+
     const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
     // get data for shop credentials
 
@@ -150,16 +161,12 @@ function Users2() {
       password.length >= 0 &&
       repeated_password.length >= 0
     ) {
-      addUser.mutate({ shopId: accountId, name, email, password });
+      addUser.mutate({ shopId: shop._id, name, email, password });
       setOpen(false);
     } else {
       successMsg('Please fill the fields properly');
     }
   };
-
-  useEffect(() => {
-    setSearchFilteredData(data?.data?.credentials?.credentials ? data?.data?.credentials?.credentials : []);
-  }, []);
 
   return (
     <Box>
@@ -177,20 +184,22 @@ function Users2() {
         <StyledSearchBar sx={{ width: '319px' }} onChange={onChangeSearchHandler} />
         <AddMenuButton onClick={() => setOpen(true)} />
       </Stack>
-
-      <Box>
-        <UsersTable
-          // EditUserAction={EditUserAction}
-          RemoveUserHandler={RemoveUserHandler}
-          editUserHandler={editUserHandler}
-          data={searchFilteredData}
-          // data={data?.data?.credentials?.credentials}
-          loading={isLoading}
-        />
-      </Box>
-      <Drawer open={open} anchor="right">
-        <AddUser loading={addUser.isLoading} addUser={addNewUser} onClose={() => setOpen(false)} />
-      </Drawer>
+      {isLoading && <MenuPageSkeleton />}
+      {!isLoading && (
+        <>
+          <Box>
+            <UsersTable
+              RemoveUserHandler={RemoveUserHandler}
+              editUserHandler={editUserHandler}
+              data={searchFilteredData}
+              loading={isLoading}
+            />
+          </Box>
+          <Drawer open={open} anchor="right">
+            <AddUser loading={addUser.isLoading} addUser={addNewUser} onClose={() => setOpen(false)} />
+          </Drawer>
+        </>
+      )}
     </Box>
   );
 }

@@ -9,12 +9,11 @@ const fieldContainerSx = {
 };
 function EditUser({ onClose, editUser, ...props }) {
   const [userData, setUserData] = useState(props.data);
-  const userEditOnBlurHandler = (e) => {
+  const userEditOnChangeHandler = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const onSubmitHandler = () => {
-    console.log('updated user data for credential: ', userData);
     props.editUserHandler(userData);
     onClose();
   };
@@ -35,7 +34,7 @@ function EditUser({ onClose, editUser, ...props }) {
               type: 'text',
               name: 'name',
               value: userData.name,
-              onChange: userEditOnBlurHandler,
+              onChange: userEditOnChangeHandler,
             }}
           />
           {/* email */}
@@ -67,7 +66,7 @@ function EditUser({ onClose, editUser, ...props }) {
             inputProps={{
               type: 'password',
               name: 'new_password',
-              onChange: userEditOnBlurHandler,
+              onChange: userEditOnChangeHandler,
             }}
           />
           {/* confirm password */}
@@ -80,7 +79,7 @@ function EditUser({ onClose, editUser, ...props }) {
             inputProps={{
               type: 'password',
               name: 'confirm_new_password',
-              onChange: userEditOnBlurHandler,
+              onChange: userEditOnChangeHandler,
             }}
           />
         </Box>
