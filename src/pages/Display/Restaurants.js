@@ -7,9 +7,6 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import PageSkeleton from './RestaurantsSkeleton';
 
-// eslint-disable-next-line no-unused-vars
-const skeletons = new Array(4).fill(0);
-
 const typeToApiMap = {
   tag: Api.GET_SHOP_BY_TAGS_AND_CUSINES,
   list: Api.GET_LIST_CONTAINER_SHOPS,

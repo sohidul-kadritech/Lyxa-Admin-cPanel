@@ -177,6 +177,8 @@ export const GET_REWARD_CATEGORY_WISE_PRODUCTS = `${ADMIN_ENDPOINT}/setting/get-
 
 export const GET_ADMIN_DEAL_SETTINGS = `${ADMIN_ENDPOINT}/setting/deal-setting`;
 export const EDIT_ADMIN_DEAL_SETTINGS = `${ADMIN_ENDPOINT}/setting/deal-setting/edit`;
+export const GET_ADMIN_FEATURED_SETTINGS = `${ADMIN_ENDPOINT}/setting/featured-setting`;
+export const EDIT_ADMIN_FEATURED_SETTINGS = `${ADMIN_ENDPOINT}/setting/featured-setting/edit`;
 
 export const DATABASE_ALL_COLLECTIONS = `${ADMIN_ENDPOINT}/database/collections`;
 export const DATABASE_COLLECTION_BACKUP = `${ADMIN_ENDPOINT}/database/back-up`;
