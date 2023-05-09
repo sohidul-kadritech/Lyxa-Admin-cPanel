@@ -4,7 +4,7 @@
 /* eslint-disable max-len */
 // third party
 import { Box, Button, Checkbox, FormControlLabel, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 
@@ -35,8 +35,6 @@ import {
   createGroupedDataRow,
   createGroupedList,
   durationInit,
-  featuredDurationAmountMap,
-  featuredDurationTypes,
   itemSelectOptions,
 } from './helpers';
 
@@ -107,8 +105,6 @@ export default function MarketingSettings({
     }
   );
 
-  // console.log(shop);
-
   // deal settings query
   const dealSettingsQuery = useQuery(
     ['deal-settings', { type: shop?.shopType === 'food' ? 'restaurant' : shop?.shopType }],
@@ -123,6 +119,30 @@ export default function MarketingSettings({
     }
   );
 
+  // featured settinsg
+  // const [featuredSettings, setFeaturedSettings]=useState([]);
+
+  const featuredSettingsQuery = useQuery([Api.GET_ADMIN_FEATURED_SETTINGS], () =>
+    AXIOS.get(Api.GET_ADMIN_FEATURED_SETTINGS, {
+      params: {
+        featuredType: shop?.shopType,
+      },
+    })
+  );
+
+  const featuredSettingsOptions = useMemo(() => {
+    if (featuredSettingsQuery?.data?.data?.featuredSetting?.length) {
+      return featuredSettingsQuery.data.data.featuredSetting[0]?.featuredItems?.map((item) => ({
+        label: `${item?.featuredWeeklyDuration} week`,
+        value: item?.featuredAmount,
+      }));
+    }
+
+    return [];
+  }, [featuredSettingsQuery?.data?.data?.featuredSetting]);
+
+  console.log(featuredSettingsOptions);
+
   const [itemSelectType, setItemSelectType] = useState('single');
   const [hasChanged, setHasChanged] = useState(false);
   const [globalRewardBundle, setGlobalRewardBundle] = useState();
@@ -133,14 +153,14 @@ export default function MarketingSettings({
   const [spendLimit, setSpendLimit] = useState('');
   const [products, setProducts] = useState([]);
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
-
-  const [featuredDuration, setFeaturedDuration] = useState('1-week');
+  const [featuredAmount, setFeaturedDuration] = useState('');
 
   const setLocalData = (data) => {
     setProducts(data?.products);
     setDuration(data?.duration);
     setSpendLimit(data?.spendLimit);
     setItemSelectType(data?.itemSelectionType);
+    setFeaturedDuration(data?.amount);
 
     if (data?.spendLimit > 0) {
       setSpendLimitChecked(true);
@@ -163,6 +183,8 @@ export default function MarketingSettings({
       enabled: queryEnabled,
     }
   );
+
+  console.log(loyaltySettingsQuery?.data);
 
   useEffect(() => {
     if (loyaltySettingsQuery?.data !== undefined) {
@@ -324,7 +346,7 @@ export default function MarketingSettings({
       };
     });
 
-    if (marketingType !== 'free_delivery' && products?.length === 0) {
+    if (marketingType !== 'free_delivery' && marketingType !== 'featured' && products?.length === 0) {
       successMsg('Products cannot be empty!', 'warn');
       return;
     }
@@ -349,16 +371,34 @@ export default function MarketingSettings({
       return;
     }
 
-    loyaltySettingsMutaion.mutate({
-      shop: shop?._id,
-      type: marketingType,
-      creatorType,
-      products: productsData,
-      duration,
-      spendLimit: spendLimitChecked ? spendLimit : 0,
-      status: status || 'active',
-      itemSelectionType: itemSelectType,
-    });
+    if (marketingType === 'featured' && !featuredAmount) {
+      successMsg('Select duration first!', 'warn');
+      return;
+    }
+
+    if (marketingType === 'featured') {
+      const week = featuredSettingsOptions?.find((item) => item?.value === Number(featuredAmount))?.label?.slice(0, 1);
+
+      loyaltySettingsMutaion.mutate({
+        shop: shop?._id,
+        type: marketingType,
+        creatorType,
+        status: 'active',
+        week,
+        amount: featuredAmount,
+      });
+    } else {
+      loyaltySettingsMutaion.mutate({
+        shop: shop?._id,
+        type: marketingType,
+        creatorType,
+        products: productsData,
+        duration,
+        spendLimit: spendLimitChecked ? spendLimit : 0,
+        status: status || 'active',
+        itemSelectionType: itemSelectType,
+      });
+    }
   };
 
   const loyaltySettingsDeleteMutation = useMutation(
@@ -381,8 +421,6 @@ export default function MarketingSettings({
       },
     }
   );
-
-  // console.log(shop);
 
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
     ? dealSettingsQuery?.data?.data?.dealSetting[0]?.percentageBundle
@@ -988,8 +1026,8 @@ export default function MarketingSettings({
                 disabled={isPageDisabled}
               >
                 <OptionsSelect
-                  items={featuredDurationTypes}
-                  value={featuredDuration}
+                  items={featuredSettingsOptions}
+                  value={featuredAmount}
                   onChange={(value) => {
                     setFeaturedDuration(value);
                   }}
@@ -1001,7 +1039,7 @@ export default function MarketingSettings({
                   Amount
                 </Typography>
                 <Typography variant="h5" fontSize={32} lineHeight={1}>
-                  ${featuredDurationAmountMap[featuredDuration]}
+                  {currency} {featuredAmount || 0}
                 </Typography>
               </Stack>
             </Box>
@@ -1105,39 +1143,41 @@ export default function MarketingSettings({
                     Delete Promotion
                   </Button>
                 </Box>
-                <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    rounded
-                    disabled={loyaltySettingsDeleteMutation.isLoading}
-                    onClick={() => {
-                      setIsPageDisabled(false);
-                      setPageMode(2);
-                    }}
-                  >
-                    Edit Promotion
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="danger"
-                    disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
-                    rounded
-                    onClick={() => {
-                      setConfirmModal(true);
-                      setConfirmAction({
-                        message: 'Are you sure?. Your campaign will be deactivaed.',
-                        onCancel: () => setConfirmModal(false),
-                        onConfirm: () => {
-                          updateLoyaltySettings('inactive');
-                          setConfirmModal(false);
-                        },
-                      });
-                    }}
-                  >
-                    Pause Promotion
-                  </Button>
-                </Stack>
+                {marketingType !== 'featured' && (
+                  <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      rounded
+                      disabled={loyaltySettingsDeleteMutation.isLoading}
+                      onClick={() => {
+                        setIsPageDisabled(false);
+                        setPageMode(2);
+                      }}
+                    >
+                      Edit Promotion
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="danger"
+                      disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
+                      rounded
+                      onClick={() => {
+                        setConfirmModal(true);
+                        setConfirmAction({
+                          message: 'Are you sure?. Your campaign will be deactivaed.',
+                          onCancel: () => setConfirmModal(false),
+                          onConfirm: () => {
+                            updateLoyaltySettings('inactive');
+                            setConfirmModal(false);
+                          },
+                        });
+                      }}
+                    >
+                      Pause Promotion
+                    </Button>
+                  </Stack>
+                )}
               </Stack>
             )}
             {pageMode === 2 && (

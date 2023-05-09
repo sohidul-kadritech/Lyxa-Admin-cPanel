@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Stack } from '@mui/material';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import FilterDate from '../../components/Filter/FilterDate';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { deepClone } from '../../helpers/deepClone';
@@ -40,7 +38,7 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
         }}
       />
       {/* start date */}
-      <FilterDate
+      {/* <FilterDate
         tooltip="Start Date"
         maxDate={moment(localValue.date.end).subtract(1, 'day')}
         value={localValue.date.start}
@@ -54,9 +52,9 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
             },
           }));
         }}
-      />
+      /> */}
       {/* end date */}
-      <FilterDate
+      {/* <FilterDate
         tooltip="End Date"
         minDate={moment(localValue.date.start).add(1, 'day')}
         value={localValue.date.end}
@@ -70,7 +68,7 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
             },
           }));
         }}
-      />
+      /> */}
       {/* end date */}
       <FilterSelect
         items={listFilterOptions}

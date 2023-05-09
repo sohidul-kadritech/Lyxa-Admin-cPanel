@@ -1,6 +1,5 @@
 // thrid pary
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
-import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
@@ -30,10 +29,10 @@ const typeToTabIndexMap = {
 const filtersInit = {
   searchKey: '',
   status: '',
-  date: {
-    start: moment().startOf('month').format('YYYY-MM-DD'),
-    end: moment().endOf('month').format('YYYY-MM-DD'),
-  },
+  // date: {
+  //   start: moment().startOf('month').format('YYYY-MM-DD'),
+  //   end: moment().endOf('month').format('YYYY-MM-DD'),
+  // },
 };
 
 export default function TagsAndCusines() {
@@ -53,8 +52,8 @@ export default function TagsAndCusines() {
       {
         searchKey: filters.searchKey,
         shopType: typeToTabIndexMap[currentTab],
-        startDate: filters.date.start,
-        endDate: filters.date.end,
+        // startDate: filters.date.start,
+        // endDate: filters.date.end,
         status: filters.status,
       },
     ],
@@ -67,8 +66,8 @@ export default function TagsAndCusines() {
           sortBy: 'asc',
           shopType: typeToTabIndexMap[currentTab],
           status: filters.status,
-          startDate: filters.date.start,
-          endDate: filters.date.end,
+          // startDate: filters.date.start,
+          // endDate: filters.date.end,
         },
       })
   );
@@ -117,7 +116,7 @@ export default function TagsAndCusines() {
   });
 
   return (
-    <Box>
+    <Box pb={6 + 6}>
       <Box>
         <PageTop
           breadcrumbItems={breadcrumbItems}
