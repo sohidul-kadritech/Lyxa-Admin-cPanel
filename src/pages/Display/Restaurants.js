@@ -25,9 +25,6 @@ export default function Restaurants({ onClose, id, type }) {
     })
   );
 
-  const prop = type === 'tag' ? 'shop' : 'shops';
-  const data = shopsQuery?.data?.data || [];
-
   if (shopsQuery.isLoading) {
     return (
       <SidebarContainer title="Resturants" onClose={onClose}>
@@ -39,7 +36,7 @@ export default function Restaurants({ onClose, id, type }) {
   return (
     <SidebarContainer title="Resturants" onClose={onClose}>
       {/* shop */}
-      {data[prop]?.map((shop) => (
+      {shopsQuery?.data?.data?.shops?.map((shop) => (
         <Box
           pt={4}
           pb={4}
@@ -51,7 +48,7 @@ export default function Restaurants({ onClose, id, type }) {
           <ShopPreview shop={shop} loading={shopsQuery?.isLoading} />
         </Box>
       ))}
-      {!data[prop]?.length && (
+      {!shopsQuery?.data?.data?.shops?.length && (
         <Typography
           variant="h6"
           pt={4}
