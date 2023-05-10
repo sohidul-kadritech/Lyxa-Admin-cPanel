@@ -54,7 +54,10 @@ function AddUser({ onClose, editCategory, loading, ...props }) {
               type: 'email',
               name: 'email',
               onBlur: userOnBlurHandler,
-              autoComplete: 'off',
+              // autoComplete: 'off',
+              inputProps: {
+                autoComplete: 'off',
+              },
             }}
           />
           <Typography

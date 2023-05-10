@@ -6,6 +6,8 @@ import TimeRangePicker from './TimeRangePicker';
 export default function Day({ day, onAnyChange }) {
   const [render, setRender] = useState(false);
 
+  console.log(day);
+
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between">
       <Typography variant="body1" fontWeight={500}>
@@ -24,14 +26,14 @@ export default function Day({ day, onAnyChange }) {
         <Box></Box>
         <TimeRangePicker
           startValue={day?.open}
-          endValue={day?.closed}
+          endValue={day?.close}
           onStartChange={(v) => {
             day.open = v;
             setRender(!render);
             onAnyChange();
           }}
           onEndChange={(v) => {
-            day.closed = v;
+            day.close = v;
             setRender(!render);
             onAnyChange();
           }}

@@ -11,7 +11,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Day from './Day';
 import Holiday from './Holiday';
-import { StyledBox, createMomentTimeFormat, holidayHourInit, validateSettings } from './helpers';
+import { StyledBox, holidayHourInit, validateSettings } from './helpers';
 
 export default function ShopHourSettings() {
   const shop = useSelector((store) => store.Login.admin);
@@ -34,20 +34,23 @@ export default function ShopHourSettings() {
     },
   });
 
+  // console.log('normal hours ==>', normalHours);
+
   const populateStateFromShop = () => {
+    console.log('normal hours ==>', shop?.normalHours);
     setNormalHours(
       shop?.normalHours?.map((day) => ({
         ...day,
-        open: createMomentTimeFormat(day?.open),
-        close: createMomentTimeFormat(day?.close),
+        open: moment(day?.open, 'HH:mm'),
+        close: moment(day?.close, 'HH:mm'),
       }))
     );
 
     setHolidayHours(
       shop?.holidayHours?.map((holiday) => ({
         ...holiday,
-        closedStart: createMomentTimeFormat(holiday?.closedStart),
-        closedEnd: createMomentTimeFormat(holiday?.closedEnd),
+        closedStart: moment(holiday?.closedStart, 'HH:mm'),
+        closedEnd: moment(holiday?.closedEnd, 'HH:mm'),
       }))
     );
   };
@@ -64,15 +67,15 @@ export default function ShopHourSettings() {
 
     data.normalHours = normalHours.map((day) => ({
       ...day,
-      open: day?.open?.format('hh:mm'),
-      close: day?.close?.format('hh:mm'),
+      open: day?.open?.format('HH:mm'),
+      close: day?.close?.format('HH:mm'),
     }));
 
     data.holidayHours = holidayHours?.map((holiday) => ({
       ...holiday,
       date: moment(holiday?.date).format('MM/DD/YYYY'),
-      closedStart: holiday?.closedStart?.format('hh:mm'),
-      closedEnd: holiday?.closedEnd?.format('hh:mm'),
+      closedStart: holiday?.closedStart?.format('HH:mm'),
+      closedEnd: holiday?.closedEnd?.format('HH:mm'),
     }));
 
     const validation = validateSettings(data);
