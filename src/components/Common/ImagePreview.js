@@ -84,6 +84,7 @@ export default function ImagePreview({ progress, files, readOnly }) {
           >
             <Close style={{ fontSize: '14px', color: '#5E97A9' }} />
           </IconButton>
+
           <img style={imageSx} src={file?.preview} alt="" />
           <Box sx={progress && progress < 100 ? uploadProgressSx : { ...uploadProgressSx, ...hiddenSx }}>
             <CircularProgress variant="determinate" value={progress} />

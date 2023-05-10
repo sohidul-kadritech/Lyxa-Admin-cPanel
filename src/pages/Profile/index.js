@@ -1,25 +1,33 @@
-import { AccessTime } from '@mui/icons-material';
-import { Avatar, Box, IconButton, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { AccessTime, AccessTimeFilled, Email } from '@mui/icons-material';
+import { Avatar, Box, Drawer, IconButton, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
+import { ReactComponent as AverageIcon } from '../../assets/icons/averageIcon.svg';
+import { ReactComponent as CalenderIcon } from '../../assets/icons/calender.svg';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
-import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery2.svg';
+import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
+import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
+import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
+import { ReactComponent as TagIcon } from '../../assets/icons/tag2.svg';
+import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import ThreeDotsMenu from '../../components/ThreeDotsMenu';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
+import EditShop from './EditShop';
 import FlaggedViews from './FlaggedViews';
 import ReviewViews from './ReviewView';
 import { CoverPhotoButton } from './helper';
 
-// const profileTabValueMap = {
-//   0: 'Flagged',
-//   1: 'Reviews',
-// };
-
 function ShopTab() {
   const [currentTab, setCurrentTab] = useState(1);
+
   return (
     <Box>
       <Tabs
@@ -54,8 +62,100 @@ function ShopTab() {
   );
 }
 
+function ShopProfileBasicInfo({ title, Icon, desc }) {
+  return (
+    <Box>
+      <Box sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center', alignItems: 'center', gap: '11px' }}>
+        <Icon />
+        <Typography sx={{ fontSize: '14px', fontWeight: '600' }}>{title}</Typography>
+      </Box>
+      <Box sx={{ marginTop: '18px', fontSize: '14px', fontWeight: '500' }}>
+        {' '}
+        <Typography sx={{ textTransform: 'capitalize' }}>{desc}</Typography>
+      </Box>
+    </Box>
+  );
+}
+
+function AverageOrderValue(totalProductsAmount, totalOrder) {
+  return totalProductsAmount / totalOrder;
+}
+
+function TagsAndCuisines(tags, cuisines) {
+  return `${cuisines.map((cuisines) => cuisines.name).join(', ')}, ${tags.map((tags) => tags.name).join(', ')}`;
+}
+
+function openingHours(normalHours) {
+  const openingHoursSx = {
+    fontSize: '14px',
+    fontWeight: 500,
+    color: '#363636',
+  };
+  const dayStructure = (day) => {
+    if (day.toLowerCase() === 'saturday') return 'Sat.';
+    if (day.toLowerCase() === 'sunday') return 'Sun.';
+    if (day.toLowerCase() === 'monday') return 'Mon.';
+    if (day.toLowerCase() === 'tuesday') return 'Tue.';
+    if (day.toLowerCase() === 'wednesday') return 'Wed.';
+    if (day.toLowerCase() === 'thursday') return 'Thu.';
+    if (day.toLowerCase() === 'friday') return 'Fri.';
+
+    return '';
+  };
+
+  function convertTimeToAmPm(time) {
+    const date = new Date();
+    const [hours, minutes] = time.split(':');
+    date.setHours(hours, minutes, 0, 0);
+    const suffix = hours >= 12 ? 'P.M' : 'A.M';
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = minutes.toString().padStart(2, '0');
+    return `${displayHours}:${displayMinutes} ${suffix}`;
+  }
+
+  return (
+    <Stack flexDirection="column" gap="10px">
+      {normalHours?.map((week, i) => (
+        <Box key={i}>
+          <Stack flexDirection="row">
+            <Typography sx={openingHoursSx} flex={2} variant="span">
+              {dayStructure(week.day)}
+            </Typography>
+            {week.isActive ? (
+              <>
+                {' '}
+                <Typography sx={openingHoursSx} flex={8} variant="span">
+                  {convertTimeToAmPm(week.open)} - {convertTimeToAmPm(week.close)}
+                </Typography>
+              </>
+            ) : (
+              <Typography sx={openingHoursSx} variant="span">
+                Closed
+              </Typography>
+            )}
+          </Stack>
+        </Box>
+      ))}
+    </Stack>
+  );
+}
+
 export default function ShopProfile() {
   const shop = useSelector((store) => store.Login.admin);
+
+  const getShopData = useQuery('get-single-shop-data', () => AXIOS.get(`${API_URL.SINGLE_SHOP}?id=${shop?._id}`));
+
+  console.log('data: ', getShopData?.data?.data?.shop);
+  console.log('profile data: ', shop);
+
+  const options = ['Edit Shop', 'Access as Shop'];
+
+  const [sideBar, setSidebar] = useState('');
+
+  const [open, setOpen] = useState(false);
+
+  console.log(sideBar);
+
   const theme = useTheme();
   return (
     <Box>
@@ -126,7 +226,7 @@ export default function ShopProfile() {
                 <CameraIcon />
               </IconButton>
             </Box>
-            <Box>
+            <Box sx={{ width: '100%' }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -144,18 +244,29 @@ export default function ShopProfile() {
                       variant="h2"
                       sx={{ fontSize: { xs: '14px', sm: '16px', md: '20px', lg: '30px' }, fontWeight: 500 }}
                     >
-                      Roadster Diner
+                      {shop?.shopName}
                     </Typography>
                   </Box>
                 </Box>
-                <Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
                   <Typography
                     sx={{ color: theme.palette.primary.main, fontSize: '15px', fontWeight: '600', marginLeft: '8px' }}
                   >
                     @account manager
                   </Typography>
+                  <Box>
+                    {' '}
+                    <ThreeDotsMenu
+                      menuItems={options}
+                      handleMenuClick={(value) => {
+                        setSidebar(value);
+                        setOpen(true);
+                      }}
+                    />
+                  </Box>
                 </Box>
               </Box>
+
               <Box sx={{ marginLeft: '20px', marginTop: '9px' }}>
                 <Typography
                   sx={{
@@ -201,36 +312,40 @@ export default function ShopProfile() {
                       <AccessTime sx={{ width: '17px', height: '17px' }} />
                       <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>30-40min</Typography>
                     </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        alignContents: 'center',
-                        gap: '6px',
-                        backgroundColor: '#EFF8FA',
-                        color: '#15BFCA',
-                        padding: '10px 16px',
-                        borderRadius: '7px',
-                      }}
-                    >
-                      <RewardIcon style={{ width: '17px', height: '17px' }} />{' '}
-                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Rewards</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        alignContents: 'center',
-                        gap: '6px',
-                        backgroundColor: '#5BBD4E12',
-                        color: '#5BBD4E',
-                        padding: '10px 16px',
-                        borderRadius: '7px',
-                      }}
-                    >
-                      <DeliveryIcon style={{ width: '17px', height: '17px' }} />
-                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Free</Typography>
-                    </Box>
+                    {shop?.rewardSystem !== 'off' && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          alignContents: 'center',
+                          gap: '6px',
+                          backgroundColor: '#EFF8FA',
+                          color: '#15BFCA',
+                          padding: '10px 16px',
+                          borderRadius: '7px',
+                        }}
+                      >
+                        <RewardIcon style={{ width: '17px', height: '17px' }} />{' '}
+                        <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Rewards</Typography>
+                      </Box>
+                    )}
+                    {shop?.freeDelivery && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          alignContents: 'center',
+                          gap: '6px',
+                          backgroundColor: '#5BBD4E12',
+                          color: '#5BBD4E',
+                          padding: '10px 16px',
+                          borderRadius: '7px',
+                        }}
+                      >
+                        <DeliveryIcon style={{ width: '17px', height: '17px' }} />
+                        <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Free</Typography>
+                      </Box>
+                    )}
                     <Box
                       sx={{
                         display: 'flex',
@@ -244,7 +359,7 @@ export default function ShopProfile() {
                       }}
                     >
                       <CartIcon style={{ width: '17px', height: '17px' }} />
-                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Min. $3</Typography>
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Min. ${shop?.minOrderAmount}</Typography>
                     </Box>
                   </Stack>
                 </Box>
@@ -263,8 +378,51 @@ export default function ShopProfile() {
           sx={{
             paddingLeft: '50px',
           }}
-        ></Box>
+        >
+          <Stack gap="40px">
+            <ShopProfileBasicInfo title="Seller" desc={shop?.shopName} Icon={CalenderIcon} />
+            <ShopProfileBasicInfo title="Shop Type" desc={shop?.shopType} Icon={CalenderIcon} />
+            <ShopProfileBasicInfo title="Location" desc={shop?.address?.address} Icon={Loacation} />
+            <ShopProfileBasicInfo
+              title="Delivery by"
+              desc={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'}
+              Icon={DeliveryIcon}
+            />
+            <ShopProfileBasicInfo title="Phone number" desc={shop?.phone_number} Icon={Phone} />
+            <ShopProfileBasicInfo title="Email" desc={shop?.email} Icon={Email} />
+            <ShopProfileBasicInfo title="Payment Options" desc={shop?.paymentOption.join(', ')} Icon={InfoIcon} />
+            <ShopProfileBasicInfo
+              title="Tags & cuisines"
+              desc={TagsAndCuisines(shop?.tagsId, shop?.cuisineType)}
+              Icon={TagIcon}
+            />
+            <ShopProfileBasicInfo
+              title="Average Ord. Value"
+              desc={AverageOrderValue(shop?.orderValue?.productAmount, shop?.orderValue?.count)}
+              Icon={AverageIcon}
+            />
+            <ShopProfileBasicInfo title="Status" desc={shop?.shopStatus} Icon={Warning} />
+            <Box sx={{ paddingBottom: '40px' }}>
+              <ShopProfileBasicInfo
+                title="Opening Hours"
+                desc={openingHours(shop?.normalHours)}
+                Icon={AccessTimeFilled}
+              />
+            </Box>
+          </Stack>
+        </Box>
       </Box>
+
+      <Drawer open={open} anchor="right">
+        <EditShop
+          shopData={{
+            ...getShopData?.data?.data?.shop,
+            shopLogo: [{ preview: getShopData?.data?.data?.shop.shopLogo }],
+            shopBanner: [{ preview: getShopData?.data?.data?.shop.shopBanner }],
+          }}
+          onClose={() => setOpen(false)}
+        />
+      </Drawer>
     </Box>
   );
 }
