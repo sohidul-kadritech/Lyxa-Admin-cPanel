@@ -15,6 +15,7 @@ import ConfirmModal from '../../../components/Common/ConfirmModal';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
+import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledAutocomplete from '../../../components/Styled/StyledAutocomplete';
 import StyledInput from '../../../components/Styled/StyledInput';
@@ -25,8 +26,6 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import BannerPreview from './BannerPreview';
 import ProductTable from './ProductTable';
-
-import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import {
   CommonTitle,
   GroupHeader,
@@ -35,6 +34,7 @@ import {
   createGroupedDataRow,
   createGroupedList,
   durationInit,
+  getCurrentFeaturedWeekOption,
   itemSelectOptions,
 } from './helpers';
 
@@ -141,8 +141,6 @@ export default function MarketingSettings({
     return [];
   }, [featuredSettingsQuery?.data?.data?.featuredSetting]);
 
-  console.log(featuredSettingsOptions);
-
   const [itemSelectType, setItemSelectType] = useState('single');
   const [hasChanged, setHasChanged] = useState(false);
   const [globalRewardBundle, setGlobalRewardBundle] = useState();
@@ -155,12 +153,14 @@ export default function MarketingSettings({
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
 
+  // console.log(featuredWeek);
+
   const setLocalData = (data) => {
     setProducts(data?.products);
     setDuration(data?.duration);
     setSpendLimit(data?.spendLimit);
     setItemSelectType(data?.itemSelectionType);
-    setFeaturedDuration(data?.amount);
+    setFeaturedDuration(data?.featuredAmount);
 
     if (data?.spendLimit > 0) {
       setSpendLimitChecked(true);
@@ -377,15 +377,17 @@ export default function MarketingSettings({
     }
 
     if (marketingType === 'featured') {
-      const week = featuredSettingsOptions?.find((item) => item?.value === Number(featuredAmount))?.label?.slice(0, 1);
+      const featuredWeek = featuredSettingsOptions
+        ?.find((item) => item?.value === Number(featuredAmount))
+        ?.label?.slice(0, 1);
 
       loyaltySettingsMutaion.mutate({
         shop: shop?._id,
         type: marketingType,
         creatorType,
         status: 'active',
-        week,
-        amount: featuredAmount,
+        featuredWeek,
+        featuredAmount,
       });
     } else {
       loyaltySettingsMutaion.mutate({
@@ -1011,9 +1013,10 @@ export default function MarketingSettings({
               </StyledAccordion>
             </Box>
           ) : (
+            /* duration */
             <Box>
               <StyledAccordion
-                isOpen={currentExpanedTab === 0}
+                isOpen={loyaltySettingsQuery?.data?.isMarketing || currentExpanedTab === 0}
                 onChange={(closed) => {
                   seCurrentExpanedTab(closed ? 0 : -1);
                 }}
@@ -1026,7 +1029,11 @@ export default function MarketingSettings({
                 disabled={isPageDisabled}
               >
                 <OptionsSelect
-                  items={featuredSettingsOptions}
+                  items={
+                    loyaltySettingsQuery?.data?.isMarketing
+                      ? [getCurrentFeaturedWeekOption(loyaltySettingsQuery?.data)]
+                      : featuredSettingsOptions
+                  }
                   value={featuredAmount}
                   onChange={(value) => {
                     setFeaturedDuration(value);
