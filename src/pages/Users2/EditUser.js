@@ -15,7 +15,6 @@ function EditUser({ onClose, editUser, ...props }) {
 
   const onSubmitHandler = () => {
     props.editUserHandler(userData);
-    onClose();
   };
 
   const theme = useTheme();

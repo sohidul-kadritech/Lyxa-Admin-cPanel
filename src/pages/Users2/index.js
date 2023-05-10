@@ -8,7 +8,6 @@ import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import MenuPageSkeleton from '../Menu/PageSkeleton';
 import AddUser from './AddUser';
 import UsersTable from './UsersTable';
 
@@ -24,19 +23,19 @@ function AddMenuButton({ ...props }) {
 function Users2() {
   const [open, setOpen] = useState(false);
 
+  const [isConfirm, setIsConfirm] = useState(false);
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
   const [searchFilteredData, setSearchFilteredData] = useState([]);
 
   const shop = useSelector((store) => store.Login.admin);
 
-  const [email, setEmail] = useState('');
-
-  const [password, setPassword] = useState('');
-
-  const { data, isLoading, isError, refetch } = useQuery(
+  const { data, isLoading, refetch } = useQuery(
     'get-shop-credentials',
     () =>
       // eslint-disable-next-line prettier/prettier
-      AXIOS.get(`${API_URL.GET_SHOP_CREDENTIALS}?id=${shop._id}`),
+			AXIOS.get(`${API_URL.GET_SHOP_CREDENTIALS}?id=${shop._id}`),
     {
       onSuccess: (data) => {
         if (data?.status) {
@@ -49,10 +48,16 @@ function Users2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+		}
   );
 
-  console.log('useQuery', data?.data?.credentials?.credentials, isLoading, isError);
+  const closeEditSidebar = () => setIsEditOpen(false);
+
+  const closeConfirmModal = () => setIsConfirm(false);
+
+  const openEditSideBar = () => setIsEditOpen(true);
+
+  const openConfirmModal = () => setIsConfirm(true);
 
   const addUser = useMutation((data) => AXIOS.post(API_URL.ADD_SHOP_CREDENTIAL, data), {
     onSuccess: (data) => {
@@ -65,14 +70,15 @@ function Users2() {
       }
     },
   });
-  const EditUserAction = useMutation(
+
+  const editUserAction = useMutation(
     (data) => AXIOS.post(API_URL.UPDATE_SHOP_CREDENTIAL, { isParentUser: undefined, ...data }),
     {
       onSuccess: (data, args) => {
         console.log('args: ', args);
         if (data?.status) {
           successMsg(data.message, 'success');
-
+          closeEditSidebar();
           if (args?.isParentUser) {
             shop.name = args?.name;
           }
@@ -82,13 +88,14 @@ function Users2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+		}
   );
 
   const DeleteUser = useMutation((data) => AXIOS.post(API_URL.REMOVE_SHOP_CREDENTIAL, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data.message, 'success');
+        closeConfirmModal();
         refetch();
       } else {
         successMsg(data.message, 'error');
@@ -107,9 +114,9 @@ function Users2() {
           (user) =>
             user?.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
             // eslint-disable-next-line prettier/prettier
-            user?.email.toLowerCase().includes(e.target.value.toLowerCase()),
+						user?.email.toLowerCase().includes(e.target.value.toLowerCase())
           // eslint-disable-next-line prettier/prettier
-        ),
+				)
       );
     } else if (e.target.value === '') {
       setSearchFilteredData([
@@ -118,8 +125,6 @@ function Users2() {
       ]);
     }
   };
-
-  console.log(email, ' and ', password);
 
   const editUserHandler = (data) => {
     console.log(data);
@@ -131,17 +136,13 @@ function Users2() {
     const newData = { id: _id, name, password: tempNewPass, isParentUser };
 
     if (tempNewPass === tempconfirmPass) {
-      EditUserAction.mutate(newData);
+      editUserAction.mutate(newData);
       // setOpen(false)
     } else successMsg("Passsword doesn't match");
   };
 
   const addNewUser = async (data) => {
     const { name, email, password, repeated_password } = data;
-
-    setEmail(email);
-
-    setPassword(password);
 
     const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
     // get data for shop credentials
@@ -195,23 +196,28 @@ function Users2() {
         <StyledSearchBar sx={{ width: '319px' }} onChange={onChangeSearchHandler} placeholder="Search" />
         <AddMenuButton onClick={() => setOpen(true)} />
       </Stack>
-      {isLoading && <MenuPageSkeleton />}
-      {!isLoading && (
-        <>
-          <Box>
-            <UsersTable
-              RemoveUserHandler={RemoveUserHandler}
-              editUserHandler={editUserHandler}
-              data={searchFilteredData}
-              loading={isLoading}
-              editUserLoading={EditUserAction?.isLoading}
-            />
-          </Box>
-          <Drawer open={open} anchor="right">
-            <AddUser loading={addUser?.isLoading} addUser={addNewUser} onClose={() => setOpen(false)} />
-          </Drawer>
-        </>
-      )}
+
+      <>
+        <Box>
+          <UsersTable
+            isConfirm={isConfirm}
+            isEditOpen={isEditOpen}
+            closeConfirmModal={closeConfirmModal}
+            closeEditSidebar={closeEditSidebar}
+            openEditSideBar={openEditSideBar}
+            openConfirmModal={openConfirmModal}
+            RemoveUserHandler={RemoveUserHandler}
+            editUserHandler={editUserHandler}
+            data={searchFilteredData}
+            loading={isLoading}
+            editUserLoading={editUserAction?.isLoading}
+            deleteUserLoading={DeleteUser?.isLoading}
+          />
+        </Box>
+        <Drawer open={open} anchor="right">
+          <AddUser loading={addUser?.isLoading} addUser={addNewUser} onClose={() => setOpen(false)} />
+        </Drawer>
+      </>
     </Box>
   );
 }
