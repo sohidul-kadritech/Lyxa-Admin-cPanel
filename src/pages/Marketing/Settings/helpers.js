@@ -116,16 +116,8 @@ export const GroupHeader = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.secondary,
 }));
 
-export const featuredDurationTypes = [
-  { label: '1 week', value: '1-week' },
-  { label: '2 week', value: '2-week' },
-  { label: '3 week', value: '3-week' },
-  { label: '4 week', value: '4-week' },
-];
-
-export const featuredDurationAmountMap = {
-  '1-week': 20,
-  '2-week': 40,
-  '3-week': 55,
-  '4-week': 65,
+export const getCurrentFeaturedWeekOption = (marketingData) => {
+  const week = marketingData?.data?.marketing?.featuredWeek || 0;
+  const amount = marketingData?.data?.marketing?.featuredAmount || 0;
+  return { label: `${week} week`, value: amount };
 };

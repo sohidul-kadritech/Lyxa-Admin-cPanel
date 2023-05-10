@@ -30,6 +30,7 @@ const mTypeMap = {
   percentage: 'Discounted Items',
   free_delivery: '$0 Delivery fee',
   reward: 'Loyalty',
+  featured: 'Featured',
 };
 
 export default function MarketingDashboard() {

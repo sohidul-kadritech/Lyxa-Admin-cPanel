@@ -1,15 +1,30 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as DropIcon } from '../../../../../assets/icons/down.svg';
 import SidebarContainer from '../../../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../../../components/Form/StyledFormField';
+import { successMsg } from '../../../../../helpers/successMsg';
 
-const fieldContainerSx = {
-  padding: '14px 0',
-};
+export default function EditField({ onClose, editField, updateField, loading }) {
+  const [field, setField] = useState(editField);
 
-export default function EditField({ onClose, editItem }) {
+  const commonChangeHandler = (event) => {
+    setField((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const onSubmit = () => {
+    if (field?.featuredAmount < 1) {
+      successMsg('Amount can be less than 1!');
+      return;
+    }
+
+    updateField(field, 'amount');
+  };
+
   return (
     <SidebarContainer title="Edit Field" onClose={onClose}>
       <Box position="relative" height="100%">
@@ -17,13 +32,10 @@ export default function EditField({ onClose, editItem }) {
         <StyledFormField
           label="Duration"
           intputType="text"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
           inputProps={{
-            type: 'text',
+            type: 'number',
             name: 'duration',
-            value: editItem.duration,
+            value: field.featuredWeeklyDuration,
             readOnly: true,
           }}
         />
@@ -31,29 +43,21 @@ export default function EditField({ onClose, editItem }) {
         <StyledFormField
           label="Amount"
           intputType="text"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
           inputProps={{
-            type: 'text',
-            name: 'amount',
-            value: editItem.amount,
+            type: 'number',
+            name: 'featuredAmount',
+            value: field?.featuredAmount,
+            onChange: commonChangeHandler,
           }}
         />
-        <Box
-        // sx={{
-        //   position: 'absolute',
-        //   bottom: '20px',
-        //   padding: '20px',
-        //   width: '100%',
-        // }}
-        >
+        <Box pt={5}>
           <Button
             variant="contained"
             color="primary"
             startIcon={<DropIcon />}
             fullWidth
-            onClick={() => {}}
+            disabled={loading}
+            onClick={onSubmit}
             sx={{
               marginTop: '14px',
             }}

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 // third party
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
@@ -15,9 +14,10 @@ import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.sv
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import MCard from './MarketingCard';
 import MSettingsModal from './MSettingsModal';
+import MCard from './MarketingCard';
 import MarketingSettings from './Settings';
+import { getPromotionStatus } from './helpers';
 
 const activeDealsInit = {
   free_delivery: false,
@@ -46,6 +46,7 @@ const getApliedDeals = (marketings, currentUserType) => {
 };
 
 const getActiveDeals = (dealSetting, shopType) => {
+  console.log(dealSetting);
   const deals = { ...activeDealsInit };
 
   dealSetting?.forEach((item) => {
@@ -114,15 +115,28 @@ export default function Marketing() {
     }
   }, [shopQuery?.data?.data?.shop, dealSettingsQuery?.data?.data?.dealSetting]);
 
+  const getQueryParmas = (marketingType) => ({
+    shop: currentShop?._id,
+    type: marketingType,
+    creatorType: adminShop?.shopType ? 'shop' : 'admin',
+  });
+
   const rewardSettingsQuery = useQuery(
     ['marketing-reward-settings'],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
-        params: {
-          shop: currentShop?._id,
-          type: 'reward',
-          creatorType: adminShop?.shopType ? 'shop' : 'admin',
-        },
+        params: getQueryParmas('reward'),
+      }),
+    {
+      enabled: Boolean(currentShop?._id),
+    }
+  );
+
+  const featuredSettingsQuery = useQuery(
+    ['marketing-featured-settings'],
+    () =>
+      AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+        params: getQueryParmas('featured'),
       }),
     {
       enabled: Boolean(currentShop?._id),
@@ -133,11 +147,7 @@ export default function Marketing() {
     ['marketing-percentage-settings'],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
-        params: {
-          shop: currentShop?._id,
-          type: 'percentage',
-          creatorType: adminShop?.shopType ? 'shop' : 'admin',
-        },
+        params: getQueryParmas('percentage'),
       }),
     {
       enabled: Boolean(currentShop?._id),
@@ -148,11 +158,7 @@ export default function Marketing() {
     ['marketing-double_menu-settings'],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
-        params: {
-          shop: currentShop?._id,
-          type: 'double_menu',
-          creatorType: adminShop?.shopType ? 'shop' : 'admin',
-        },
+        params: getQueryParmas('double_menu'),
       }),
     {
       enabled: Boolean(currentShop?._id),
@@ -163,11 +169,7 @@ export default function Marketing() {
     ['marketing-free_delivery-settings'],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
-        params: {
-          shop: currentShop?._id,
-          type: 'free_delivery',
-          creatorType: adminShop?.shopType ? 'shop' : 'admin',
-        },
+        params: getQueryParmas('free_delivery'),
       }),
     {
       enabled: Boolean(currentShop?._id),
@@ -182,30 +184,6 @@ export default function Marketing() {
     } else {
       history.push(`/shops/marketing/dashboard/${currentShop?._id}/${marketingType}/${marketing?._id}`);
     }
-  };
-
-  const getPromotionStatus = (mQuery, type) => {
-    if (type && !activeDeals[type]) {
-      return 'deactivated';
-    }
-
-    if (mQuery?.data?.isNotEligible) {
-      return mQuery?.data?.status;
-    }
-
-    if (mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active') {
-      return 'ongoing';
-    }
-
-    if (!mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'active') {
-      return 'scheduled';
-    }
-
-    if (!mQuery.data?.data?.marketing?.isActive && mQuery.data?.data?.marketing?.status === 'inactive') {
-      return 'paused';
-    }
-
-    return '';
   };
 
   const __loading =
@@ -233,7 +211,7 @@ export default function Marketing() {
             icon={DiscountIcon}
             loading={__loading || discountSettingsQuery?.isFetching}
             disabled={appliedDeals.percentage || !activeDeals.percentage}
-            status={getPromotionStatus(discountSettingsQuery, 'percentage')}
+            status={getPromotionStatus(discountSettingsQuery, 'percentage', activeDeals)}
             ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
             onOpen={() => {
               if (!appliedDeals.percentage && activeDeals.percentage && !__loading) {
@@ -249,7 +227,7 @@ export default function Marketing() {
             icon={BuyIcon}
             loading={__loading || doubleDealSettingsQuery.isFetching}
             disabled={appliedDeals.double_menu || !activeDeals.double_menu}
-            status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu')}
+            status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu', activeDeals)}
             ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
             onOpen={() => {
               if (!__loading && !appliedDeals.double_menu && activeDeals.double_menu) {
@@ -264,7 +242,7 @@ export default function Marketing() {
             title="$0 Delivery Fee"
             loading={__loading || freeDeliverySettingsQuery?.isFetching}
             disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
-            status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery')}
+            status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery', activeDeals)}
             ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
             icon={DeliveryIcon}
             onOpen={() => {
@@ -295,9 +273,12 @@ export default function Marketing() {
                 description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
                 title="Promotions"
                 loading={__loading || rewardSettingsQuery.isFetching}
+                status={getPromotionStatus(featuredSettingsQuery)}
                 icon={PromoIcon}
                 onOpen={() => {
-                  openHandler('featured', {});
+                  if (!featuredSettingsQuery.isLoading) {
+                    openHandler('featured', featuredSettingsQuery.data?.data?.marketing);
+                  }
                 }}
               />
             </Grid>

@@ -2,42 +2,48 @@
 import { Edit } from '@mui/icons-material';
 import { Box, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import StyledIconButton from '../../../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
 import StyledTable from '../../../../../components/Styled/StyledTable3';
 
-export default function SettingsTable({ rows, onEdit }) {
+export default function SettingsTable({ rows = [], onEdit, onStatusChange }) {
   const [render, setRender] = useState(false);
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   const columns = [
     {
       id: 1,
       headerName: 'DURATION',
-      field: 'duration',
+      field: 'featuredWeeklyDuration',
       flex: 2,
       disableColumnFilter: true,
       sortable: false,
-      renderCell: (params) => (
+      renderCell: ({ value }) => (
         <Typography variant="body4" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-          {params?.value}
+          {value} week
         </Typography>
       ),
     },
     {
       id: 2,
       headerName: 'AMOUNT',
-      field: 'amount',
+      field: 'featuredAmount',
       headerAlign: 'left',
       align: 'left',
       sortable: false,
       flex: 2,
       minWidth: 200,
-      renderCell: ({ value }) => <Typography variant="body4">${value}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography variant="body4">
+          {currency} {value}
+        </Typography>
+      ),
     },
     {
       id: 3,
       headerName: '',
-      field: 'action',
+      field: 'featuredStatus',
       sortable: false,
       flex: 4,
       minWidth: 100,
@@ -47,11 +53,12 @@ export default function SettingsTable({ rows, onEdit }) {
         <Stack direction="row" alignItems="center" justifyContent="flex-start" gap={4}>
           <StyledSwitch
             color="primary"
-            checked={row?.status === 'active'}
+            checked={row?.featuredStatus === 'active'}
             onChange={() => {
-              console.log(row);
-              row.status = row.status === 'active' ? 'inactive' : 'active';
+              row.featuredStatus = row?.featuredStatus === 'active' ? 'inactive' : 'active';
               setRender(!render);
+              onStatusChange(row);
+              // set_has_unsaved_change(true);
             }}
           />
           <StyledIconButton
@@ -74,7 +81,7 @@ export default function SettingsTable({ rows, onEdit }) {
         padding: '6px 18px',
       }}
     >
-      <StyledTable columns={columns} rows={rows} />
+      <StyledTable columns={columns} rows={rows} getRowId={(row) => row?._id} />
     </Box>
   );
 }
