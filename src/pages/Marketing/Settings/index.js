@@ -153,9 +153,11 @@ export default function MarketingSettings({
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
 
-  // console.log(featuredWeek);
+  console.log({ featuredAmount });
 
   const setLocalData = (data) => {
+    console.log({ data });
+
     setProducts(data?.products);
     setDuration(data?.duration);
     setSpendLimit(data?.spendLimit);
@@ -415,7 +417,8 @@ export default function MarketingSettings({
         successMsg(data?.message, 'success');
 
         if (data?.status) {
-          queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
+          queryClient.removeQueries([`marketing-${marketingType}-settings`]);
+          // queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
           queryClient.invalidateQueries([`shop-all-products`]);
 
           onDelete();
@@ -1026,7 +1029,7 @@ export default function MarketingSettings({
                     subTitle="Choose the time period during which your items will be featured."
                   />
                 }
-                disabled={isPageDisabled}
+                disabled={isPageDisabled || featuredSettingsQuery.isLoading}
               >
                 <OptionsSelect
                   items={
