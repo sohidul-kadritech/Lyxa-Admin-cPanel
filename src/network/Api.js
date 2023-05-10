@@ -132,6 +132,7 @@ export const UPDATE_PRODUCT_STATUS = `${ADMIN_ENDPOINT}/product/status`;
 export const GET_CATEGORY_WISE_PRODUCT = `${ADMIN_ENDPOINT}/product/category-wise-products`;
 export const SORT_PRODUCTS = `${ADMIN_ENDPOINT}/product/sort`;
 export const UPDATE_PRODUCT_STOCK = `${ADMIN_ENDPOINT}/product/update-stock`;
+export const PRODUCT_ADDON_CHECK = `${ADMIN_ENDPOINT}/product/addons-check`;
 
 export const DELETE_PRODUCT_DEAL = `${ADMIN_ENDPOINT}/product/delete-deal`;
 export const UPDATE_PRODUCT_REWARD_SETTINGS = `${ADMIN_ENDPOINT}/product/add-reward`;

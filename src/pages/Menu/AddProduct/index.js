@@ -1,5 +1,5 @@
 // third party
-import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -42,13 +42,14 @@ const tabSx = {
 export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
   const shop = useSelector((store) => store.Login.admin);
   const queryClient = useQueryClient();
+  const theme = useTheme();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [render, setRender] = useState(false);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  const [hasAttribute, setHasAttribute] = useState('');
+  const [hasAttribute, setHasAttribute] = useState('no');
 
   const [product, setProduct] = useState(
     editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
@@ -76,16 +77,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   );
 
   const adddons = useMemo(
-    () =>
-      productsQuery?.data?.data?.products?.filter((p) => {
-        let flag = true;
-
-        p?.attributes?.forEach((a) => {
-          if (a?.required) flag = false;
-        });
-
-        return flag;
-      }),
+    () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
     [productsQuery?.data?.data?.products]
   );
 
@@ -107,7 +99,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     {
       staleTime: minInMiliSec(10),
       onSuccess: (data) => {
-        // ConstructionOutlined
         console.log(data);
         setCategories(
           (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
@@ -142,16 +133,38 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }
 
     if (editProduct?._id) {
-      if (product?.type === 'food') {
-        if (product?.attributes?.length && product?.attributes[0]?.items?.length) {
+      if (editProduct?.type === 'food') {
+        if (editProduct?.attributes?.length && editProduct?.attributes[0]?.items?.length) {
           setHasAttribute('yes');
         }
       }
     }
   }, []);
 
+  // is adddon
+  const isProductAddonQuery = useQuery(
+    [
+      Api.PRODUCT_ADDON_CHECK,
+      {
+        productId: editProduct?._id,
+      },
+    ],
+    () =>
+      AXIOS.get(Api.PRODUCT_ADDON_CHECK, {
+        params: {
+          productId: editProduct?._id,
+        },
+      }),
+    {
+      enabled: Boolean(editProduct?._id),
+    }
+  );
+
+  console.log(isProductAddonQuery.data);
+
   // loading
-  const __loading = categoriesQuery.isLoading || productsQuery.isLoading;
+  const __loading =
+    categoriesQuery.isLoading || productsQuery.isLoading || (editProduct?._id && isProductAddonQuery?.isLoading);
 
   // input handler
   const commonChangeHandler = (e) => {
@@ -397,18 +410,32 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       {shop?.shopType === 'food' && (
         <Box sx={fieldContainerSx} id="add-product-features">
           <StyledFormField
-            label="Attributes"
+            label={
+              <span>
+                Attributes
+                {editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon && (
+                  <span
+                    style={{
+                      color: theme.palette.error.main,
+                    }}
+                  >
+                    {' '}
+                    (Product is used as addon)
+                  </span>
+                )}
+              </span>
+            }
             intputType="optionsSelect"
-            // containerProps={{
-            //   : fieldContainerSx,
-            // }}
             inputProps={{
               value: hasAttribute,
               items: attributeOptions,
               onChange: (value) => {
                 setHasAttribute(value);
               },
-              readOnly: productReadonly,
+              console: console.log(
+                productReadonly || (editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon)
+              ),
+              readOnly: productReadonly || (editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon),
             }}
           />
         </Box>
@@ -459,8 +486,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           />
         </Box>
       )}
-      {/* addons */}
 
+      {/* addons */}
       {shop?.shopType === 'food' && (
         <StyledFormField
           // console={console.log(product?.attributes)}
@@ -495,6 +522,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 label={item?.name}
                 size="lg"
                 onDelete={() => {
+                  if (productReadonly) return;
+
                   product.addons.splice(index, 1);
                   setRender(!render);
                 }}
