@@ -20,6 +20,7 @@ import TabPanel from '../../components/Common/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+
 import EditShop from './EditShop';
 import FlaggedViews from './FlaggedViews';
 import ReviewViews from './ReviewView';
@@ -142,11 +143,26 @@ function openingHours(normalHours) {
 
 export default function ShopProfile() {
   const shop = useSelector((store) => store.Login.admin);
+  // const queryClient = useQueryClient();
+  const onDrop = (acceptedFiles) => {
+    console.log('acceptedFiles: ', acceptedFiles);
+    const newFiles = acceptedFiles.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        // eslint-disable-next-line prettier/prettier
+			})
+    );
+    console.log(newFiles);
+    // setEditedData((prev) => ({
+    //   ...prev,
+    //   shopLogo: newFiles?.length > 0 ? newFiles : prev.images,
+    // }));
+  };
 
   const getShopData = useQuery('get-single-shop-data', () => AXIOS.get(`${API_URL.SINGLE_SHOP}?id=${shop?._id}`));
 
-  console.log('data: ', getShopData?.data?.data?.shop);
-  console.log('profile data: ', shop);
+  // console.log('data: ', getShopData?.data?.data?.shop);
+  // console.log('profile data: ', shop);
 
   const options = ['Edit Shop', 'Access as Shop'];
 
@@ -186,7 +202,7 @@ export default function ShopProfile() {
             }}
           >
             <img
-              src={shop?.shopBanner}
+              src={getShopData?.data?.data?.shop?.shopBanner}
               alt="Banner"
               style={{
                 width: '100%',
@@ -194,13 +210,18 @@ export default function ShopProfile() {
                 objectFit: 'cover',
               }}
             />
-            <CoverPhotoButton label="Add Cover Photo" />
+            <CoverPhotoButton onDrop={onDrop} label="Add Cover Photo" />
           </Box>
           {/* logo */}
           <Stack direction="row" gap="21px" pt={4.5}>
             <Box sx={{ position: 'relative' }}>
-              <Avatar src={shop.shopLogo} alt="Shop" variant="circular" sx={{ width: 175, height: 175 }}>
-                {shop?.shopName
+              <Avatar
+                src={getShopData?.data?.data?.shop.shopLogo}
+                alt="Shop"
+                variant="circular"
+                sx={{ width: 175, height: 175 }}
+              >
+                {getShopData?.data?.data?.shop?.shopName
                   ?.split(' ')
                   .reduce((prev, cur) => prev + cur.charAt(0), '')
                   .slice(0, 3)}
@@ -244,7 +265,7 @@ export default function ShopProfile() {
                       variant="h2"
                       sx={{ fontSize: { xs: '14px', sm: '16px', md: '20px', lg: '30px' }, fontWeight: 500 }}
                     >
-                      {shop?.shopName}
+                      {getShopData?.data?.data?.shop?.shopName}
                     </Typography>
                   </Box>
                 </Box>
@@ -312,7 +333,7 @@ export default function ShopProfile() {
                       <AccessTime sx={{ width: '17px', height: '17px' }} />
                       <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>30-40min</Typography>
                     </Box>
-                    {shop?.rewardSystem !== 'off' && (
+                    {getShopData?.data?.data?.shop?.rewardSystem !== 'off' && (
                       <Box
                         sx={{
                           display: 'flex',
@@ -329,7 +350,7 @@ export default function ShopProfile() {
                         <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Rewards</Typography>
                       </Box>
                     )}
-                    {shop?.freeDelivery && (
+                    {getShopData?.data?.data?.shop?.freeDelivery && (
                       <Box
                         sx={{
                           display: 'flex',
@@ -359,7 +380,9 @@ export default function ShopProfile() {
                       }}
                     >
                       <CartIcon style={{ width: '17px', height: '17px' }} />
-                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Min. ${shop?.minOrderAmount}</Typography>
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
+                        Min. ${getShopData?.data?.data?.shop?.minOrderAmount}
+                      </Typography>
                     </Box>
                   </Stack>
                 </Box>
@@ -380,32 +403,51 @@ export default function ShopProfile() {
           }}
         >
           <Stack gap="40px">
-            <ShopProfileBasicInfo title="Seller" desc={shop?.shopName} Icon={CalenderIcon} />
-            <ShopProfileBasicInfo title="Shop Type" desc={shop?.shopType} Icon={CalenderIcon} />
-            <ShopProfileBasicInfo title="Location" desc={shop?.address?.address} Icon={Loacation} />
+            <ShopProfileBasicInfo title="Seller" desc={getShopData?.data?.data?.shop?.shopName} Icon={CalenderIcon} />
+            <ShopProfileBasicInfo
+              title="Shop Type"
+              desc={getShopData?.data?.data?.shop?.shopType}
+              Icon={CalenderIcon}
+            />
+            <ShopProfileBasicInfo
+              title="Location"
+              desc={getShopData?.data?.data?.shop?.address?.address}
+              Icon={Loacation}
+            />
             <ShopProfileBasicInfo
               title="Delivery by"
-              desc={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'}
+              desc={getShopData?.data?.data?.shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'}
               Icon={DeliveryIcon}
             />
-            <ShopProfileBasicInfo title="Phone number" desc={shop?.phone_number} Icon={Phone} />
-            <ShopProfileBasicInfo title="Email" desc={shop?.email} Icon={Email} />
-            <ShopProfileBasicInfo title="Payment Options" desc={shop?.paymentOption.join(', ')} Icon={InfoIcon} />
+            <ShopProfileBasicInfo
+              title="Phone number"
+              desc={getShopData?.data?.data?.shop?.phone_number}
+              Icon={Phone}
+            />
+            <ShopProfileBasicInfo title="Email" desc={getShopData?.data?.data?.shop?.email} Icon={Email} />
+            <ShopProfileBasicInfo
+              title="Payment Options"
+              desc={getShopData?.data?.data?.shop?.paymentOption.join(', ')}
+              Icon={InfoIcon}
+            />
             <ShopProfileBasicInfo
               title="Tags & cuisines"
-              desc={TagsAndCuisines(shop?.tagsId, shop?.cuisineType)}
+              desc={TagsAndCuisines(getShopData?.data?.data?.shop?.tagsId, getShopData?.data?.data?.shop?.cuisineType)}
               Icon={TagIcon}
             />
             <ShopProfileBasicInfo
               title="Average Ord. Value"
-              desc={AverageOrderValue(shop?.orderValue?.productAmount, shop?.orderValue?.count)}
+              desc={AverageOrderValue(
+                getShopData?.data?.data?.shop?.orderValue?.productAmount,
+                getShopData?.data?.data?.shop?.orderValue?.count
+              )}
               Icon={AverageIcon}
             />
-            <ShopProfileBasicInfo title="Status" desc={shop?.shopStatus} Icon={Warning} />
+            <ShopProfileBasicInfo title="Status" desc={getShopData?.data?.data?.shop?.shopStatus} Icon={Warning} />
             <Box sx={{ paddingBottom: '40px' }}>
               <ShopProfileBasicInfo
                 title="Opening Hours"
-                desc={openingHours(shop?.normalHours)}
+                desc={openingHours(getShopData?.data?.data?.shop?.normalHours)}
                 Icon={AccessTimeFilled}
               />
             </Box>
@@ -415,6 +457,7 @@ export default function ShopProfile() {
 
       <Drawer open={open} anchor="right">
         <EditShop
+          loading={getShopData?.isLoading}
           shopData={{
             ...getShopData?.data?.data?.shop,
             shopLogo: [{ preview: getShopData?.data?.data?.shop.shopLogo }],

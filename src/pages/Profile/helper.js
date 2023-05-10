@@ -1,6 +1,47 @@
 import { Button, useTheme } from '@mui/material';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
+import { getImageUrl } from '../../helpers/images';
 
+export const createShopData = async (shopData) => {
+  const img_url_logo = await getImageUrl(shopData.shopLogo[0]);
+  const img_url_banner = await getImageUrl(shopData.shopBanner[0]);
+
+  if (!img_url_logo) {
+    return {
+      status: false,
+      msg: 'Error while Shop Logo image is uploading!',
+    };
+  }
+  if (!img_url_banner) {
+    return {
+      status: false,
+      msg: 'Error while Shop Banner image is uploading!',
+    };
+  }
+
+  console.log(img_url_logo, ' image logo and banner', img_url_banner);
+
+  shopData.shopAddress = shopData.address;
+  delete shopData.address;
+
+  return {
+    ...shopData,
+    id: shopData?._id,
+    shopAddress: {
+      address: shopData?.shopAddress?.address,
+      latitude: shopData?.shopAddress?.latitude,
+      longitude: shopData?.shopAddress?.longitude,
+      country: shopData?.shopAddress?.country,
+      state: shopData?.shopAddress?.state,
+      city: shopData?.shopAddress?.city,
+      pin: shopData?.shopAddress?.pin,
+      primary: false,
+      note: shopData?.shopAddress?.note,
+    },
+    shopLogo: img_url_logo,
+    shopBanner: img_url_banner,
+  };
+};
 export function validateEditedData(shopData) {
   const status = {
     status: false,
@@ -9,6 +50,10 @@ export function validateEditedData(shopData) {
 
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 
+  if (!shopData?.email) {
+    status.msg = 'Please provide your email';
+    return status;
+  }
   if (shopData?.email && !emailRegex.test(shopData?.email)) {
     status.msg = 'Email is not valid';
     return status;
@@ -28,10 +73,12 @@ export function validateEditedData(shopData) {
     status.msg = 'Please provide your phone number';
     return status;
   }
+
   if (!shopData?.zip_code) {
     status.msg = 'Please provide your Zip Code';
     return status;
   }
+
   if (!shopData?.shopLogo) {
     status.msg = 'Please provide your Shop logo';
     return status;
@@ -61,10 +108,12 @@ export function validateEditedData(shopData) {
     status.msg = 'Please provide your bank address';
     return status;
   }
+
   if (!shopData?.bank_postal_code) {
     status.msg = 'Please provide your bank postal code';
     return status;
   }
+
   if (!shopData?.account_number) {
     status.msg = 'Please provide your bank account number';
     return status;
@@ -75,7 +124,6 @@ export function validateEditedData(shopData) {
     return status;
   }
 
-  // if(shopData?.)
   return { status: true };
 }
 
@@ -85,6 +133,8 @@ export function CoverPhotoButton({ label }) {
   return (
     <Button
       variant="contained"
+      aria-label="upload picture"
+      component="label"
       startIcon={<CameraIcon />}
       sx={{
         position: 'absolute',
@@ -106,6 +156,7 @@ export function CoverPhotoButton({ label }) {
         },
       }}
     >
+      <input hidden accept="image/*" type="file" />
       {label}
     </Button>
   );
