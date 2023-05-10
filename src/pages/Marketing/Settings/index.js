@@ -35,18 +35,11 @@ import {
   createGroupedList,
   durationInit,
   getCurrentFeaturedWeekOption,
+  getDurationLeft,
   itemSelectOptions,
 } from './helpers';
 
-export default function MarketingSettings({
-  onClose,
-  // onActivate,
-  // onDeactivate,
-  onDelete,
-  marketingType,
-  shop,
-  creatorType,
-}) {
+export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -120,8 +113,6 @@ export default function MarketingSettings({
   );
 
   // featured settinsg
-  // const [featuredSettings, setFeaturedSettings]=useState([]);
-
   const featuredSettingsQuery = useQuery([Api.GET_ADMIN_FEATURED_SETTINGS], () =>
     AXIOS.get(Api.GET_ADMIN_FEATURED_SETTINGS, {
       params: {
@@ -171,7 +162,7 @@ export default function MarketingSettings({
     }
   };
 
-  const loyaltySettingsQuery = useQuery(
+  const marketingQuery = useQuery(
     [`marketing-${marketingType}-settings`],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
@@ -186,12 +177,12 @@ export default function MarketingSettings({
     }
   );
 
-  console.log(loyaltySettingsQuery?.data);
+  console.log(marketingQuery?.data);
 
   useEffect(() => {
-    if (loyaltySettingsQuery?.data !== undefined) {
-      if (loyaltySettingsQuery?.data?.isMarketing) {
-        if (loyaltySettingsQuery?.data?.data?.marketing?.status === 'active') {
+    if (marketingQuery?.data !== undefined) {
+      if (marketingQuery?.data?.isMarketing) {
+        if (marketingQuery?.data?.data?.marketing?.status === 'active') {
           setIsPageDisabled(true);
           setPageMode(1);
         } else {
@@ -199,8 +190,8 @@ export default function MarketingSettings({
           setIsPageDisabled(false);
         }
 
-        setServerState(loyaltySettingsQuery?.data?.data?.marketing);
-        const newData = deepClone(loyaltySettingsQuery?.data?.data?.marketing);
+        setServerState(marketingQuery?.data?.data?.marketing);
+        const newData = deepClone(marketingQuery?.data?.data?.marketing);
         setLocalData(newData);
 
         if (newData?.products?.length > 0) {
@@ -212,7 +203,7 @@ export default function MarketingSettings({
       }
       setQueryEnabled(false);
     }
-  }, [loyaltySettingsQuery?.data]);
+  }, [marketingQuery?.data]);
 
   const onProductSelectChange = (event) => {
     if (hasChanged && products?.length > 0) {
@@ -418,7 +409,6 @@ export default function MarketingSettings({
 
         if (data?.status) {
           queryClient.removeQueries([`marketing-${marketingType}-settings`]);
-          // queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
           queryClient.invalidateQueries([`shop-all-products`]);
 
           onDelete();
@@ -706,7 +696,7 @@ export default function MarketingSettings({
         }}
       />
       {/* overlay */}
-      {loyaltySettingsQuery.isLoading && <LoadingOverlay />}
+      {marketingQuery.isLoading && <LoadingOverlay />}
       {/* left */}
       <Box
         sx={{
@@ -1019,7 +1009,7 @@ export default function MarketingSettings({
             /* duration */
             <Box>
               <StyledAccordion
-                isOpen={loyaltySettingsQuery?.data?.isMarketing || currentExpanedTab === 0}
+                isOpen={marketingQuery?.data?.isMarketing || currentExpanedTab === 0}
                 onChange={(closed) => {
                   seCurrentExpanedTab(closed ? 0 : -1);
                 }}
@@ -1033,8 +1023,8 @@ export default function MarketingSettings({
               >
                 <OptionsSelect
                   items={
-                    loyaltySettingsQuery?.data?.isMarketing
-                      ? [getCurrentFeaturedWeekOption(loyaltySettingsQuery?.data)]
+                    marketingQuery?.data?.isMarketing
+                      ? [getCurrentFeaturedWeekOption(marketingQuery?.data)]
                       : featuredSettingsOptions
                   }
                   value={featuredAmount}
@@ -1044,18 +1034,45 @@ export default function MarketingSettings({
                 />
               </StyledAccordion>
               {/* featured spend amount */}
-              <Stack gap={2} pt={5}>
-                <Typography variant="body1" fontWeight={600}>
-                  Amount
-                </Typography>
-                <Typography variant="h5" fontSize={32} lineHeight={1}>
-                  {currency} {featuredAmount || 0}
-                </Typography>
+              <Stack direction="row" alignItems="center" gap={15}>
+                <Stack gap={2} pt={5}>
+                  <Typography variant="body1" fontWeight={600}>
+                    Amount
+                  </Typography>
+                  <Typography variant="h5" fontSize={32} lineHeight={1}>
+                    {currency} {featuredAmount || 0}
+                  </Typography>
+                </Stack>
+                {marketingQuery?.data?.isMarketing && (
+                  <Stack gap={2} pt={5}>
+                    <Typography variant="body1" fontWeight={600}>
+                      Time Remaining
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      fontSize={32}
+                      lineHeight={1}
+                      color={
+                        marketingQuery?.data?.data?.marketing?.status === 'inactive'
+                          ? theme.palette.error.main
+                          : undefined
+                      }
+                    >
+                      {getDurationLeft(marketingQuery?.data?.data?.marketing?.duration?.end) || '0 days 0 hours'}
+                    </Typography>
+                  </Stack>
+                )}
               </Stack>
+              {marketingQuery?.data?.data?.marketing?.status === 'inactive' && (
+                <Typography variant="body1" fontWeight={500} mt={10} maxWidth="650px" color={theme.palette.error.main}>
+                  Your featrued campaign is over, if you wish to start a new campaign. Please delete this campaign and
+                  add a new one.
+                </Typography>
+              )}
             </Box>
           )}
         </Box>
-        {!loyaltySettingsQuery.isLoading && (
+        {!marketingQuery.isLoading && (
           <Box
             sx={{
               paddingTop: '70px',
@@ -1141,7 +1158,10 @@ export default function MarketingSettings({
                     onClick={() => {
                       setConfirmModal(true);
                       setConfirmAction({
-                        message: 'Are you sure?. Your campaign will be deleted.',
+                        message:
+                          marketingType === 'featured' && marketingQuery?.data?.data?.marketing?.status === 'active'
+                            ? `Deleting this campaign will not refund your ${currency} ${featuredAmount} ?`
+                            : 'Are you sure?. Your campaign will be deleted.',
                         onCancel: () => setConfirmModal(false),
                         onConfirm: () => {
                           loyaltySettingsDeleteMutation.mutate();

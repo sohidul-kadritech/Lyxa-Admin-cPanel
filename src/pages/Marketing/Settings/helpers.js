@@ -121,3 +121,38 @@ export const getCurrentFeaturedWeekOption = (marketingData) => {
   const amount = marketingData?.data?.marketing?.featuredAmount || 0;
   return { label: `${week} week`, value: amount };
 };
+
+export const getDurationLeft = (date) => {
+  const targetDate = moment(date);
+  const currentDate = moment();
+
+  if (targetDate.diff(currentDate) <= 0) {
+    return null;
+  }
+
+  const duration = moment.duration(targetDate.diff(currentDate));
+  const weeks = Math.floor(duration.asWeeks()) % 4;
+  const days = Math.floor(duration.asDays()) % 7;
+  const hours = Math.floor(duration.hours()) % 24;
+  const minutes = Math.floor(duration.minutes()) % 60;
+
+  let durationStr = '';
+
+  if (weeks >= 1) {
+    durationStr += ` ${weeks} week${weeks === 1 ? '' : 's'}`;
+  }
+
+  if (days >= 1) {
+    durationStr += ` ${days} day${days === 1 ? '' : 's'}`;
+  }
+
+  if (weeks < 1 && hours >= 1) {
+    durationStr += ` ${hours} hour${hours === 1 ? '' : 's'}`;
+  }
+
+  if (weeks < 1 && days < 1 && hours < 1) {
+    durationStr += ` ${minutes} minute${minutes === 1 ? '' : 's'}`;
+  }
+
+  return durationStr;
+};

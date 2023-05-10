@@ -12,6 +12,7 @@ const generateData = (data) => {
   const doubleDeal = [];
   const freeDelivery = [];
   const date = [];
+  // const featured = [];
 
   data?.forEach((node) => {
     date.push(moment(node?.date).format('MMMM DD'));
@@ -19,6 +20,7 @@ const generateData = (data) => {
     points.push(node?.totalRewardAmount);
     doubleDeal.push(node?.totalDoubleMenuItemPrice);
     freeDelivery.push(node?.freeDeliveryShopCut);
+    console.log(node);
   });
 
   return { discount, points, doubleDeal, freeDelivery, date };

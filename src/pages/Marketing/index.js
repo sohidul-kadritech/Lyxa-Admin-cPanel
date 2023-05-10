@@ -271,7 +271,7 @@ export default function Marketing() {
             <Grid md={6} lg={4}>
               <MCard
                 description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
-                title="Promotions"
+                title="Featured"
                 loading={__loading || rewardSettingsQuery.isFetching}
                 status={getPromotionStatus(featuredSettingsQuery)}
                 icon={PromoIcon}

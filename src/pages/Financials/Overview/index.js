@@ -71,6 +71,7 @@ export default function Overview() {
         </Stack>
       </Grid>
       <InfoCard
+        console={console.log(shopDashboardQuery?.data?.data)}
         title="Total Profit"
         value={`${currency?.symbol_native} ${
           Math.round(
