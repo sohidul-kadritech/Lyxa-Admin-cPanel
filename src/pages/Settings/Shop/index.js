@@ -16,7 +16,7 @@ import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import { successMsg } from '../../../helpers/successMsg';
-import { DeliverySettings, DietarySettings, PaymentInformationList, PriceRange } from './helper';
+import { DeliverySettings, DietarySettings, PaymentInformationList, PriceRange, maxDeliveryOptions } from './helper';
 
 const boxSx2 = {
   padding: '32px 56px 21px 30px',
@@ -56,6 +56,8 @@ function ShopSettings() {
 
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
 
+  const [newMaxDiscount, setNewMaxDiscount] = useState(newShop?.maxDiscount.toString());
+
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -68,6 +70,7 @@ function ShopSettings() {
       shopName: shop?.shopName,
       password: '',
       isCuisine: shop?.isCuisine,
+      maxDiscount: newMaxDiscount,
       minOrderAmount: minimumOrder,
       email: shop?.email,
       phone_number: shop?.phone,
@@ -111,6 +114,7 @@ function ShopSettings() {
       successMsg(data?.message, data.status ? 'success' : undefined);
       if (data?.status) {
         shop.paymentOption = data?.data?.shop.paymentOption || shop.paymentOption;
+        shop.maxDiscount = data?.data?.shop.maxDiscount || shop?.maxDiscount;
         shop.expensive = data?.data?.shop.expensive || shop.expensive;
         shop.dietary = data?.data?.shop.dietary || shop.dietary;
         shop.minOrderAmount = data?.data?.shop.minOrderAmount || shop.minOrderAmount;
@@ -138,10 +142,10 @@ function ShopSettings() {
     setNewDietary(shop?.dietary);
     setMinimumOrder(shop?.minOrderAmount);
     setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
+    setNewMaxDiscount(shop?.maxDiscount.toString());
   };
 
   useEffect(() => {
-    console.log('ami use effecte achi: ');
     populateStateFromShop();
   }, []);
 
@@ -193,6 +197,14 @@ function ShopSettings() {
   // Handle OwnDeliveryBoy
   const OwnDeliveryBoyHandler = (value) => {
     setOwnDeliveryBoy(value);
+    set_has_unsaved_change(true);
+  };
+
+  // Handle max discount
+
+  const maxDiscountHandler = (value) => {
+    console.log('prev:', newMaxDiscount, 'value: ', value);
+    setNewMaxDiscount(value);
     set_has_unsaved_change(true);
   };
 
@@ -265,6 +277,27 @@ function ShopSettings() {
               decrementOrder={decrementOrder}
               current={minimumOrder}
               TypoSx={TypoSx}
+            />
+          </Box>
+
+          <Box sx={boxSx2}>
+            <ShopSettingsSection2
+              boxSx={{
+                // width: '100%',
+                paddingBottom: '29px',
+              }}
+              fieldContainerSx={{
+                padding: '14px 0',
+                width: '250px',
+              }}
+              buttonType={2}
+              title="Maximum Order Amount"
+              // title2=""
+              value={newMaxDiscount}
+              options={maxDeliveryOptions}
+              action={maxDiscountHandler}
+              isInput
+              // isMethod
             />
           </Box>
           <Stack

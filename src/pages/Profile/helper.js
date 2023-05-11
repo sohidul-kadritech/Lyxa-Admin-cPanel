@@ -25,8 +25,23 @@ export const createShopData = async (shopData) => {
   delete shopData.address;
 
   return {
-    ...shopData,
+    //
     id: shopData?._id,
+    shopStartTime: shopData?.shopStartTime,
+    shopEndTime: shopData?.shopEndTime,
+    shopName: shopData?.shopName,
+    email: shopData?.email,
+    password: shopData?.password,
+    phone_number: shopData?.phone_number,
+    shopStatus: shopData?.shopStatus,
+    bank_name: shopData?.bank_name,
+    account_name: shopData?.account_name,
+    account_number: shopData?.account_number,
+    bank_address: shopData?.bank_address,
+    bank_postal_code: shopData?.bank_postal_code,
+    account_swift: shopData?.account_swift,
+    //
+
     shopAddress: {
       address: shopData?.shopAddress?.address,
       latitude: shopData?.shopAddress?.latitude,
@@ -73,8 +88,7 @@ export function validateEditedData(shopData) {
     status.msg = 'Please provide your phone number';
     return status;
   }
-
-  if (!shopData?.zip_code) {
+  if (!shopData?.address?.pin) {
     status.msg = 'Please provide your Zip Code';
     return status;
   }
@@ -127,7 +141,7 @@ export function validateEditedData(shopData) {
   return { status: true };
 }
 
-export function CoverPhotoButton({ label }) {
+export function CoverPhotoButton({ label, onDrop }) {
   const theme = useTheme();
 
   return (
@@ -156,7 +170,7 @@ export function CoverPhotoButton({ label }) {
         },
       }}
     >
-      <input hidden accept="image/*" type="file" />
+      <input hidden onChange={(e) => onDrop([e.target.files[0]])} accept="image/*" type="file" />
       {label}
     </Button>
   );

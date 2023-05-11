@@ -1,8 +1,11 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import { ReactComponent as SupremeIcon } from '../../../../assets/icons/shop-settings-icons/supreme.svg';
+import StyledFormField from '../../../../components/Form/StyledFormField';
 import { ShopAction2 } from '../ShopAction/ShopAction2';
 
-export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMethod, options, ...props }) {
+//
+
+export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMethod, options, isInput, ...props }) {
   const theme = useTheme();
   console.log(buttonType);
 
@@ -37,6 +40,22 @@ export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMe
         <Box>
           <ShopAction2 options={options} {...props} />
         </Box>
+      )}
+      {isInput && (
+        <StyledFormField
+          intputType="select"
+          containerProps={{
+            sx: props?.fieldContainerSx,
+          }}
+          inputProps={{
+            name: 'shopStatus',
+            value: props?.value,
+            items: options,
+            //   items: categories,
+            onChange: (e) => props.action(e.target.value),
+            //   readOnly: Boolean(newProductCategory) || productReadonly,
+          }}
+        />
       )}
     </Box>
   );

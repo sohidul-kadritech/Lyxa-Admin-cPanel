@@ -11,7 +11,8 @@ export default function AppPagination({ totalPage, lisener, currentPage }) {
         onChange={(event, value) => {
           lisener(value);
         }}
-        shape="rounded"
+        shape="circular"
+        variant="outlined"
       />
     </Stack>
   );

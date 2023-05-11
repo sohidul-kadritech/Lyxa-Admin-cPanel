@@ -1,19 +1,16 @@
 import { ArrowDownward, ArrowForward } from '@mui/icons-material';
 import { Box, Button, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import TabPanel from '../../components/Common/TabPanel';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
-import * as API_URL from '../../network/Api';
-import AXIOS from '../../network/axios';
 import { createShopData, validateEditedData } from './helper';
 
-function EditShop({ onClose, shopData, loading }) {
+function EditShop({ onClose, shopData, loading, editShopData }) {
   // Style
   // const [newLoading, setNewLoading] = useState(loading);
-  console.log('shopData; ', shopData);
+  // console.log('shopData; ', shopData);
   const fieldContainerSx = {
     padding: '14px 0',
   };
@@ -39,29 +36,19 @@ function EditShop({ onClose, shopData, loading }) {
   ];
 
   //   const getShopData = useQueries(()=>)
-  const queryClient = useQueryClient();
+
   const [editedData, setEditedData] = useState(shopData);
 
   // eslint-disable-next-line no-unused-vars
   const [currentTab, setCurrentTab] = useState(0);
 
-  const editShopData = useMutation((data) => AXIOS.post(API_URL.EDIT_SHOP, data), {
-    onSuccess: (data, arg) => {
-      console.log(data, 'arg: ', arg, 'api: ', API_URL.EDIT_SHOP);
-      if (data?.status) {
-        console.log('updated or not: ', data);
-        successMsg('Successfully Updated', 'success');
-        queryClient.invalidateQueries('get-single-shop-data');
-        onClose();
-      }
-    },
-  });
-
   const editedDataOnChangeHandler = (e) => {
-    if (e.target.name !== 'address') {
-      setEditedData({ ...editedData, [e.target.name]: e.target.value });
-    } else {
+    if (e.target.name === 'pin') {
+      setEditedData({ ...editedData, address: { ...editedData.address, pin: e.target.value } });
+    } else if (e.target.name === 'address') {
       setEditedData({ ...editedData, address: { ...editedData.address, address: e.target.value } });
+    } else {
+      setEditedData({ ...editedData, [e.target.name]: e.target.value });
     }
     console.log('edited data; ', editedData);
   };
@@ -74,7 +61,7 @@ function EditShop({ onClose, shopData, loading }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-			})
+      }),
     );
     console.log(newFiles);
     setEditedData((prev) => ({
@@ -88,7 +75,7 @@ function EditShop({ onClose, shopData, loading }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-			})
+      }),
     );
     console.log(newFiles);
     setEditedData((prev) => ({
@@ -135,16 +122,10 @@ function EditShop({ onClose, shopData, loading }) {
             label="Details"
             sx={tabSx}
             onClick={() => {
-              document?.getElementById('add-product-details')?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+              setCurrentTab(0);
             }}
           />
-          <Tab
-            label="Bangking"
-            sx={tabSx}
-            onClick={() => {
-              document?.getElementById('add-product-features')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          />
+          <Tab label="Bangking" sx={tabSx} />
         </Tabs>
       </Box>
       {!loading && (
@@ -159,21 +140,21 @@ function EditShop({ onClose, shopData, loading }) {
             >
               {/* shop name */}
               <StyledFormField
-                label="Shop Name"
+                label="Shop Name *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.shopName,
+                  value: editedData?.shopName,
                   type: 'text',
                   name: 'shopName',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* email */}
               <StyledFormField
-                label="E-mail"
+                label="E-mail *"
                 intputType="text"
                 containerProps={{
                   sx: {
@@ -181,72 +162,72 @@ function EditShop({ onClose, shopData, loading }) {
                   },
                 }}
                 inputProps={{
-                  defaultValue: editedData?.email,
-                  type: 'email',
+                  value: editedData?.email,
+                  type: 'email *',
                   name: 'email',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                   autoComplete: 'off',
                 }}
               />
               {/* password */}
               <StyledFormField
-                label="Password"
+                label="Password *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: '',
-                  type: 'password',
+                  value: editedData?.password,
+                  type: 'password *',
                   name: 'password',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* password */}
               <StyledFormField
-                label="Phone Number"
+                label="Phone Number *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.phone_number,
+                  value: editedData?.phone_number,
                   type: 'text',
                   name: 'phone_number',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* address */}
               <StyledFormField
-                label="Address"
+                label="Address *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.address?.address,
+                  value: editedData?.address?.address,
                   type: 'text',
                   name: 'address',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* zip code */}
               <StyledFormField
-                label="Zip Code"
+                label="Zip Code *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.zip_code,
+                  value: editedData?.address?.pin,
                   type: 'text',
-                  name: 'zip_code',
-                  onBlur: editedDataOnChangeHandler,
+                  name: 'pin',
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
 
               <StyledFormField
-                label="Shop Logo"
+                label="Shop Logo *"
                 intputType="file"
                 containerProps={{
                   sx: fieldContainerSx,
@@ -266,7 +247,7 @@ function EditShop({ onClose, shopData, loading }) {
                 }}
               />
               <StyledFormField
-                label="Shop Banner"
+                label="Shop Banner *"
                 intputType="file"
                 containerProps={{
                   sx: fieldContainerSx,
@@ -283,7 +264,7 @@ function EditShop({ onClose, shopData, loading }) {
                 }}
               />
               <StyledFormField
-                label="Status"
+                label="Status *"
                 intputType="select"
                 containerProps={{
                   sx: fieldContainerSx,
@@ -308,16 +289,16 @@ function EditShop({ onClose, shopData, loading }) {
             >
               {/* bank name */}
               <StyledFormField
-                label="Bank Name"
+                label="Bank Name *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.bank_name,
+                  value: editedData?.bank_name,
                   type: 'text',
                   name: 'bank_name',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* Account Holder’s Full Name/Name of Enterprise  */}
@@ -330,68 +311,68 @@ function EditShop({ onClose, shopData, loading }) {
                   },
                 }}
                 inputProps={{
-                  defaultValue: editedData?.account_name,
+                  value: editedData?.account_name,
                   type: 'text',
                   name: 'account_name',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                   autoComplete: 'off',
                 }}
               />
 
-              {/* password */}
+              {/* Address */}
               <StyledFormField
-                label="Address"
+                label="Address *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.bank_address,
+                  value: editedData?.bank_address,
                   type: 'text',
                   name: 'bank_address',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* postal code */}
               <StyledFormField
-                label="Postal Code"
+                label="Postal Code *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.bank_postal_code,
+                  value: editedData?.bank_postal_code,
                   type: 'text',
                   name: 'bank_postal_code',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* IBAN */}
               <StyledFormField
-                label="Account Nr / IBAN"
+                label="Account Nr / IBAN *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.account_number,
+                  value: editedData?.account_number,
                   type: 'text',
                   name: 'account_number',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
               {/* zip code */}
               <StyledFormField
-                label="SWIFT"
+                label="SWIFT *"
                 intputType="text"
                 containerProps={{
                   sx: fieldContainerSx,
                 }}
                 inputProps={{
-                  defaultValue: editedData?.account_swift,
+                  value: editedData?.account_swift,
                   type: 'text',
                   name: 'account_swift',
-                  onBlur: editedDataOnChangeHandler,
+                  onChange: editedDataOnChangeHandler,
                 }}
               />
             </TabPanel>
