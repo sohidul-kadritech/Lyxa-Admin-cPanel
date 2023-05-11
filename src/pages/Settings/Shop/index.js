@@ -291,7 +291,7 @@ function ShopSettings() {
                 width: '250px',
               }}
               buttonType={2}
-              title="Maximum Order Amount"
+              title="Change Maximum Discount"
               // title2=""
               value={newMaxDiscount}
               options={maxDeliveryOptions}
