@@ -1,26 +1,15 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Drawer, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import StyledTable from '../../components/Styled/StyledTable3';
+import OrderDetail from './OrderDetail';
 import TableDataPagination from './TableDataPagination';
 
-function FlaggedViews({
-  // flaggedData = [
-  //   { _id: 1, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 2, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 3, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 4, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 5, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 6, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 7, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 8, comment: 'Satisfied', rating: 4.2 },
-  //   { _id: 9, comment: 'Satisfied', rating: 4.2 },
-  // ],
-  filteredData,
-  currentTab,
-}) {
+function FlaggedViews({ filteredData, currentTab }) {
   const [rowPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentOrderDetails, setCurrentOrderDetails] = useState(1);
+  const [open, setOpen] = useState(false);
 
   const columns = [
     {
@@ -30,7 +19,17 @@ function FlaggedViews({
       field: 'orderId',
       sortable: false,
       minWidth: 270,
-      renderCell: ({ value }) => <Typography>{value?._id}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography
+          sx={{ cursor: 'pointer' }}
+          onClick={() => {
+            setCurrentOrderDetails(value);
+            setOpen(true);
+          }}
+        >
+          {value?.orderId}
+        </Typography>
+      ),
     },
     {
       showFor: ['Flagged', 'Reviews'],
@@ -78,10 +77,9 @@ function FlaggedViews({
             .map((row) => row)}
           getRowId={(row) => row?._id}
           rowHeight={71}
-          // onRowClick={onRowClick}
           sx={{
             '& .MuiDataGrid-row': {
-              cursor: 'pointer',
+              cursor: 'default',
             },
           }}
           components={{
@@ -100,6 +98,10 @@ function FlaggedViews({
         }}
         totalPage={Math.ceil(filteredData.length / 5)}
       />
+
+      <Drawer open={open} anchor="right">
+        <OrderDetail order={currentOrderDetails} onClose={() => setOpen(false)} />
+      </Drawer>
     </>
   );
 }

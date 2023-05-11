@@ -9,8 +9,8 @@ import { createShopData, validateEditedData } from './helper';
 
 function EditShop({ onClose, shopData, loading, editShopData }) {
   // Style
-  // const [newLoading, setNewLoading] = useState(loading);
-  // console.log('shopData; ', shopData);
+  const [newLoading, setNewLoading] = useState(false);
+
   const fieldContainerSx = {
     padding: '14px 0',
   };
@@ -35,9 +35,7 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
     },
   ];
 
-  //   const getShopData = useQueries(()=>)
-
-  const [editedData, setEditedData] = useState(shopData);
+  const [editedData, setEditedData] = useState({ ...shopData, password: '' });
 
   // eslint-disable-next-line no-unused-vars
   const [currentTab, setCurrentTab] = useState(0);
@@ -50,20 +48,17 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
     } else {
       setEditedData({ ...editedData, [e.target.name]: e.target.value });
     }
-    console.log('edited data; ', editedData);
   };
 
   //   useEffect(() => {}, []);
 
   const onDrop = (acceptedFiles) => {
-    console.log('acceptedFiles: ', acceptedFiles);
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+			})
     );
-    console.log(newFiles);
     setEditedData((prev) => ({
       ...prev,
       shopLogo: newFiles?.length > 0 ? newFiles : prev.images,
@@ -75,7 +70,7 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+			})
     );
     console.log(newFiles);
     setEditedData((prev) => ({
@@ -87,12 +82,13 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
   const onSubmitShopUpdatedData = async () => {
     console.log('edted data: ', editedData);
     const isValid = validateEditedData(editedData);
-
+    setNewLoading(true);
     if (isValid?.status === false) {
       successMsg(isValid.msg);
+      setNewLoading(false);
       return;
     }
-
+    setNewLoading(true);
     const shopData = await createShopData(editedData);
     console.log('ShopData return', shopData);
     if (shopData?.status === false) {
@@ -394,12 +390,12 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={editShopData?.isLoading}
+                disabled={newLoading}
                 onClick={onSubmitShopUpdatedData}
                 startIcon={<ArrowDownward />}
                 fullWidth
               >
-                Save Changes
+                {!newLoading ? 'Save Changes' : 'Loading...'}
               </Button>
             )}
           </Box>

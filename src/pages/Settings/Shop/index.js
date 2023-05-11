@@ -16,7 +16,14 @@ import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import { successMsg } from '../../../helpers/successMsg';
-import { DeliverySettings, DietarySettings, PaymentInformationList, PriceRange, maxDeliveryOptions } from './helper';
+import {
+  DeliverySettings,
+  DietarySettings,
+  PaymentInformationList,
+  PriceRange,
+  createShopSettingsData,
+  maxDeliveryOptions,
+} from './helper';
 
 const boxSx2 = {
   padding: '32px 56px 21px 30px',
@@ -63,49 +70,14 @@ function ShopSettings() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const updateShopSettings = () => {
-    const data = {
-      id: shop?._id,
-      shopStartTime: shop?.shopStartTime,
-      shopEndTime: shop?.shopEndTime,
-      shopName: shop?.shopName,
-      password: '',
-      isCuisine: shop?.isCuisine,
-      maxDiscount: newMaxDiscount,
-      minOrderAmount: minimumOrder,
-      email: shop?.email,
-      phone_number: shop?.phone,
-      shopType: shop?.shopType,
-      shopLogo: shop?.shopLogo,
-      shopBanner: shop?.shopBanner,
-      shopStatus: shop?.shopStatus,
-      shopDescription: 'desrcriptions',
-      tags: shop?.tags,
-      tagsId: shop?.tagsId,
-      orderCapacity: shop?.orderCapacity,
-      paymentOption: newPayMentInformation,
-      dietary: newDietary,
-      liveStatus: shop?.liveStatus,
-      cuisineType: shop?.cuisinesList,
-      dietaryType: shop?.dietaryType,
-      expensive: newPriceRange,
-      deliveryType: shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
-      deliveryFee: shop?.deliveryFee,
-      shopAddress: {
-        address: shop?.address.address,
-        latitude: shop?.address.latitude,
-        longitude: shop?.address.longitude,
-        city: shop?.address.city,
-        state: shop?.address.state,
-        country: shop?.address.country,
-        placeId: shop?.address.placeId,
-        pin: shop?.address.pin,
-        primary: true,
-        note: shop?.address.note,
-      },
-      bank_name: shop?.bank_name,
-      account_name: shop?.account_name,
-      account_number: shop?.account_number,
-    };
+    const data = createShopSettingsData(
+      shop,
+      newMaxDiscount,
+      minimumOrder,
+      newPayMentInformation,
+      newDietary,
+      newPriceRange
+    );
     return Axios.post(Api.EDIT_SHOP, data);
   };
 
@@ -300,6 +272,7 @@ function ShopSettings() {
               // isMethod
             />
           </Box>
+
           <Stack
             direction="row"
             justifyContent="flex-end"

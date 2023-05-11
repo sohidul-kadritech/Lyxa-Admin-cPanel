@@ -152,10 +152,11 @@ export default function ShopProfile() {
 
   const options = ['Edit Shop', 'Access as Shop'];
 
+  // eslint-disable-next-line no-unused-vars
   const [sideBar, setSidebar] = useState('');
 
   const [open, setOpen] = useState(false);
-  console.log('====>', getShopData?.data?.data?.shop);
+
   const editShopData = useMutation((data) => AXIOS.post(API_URL.EDIT_SHOP, data), {
     onSuccess: (data) => {
       if (data?.status) {
@@ -181,25 +182,22 @@ export default function ShopProfile() {
     },
   });
 
-  console.log(sideBar);
   const theme = useTheme();
 
   const onDrop = async (acceptedFiles) => {
-    console.log('acceptedFiles: ', acceptedFiles);
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+			})
     );
-    console.log(newFiles);
-
+    successMsg('Please wait It may take time !');
     const shopData = await createShopData({
       ...getShopData?.data?.data?.shop,
+      password: '',
       shopBanner: newFiles,
       shopLogo: [{ preview: getShopData?.data?.data?.shop?.shopLogo }],
     });
-    console.log(shopData);
 
     if (shopData?.status === false) {
       successMsg(shopData?.msg);
@@ -209,31 +207,25 @@ export default function ShopProfile() {
   };
 
   const onDrop2 = async (acceptedFiles) => {
-    console.log('acceptedFiles: ', acceptedFiles);
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+			})
     );
-    console.log(newFiles);
-
+    successMsg('Please wait It may take time !');
     const shopData = await createShopData({
       ...getShopData?.data?.data?.shop,
+      password: '',
       shopLogo: newFiles,
       shopBanner: [{ preview: getShopData?.data?.data?.shop?.shopBanner }],
     });
-    console.log(shopData);
 
     if (shopData?.status === false) {
       successMsg(shopData?.msg);
     }
 
     editShopData.mutate({ ...shopData });
-    // setEditedData((prev) => ({
-    //   ...prev,
-    //   shopLogo: newFiles?.length > 0 ? newFiles : prev.images,
-    // }));
   };
   return (
     <>
@@ -401,7 +393,14 @@ export default function ShopProfile() {
                           }}
                         >
                           <AccessTime sx={{ width: '17px', height: '17px' }} />
-                          <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>30-40min</Typography>
+                          <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
+                            {getShopData?.data?.data?.shop?.avgOrderDeliveryTime < 30
+                              ? '30-40'
+                              : `${Math.ceil(getShopData?.data?.data?.shop?.avgOrderDeliveryTime)}-${
+                                  Math.ceil(getShopData?.data?.data?.shop?.avgOrderDeliveryTime) + 10
+                                }`}
+                            min
+                          </Typography>
                         </Box>
                         {getShopData?.data?.data?.shop?.rewardSystem !== 'off' && (
                           <Box
@@ -509,7 +508,7 @@ export default function ShopProfile() {
                   desc={TagsAndCuisines(
                     getShopData?.data?.data?.shop?.tagsId,
                     // eslint-disable-next-line prettier/prettier
-                    getShopData?.data?.data?.shop?.cuisineType,
+										getShopData?.data?.data?.shop?.cuisineType
                   )}
                   Icon={TagIcon}
                 />
@@ -518,7 +517,7 @@ export default function ShopProfile() {
                   desc={AverageOrderValue(
                     getShopData?.data?.data?.shop?.orderValue?.productAmount,
                     // eslint-disable-next-line prettier/prettier
-                    getShopData?.data?.data?.shop?.orderValue?.count,
+										getShopData?.data?.data?.shop?.orderValue?.count
                   )}
                   Icon={AverageIcon}
                 />

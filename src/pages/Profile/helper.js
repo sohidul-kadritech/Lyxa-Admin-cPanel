@@ -1,6 +1,12 @@
-import { Button, useTheme } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
+
+export function convertTime(timeString) {
+  const hours = timeString.slice(0, 2);
+  const minutes = timeString.slice(2, 4);
+  return `${hours}:${minutes}`;
+}
 
 export const createShopData = async (shopData) => {
   const img_url_logo = await getImageUrl(shopData.shopLogo[0]);
@@ -19,16 +25,14 @@ export const createShopData = async (shopData) => {
     };
   }
 
-  console.log(img_url_logo, ' image logo and banner', img_url_banner);
-
   shopData.shopAddress = shopData.address;
   delete shopData.address;
 
   return {
     //
     id: shopData?._id,
-    shopStartTime: shopData?.shopStartTime,
-    shopEndTime: shopData?.shopEndTime,
+    shopStartTime: convertTime(shopData?.shopStartTime),
+    shopEndTime: convertTime(shopData?.shopEndTime),
     shopName: shopData?.shopName,
     email: shopData?.email,
     password: shopData?.password,
@@ -57,6 +61,7 @@ export const createShopData = async (shopData) => {
     shopBanner: img_url_banner,
   };
 };
+
 export function validateEditedData(shopData) {
   const status = {
     status: false,
@@ -173,5 +178,26 @@ export function CoverPhotoButton({ label, onDrop }) {
       <input hidden onChange={(e) => onDrop([e.target.files[0]])} accept="image/*" type="file" />
       {label}
     </Button>
+  );
+}
+
+export function StyledOrderDetailBox({ title, children }) {
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        border: `1px solid ${theme.palette.custom.border}`,
+        borderRadius: '10px',
+        padding: '12px 16px',
+      }}
+    >
+      {title && (
+        <Typography variant="body4" display="block" pb={2} fontWeight={600}>
+          {title}
+        </Typography>
+      )}
+      {children}
+    </Box>
   );
 }

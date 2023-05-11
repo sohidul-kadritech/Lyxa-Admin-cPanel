@@ -110,6 +110,7 @@ export const getOrderProfit = (order) => {
   return totalAmount - order?.dropCharge?.dropChargeFromOrder;
 };
 
+// Order Details Handling
 export function StyledOrderDetailBox({ title, children }) {
   const theme = useTheme();
 
