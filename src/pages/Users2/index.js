@@ -35,7 +35,7 @@ function Users2() {
     'get-shop-credentials',
     () =>
       // eslint-disable-next-line prettier/prettier
-			AXIOS.get(`${API_URL.GET_SHOP_CREDENTIALS}?id=${shop._id}`),
+      AXIOS.get(`${API_URL.GET_SHOP_CREDENTIALS}?id=${shop._id}`),
     {
       onSuccess: (data) => {
         if (data?.status) {
@@ -48,7 +48,7 @@ function Users2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-		}
+    },
   );
 
   const closeEditSidebar = () => setIsEditOpen(false);
@@ -88,7 +88,7 @@ function Users2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-		}
+    },
   );
 
   const DeleteUser = useMutation((data) => AXIOS.post(API_URL.REMOVE_SHOP_CREDENTIAL, data), {
@@ -114,9 +114,9 @@ function Users2() {
           (user) =>
             user?.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
             // eslint-disable-next-line prettier/prettier
-						user?.email.toLowerCase().includes(e.target.value.toLowerCase())
+            user?.email.toLowerCase().includes(e.target.value.toLowerCase()),
           // eslint-disable-next-line prettier/prettier
-				)
+        ),
       );
     } else if (e.target.value === '') {
       setSearchFilteredData([
