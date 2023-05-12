@@ -13,6 +13,7 @@ import PageLoader from './PageLoader';
 import {
   checkedInit,
   couponDiscountTypeOptions,
+  couponShopTypeOptions,
   couponTypeToTitleMap,
   createCouponUploaData,
   getCouponEditdData,
@@ -26,6 +27,8 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
   const [coupon, setCoupon] = useState(editCoupon?._id ? getCouponEditdData(editCoupon) : getCouponInit(couponType));
   const [checked, setChecked] = useState(editCoupon?._id ? getEditCouponChecked(editCoupon) : { ...checkedInit });
+
+  console.log(editCoupon);
 
   // handlers
   const commonChangeHandler = (e) => {
@@ -62,6 +65,35 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       },
     })
   );
+
+  // admins query
+  // const adminsQuery = useQuery([Api.GET_ALL_ADMIN], () => AXIOS.get(Api.GET_ALL_ADMIN), {
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //   },
+  // });
+
+  // const adminsList = useMemo(() => {
+  //   const options = [];
+  //   adminsQuery?.data?.data?.Admins?.forEach((admin) => {
+  //     if (admin?.adminType === 'admin') {
+  //       options.push({ value: admin?._id, label: admin?.name });
+  //     }
+  //   });
+
+  //   return options;
+  // }, [adminsQuery?.data]);
+
+  // const adminsList = useMemo(
+  //   () =>
+  //     // const options = [];
+  //     adminsQuery?.data?.data?.Admins?.filter((admin) => admin?.adminType === 'admin'),
+
+  //   // return options;
+  //   [adminsQuery?.data]
+  // );
+
+  // console.log(adminsList);
 
   // coupon add
   const couponMutation = useMutation(
@@ -142,7 +174,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               intputType="autocomplete"
               inputProps={{
                 maxHeight: '300px',
-                options: usersQuery?.data?.data?.users,
+                options: usersQuery?.data?.data?.users || [],
                 value: (coupon?.couponUsers && coupon?.couponUsers[0]) || null,
                 isOptionEqualToValue: (option, value) => option?._id === value?._id,
                 getOptionLabel: (option) => option?.name,
@@ -155,6 +187,27 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               }}
             />
           )}
+          {/* cupon influencer */}
+          {couponType === 'custom_coupon' && (
+            <StyledFormField
+              label="Influencer Name"
+              intputType="autocomplete"
+              inputProps={{
+                maxHeight: '300px',
+                options: usersQuery?.data?.data?.users || [],
+                value: coupon?.couponInfluencer || null,
+                isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                getOptionLabel: (option) => option?.name,
+                sx: {
+                  flex: 1,
+                },
+                onChange: (e, v) => {
+                  setCoupon((prev) => ({ ...prev, couponInfluencer: v }));
+                },
+              }}
+            />
+          )}
+
           {/* type */}
           <StyledFormField
             label="Type"
@@ -275,7 +328,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               onToggle: (event) => commonCheckHandler(event, 'couponMinimumOrderValue'),
             }}
           />
-
           {/* store */}
           {couponType === 'individual_store' && (
             <StyledFormField
@@ -296,7 +348,58 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               }}
             />
           )}
-
+          {/* type */}
+          {couponType === 'custom_coupon' && (
+            <StyledFormField
+              label="Shop Category"
+              intputType="autocomplete"
+              inputProps={{
+                multiple: true,
+                maxHeight: '150px',
+                disabled: __loading,
+                options: couponShopTypeOptions,
+                value: coupon.couponShopTypes || [],
+                label: 'Choose',
+                getOptionLabel: (option) => option?.label,
+                isOptionEqualToValue: (option, value) => option?.value === value?.value,
+                getTagKey: (item) => item?.value,
+                onChange: (e, v) => {
+                  setCoupon((prev) => ({ ...prev, couponShopTypes: v.map((item) => item) }));
+                },
+                sx: {
+                  '& .MuiFormControl-root': {
+                    minWidth: '100px',
+                  },
+                },
+              }}
+            />
+          )}
+          {/* multiple shops */}
+          {couponType === 'custom_coupon' && !coupon?.couponShopTypes?.length && (
+            <StyledFormField
+              label="Custom Shops"
+              intputType="autocomplete"
+              inputProps={{
+                multiple: true,
+                maxHeight: '110px',
+                disabled: __loading,
+                options: shopsOptions,
+                value: coupon?.couponShops || [],
+                label: 'Choose',
+                getOptionLabel: (option) => option?.shopName,
+                isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                getTagKey: (item) => item?._id,
+                onChange: (e, v) => {
+                  setCoupon((prev) => ({ ...prev, couponShops: v.map((item) => item) }));
+                },
+                sx: {
+                  '& .MuiFormControl-root': {
+                    minWidth: '100px',
+                  },
+                },
+              }}
+            />
+          )}
           {/* submit */}
           <Box pt={20} pb={6}>
             <Button

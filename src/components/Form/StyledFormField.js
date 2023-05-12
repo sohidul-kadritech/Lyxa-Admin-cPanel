@@ -170,6 +170,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
               }
               return (
                 <StyledChip
+                  console={console.log(item)}
                   key={inputProps.getTagKey?.(item) || item?._id}
                   label={inputProps?.getOptionLabel(item) || item?.name}
                   size="lg"

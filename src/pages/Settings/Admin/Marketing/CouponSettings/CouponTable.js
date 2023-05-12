@@ -2,7 +2,7 @@
 // project import
 import { Edit } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -20,6 +20,7 @@ import { getFormatedDuration } from './helpers';
 export default function CouponTable({ rows = [], onEdit, couponType }) {
   const queryClient = useQueryClient();
   const history = useHistory();
+  const theme = useTheme();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [currentCoupon, setCurrentCoupon] = useState({});
@@ -77,16 +78,20 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
       align: 'left',
       headerAlign: 'left',
       minWidth: 180,
-      renderCell: ({ row }) => (
-        <Stack gap={1.5}>
-          <Typography variant="body4">
-            {getFormatedDuration(row?.couponDuration?.start, row?.couponDuration?.end)}
-          </Typography>
-          <Typography variant="body4" color="#737373">
-            {getFormatedDuration(moment(), row?.couponDuration?.end)} left
-          </Typography>
-        </Stack>
-      ),
+      renderCell: ({ row }) => {
+        const timeLeft = getFormatedDuration(moment(), row?.couponDuration?.end);
+
+        return (
+          <Stack gap={1.5}>
+            <Typography variant="body4">
+              {getFormatedDuration(row?.couponDuration?.start, row?.couponDuration?.end)}
+            </Typography>
+            <Typography variant="body4" color={timeLeft ? '#737373' : theme.palette.error.main}>
+              {timeLeft ? `${timeLeft} left` : 'expired'}
+            </Typography>
+          </Stack>
+        );
+      },
     },
     {
       id: 4,

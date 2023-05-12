@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { deepClone } from '../../../../../../helpers/deepClone';
 
 export const couponTypeToTitleMap = {
   global: 'Global',
@@ -24,12 +25,19 @@ export const getCouponInit = (couponType) => ({
   couponInfluencer: couponType === 'custom_coupon' ? '' : undefined,
   couponUsers: [],
   couponShops: [],
+  couponShopTypes: couponType === 'custom_coupon' ? [] : undefined,
 });
 
 export const couponDiscountTypeOptions = [
   { label: 'Amount', value: 'fixed' },
   { label: 'Percentage', value: 'percentage' },
   { label: 'Free delivery', value: 'free_delivery' },
+];
+
+export const couponShopTypeOptions = [
+  { label: 'Resturant', value: 'food' },
+  { label: 'Grocery', value: 'grocery' },
+  { label: 'Pharmacy', value: 'pharmacy' },
 ];
 
 export const checkedInit = {
@@ -44,16 +52,6 @@ export const validateCoupon = (coupon, couponType) => {
     status: false,
     message: '',
   };
-
-  // if (!coupon?.couponType) {
-  //   error.message = 'Coupon type is empty!';
-  //   return error;
-  // }
-
-  // if (!coupon?.couponStatus) {
-  //   error.message = 'Coupon status is empty!';
-  //   return error;
-  // }
 
   if (!coupon?.couponName?.trim()) {
     error.message = 'Coupon name cannot be empty!';
@@ -84,15 +82,22 @@ export const validateCoupon = (coupon, couponType) => {
     }
   }
 
-  // if (!coupon?.couponDuration && coupon?.couponDiscountType !== 'free_delivery') {
-  //   error.message = 'Coupon value cannot be empty!';
-  //   return error;
-  // }
+  if (couponType === 'custom_coupon') {
+    if (!coupon?.couponInfluencer) {
+      error.message = 'Please select cuopon influencer';
+      return error;
+    }
+
+    if (!coupon?.couponShops?.length && !coupon?.couponShopTypes?.length) {
+      error.message = 'Must have cuopon shop category or custom shop!';
+      return error;
+    }
+  }
 
   return { status: true };
 };
 
-export const createCouponUploaData = (coupon, checked, couponType) => {
+export const createCouponUploaData = (coupon, checked) => {
   const { couponAmountLimit, couponUserLimit, couponOrderLimit, couponMinimumOrderValue } = coupon;
 
   const data = {
@@ -102,12 +107,13 @@ export const createCouponUploaData = (coupon, checked, couponType) => {
     couponMinimumOrderValue: checked.couponMinimumOrderValue ? couponMinimumOrderValue : 0,
   };
 
-  if (couponType === 'individual_store') {
-    data.couponShops = coupon?.couponShops?.map((shop) => shop?._id);
-  }
+  data.couponShops = coupon?.couponShops?.map((shop) => shop?._id);
+  data.couponUsers = coupon?.couponUsers?.map((shop) => shop?._id);
+  data.couponInfluencer = coupon.couponInfluencer?._id;
 
-  if (couponType === 'individual_user') {
-    data.couponShops = coupon?.couponUsers?.map((shop) => shop?._id);
+  if (coupon?.couponShopTypes?.length) {
+    data.couponShopTypes = coupon?.couponShopTypes?.map((item) => item?.value);
+    data.couponShops = [];
   }
 
   return {
@@ -116,7 +122,14 @@ export const createCouponUploaData = (coupon, checked, couponType) => {
   };
 };
 
-export const getCouponEditdData = (editCoupon) => editCoupon;
+export const getCouponEditdData = (editCoupon) => {
+  const coupon = deepClone(editCoupon);
+  coupon.couponShopTypes = coupon.couponShopTypes?.map((type) =>
+    couponShopTypeOptions.find((item) => item?.value === type)
+  );
+  // console.log('==========>', coupon);
+  return coupon;
+};
 
 export const getEditCouponChecked = (editCoupon) => {
   const checked = { ...checkedInit };

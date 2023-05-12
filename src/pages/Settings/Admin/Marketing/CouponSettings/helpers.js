@@ -50,50 +50,44 @@ export const getFormatedDuration = (start, end) => {
   const endDate = moment(end);
 
   // Calculate the difference between dates in days
-  const duration = moment.duration(endDate.diff(startDate));
+  const duration = moment.duration(endDate.add(1, 's').diff(startDate));
 
   // Convert days into months, weeks, and days
   const months = Math.floor(duration.asMonths());
   const weeks = Math.floor(duration.asWeeks()) % 4;
-  let days = Math.floor(duration.asDays()) % 7;
+  const days = Math.floor(duration.asDays()) % 7;
   const hours = Math.floor(duration.asHours()) % 24;
   const minutes = Math.floor(duration.asMinutes()) % 60;
 
-  // Build a string that represents the duration
-  let durationStr = '';
+  const durationArr = [];
 
-  if (months) {
-    durationStr = `${months} month${months === 1 ? '' : 's'}`;
-
-    if (weeks) {
-      durationStr += ` ${weeks} week${weeks === 1 ? '' : 's'}`;
-    }
-
-    return durationStr;
+  if (months > 0) {
+    durationArr.push(`${months} month${months === 1 ? '' : 's'}`);
   }
 
-  if (weeks) {
-    durationStr += ` ${weeks} week${weeks === 1 ? '' : 's'}`;
-    days = Math.ceil(duration.asDays()) % 7;
-
-    if (days) {
-      durationStr += ` ${days} day${days === 1 ? '' : 's'}`;
-    }
-
-    return durationStr;
+  if (weeks > 0) {
+    durationArr.push(`${weeks} week${weeks === 1 ? '' : 's'}`);
+    if (durationArr.length === 2) return durationArr.join(' ');
   }
 
-  if (days || hours) {
-    if (days) {
-      durationStr += ` ${days} day${days === 1 ? '' : 's'}`;
-    }
-
-    if (hours) {
-      durationStr += ` ${hours} hour${hours === 1 ? '' : 's'}`;
-    }
-
-    return durationStr;
+  if (days > 0) {
+    durationArr.push(`${days} day${days === 1 ? '' : 's'}`);
+    if (durationArr.length === 2) return durationArr.join(' ');
   }
 
-  return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+  if (hours > 0) {
+    durationArr.push(`${hours} hour${hours === 1 ? '' : 's'}`);
+    if (durationArr.length === 2) return durationArr.join(' ');
+  }
+
+  if (minutes > 0) {
+    durationArr.push(`${minutes} minute${minutes === 1 ? '' : 's'}`);
+    if (durationArr.length === 2) return durationArr.join(' ');
+  }
+
+  if (durationArr.length === 0) {
+    return null;
+  }
+
+  return durationArr.join(' ');
 };
