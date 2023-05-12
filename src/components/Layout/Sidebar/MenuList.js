@@ -1,11 +1,21 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 
-export default function MenuList({ menuList }) {
+// eslint-disable-next-line no-unused-vars
+const variantToItemStylesMap = {
+  dark: {
+    color: '#363636',
+  },
+  light: {
+    color: '#fff',
+  },
+};
+
+export default function MenuList({ menuList, variant }) {
   return (
     <Box>
       <Typography
-        variant="body3"
+        variant="inherit"
         sx={{
           fontWeight: '500',
           fontSize: '12px',
@@ -13,7 +23,7 @@ export default function MenuList({ menuList }) {
           paddingLeft: '30px',
           paddingTop: '28px',
           paddingBottom: '8px',
-          color: '#fff!important',
+          color: variant === 'parent' ? '#363636' : 'white',
           letterSpacing: '0.05em',
           textTransform: 'uppercase',
           display: 'block',
@@ -23,17 +33,9 @@ export default function MenuList({ menuList }) {
       </Typography>
       <Stack>
         {menuList?.menu?.map(({ to, icon: Icon, label }, index) => (
-          <NavLink to={to} exact key={index} className={() => `sidebar-menu-item`}>
+          <NavLink to={to} exact key={index} className={() => `sidebar-menu-item ${variant}`}>
             {Icon && <Icon />}
-            <Typography
-              variant="body2"
-              sx={{
-                color: '#fff',
-                fontWeight: '400',
-              }}
-            >
-              {label}
-            </Typography>
+            <span>{label}</span>
           </NavLink>
         ))}
       </Stack>
