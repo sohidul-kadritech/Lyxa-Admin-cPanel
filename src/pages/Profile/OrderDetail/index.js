@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import CloseButton from '../../../components/Common/CloseButton';
 import TabPanel from '../../../components/Common/TabPanel';
 import DeliveryDetails from './DeliveryDetails';
-import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
 import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
@@ -110,9 +109,9 @@ export default function OrderDetail({ order, onClose }) {
           }}
         >
           <Stack gap={5}>
-            {order?.flag?.length ? <OrderIssues flags={order?.flag} /> : null}
+            {/* {order?.flag?.length ? <OrderIssues flags={order?.flag} /> : null} */}
             <OrderTimeline orderTimeline={order?.timeline} />
-            <DeliveryDetails deliveryDetails={order?.dropOffLocation} />
+            <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
             {order?.orderFor === 'global' && order?.deliveryBoy && (
               <Rider rider={order?.deliveryBoy} isDelivered={order?.orderStatus === 'delivered'} />
             )}

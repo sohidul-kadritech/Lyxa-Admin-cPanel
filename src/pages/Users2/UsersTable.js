@@ -90,12 +90,6 @@ function UsersTable({ data, loading, isConfirm, isEditOpen, ...props }) {
     props.RemoveUserHandler({ shopId: id });
   };
 
-  // useEffect(() => {
-  //   if (loading === false) {
-  //     setOpen(false);
-  //   }
-  // }, [loading]);
-
   return (
     <Box>
       <TableContainer

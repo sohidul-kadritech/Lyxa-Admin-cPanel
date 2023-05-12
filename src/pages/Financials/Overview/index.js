@@ -23,6 +23,14 @@ const dateRangeItit = {
   end: moment().format('YYYY-MM-DD'),
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
+
+export function calculateDateDifference(date1, date2, unit) {
+  const momentDate1 = moment(date1);
+  const momentDate2 = moment(date2);
+  const difference = momentDate2.diff(momentDate1, unit);
+  return difference;
+}
+
 export default function Overview() {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency);
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
@@ -33,9 +41,10 @@ export default function Overview() {
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_SUMMARY, {
         params: { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
-
+  console.log('shopDashBoard: ', shopDashboardQuery.data?.data?.summary);
   // order amount graph
   const marketingSpentAmount =
     shopDashboardQuery?.data?.data?.summary?.orderValue?.totalDiscount +
@@ -76,21 +85,37 @@ export default function Overview() {
         value={`${currency?.symbol_native} ${
           Math.round(
             shopDashboardQuery?.data?.data?.summary?.orderValue?.deliveryFee +
-              shopDashboardQuery?.data?.data?.summary?.toalShopProfile
+              // eslint-disable-next-line prettier/prettier
+              shopDashboardQuery?.data?.data?.summary?.toalShopProfile,
           ) || 0
         }`}
-        Tag={<IncreaseDecreaseTag status="increase" amount="29%" />}
+        Tag={
+          <IncreaseDecreaseTag
+            status={`${
+              Math.round(
+                shopDashboardQuery?.data?.data?.summary?.orderValue?.deliveryFee +
+                  // eslint-disable-next-line prettier/prettier
+                  shopDashboardQuery?.data?.data?.summary?.toalShopProfile,
+              ) >= 0
+                ? 'increase'
+                : 'decrement'
+            }`}
+            amount={`29% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+          />
+        }
         sm={6}
         md={4}
         lg={4}
       />
       <InfoCard
         title="Orders"
-        value={`${
-          shopDashboardQuery?.data?.data?.summary?.totalCancelOrder +
-            shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder || 0
-        }`}
-        Tag={<IncreaseDecreaseTag status="increase" amount="11%" />}
+        value={`${shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder || 0}`}
+        Tag={
+          <IncreaseDecreaseTag
+            status={shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder >= 0 ? 'increase' : 'decrement'}
+            amount={`11% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+          />
+        }
         sm={6}
         md={4}
         lg={4}
@@ -99,7 +124,12 @@ export default function Overview() {
         title="Marketing Spent"
         isDropdown
         value={`${currency?.symbol_native} ${marketingSpentAmount || 0}`}
-        Tag={<IncreaseDecreaseTag status="decrement" amount="9%" />}
+        Tag={
+          <IncreaseDecreaseTag
+            status={marketingSpentAmount >= 0 ? 'increase' : 'decrement'}
+            amount={`9% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+          />
+        }
         sm={6}
         md={4}
         lg={4}

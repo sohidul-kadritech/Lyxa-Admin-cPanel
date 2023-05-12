@@ -11,6 +11,7 @@ const generateData = (data) => {
   const points = [];
   const doubleDeal = [];
   const freeDelivery = [];
+  const featureAmount = [];
   const date = [];
   // const featured = [];
 
@@ -20,10 +21,11 @@ const generateData = (data) => {
     points.push(node?.totalRewardAmount);
     doubleDeal.push(node?.totalDoubleMenuItemPrice);
     freeDelivery.push(node?.freeDeliveryShopCut);
+    featureAmount.push(node?.totalFeaturedAmount);
     console.log(node);
   });
 
-  return { discount, points, doubleDeal, freeDelivery, date };
+  return { discount, points, doubleDeal, freeDelivery, featureAmount, date };
 };
 
 const dateRangeItit = {
@@ -39,8 +41,11 @@ export default function MarketingSpentChart() {
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
         params: { startDate: range.start, endDate: range.end, type: 'normal' },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
+
+  console.log('marketing data: ', marketingSpentQuery?.data?.data);
 
   const chartdata = generateData(marketingSpentQuery?.data?.data?.info);
 
@@ -72,6 +77,13 @@ export default function MarketingSpentChart() {
         label: 'Free Delivery',
         data: chartdata.freeDelivery,
         borderColor: 'rgba(255, 176, 23, 1)',
+        backgroundColor: 'rgba(21, 191, 202, 0)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Featured',
+        data: chartdata.featureAmount,
+        borderColor: 'rgba(76, 153, 0, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },
