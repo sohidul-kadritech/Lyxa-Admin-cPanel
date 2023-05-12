@@ -28,6 +28,7 @@ export default function NewOrders() {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, shop: shop?._id });
   const [currentTab, setCurrentTab] = useState(0);
 
+  console.log('currentOrder: ', currentOrder);
   const ordersQuery = useQuery(
     ['single-shop-orders', { ...queryParams }],
     () =>
@@ -38,7 +39,8 @@ export default function NewOrders() {
       onSuccess: (data) => {
         console.log(data);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
