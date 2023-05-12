@@ -284,10 +284,40 @@ input[type='number'] {
   align-items: center;
   gap: 11px;
 
-  &:hover,
-  &.active {
+  & > span {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  &.child:hover,
+  &.child.active {
     background-color: rgba(255, 255, 255, 0.2);
     border-color: #fff !important;
+  }
+
+  &.child {
+    & > span {
+      color: white;
+    }
+    & > svg {
+      color: white;
+    }
+  }
+
+  &.parent:hover,
+  &.parent.active {
+    background-color: rgba(177, 177, 177, 0.2);
+    border-color: #dd5b63 !important;
+  }
+
+  &.parent {
+    & > span {
+      color: #363636;
+    }
+    & > svg {
+      color: #363636;
+    }
   }
 }
 
