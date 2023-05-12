@@ -12,10 +12,11 @@ function AddRemoveCredit({ userType, id, dropAmount, userAmount }) {
 
   const [amount, setAmount] = useState('');
   const [typeOfCredit, setTypeOfCredit] = useState('');
+  const [desc, setDesc] = useState('');
 
   const submitData = () => {
     if (userType === 'shop') {
-      dispatch(shopAddRemoveCredit({ shopId: id, amount, type: typeOfCredit }));
+      dispatch(shopAddRemoveCredit({ shopId: id, amount, type: typeOfCredit, desc }));
     }
   };
 
@@ -64,6 +65,17 @@ function AddRemoveCredit({ userType, id, dropAmount, userAmount }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           required
+        />
+        <TextField
+          style={{ width: '100%' }}
+          id="outlined-basic"
+          label="Description"
+          type="text"
+          variant="outlined"
+          placeholder="Enter description"
+          className="mt-2"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
         />
         <div className="mt-3 d-flex justify-content-end">
           <Button type="submit" color="success" disabled={loading}>

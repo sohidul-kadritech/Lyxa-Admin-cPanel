@@ -1,11 +1,12 @@
 // third party
-import { Box, Button, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Box, Button, Stack, Tab, Tabs, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 
 // project import
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
+import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import { shopTypeOptions2 } from '../../../assets/staticData';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
@@ -160,7 +161,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }
   );
 
-  console.log(isProductAddonQuery.data);
+  const productIsAddonMessage = `Product is used as  addon ${isProductAddonQuery?.data?.data?.products
+    ?.map((p, i) => `${i === 0 ? '' : ', '}${p?.name}`)
+    .join('')}. Products used as addon cannot have attributes.`;
+
+  console.log(productIsAddonMessage);
 
   // loading
   const __loading =
@@ -411,18 +416,22 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         <Box sx={fieldContainerSx} id="add-product-features">
           <StyledFormField
             label={
-              <span>
-                Attributes
+              <span
+                style={{
+                  color:
+                    editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon
+                      ? theme.palette.error.main
+                      : undefined,
+                }}
+              >
                 {editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon && (
-                  <span
-                    style={{
-                      color: theme.palette.error.main,
-                    }}
-                  >
-                    {' '}
-                    (Product is used as addon)
+                  <span>
+                    <Tooltip title={productIsAddonMessage}>
+                      <InfoIcon />
+                    </Tooltip>
                   </span>
-                )}
+                )}{' '}
+                Attributes
               </span>
             }
             intputType="optionsSelect"
