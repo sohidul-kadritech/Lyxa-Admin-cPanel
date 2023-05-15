@@ -62,7 +62,8 @@ export default function Customers() {
       onSuccess: (data) => {
         console.log(data);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
@@ -80,6 +81,7 @@ export default function Customers() {
               isActive={currentTab === 'total'}
               index="total"
               onClick={handleTabChange}
+              percentage={query?.data?.data?.totalCustomersPercentOfSales || 0}
             />
             <CustomerInfoCard
               title="New customers"
@@ -88,6 +90,7 @@ export default function Customers() {
               isActive={currentTab === 'new'}
               index="new"
               onClick={handleTabChange}
+              percentage={query?.data?.data?.newCustomersPercentOfSales || 0}
             />
             <CustomerInfoCard
               title="Repeated customers"
@@ -96,6 +99,7 @@ export default function Customers() {
               isActive={currentTab === 'repeated'}
               index="repeated"
               onClick={handleTabChange}
+              percentage={query?.data?.data?.repeatedCustomersPercentOfSales || 0}
             />
             <CustomerInfoCard
               title="Lapsed customers"
@@ -104,6 +108,7 @@ export default function Customers() {
               index="lapsed"
               isActive={currentTab === 'lapsed'}
               onClick={handleTabChange}
+              percentage={query?.data?.data?.lapsedCustomersPercentOfSales || 0}
             />
           </Stack>
         </Grid>
@@ -112,6 +117,7 @@ export default function Customers() {
             title={tabValueToPropsMap[currentTab].title}
             details={query?.data?.data}
             customerType={currentTab}
+            range={range}
           />
         </Grid>
         <CommonAreaChart
@@ -122,7 +128,8 @@ export default function Customers() {
             generateGraphData(
               data?.data?.info || [],
               (item) => item[tabValueToPropsMap[currentTab].graphValueProp],
-              (item) => moment(item?.date).format('MMMM DD')
+              // eslint-disable-next-line prettier/prettier
+              (item) => moment(item?.date).format('MMMM DD'),
             )
           }
         />

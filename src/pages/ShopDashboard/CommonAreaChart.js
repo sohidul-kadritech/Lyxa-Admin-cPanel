@@ -32,7 +32,8 @@ export default function CommonAreaChart({ title, generateData, api, cacheKey }) 
           year: undefined,
           type: 'normal',
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   const data = generateData(query?.data);

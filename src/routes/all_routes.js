@@ -85,6 +85,7 @@ import SendNotifications from '../pages/Notifications/SendNotifications';
 import ShopProfile from '../pages/Profile';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
 
+import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
@@ -210,6 +211,7 @@ export const adminRoutes = [
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/admin/default-chat-message', component: DefaultChat },
+  { path: '/admin/zone', component: ServiceZone },
   { path: '/admin/database/collections', component: DatabaseSettings },
 
   { path: '/admin/settings2', component: AdminSettings2 },
@@ -347,6 +349,8 @@ export const shopRoutes = [
   { path: '/new-orders', component: NewOrders },
   { path: '/shop/settings', component: ShopSettings2 },
   { path: '/shop/users', component: Users2 },
+  { path: '/shop/zone', component: ServiceZone },
+
   // this route should be at the end of all other routes
   { path: '/', exact: true, component: () => <Redirect to="/dashboard" /> },
 ];

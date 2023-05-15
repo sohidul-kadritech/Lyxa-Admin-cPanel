@@ -336,3 +336,11 @@ export const UPDATE_COUPON = `${ADMIN_ENDPOINT}/coupon/update`;
 export const DELETE_COUPON = `${ADMIN_ENDPOINT}/coupon/delete`;
 export const GET_AUTO_GEN_COUPON_CODE = `${ADMIN_ENDPOINT}/coupon/auto-generate`;
 export const GET_COUPON = `${ADMIN_ENDPOINT}/coupon`;
+
+// ZONE
+export const GET_ALL_ZONE = `${ADMIN_ENDPOINT}/zone`;
+export const GET_SINGLE_ZONE = `${ADMIN_ENDPOINT}/zone/details`;
+export const GET_STAT_ZONE = `${ADMIN_ENDPOINT}/zone/statistics`;
+export const CREATE_ZONE = `${ADMIN_ENDPOINT}/zone/add`;
+export const UPDATE_ZONE = `${ADMIN_ENDPOINT}/zone/update`;
+export const DELETE_ZONE = `${ADMIN_ENDPOINT}/zone/delete`;

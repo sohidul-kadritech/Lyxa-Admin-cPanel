@@ -84,6 +84,28 @@ const sizes = {
       },
     },
   },
+  sm2: {
+    root: {
+      minWidth: '84px',
+      '& .MuiSelect-select': {
+        paddingTop: '7.5px',
+        paddingBottom: '7.5px',
+        // maxWidth: '84px',
+      },
+
+      '& .MuiOutlinedInput-input': {
+        fontWeight: '500',
+        fontSize: '12px',
+        lineHeight: '20px',
+      },
+    },
+    menuSx: {
+      '& .MuiMenuItem-root': {
+        fontSize: '12px',
+        lineHeight: '20px',
+      },
+    },
+  },
   lg1: {
     root: {
       minWidth: 0,

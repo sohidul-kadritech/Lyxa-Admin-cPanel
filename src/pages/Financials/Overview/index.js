@@ -92,15 +92,16 @@ export default function Overview() {
         Tag={
           <IncreaseDecreaseTag
             status={`${
-              Math.round(
-                shopDashboardQuery?.data?.data?.summary?.orderValue?.deliveryFee +
-                  // eslint-disable-next-line prettier/prettier
-                  shopDashboardQuery?.data?.data?.summary?.toalShopProfile,
-              ) >= 0
+              Math.round(shopDashboardQuery?.data?.data?.summary?.toalShopProfitAvgInPercentage) >= 0
                 ? 'increase'
                 : 'decrement'
             }`}
-            amount={`29% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+            amount={`${
+              Math.round(
+                // eslint-disable-next-line prettier/prettier
+                Math.abs(shopDashboardQuery?.data?.data?.summary?.toalShopProfitAvgInPercentage),
+              ) || 0
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }
         sm={6}
@@ -112,8 +113,17 @@ export default function Overview() {
         value={`${shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder || 0}`}
         Tag={
           <IncreaseDecreaseTag
-            status={shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder >= 0 ? 'increase' : 'decrement'}
-            amount={`11% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+            status={
+              Math.round(shopDashboardQuery?.data?.data?.summary?.totalDeliverOrderAvgInPercentage) >= 0
+                ? 'increase'
+                : 'decrement'
+            }
+            amount={`${
+              Math.round(
+                // eslint-disable-next-line prettier/prettier
+                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalDeliverOrderAvgInPercentage),
+              ) || 0
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }
         sm={6}
@@ -126,8 +136,17 @@ export default function Overview() {
         value={`${currency?.symbol_native} ${marketingSpentAmount || 0}`}
         Tag={
           <IncreaseDecreaseTag
-            status={marketingSpentAmount >= 0 ? 'increase' : 'decrement'}
-            amount={`9% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+            status={
+              Math.round(shopDashboardQuery?.data?.data?.summary?.totalMarketingSpentAvgInPercentage) >= 0
+                ? 'increase'
+                : 'decrement'
+            }
+            amount={`${
+              Math.round(
+                // eslint-disable-next-line prettier/prettier
+                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalMarketingSpentAvgInPercentage),
+              ) || 0
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }
         sm={6}

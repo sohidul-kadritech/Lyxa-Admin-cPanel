@@ -1,4 +1,15 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Stack,
+  Typography,
+  styled,
+  useTheme,
+} from '@mui/material';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
 
@@ -199,6 +210,58 @@ export function StyledOrderDetailBox({ title, children }) {
       )}
       {children}
     </Box>
+  );
+}
+
+export function StyledOrderDetailBox2({ title, children }) {
+  const theme = useTheme();
+  const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+    minHeight: '20px',
+    '&.icon-hidden .MuiAccordionSummary-expandIconWrapper': {
+      visibility: 'hidden',
+    },
+
+    '& .MuiSvgIcon-root': {
+      color: theme.palette.text.primary,
+      fontSize: '24px',
+    },
+
+    '& .MuiAccordionSummary-content': {
+      margin: '0',
+      '&.Mui-expanded': {
+        margin: 0,
+      },
+    },
+  }));
+  return (
+    <Accordion
+      sx={{
+        border: `1px solid ${theme.palette.custom.border}`,
+        borderRadius: '10px',
+        padding: '12px 16px',
+        '&:before': {
+          display: 'none',
+        },
+      }}
+    >
+      <StyledAccordionSummary
+        expandIcon={<ExpandMore />}
+        sx={{
+          '&.Mui-expanded': {
+            minHeight: '16px',
+          },
+        }}
+        aria-controls="panel1a-content"
+      >
+        {title && (
+          <Typography variant="body4" display="block" pb={2} fontWeight={600}>
+            {title}
+          </Typography>
+        )}
+      </StyledAccordionSummary>
+
+      <AccordionDetails>{children}</AccordionDetails>
+    </Accordion>
   );
 }
 

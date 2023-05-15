@@ -8,6 +8,7 @@ import StyledBox from '../../../../components/StyledCharts/StyledBox';
 // project import
 import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
 import StyledDoughnutChart from '../../../../components/StyledCharts/StyledPieChart';
+import { calculateDateDifference } from '../../helper';
 
 const customerTypeProps = {
   total: {
@@ -63,7 +64,7 @@ function AmountItem({ amount, title }) {
   );
 }
 
-export default function CustomerBreakdown({ title, customerType, details = {} }) {
+export default function CustomerBreakdown({ title, customerType, range, details = {} }) {
   const theme = useTheme();
   const shop = useSelector((store) => store.Login.admin);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
@@ -103,7 +104,7 @@ export default function CustomerBreakdown({ title, customerType, details = {} })
         {title}
       </Typography>
       <Typography variant="body4" pb={4} color={theme.palette.text.secondary2}>
-        Customers who ordered: Last 90 days
+        Customers who ordered: Last {calculateDateDifference(range.start, range.end, 'day')} days
       </Typography>
       <Typography
         variant="body1"

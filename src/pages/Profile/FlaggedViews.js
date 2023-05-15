@@ -1,4 +1,4 @@
-import { Box, Drawer, Stack, Typography } from '@mui/material';
+import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import StyledTable from '../../components/Styled/StyledTable3';
@@ -10,7 +10,7 @@ function FlaggedViews({ filteredData, currentTab }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentOrderDetails, setCurrentOrderDetails] = useState(1);
   const [open, setOpen] = useState(false);
-
+  const theme = useTheme();
   const columns = [
     {
       showFor: ['Flagged', 'Reviews'],
@@ -21,13 +21,13 @@ function FlaggedViews({ filteredData, currentTab }) {
       minWidth: 270,
       renderCell: ({ value }) => (
         <Typography
-          sx={{ cursor: 'pointer' }}
+          sx={{ cursor: 'pointer', color: `${theme.palette.primary.main} !important` }}
           onClick={() => {
             setCurrentOrderDetails(value);
             setOpen(true);
           }}
         >
-          {value?.orderId}
+          #{value?.orderId}
         </Typography>
       ),
     },

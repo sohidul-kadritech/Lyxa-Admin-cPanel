@@ -109,6 +109,11 @@ export const shop_menu_items = [
         to: '/orders/list',
       },
       {
+        label: 'Zone',
+        // icon: ShopZone,
+        to: '/shop/zone',
+      },
+      {
         label: 'Old Dashboard',
         icon: DashBoardIcon,
         to: '/dashboard',
@@ -355,6 +360,10 @@ export const admin_menu_items = [
       {
         label: 'Support Reasons',
         to: '/settings/support-reasons',
+      },
+      {
+        label: 'Zone',
+        to: '/admin/zone',
       },
       {
         label: 'Database Collection',

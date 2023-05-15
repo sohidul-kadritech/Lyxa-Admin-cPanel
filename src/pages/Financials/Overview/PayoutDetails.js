@@ -113,19 +113,21 @@ export default function Payout({ paymentDetails }) {
                   seCurrentExpanedTab(closed ? 2 : -1);
                 }}
               >
-                {paymentDetails?.freeDeliveryShopCut > 0 && (
+                {Math.round(Math.abs(paymentDetails?.freeDeliveryShopCut)) > 0 && (
                   <PriceItem
                     title="Promotion: free delivery"
                     amount={paymentDetails?.freeDeliveryShopCut}
-                    amountStatus="minus"
+                    amountStatus={`${Math.round(paymentDetails?.freeDeliveryShopCut) < 0 ? 'minus' : ''}`}
                   />
                 )}
 
-                <PriceItem
-                  title="Featured"
-                  amount={paymentDetails?.totalFeaturedAmount}
-                  amountStatus={`${paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''}`}
-                />
+                {Math.round(Math.abs(paymentDetails?.totalFeaturedAmount)) > 0 && (
+                  <PriceItem
+                    title="Featured"
+                    amount={paymentDetails?.totalFeaturedAmount}
+                    amountStatus={`${Math.round(paymentDetails?.totalFeaturedAmount) < 0 ? 'minus' : ''}`}
+                  />
+                )}
               </DetailsAccordion>
             ))}
 
@@ -169,7 +171,7 @@ export default function Payout({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile}
+            titleAmount={Math.abs(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile)}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
@@ -184,31 +186,38 @@ export default function Payout({ paymentDetails }) {
               borderBottom: '0',
             }}
           >
-            <PriceItem
-              title="Paid"
-              amount={
-                paymentDetails?.orderValue?.deliveryFee +
+            {Math.abs(
+              paymentDetails?.orderValue?.deliveryFee +
                 paymentDetails?.toalShopProfile -
-                paymentDetails?.totalShopUnsettle
-              }
-              amountStatus={
-                paymentDetails?.orderValue?.deliveryFee +
-                  paymentDetails?.toalShopProfile -
-                  paymentDetails?.totalShopUnsettle <
-                0
-                  ? 'minus'
-                  : ''
-              }
-            />
+                // eslint-disable-next-line prettier/prettier
+                paymentDetails?.totalShopUnsettle,
+            ) > 0 && (
+              <PriceItem
+                title="Paid"
+                amount={Math.abs(
+                  paymentDetails?.orderValue?.deliveryFee +
+                    paymentDetails?.toalShopProfile -
+                    // eslint-disable-next-line prettier/prettier
+                    paymentDetails?.totalShopUnsettle,
+                )}
+                amountStatus={
+                  paymentDetails?.orderValue?.deliveryFee +
+                    paymentDetails?.toalShopProfile -
+                    paymentDetails?.totalShopUnsettle <
+                  0
+                    ? 'minus'
+                    : ''
+                }
+              />
+            )}
 
-            {paymentDetails?.totalShopUnsettle > 0 ||
-              (paymentDetails?.totalShopUnsettle < 0 && (
-                <PriceItem
-                  title="Unpaid"
-                  amount={paymentDetails?.totalShopUnsettle}
-                  amountStatus={paymentDetails?.totalShopUnsettle < 0 ? 'minus' : ''}
-                />
-              ))}
+            {Math.abs(paymentDetails?.totalShopUnsettle) > 0 && (
+              <PriceItem
+                title="Unpaid"
+                amount={Math.abs(paymentDetails?.totalShopUnsettle)}
+                amountStatus={paymentDetails?.totalShopUnsettle < 0 ? 'minus' : ''}
+              />
+            )}
           </DetailsAccordion>
         </Box>
       </StyledBox>

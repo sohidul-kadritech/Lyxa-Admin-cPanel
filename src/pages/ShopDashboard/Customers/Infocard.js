@@ -5,7 +5,7 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import IncreaseDecrease from '../../../components/StyledCharts/IncreaseDecrease';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 
-export default function CustomerInfoCard({ title, dotColor, amount, isActive, onClick, index }) {
+export default function CustomerInfoCard({ title, percentage, dotColor, amount, isActive, onClick, index }) {
   const theme = useTheme();
 
   return (
@@ -42,7 +42,7 @@ export default function CustomerInfoCard({ title, dotColor, amount, isActive, on
         <Typography variant="inherit" fontSize={40} fontWeight={600} lineHeight={1}>
           {amount}
         </Typography>
-        <IncreaseDecrease amount="4%" status="increase" />
+        <IncreaseDecrease amount={`${percentage || 0}%`} status={`${percentage >= 0 ? 'increase' : 'decrease'}`} />
       </Stack>
     </StyledBox>
   );

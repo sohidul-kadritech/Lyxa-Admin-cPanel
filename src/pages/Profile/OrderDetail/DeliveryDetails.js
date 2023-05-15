@@ -1,12 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import { ReactComponent as MapIcon } from '../../../assets/icons/map-colored.svg';
-import OrderTrackingMap from '../../../components/OrderTrackingMap';
-import { StyledOrderDetailBox } from '../helper';
+// import OrderTrackingMap from '../../../components/OrderTrackingMap';
+import { StyledOrderDetailBox2 } from '../helper';
+import OrderTrackingMap from './OrderTrackingMap2';
 
 export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation = {} }) {
   return (
-    <StyledOrderDetailBox
-      isDropdown={false}
+    <StyledOrderDetailBox2
       title={
         <span
           style={{
@@ -30,6 +30,6 @@ export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation =
       <Box sx={{ marginTop: '8px', borderRadius: '7px' }}>
         <OrderTrackingMap pickup={pickUpLocation} dropoff={deliveryDetails} />
       </Box>
-    </StyledOrderDetailBox>
+    </StyledOrderDetailBox2>
   );
 }
