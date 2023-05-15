@@ -9,19 +9,15 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import CircularLoader from './components/CircularLoader';
-import NewLayout from './components/Layout';
 import { getAllAppSettings } from './store/Settings/settingsAction';
 
 // Import Routes all
 import { adminRoutes, authRoutes, customerServiceRoutes, sellerRoutes, shopRoutes } from './routes/all_routes';
 
 // Import all middleware
-import Authmiddleware from './routes/middleware/Authmiddleware';
 
 // layouts Format
-import NonAuthLayout from './components/NonAuthLayout';
 
 // Import scss
 import './assets/scss/theme.scss';
@@ -30,13 +26,13 @@ import { setAdmin } from './store/actions';
 import { getAllChat, incrementOpenChats } from './store/chat/chatAction';
 import { socketConnect } from './store/socket/socketAction';
 
-import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
+import { Box } from '@mui/material';
+import Router from './Router';
 import { useGlobalContext } from './context/GlobalContext';
 import setCookiesAsObj from './helpers/cookies/setCookiesAsObject';
 import { successMsg } from './helpers/successMsg';
 import { SINGLE_ADMIN, SINGLE_SELLER, SINGLE_SHOP } from './network/Api';
 import requestApi from './network/httpRequest';
-import Login from './pages/Authentication/Login';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -177,43 +173,55 @@ export default function App() {
   }, [socket]);
 
   return (
-    <Router>
-      <Switch>
-        {/* login */}
-        <Authmiddleware path="/login" layout={NonAuthLayout} component={Login} isAuthProtected={false} />
-        {/* admin data is loading */}
-        {adminDataIsLoading && (
-          <Route
-            path="*"
-            exact
-            render={() => (
-              <div
-                style={{
-                  height: '100vh',
-                }}
-              >
-                <CircularLoader />
-              </div>
-            )}
-          />
-        )}
-        {/* admin data not found */}
-        {!adminDataIsLoading && !account_type && <Redirect to="/login" replace />}
-        {/* admin data is fetched */}
-        {!adminDataIsLoading &&
-          account_type &&
-          routeList?.map((route) => (
-            <Authmiddleware
-              path={route.path}
-              // layout={account_type === 'shop' ? NewLayout : VeritcalLayout}
-              layout={NewLayout}
-              component={route.component}
-              key={route.path}
-              isAuthProtected
-              exact
-            />
-          ))}
-      </Switch>
-    </Router>
+    // <Router>
+    //   <Switch>
+    //     {/* login */}
+    //     <Authmiddleware path="/login" layout={NonAuthLayout} component={Login} isAuthProtected={false} />
+    //     {/* admin data is loading */}
+    //     {adminDataIsLoading && (
+    //       <Route
+    //         path="*"
+    //         exact
+    //         render={() => (
+    //           <div
+    //             style={{
+    //               height: '100vh',
+    //             }}
+    //           >
+    //             <CircularLoader />
+    //           </div>
+    //         )}
+    //       />
+    //     )}
+    //     {/* admin data not found */}
+    //     {!adminDataIsLoading && !account_type && <Redirect to="/login" replace />}
+    //     {/* admin data is fetched */}
+    //     {!adminDataIsLoading &&
+    //       account_type &&
+    //       routeList?.map((route) => (
+    //         <Authmiddleware
+    //           path={route.path}
+    //           // layout={account_type === 'shop' ? NewLayout : VeritcalLayout}
+    //           layout={NewLayout}
+    //           component={route.component}
+    //           key={route.path}
+    //           isAuthProtected
+    //           exact
+    //         />
+    //       ))}
+    //   </Switch>
+    // </Router>
+    <Box>
+      {adminDataIsLoading && (
+        <Box
+          sx={{
+            height: '100vh',
+          }}
+        >
+          <CircularLoader />
+        </Box>
+      )}
+      {!adminDataIsLoading && <Router />}
+    </Box>
   );
 }
