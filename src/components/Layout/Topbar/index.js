@@ -26,7 +26,6 @@ export default function Topbar({ setSidebar, sidebar }) {
       pl="30px"
       pr="30px"
       sx={{
-        zIndex: '1500',
         background: '#fff',
         borderBottom: `1px solid ${sidebar ? 'rgba(177, 177, 177, 0.2)' : 'transparent'}`,
       }}

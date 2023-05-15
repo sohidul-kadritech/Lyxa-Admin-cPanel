@@ -1,4 +1,5 @@
-import { Box, Drawer, Stack, Typography } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { Box, Stack, Typography, styled } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { ReactComponent as Logo } from '../../../assets/icons/lyxa-sidebar-logo.svg';
 import {
@@ -9,7 +10,44 @@ import {
 } from '../../../common/sidebar_menu_items';
 import MenuList from './MenuList';
 
-export default function Sidebar({ sidebar, setSidebar, variant }) {
+const StyledSidebarContaier = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  background: '#fff',
+  zIndex: '9999',
+  width: '230px',
+  overflowY: 'scroll',
+  height: '100vh',
+  transition: 'transform 225ms ease',
+  transform: 'translateX(-100%)',
+
+  '&.show': {
+    transform: 'translateX(0)',
+  },
+}));
+
+const StyledOverlay = styled(Box)(() => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  zIndex: 999,
+  opacity: '0',
+  visibility: 'hidden',
+  pointerEvents: 'none',
+  transition: 'opacity 225ms ease',
+
+  '&.show': {
+    opacity: '1',
+    visibility: 'visible',
+    pointerEvents: 'all',
+  },
+}));
+
+export default function Sidebar({ variant, sidebar, setSidebar }) {
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   let menuItems = [];
@@ -20,28 +58,15 @@ export default function Sidebar({ sidebar, setSidebar, variant }) {
   if (account_type === 'seller') menuItems = seller_menu_items;
 
   return (
-    <Drawer
-      sx={
-        {
-          // background: 'red',
-        }
-      }
-      variant="temporary"
-      open={sidebar}
-      onClose={() => {
-        setSidebar(false);
-      }}
-    >
-      <Box
+    <Box>
+      <StyledSidebarContaier
+        className={sidebar ? 'show' : undefined}
         sx={{
           background: variant === 'parent' ? 'white' : '#333333',
-          height: '100vh',
-          overflowY: 'scroll',
-          width: '230px',
         }}
       >
         {/* logo */}
-        {variant === 'child' ? (
+        {variant === 'child' && (
           <Box
             sx={{
               textAlign: 'center',
@@ -67,16 +92,19 @@ export default function Sidebar({ sidebar, setSidebar, variant }) {
               Lyxa Manager
             </Typography>
           </Box>
-        ) : (
-          <Box paddingTop="83px"></Box>
         )}
-
         <Stack pb={8.5}>
           {menuItems.map((list, index) => (
             <MenuList key={index} variant={variant} menuList={list} />
           ))}
         </Stack>
-      </Box>
-    </Drawer>
+      </StyledSidebarContaier>
+      <StyledOverlay
+        className={sidebar ? 'show' : undefined}
+        onClick={() => {
+          setSidebar(false);
+        }}
+      />
+    </Box>
   );
 }

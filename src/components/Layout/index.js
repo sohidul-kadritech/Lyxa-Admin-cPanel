@@ -17,7 +17,8 @@ export default function Layout({ children }) {
       }}
     >
       <Topbar sidebar={sidebar} setSidebar={setSidebar} />
-      <Box>
+      <Box position="relative">
+        <Sidebar sidebar={sidebar} setSidebar={setSidebar} variant="parent" />
         <Box
           sx={{
             paddingLeft: 12.5,
@@ -27,7 +28,6 @@ export default function Layout({ children }) {
             backgroundColor: '#fbfbfb',
           }}
         >
-          <Sidebar sidebar={sidebar} setSidebar={setSidebar} variant="parent" />
           {children}
         </Box>
         <ToastContainer />
