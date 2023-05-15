@@ -10,6 +10,8 @@ export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   console.log(paymentDetails);
 
+  console.log('currentExpandTab', currentExpanedTab);
+
   return (
     <Grid xs={12}>
       <StyledBox
@@ -78,7 +80,7 @@ export default function Payout({ paymentDetails }) {
             // Shop-powered deliveries: 10%.
             // VAT inclusive"
             titleAmount={Math.abs(paymentDetails?.totalDropGet)}
-            titleAmountStatus="minus"
+            titleAmountStatus={paymentDetails?.totalDropGet < 0 ? 'minus' : ''}
             // isOpen={currentExpanedTab === 1}
             // onChange={(closed) => {
             //   seCurrentExpanedTab(closed ? 1 : -1);
@@ -95,26 +97,37 @@ export default function Payout({ paymentDetails }) {
           />
 
           {/* Other payments */}
-          {paymentDetails?.freeDeliveryShopCut > 0 && (
-            <DetailsAccordion
-              title="Other Payments"
-              tooltip="Fee for Lyxa-powered deliveries: 20%
+          {paymentDetails?.freeDeliveryShopCut > 0 ||
+            (paymentDetails?.freeDeliveryShopCut <= 0 && (
+              <DetailsAccordion
+                title="Other Payments"
+                tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
-              titleAmount={paymentDetails?.freeDeliveryShopCut}
-              titleAmountStatus="minus"
-              isOpen={currentExpanedTab === 2}
-              onChange={(closed) => {
-                seCurrentExpanedTab(closed ? 2 : -1);
-              }}
-            >
-              <PriceItem
-                title="Promotion: free delivery"
-                amount={paymentDetails?.freeDeliveryShopCut}
-                amountStatus="minus"
-              />
-            </DetailsAccordion>
-          )}
+                titleAmount={paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount}
+                titleAmountStatus={`${
+                  paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''
+                }`}
+                isOpen={currentExpanedTab === 2}
+                onChange={(closed) => {
+                  seCurrentExpanedTab(closed ? 2 : -1);
+                }}
+              >
+                {paymentDetails?.freeDeliveryShopCut > 0 && (
+                  <PriceItem
+                    title="Promotion: free delivery"
+                    amount={paymentDetails?.freeDeliveryShopCut}
+                    amountStatus="minus"
+                  />
+                )}
+
+                <PriceItem
+                  title="Featured"
+                  amount={paymentDetails?.totalFeaturedAmount}
+                  amountStatus={`${paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''}`}
+                />
+              </DetailsAccordion>
+            ))}
 
           {/* delivery */}
           {paymentDetails?.orderValue?.deliveryFee > 0 && (
@@ -160,6 +173,9 @@ export default function Payout({ paymentDetails }) {
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
+            titleAmountStatus={
+              paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile < 0 ? 'minus' : ''
+            }
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);
@@ -168,19 +184,31 @@ export default function Payout({ paymentDetails }) {
               borderBottom: '0',
             }}
           >
-            {paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile > 0 && (
-              <PriceItem
-                title="Paid"
-                amount={
-                  paymentDetails?.orderValue?.deliveryFee +
+            <PriceItem
+              title="Paid"
+              amount={
+                paymentDetails?.orderValue?.deliveryFee +
+                paymentDetails?.toalShopProfile -
+                paymentDetails?.totalShopUnsettle
+              }
+              amountStatus={
+                paymentDetails?.orderValue?.deliveryFee +
                   paymentDetails?.toalShopProfile -
-                  paymentDetails?.totalShopUnsettle
-                }
-              />
-            )}
-            {paymentDetails?.totalShopUnsettle > 0 && (
-              <PriceItem title="Unpaid" amount={paymentDetails?.totalShopUnsettle} />
-            )}
+                  paymentDetails?.totalShopUnsettle <
+                0
+                  ? 'minus'
+                  : ''
+              }
+            />
+
+            {paymentDetails?.totalShopUnsettle > 0 ||
+              (paymentDetails?.totalShopUnsettle < 0 && (
+                <PriceItem
+                  title="Unpaid"
+                  amount={paymentDetails?.totalShopUnsettle}
+                  amountStatus={paymentDetails?.totalShopUnsettle < 0 ? 'minus' : ''}
+                />
+              ))}
           </DetailsAccordion>
         </Box>
       </StyledBox>

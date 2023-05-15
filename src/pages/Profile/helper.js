@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useTheme } from '@mui/material';
+import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
 
@@ -199,5 +199,83 @@ export function StyledOrderDetailBox({ title, children }) {
       )}
       {children}
     </Box>
+  );
+}
+
+export function ShopProfileBasicInfo({ title, Icon, desc }) {
+  return (
+    <Box>
+      <Box sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center', alignItems: 'center', gap: '11px' }}>
+        <Icon />
+        <Typography sx={{ fontSize: '14px', fontWeight: '600' }}>{title}</Typography>
+      </Box>
+      <Box sx={{ marginTop: '18px', fontSize: '14px', fontWeight: '500' }}>
+        {' '}
+        <Typography sx={{ textTransform: 'capitalize' }}>{desc}</Typography>
+      </Box>
+    </Box>
+  );
+}
+
+export function AverageOrderValue(totalProductsAmount, totalOrder) {
+  return totalProductsAmount / totalOrder;
+}
+
+export function TagsAndCuisines(tags, cuisines) {
+  return `${cuisines?.map((cuisines) => cuisines.name).join(', ')}, ${tags?.map((tags) => tags.name).join(', ')}`;
+}
+
+export function convertTimeToAmPm(time) {
+  const date = new Date();
+  const [hours, minutes] = time.split(':');
+  date.setHours(hours, minutes, 0, 0);
+  const suffix = hours >= 12 ? 'P.M' : 'A.M';
+  const displayHours = hours % 12 || 12;
+  const displayMinutes = minutes.toString().padStart(2, '0');
+  return `${displayHours}:${displayMinutes} ${suffix}`;
+}
+
+export function openingHours(normalHours) {
+  const openingHoursSx = {
+    fontSize: '14px',
+    fontWeight: 500,
+    color: '#363636',
+  };
+  const dayStructure = (day) => {
+    if (day.toLowerCase() === 'saturday') return 'Sat.';
+    if (day.toLowerCase() === 'sunday') return 'Sun.';
+    if (day.toLowerCase() === 'monday') return 'Mon.';
+    if (day.toLowerCase() === 'tuesday') return 'Tue.';
+    if (day.toLowerCase() === 'wednesday') return 'Wed.';
+    if (day.toLowerCase() === 'thursday') return 'Thu.';
+    if (day.toLowerCase() === 'friday') return 'Fri.';
+
+    return '';
+  };
+
+  return (
+    <Stack flexDirection="column" gap="10px">
+      {normalHours?.map((week, i) => (
+        <Box key={i}>
+          <Stack flexDirection="row">
+            <Typography sx={openingHoursSx} flex={2} variant="span">
+              {dayStructure(week.day)}
+            </Typography>
+            {week.isActive ? (
+              <>
+                {' '}
+                <Typography sx={openingHoursSx} flex={8} variant="span">
+                  {convertTimeToAmPm(week.open)} - {convertTimeToAmPm(week.close)}
+                </Typography>
+              </>
+            ) : (
+              <Typography sx={openingHoursSx} variant="span">
+                Closed
+              </Typography>
+            )}
+          </Stack>
+        </Box>
+      ))}
+    </Stack>
   );
 }

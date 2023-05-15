@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import CloseButton from '../../../components/Common/CloseButton';
 import TabPanel from '../../../components/Common/TabPanel';
 import DeliveryDetails from './DeliveryDetails';
-import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
 import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
@@ -44,13 +43,19 @@ export default function OrderDetail({ order, onClose }) {
           {/* top */}
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Stack direction="row" alignItems="center" gap={3}>
-              <Avatar alt="user-image" src={order?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
-                {/* {order?.user?.name[0]} */}A
+              <Avatar
+                alt="user-image"
+                src={order?.user?.profile_photo}
+                sx={{ width: 36, height: 36, textTransform: 'capitalize' }}
+              >
+                {order?.user?.name[0] || 'A'}
               </Avatar>
               <Stack gap={0.5}>
-                <Typography variant="body4">{order?.user?.name}</Typography>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {order?.user?.name}
+                </Typography>
                 <Typography variant="body4" color="#737373">
-                  9 orders
+                  {order?.products.length || '9'} orders
                 </Typography>
               </Stack>
             </Stack>
@@ -104,9 +109,9 @@ export default function OrderDetail({ order, onClose }) {
           }}
         >
           <Stack gap={5}>
-            {order?.flag?.length ? <OrderIssues flags={order?.flag} /> : null}
+            {/* {order?.flag?.length ? <OrderIssues flags={order?.flag} /> : null} */}
             <OrderTimeline orderTimeline={order?.timeline} />
-            <DeliveryDetails deliveryDetails={order?.dropOffLocation} />
+            <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
             {order?.orderFor === 'global' && order?.deliveryBoy && (
               <Rider rider={order?.deliveryBoy} isDelivered={order?.orderStatus === 'delivered'} />
             )}

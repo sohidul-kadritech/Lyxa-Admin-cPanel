@@ -17,6 +17,7 @@ export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/shop`;
 export const GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/revenue`;
 export const GET_SHOP_DASHBOARD_PROFIT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/payout`;
 export const GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/marketing-spent`;
+export const GET_SHOP_DASHBOARD_OPERATIONS = `${ADMIN_ENDPOINT}/dashboard/shop/operations`;
 
 export const ADMIN_DASHBOARD_USERS_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/users`;
 

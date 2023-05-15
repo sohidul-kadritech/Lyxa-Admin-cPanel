@@ -36,7 +36,7 @@ export default function IncreaseDecreaseTag({ status, amount }) {
           fontWeight: '600',
         }}
       >
-        {amount} last 30 days
+        {amount} days
       </Typography>
     </Stack>
   );

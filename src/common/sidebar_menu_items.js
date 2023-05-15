@@ -17,11 +17,6 @@ export const shop_menu_items = [
       {
         label: 'Dashboard',
         icon: DashBoardIcon,
-        to: '/dashboard',
-      },
-      {
-        label: 'Dashboard',
-        icon: DashBoardIcon,
         to: '/new-dashboard',
       },
       {
@@ -112,6 +107,11 @@ export const shop_menu_items = [
       {
         label: 'Old Orders',
         to: '/orders/list',
+      },
+      {
+        label: 'Old Dashboard',
+        icon: DashBoardIcon,
+        to: '/dashboard',
       },
     ],
   },
