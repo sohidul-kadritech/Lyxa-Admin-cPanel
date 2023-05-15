@@ -26,7 +26,7 @@ export const shop_menu_items = [
       {
         label: 'Dashboard',
         icon: DashBoardIcon,
-        to: '/new-dashboard',
+        to: '/',
       },
       {
         label: 'Marketing',
@@ -56,7 +56,7 @@ export const shop_menu_items = [
       {
         label: 'Settings',
         icon: SettingsIcon,
-        to: '/shop/settings',
+        to: '/settings',
       },
     ],
   },
@@ -66,7 +66,7 @@ export const shop_menu_items = [
       {
         label: 'Menu',
         icon: MenuIcon,
-        to: '/products/list2',
+        to: '/menu',
       },
       {
         label: 'Profile',
@@ -81,7 +81,7 @@ export const shop_menu_items = [
       {
         label: 'Users',
         icon: UsersIcon,
-        to: '/shop/users',
+        to: '/users',
       },
     ],
   },

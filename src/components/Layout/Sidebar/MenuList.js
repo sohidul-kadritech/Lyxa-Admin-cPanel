@@ -11,7 +11,7 @@ const variantToItemStylesMap = {
   },
 };
 
-export default function MenuList({ menuList, variant }) {
+export default function MenuList({ menuList, variant, onLinkClick }) {
   return (
     <Box>
       <Typography
@@ -33,7 +33,7 @@ export default function MenuList({ menuList, variant }) {
       </Typography>
       <Stack>
         {menuList?.menu?.map(({ to, icon: Icon, label }, index) => (
-          <NavLink to={to} exact key={index} className={() => `sidebar-menu-item ${variant}`}>
+          <NavLink to={to} exact key={index} className={() => `sidebar-menu-item ${variant}`} onClick={onLinkClick}>
             {Icon && <Icon />}
             <span>{label}</span>
           </NavLink>

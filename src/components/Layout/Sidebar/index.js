@@ -95,7 +95,7 @@ export default function Sidebar({ variant, sidebar, setSidebar }) {
         )}
         <Stack pb={8.5}>
           {menuItems.map((list, index) => (
-            <MenuList key={index} variant={variant} menuList={list} />
+            <MenuList key={index} variant={variant} menuList={list} onLinkClick={() => setSidebar(false)} />
           ))}
         </Stack>
       </StyledSidebarContaier>
