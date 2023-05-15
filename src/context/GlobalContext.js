@@ -10,7 +10,7 @@ Global Store Provider
 */
 export default function ContextProvider({ children }) {
   const [currentUser, dispatchCurrentUser] = useReducer(currentUserReducer, currentUserInit);
-  const value = useMemo(() => ({ currentUser, dispatchCurrentUser }), []);
+  const value = useMemo(() => ({ currentUser, dispatchCurrentUser }), [currentUser]);
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

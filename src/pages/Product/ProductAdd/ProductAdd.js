@@ -7,6 +7,7 @@ import { Button, Card, CardBody, CardTitle, Col, Container, Form, Label, Row, Sp
 import styled from 'styled-components';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
+import { useGlobalContext } from '../../../context/GlobalContext';
 
 import { getAllCategory, getAllSubCategory, updateCategoryShopType } from '../../../store/Category/categoryAction';
 
@@ -28,6 +29,8 @@ function ProductAdd() {
   const { id } = useParams();
   const history = useHistory();
   const { search } = useLocation();
+  const context = useGlobalContext();
+  console.log(context);
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 

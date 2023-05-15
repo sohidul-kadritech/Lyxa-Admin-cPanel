@@ -46,9 +46,9 @@ export const adminAuth = (user) => async (dispatch) => {
       },
     };
 
-    console.log('action.js: ', { data });
+    // console.log('action.js: ', { data });
 
-    console.log('data admin parentshop: ', data?.admin?.parentShop);
+    // console.log('data admin parentshop: ', data?.admin?.parentShop);
     let newData;
 
     const credentialParent = data?.admin?.parentShop || data?.admin?.parentSeller;
@@ -56,7 +56,7 @@ export const adminAuth = (user) => async (dispatch) => {
       newData = await requestApi().request(`${SINGLE_SHOP}?id=${credentialParent}`, requestOptions);
     }
 
-    console.log('newData: ', newData?.data?.data?.shop);
+    // console.log('newData: ', newData?.data?.data?.shop);
 
     if (status) {
       // set cookies
@@ -75,14 +75,14 @@ export const adminAuth = (user) => async (dispatch) => {
       } else {
         admin = { ...data.admin };
       }
-      console.log('admin added data: ', admin);
+      // console.log('admin added data: ', admin);
       delete admin.token;
       dispatch(loginSuccess(admin, message));
     } else {
       dispatch(apiError(message));
     }
   } catch (error) {
-    console.log('authCookies');
+    // console.log('authCookies');
     dispatch(apiError(error.message));
   }
 };

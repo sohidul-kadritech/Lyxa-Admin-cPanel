@@ -31,6 +31,7 @@ import { getAllChat, incrementOpenChats } from './store/chat/chatAction';
 import { socketConnect } from './store/socket/socketAction';
 
 import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
+import { useGlobalContext } from './context/GlobalContext';
 import setCookiesAsObj from './helpers/cookies/setCookiesAsObject';
 import { successMsg } from './helpers/successMsg';
 import { SINGLE_ADMIN, SINGLE_SELLER, SINGLE_SHOP } from './network/Api';
@@ -39,6 +40,7 @@ import Login from './pages/Authentication/Login';
 
 export default function App() {
   const dispatch = useDispatch();
+  const { dispatchCurrentUser } = useGlobalContext();
   const [routeList, setRouteList] = useState([]);
   const { socket } = useSelector((state) => state.socketReducer);
 
@@ -105,6 +107,8 @@ export default function App() {
       } else {
         removeAuthCookies();
       }
+      // console.log('data is loaded: ', ENDPOINT, ADMIN_DATA);
+      setAdminDataIsLoading(false);
     } catch (error) {
       console.log(error);
     }

@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 
 // project import
 import PageTop from '../../../../../components/Common/PageTop';
+import { useGlobalContext } from '../../../../../context/GlobalContext';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
 import AddCoupon from './AddCoupon';
@@ -25,6 +26,9 @@ export default function CoponSettings() {
       params: filters,
     })
   );
+
+  const context = useGlobalContext();
+  console.log(context);
 
   return (
     <Box>
