@@ -39,5 +39,6 @@ export const shop_routes = (prefix = '') => {
     { path: `${prefix}/`, component: ShopDashboard },
     { path: `${prefix}/*`, component: NotFoundPage },
   ];
+
   return routes;
 };

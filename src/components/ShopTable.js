@@ -99,7 +99,7 @@ function ShopTable({ shops = [] }) {
                   img={item?.shopLogo}
                   altImg={RoomOutlinedIcon}
                   name={item?.shopName}
-                  subTitle={item?.seller.name}
+                  subTitle={item?.seller?.name}
                   id={item?.autoGenId}
                 />
               </Th>

@@ -198,7 +198,7 @@ export const admin_menu_items = [
       {
         label: 'Dashboard',
         icon: DashBoardIcon,
-        to: '/dashboard',
+        to: '/',
       },
       {
         label: 'Orders',
