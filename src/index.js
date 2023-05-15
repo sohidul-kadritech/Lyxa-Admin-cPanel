@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
+import ContextProvider from './context/GlobalContext';
 import store from './store';
 import ThemeProvider from './theme';
 
@@ -20,15 +21,17 @@ const queryClient = new QueryClient({
 
 ReactDOM.render(
   <Provider store={store}>
-    <ThemeProvider>
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <BrowserRouter>
-          <QueryClientProvider client={queryClient}>
-            <App />
-          </QueryClientProvider>
-        </BrowserRouter>
-      </LocalizationProvider>
-    </ThemeProvider>
+    <ContextProvider>
+      <ThemeProvider>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+              <App />
+            </QueryClientProvider>
+          </BrowserRouter>
+        </LocalizationProvider>
+      </ThemeProvider>
+    </ContextProvider>
   </Provider>,
   document.getElementById('root')
 );

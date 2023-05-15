@@ -2,12 +2,15 @@ import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import { useGlobalContext } from '../../context/GlobalContext';
 import Banking from './Banking';
 import Invoices from './Invoices';
 import Overview from './Overview';
 
 export default function Financials() {
   const [currentTab, setCurrentTab] = useState(0);
+  const store = useGlobalContext();
+  console.log(store);
 
   return (
     <Box pb={10}>
