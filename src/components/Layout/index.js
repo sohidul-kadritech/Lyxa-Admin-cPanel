@@ -1,10 +1,11 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
-export default function Layout({ children }) {
+export default function Layout() {
   const [sidebar, setSidebar] = useState(false);
 
   return (
@@ -28,7 +29,9 @@ export default function Layout({ children }) {
             backgroundColor: '#fbfbfb',
           }}
         >
-          {children}
+          <Switch>
+            <Route path="/" exact component={() => <div>Home</div>} />
+          </Switch>
         </Box>
         <ToastContainer />
       </Box>

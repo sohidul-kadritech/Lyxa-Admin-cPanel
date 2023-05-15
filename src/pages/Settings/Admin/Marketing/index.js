@@ -17,8 +17,8 @@ const pagesList = [
     to: '/admin/settings2/marketing/featured',
   },
   {
-    label: 'Cupons',
-    to: '/admin/settings2/marketing/cupons',
+    label: 'Coupons',
+    to: '/admin/settings2/marketing/coupons',
   },
 ];
 

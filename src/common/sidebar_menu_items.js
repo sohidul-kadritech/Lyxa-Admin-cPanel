@@ -1,12 +1,21 @@
+import { ReactComponent as AdminOrdersIcon } from '../assets/icons/menu-icons/admin-orders.svg';
+import { ReactComponent as ChatIcon } from '../assets/icons/menu-icons/chat.svg';
 import { ReactComponent as HoursIcon } from '../assets/icons/menu-icons/clock.svg';
 import { ReactComponent as DashBoardIcon } from '../assets/icons/menu-icons/dashboard.svg';
+import { ReactComponent as DisplayIcon } from '../assets/icons/menu-icons/display.svg';
+import { ReactComponent as FinanceAdminIcon } from '../assets/icons/menu-icons/finance-admin.svg';
 import { ReactComponent as FinancialIcon } from '../assets/icons/menu-icons/financials.svg';
 import { ReactComponent as MarketingIcon } from '../assets/icons/menu-icons/marketing.svg';
 import { ReactComponent as MenuIcon } from '../assets/icons/menu-icons/menu.svg';
 import { ReactComponent as OrderIcon } from '../assets/icons/menu-icons/order.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icons/menu-icons/profile.svg';
+import { ReactComponent as RidersAdminIcons } from '../assets/icons/menu-icons/riders.svg';
+import { ReactComponent as SellersIcon } from '../assets/icons/menu-icons/sellers.svg';
+import { ReactComponent as SettingsAdminIcon } from '../assets/icons/menu-icons/settings-admin.svg';
 import { ReactComponent as SettingsIcon } from '../assets/icons/menu-icons/settings.svg';
+import { ReactComponent as ShopIcon } from '../assets/icons/menu-icons/shop.svg';
 import { ReactComponent as RatingIcon } from '../assets/icons/menu-icons/star.svg';
+import { ReactComponent as TeamIcon } from '../assets/icons/menu-icons/team.svg';
 import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/usrs.svg';
 
 /* ======== shop ======== */
@@ -24,11 +33,6 @@ export const shop_menu_items = [
         icon: MarketingIcon,
         to: '/marketing',
       },
-      // {
-      //   label: 'Services',
-      //   icon: ServicesIcon,
-      //   to: '/',
-      // },
       {
         label: 'Financials',
         icon: FinancialIcon,
@@ -196,16 +200,62 @@ export const admin_menu_items = [
         icon: DashBoardIcon,
         to: '/dashboard',
       },
+      {
+        label: 'Orders',
+        icon: AdminOrdersIcon,
+        to: '/orders/list',
+      },
+      {
+        label: 'Sellers',
+        to: '/seller/list',
+        icon: SellersIcon,
+      },
+      {
+        label: 'Shops',
+        to: '/shops/list',
+        icon: ShopIcon,
+      },
+      {
+        label: 'Users',
+        to: '/users/list',
+        icon: UsersIcon,
+      },
+      {
+        label: 'Riders',
+        to: '/deliveryman/list',
+        icon: RidersAdminIcons,
+      },
+      {
+        label: 'Settings',
+        to: '/admin/settings2',
+        icon: SettingsAdminIcon,
+      },
+      {
+        label: 'Financials',
+        to: '/',
+        icon: FinanceAdminIcon,
+      },
+      {
+        label: 'Team',
+        to: '/admin/list',
+        icon: TeamIcon,
+      },
+      {
+        label: 'Display',
+        to: '/display',
+        icon: DisplayIcon,
+      },
+      {
+        label: 'Chat',
+        to: '/customer-support',
+        icon: ChatIcon,
+        badgeId: 'sidebar-item-chat-badges',
+      },
     ],
   },
   {
     title: 'Order',
     menu: [
-      {
-        label: 'Orders',
-        icon: OrderIcon,
-        to: '/orders/list',
-      },
       {
         label: 'Cancelled Orders',
         to: '/orders/list/cancel',
@@ -221,19 +271,10 @@ export const admin_menu_items = [
     title: 'Sellers & Shop',
     menu: [
       {
-        label: 'Sellers List',
-        to: '/seller/list',
-      },
-
-      {
         label: 'Sellers Add',
         to: '/seller/add',
       },
 
-      {
-        label: 'Shops List',
-        to: '/shops/list',
-      },
       {
         label: 'Shops Add',
         to: '/shops/add',
@@ -260,14 +301,6 @@ export const admin_menu_items = [
   {
     title: 'User & Delivery',
     menu: [
-      {
-        label: 'User',
-        to: '/users/list',
-      },
-      {
-        label: 'Delivery Boy List',
-        to: '/deliveryman/list',
-      },
       {
         label: 'Delivery Boy Add',
         to: '/deliveryman/add',
@@ -334,10 +367,6 @@ export const admin_menu_items = [
     title: 'Settings',
     menu: [
       {
-        label: 'Settings',
-        to: '/admin/settings2',
-      },
-      {
         label: 'Admin Settings',
         to: '/admin/settings',
       },
@@ -399,10 +428,6 @@ export const admin_menu_items = [
         to: '/categories/list',
       },
 
-      {
-        label: 'Display',
-        to: '/display',
-      },
       {
         label: 'Admin Log',
         to: '/admin/percentage-settings-history',

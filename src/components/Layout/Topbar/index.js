@@ -4,9 +4,32 @@ import { useState } from 'react';
 import { ReactComponent as Logo } from '../../../assets/icons/logo-sm.svg';
 import { ReactComponent as NotificationIcon } from '../../../assets/icons/t-notification.svg';
 import { ReactComponent as SupportIcon } from '../../../assets/icons/t-support.svg';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import AccountMenu from './AccountMenu';
 
+const getConsoleName = (userType, adminType) => {
+  if (userType === 'admin' && adminType === 'admin') {
+    return 'Admin Console';
+  }
+
+  if (userType === 'admin' && adminType === 'customerService') {
+    return 'Customer Service Console';
+  }
+
+  if (userType === 'shop') {
+    return 'Shop Manager';
+  }
+
+  if (userType === 'seller') {
+    return 'Seller Manager';
+  }
+
+  return '';
+};
+
 export default function Topbar({ setSidebar, sidebar }) {
+  const { currentUser } = useGlobalContext();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -46,7 +69,7 @@ export default function Topbar({ setSidebar, sidebar }) {
         <Stack direction="row" alignItems="center" gap={2}>
           <Logo />
           <Typography variant="inherit" fontSize={22} lineHeight="26px" fontWeight={500}>
-            Sales Manager
+            {getConsoleName(currentUser.userType, currentUser.adminType)}
           </Typography>
         </Stack>
       </Stack>

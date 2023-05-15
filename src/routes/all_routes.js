@@ -33,7 +33,7 @@ import Marketing from '../pages/Marketing';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import SellerList from '../pages/Seller/SellerList/SellerList';
-import CuponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
+import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
@@ -219,7 +219,7 @@ export const adminRoutes = [
   { path: '/admin/settings2/marketing/loyalty', component: AdminLoyaltySettings },
   { path: '/admin/settings2/marketing/deals', component: AdminDealSettings },
   { path: '/admin/settings2/marketing/featured', component: AdminFeaturedSettings },
-  { path: '/admin/settings2/marketing/cupons', component: CuponSettings },
+  { path: '/admin/settings2/marketing/coupons', component: CouponSettings },
 
   // terms and conditions
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
