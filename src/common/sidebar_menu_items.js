@@ -19,24 +19,24 @@ import { ReactComponent as TeamIcon } from '../assets/icons/menu-icons/team.svg'
 import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/usrs.svg';
 
 /* ======== shop ======== */
-export const shop_menu_items = [
+export const shop_menu_items = (prefix = '') => [
   {
     title: 'Management',
     menu: [
       {
         label: 'Dashboard',
         icon: DashBoardIcon,
-        to: '/',
+        to: `${prefix}/`,
       },
       {
         label: 'Marketing',
         icon: MarketingIcon,
-        to: '/marketing',
+        to: `${prefix}/marketing`,
       },
       {
         label: 'Financials',
         icon: FinancialIcon,
-        to: '/financials',
+        to: `${prefix}/financials`,
       },
     ],
   },
@@ -46,17 +46,17 @@ export const shop_menu_items = [
       {
         label: 'Order',
         icon: OrderIcon,
-        to: '/new-orders',
+        to: `${prefix}/new-orders`,
       },
       {
         label: 'Driver Rating',
         icon: RatingIcon,
-        to: '/',
+        to: `${prefix}/`,
       },
       {
         label: 'Settings',
         icon: SettingsIcon,
-        to: '/settings',
+        to: `${prefix}/settings`,
       },
     ],
   },
@@ -66,22 +66,22 @@ export const shop_menu_items = [
       {
         label: 'Menu',
         icon: MenuIcon,
-        to: '/menu',
+        to: `${prefix}/menu`,
       },
       {
         label: 'Profile',
         icon: ProfileIcon,
-        to: '/profile',
+        to: `${prefix}/profile`,
       },
       {
         label: 'Hours',
         icon: HoursIcon,
-        to: '/hours',
+        to: `${prefix}/hours`,
       },
       {
         label: 'Users',
         icon: UsersIcon,
-        to: '/users',
+        to: `${prefix}/users`,
       },
     ],
   },
@@ -90,27 +90,27 @@ export const shop_menu_items = [
     menu: [
       {
         label: 'My Shop',
-        to: '/shops/list',
+        to: `${prefix}/shops/list`,
       },
       {
         label: 'Menu Old',
-        to: '/products/list',
+        to: `${prefix}/products/list`,
       },
       {
         label: 'App Wallet',
-        to: '/add-wallet/shop-transactions',
+        to: `${prefix}/add-wallet/shop-transactions`,
       },
       {
         label: 'Credentials',
-        to: '/shop/credentials/list',
+        to: `${prefix}/shop/credentials/list`,
       },
       {
         label: 'Categories Old',
-        to: '/categories/list',
+        to: `${prefix}/categories/list`,
       },
       {
         label: 'Old Orders',
-        to: '/orders/list',
+        to: `${prefix}/orders/list`,
       },
       {
         label: 'Zone',
@@ -120,7 +120,7 @@ export const shop_menu_items = [
       {
         label: 'Old Dashboard',
         icon: DashBoardIcon,
-        to: '/dashboard',
+        to: `${prefix}/dashboard`,
       },
     ],
   },
@@ -133,7 +133,7 @@ export const seller_menu_items = [
     menu: [
       {
         label: 'Dashboard',
-        to: '/dashboard',
+        to: '/',
       },
       {
         label: 'Orders',

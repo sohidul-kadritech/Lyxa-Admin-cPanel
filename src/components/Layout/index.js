@@ -1,18 +1,16 @@
 import { Box } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { useGlobalContext } from '../../context/GlobalContext';
-import { shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import { getRouteAndSidebarItems } from './helper';
 
 export default function Layout() {
   const { currentUser } = useGlobalContext();
   const [sidebar, setSidebar] = useState(false);
-  let routes = [];
-
-  if (currentUser?.userType === 'shop') routes = shop_routes;
+  const { routes, menuItems } = useMemo(() => getRouteAndSidebarItems(currentUser?.userType), [currentUser?.userType]);
 
   return (
     <Box
@@ -25,7 +23,7 @@ export default function Layout() {
     >
       <Topbar sidebar={sidebar} setSidebar={setSidebar} />
       <Box position="relative">
-        <Sidebar sidebar={sidebar} setSidebar={setSidebar} variant="parent" />
+        <Sidebar sidebar={sidebar} setSidebar={setSidebar} menuItems={menuItems} variant="parent" />
         <Box
           sx={{
             paddingLeft: 12.5,

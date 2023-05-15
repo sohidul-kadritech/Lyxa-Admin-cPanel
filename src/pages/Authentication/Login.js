@@ -51,7 +51,7 @@ function Login(props) {
       if (type === 'customerService') {
         history.push('/orders/list');
       } else {
-        history.push('/dashboard');
+        history.push('/');
       }
     }
   }, [admin]);

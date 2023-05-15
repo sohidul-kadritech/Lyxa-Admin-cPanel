@@ -2,12 +2,6 @@
 import { Box, Stack, Typography, styled } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { ReactComponent as Logo } from '../../../assets/icons/lyxa-sidebar-logo.svg';
-import {
-  admin_menu_items,
-  customer_service_menu_items,
-  seller_menu_items,
-  shop_menu_items,
-} from '../../../common/sidebar_menu_items';
 import MenuList from './MenuList';
 
 const StyledSidebarContaier = styled(Box)(({ theme }) => ({
@@ -24,6 +18,12 @@ const StyledSidebarContaier = styled(Box)(({ theme }) => ({
 
   '&.show': {
     transform: 'translateX(0)',
+  },
+
+  '&.child': {
+    position: 'static',
+    transform: 'translateX(0%)',
+    height: 'calc(100vh - 83px)',
   },
 }));
 
@@ -47,20 +47,13 @@ const StyledOverlay = styled(Box)(() => ({
   },
 }));
 
-export default function Sidebar({ variant, sidebar, setSidebar }) {
+export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [] }) {
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
-
-  let menuItems = [];
-
-  if (account_type === 'shop') menuItems = shop_menu_items;
-  if (account_type === 'admin')
-    menuItems = adminType !== 'customerService' ? admin_menu_items : customer_service_menu_items;
-  if (account_type === 'seller') menuItems = seller_menu_items;
 
   return (
     <Box>
       <StyledSidebarContaier
-        className={sidebar ? 'show' : undefined}
+        className={variant === 'child' ? 'child' : sidebar ? 'show' : undefined}
         sx={{
           background: variant === 'parent' ? 'white' : '#333333',
         }}
@@ -70,7 +63,7 @@ export default function Sidebar({ variant, sidebar, setSidebar }) {
           <Box
             sx={{
               textAlign: 'center',
-              padding: '97px 0px 20px 0px',
+              padding: '27px 0px 20px 0px',
               borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
               top: '0px',
               position: 'sticky',
@@ -95,12 +88,19 @@ export default function Sidebar({ variant, sidebar, setSidebar }) {
         )}
         <Stack pb={8.5}>
           {menuItems.map((list, index) => (
-            <MenuList key={index} variant={variant} menuList={list} onLinkClick={() => setSidebar(false)} />
+            <MenuList
+              key={index}
+              variant={variant}
+              menuList={list}
+              onLinkClick={() => {
+                if (variant === 'parent') setSidebar(false);
+              }}
+            />
           ))}
         </Stack>
       </StyledSidebarContaier>
       <StyledOverlay
-        className={sidebar ? 'show' : undefined}
+        className={sidebar && variant === 'parent' ? 'show' : undefined}
         onClick={() => {
           setSidebar(false);
         }}

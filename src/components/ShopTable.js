@@ -45,6 +45,12 @@ function ShopTable({ shops = [] }) {
       goToShopProductList(item._id);
     } else if (menu === 'Orders') {
       goToShopOrderList(item._id);
+    } else if (menu === 'View As Admin') {
+      if (account_type === 'seller') {
+        history.push(`/shop/${item._id}`);
+      } else if (account_type === 'admin') {
+        console.log(account_type);
+      }
     }
   };
 
@@ -120,6 +126,7 @@ function ShopTable({ shops = [] }) {
                 <ThreeDotsMenu
                   handleMenuClick={(menu) => handleMenu(menu, item)}
                   menuItems={[
+                    account_type !== 'shop' && 'View As Admin',
                     account_type !== 'shop' && 'Edit',
                     'Details',
                     account_type === 'admin' && adminType !== 'customerService' && 'Products',
