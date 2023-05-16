@@ -47,6 +47,13 @@ export default function App() {
   } = useSelector((state) => state.Login);
   const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
 
+  // remove auth cookies
+  const removeAuthCookies = () => {
+    const cookies = getCookiesAsObject();
+    setCookiesAsObj(cookies, 0);
+    window.location.reload(true);
+  };
+
   // get admin data
   const fetchAdminData = async (accountType, id) => {
     let ADMIN_DATA;
@@ -74,7 +81,6 @@ export default function App() {
       console.log('parent shop', parentShop);
       console.log('before loaded: ', ENDPOINT, ADMIN_DATA);
       const { data: respData } = await requestApi().request(ENDPOINT, requestOptions);
-
       if (respData?.status) {
         const credentialParent =
           respData?.data?.[accountType]?.parentShop || respData?.data?.[accountType]?.parentSeller;
@@ -82,7 +88,7 @@ export default function App() {
         if (credentialParent) {
           const { data: respDataCred } = await requestApi().request(
             `${ENDPOINT}?id=${credentialParent}`,
-            requestOptions,
+            requestOptions
           );
           ADMIN_DATA = respDataCred?.data?.[accountType];
           dispatch(setAdmin({ ...ADMIN_DATA, credentialUserId: ADMIN_DATA._id, account_type: accountType } || {}));
@@ -91,21 +97,15 @@ export default function App() {
           console.log('cookies: ', cookies.credentialUserId);
           ADMIN_DATA = respData?.data?.[accountType];
           dispatch(
-            setAdmin({ ...ADMIN_DATA, credentialUserId: cookies.credentialUserId, account_type: accountType } || {}),
+            setAdmin({ ...ADMIN_DATA, credentialUserId: cookies.credentialUserId, account_type: accountType } || {})
           );
         }
+      } else {
+        removeAuthCookies();
       }
-      console.log('data is loaded: ', ENDPOINT, ADMIN_DATA);
-      setAdminDataIsLoading(false);
     } catch (error) {
       console.log(error);
     }
-  };
-
-  // remove auth cookies
-  const removeAuthCookies = () => {
-    const cookies = getCookiesAsObject();
-    setCookiesAsObj(cookies, 0);
   };
 
   // read cookies and fetch admin data
