@@ -3,7 +3,7 @@
 import { Box, Drawer, Stack, Typography, styled } from '@mui/material';
 
 // project import
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import PageTop from '../../../../../components/Common/PageTop';
 import { deepClone } from '../../../../../helpers/deepClone';
@@ -13,7 +13,7 @@ import AXIOS from '../../../../../network/axios';
 import EditField from './EditField';
 import PageLoader from './PageLoader';
 import SettingsTable from './SettingsTable';
-import { createDateWithType, createUpdateData } from './helper';
+import { createDateWithType, createUpdateData, featuredSettingsInit } from './helper';
 
 const breadcrumbItems = [
   { label: 'Settings', to: '/admin/settings2' },
@@ -28,16 +28,19 @@ const StyledBox = styled(Box)(() => ({
 }));
 
 export default function FeaturedSettings() {
-  // const queryClient = useQueryClient();
-
   const [sidebar, setSidebar] = useState(false);
-  // const [confirmModal, setConfirmModal] = useState(false);
 
   const [editField, setEditField] = useState({});
-  // const [has_unsaved_change, set_has_unsaved_change] = useState(false);
+
   const setLocalData = (data = []) => {
     const newData = deepClone(data);
-    setSettingsData((prev) => createDateWithType(newData) || prev);
+    const init = deepClone(featuredSettingsInit);
+
+    newData.forEach((item) => {
+      init[item?.featuredType] = item;
+    });
+
+    setSettingsData((prev) => createDateWithType(Object.values(init)) || prev);
   };
 
   const query = useQuery([Api.GET_ADMIN_FEATURED_SETTINGS], () => AXIOS.get(Api.GET_ADMIN_FEATURED_SETTINGS), {
@@ -46,7 +49,11 @@ export default function FeaturedSettings() {
     },
   });
 
-  const [settingsData, setSettingsData] = useState(query?.data?.data?.featuredSetting || []);
+  const [settingsData, setSettingsData] = useState(Object.values(deepClone(featuredSettingsInit)));
+
+  useEffect(() => {
+    setLocalData(query?.data?.data?.featuredSetting);
+  }, []);
 
   // update
   const updateMutation = useMutation(
@@ -57,8 +64,6 @@ export default function FeaturedSettings() {
           successMsg(data?.message, data?.status ? 'success' : undefined);
         }
 
-        console.log(data);
-
         if (args.action === 'amount' && data?.status) {
           setLocalData(data?.data?.featuredSetting);
           setSidebar(false);
@@ -67,7 +72,6 @@ export default function FeaturedSettings() {
 
         if (args.action === 'full' && data?.status) {
           setLocalData(data?.data?.featuredSetting);
-          // set_has_unsaved_change(false);
         }
       },
     }
