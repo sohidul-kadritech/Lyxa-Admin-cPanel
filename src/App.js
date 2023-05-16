@@ -78,13 +78,14 @@ export default function App() {
     }
 
     try {
-      console.log('parent shop', parentShop);
-      console.log('before loaded: ', ENDPOINT, ADMIN_DATA);
+      // console.log('parent shop', parentShop);
+      // console.log('before loaded: ', ENDPOINT, ADMIN_DATA);
       const { data: respData } = await requestApi().request(ENDPOINT, requestOptions);
+      console.log({ respData });
+
       if (respData?.status) {
         const credentialParent =
           respData?.data?.[accountType]?.parentShop || respData?.data?.[accountType]?.parentSeller;
-
         if (credentialParent) {
           const { data: respDataCred } = await requestApi().request(
             `${ENDPOINT}?id=${credentialParent}`,
@@ -92,13 +93,14 @@ export default function App() {
           );
           ADMIN_DATA = respDataCred?.data?.[accountType];
           dispatch(setAdmin({ ...ADMIN_DATA, credentialUserId: ADMIN_DATA._id, account_type: accountType } || {}));
+          setAdminDataIsLoading(false);
         } else {
           const cookies = getCookiesAsObject();
-          console.log('cookies: ', cookies.credentialUserId);
           ADMIN_DATA = respData?.data?.[accountType];
           dispatch(
             setAdmin({ ...ADMIN_DATA, credentialUserId: cookies.credentialUserId, account_type: accountType } || {})
           );
+          setAdminDataIsLoading(false);
         }
       } else {
         removeAuthCookies();
