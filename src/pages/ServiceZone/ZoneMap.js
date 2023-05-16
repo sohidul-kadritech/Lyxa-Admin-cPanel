@@ -25,20 +25,13 @@ const calculatePolygonArea = (polygonCoordinates) => {
 };
 
 // eslint-disable-next-line no-unused-vars
-function ZoneMap({ selectedLocation, getZoneCoOrdinates }) {
+function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones }) {
   // eslint-disable-next-line no-unused-vars
   const [center, setCenter] = useState({ lat: 23.8103, lon: 90.4125 });
   // eslint-disable-next-line no-unused-vars
   const [selectedMarker, setSelectedMarker] = useState({ lat: 0, lon: 0 });
   // eslint-disable-next-line no-unused-vars
   const [polygonGeoData, setPolygonGeoData] = useState([]);
-  // console.log('Area: ', calculatePolygonArea(polygonData));
-  // const map = useMap();
-
-  const _created = (e) => {
-    console.log('get geo: ', e?.layer?.editing);
-    setPolygonGeoData(e?.layer?.editing?.latings);
-  };
 
   delete L.Icon.Default.prototype._getIconUrl;
 
@@ -49,6 +42,13 @@ function ZoneMap({ selectedLocation, getZoneCoOrdinates }) {
   });
   const zoom_level = 13;
   const mapRef = useRef(null);
+  const _created = (e) => {
+    const polygon = e.layer;
+    const coordinates = polygon.getLatLngs()[0].map((latLng) => [latLng.lat, latLng.lng]);
+    console.log('get geo: ', coordinates);
+    setPolygonGeoData(coordinates);
+    setCreatedZoneGeometry(coordinates);
+  };
   // eslint-disable-next-line no-unused-vars
   const handleSetView = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
     const map = mapRef.current;
@@ -73,8 +73,7 @@ function ZoneMap({ selectedLocation, getZoneCoOrdinates }) {
       return { lat: selectedLocation?.lat, lon: selectedLocation?.lon };
     });
   }, [selectedLocation]);
-  // eslint-disable-next-line no-unused-vars
-  const position = [28.52, -14];
+
   return (
     <Box sx={{ width: '100%', height: '60vh', zIndex: '-1' }}>
       <MapContainer
@@ -86,7 +85,7 @@ function ZoneMap({ selectedLocation, getZoneCoOrdinates }) {
       >
         <FeatureGroup>
           <EditControl
-            position="topright"
+            position="topleft"
             onCreated={_created}
             draw={{
               rectangle: false,
@@ -98,9 +97,16 @@ function ZoneMap({ selectedLocation, getZoneCoOrdinates }) {
           ></EditControl>
         </FeatureGroup>
         <Polygon pathOptions={{ color: 'red' }} positions={polygonData} />
+        {allZones.map((loc, i) => (
+          <Polygon
+            key={i}
+            pathOptions={{ color: `#${Math.floor(Math.random() * 16777215).toString(16)}` }}
+            positions={loc?.zoneGeometry?.coordinates[0]}
+          />
+        ))}
         <TileLayer url={mapUrlProvider.maptiler.url}></TileLayer>
         {/* Location marker here */}
-        <Marker position={[center.lat, center.lon]} draggable>
+        <Marker position={[center.lat, center.lon]}>
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>

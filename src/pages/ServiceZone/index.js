@@ -2,7 +2,7 @@ import { Add, Close, Edit } from '@mui/icons-material';
 import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
 // eslint-disable-next-line no-unused-vars
@@ -11,6 +11,7 @@ import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
+import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import CreateZone from './CreateZone';
@@ -81,10 +82,42 @@ function ServiceZone() {
   const theme = useTheme();
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
-  const { account_type } = useSelector((store) => store?.Login?.admin);
 
+  const [actionType, setActionType] = useState('add');
+
+  const [rowData, setRowData] = useState({});
+
+  const { account_type } = useSelector((store) => store?.Login?.admin);
+  const queryClient = useQueryClient();
   const apiurl = account_type === 'admin' ? API_URL.GET_ALL_ZONE : '';
-  const getAllZones = useQuery([apiurl], () => AXIOS.get(apiurl));
+
+  // getAllZones
+  const getAllZones = useQuery('get-all-zone', () => AXIOS.get(apiurl));
+  // add new zones
+  const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg('Succesfully Added New Zone', 'success');
+        setOpen(false);
+        queryClient.invalidateQueries('get-all-zone');
+      }
+    },
+  });
+  // delete a zones
+  // eslint-disable-next-line no-unused-vars
+  const deleteAZoneQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_ZONE, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg('Succesfully deleted', 'success');
+        queryClient.invalidateQueries('get-all-zone');
+      }
+    },
+  });
+
+  // eslint-disable-next-line no-unused-vars
+  const deletedAzoneById = (id) => {
+    deleteAZoneQuery.mutate({ zoneId: id });
+  };
 
   console.log(getAllZones?.data?.data?.zones);
   const columns = [
@@ -94,7 +127,7 @@ function ServiceZone() {
       field: 'zoneName',
       sortable: false,
       density: 'comfortable',
-      minWidth: 450,
+      minWidth: 400,
       renderCell: ({ value }) => (
         <Box sx={{ flex: '3' }}>
           <Typography>{value}</Typography>
@@ -104,10 +137,21 @@ function ServiceZone() {
     {
       id: 1,
       headerName: 'Area',
-      field: 'area',
+      field: 'zoneArea',
       sortable: false,
-      minWidth: 250,
-      renderCell: ({ value }) => <Typography>{value || 'no area added'}</Typography>,
+      minWidth: 300,
+      renderCell: ({ value }) => (
+        <Box
+          sx={{
+            padding: '0px 8px',
+            width: '270px',
+          }}
+        >
+          <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {value || 'no area added'}
+          </Typography>
+        </Box>
+      ),
     },
     {
       id: 1,
@@ -140,13 +184,20 @@ function ServiceZone() {
               alignContent: 'center',
               background: theme?.palette?.background?.secondary,
             }}
-            onClick={() => console.log(value?.row)}
+            onClick={() => {
+              console.log(value?.row);
+              setRowData(value?.row);
+              setOpen(() => {
+                setActionType('edit');
+                return true;
+              });
+            }}
           >
             <Edit sx={{ fontSize: '14px' }} />
           </Button>
 
           <Button
-            onClick={() => console.log(value?.row)}
+            onClick={() => deletedAzoneById(value?.row._id)}
             sx={{
               minWidth: '32px',
               padding: '9px',
@@ -197,7 +248,14 @@ function ServiceZone() {
             //   readOnly: Boolean(newProductCategory) || productReadonly,
           }}
         />
-        <AddMenuButton onClick={() => setOpen(true)} />
+        <AddMenuButton
+          onClick={() => {
+            setOpen(() => {
+              setActionType('add');
+              return true;
+            });
+          }}
+        />
       </Stack>
 
       <Box
@@ -228,11 +286,26 @@ function ServiceZone() {
         />
       </Box>
       <Modal open={open} centered>
-        <CreateZone
-          onClose={() => {
-            setOpen(!open);
-          }}
-        />
+        {actionType === 'add' ? (
+          <CreateZone
+            allZones={getAllZones?.data?.data?.zones || []}
+            addNewZone={addNewZone}
+            onClose={() => {
+              console.log('add');
+              setOpen(!open);
+            }}
+          />
+        ) : (
+          <CreateZone
+            allZones={getAllZones?.data?.data?.zones || []}
+            rowData={rowData || { zoneName: 'no name' }}
+            addNewZone={addNewZone}
+            onClose={() => {
+              console.log('edit');
+              setOpen(!open);
+            }}
+          />
+        )}
       </Modal>
     </Box>
   );

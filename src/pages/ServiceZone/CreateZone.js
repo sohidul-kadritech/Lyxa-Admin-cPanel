@@ -5,24 +5,24 @@ import React, { useState } from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 import ModalContainer from './ModalContainer';
 import ZoneMap from './ZoneMap';
+import { validateEditedData } from './helper';
 
 // eslint-disable-next-line prettier/prettier, no-unused-vars
 const fieldContainerSx = {
   padding: '14px 0px 23px 0',
   flex: '1',
 };
-// eslint-disable-next-line prettier/prettier, no-unused-vars
-const getZoneCoOrdinates = (data) => {
-  console.log('data get for ==> ', data);
-};
-function CreateZone({ onClose }) {
+
+function CreateZone({ onClose, addNewZone, allZones, ...props }) {
   const theme = useTheme();
+
+  // const { account_type } = useSelector((store) => store?.Login?.admin);
   // eslint-disable-next-line no-unused-vars
   const [searchLoading, setSearchLoading] = useState(false);
   // eslint-disable-next-line no-unused-vars
-  const [createdZoneGeometry, setCreatedZoneGeometry] = useState({ type: 'Polygon', coordinates: [] });
+  const [createdZoneGeometry, setCreatedZoneGeometry] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [createdZoneStatus, setCreatedZoneStatus] = useState(false);
+  const [createdZoneStatus, setCreatedZoneStatus] = useState('active');
   // eslint-disable-next-line no-unused-vars
   const [createdZoneName, setCreatedZoneName] = useState('');
   // eslint-disable-next-line no-unused-vars
@@ -33,10 +33,29 @@ function CreateZone({ onClose }) {
   const [selectedLocation, setSelectedLoaction] = useState({ lat: 23.8103, lon: 90.4125 });
   // eslint-disable-next-line no-unused-vars
   console.log('createdZone', createdZoneName);
-  // const onChangeCreatedZone = (e) => {
-  //   console.log('createdZone', createdZone);
-  //   setCreatedZone({ ...createdZone, [e.target.name]: e.target.value });
-  // };
+
+  // eslint-disable-next-line no-unused-vars
+  console.log('data: ', props?.rowData);
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const createNewZone = () => {
+    const data = {
+      zoneName: createdZoneName,
+      zoneArea: createdZoneArea,
+      zoneGeometry: {
+        type: 'Polygon',
+        coordinates: [createdZoneGeometry],
+      },
+      zoneStatus: createdZoneStatus,
+    };
+    if (validateEditedData(data)) {
+      addNewZone.mutate(data);
+      // const apiurl = account_type === 'admin' ? API_URL.GET_ALL_ZONE : '';
+
+      // getAllZones.refetch();
+    }
+    console.log(data);
+  };
+
   const mapSearchResult = async (e) => {
     setSearchLoading(true);
     const provider = new OpenStreetMapProvider();
@@ -84,6 +103,7 @@ function CreateZone({ onClose }) {
               sx: fieldContainerSx,
             }}
             inputProps={{
+              defaultValue: props?.rowData?.zoneName || '',
               type: 'text',
               name: 'zoneName',
               onChange: (e) => setCreatedZoneName(e.target.value),
@@ -113,6 +133,7 @@ function CreateZone({ onClose }) {
                 sx: fieldContainerSx,
               }}
               inputProps={{
+                defaultValue: props?.rowData?.zoneArea || '',
                 type: 'text',
                 name: 'zoneArea',
                 onChange: mapSearchResult,
@@ -138,11 +159,15 @@ function CreateZone({ onClose }) {
                     {searchResult.map((loc, i) => (
                       <Stack
                         key={i}
-                        onClick={() => {
+                        onClick={async () => {
                           // console.log('location slected: ', [loc.raw.lat, loc.raw.lon]);
-                          setCreatedZoneArea(loc?.label);
+                          await setCreatedZoneArea(loc?.label);
                           if (loc?.raw?.lat && loc?.raw?.lon)
-                            setSelectedLoaction({ lat: parseFloat(loc?.raw?.lat), lon: parseFloat(loc?.raw?.lon) });
+                            await setSelectedLoaction({
+                              lat: parseFloat(loc?.raw?.lat),
+                              lon: parseFloat(loc?.raw?.lon),
+                            });
+                          setSearchResult([]);
                           // else setSelectedLoaction([]);
                         }}
                         flexDirection="row"
@@ -170,7 +195,11 @@ function CreateZone({ onClose }) {
         </Stack>
 
         <Box>
-          <ZoneMap getZoneCoOrdinates={getZoneCoOrdinates} selectedLocation={selectedLocation}></ZoneMap>
+          <ZoneMap
+            allZones={allZones}
+            setCreatedZoneGeometry={setCreatedZoneGeometry}
+            selectedLocation={selectedLocation}
+          ></ZoneMap>
         </Box>
         <Box>
           <Stack flexDirection="row" sx={{ marginTop: '40px' }}>
@@ -187,7 +216,7 @@ function CreateZone({ onClose }) {
               </Typography>
             </Box>
             <Box>
-              <Button variant="contained" color="primary">
+              <Button onClick={createNewZone} variant="contained" color="primary">
                 Save Zone
               </Button>
             </Box>
