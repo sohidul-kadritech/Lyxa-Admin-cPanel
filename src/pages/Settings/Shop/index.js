@@ -63,7 +63,7 @@ function ShopSettings() {
 
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
 
-  const [newMaxDiscount, setNewMaxDiscount] = useState(newShop?.maxDiscount.toString());
+  const [newMaxDiscount, setNewMaxDiscount] = useState(newShop?.maxDiscount?.toString() || '100');
 
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
 
@@ -76,7 +76,8 @@ function ShopSettings() {
       minimumOrder,
       newPayMentInformation,
       newDietary,
-      newPriceRange
+      // eslint-disable-next-line prettier/prettier
+      newPriceRange,
     );
     return Axios.post(Api.EDIT_SHOP, data);
   };
@@ -114,7 +115,7 @@ function ShopSettings() {
     setNewDietary(shop?.dietary);
     setMinimumOrder(shop?.minOrderAmount);
     setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
-    setNewMaxDiscount(shop?.maxDiscount.toString());
+    setNewMaxDiscount(shop?.maxDiscount?.toString() || '100');
   };
 
   useEffect(() => {

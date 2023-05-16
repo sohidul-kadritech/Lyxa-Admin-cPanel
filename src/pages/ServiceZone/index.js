@@ -94,7 +94,7 @@ function ServiceZone() {
       field: 'zoneName',
       sortable: false,
       density: 'comfortable',
-      minWidth: 400,
+      minWidth: 450,
       renderCell: ({ value }) => (
         <Box sx={{ flex: '3' }}>
           <Typography>{value}</Typography>
@@ -106,7 +106,7 @@ function ServiceZone() {
       headerName: 'Area',
       field: 'area',
       sortable: false,
-      minWidth: 300,
+      minWidth: 250,
       renderCell: ({ value }) => <Typography>{value || 'no area added'}</Typography>,
     },
     {
