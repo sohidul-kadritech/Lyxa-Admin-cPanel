@@ -197,7 +197,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const { cancelReasons } = useSelector((state) => state.settingsReducer);
   const { isCanceled } = useSelector((state) => state.butlerReducer);
   const { status } = useSelector((store) => store.butlerReducer);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { account_type } = useSelector((store) => store.Login.admin);
   const { socket } = useSelector((state) => state.socketReducer);
 

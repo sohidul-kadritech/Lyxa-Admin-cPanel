@@ -22,7 +22,7 @@ import {
 function SellerTransactions() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const {
     loading,

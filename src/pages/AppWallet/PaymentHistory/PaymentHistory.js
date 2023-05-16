@@ -6,7 +6,7 @@ import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 
 function PaymentHistory() {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   return (
     <GlobalWrapper>

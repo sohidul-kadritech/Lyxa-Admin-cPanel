@@ -85,7 +85,7 @@ function ShopDetails() {
   const [productsFile, setProductsFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { account_type } = useSelector((store) => store.Login.admin);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const getShop = async () => {
     const data = await callApi(id, SINGLE_SHOP, 'shop');

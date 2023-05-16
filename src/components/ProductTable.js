@@ -12,7 +12,7 @@ import ThreeDotsMenu from './ThreeDotsMenu';
 function ProductTable({ products, loading }) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   // eslint-disable-next-line no-unused-vars
   const [selectedImg, setSelectedImg] = useState(null);

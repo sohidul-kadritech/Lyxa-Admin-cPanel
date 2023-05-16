@@ -23,13 +23,13 @@ import { Button, Card, CardBody, CardTitle, Col, Form, Modal, Row, Spinner } fro
 import styled from 'styled-components';
 import { orderStatusOptions } from '../assets/staticData';
 import { successMsg } from '../helpers/successMsg';
+import { getAllCancelReasons } from '../store/Settings/settingsAction';
 import {
   cancelOrderByAdmin,
   getAllActiveDeliveryMan,
   orderUpdateStatus,
   sentOrderFlag,
 } from '../store/order/orderAction';
-import { getAllCancelReasons } from '../store/Settings/settingsAction';
 
 import userIcon from '../assets/images/dashboard/user.png';
 import noPhoto from '../assets/images/noPhoto.jpg';
@@ -329,7 +329,7 @@ function OrderTable({ orders = [], status, loading }) {
       updateIsFlaged(item?.flag);
     }
   };
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const goToDetails = (id) => {
     history.push(`/orders/details/${id}`);

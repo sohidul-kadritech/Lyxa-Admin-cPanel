@@ -16,7 +16,7 @@ import cancelBagIcon from '../assets/images/dashboard/cancel-bag.png';
 const GraphInfo = lazy(() => import('./GraphInfo'));
 
 function ShopDashboard({ summary }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { haveOwnDeliveryBoy } = useSelector((store) => store.Login.admin);
   console.log(haveOwnDeliveryBoy);
 

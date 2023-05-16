@@ -80,7 +80,7 @@ function SingleDeliveryTransactions() {
   const [cashOrders, setCashOrders] = useState([]);
   const [tabItem, setTabItem] = useState(0);
 
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const {
     status,

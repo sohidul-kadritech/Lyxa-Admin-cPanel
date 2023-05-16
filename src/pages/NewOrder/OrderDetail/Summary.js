@@ -5,7 +5,7 @@ import { StyledOrderDetailBox } from '../helpers';
 
 export default function OrderSummary({ productsDetails = [] }) {
   const theme = useTheme();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const totalProductQuantity = productsDetails.reduce((prev, curr) => curr?.productQuantity + prev, 0);
 

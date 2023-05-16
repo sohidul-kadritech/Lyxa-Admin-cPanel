@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { StyledOrderDetailBox } from '../helpers';
 
 function StyledItem({ label, value, total }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   return (
     <Stack

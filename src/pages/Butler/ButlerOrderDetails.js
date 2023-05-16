@@ -59,7 +59,7 @@ function OrderInfo({ items = [] }) {
 }
 
 function SummaryInfo({ title, value }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   return (
     <div className="item">
@@ -136,7 +136,7 @@ function ButlerOrderDetails() {
   const [selectedImg] = useState(null);
   console.log(order);
 
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   useEffect(() => {
     if (id) {

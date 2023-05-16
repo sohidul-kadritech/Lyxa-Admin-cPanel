@@ -48,7 +48,7 @@ function ProductDetails() {
 
   const { products, status } = useSelector((state) => state.productReducer);
 
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const [product, setProduct] = useState(null);
   const [isOpen, setIsOpen] = useState(false);

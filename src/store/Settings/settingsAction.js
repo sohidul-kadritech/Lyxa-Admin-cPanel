@@ -265,7 +265,7 @@ export const getAllAppSettings = () => async (dispatch) => {
     // save current currency to localStorage
     localStorage.setItem('currency', JSON.stringify(data?.appSetting?.currency || { code: '' }));
 
-    if (status) {
+    if (status && data.appSetting) {
       dispatch({
         type: actionType.ALL_APP_SETTINGS_REQUEST_SUCCESS,
         payload: data.appSetting,

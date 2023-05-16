@@ -6,7 +6,7 @@ import CircularLoader from './CircularLoader';
 import { TrxType } from './updateTrxsType';
 
 function TransactionsTable({ trxs = [], loading }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   return (
     <div>

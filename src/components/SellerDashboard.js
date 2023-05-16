@@ -17,7 +17,7 @@ import shopIcon from '../assets/images/dashboard/shop.png';
 const GraphInfo = lazy(() => import('./GraphInfo'));
 
 function SellerDashboard({ summary }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const shops = useSelector((store) => store.Login.admin.shops);
 
   let topSummaryData = [

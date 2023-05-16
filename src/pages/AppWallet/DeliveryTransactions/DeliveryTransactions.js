@@ -35,7 +35,7 @@ function DeliveryTransactions() {
     deliverySortByKey,
     deliverySearchKey,
   } = useSelector((state) => state.appWalletReducer);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const dispatch = useDispatch();
   const history = useHistory();

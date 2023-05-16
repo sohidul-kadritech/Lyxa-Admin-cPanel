@@ -52,7 +52,7 @@ function Transactions() {
       callTransList(true);
     }
   }, [trxSortByKey, trxSearchKey, trxAccountType]);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const updateTrxType = (trx) => {
     let newType = null;

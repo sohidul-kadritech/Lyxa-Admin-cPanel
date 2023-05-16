@@ -45,7 +45,7 @@ function DropPayList() {
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   const [balAddModal, setBalAddModal] = useState(false);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   useEffect(() => {
     dispatch(

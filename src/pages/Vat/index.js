@@ -31,7 +31,7 @@ function SingleShopTransactions() {
     loading,
     status,
   } = useSelector((store) => store.vatReducer);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { admins } = useSelector((state) => state.adminReducer);
 
   const [isModalOpen, setIsModalOpen] = useState(false);

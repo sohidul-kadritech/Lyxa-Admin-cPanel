@@ -59,7 +59,7 @@ function OrderInfo({ items = [] }) {
 }
 
 function SummaryInfo({ title, value }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   return (
     <div className="item">
@@ -135,7 +135,7 @@ function OrderDetails() {
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg] = useState(null);
   const [orderTimeline, setOrderTimeline] = useState([]);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const getProperOrderTimeline = (orderObj) => {
     if (orderObj?.orderFor === 'specific') {

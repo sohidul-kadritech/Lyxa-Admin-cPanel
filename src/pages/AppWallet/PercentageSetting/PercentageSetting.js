@@ -21,7 +21,7 @@ import {
 
 function PercentageSetting() {
   const dispatch = useDispatch();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { loading, dropCharge, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
     (state) => state.settingsReducer
   );

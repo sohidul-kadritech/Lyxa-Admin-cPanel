@@ -28,7 +28,7 @@ import { MAP_URL, SINGLE_USER } from '../../../network/Api';
 import { getUserAllOrder, updateUserStatus } from '../../../store/Users/UsersAction';
 
 function UserDetails() {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();

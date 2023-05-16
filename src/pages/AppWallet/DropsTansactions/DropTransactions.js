@@ -17,7 +17,7 @@ import {
 
 function DropTransactions() {
   const history = useHistory();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code).toUpperCase();
+  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const { loading, dropTrxs, dropTrxStartDate, dropTrxEndDate, paging, hasNextPage, currentPage, hasPreviousPage } =
     useSelector((state) => state.appWalletReducer);
