@@ -2,10 +2,35 @@ import { Box } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { admin_menu_items, seller_menu_items, shop_menu_items } from '../../common/sidebar_menu_items';
 import { useGlobalContext } from '../../context/GlobalContext';
+import { admin_routes } from '../../routes/admin_routes';
+import { seller_routes } from '../../routes/seller_routes';
+import { shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
-import { getRouteAndSidebarItems } from './helper';
+
+export const getRouteAndSidebarItems = (userType, prefix = '') => {
+  let routes = [];
+  let menuItems = [];
+
+  if (userType === 'shop') {
+    routes = shop_routes(prefix);
+    menuItems = shop_menu_items(prefix);
+  }
+
+  if (userType === 'seller') {
+    routes = seller_routes;
+    menuItems = seller_menu_items;
+  }
+
+  if (userType === 'admin') {
+    routes = admin_routes;
+    menuItems = admin_menu_items;
+  }
+
+  return { routes, menuItems };
+};
 
 export default function Layout() {
   const { currentUser } = useGlobalContext();

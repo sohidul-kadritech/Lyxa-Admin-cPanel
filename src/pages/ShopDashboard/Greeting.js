@@ -1,14 +1,13 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
-// import {  } from 'styled-components';
+import { useGlobalContext } from '../../context/GlobalContext';
 
 export default function Greeting() {
   const theme = useTheme();
-
-  const shop = useSelector((store) => store.Login.admin);
-  // console.log(shop);
+  const { currentUser } = useGlobalContext();
+  const shop = currentUser?.shop || {};
+  console.log(shop);
 
   return (
     <Box>

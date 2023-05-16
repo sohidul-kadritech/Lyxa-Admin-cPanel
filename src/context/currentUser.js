@@ -14,21 +14,21 @@ export const currentUserReducer = (state, { type, payload }) => {
       return {
         ...state,
         shop: payload.shop,
-        userType: 'shop',
+        userType: payload.isCurrentUser ? 'shop' : state.userType,
       };
 
     case 'seller':
       return {
         ...state,
         seller: payload.seller,
-        userType: 'seller',
+        userType: payload.isCurrentUser ? 'seller' : state.userType,
       };
 
     case 'admin':
       return {
         ...state,
         admin: payload.admin,
-        userType: 'admin',
+        userType: payload.isCurrentUser ? 'seller' : state.userType,
         adminType: payload.admin?.adminType,
       };
 

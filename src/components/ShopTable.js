@@ -4,12 +4,14 @@ import Lightbox from 'react-image-lightbox';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { useGlobalContext } from '../context/GlobalContext';
 import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
 function ShopTable({ shops = [] }) {
   const history = useHistory();
+  const { dispatchCurrentUser } = useGlobalContext();
 
   const { loading } = useSelector((state) => state.shopReducer);
 
@@ -48,6 +50,8 @@ function ShopTable({ shops = [] }) {
     } else if (menu === 'View As Admin') {
       if (account_type === 'seller') {
         history.push(`/shop/${item._id}`);
+        console.log(item);
+        dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
       } else if (account_type === 'admin') {
         console.log(account_type);
       }

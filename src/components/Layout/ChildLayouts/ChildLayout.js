@@ -1,17 +1,8 @@
 import { Box } from '@material-ui/core';
-import { Route, Switch, useParams } from 'react-router-dom';
-import { shop_routes } from '../../routes/shop_routes';
-import Sidebar from './Sidebar';
+import { Route, Switch } from 'react-router-dom';
+import Sidebar from '../Sidebar';
 
-export default function ChildLayout({ routesPrefix, to }) {
-  const { id } = useParams();
-  console.log(id);
-
-  // eslint-disable-next-line max-len
-  // const { routes, menuItems } = useMemo(() => getRouteAndSidebarItems(currentUser?.userType), [currentUser?.userType]);
-  let routes = [];
-  if (to === 'shop') routes = shop_routes(routesPrefix);
-
+export default function ChildLayout({ routes, menuItems }) {
   return (
     <Box
       position="relative"
@@ -22,7 +13,7 @@ export default function ChildLayout({ routesPrefix, to }) {
         gridTemplateColumns: 'auto 1fr',
       }}
     >
-      <Sidebar variant="child" />
+      <Sidebar variant="child" menuItems={menuItems} />
       <Box
         sx={{
           paddingLeft: '50px',

@@ -1,4 +1,4 @@
-import ChildLayout from '../components/Layout/ChildLayout';
+import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToChildLayout';
 import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
 import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
@@ -42,5 +42,9 @@ export const seller_routes = [
   { path: '/categories/list', component: CategoryList },
   { path: '/categories/edit/:id', component: CategoryAdd },
   { path: '/category/details/:id', component: CategoryDetails },
-  { path: '/shop/:shopId', component: () => <ChildLayout to="shop" routesPrefix="/shop/:shopId" /> },
+  {
+    path: '/shop/:shopId',
+    exact: false,
+    component: () => <SellerToShopLayout routePrefix="/shop/:shopId" />,
+  },
 ];
