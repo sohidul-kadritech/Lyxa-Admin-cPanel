@@ -30,6 +30,7 @@ export default function SellerToShopLayout({ routePrefix }) {
         if (data?.status) {
           console.log(data?.data);
           dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shop } });
+          dispatchTabs({ type: 'add-tab', payload: { shop: data?.data?.shop || {}, location: location.pathname } });
         }
       },
     }

@@ -1,4 +1,4 @@
-import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToChildLayout';
+import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
 import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
