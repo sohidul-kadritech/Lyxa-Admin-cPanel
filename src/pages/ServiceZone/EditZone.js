@@ -1,25 +1,21 @@
 import { LocationOnOutlined } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
-import * as turf from '@turf/turf';
+import L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import React, { useState } from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 import ModalContainer from './ModalContainer';
 import ZoneMap from './ZoneMap';
-import { validateEditedData } from './helper';
-
+import { ConvertArea, createdGetLatLngsData, validateEditedData } from './helper';
 // eslint-disable-next-line prettier/prettier, no-unused-vars
 const fieldContainerSx = {
   padding: '14px 0px 23px 0',
   flex: '1',
 };
 
-const calculatePolygonArea = (coordinates) => {
-  // var polygon = turf.polygon([coordinates])
-  const oldPolygon = [...coordinates, coordinates[0]];
-  console.log('ok', oldPolygon);
-  const polygon = turf.polygon([oldPolygon]);
-  const area = turf.area(polygon);
+const calculateCurrentPolygonArea = (polygon) => {
+  const convetedData = createdGetLatLngsData(polygon);
+  const area = L.GeometryUtil.geodesicArea(convetedData);
   return Math.round(area);
 };
 
@@ -36,7 +32,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
       [0, 0],
       [0, 0],
       // eslint-disable-next-line prettier/prettier
-    ],
+		]
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -49,6 +45,21 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
   const [searchResult, setSearchResult] = useState([]);
 
   const [selectedLocation, setSelectedLoaction] = useState({ lat: null, lon: null });
+  console.log(
+    'getArear here: ',
+    L.GeometryUtil.geodesicArea([
+      { lat: 23.2254654, lng: 45.55 },
+      { lat: 25.2254654, lng: 48.55 },
+      { lat: 28.2254654, lng: 50.55 },
+    ])
+  );
+
+  console.log(createdGetLatLngsData(rowData?.zoneGeometry?.coordinates[0]), 'funciton call here');
+  // console.log('getArear here: ', L.GeometryUtil.geodesicArea(rowData?.zoneGeometry?.coordinates[0]));
+  // eslint-disable-next-line no-unused-vars
+  const [polygonArea, setPolygonArea] = useState(
+    calculateCurrentPolygonArea(rowData?.zoneGeometry?.coordinates[0]) || 0
+  );
 
   const updateZone = () => {
     const data = {
@@ -83,7 +94,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
         [0, 0],
         [0, 0],
         // eslint-disable-next-line prettier/prettier
-      ],
+			]
     );
     setCreatedZoneName(rowData?.zoneName || '');
     setCreatedZoneArea(rowData?.zoneArea || '');
@@ -227,6 +238,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
 
         <Box>
           <ZoneMap
+            setPolygonArea={setPolygonArea}
             allZones={allZones}
             setCreatedZoneGeometry={setCreatedZoneGeometry}
             selectedLocation={selectedLocation}
@@ -244,7 +256,8 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
               <Typography
                 sx={{ color: theme.palette.text.primary, fontSize: '28px', fontWeight: 500, lineHeight: '20px' }}
               >
-                {calculatePolygonArea(createdZoneGeometry) || 0}m<sup>2</sup>
+                {/* {polygonArea}m<sup>2</sup> */}
+                <ConvertArea squareMeters={polygonArea} />
               </Typography>
             </Box>
             <Stack flexDirection="row" gap="20px">

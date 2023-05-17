@@ -1,3 +1,5 @@
+import { Stack, Typography } from '@mui/material';
+import L from 'leaflet';
 import { successMsg } from '../../helpers/successMsg';
 
 export const validateEditedData = (data) => {
@@ -20,6 +22,47 @@ export const validateEditedData = (data) => {
 
   return true;
 };
+export const calculatePolygonArea = (polygon) => {
+  const area = L.GeometryUtil.geodesicArea(polygon.getLatLngs()[0]);
+  console.log('polygon.getLatLngs()[0]', polygon.getLatLngs()[0]);
+  return Math.round(area);
+};
+
+export const createdGetLatLngsData = (polygon) => {
+  const convertedData = polygon.map(([lat, lng]) => ({ lat, lng }));
+  // console.log('converted: ', convertedData);
+  return convertedData;
+};
+
+export function ConvertArea({ squareMeters }) {
+  const squareFeet = squareMeters * 10.7639;
+  // eslint-disable-next-line no-unused-vars
+  const acres = squareFeet / 43560;
+  const squareKilometers = squareMeters / 1000000;
+  // eslint-disable-next-line no-unused-vars
+  const squareMiles = squareFeet / 27878400;
+
+  return (
+    <Stack flexDirection="row" alignContent="center" alignItems="center" gap="4px">
+      <Typography variant="span">
+        {squareMeters}m<sup>2</sup>
+      </Typography>
+      <Typography sx={{ fontSize: '12px' }} variant="span">
+        {squareKilometers.toFixed(2)}km<sup>2</sup>
+      </Typography>
+      {/* <Typography sx={{ fontSize: '12px' }} variant="span">
+        {squareMiles}miles<sup>2</sup>
+      </Typography>
+      <Typography sx={{ fontSize: '12px' }} variant="span">
+        {acres}acres
+      </Typography> */}
+    </Stack>
+  );
+  // squareMeters,
+  // acres,
+  // squareKilometers,
+  // squareMiles,
+}
 
 export const colorList = [
   '#FF0000', // Red

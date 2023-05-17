@@ -1,6 +1,7 @@
 import { LocationOnOutlined } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
-import * as turf from '@turf/turf';
+
+// eslint-disable-next-line no-unused-vars
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import React, { useState } from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
@@ -12,14 +13,6 @@ import { validateEditedData } from './helper';
 const fieldContainerSx = {
   padding: '14px 0px 23px 0',
   flex: '1',
-};
-
-const calculatePolygonArea = (coordinates) => {
-  const oldPolygon = [...coordinates, coordinates[0]];
-  console.log('ok', oldPolygon);
-  const polygon = turf.polygon([oldPolygon]);
-  const area = turf.area(polygon);
-  return Math.round(area);
 };
 
 function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }) {
@@ -40,6 +33,8 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
   const [createdZoneArea, setCreatedZoneArea] = useState('');
 
   const [searchResult, setSearchResult] = useState([]);
+
+  const [polygonArea, setPolygonArea] = useState(0);
 
   const [selectedLocation, setSelectedLoaction] = useState({ lat: null, lon: null });
 
@@ -204,6 +199,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
 
         <Box>
           <ZoneMap
+            setPolygonArea={setPolygonArea}
             currentLocation={currentLocation}
             allZones={allZones}
             setCreatedZoneGeometry={setCreatedZoneGeometry}
@@ -221,7 +217,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
               <Typography
                 sx={{ color: theme.palette.text.primary, fontSize: '28px', fontWeight: 500, lineHeight: '20px' }}
               >
-                {calculatePolygonArea(createdZoneGeometry) || 0}m<sup>2</sup>
+                {polygonArea}m<sup>2</sup>
               </Typography>
             </Box>
             <Box>

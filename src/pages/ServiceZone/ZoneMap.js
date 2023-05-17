@@ -8,17 +8,17 @@ import { FeatureGroup, MapContainer, Marker, Polygon, Popup, TileLayer } from 'r
 import { EditControl } from 'react-leaflet-draw';
 import { successMsg } from '../../helpers/successMsg';
 import './ZoneMap.css';
-import { colorList } from './helper';
+import { calculatePolygonArea, colorList } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
 // eslint-disable-next-line no-unused-vars
 
 // eslint-disable-next-line no-unused-vars
-function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones, currentLocation }) {
+function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones, currentLocation, setPolygonArea }) {
   // eslint-disable-next-line no-unused-vars
   const [center, setCenter] = useState(
     // eslint-disable-next-line prettier/prettier
-    currentLocation?.loaded ? currentLocation?.coordinates : { lat: 23.8103, lon: 90.4125 },
+		currentLocation?.loaded ? currentLocation?.coordinates : {lat: 23.8103, lon: 90.4125}
   );
   // eslint-disable-next-line no-unused-vars
   const [selectedMarker, setSelectedMarker] = useState({ lat: 0, lon: 0 });
@@ -40,6 +40,8 @@ function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones, currentLo
 
   const createdPolygon = (e) => {
     const polygon = e.layer;
+    console.log('polygon: ', polygon);
+    setPolygonArea(calculatePolygonArea(polygon));
     const coordinates = polygon.getLatLngs()[0].map((latLng) => [latLng.lat, latLng.lng]);
     console.log('get geo: ', coordinates);
     setPolygonGeoData(coordinates);
@@ -49,6 +51,8 @@ function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones, currentLo
   const polygonEdited = (e) => {
     successMsg('Polygon edited succesfully', 'success');
     const polygon = e?.layers?.getLayers()[0];
+    console.log('polygon: ', polygon);
+    setPolygonArea(calculatePolygonArea(polygon));
     const coordinates = polygon.getLatLngs()[0].map((latLng) => [latLng.lat, latLng.lng]);
     setPolygonGeoData(coordinates);
     setCreatedZoneGeometry(coordinates);
@@ -56,6 +60,7 @@ function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones, currentLo
 
   const polygonDeleted = () => {
     successMsg('Polygon deleted succesfully', 'success');
+    setPolygonArea(0);
     setCreatedZoneGeometry([
       [0, 0],
       [0, 0],
