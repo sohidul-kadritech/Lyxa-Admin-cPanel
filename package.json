@@ -24,6 +24,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@turf/turf": "^6.5.0",
     "availity-reactstrap-validation": "^2.7.1",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta2",

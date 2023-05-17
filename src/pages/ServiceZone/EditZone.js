@@ -15,6 +15,7 @@ const fieldContainerSx = {
 };
 
 const calculatePolygonArea = (coordinates) => {
+  // var polygon = turf.polygon([coordinates])
   const oldPolygon = [...coordinates, coordinates[0]];
   console.log('ok', oldPolygon);
   const polygon = turf.polygon([oldPolygon]);
@@ -22,29 +23,36 @@ const calculatePolygonArea = (coordinates) => {
   return Math.round(area);
 };
 
-function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }) {
+// eslint-disable-next-line no-unused-vars
+function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
   const theme = useTheme();
+  console.log('current location in edited section: ', currentLocation);
+  // eslint-disable-next-line no-unused-vars
   const [searchLoading, setSearchLoading] = useState(false);
-
-  const [createdZoneGeometry, setCreatedZoneGeometry] = useState([
-    [0, 0],
-    [0, 0],
-    [0, 0],
-  ]);
+  // eslint-disable-next-line no-unused-vars
+  const [createdZoneGeometry, setCreatedZoneGeometry] = useState(
+    rowData?.zoneGeometry?.coordinates[0] || [
+      [0, 0],
+      [0, 0],
+      [0, 0],
+      // eslint-disable-next-line prettier/prettier
+    ],
+  );
 
   // eslint-disable-next-line no-unused-vars
   const [createdZoneStatus, setCreatedZoneStatus] = useState('active');
 
-  const [createdZoneName, setCreatedZoneName] = useState('');
+  const [createdZoneName, setCreatedZoneName] = useState(rowData?.zoneName || '');
 
-  const [createdZoneArea, setCreatedZoneArea] = useState('');
+  const [createdZoneArea, setCreatedZoneArea] = useState(rowData?.zoneArea || '');
 
   const [searchResult, setSearchResult] = useState([]);
 
   const [selectedLocation, setSelectedLoaction] = useState({ lat: null, lon: null });
 
-  const createNewZone = () => {
+  const updateZone = () => {
     const data = {
+      zoneId: rowData?._id,
       zoneName: createdZoneName,
       zoneArea: createdZoneArea,
       zoneGeometry: {
@@ -54,11 +62,11 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
       zoneStatus: createdZoneStatus,
     };
     if (validateEditedData(data)) {
-      addNewZone.mutate(data);
+      editZone.mutate(data);
     }
-    console.log(data);
   };
 
+  // searching place api here
   const mapSearchResult = async (e) => {
     setSearchLoading(true);
     const provider = new OpenStreetMapProvider();
@@ -67,10 +75,24 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
     setSearchResult(e.target.value ? results : []);
   };
 
+  // eslint-disable-next-line no-unused-vars
+  const populateData = () => {
+    setCreatedZoneGeometry(
+      rowData?.zoneGeometry?.coordinates[0] || [
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        // eslint-disable-next-line prettier/prettier
+      ],
+    );
+    setCreatedZoneName(rowData?.zoneName || '');
+    setCreatedZoneArea(rowData?.zoneArea || '');
+  };
+
   return (
     <ModalContainer
       onClose={onClose}
-      title="Create zone"
+      title="Edit zone"
       sx={{
         width: '96vw',
         height: '96vh',
@@ -83,7 +105,6 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
     >
       <Box>
         <Stack flexDirection="row" gap="36px">
-          {/* Zone name */}
           <StyledFormField
             label={
               <Typography sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '20px' }} variant="h4">
@@ -107,14 +128,15 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
               sx: fieldContainerSx,
             }}
             inputProps={{
-              defaultValue: props?.rowData?.zoneName || '',
+              value: createdZoneName,
               type: 'text',
               name: 'zoneName',
-              onChange: (e) => setCreatedZoneName(e.target.value),
+              onChange: (e) => {
+                setCreatedZoneName(e.target.value);
+              },
             }}
           />
 
-          {/* Search Area */}
           <Box sx={{ flex: '1', position: 'relative' }}>
             <StyledFormField
               label={
@@ -143,7 +165,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
                 type: 'text',
                 name: 'zoneArea',
                 onChange: (e) => {
-                  setCreatedZoneArea(e?.target?.value);
+                  setCreatedZoneArea(e.target.value);
                   mapSearchResult(e);
                 },
               }}
@@ -151,7 +173,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
             {searchResult?.length > 0 && (
               <Box
                 sx={{
-                  backgroundColor: theme?.palette?.primary?.contrastText,
+                  backgroundColor: theme.palette.primary.contrastText,
                   width: '100%',
                   maxHeight: '300px',
                   position: 'absolute',
@@ -169,6 +191,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
                       <Stack
                         key={i}
                         onClick={async () => {
+                          // console.log('location slected: ', [loc.raw.lat, loc.raw.lon]);
                           await setCreatedZoneArea(loc?.label);
                           if (loc?.raw?.lat && loc?.raw?.lon)
                             await setSelectedLoaction({
@@ -204,10 +227,10 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
 
         <Box>
           <ZoneMap
-            currentLocation={currentLocation}
             allZones={allZones}
             setCreatedZoneGeometry={setCreatedZoneGeometry}
             selectedLocation={selectedLocation}
+            currentLocation={currentLocation}
           ></ZoneMap>
         </Box>
         <Box>
@@ -224,11 +247,11 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
                 {calculatePolygonArea(createdZoneGeometry) || 0}m<sup>2</sup>
               </Typography>
             </Box>
-            <Box>
-              <Button disabled={addNewZone?.isLoading} onClick={createNewZone} variant="contained" color="primary">
-                Save Zone
+            <Stack flexDirection="row" gap="20px">
+              <Button disabled={editZone?.isLoading} onClick={updateZone} variant="contained" color="primary">
+                Save Changes
               </Button>
-            </Box>
+            </Stack>
           </Stack>
         </Box>
       </Box>
@@ -236,4 +259,4 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
   );
 }
 
-export default CreateZone;
+export default EditZone;

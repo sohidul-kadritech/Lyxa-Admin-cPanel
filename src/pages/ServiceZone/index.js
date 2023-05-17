@@ -8,6 +8,7 @@ import PageTop from '../../components/Common/PageTop';
 // eslint-disable-next-line no-unused-vars
 import StyledFormField from '../../components/Form/StyledFormField';
 
+import AppPagination from '../../components/Common/AppPagination2';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
@@ -15,6 +16,9 @@ import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import CreateZone from './CreateZone';
+import EditZone from './EditZone';
+import ServiceZonePageSkeleton from './ServiceZonePageSkeleton';
+import useGeoLocation from './useGeoLocation';
 
 const dateFormation = (date) => moment(date).format('MMMM D, YYYY');
 
@@ -35,29 +39,11 @@ const breadcrumbItems = [
 ];
 
 // eslint-disable-next-line no-unused-vars
-const rows = [
-  {
-    _id: 1,
-    name: 'Zone A',
-    area: 'McDonalt',
-    created: 'June 1, 2023',
-  },
-  {
-    _id: 2,
-    name: 'Zone B',
-    area: 'McDonalt',
-    created: 'July 1, 2023',
-  },
-  {
-    _id: 3,
-    name: 'Zone C',
-    area: 'McDonalt',
-    created: 'April 1, 2023',
-  },
-];
-
-// eslint-disable-next-line no-unused-vars
 const statusOptions = [
+  {
+    label: 'All',
+    value: '',
+  },
   {
     label: 'Active',
     value: 'active',
@@ -80,6 +66,7 @@ function AddMenuButton({ ...props }) {
 
 function ServiceZone() {
   const theme = useTheme();
+  const currentLocation = useGeoLocation();
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
 
@@ -87,29 +74,65 @@ function ServiceZone() {
 
   const [rowData, setRowData] = useState({});
 
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [slectedZoneStatus, setSelectedZoneStatus] = useState('');
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [searchedValue, setSearchedValue] = useState('');
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [pageNo, setPageNo] = useState(1);
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [selectedPageSize, setSelectedPageSize] = useState(5);
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [selectedsortBy, setSelectedSortBy] = useState('desc');
+
   const { account_type } = useSelector((store) => store?.Login?.admin);
+
   const queryClient = useQueryClient();
   const apiurl = account_type === 'admin' ? API_URL.GET_ALL_ZONE : '';
 
   // getAllZones
-  const getAllZones = useQuery('get-all-zone', () => AXIOS.get(apiurl));
+  const getAllZones = useQuery(
+    [apiurl, { slectedStatus: slectedZoneStatus, searchedValue, pageNo, selectedPageSize, selectedsortBy }],
+    () =>
+      AXIOS.get(apiurl, {
+        params: {
+          zoneStatus: slectedZoneStatus,
+          searchKey: searchedValue,
+          page: pageNo,
+          pageSize: selectedPageSize,
+          sortBy: selectedsortBy,
+        },
+        // eslint-disable-next-line prettier/prettier
+      }),
+  );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg('Succesfully Added New Zone', 'success');
         setOpen(false);
-        queryClient.invalidateQueries('get-all-zone');
+        queryClient.invalidateQueries(apiurl);
       }
     },
   });
+
   // delete a zones
   // eslint-disable-next-line no-unused-vars
   const deleteAZoneQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_ZONE, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg('Succesfully deleted', 'success');
-        queryClient.invalidateQueries('get-all-zone');
+        queryClient.invalidateQueries(apiurl);
+      }
+    },
+  });
+
+  const updateAZoneQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_ZONE, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg('Succesfully updated', 'success');
+        queryClient.invalidateQueries(apiurl);
+        setOpen(false);
       }
     },
   });
@@ -127,7 +150,8 @@ function ServiceZone() {
       field: 'zoneName',
       sortable: false,
       density: 'comfortable',
-      minWidth: 400,
+      flex: 3,
+      minWidth: 270,
       renderCell: ({ value }) => (
         <Box sx={{ flex: '3' }}>
           <Typography>{value}</Typography>
@@ -139,12 +163,13 @@ function ServiceZone() {
       headerName: 'Area',
       field: 'zoneArea',
       sortable: false,
-      minWidth: 300,
+      flex: 3,
+      minWidth: 270,
       renderCell: ({ value }) => (
         <Box
           sx={{
             padding: '0px 8px',
-            width: '270px',
+            width: '80%',
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -158,19 +183,32 @@ function ServiceZone() {
       headerName: 'Date Created',
       field: 'createdAt',
       sortable: false,
-      minWidth: 220,
+      flex: 2,
+      minWidth: 270,
       renderCell: ({ value }) => <Typography>{dateFormation(value)}</Typography>,
     },
     {
       id: 2,
       sortable: false,
-      minWidth: 220,
+      flex: 2,
+      minWidth: 270,
       renderCell: (value) => (
         <Stack flexDirection="row" gap="16px">
           <StyledSwitch
             checked={value?.row?.zoneStatus === 'active'}
             onChange={() => {
               console.log('value; ', value?.row?.zoneStatus);
+              if (value?.row?.zoneStatus === 'active') {
+                updateAZoneQuery.mutate({
+                  zoneId: value?.row?._id,
+                  zoneStatus: 'inactive',
+                });
+              } else {
+                updateAZoneQuery.mutate({
+                  zoneId: value?.row?._id,
+                  zoneStatus: 'active',
+                });
+              }
             }}
           />
           <Button
@@ -215,6 +253,7 @@ function ServiceZone() {
       ),
     },
   ];
+
   return (
     <Box>
       <PageTop
@@ -231,7 +270,7 @@ function ServiceZone() {
       />
 
       <Stack direction="row" justifyContent="start" gap="17px">
-        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" />
+        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchedValue(e.target.value)} />
         <StyledFormField
           // label="Status *"
           intputType="select"
@@ -240,14 +279,15 @@ function ServiceZone() {
           }}
           inputProps={{
             name: 'zoneStatus',
-            value: 'active',
+            value: slectedZoneStatus,
             items: statusOptions,
             size: 'sm2',
             //   items: categories,
-            // onChange: editedDataOnChangeHandler,
+            onChange: (e) => setSelectedZoneStatus(e.target.value),
             //   readOnly: Boolean(newProductCategory) || productReadonly,
           }}
         />
+
         <AddMenuButton
           onClick={() => {
             setOpen(() => {
@@ -267,28 +307,42 @@ function ServiceZone() {
           border: '1px solid #EEEEEE',
           borderRadius: '7px',
           background: '#fff',
-          marginTop: '30px',
+          margin: '30px 0px',
           // height: 550,
           // width: '100%',
         }}
       >
-        <StyledTable
-          columns={columns}
-          rows={getAllZones?.data?.data?.zones || []}
-          getRowId={(row) => row?._id}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No zone found
-              </Stack>
-            ),
-          }}
-        />
+        {!getAllZones?.isLoading ? (
+          <StyledTable
+            columns={columns}
+            rows={getAllZones?.data?.data?.zones || []}
+            getRowId={(row) => row?._id}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No zone found
+                </Stack>
+              ),
+            }}
+          />
+        ) : (
+          <Box>
+            <ServiceZonePageSkeleton />
+          </Box>
+        )}
       </Box>
+      <AppPagination
+        currentPage={pageNo}
+        lisener={(newPage) => {
+          setPageNo(newPage);
+        }}
+        totalPage={2}
+      />
       <Modal open={open} centered>
         {actionType === 'add' ? (
           <CreateZone
             allZones={getAllZones?.data?.data?.zones || []}
+            currentLocation={currentLocation}
             addNewZone={addNewZone}
             onClose={() => {
               console.log('add');
@@ -296,10 +350,17 @@ function ServiceZone() {
             }}
           />
         ) : (
-          <CreateZone
+          <EditZone
             allZones={getAllZones?.data?.data?.zones || []}
+            currentLocation={{
+              loaded: true,
+              coordinates: {
+                lat: rowData?.zoneGeometry?.coordinates[0][0][0],
+                lon: rowData?.zoneGeometry?.coordinates[0][0][1],
+              },
+            }}
             rowData={rowData || { zoneName: 'no name' }}
-            addNewZone={addNewZone}
+            editZone={updateAZoneQuery}
             onClose={() => {
               console.log('edit');
               setOpen(!open);

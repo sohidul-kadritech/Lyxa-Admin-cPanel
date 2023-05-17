@@ -6,33 +6,26 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { FeatureGroup, MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import { successMsg } from '../../helpers/successMsg';
 import './ZoneMap.css';
+import { colorList } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
 // eslint-disable-next-line no-unused-vars
 
-const polygonData = [
-  [51.515, -0.09],
-  [51.52, -0.1],
-  [51.52, -0.12],
-];
-
 // eslint-disable-next-line no-unused-vars
-const calculatePolygonArea = (polygonCoordinates) => {
-  // const turfPolygon = polygon([polygonCoordinates]);
-  // const getArea = area(turfPolygon);
-  // return getArea;
-};
-
-// eslint-disable-next-line no-unused-vars
-function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones }) {
+function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones, currentLocation }) {
   // eslint-disable-next-line no-unused-vars
-  const [center, setCenter] = useState({ lat: 23.8103, lon: 90.4125 });
+  const [center, setCenter] = useState(
+    // eslint-disable-next-line prettier/prettier
+    currentLocation?.loaded ? currentLocation?.coordinates : { lat: 23.8103, lon: 90.4125 },
+  );
   // eslint-disable-next-line no-unused-vars
   const [selectedMarker, setSelectedMarker] = useState({ lat: 0, lon: 0 });
   // eslint-disable-next-line no-unused-vars
   const [polygonGeoData, setPolygonGeoData] = useState([]);
 
+  // Map Pin Icon URL
   delete L.Icon.Default.prototype._getIconUrl;
 
   L.Icon.Default.mergeOptions({
@@ -40,23 +33,45 @@ function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones }) {
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-shadow.png',
   });
+
   const zoom_level = 13;
+
   const mapRef = useRef(null);
-  const _created = (e) => {
+
+  const createdPolygon = (e) => {
     const polygon = e.layer;
     const coordinates = polygon.getLatLngs()[0].map((latLng) => [latLng.lat, latLng.lng]);
     console.log('get geo: ', coordinates);
     setPolygonGeoData(coordinates);
     setCreatedZoneGeometry(coordinates);
   };
-  // eslint-disable-next-line no-unused-vars
+
+  const polygonEdited = (e) => {
+    successMsg('Polygon edited succesfully', 'success');
+    const polygon = e?.layers?.getLayers()[0];
+    const coordinates = polygon.getLatLngs()[0].map((latLng) => [latLng.lat, latLng.lng]);
+    setPolygonGeoData(coordinates);
+    setCreatedZoneGeometry(coordinates);
+  };
+
+  const polygonDeleted = () => {
+    successMsg('Polygon deleted succesfully', 'success');
+    setCreatedZoneGeometry([
+      [0, 0],
+      [0, 0],
+      [0, 0],
+    ]);
+  };
+
+  // Map view handler
   const handleSetView = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
     const map = mapRef.current;
     if (map) {
       map.setView([newLatitude, newLongitude], newZoomLevel);
     }
   };
-  // eslint-disable-next-line no-unused-vars
+
+  // Map view handler
   const handleFlyTo = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
     const map = mapRef.current;
     if (map) {
@@ -66,11 +81,18 @@ function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones }) {
     }
   };
 
+  // for selecting the current location and selected location
   useEffect(() => {
     setCenter(() => {
-      handleSetView(selectedLocation?.lat, selectedLocation?.lon);
-      handleFlyTo(selectedLocation?.lat, selectedLocation?.lon);
-      return { lat: selectedLocation?.lat, lon: selectedLocation?.lon };
+      if (selectedLocation?.lat !== null && selectedLocation?.lon !== null) {
+        handleSetView(selectedLocation?.lat, selectedLocation?.lon);
+        handleFlyTo(selectedLocation?.lat, selectedLocation?.lon);
+        return { lat: selectedLocation?.lat, lon: selectedLocation?.lon };
+      }
+
+      handleSetView(currentLocation?.coordinates?.lat || 23.8103, currentLocation?.coordinates?.lon || 90.4125);
+      handleFlyTo(currentLocation?.coordinates?.lat || 23.8103, currentLocation?.coordinates?.lon || 90.4125);
+      return currentLocation?.loaded ? currentLocation?.coordinates : { lat: 23.8103, lon: 90.4125 };
     });
   }, [selectedLocation]);
 
@@ -83,10 +105,13 @@ function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones }) {
         ref={mapRef}
         scrollWheelZoom
       >
+        {/* Map edit controler */}
         <FeatureGroup>
           <EditControl
             position="topleft"
-            onCreated={_created}
+            onCreated={createdPolygon}
+            onEdited={polygonEdited}
+            onDeleted={polygonDeleted}
             draw={{
               rectangle: false,
               circle: false,
@@ -96,20 +121,23 @@ function ZoneMap({ selectedLocation, setCreatedZoneGeometry, allZones }) {
             }}
           ></EditControl>
         </FeatureGroup>
-        <Polygon pathOptions={{ color: 'red' }} positions={polygonData} />
+
+        {/* Previous zone will be show here */}
         {allZones.map((loc, i) => (
           <Polygon
             key={i}
-            pathOptions={{ color: `#${Math.floor(Math.random() * 16777215).toString(16)}` }}
+            pathOptions={{ color: `${colorList[i % 50]}` }}
             positions={loc?.zoneGeometry?.coordinates[0]}
-          />
+          >
+            <Popup>{loc.zoneName}</Popup>
+          </Polygon>
         ))}
+
         <TileLayer url={mapUrlProvider.maptiler.url}></TileLayer>
+
         {/* Location marker here */}
         <Marker position={[center.lat, center.lon]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
+          <Popup>{JSON.stringify(center)}</Popup>
         </Marker>
       </MapContainer>
     </Box>

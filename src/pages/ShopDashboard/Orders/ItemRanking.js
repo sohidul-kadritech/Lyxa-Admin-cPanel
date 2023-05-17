@@ -1,18 +1,24 @@
 // third party
-import { Unstable_Grid2 as Grid, Typography } from '@mui/material';
+import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
-
 // project import
 import IncreaseDecrease from '../../../components/StyledCharts/IncreaseDecrease';
-import { rankedItems } from './mock';
 
-export default function ItemRanking() {
+export default function ItemRanking({ rankedData, loading }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
-  const columns = [
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [pageNo, setPageNo] = useState(1);
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [selectedPageSize, setSelectedPageSize] = useState(50);
+  // eslint-disable-next-line prettier/prettier, no-unused-vars
+  const [selectedPagingRange, setSelectedPagingRange] = useState(5);
+
+  const column = [
     {
       id: 1,
       headerName: '',
@@ -20,7 +26,7 @@ export default function ItemRanking() {
       flex: 1,
       sortable: false,
       maxWidth: 90,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value || 'none'}</Typography>,
     },
     {
       id: 2,
@@ -31,39 +37,41 @@ export default function ItemRanking() {
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="product"
-          imgUrl={row?.profile_photo}
+          imgUrl={row?.product?.images}
           imgStyle="square"
-          imgFallbackCharacter={row?.name?.charAt(0)}
-          name={row?.name}
-          subTitle={`${currency} ${row?.price}`}
+          imgFallbackCharacter={row?.product?.name?.charAt(0) || 'none'}
+          name={row?.product?.name}
+          subTitle={`${currency} ${row?.product?.price}`}
         />
       ),
     },
     {
       id: 3,
       headerName: 'ITEMS SOLD',
-      field: 'sold',
+      field: 'soldQuantity',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value || 'none'}</Typography>,
     },
     {
       id: 4,
-      headerName: <IncreaseDecrease status="neutral" amount="%" />,
-      field: 'isIncreased',
+      headerName: <IncreaseDecrease status="neutral" amount="% ( Last 30 days )" />,
+      field: 'soldAvgInPercentage',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <IncreaseDecrease status={value ? 'increase' : 'decrease'} amount="10%" />,
+      renderCell: ({ value }) => (
+        <IncreaseDecrease status={value >= 0 ? 'increase' : 'decrease'} amount={value || 'none'} />
+      ),
     },
     {
       id: 5,
       headerName: 'SALES',
-      field: 'sales',
+      field: 'totalAmount',
       flex: 1,
       align: 'center',
       headerAlign: 'center',
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value || 'none'}</Typography>,
     },
   ];
 
@@ -74,13 +82,20 @@ export default function ItemRanking() {
           Item Ranking
         </Typography>
         <StyledTable
-          columns={columns}
-          rows={rankedItems?.map((row, index) => ({
+          columns={column}
+          rows={rankedData.map((row, index) => ({
             ...row,
             rowNumber: index + 1,
           }))}
-          getRowId={(row) => row?._id}
+          getRowId={(row) => row?.product?._id}
           rowHeight={71}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                {loading ? '' : 'No Flags found'}
+              </Stack>
+            ),
+          }}
         />
       </StyledBox>
     </Grid>
