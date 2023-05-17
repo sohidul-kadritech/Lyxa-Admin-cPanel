@@ -1,5 +1,5 @@
 import { Box } from '@material-ui/core';
-import { Route, Switch } from 'react-router-dom';
+import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import Sidebar from '../Sidebar';
 
 export default function ChildLayout({ routes, menuItems }) {
@@ -23,11 +23,25 @@ export default function ChildLayout({ routes, menuItems }) {
           height: 'calc(100vh - 67px)',
         }}
       >
-        <Switch>
-          {routes.map((route) => (
-            <Route exact {...route} key={route.path} />
-          ))}
-        </Switch>
+        <CacheSwitch>
+          {routes?.map(({ path, component: Component, ...props }) => {
+            console.log(path);
+
+            return (
+              <CacheRoute
+                when="always"
+                multiple
+                exact
+                key={path}
+                path={path}
+                component={Component}
+                cacheKey={path}
+                saveScrollPosition
+                {...props}
+              />
+            );
+          })}
+        </CacheSwitch>
       </Box>
     </Box>
   );

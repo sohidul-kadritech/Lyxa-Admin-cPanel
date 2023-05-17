@@ -11,7 +11,7 @@ import ThreeDotsMenu from './ThreeDotsMenu';
 
 function ShopTable({ shops = [] }) {
   const history = useHistory();
-  const { dispatchCurrentUser } = useGlobalContext();
+  const { dispatchCurrentUser, dispatchTabs } = useGlobalContext();
 
   const { loading } = useSelector((state) => state.shopReducer);
 
@@ -50,8 +50,8 @@ function ShopTable({ shops = [] }) {
     } else if (menu === 'View As Admin') {
       if (account_type === 'seller') {
         history.push(`/shop/${item._id}`);
-        console.log(item);
         dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
+        dispatchTabs({ type: 'add-tab', payload: { shop: item, location: `/shop/${item._id}` } });
       } else if (account_type === 'admin') {
         console.log(account_type);
       }

@@ -6,6 +6,7 @@ import { ReactComponent as NotificationIcon } from '../../../assets/icons/t-noti
 import { ReactComponent as SupportIcon } from '../../../assets/icons/t-support.svg';
 import { useGlobalContext } from '../../../context/GlobalContext';
 import AccountMenu from './AccountMenu';
+import Tabs from './Tabs';
 
 const getConsoleName = (userType, adminType) => {
   if (userType === 'admin' && adminType === 'admin') {
@@ -72,6 +73,14 @@ export default function Topbar({ setSidebar, sidebar }) {
             {getConsoleName(currentUser.userType, currentUser.adminType)}
           </Typography>
         </Stack>
+        <Box
+          sx={{
+            marginBottom: '-43px',
+            paddingLeft: '40px',
+          }}
+        >
+          <Tabs />
+        </Box>
       </Stack>
       <Stack direction="row" alignItems="center" gap="25px">
         <Typography variant="body2">
