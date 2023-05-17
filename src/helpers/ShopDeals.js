@@ -23,10 +23,7 @@ export class ShopDeals {
       hasActiveDeal: false,
     };
 
-    // console.log(shop);
-    console.log(shop?.marketings);
-
-    shop?.marketings.forEach((obj) => {
+    shop?.marketings?.forEach((obj) => {
       if (obj?.type === 'free_delivery') {
         deals.free_delivery = obj?.isActive;
         deals.hasActiveDeal = obj?.isActive;

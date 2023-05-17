@@ -2,7 +2,6 @@
 import { Box, Button, Stack, Tab, Tabs, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
 
 // project import
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
@@ -13,6 +12,7 @@ import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledChip from '../../../components/Styled/StyledChips';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -41,7 +41,8 @@ const tabSx = {
 };
 
 export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
-  const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
   const queryClient = useQueryClient();
   const theme = useTheme();
 

@@ -66,17 +66,22 @@ export default function Marketing() {
 
   const [currentModal, setCurrentModal] = useState(null);
   const [activeDeals, setActiveDeals] = useState(activeDealsInit);
-  const { id: shopId } = useParams();
+  const params = useParams();
   const [currentShop, setCurrentShop] = useState(adminShop?.shopType ? adminShop : {});
 
   const [appliedDeals, setAppliedDeals] = useState(marketingTypesInit);
 
   const shopQuery = useQuery(
-    [`single-shop-${shopId}`],
+    [
+      `single-shop`,
+      {
+        id: params?.shopId,
+      },
+    ],
     () =>
       AXIOS.get(Api.SINGLE_SHOP, {
         params: {
-          id: shopId,
+          id: params?.shopId,
         },
       }),
     {
@@ -84,12 +89,19 @@ export default function Marketing() {
     }
   );
 
-  const dealSettingsQuery = useQuery(['deal-settings'], () =>
-    AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
-      params: {
-        type: 'all',
+  const dealSettingsQuery = useQuery(
+    [
+      'deal-settings',
+      {
+        id: params?.shopId,
       },
-    })
+    ],
+    () =>
+      AXIOS.get(Api.GET_ADMIN_DEAL_SETTINGS, {
+        params: {
+          type: 'all',
+        },
+      })
   );
 
   useEffect(() => {
@@ -122,7 +134,12 @@ export default function Marketing() {
   });
 
   const rewardSettingsQuery = useQuery(
-    ['marketing-reward-settings'],
+    [
+      'marketing-reward-settings',
+      {
+        id: params?.shopId,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: getQueryParmas('reward'),
@@ -133,7 +150,12 @@ export default function Marketing() {
   );
 
   const featuredSettingsQuery = useQuery(
-    ['marketing-featured-settings'],
+    [
+      'marketing-featured-settings',
+      {
+        id: params?.shopId,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: getQueryParmas('featured'),
@@ -144,7 +166,12 @@ export default function Marketing() {
   );
 
   const discountSettingsQuery = useQuery(
-    ['marketing-percentage-settings'],
+    [
+      'marketing-percentage-settings',
+      {
+        id: params?.shopId,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: getQueryParmas('percentage'),
@@ -155,7 +182,12 @@ export default function Marketing() {
   );
 
   const doubleDealSettingsQuery = useQuery(
-    ['marketing-double_menu-settings'],
+    [
+      'marketing-double_menu-settings',
+      {
+        id: params?.shopId,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: getQueryParmas('double_menu'),
@@ -166,7 +198,12 @@ export default function Marketing() {
   );
 
   const freeDeliverySettingsQuery = useQuery(
-    ['marketing-free_delivery-settings'],
+    [
+      'marketing-free_delivery-settings',
+      {
+        id: params?.shopId,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: getQueryParmas('free_delivery'),

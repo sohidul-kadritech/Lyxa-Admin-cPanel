@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import ChartBox from '../../components/StyledCharts/ChartBox';
 import StyledAreaChart from '../../components/StyledCharts/StyledAreaChart';
+import { useGlobalContext } from '../../context/GlobalContext';
 import AXIOS from '../../network/axios';
 
 const dateRangeItit = {
@@ -12,6 +13,8 @@ const dateRangeItit = {
 };
 
 export default function CommonAreaChart({ title, generateData, api, cacheKey }) {
+  const { currentUser } = useGlobalContext();
+
   const [range, setRange] = useState({ ...dateRangeItit });
 
   const query = useQuery(
@@ -22,6 +25,7 @@ export default function CommonAreaChart({ title, generateData, api, cacheKey }) 
         startDate: range.start,
         year: undefined,
         type: 'normal',
+        shopId: currentUser?.shop?._id,
       },
     ],
     () =>
@@ -31,9 +35,9 @@ export default function CommonAreaChart({ title, generateData, api, cacheKey }) 
           startDate: range.start,
           year: undefined,
           type: 'normal',
+          shopId: currentUser?.shop?._id,
         },
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const data = generateData(query?.data);

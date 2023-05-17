@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import OptionsSelect from '../../../../components/Filter/OptionsSelect';
 
-export function ShopAction2({ actionSx, options, ...props }) {
+export function ShopAction2({ actionSx, options = [], ...props }) {
   // const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('lg'));
   return (
     <Stack

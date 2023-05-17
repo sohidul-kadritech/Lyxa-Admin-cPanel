@@ -3,12 +3,12 @@
 import { Drawer } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 // import { useHistory } from 'react-router-dom';
 import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
 import PageTop from '../../components/Common/PageTop';
+import { useGlobalContext } from '../../context/GlobalContext';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import dropSort from '../../helpers/dropSort';
 import { local_product_category_search, local_product_category_subCategory_search } from '../../helpers/localSearch';
@@ -26,7 +26,9 @@ import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
-  const shop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
   const Deals = useMemo(() => new ShopDeals(shop), []);
 
   const [render, setRender] = useState(false);

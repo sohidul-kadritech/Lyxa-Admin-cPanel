@@ -3,10 +3,10 @@ import { Add, Edit, ExpandMore } from '@mui/icons-material';
 import { AccordionDetails, Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useSelector } from 'react-redux';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ProductsContainer from './ProductsContainer';
@@ -23,7 +23,8 @@ export default function CategoryItem({
   asSearchResult,
 }) {
   const theme = useTheme();
-  const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
   const [open, setOpen] = useState(!!category?.sortedProducts?.length || !!category?.subCategories?.length);
   const [render, setRender] = useState(false);
 

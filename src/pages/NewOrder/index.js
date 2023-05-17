@@ -5,8 +5,8 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 // project import
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
+import { useGlobalContext } from '../../context/GlobalContext';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import OrderDetail from './OrderDetail';
@@ -21,7 +21,8 @@ const orderFilterToTabValueMap = {
 };
 
 export default function NewOrders() {
-  const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -30,7 +31,7 @@ export default function NewOrders() {
 
   console.log('currentOrder: ', currentOrder);
   const ordersQuery = useQuery(
-    ['single-shop-orders', { ...queryParams }],
+    [Api.ORDER_LIST, { ...queryParams }],
     () =>
       AXIOS.get(Api.ORDER_LIST, {
         params: { ...queryParams },
@@ -39,8 +40,7 @@ export default function NewOrders() {
       onSuccess: (data) => {
         console.log(data);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (

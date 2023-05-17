@@ -3,7 +3,6 @@ import { Button, Divider, Stack } from '@mui/material';
 import { cloneDeep } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useSelector } from 'react-redux';
 import PageTop from '../../../components/Common/PageTop';
 import { deepClone } from '../../../helpers/deepClone';
 import * as Api from '../../../network/Api';
@@ -15,6 +14,7 @@ import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 // data
 
 import ConfirmModal from '../../../components/Common/ConfirmModal';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { successMsg } from '../../../helpers/successMsg';
 import {
   DeliverySettings,
@@ -42,10 +42,13 @@ const section2Sx = {
 };
 
 function ShopSettings() {
-  const shop = useSelector((store) => {
-    console.log('useSelector:', store);
-    return store.Login.admin;
-  });
+  // const shop = useSelector((store) => {
+  //   console.log('useSelector:', store);
+  //   return store.Login.admin;
+  // });
+
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   console.log('shop', shop.credentialUserId);
 
@@ -53,11 +56,11 @@ function ShopSettings() {
 
   console.log('shop', newShop);
 
-  const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption);
+  const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
 
-  const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive);
+  const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive || '');
 
-  const [newDietary, setNewDietary] = useState(newShop?.dietary);
+  const [newDietary, setNewDietary] = useState(newShop?.dietary || []);
 
   const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount);
 
@@ -77,7 +80,7 @@ function ShopSettings() {
       newPayMentInformation,
       newDietary,
       // eslint-disable-next-line prettier/prettier
-      newPriceRange,
+      newPriceRange
     );
     return Axios.post(Api.EDIT_SHOP, data);
   };

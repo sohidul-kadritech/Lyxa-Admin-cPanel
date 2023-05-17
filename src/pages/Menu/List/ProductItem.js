@@ -2,11 +2,11 @@
 import { Avatar, Box, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledInput from '../../../components/Styled/StyledInput';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -20,7 +20,8 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
   const theme = useTheme();
   const history = useHistory();
   const [render, setRender] = useState(false);
-  const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   // status update
   const productMutation = useMutation(
