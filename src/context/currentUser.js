@@ -28,7 +28,7 @@ export const currentUserReducer = (state, { type, payload }) => {
       return {
         ...state,
         admin: payload.admin,
-        userType: payload.isCurrentUser ? 'seller' : state.userType,
+        userType: payload.isCurrentUser ? 'admin' : state.userType,
         adminType: payload.admin?.adminType,
       };
 

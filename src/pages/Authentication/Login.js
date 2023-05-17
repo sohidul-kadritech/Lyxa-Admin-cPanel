@@ -46,6 +46,7 @@ function Login(props) {
 
   useEffect(() => {
     if (admin?.account_type) {
+      console.log({ accountType: admin?.account_type });
       dispatchCurrentUser({
         type: admin?.account_type,
         payload: { [admin?.account_type]: admin, isCurrentUser: true },

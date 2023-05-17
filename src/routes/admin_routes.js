@@ -74,6 +74,7 @@ import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
+import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
@@ -107,6 +108,7 @@ export const admin_routes = [
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },
   { path: '/seller/details/:id', component: SellerDetails },
+  { path: '/seller/:sellerId', component: () => <AdminToSellerLayout routePrefix="/seller/:sellerId" />, exact: false },
 
   // shops
   { path: '/shops/list', component: ShopList },

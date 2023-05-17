@@ -47,7 +47,7 @@ const StyledOverlay = styled(Box)(() => ({
   },
 }));
 
-export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [] }) {
+export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], title }) {
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   return (
@@ -82,7 +82,7 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [] }
                 letterSpacing: '0.05em',
               }}
             >
-              Lyxa Manager
+              {title}
             </Typography>
           </Box>
         )}

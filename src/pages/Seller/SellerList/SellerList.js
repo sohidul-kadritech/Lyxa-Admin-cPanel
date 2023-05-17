@@ -16,6 +16,7 @@ import GlobalWrapper from '../../../components/GlobalWrapper';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import {
   getAllSeller,
   setSellerStatusFalse,
@@ -31,6 +32,7 @@ function SellerList() {
 
   const [isZoom, setIsZoom] = useState(false);
   const [sellerImg] = useState('');
+  const { dispatchCurrentUser } = useGlobalContext();
 
   const {
     loading,
@@ -62,8 +64,15 @@ function SellerList() {
   }, [sortByKey, searchKey, statusKey, typeKey]);
 
   const handleMenu = (menu, item) => {
+    // console.log(menu === 'View as Admin');
+
     if (menu === 'Edit') {
       history.push(`/seller/edit/${item._id}`);
+    }
+
+    if (menu === 'View as Admin') {
+      history?.push(`/seller/${item._id}`);
+      dispatchCurrentUser({ type: 'seller', payload: { seller: item } });
     }
   };
 
@@ -192,7 +201,10 @@ function SellerList() {
                       </Td>
                       <Td onClick={() => goToDetails(item?._id)}>{new Date(item?.createdAt).toLocaleDateString()}</Td>
                       <Td>
-                        <ThreeDotsMenu handleMenuClick={(menu) => handleMenu(menu, item)} menuItems={['Edit']} />
+                        <ThreeDotsMenu
+                          handleMenuClick={(menu) => handleMenu(menu, item)}
+                          menuItems={['View as Admin', 'Edit']}
+                        />
                       </Td>
                     </Tr>
                   ))}

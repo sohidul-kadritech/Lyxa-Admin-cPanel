@@ -16,35 +16,35 @@ import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import ShopList from '../pages/Shops/ShopList/ShopList';
 
-export const seller_routes = [
-  { path: '/', component: Dashboard },
-  { path: '/orders/list', component: OrdersList },
-  { path: '/orders/details/:id', component: OrderDetails },
-  { path: '/products/list', component: ProductList },
-  { path: '/products/add', component: ProductAdd },
-  { path: '/products/edit/:id', component: ProductAdd },
-  { path: '/products/details/:id', component: ProductDetails },
-  { path: '/shops/list', component: ShopList },
-  { path: '/shops/add', component: ShopAdd },
-  { path: '/shops/edit/:id', component: ShopAdd },
-  { path: '/shops/details/:id', component: ShopDetails },
+export const seller_routes = (prefix = '') => [
+  { path: `${prefix}/`, component: Dashboard },
+  { path: `${prefix}/orders/list`, component: OrdersList },
+  { path: `${prefix}/orders/details/:id`, component: OrderDetails },
+  { path: `${prefix}/products/list`, component: ProductList },
+  { path: `${prefix}/products/add`, component: ProductAdd },
+  { path: `${prefix}/products/edit/:id`, component: ProductAdd },
+  { path: `${prefix}/products/details/:id`, component: ProductDetails },
+  { path: `${prefix}/shops/list`, component: ShopList },
+  { path: `${prefix}/shops/add`, component: ShopAdd },
+  { path: `${prefix}/shops/edit/:id`, component: ShopAdd },
+  { path: `${prefix}/shops/details/:id`, component: ShopDetails },
   {
-    path: '/app-wallet/seller/shops-transactions',
+    path: `${prefix}/app-wallet/seller/shops-transactions`,
     component: ShopsTransactions,
   },
   {
-    path: '/add-wallet/shop-transactions',
+    path: `${prefix}/add-wallet/shop-transactions`,
     component: SingleShopTransactions,
   },
-  { path: '/seller/credentials/list', component: SellerCredentialsList },
-  { path: '/admin/create', component: CreateAdmin },
+  { path: `${prefix}/seller/credentials/list`, component: SellerCredentialsList },
+  { path: `${prefix}/admin/create`, component: CreateAdmin },
 
-  { path: '/categories/list', component: CategoryList },
-  { path: '/categories/edit/:id', component: CategoryAdd },
-  { path: '/category/details/:id', component: CategoryDetails },
+  { path: `${prefix}/categories/list`, component: CategoryList },
+  { path: `${prefix}/categories/edit/:id`, component: CategoryAdd },
+  { path: `${prefix}/category/details/:id`, component: CategoryDetails },
   {
-    path: '/shop/:shopId',
+    path: `${prefix}/shop/:shopId`,
     exact: false,
-    component: () => <SellerToShopLayout routePrefix="/shop/:shopId" />,
+    component: () => <SellerToShopLayout routePrefix="" />,
   },
 ];

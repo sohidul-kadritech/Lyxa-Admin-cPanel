@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
@@ -13,11 +13,16 @@ import CircularLoader from '../../CircularLoader';
 import { replacePathValues } from '../helper';
 import ChildLayout from './ChildLayout';
 
-export default function SellerToShopLayout({ routePrefix }) {
+export default function SellerToShopLayout() {
   const { currentUser, dispatchCurrentUser, dispatchTabs } = useGlobalContext();
   const params = useParams();
   const location = useLocation();
   const history = useHistory();
+
+  const routePrefix = useMemo(() => {
+    if (currentUser?.admin?._id) return '/seller/:shopId/shop/:shopId';
+    return '/shop/:shopId';
+  }, []);
 
   const shopQuery = useQuery(
     [Api.SINGLE_SHOP, { id: params?.shopId }],
@@ -31,7 +36,6 @@ export default function SellerToShopLayout({ routePrefix }) {
       enabled: false,
       onSuccess: (data) => {
         if (data?.status) {
-          console.log('=========apiData=======>', data?.data?.shop);
           console.log(data?.data);
           dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shop } });
           dispatchTabs({ type: 'add-tab', payload: { shop: data?.data?.shop || {}, location: location.pathname } });
@@ -72,6 +76,7 @@ export default function SellerToShopLayout({ routePrefix }) {
 
   return (
     <ChildLayout
+      sidebarTitle="Lyxa Shop"
       routes={shop_routes(routePrefix)}
       menuItems={shop_menu_items(replacePathValues(routePrefix, params))}
     />

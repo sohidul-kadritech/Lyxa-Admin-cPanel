@@ -9,6 +9,8 @@ import AccountMenu from './AccountMenu';
 import Tabs from './Tabs';
 
 const getConsoleName = (userType, adminType) => {
+  console.log({ userType });
+
   if (userType === 'admin' && adminType === 'admin') {
     return 'Admin Console';
   }
@@ -30,6 +32,7 @@ const getConsoleName = (userType, adminType) => {
 
 export default function Topbar({ setSidebar, sidebar }) {
   const { currentUser } = useGlobalContext();
+  console.log({ currentUser });
 
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {

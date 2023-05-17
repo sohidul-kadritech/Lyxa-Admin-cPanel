@@ -20,8 +20,8 @@ export const getRouteAndSidebarItems = (userType, prefix = '') => {
   }
 
   if (userType === 'seller') {
-    routes = seller_routes;
-    menuItems = seller_menu_items;
+    routes = seller_routes(prefix);
+    menuItems = seller_menu_items(prefix);
   }
 
   if (userType === 'admin') {

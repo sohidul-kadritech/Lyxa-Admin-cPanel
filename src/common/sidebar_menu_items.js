@@ -114,8 +114,7 @@ export const shop_menu_items = (prefix = '') => [
       },
       {
         label: 'Zone',
-        // icon: ShopZone,
-        to: '/shop/zone',
+        to: `${prefix}/shop/zone`,
       },
       {
         label: 'Old Dashboard',
@@ -127,17 +126,17 @@ export const shop_menu_items = (prefix = '') => [
 ];
 
 /* ======== seller ======== */
-export const seller_menu_items = [
+export const seller_menu_items = (prefix = '') => [
   {
     title: 'Management',
     menu: [
       {
         label: 'Dashboard',
-        to: '/',
+        to: `${prefix}/`,
       },
       {
         label: 'Orders',
-        to: '/orders/list',
+        to: `${prefix}/orders/list`,
       },
     ],
   },
@@ -146,11 +145,11 @@ export const seller_menu_items = [
     menu: [
       {
         label: 'Shop List',
-        to: '/shops/list',
+        to: `${prefix}/shops/list`,
       },
       {
         label: 'Shop Add',
-        to: '/shops/add',
+        to: `${prefix}/shops/add`,
       },
     ],
   },
@@ -159,11 +158,11 @@ export const seller_menu_items = [
     menu: [
       {
         label: 'List',
-        to: '/products/list',
+        to: `${prefix}/products/list`,
       },
       {
         label: 'Add',
-        to: '/products/add',
+        to: `${prefix}/products/add`,
       },
     ],
   },
@@ -172,19 +171,19 @@ export const seller_menu_items = [
     menu: [
       {
         label: 'Shops TRX',
-        to: `/app-wallet/seller/shops-transactions`,
+        to: `${prefix}/app-wallet/seller/shops-transactions`,
       },
       {
         label: 'Categories List',
-        to: '/seller/credentials/list',
+        to: `${prefix}/seller/credentials/list`,
       },
       {
         label: 'Categories Add',
-        to: '/admin/create',
+        to: `${prefix}/admin/create`,
       },
       {
         label: 'List',
-        to: '/categories/list',
+        to: `${prefix}/categories/list`,
       },
     ],
   },

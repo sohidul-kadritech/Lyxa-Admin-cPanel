@@ -2,7 +2,8 @@ import { Box } from '@material-ui/core';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import Sidebar from '../Sidebar';
 
-export default function ChildLayout({ routes, menuItems }) {
+export default function ChildLayout({ routes, menuItems, sidebarTitle }) {
+  console.log('from child layout============================================');
   return (
     <Box
       position="relative"
@@ -13,7 +14,7 @@ export default function ChildLayout({ routes, menuItems }) {
         gridTemplateColumns: 'auto 1fr',
       }}
     >
-      <Sidebar variant="child" menuItems={menuItems} />
+      <Sidebar variant="child" menuItems={menuItems} title={sidebarTitle} />
       <Box
         sx={{
           paddingLeft: '50px',

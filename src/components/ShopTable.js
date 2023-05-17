@@ -1,16 +1,20 @@
+/* eslint-disable no-unused-vars */
 import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import React, { useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { useGlobalContext } from '../context/GlobalContext';
 import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
+// import {  } from 'react-router-dom';
 
 function ShopTable({ shops = [] }) {
   const history = useHistory();
+  const location = useLocation();
+
   const { dispatchCurrentUser, dispatchTabs } = useGlobalContext();
 
   const { loading } = useSelector((state) => state.shopReducer);
@@ -47,13 +51,22 @@ function ShopTable({ shops = [] }) {
     } else if (menu === 'Orders') {
       goToShopOrderList(item._id);
     } else if (menu === 'View As Admin') {
+      let routePath = '';
+
       if (account_type === 'seller') {
-        history.push(`/shop/${item._id}`);
-        dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
-        dispatchTabs({ type: 'add-tab', payload: { shop: item, location: `/shop/${item._id}` } });
-      } else if (account_type === 'admin') {
-        console.log(account_type);
+        routePath = `/shop/${item._id}`;
+      } else {
+        routePath = '';
+        location?.pathname?.split('/')?.forEach((s, i) => {
+          if (i < 3 && s) {
+            routePath += `/${s}`;
+          }
+        });
+        routePath += `/shop/${item._id}`;
       }
+      history.push(routePath);
+      dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
+      dispatchTabs({ type: 'add-tab', payload: { shop: item, location: `/shop/${item._id}` } });
     }
   };
 
