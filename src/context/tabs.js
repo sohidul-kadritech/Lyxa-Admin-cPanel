@@ -35,5 +35,7 @@ export const tabsReducer = (state, { type, payload }) => {
 
   if (type === 'change-current-tab') return { ...state, currentTabId: payload.tabId };
 
+  if (type === 'remove-tab') return { ...state, allTabs: state.allTabs.filter((tab) => tab.shopId !== payload.tabId) };
+
   return state;
 };

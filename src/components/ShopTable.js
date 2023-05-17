@@ -21,7 +21,6 @@ function ShopTable({ shops = [] }) {
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
 
   // GO TO SHOP PRODUCT LIST
-
   const goToShopProductList = (shopId) => {
     history.push({
       pathname: `/products/list`,

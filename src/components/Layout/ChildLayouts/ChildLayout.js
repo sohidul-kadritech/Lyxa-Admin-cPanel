@@ -24,23 +24,19 @@ export default function ChildLayout({ routes, menuItems }) {
         }}
       >
         <CacheSwitch>
-          {routes?.map(({ path, component: Component, ...props }) => {
-            console.log(path);
-
-            return (
-              <CacheRoute
-                when="always"
-                multiple
-                exact
-                key={path}
-                path={path}
-                component={Component}
-                cacheKey={path}
-                saveScrollPosition
-                {...props}
-              />
-            );
-          })}
+          {routes?.map(({ path, component: Component, ...props }) => (
+            <CacheRoute
+              when="always"
+              multiple
+              exact
+              key={path}
+              path={path}
+              component={Component}
+              cacheKey={path}
+              saveScrollPosition
+              {...props}
+            />
+          ))}
         </CacheSwitch>
       </Box>
     </Box>
