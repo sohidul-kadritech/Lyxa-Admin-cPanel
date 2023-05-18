@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 import ModalContainer from './ModalContainer';
 import ZoneMap from './ZoneMap';
-import { validateEditedData } from './helper';
+import { ConvertArea, validateEditedData } from './helper';
 
 // eslint-disable-next-line prettier/prettier, no-unused-vars
 const fieldContainerSx = {
@@ -217,7 +217,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
               <Typography
                 sx={{ color: theme.palette.text.primary, fontSize: '28px', fontWeight: 500, lineHeight: '20px' }}
               >
-                {polygonArea}m<sup>2</sup>
+                <ConvertArea squareMeters={polygonArea} />
               </Typography>
             </Box>
             <Box>
