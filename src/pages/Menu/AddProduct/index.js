@@ -162,7 +162,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }
   );
 
-  const productIsAddonMessage = `Product is used as  addon ${isProductAddonQuery?.data?.data?.products
+  const productIsAddonMessage = `Product is used as  addon inside ${isProductAddonQuery?.data?.data?.products
     ?.map((p, i) => `${i === 0 ? '' : ', '}${p?.name}`)
     .join('')}. Products used as addon cannot have attributes.`;
 
@@ -426,11 +426,20 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 }}
               >
                 {editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon && (
-                  <span>
-                    <Tooltip title={productIsAddonMessage}>
-                      <InfoIcon />
-                    </Tooltip>
-                  </span>
+                  <Tooltip
+                    title={
+                      <>
+                        <span>Product is addon inside: </span>
+                        <ul>
+                          {isProductAddonQuery?.data?.data?.products?.map((p) => (
+                            <li>{p.name}</li>
+                          ))}
+                        </ul>
+                      </>
+                    }
+                  >
+                    <InfoIcon />
+                  </Tooltip>
                 )}{' '}
                 Attributes
               </span>
@@ -442,9 +451,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
               onChange: (value) => {
                 setHasAttribute(value);
               },
-              console: console.log(
-                productReadonly || (editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon)
-              ),
               readOnly: productReadonly || (editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon),
             }}
           />
