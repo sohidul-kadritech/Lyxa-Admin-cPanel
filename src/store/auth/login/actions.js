@@ -30,6 +30,8 @@ export const logoutAdmin = () => (dispatch) => {
 };
 
 export const adminAuth = (user) => async (dispatch) => {
+  console.log(user);
+
   try {
     dispatch({ type: LOGIN_USER });
 

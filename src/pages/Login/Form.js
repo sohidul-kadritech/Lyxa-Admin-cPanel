@@ -1,7 +1,27 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
 import StyledFormInput from './StyledFormInput';
+import { credentialsInit, validateForm } from './helper';
 
-export default function Form() {
+export default function Form({ onSubmit, loginError, loading }) {
+  const theme = useTheme();
+  const [credentials, setCredentials] = useState({ ...credentialsInit });
+  const [errors, setErrors] = useState({ email: undefined, password: undefined });
+  const [touched, setTouched] = useState({ email: false, password: false });
+
+  const checkValidSubmit = () => {
+    if (!touched.email && !touched.password) {
+      validateForm(credentials, errors, setErrors);
+      return;
+    }
+
+    if (Boolean(errors.email) || Boolean(errors.password)) {
+      return;
+    }
+
+    onSubmit(credentials);
+  };
+
   return (
     <Box
       sx={{
@@ -9,9 +29,50 @@ export default function Form() {
       }}
     >
       <Stack gap={5}>
-        <StyledFormInput label="Email" placeholder="john.dowry@example.com" type="email" />
+        {Boolean(loginError) && (
+          <Box
+            sx={{
+              background: '#e37b8233',
+              padding: '8px 10px',
+              border: `1px solid ${theme.palette.error.main}`,
+            }}
+          >
+            <Typography variant="inherit" fontSize={12} lineHeight="20px" color="error">
+              {loginError}
+            </Typography>
+          </Box>
+        )}
+        <StyledFormInput
+          label="Email"
+          placeholder="john.dowry@example.com"
+          type="email"
+          value={credentials.email}
+          onChange={(e) => {
+            setCredentials({ ...credentials, email: e.target.value });
+            setTouched({ ...touched, email: true });
+          }}
+          error={Boolean(errors.email)}
+          helperText={errors.email}
+          onBlur={() => {
+            validateForm(credentials, errors, setErrors);
+          }}
+        />
         <Box>
-          <StyledFormInput label="Password" placeholder="XXXXXXXX" type="password" />
+          <StyledFormInput
+            label="Password"
+            placeholder="XXXXXXXX"
+            type="password"
+            value={credentials.password}
+            onChange={(e) => {
+              setCredentials({ ...credentials, password: e.target.value });
+              setTouched({ ...touched, password: true });
+            }}
+            error={Boolean(errors.password)}
+            helperText={errors.password}
+            onBlur={() => {
+              validateForm(credentials, errors, setErrors);
+            }}
+          />
           <Typography
             variant="inherit"
             color="#fff"
@@ -29,6 +90,8 @@ export default function Form() {
             variant="contained"
             fullWidth
             color="error"
+            disabled={loading}
+            onClick={checkValidSubmit}
             sx={{
               padding: '10px 30px',
               borderRadius: '7px',
