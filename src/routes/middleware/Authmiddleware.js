@@ -3,6 +3,7 @@ import { useGlobalContext } from '../../context/GlobalContext';
 
 export default function Authmiddleware({ children }) {
   const { currentUser } = useGlobalContext();
+
   let lastLoginType = null;
 
   if (localStorage.getItem('lastLoginType')) {

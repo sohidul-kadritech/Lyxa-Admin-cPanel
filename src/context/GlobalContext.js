@@ -14,7 +14,6 @@ export default function ContextProvider({ children }) {
   const [tabs, dispatchTabs] = useReducer(tabsReducer, tabsInit);
 
   const value = useMemo(() => ({ currentUser, dispatchCurrentUser, tabs, dispatchTabs }), [currentUser, tabs]);
-  console.log('================================>', value.tabs);
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
