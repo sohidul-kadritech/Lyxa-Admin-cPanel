@@ -175,18 +175,21 @@ const InfoWrapper = styled.div`
 `;
 
 function SellerInfo() {
-  const {
-    admin: {
-      profile_photo,
-      name,
-      company_name,
-      status,
-      sellerType,
-      addressSeller: { address, latitude, longitude },
-      phone_number,
-      email,
-    },
-  } = useSelector((state) => state.Login);
+  // const {
+  //   admin: {
+  //     profile_photo,
+  //     name,
+  //     company_name,
+  //     status,
+  //     sellerType,
+  //     addressSeller: { address, latitude, longitude },
+  //     phone_number,
+  //     email,
+  //   },
+  // } = useSelector((state) => state.Login);
+
+  const { currentUser } = useGlobalContext();
+  const { seller } = currentUser;
 
   return (
     <InfoWrapper>
@@ -197,28 +200,29 @@ function SellerInfo() {
               className="rounded-circle avatar-xl cursor-pointer"
               style={{ borderRadius: 200, width: 90, height: 90, objectFit: 'cover' }}
               alt="Seller"
-              src={!profile_photo ? noPhoto : profile_photo}
+              src={!seller?.profile_photo ? noPhoto : seller?.profile_photo}
             />
           </div>
         </Col>
         <Col md={10}>
           <div className="d-flex align-items-center pb-1">
             <h5 className="me-2">
-              Welcome, <span className="text-danger">{company_name}</span>
+              Welcome, <span className="text-danger">{seller?.company_name}</span>
             </h5>
-            <h6 className="text-capitalize mx-3">{`Status - ${status}`}</h6>
-            <h6 className="text-capitalize">{sellerType}</h6>
+            <h6 className="text-capitalize mx-3">{`Status - ${seller?.status}`}</h6>
+            <h6 className="text-capitalize">{seller?.sellerType}</h6>
           </div>
           <InfoTwoWrapper>
-            <InfoTwo value={`${name}`} Icon={PersonOutlineOutlinedIcon} name="Manager" />
+            <InfoTwo value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} name="Manager" />
             <InfoTwo
-              value={`${address}`}
-              mapLink={`${MAP_URL}?z=10&t=m&q=loc:${latitude}+${longitude}`}
+              value={`${seller?.addressSeller?.address}`}
+              // eslint-disable-next-line max-len
+              mapLink={`${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
               Icon={RoomOutlinedIcon}
               name="Location"
             />
-            <InfoTwo value={phone_number} Icon={LocalPhoneOutlinedIcon} name="Phone" />
-            <InfoTwo name="Email" classes="text-lowercase" value={email} Icon={AlternateEmailOutlinedIcon} />
+            <InfoTwo value={seller?.phone_number} Icon={LocalPhoneOutlinedIcon} name="Phone" />
+            <InfoTwo name="Email" classes="text-lowercase" value={seller?.email} Icon={AlternateEmailOutlinedIcon} />
           </InfoTwoWrapper>
         </Col>
       </Row>

@@ -2,7 +2,6 @@ import { AccessTime, AccessTimeFilled, Email } from '@mui/icons-material';
 import { Avatar, Box, Drawer, IconButton, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
 import { ReactComponent as AverageIcon } from '../../assets/icons/averageIcon.svg';
 import { ReactComponent as CalenderIcon } from '../../assets/icons/calender.svg';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
@@ -21,6 +20,7 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 
+import { useGlobalContext } from '../../context/GlobalContext';
 import { successMsg } from '../../helpers/successMsg';
 import EditShop from './EditShop';
 import FlaggedViews from './FlaggedViews';
@@ -71,11 +71,13 @@ function ShopTab({ data }) {
 }
 
 export default function ShopProfile() {
-  const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   const queryClient = useQueryClient();
-
-  const getShopData = useQuery('get-single-shop-data', () => AXIOS.get(`${API_URL.SINGLE_SHOP}?id=${shop?._id}`));
+  const getShopData = useQuery([API_URL.SINGLE_SHOP, { id: shop?._id }], () =>
+    AXIOS.get(`${API_URL.SINGLE_SHOP}?id=${shop?._id}`)
+  );
 
   const options = ['Edit Shop', 'Access as Shop'];
 
@@ -116,7 +118,7 @@ export default function ShopProfile() {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
     successMsg('Please wait It may take time !');
     const shopData = await createShopData({
@@ -138,7 +140,7 @@ export default function ShopProfile() {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
     successMsg('Please wait It may take time !');
     const shopData = await createShopData({
@@ -437,7 +439,7 @@ export default function ShopProfile() {
                   desc={TagsAndCuisines(
                     getShopData?.data?.data?.shop?.tagsId,
                     // eslint-disable-next-line prettier/prettier
-                    getShopData?.data?.data?.shop?.cuisineType,
+                    getShopData?.data?.data?.shop?.cuisineType
                   )}
                   Icon={TagIcon}
                 />
@@ -446,7 +448,7 @@ export default function ShopProfile() {
                   desc={AverageOrderValue(
                     getShopData?.data?.data?.shop?.orderValue?.productAmount,
                     // eslint-disable-next-line prettier/prettier
-                    getShopData?.data?.data?.shop?.orderValue?.count,
+                    getShopData?.data?.data?.shop?.orderValue?.count
                   )}
                   Icon={AverageIcon}
                 />

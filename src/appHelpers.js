@@ -4,7 +4,7 @@ import * as Api from './network/Api';
 import AXIOS from './network/axios';
 
 export const userTypeToApiMap = {
-  shop: Api.SINGLE_USER,
+  shop: Api.SINGLE_SHOP,
   seller: Api.SINGLE_SELLER,
   admin: Api.SINGLE_ADMIN,
 };
