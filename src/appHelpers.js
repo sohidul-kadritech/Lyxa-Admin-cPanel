@@ -1,7 +1,7 @@
-import getCookiesAsObject from '../helpers/cookies/getCookiesAsObject';
-import setCookiesAsObj from '../helpers/cookies/setCookiesAsObject';
-import * as Api from '../network/Api';
-import AXIOS from '../network/axios';
+import getCookiesAsObject from './helpers/cookies/getCookiesAsObject';
+import setCookiesAsObj from './helpers/cookies/setCookiesAsObject';
+import * as Api from './network/Api';
+import AXIOS from './network/axios';
 
 export const userTypeToApiMap = {
   shop: Api.SINGLE_USER,

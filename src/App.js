@@ -9,22 +9,24 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from 'react-redux';
-import CircularLoader from '../components/CircularLoader';
-import { getAllAppSettings } from '../store/Settings/settingsAction';
+import CircularLoader from './components/CircularLoader';
+import { getAllAppSettings } from './store/Settings/settingsAction';
 
 // Import scss
-import '../assets/scss/theme.scss';
-import getCookiesAsObject from '../helpers/cookies/getCookiesAsObject';
-import { incrementOpenChats } from '../store/chat/chatAction';
-import { socketConnect } from '../store/socket/socketAction';
+import './assets/scss/theme.scss';
+import getCookiesAsObject from './helpers/cookies/getCookiesAsObject';
+import { incrementOpenChats } from './store/chat/chatAction';
+import { socketConnect } from './store/socket/socketAction';
 
 import { Box } from '@mui/material';
-import Router from '../Router';
-import { useGlobalContext } from '../context/GlobalContext';
-import { successMsg } from '../helpers/successMsg';
-import { getUserData, removeAuthCookies } from './helpers';
+import Router from './Router';
+import { getUserData, removeAuthCookies } from './appHelpers';
+import { useGlobalContext } from './context/GlobalContext';
+import { successMsg } from './helpers/successMsg';
 
 export default function App() {
+  console.log('App');
+
   const dispatch = useDispatch();
   const { dispatchCurrentUser, currentUser } = useGlobalContext();
   const { userType } = currentUser;
