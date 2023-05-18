@@ -33,6 +33,7 @@ import {
 
 import userIcon from '../assets/images/dashboard/user.png';
 import noPhoto from '../assets/images/noPhoto.jpg';
+import { useGlobalContext } from '../context/GlobalContext';
 import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
@@ -89,7 +90,9 @@ function OrderTable({ orders = [], status, loading }) {
     rider: false,
   });
 
-  const { account_type } = useSelector((store) => store.Login.admin);
+  // const { userType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
 
   // UPDATE ORDER STATUS
   const updateOrderStatus = (oId, shopId, orderStatus, shopDeliveryMethod, isSelfDelivery) => {
@@ -353,7 +356,7 @@ function OrderTable({ orders = [], status, loading }) {
                   <Th>Amount ({currency})</Th>
                   <Th>Payment method</Th>
                   <Th>Order Status</Th>
-                  {account_type === 'admin' && <Th>Action</Th>}
+                  {userType === 'admin' && <Th>Action</Th>}
                 </Tr>
               </Thead>
               <Tbody style={{ position: 'relative' }}>
@@ -407,7 +410,7 @@ function OrderTable({ orders = [], status, loading }) {
                         </div>
                       </Td>
 
-                      {account_type === 'admin' && (
+                      {userType === 'admin' && (
                         <Td>
                           <ThreeDotsMenu
                             handleMenuClick={(menu) => handleMenu(menu, item)}
@@ -416,8 +419,8 @@ function OrderTable({ orders = [], status, loading }) {
                                 item?.orderStatus !== 'delivered' &&
                                 item?.orderStatus !== 'refused' &&
                                 'Update Status',
-                              account_type === 'admin' && 'Flag',
-                              account_type === 'admin' &&
+                              userType === 'admin' && 'Flag',
+                              userType === 'admin' &&
                                 item?.orderStatus !== 'cancelled' &&
                                 item?.orderStatus !== 'delivered' &&
                                 item?.orderStatus !== 'refused' &&

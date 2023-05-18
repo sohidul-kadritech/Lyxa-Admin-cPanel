@@ -12,6 +12,7 @@ import { shopsTrxsFilterOptions } from '../../../assets/staticData';
 import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import store from '../../../store';
 import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate } from '../../../store/appWallet/appWalletAction';
 
@@ -83,16 +84,20 @@ function ShopsTransactions() {
   const [filterType, setFilterType] = useState('');
   const [fromNum, setFromNum] = useState(0);
   const [toNum, setToNum] = useState(0);
-  const { _id: accountId, company_name } = useSelector((store) => store.Login.admin);
+  // const { _id: accountId, company_name } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { seller } = currentUser;
 
   useEffect(() => {
     if (shopsTrxStartDate || shopsTrxEndDate) {
       // eslint-disable-next-line no-unused-expressions
-      searchParams.get('companyName') ? setCompanyName(searchParams.get('companyName')) : setCompanyName(company_name);
+      searchParams.get('companyName')
+        ? setCompanyName(searchParams.get('companyName'))
+        : setCompanyName(seller?.company_name);
 
       let id = null;
       // eslint-disable-next-line no-unused-expressions
-      searchParams.get('sellerId') ? (id = searchParams.get('sellerId')) : (id = accountId);
+      searchParams.get('sellerId') ? (id = searchParams.get('sellerId')) : (id = seller?._id);
 
       dispatch(getSellerTrx(true, id));
 

@@ -4,15 +4,19 @@ import { Container } from 'reactstrap';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import CredentialsTable from '../../../components/CredentialsTable';
 import GlobalWrapper from '../../../components/GlobalWrapper';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { getAllSellerCredentials } from '../../../store/AdminControl/Admin/adminAction';
 
 function SellerCredentialsList() {
   const { loading, sellerCredentials } = useSelector((state) => state.adminReducer);
   const dispatch = useDispatch();
-  const { _id: accountId } = useSelector((store) => store.Login.admin);
+  // const { _id: accountId } = useSelector((store) => store.Login.admin);
+
+  const { currentUser } = useGlobalContext();
+  const { seller } = currentUser;
 
   const callList = (refresh = false) => {
-    dispatch(getAllSellerCredentials(refresh, accountId));
+    dispatch(getAllSellerCredentials(refresh, seller?._id));
   };
 
   useEffect(() => {

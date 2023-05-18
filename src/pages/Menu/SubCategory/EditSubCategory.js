@@ -2,13 +2,13 @@
 import { Box, Button, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
 import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import { confirmActionInit } from '../../../assets/staticData';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -21,7 +21,10 @@ const fieldContainerSx = {
 };
 
 export default function EditSubCategory({ onClose, editSubCategory }) {
-  const shop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
+
   const queryClient = useQueryClient();
 
   const categoriesQuery = useQuery(

@@ -39,6 +39,7 @@ import { getAllSeller, updateSellerSearchKey } from '../../../store/Seller/selle
 import { addShop, editShop, getAllCuisine, getAllTags, updateShopSearchKey } from '../../../store/Shop/shopAction';
 
 import { callApi } from '../../../components/SingleApiCall';
+import { useGlobalContext } from '../../../context/GlobalContext';
 
 function ShopAdd() {
   const dispatch = useDispatch();
@@ -88,7 +89,9 @@ function ShopAdd() {
   const [orderCapacity, setOrderCapacity] = useState('');
   const [paymentOption, setpaymentOption] = useState([]);
 
-  const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
+  // const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, seller: adminSeller } = currentUser;
 
   console.log(dietaryType);
 
@@ -188,11 +191,11 @@ function ShopAdd() {
 
   // FIND SELLER
   useEffect(async () => {
-    if (searchParams.get('sellerId') || account_type === 'seller') {
+    if (searchParams.get('sellerId') || userType === 'seller') {
       const paramsId = searchParams.get('sellerId');
       let sellerId = null;
       // eslint-disable-next-line no-unused-expressions
-      paramsId ? (sellerId = paramsId) : (sellerId = accountId);
+      paramsId ? (sellerId = paramsId) : (sellerId = adminSeller?._id);
       if (sellerId) {
         const findSeller = sellers.find((item) => item._id === sellerId);
         if (findSeller) {
@@ -207,7 +210,7 @@ function ShopAdd() {
         }
       }
     }
-  }, [searchParams, account_type]);
+  }, [searchParams, userType]);
 
   // GET ALL TAGS
   useEffect(() => {
@@ -543,7 +546,7 @@ function ShopAdd() {
                     <div className="mb-4">
                       <Autocomplete
                         className="cursor-pointer"
-                        disabled={!!(id || searchParams.get('sellerId') || account_type === 'seller')}
+                        disabled={!!(id || searchParams.get('sellerId') || userType === 'seller')}
                         value={seller || null}
                         onChange={(event, newValue) => {
                           setSeller(newValue);

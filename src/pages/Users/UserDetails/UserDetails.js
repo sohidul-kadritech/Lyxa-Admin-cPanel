@@ -24,6 +24,7 @@ import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
 import OrderTable from '../../../components/OrderTable';
 import { callApi } from '../../../components/SingleApiCall';
 import UserCradit from '../../../components/UserCradit';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { MAP_URL, SINGLE_USER } from '../../../network/Api';
 import { getUserAllOrder, updateUserStatus } from '../../../store/Users/UsersAction';
 
@@ -43,7 +44,9 @@ function UserDetails() {
     loading,
   } = useSelector((state) => state.usersReducer);
   const { status } = useSelector((state) => state.dropPayReducer);
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  // const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
 
   const [user, setUser] = useState({});
   const [balAddModal, setBalAddModal] = useState(false);
@@ -112,7 +115,7 @@ function UserDetails() {
                       >
                         Add/Remove Credit
                       </Button>
-                      {account_type === 'admin' && adminType === 'admin' && (
+                      {userType === 'admin' && userType === 'admin' && (
                         <Button
                           outline
                           color="success"

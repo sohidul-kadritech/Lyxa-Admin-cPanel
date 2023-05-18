@@ -2,9 +2,9 @@ import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import { useGlobalContext } from '../../context/GlobalContext';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -29,7 +29,9 @@ function Users2() {
 
   const [searchFilteredData, setSearchFilteredData] = useState([]);
 
-  const shop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   const { data, isLoading, refetch } = useQuery(
     'get-shop-credentials',
@@ -48,7 +50,7 @@ function Users2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const closeEditSidebar = () => setIsEditOpen(false);
@@ -88,7 +90,7 @@ function Users2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const DeleteUser = useMutation((data) => AXIOS.post(API_URL.REMOVE_SHOP_CREDENTIAL, data), {
@@ -114,9 +116,9 @@ function Users2() {
           (user) =>
             user?.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
             // eslint-disable-next-line prettier/prettier
-            user?.email.toLowerCase().includes(e.target.value.toLowerCase()),
+            user?.email.toLowerCase().includes(e.target.value.toLowerCase())
           // eslint-disable-next-line prettier/prettier
-        ),
+        )
       );
     } else if (e.target.value === '') {
       setSearchFilteredData([

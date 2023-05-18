@@ -21,6 +21,7 @@ import CircularLoader from '../../../components/CircularLoader';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import UserCradit from '../../../components/UserCradit';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { getDashboardSummary } from '../../../store/Dashboard/dashboardAction';
 
 function DropPayList() {
@@ -42,7 +43,8 @@ function DropPayList() {
   const {
     dashboardData: { summary = {} },
   } = useSelector((state) => state.dashboardReducer);
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, adminType } = currentUser;
 
   const [balAddModal, setBalAddModal] = useState(false);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
@@ -50,11 +52,7 @@ function DropPayList() {
   useEffect(() => {
     dispatch(
       getDashboardSummary(
-        account_type === 'admin' && adminType !== 'customerService'
-          ? 'admin'
-          : account_type === 'seller'
-          ? 'seller'
-          : 'shop'
+        userType === 'admin' && adminType !== 'customerService' ? 'admin' : userType === 'seller' ? 'seller' : 'shop'
       )
     );
   }, [credits]);

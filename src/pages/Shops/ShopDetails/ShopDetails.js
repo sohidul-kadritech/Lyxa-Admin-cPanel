@@ -61,6 +61,7 @@ import {
 // eslint-disable-next-line import/extensions
 import ReviewTable from '../../../components/ReviewTable.js';
 
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { getAllAppSettings } from '../../../store/Settings/settingsAction';
 
 // const marketingTypesInit = {
@@ -84,7 +85,10 @@ function ShopDetails() {
   const [isImportProductOpen, setIsImportProductOpen] = useState(false);
   const [productsFile, setProductsFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { account_type } = useSelector((store) => store.Login.admin);
+  // const { account_type } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
+
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const getShop = async () => {
@@ -288,7 +292,7 @@ function ShopDetails() {
                   <Button outline color="success" onClick={() => setMaxDiscountModal(true)} className="me-3">
                     Add Max Discount
                   </Button>
-                  {account_type === 'admin' && (
+                  {userType === 'admin' && (
                     <>
                       <Button
                         outline
@@ -327,7 +331,7 @@ function ShopDetails() {
                       Icon={ApartmentOutlinedIcon}
                       value={`${shop?.seller?.name}`}
                       name="Seller"
-                      link={account_type === 'admin' ? `/seller/details/${shop?.seller?._id}` : ''}
+                      link={userType === 'admin' ? `/seller/details/${shop?.seller?._id}` : ''}
                     />
                     <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopName}`} name="Shop Name" />
                     <InfoTwo Icon={LocalPhoneOutlinedIcon} value={shop?.phone_number} name="Phone" />

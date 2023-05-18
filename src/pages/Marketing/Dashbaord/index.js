@@ -4,7 +4,6 @@ import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import PageTop from '../../../components/Common/PageTop';
 
@@ -15,6 +14,7 @@ import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -37,9 +37,12 @@ export default function MarketingDashboard() {
   const params = useParams();
   const history = useHistory();
 
-  const adminShop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentShop, setCurrentShop] = useState(adminShop);
+  const [currentShop, setCurrentShop] = useState(shop);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const singleShopQuery = useQuery(

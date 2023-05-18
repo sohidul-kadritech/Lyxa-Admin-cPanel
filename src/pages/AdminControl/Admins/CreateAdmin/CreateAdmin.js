@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import Breadcrumb from '../../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../../components/GlobalWrapper';
+import { useGlobalContext } from '../../../../context/GlobalContext';
 import { SINGLE_ADMIN } from '../../../../network/Api';
 import requestApi from '../../../../network/httpRequest';
 import {
@@ -30,7 +31,9 @@ function CreateAdmin() {
   const [role, setRole] = useState('');
   const [activeStatus, setActiveStatus] = useState('');
 
-  const { account_type: accountType, _id: accountId } = useSelector((store) => store.Login.admin);
+  // const { userType: userType, _id: accountId } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, shop, seller } = currentUser;
 
   const updateData = (data) => {
     const { email, name, phone_number, status, adminType } = data;
@@ -73,7 +76,7 @@ function CreateAdmin() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (accountType === 'admin') {
+    if (userType === 'admin') {
       const data = {
         name,
         email,
@@ -94,12 +97,12 @@ function CreateAdmin() {
       } else {
         dispatch(addAdmin(data));
       }
-    } else if (accountType === 'seller') {
+    } else if (userType === 'seller') {
       dispatch(
         addSellerCredential({
           email,
           password,
-          sellerId: accountId,
+          sellerId: seller?._id,
         })
       );
     } else {
@@ -107,7 +110,7 @@ function CreateAdmin() {
         addShopCredential({
           email,
           password,
-          shopId: accountId,
+          shopId: shop?._id,
         })
       );
     }
@@ -135,9 +138,7 @@ function CreateAdmin() {
           <Breadcrumb
             maintitle="Lyxa"
             breadcrumbItem={id ? 'Edit' : 'Create'}
-            title={
-              accountType === 'shop' ? 'Shop Crediantial' : accountType === 'seller' ? 'Seller Crediantial' : 'Admin'
-            }
+            title={userType === 'shop' ? 'Shop Crediantial' : userType === 'seller' ? 'Seller Crediantial' : 'Admin'}
             isRefresh={false}
           />
 
@@ -146,15 +147,15 @@ function CreateAdmin() {
               <CardBody>
                 <div className="py-3">
                   <h5>
-                    {accountType === 'shop'
+                    {userType === 'shop'
                       ? 'Shop Crediantial Informations'
-                      : accountType === 'Seller'
+                      : userType === 'Seller'
                       ? 'Shop Crediantial Informations'
                       : 'Admin Informations'}
                   </h5>
                   <hr />
                 </div>
-                {accountType === 'admin' && (
+                {userType === 'admin' && (
                   <Row className="mb-3">
                     <Col xl={6} className="mb-3 mb-xl-0">
                       <TextField
@@ -227,7 +228,7 @@ function CreateAdmin() {
                       required={!id}
                     />
                   </Col>
-                  {accountType === 'admin' && (
+                  {userType === 'admin' && (
                     <Col xl={6} className="mb-3 mb-xl-0">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">Role</InputLabel>

@@ -29,11 +29,12 @@ import styled from 'styled-components';
 import { successMsg } from '../helpers/successMsg';
 
 // project import
+import { useGlobalContext } from '../context/GlobalContext';
 import * as Api from '../network/Api';
 import AXIOS from '../network/axios';
 import { cancelButlerOrderByAdmin, updateButlerOrderIsCancelled } from '../store/Butler/butlerActions';
-import { cancelOrderByAdmin } from '../store/order/orderAction';
 import { getAllCancelReasons } from '../store/Settings/settingsAction';
+import { cancelOrderByAdmin } from '../store/order/orderAction';
 import CloseButton from './Common/CloseButton';
 import TableLoader from './Common/TableLoader';
 import OptionsSelect from './Filter/OptionsSelect';
@@ -198,7 +199,10 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   const { isCanceled } = useSelector((state) => state.butlerReducer);
   const { status } = useSelector((store) => store.butlerReducer);
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-  const { account_type } = useSelector((store) => store.Login.admin);
+  // const { userType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
+
   const { socket } = useSelector((state) => state.socketReducer);
 
   const [currentOrder, setCurrentOrder] = useState({});
@@ -400,11 +404,11 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
       options.push('Update Status');
     }
 
-    if (account_type === 'admin' && hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+    if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
       options.push('Cancel Order');
     }
 
-    if (account_type === 'admin') {
+    if (userType === 'admin') {
       options.push('Flag');
     }
 

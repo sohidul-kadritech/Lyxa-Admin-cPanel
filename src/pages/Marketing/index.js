@@ -3,7 +3,6 @@
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 
 // project import
@@ -12,6 +11,7 @@ import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
 import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
+import { useGlobalContext } from '../../context/GlobalContext';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import MSettingsModal from './MSettingsModal';
@@ -62,12 +62,14 @@ const getActiveDeals = (dealSetting, shopType) => {
 
 export default function Marketing() {
   const history = useHistory();
-  const adminShop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   const [currentModal, setCurrentModal] = useState(null);
   const [activeDeals, setActiveDeals] = useState(activeDealsInit);
   const params = useParams();
-  const [currentShop, setCurrentShop] = useState(adminShop?.shopType ? adminShop : {});
+  const [currentShop, setCurrentShop] = useState(shop?.shopType ? shop : {});
 
   const [appliedDeals, setAppliedDeals] = useState(marketingTypesInit);
 
@@ -85,7 +87,7 @@ export default function Marketing() {
         },
       }),
     {
-      enabled: !adminShop?.shopType,
+      enabled: !shop?.shopType,
     }
   );
 
@@ -105,13 +107,13 @@ export default function Marketing() {
   );
 
   useEffect(() => {
-    if (adminShop?.shopType) {
-      setCurrentShop(adminShop);
+    if (shop?.shopType) {
+      setCurrentShop(shop);
 
-      const activeDeals = getActiveDeals(dealSettingsQuery?.data?.data?.dealSetting || [], adminShop?.shopType);
+      const activeDeals = getActiveDeals(dealSettingsQuery?.data?.data?.dealSetting || [], shop?.shopType);
       setActiveDeals(activeDeals);
 
-      const appliedDeals = getApliedDeals(adminShop?.marketings, 'shop');
+      const appliedDeals = getApliedDeals(shop?.marketings, 'shop');
       setAppliedDeals(appliedDeals);
     } else if (shopQuery?.data?.status) {
       setCurrentShop(shopQuery?.data?.data?.shop || {});
@@ -130,7 +132,7 @@ export default function Marketing() {
   const getQueryParmas = (marketingType) => ({
     shop: currentShop?._id,
     type: marketingType,
-    creatorType: adminShop?.shopType ? 'shop' : 'admin',
+    creatorType: shop?.shopType ? 'shop' : 'admin',
   });
 
   const rewardSettingsQuery = useQuery(
@@ -216,7 +218,7 @@ export default function Marketing() {
   const openHandler = (marketingType, marketing) => {
     if (!marketing?.status) {
       setCurrentModal(marketingType);
-    } else if (adminShop?.shopType) {
+    } else if (shop?.shopType) {
       history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
     } else {
       history.push(`/shops/marketing/dashboard/${currentShop?._id}/${marketingType}/${marketing?._id}`);
@@ -249,7 +251,7 @@ export default function Marketing() {
             loading={__loading || discountSettingsQuery?.isFetching}
             disabled={appliedDeals.percentage || !activeDeals.percentage}
             status={getPromotionStatus(discountSettingsQuery, 'percentage', activeDeals)}
-            ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+            ongoingBy={shop?.shopType ? 'admin' : 'shop'}
             onOpen={() => {
               if (!appliedDeals.percentage && activeDeals.percentage && !__loading) {
                 openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
@@ -265,7 +267,7 @@ export default function Marketing() {
             loading={__loading || doubleDealSettingsQuery.isFetching}
             disabled={appliedDeals.double_menu || !activeDeals.double_menu}
             status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu', activeDeals)}
-            ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+            ongoingBy={shop?.shopType ? 'admin' : 'shop'}
             onOpen={() => {
               if (!__loading && !appliedDeals.double_menu && activeDeals.double_menu) {
                 openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
@@ -280,7 +282,7 @@ export default function Marketing() {
             loading={__loading || freeDeliverySettingsQuery?.isFetching}
             disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
             status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery', activeDeals)}
-            ongoingBy={adminShop?.shopType ? 'admin' : 'shop'}
+            ongoingBy={shop?.shopType ? 'admin' : 'shop'}
             icon={DeliveryIcon}
             onOpen={() => {
               if (!__loading && !appliedDeals.free_delivery && activeDeals.free_delivery) {
@@ -289,7 +291,7 @@ export default function Marketing() {
             }}
           />
         </Grid>
-        {adminShop?.shopType && (
+        {shop?.shopType && (
           <>
             <Grid md={6} lg={4}>
               <MCard
@@ -326,7 +328,7 @@ export default function Marketing() {
       <MSettingsModal open={Boolean(currentModal)}>
         <MarketingSettings
           shop={currentShop}
-          creatorType={adminShop?.shopType ? 'shop' : 'admin'}
+          creatorType={shop?.shopType ? 'shop' : 'admin'}
           marketingType={currentModal}
           onDelete={() => {
             setCurrentModal(null);

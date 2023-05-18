@@ -12,13 +12,16 @@ import TopSummery from './TopSummery';
 
 import bagIcon from '../assets/images/dashboard/bag.png';
 import cancelBagIcon from '../assets/images/dashboard/cancel-bag.png';
+import { useGlobalContext } from '../context/GlobalContext';
 
 const GraphInfo = lazy(() => import('./GraphInfo'));
 
 function ShopDashboard({ summary }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-  const { haveOwnDeliveryBoy } = useSelector((store) => store.Login.admin);
-  console.log(haveOwnDeliveryBoy);
+  // const { haveOwnDeliveryBoy } = useSelector((store) => store.Login.admin);
+  // console.log(haveOwnDeliveryBoy);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   let topSummaryData = [
     {
@@ -67,7 +70,7 @@ function ShopDashboard({ summary }) {
     },
   ];
 
-  if (haveOwnDeliveryBoy) {
+  if (shop?.haveOwnDeliveryBoy) {
     topSummaryData = [...topSummaryData, ...selfDeliveryOnlySummary];
   }
 

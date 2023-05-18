@@ -74,7 +74,9 @@ function ProductAdd() {
     },
   ]);
 
-  const { account_type, _id: accountId } = useSelector((store) => store.Login.admin);
+  // const { userType, _id: accountId } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, seller, shop: adminShop } = currentUser;
 
   // SET PRODUCT VALUE
   const setProductValue = (product) => {
@@ -138,17 +140,17 @@ function ProductAdd() {
 
   useEffect(() => {
     dispatch(getAllUnitType(true));
-    dispatch(getAllCategory(true, account_type));
+    dispatch(getAllCategory(true, userType));
   }, []);
 
   // FIND SHOP BY SHOP ID
 
   useEffect(() => {
-    if (searchParams.get('shopId') || account_type === 'shop') {
+    if (searchParams.get('shopId') || userType === 'shop') {
       const shopId = searchParams.get('shopId');
       let shop = null;
       // eslint-disable-next-line no-unused-expressions
-      shopId ? (shop = shopId) : (shop = accountId);
+      shopId ? (shop = shopId) : (shop = adminShop?._id);
       if (shop) {
         const findShop = shops?.find((item) => item._id === shop);
         if (findShop) {
@@ -167,7 +169,7 @@ function ProductAdd() {
         }
       }
     }
-  }, [searchParams, account_type]);
+  }, [searchParams, userType]);
 
   // ALL CATEGORY LIST
   // useEffect(() => {
@@ -185,12 +187,12 @@ function ProductAdd() {
 
   // ALL SHOP LIST
   useEffect(() => {
-    if (account_type === 'shop') {
+    if (userType === 'shop') {
       dispatch(getAllShop(true));
     } else if ((typeKey || searchKey) && type) {
-      dispatch(getAllShop(true, account_type === 'seller' ? accountId : null));
+      dispatch(getAllShop(true, userType === 'seller' ? seller?._id : null));
     }
-  }, [type, typeKey, searchKey, account_type]);
+  }, [type, typeKey, searchKey, userType]);
 
   // ALL SUB CATEGORY LIST
 
@@ -453,7 +455,7 @@ function ProductAdd() {
                           setCategory(null);
                         }}
                         options={shopTypeOptions2}
-                        disabled={!!(searchParams.get('shopId') || id || account_type === 'shop')}
+                        disabled={!!(searchParams.get('shopId') || id || userType === 'shop')}
                       />
                     </div>
                     <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
@@ -464,7 +466,7 @@ function ProductAdd() {
                           searchKey={searchKey}
                           onInputChange={(event, newInputValue) => dispatch(updateShopSearchKey(newInputValue))}
                           list={shops}
-                          disabled={!!(!type || id || searchParams.get('shopId') || account_type === 'shop')}
+                          disabled={!!(!type || id || searchParams.get('shopId') || userType === 'shop')}
                           type="shop"
                           showImg
                         />

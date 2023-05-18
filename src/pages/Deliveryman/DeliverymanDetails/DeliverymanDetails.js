@@ -26,6 +26,7 @@ import InfoTwo from '../../../components/InfoTwo';
 import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
 import OrderTable from '../../../components/OrderTable';
 import { callApi } from '../../../components/SingleApiCall';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { SINGLE_DELIVERY_MAN } from '../../../network/Api';
 import { getDeliveryAllOrder } from '../../../store/DeliveryMan/DeliveryManAction';
 
@@ -37,7 +38,9 @@ function DeliverymanDetails() {
   const { deliveryMans, orders, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
     (state) => state.deliveryManReducer
   );
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  // const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, adminType } = currentUser;
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +89,7 @@ function DeliverymanDetails() {
                   <Button outline color="primary" onClick={() => history.push(`/deliveryman/edit/${id}`)}>
                     Edit
                   </Button>
-                  {account_type === 'admin' && adminType === 'admin' && (
+                  {userType === 'admin' && adminType === 'admin' && (
                     <Button
                       outline
                       color="primary"

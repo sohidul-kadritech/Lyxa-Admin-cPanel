@@ -1,17 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import Portals from '../../components/Portals';
+import { useGlobalContext } from '../../context/GlobalContext';
 
 function Authmiddleware({ component: Component, layout: Layout, isAuthProtected, ...rest }) {
-  const { account_type } = useSelector((store) => store.Login.admin);
+  // const { account_type } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (isAuthProtected && !account_type) {
+        if (isAuthProtected && !userType) {
           return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />;
         }
         return (

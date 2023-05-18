@@ -2,10 +2,10 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -19,7 +19,10 @@ const fieldContainerSx = {
 };
 
 export default function AddSubCategory({ onClose, editCategory, newSubCategoryId }) {
-  const shop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, shop } = currentUser;
+
   const queryClient = useQueryClient();
 
   const [subCategory, setSubCategory] = useState(getAddSubCategoriesInit(newSubCategoryId));

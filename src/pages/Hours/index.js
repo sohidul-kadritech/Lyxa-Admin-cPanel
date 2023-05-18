@@ -4,8 +4,8 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useSelector } from 'react-redux';
 import ConfirmModal from '../../components/Common/ConfirmModal';
+import { useGlobalContext } from '../../context/GlobalContext';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -14,7 +14,9 @@ import Holiday from './Holiday';
 import { StyledBox, holidayHourInit, validateSettings } from './helpers';
 
 export default function ShopHourSettings() {
-  const shop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, shop } = currentUser;
 
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);

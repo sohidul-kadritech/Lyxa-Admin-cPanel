@@ -13,12 +13,15 @@ import TopSummery from './TopSummery';
 import bagIcon from '../assets/images/dashboard/bag.png';
 import cancelBagIcon from '../assets/images/dashboard/cancel-bag.png';
 import shopIcon from '../assets/images/dashboard/shop.png';
+import { useGlobalContext } from '../context/GlobalContext';
 
 const GraphInfo = lazy(() => import('./GraphInfo'));
 
 function SellerDashboard({ summary }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-  const shops = useSelector((store) => store.Login.admin.shops);
+  // const shop = useSelector((store) => store.Login.admin.shop);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   let topSummaryData = [
     {
@@ -55,9 +58,9 @@ function SellerDashboard({ summary }) {
     },
   ];
 
-  if (shops?.length > 0) {
-    console.log(shops);
-    const selfDeliveredShop = shops.find((item) => item.haveOwnDeliveryBoy);
+  if (shop?.length > 0) {
+    console.log(shop);
+    const selfDeliveredShop = shop.find((item) => item.haveOwnDeliveryBoy);
     const selfDeliveryOnlySummary = [
       {
         id: 3,

@@ -19,6 +19,7 @@ import { liveStatusFilterOptions, shopStatusOptions, shopTypeOptions, sortByOpti
 import Search from '../../../components/Search';
 import ShopTable from '../../../components/ShopTable';
 import { callApi } from '../../../components/SingleApiCall';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { SINGLE_SHOP } from '../../../network/Api';
 
 function ShopList() {
@@ -37,7 +38,9 @@ function ShopList() {
     currentPage,
     liveStatus,
   } = useSelector((state) => state.shopReducer);
-  const { account_type, adminType, _id: Id } = useSelector((store) => store.Login.admin);
+  // const { userType, adminType, _id: Id } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, seller, adminType } = currentUser;
 
   const [myShop, setMyShop] = useState([]);
 
@@ -50,13 +53,13 @@ function ShopList() {
   }, []);
 
   const callShopList = async (refresh = false) => {
-    if (account_type === 'shop') {
-      const data = await callApi(Id, SINGLE_SHOP, 'shop');
+    if (userType === 'shop') {
+      const data = await callApi(seller?._id, SINGLE_SHOP, 'shop');
       if (data) {
         setMyShop([data]);
       }
     } else {
-      dispatch(getAllShop(refresh, account_type === 'seller' ? Id : null));
+      dispatch(getAllShop(refresh, userType === 'seller' ? seller?._id : null));
     }
   };
 
@@ -76,12 +79,12 @@ function ShopList() {
             title="Shop"
             loading={loading}
             callList={callShopList}
-            isRefresh={account_type !== 'shop'}
-            isAddNew={account_type === 'admin' && adminType !== 'customerService'}
+            isRefresh={userType !== 'shop'}
+            isAddNew={userType === 'admin' && adminType !== 'customerService'}
             addNewRoute="shops/add"
           />
 
-          {account_type !== 'shop' && (
+          {userType !== 'shop' && (
             <Card>
               <CardBody>
                 <Row>
@@ -97,7 +100,7 @@ function ShopList() {
                       />
                     </div>
                   </Col>
-                  {account_type !== 'seller' && (
+                  {userType !== 'seller' && (
                     <Col lg={4}>
                       <div className="mb-4">
                         <label className="control-label">Type</label>
@@ -157,8 +160,8 @@ function ShopList() {
 
           <Card>
             <CardBody>
-              <CardTitle className="h4"> {account_type !== 'shop' ? 'Shop List' : 'My Shop'}</CardTitle>
-              <ShopTable shops={account_type === 'shop' ? myShop : shops} />
+              <CardTitle className="h4"> {userType !== 'shop' ? 'Shop List' : 'My Shop'}</CardTitle>
+              <ShopTable shops={userType === 'shop' ? myShop : shops} />
             </CardBody>
           </Card>
           <Row>
@@ -169,7 +172,7 @@ function ShopList() {
                   hasNextPage={hasNextPage}
                   hasPreviousPage={hasPreviousPage}
                   currentPage={currentPage}
-                  lisener={(page) => dispatch(getAllShop(true, account_type === 'seller' ? Id : null, page))}
+                  lisener={(page) => dispatch(getAllShop(true, userType === 'seller' ? seller?._id : null, page))}
                 />
               </div>
             </Col>

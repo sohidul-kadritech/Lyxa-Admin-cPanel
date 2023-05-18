@@ -21,6 +21,7 @@ import MakePayment from '../../../components/MakePayment';
 import TopSummery from '../../../components/TopSummery';
 import TransactionsTable from '../../../components/TransactionsTable';
 import { TrxType } from '../../../components/updateTrxsType';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { successMsg } from '../../../helpers/successMsg';
 import { SINGLE_DELIVERY_TRX } from '../../../network/Api';
 import requestApi from '../../../network/httpRequest';
@@ -90,7 +91,9 @@ function SingleDeliveryTransactions() {
     riderCashTrxEndDate,
     loading: isLoading,
   } = useSelector((state) => state.appWalletReducer);
-  const { account_type } = useSelector((store) => store.Login.admin);
+  // const { userType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
 
   const callApi = async (deiveryId, page = 1) => {
     setLoading(true);
@@ -311,7 +314,7 @@ function SingleDeliveryTransactions() {
                   <CardBody>
                     <div className="d-flex justify-content-between align-items-center pb-3">
                       <CardTitle className="h4"> Transactions List</CardTitle>
-                      {account_type === 'admin' && (
+                      {userType === 'admin' && (
                         <div className="d-flex justify-content-end">
                           <Button className="btn btn-info ms-4" onClick={() => setIsMakePayment(!isMakePayment)}>
                             Make Payment
@@ -369,7 +372,7 @@ function SingleDeliveryTransactions() {
                 <Card>
                   <CardBody>
                     <div className="d-flex justify-content-end pb-3 align-items-center">
-                      {account_type === 'admin' && (
+                      {userType === 'admin' && (
                         <>
                           {totalSelectedAmount > 0 && (
                             <SummaryWrapper>

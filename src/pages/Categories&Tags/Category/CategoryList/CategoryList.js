@@ -14,6 +14,7 @@ import Breadcrumb from '../../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../../components/GlobalWrapper';
 import TableImgItem from '../../../../components/TableImgItem';
 import ThreeDotsMenu from '../../../../components/ThreeDotsMenu';
+import { useGlobalContext } from '../../../../context/GlobalContext';
 import { getAllCategory, setCatStatusFalse, updateCategoryShopType } from '../../../../store/Category/categoryAction';
 
 function CategoryList() {
@@ -27,16 +28,18 @@ function CategoryList() {
   const [isZoom, setIsZoom] = useState(false);
   const [catImg] = useState('');
 
-  const { account_type, shopType: adminShopType, sellerType } = useSelector((store) => store.Login.admin);
+  // const { userType, shopType: userType, sellerType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, seller } = currentUser;
 
   useEffect(() => {
-    if (account_type === 'shop' || account_type === 'seller') {
-      dispatch(updateCategoryShopType(adminShopType || sellerType));
+    if (userType === 'shop' || userType === 'seller') {
+      dispatch(updateCategoryShopType(userType || seller?.sellerType));
     }
-  }, [account_type]);
+  }, [userType]);
 
   const callCategoryList = (refresh = false) => {
-    dispatch(getAllCategory(refresh, account_type));
+    dispatch(getAllCategory(refresh, userType));
   };
 
   useEffect(() => {
@@ -67,7 +70,7 @@ function CategoryList() {
             title="Category"
             loading={loading}
             callList={callCategoryList}
-            isAddNew={account_type === 'shop'}
+            isAddNew={userType === 'shop'}
             addNewRoute="categories/add"
           />
 
@@ -92,7 +95,7 @@ function CategoryList() {
                       id="demo-simple-select"
                       value={shopType}
                       label="Shop Type"
-                      disabled={account_type === 'shop' || account_type === 'seller'}
+                      disabled={userType === 'shop' || userType === 'seller'}
                       onChange={(event) => {
                         dispatch(updateCategoryShopType(event.target.value));
                       }}
@@ -119,7 +122,7 @@ function CategoryList() {
                     <Th>Type</Th>
                     <Th>Shop</Th>
                     <Th>Status</Th>
-                    {account_type === 'shop' && <Th>Action</Th>}
+                    {userType === 'shop' && <Th>Action</Th>}
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: 'relative' }}>
@@ -146,7 +149,7 @@ function CategoryList() {
                           {item?.category?.status}
                         </div>
                       </Td>
-                      {account_type === 'shop' && (
+                      {userType === 'shop' && (
                         <Td>
                           <ThreeDotsMenu
                             handleMenuClick={(menu) => handleMenu(menu, item)}
@@ -179,7 +182,7 @@ function CategoryList() {
                   hasNextPage={hasNextPage}
                   hasPreviousPage={hasPreviousPage}
                   currentPage={currentPage}
-                  lisener={(page) => dispatch(getAllCategory(true, account_type, page))}
+                  lisener={(page) => dispatch(getAllCategory(true, userType, page))}
                 />
               </div>
             </Col>

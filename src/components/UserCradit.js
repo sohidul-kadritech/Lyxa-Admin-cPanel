@@ -2,6 +2,7 @@ import { Autocomplete, Box, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap';
+import { useGlobalContext } from '../context/GlobalContext';
 import { successMsg } from '../helpers/successMsg';
 import { addUserAmount, withdrawUserAmount } from '../store/DropPay/dropPayAction';
 import { getAllAppSettings } from '../store/Settings/settingsAction';
@@ -12,7 +13,9 @@ function UserCradit({ user = null }) {
   const { loading, status } = useSelector((state) => state.dropPayReducer);
   const { appSettingsOptions } = useSelector((state) => state.settingsReducer);
 
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  // const { userType, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, adminType } = currentUser;
 
   const dispatch = useDispatch();
 
@@ -28,7 +31,7 @@ function UserCradit({ user = null }) {
   }, [user]);
 
   useEffect(() => {
-    if (account_type === 'admin' && adminType === 'customerService') {
+    if (userType === 'admin' && adminType === 'customerService') {
       dispatch(getAllAppSettings());
     }
   }, []);
@@ -66,7 +69,7 @@ function UserCradit({ user = null }) {
     if (
       amount > !appSettingsOptions?.maxCustomerServiceValue
         ? 0
-        : appSettingsOptions?.maxCustomerServiceValue && account_type === 'admin' && adminType === 'customerService'
+        : appSettingsOptions?.maxCustomerServiceValue && userType === 'admin' && adminType === 'customerService'
     ) {
       return successMsg(
         `Amount can't be more than ${

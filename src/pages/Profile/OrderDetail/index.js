@@ -4,9 +4,9 @@ import moment from 'moment';
 
 // project import
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import CloseButton from '../../../components/Common/CloseButton';
 import TabPanel from '../../../components/Common/TabPanel';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import DeliveryDetails from './DeliveryDetails';
 import OrderReward from './OrderReward';
 import OrderTimeline from './OrderTimeline';
@@ -18,7 +18,9 @@ import OrderSummary from './Summary';
 import { reviews } from './mock';
 
 export default function OrderDetail({ order, onClose }) {
-  const admin = useSelector((store) => store.Login.admin);
+  // const admin = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
 
   const [currentTab, setCurrentTab] = useState(0);
   const theme = useTheme();
@@ -117,7 +119,7 @@ export default function OrderDetail({ order, onClose }) {
             )}
             <OrderSummary productsDetails={order?.productsDetails} />
             <PaymentMethod method={order?.paymentMethod} />
-            {order?.summary?.reward?.points && admin?.account_type === 'shop' ? (
+            {order?.summary?.reward?.points && userType === 'shop' ? (
               <OrderReward points={order?.summary?.reward?.points} />
             ) : null}
             <PaymentDetails order={order} />

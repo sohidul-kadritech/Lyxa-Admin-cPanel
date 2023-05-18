@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, styled } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { ReactComponent as Logo } from '../../../assets/icons/lyxa-sidebar-logo.svg';
 import MenuList from './MenuList';
 
-const StyledSidebarContaier = styled(Box)(({ theme }) => ({
+const StyledSidebarContaier = styled(Box)(() => ({
   position: 'absolute',
   top: 0,
   left: 0,
@@ -48,8 +46,6 @@ const StyledOverlay = styled(Box)(() => ({
 }));
 
 export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], title }) {
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
-
   return (
     <Box>
       <StyledSidebarContaier

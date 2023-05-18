@@ -22,7 +22,9 @@ function ShopTable({ shops = [] }) {
   // eslint-disable-next-line no-unused-vars
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  // const { userType, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, adminType } = currentUser;
 
   // GO TO SHOP PRODUCT LIST
   const goToShopProductList = (shopId) => {
@@ -53,7 +55,7 @@ function ShopTable({ shops = [] }) {
     } else if (menu === 'View As Admin') {
       let routePath = '';
 
-      if (account_type === 'seller') {
+      if (userType === 'seller') {
         routePath = `/shop/${item._id}`;
       } else {
         routePath = '';
@@ -142,10 +144,10 @@ function ShopTable({ shops = [] }) {
                 <ThreeDotsMenu
                   handleMenuClick={(menu) => handleMenu(menu, item)}
                   menuItems={[
-                    account_type !== 'shop' && 'View As Admin',
-                    account_type !== 'shop' && 'Edit',
+                    userType !== 'shop' && 'View As Admin',
+                    userType !== 'shop' && 'Edit',
                     'Details',
-                    account_type === 'admin' && adminType !== 'customerService' && 'Products',
+                    userType === 'admin' && adminType !== 'customerService' && 'Products',
                     'Orders',
                   ]}
                 />

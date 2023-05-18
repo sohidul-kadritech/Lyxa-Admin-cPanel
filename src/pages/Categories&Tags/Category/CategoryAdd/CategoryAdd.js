@@ -13,6 +13,7 @@ import { addCategory, editCategory } from '../../../../store/Category/categoryAc
 import { shopTypeOptions2 } from '../../../../assets/staticData';
 import formatBytes from '../../../../common/imageFormatBytes';
 import { callApi } from '../../../../components/SingleApiCall';
+import { useGlobalContext } from '../../../../context/GlobalContext';
 import { successMsg } from '../../../../helpers/successMsg';
 import { IMAGE_UPLOAD, SINGLE_CATEGORY } from '../../../../network/Api';
 
@@ -23,7 +24,9 @@ function CategoryAdd() {
 
   const { loading, status, categories } = useSelector((state) => state.categoryReducer);
 
-  const { account_type, shopType = '' } = useSelector((store) => store.Login.admin);
+  // const { account_type, shopType = '' } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, shop } = currentUser;
 
   const [name, setName] = useState('');
   const [type, setType] = useState(null);
@@ -31,11 +34,11 @@ function CategoryAdd() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (account_type === 'shop' && !id) {
-      const findType = shopTypeOptions2.find((item) => item.value === shopType);
+    if (userType === 'shop' && !id) {
+      const findType = shopTypeOptions2.find((item) => item.value === shop?.shopType);
       setType(findType);
     }
-  }, [account_type]);
+  }, [userType]);
 
   // SET DATA TO STATE
   const setCategoryData = (item) => {
@@ -74,7 +77,7 @@ function CategoryAdd() {
       name,
       image: url,
       type: type.value,
-      userType: account_type,
+      userType,
     };
     if (id) {
       dispatch(
@@ -153,7 +156,7 @@ function CategoryAdd() {
         history.goBack();
       } else {
         setName('');
-        setType(account_type !== 'shop' ? null : type);
+        setType(userType !== 'shop' ? null : type);
         setImage(null);
         window.scroll(0, 0);
       }
@@ -186,7 +189,7 @@ function CategoryAdd() {
                     />
                   </div>
                 </Col>
-                {account_type !== 'shop' && account_type !== 'seller' && (
+                {userType !== 'shop' && userType !== 'seller' && (
                   <Col lg={6} className="mt-3 mt-lg-0">
                     <Label>Shop Type</Label>
                     <Select

@@ -10,6 +10,7 @@ import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import ProductTable from '../../../components/ProductTable';
 import Search from '../../../components/Search';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { getAllCategory, updateCategoryShopType } from '../../../store/Category/categoryAction';
 import {
   getAllProduct,
@@ -44,29 +45,32 @@ function ProductList() {
   const { shops } = useSelector((state) => state.shopReducer);
   const { categories } = useSelector((state) => state.categoryReducer);
 
-  const { account_type, _id: Id } = useSelector((store) => store.Login.admin);
+  // const { userType, _id: Id } = useSelector((store) => store.Login.admin);
+
+  const { currentUser } = useGlobalContext();
+  const { userType, shop: adminshop, seller } = currentUser;
 
   const [shop, setShop] = useState(null);
   const [categorySearchKey, setCategorySearchKey] = useState('');
 
   useEffect(() => {
     dispatch(updateCategoryShopType('all'));
-    dispatch(getAllCategory(true, account_type));
+    dispatch(getAllCategory(true, userType));
   }, []);
 
   useEffect(() => {
-    if (account_type === 'admin') {
+    if (userType === 'admin') {
       dispatch(updateShopType({ label: 'All', value: 'all' }));
       dispatch(updateShopSearchKey(''));
     }
-  }, [account_type]);
+  }, [userType]);
 
   const callProductList = (refresh = false) => {
     dispatch(
       getAllProduct(
         refresh,
-        searchParams.get('shopId') ? searchParams.get('shopId') : account_type === 'shop' ? Id : null,
-        account_type === 'seller' ? Id : null
+        searchParams.get('shopId') ? searchParams.get('shopId') : userType === 'shop' ? adminshop?._id : null,
+        userType === 'seller' ? seller._id : null
       )
     );
   };
@@ -115,7 +119,7 @@ function ProductList() {
                   </div>
                 </Col>
 
-                {account_type !== 'seller' && account_type !== 'shop' && (
+                {userType !== 'seller' && userType !== 'shop' && (
                   <Col lg={4}>
                     <div className="mb-4">
                       <label className="control-label">Type</label>
@@ -195,8 +199,12 @@ function ProductList() {
                     dispatch(
                       getAllProduct(
                         true,
-                        searchParams.get('shopId') ? searchParams.get('shopId') : account_type === 'shop' ? Id : null,
-                        account_type === 'seller' ? Id : null,
+                        searchParams.get('shopId')
+                          ? searchParams.get('shopId')
+                          : userType === 'shop'
+                          ? adminshop._id
+                          : null,
+                        userType === 'seller' ? seller?._id : null,
                         page
                       )
                     )

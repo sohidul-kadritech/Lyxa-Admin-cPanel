@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useGlobalContext } from '../context/GlobalContext';
 import {
   ADMIN_DASHBOARD_EARNING_GRAPH,
   ADMIN_DASHBOARD_ORDER_GRAPH,
@@ -17,7 +17,10 @@ function GraphInfo({ graphType }) {
   const initStartDate = moment().startOf('month').format('YYYY-MM-DD');
   const initEndDate = moment().endOf('month').format('YYYY-MM-DD');
 
-  const { account_type } = useSelector((store) => store.Login.admin);
+  // const { account_type } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
+
   const [filterType, setFilterType] = useState({
     label: 'Daily',
     value: 'normal',
@@ -34,9 +37,9 @@ function GraphInfo({ graphType }) {
   // eslint-disable-next-line consistent-return
   const getApi = (graphType) => {
     if (graphType === 'order') {
-      return account_type === 'admin'
+      return userType === 'admin'
         ? ADMIN_DASHBOARD_ORDER_GRAPH
-        : account_type === 'seller'
+        : userType === 'seller'
         ? SELLER_DASHBOARD_ORDER_GRAPH
         : SHOP_DASHBOARD_ORDER_GRAPH;
     }
@@ -44,9 +47,9 @@ function GraphInfo({ graphType }) {
       return ADMIN_DASHBOARD_USERS_GRAPH;
     }
     if (graphType === 'earning') {
-      return account_type === 'admin'
+      return userType === 'admin'
         ? ADMIN_DASHBOARD_EARNING_GRAPH
-        : account_type === 'seller'
+        : userType === 'seller'
         ? SELLER_DASHBOARD_EARNING_GRAPH
         : SHOP_DASHBOARD_EARNING_GRAPH;
     }

@@ -8,6 +8,7 @@ import StyledBox from '../../../../components/StyledCharts/StyledBox';
 // project import
 import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
 import StyledDoughnutChart from '../../../../components/StyledCharts/StyledPieChart';
+import { useGlobalContext } from '../../../../context/GlobalContext';
 import { calculateDateDifference } from '../../helper';
 
 const customerTypeProps = {
@@ -66,7 +67,10 @@ function AmountItem({ amount, title }) {
 
 export default function CustomerBreakdown({ title, customerType, range, details = {} }) {
   const theme = useTheme();
-  const shop = useSelector((store) => store.Login.admin);
+  // const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
+
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   const sales = customerTypeProps[customerType]?.sales || '';

@@ -1,24 +1,27 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 // i18n
 import { adminMenuItem, customerServiceMenuItem, sellerMenuItem, shopMenuItem } from '../../assets/SideMenuItem';
+import { useGlobalContext } from '../../context/GlobalContext';
 import SidebarContent from './SidebarContent';
 
 function Sidebar() {
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  // const { userType, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, adminType } = currentUser;
 
   return (
     <div className="vertical-menu">
       <div data-simplebar className="h-100">
         <SidebarContent
           list={
-            account_type === 'admin' && adminType === 'admin'
+            userType === 'admin' && adminType === 'admin'
               ? adminMenuItem
-              : account_type === 'admin' && adminType === 'customerService'
+              : userType === 'admin' && adminType === 'customerService'
               ? customerServiceMenuItem
-              : account_type === 'seller'
+              : userType === 'seller'
               ? sellerMenuItem
               : shopMenuItem
           }

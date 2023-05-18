@@ -46,7 +46,9 @@ function SellerList() {
     statusKey,
     typeKey,
   } = useSelector((state) => state.sellerReducer);
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, adminType } = currentUser;
+
   useEffect(() => {
     dispatch(setSellerStatusFalse());
   }, []);
@@ -90,7 +92,7 @@ function SellerList() {
             title="Seller"
             loading={loading}
             callList={callSellerList}
-            isAddNew={adminType === 'admin' && account_type === 'admin'}
+            isAddNew={adminType === 'admin' && userType === 'admin'}
             addNewRoute="seller/add"
           />
 

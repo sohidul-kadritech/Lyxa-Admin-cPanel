@@ -68,7 +68,8 @@ export default function Login({ loginFor }) {
     });
 
     // redirect after login success
-    if (currentUser?.account_type === 'admin' && currentUser?.adminType) history.push('/orders/list');
+    if (currentUser?.account_type === 'admin' && currentUser?.adminType === 'customerService')
+      history.push('/orders/list');
     else history.push('/');
   };
 

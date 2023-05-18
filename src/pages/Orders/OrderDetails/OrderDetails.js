@@ -30,6 +30,7 @@ import noPhoto from '../../../assets/images/noPhoto.jpg';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import { callApi } from '../../../components/SingleApiCall';
 import TableImgItem from '../../../components/TableImgItem';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { SINGLE_ORDER } from '../../../network/Api';
 
 function OrderInfo({ items = [] }) {
@@ -127,7 +128,10 @@ function Riders({ list = [], heading }) {
 }
 
 function OrderDetails() {
-  const { account_type } = useSelector((store) => store.Login.admin);
+  // const { account_type } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
+
   const { id } = useParams();
   const { orders, status } = useSelector((state) => state.orderReducer);
   const history = useHistory();
@@ -551,7 +555,7 @@ function OrderDetails() {
               )}
             </Col>
           </Row>
-          {account_type === 'admin' && (
+          {userType === 'admin' && (
             <Row className="mb-4">
               {/* Flags and Chat */}
               <Col lg={6}>

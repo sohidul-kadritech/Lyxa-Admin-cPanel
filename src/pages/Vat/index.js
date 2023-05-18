@@ -14,6 +14,7 @@ import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import TopSummery from '../../components/TopSummery';
+import { useGlobalContext } from '../../context/GlobalContext';
 import { successMsg } from '../../helpers/successMsg';
 import { getAllAdmin } from '../../store/AdminControl/Admin/adminAction';
 import { getAllVatInfo, settleVat } from '../../store/vat/vatActions';
@@ -22,7 +23,10 @@ function SingleShopTransactions() {
   const dispatch = useDispatch();
 
   // eslint-disable-next-line no-unused-vars
-  const { shopName: name, _id: accountId, account_type } = useSelector((store) => store.Login.admin);
+  // const { shopName: name, _id: accountId, userType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { admin, userType } = currentUser;
+
   const {
     summary: vatSummary,
     transactions,
@@ -41,7 +45,7 @@ function SingleShopTransactions() {
   const [amountRange, setAmountRange] = useState('');
   const [searchKey, setSearchKey] = useState('');
   const [allAdminOptions, setAllAdminOptions] = useState([]);
-  const [adminBy, setAdminBy] = useState(accountId);
+  const [adminBy, setAdminBy] = useState(admin?._id);
   const [amountRangeType, setAmountRangeType] = useState('');
   const [settleAmount, setSettleAmount] = useState(0);
   const [summary, setSummary] = useState({});
@@ -82,11 +86,11 @@ function SingleShopTransactions() {
       endDate,
     };
 
-    if (account_type === 'shop') {
+    if (userType === 'shop') {
       reqBody.tnxFilter.type = ['VatAmountSettleByShop'];
     }
 
-    dispatch(getAllVatInfo(reqBody, account_type, accountId));
+    dispatch(getAllVatInfo(reqBody, userType, admin?._id));
   };
 
   // open modal
@@ -115,7 +119,7 @@ function SingleShopTransactions() {
       endDate,
     };
 
-    dispatch(settleVat(reqBody, account_type));
+    dispatch(settleVat(reqBody, userType));
   };
 
   // refetch data on filter
@@ -125,7 +129,7 @@ function SingleShopTransactions() {
 
   // format summary for shop
   useEffect(() => {
-    if (account_type === 'shop') {
+    if (userType === 'shop') {
       setSummary({ totalUnsettleVat: vatSummary?.totalUnsettleVatForShop, totalVat: vatSummary?.totalVatForShop });
       setSettleAmount(vatSummary?.totalUnsettleVatForShop);
     } else {
@@ -196,7 +200,7 @@ function SingleShopTransactions() {
                     </div>
                   </div>
                 </Col>
-                <Col lg={4} className={`${account_type !== 'admin' ? 'd-none' : ''}`}>
+                <Col lg={4} className={`${userType !== 'admin' ? 'd-none' : ''}`}>
                   <div>
                     <label className="control-label">Admin By</label>
                     <Select
@@ -282,7 +286,7 @@ function SingleShopTransactions() {
                     <Th>ID</Th>
                     <Th>Amount ({currency})</Th>
                     <Th>Date</Th>
-                    <Th className={`${account_type === 'shop' ? 'd-none' : ''}`}>Author</Th>
+                    <Th className={`${userType === 'shop' ? 'd-none' : ''}`}>Author</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -294,7 +298,7 @@ function SingleShopTransactions() {
                         <span className="d-block">{new Date(item?.createdAt).toLocaleDateString()}</span>
                         <span className="d-block">{new Date(item?.createdAt).toLocaleTimeString()}</span>
                       </Td>
-                      <Td className={`${account_type === 'shop' ? 'd-none' : ''}`}>{item?.adminBy?.name}</Td>
+                      <Td className={`${userType === 'shop' ? 'd-none' : ''}`}>{item?.adminBy?.name}</Td>
                     </Tr>
                   ))}
                 </Tbody>

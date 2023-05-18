@@ -19,6 +19,7 @@ import noPhoto from '../../assets/images/noPhoto.jpg';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import InfoTwo from '../../components/InfoTwo';
 import InfoTwoWrapper from '../../components/InfoTwoWrapper';
+import { useGlobalContext } from '../../context/GlobalContext';
 import { MAP_URL } from '../../network/Api';
 import {
   getDashboardSummary,
@@ -40,17 +41,15 @@ function Dashboard() {
     loading,
   } = useSelector((state) => state.dashboardReducer);
 
-  const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  // const { account_type, adminType } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, adminType } = currentUser;
 
   useEffect(() => {
     if (startDate || endDate) {
       dispatch(
         getDashboardSummary(
-          account_type === 'admin' && adminType !== 'customerService'
-            ? 'admin'
-            : account_type === 'seller'
-            ? 'seller'
-            : 'shop'
+          userType === 'admin' && adminType !== 'customerService' ? 'admin' : userType === 'seller' ? 'seller' : 'shop'
         )
       );
     }
@@ -71,22 +70,22 @@ function Dashboard() {
               }}
             >
               <Row className="align-items-center">
-                <Col md={account_type === 'shop' ? 9 : 6}>
-                  {account_type === 'admin' ? (
+                <Col md={userType === 'shop' ? 9 : 6}>
+                  {userType === 'admin' ? (
                     <>
                       <h6 className="page-title text-danger">Dashboard</h6>
                       <ol className="breadcrumb m-0">
                         <li className="breadcrumb-item active">Welcome to Lyxa Dashboard</li>
                       </ol>
                     </>
-                  ) : account_type === 'seller' ? (
+                  ) : userType === 'seller' ? (
                     <SellerInfo />
                   ) : (
                     <ShopInfo />
                   )}
                 </Col>
-                <Col md={account_type === 'shop' ? 3 : 6}>
-                  <div className={`d-flex ${account_type === 'shop' && 'flex-column'}`}>
+                <Col md={userType === 'shop' ? 3 : 6}>
+                  <div className={`d-flex ${userType === 'shop' && 'flex-column'}`}>
                     <DateFilter className=" me-2 ">
                       <div className="date-label">
                         <small>Start</small>
@@ -102,7 +101,7 @@ function Dashboard() {
                         onChange={(e) => dispatch(updateDashboardCardStartDate(e.target.value))}
                       />
                     </DateFilter>
-                    <DateFilter className={`${account_type !== 'shop' && 'ps-3'}`}>
+                    <DateFilter className={`${userType !== 'shop' && 'ps-3'}`}>
                       <div className="date-label">
                         <small>End</small>
                         <h5>Date</h5>
@@ -126,11 +125,11 @@ function Dashboard() {
           {loading && <div className="text-center">{/* <Spinner animation="border" color="success" /> */}</div>}
 
           <div>
-            {account_type === 'admin' ? (
+            {userType === 'admin' ? (
               <Suspense fallback={<div>Loading...</div>}>
                 <AdminDashboard summary={summary} topActivity={top_activity} />
               </Suspense>
-            ) : account_type === 'seller' ? (
+            ) : userType === 'seller' ? (
               <Suspense fallback={<div>Loading...</div>}>
                 <SellerDashboard summary={summary} />
               </Suspense>

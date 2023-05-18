@@ -20,9 +20,9 @@ import {
   useTheme,
 } from '@mui/material';
 import React, { Fragment, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import TableLoader from '../../components/Common/TableLoader';
+import { useGlobalContext } from '../../context/GlobalContext';
 import EditUser from './EditUser';
 import UserTablePageSkeleton from './UserTableSkeleton';
 
@@ -65,7 +65,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 function UsersTable({ data, loading, isConfirm, isEditOpen, ...props }) {
-  const shop = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   const credentialUserId = shop.credentialUserId || shop._id;
 

@@ -19,6 +19,7 @@ import MakePayment from '../../../components/MakePayment';
 import Search from '../../../components/Search';
 import TopSummery from '../../../components/TopSummery';
 import TransactionsTable from '../../../components/TransactionsTable';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { getAllAdmin } from '../../../store/AdminControl/Admin/adminAction';
 import {
   getShopTrxs,
@@ -64,12 +65,14 @@ function SingleShopTransactions() {
   const [shopId, setShopId] = useState('');
   const [adminSearchKey, setAdminSearchKey] = useState('');
 
-  const { shopName: name, _id: accountId, account_type } = useSelector((store) => store.Login.admin);
+  // const { shopName: name, _id: accountId, account_type } = useSelector((store) => store.Login.admin);
+  const { currentUser } = useGlobalContext();
+  const { userType, shop } = currentUser;
 
   const { admins } = useSelector((state) => state.adminReducer);
 
   useEffect(() => {
-    if (account_type !== 'shop') {
+    if (userType !== 'shop') {
       dispatch(getAllAdmin(true));
     }
   }, []);
@@ -80,12 +83,12 @@ function SingleShopTransactions() {
     dispatch(getShopTrxs(refresh, IdOfShop || shopId));
   };
   useEffect(() => {
-    if (searchParams.get('shopId') || accountId) {
+    if (searchParams.get('shopId') || shop?._id) {
       // eslint-disable-next-line no-unused-expressions
-      searchParams.get('shopName') ? setShopName(searchParams.get('shopName')) : setShopName(name);
+      searchParams.get('shopName') ? setShopName(searchParams.get('shopName')) : setShopName(shop?.name);
       let id = null;
       // eslint-disable-next-line no-unused-expressions
-      searchParams.get('shopId') ? (id = searchParams.get('shopId')) : (id = accountId);
+      searchParams.get('shopId') ? (id = searchParams.get('shopId')) : (id = shop?._id);
       if (id) {
         if (
           shopTrxStartDate ||
@@ -105,7 +108,7 @@ function SingleShopTransactions() {
     }
   }, [
     searchParams,
-    accountId,
+    shop?._id,
     shopTrxStartDate,
     shopTrxEndDate,
     shopTrxOrderBy,
@@ -173,7 +176,7 @@ function SingleShopTransactions() {
       },
     ];
 
-    if (account_type === 'admin') {
+    if (userType === 'admin') {
       setSummary(summaryListAdmin);
     } else {
       setSummary(summaryListShop);
@@ -293,7 +296,7 @@ function SingleShopTransactions() {
                   </div>
                 </Col>
 
-                {account_type !== 'shop' && (
+                {userType !== 'shop' && (
                   <Col lg={4}>
                     <label>Transaction By</label>
                     <AdminFilter>
@@ -403,7 +406,7 @@ function SingleShopTransactions() {
               </Row>
               <div className="d-flex justify-content-between pb-3">
                 <CardTitle className="h4"> Shop Transactions List</CardTitle>
-                {account_type === 'admin' && (
+                {userType === 'admin' && (
                   <div>
                     <Button className="btn btn-success" onClick={() => setOpenCreditModal(!openCreditModal)}>
                       Add/Remove Credit
