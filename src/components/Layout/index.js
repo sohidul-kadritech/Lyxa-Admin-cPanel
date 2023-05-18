@@ -2,15 +2,21 @@ import { Box } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { admin_menu_items, seller_menu_items, shop_menu_items } from '../../common/sidebar_menu_items';
+import {
+  admin_menu_items,
+  customer_service_menu_items,
+  seller_menu_items,
+  shop_menu_items,
+} from '../../common/sidebar_menu_items';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { admin_routes } from '../../routes/admin_routes';
+import { customer_service_routes } from '../../routes/customerSericeRoutes';
 import { seller_routes } from '../../routes/seller_routes';
 import { shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
-export const getRouteAndSidebarItems = (userType, prefix = '') => {
+export const getRouteAndSidebarItems = (userType, adminType, prefix = '') => {
   let routes = [];
   let menuItems = [];
 
@@ -24,9 +30,14 @@ export const getRouteAndSidebarItems = (userType, prefix = '') => {
     menuItems = seller_menu_items(prefix);
   }
 
-  if (userType === 'admin') {
+  if (userType === 'admin' && adminType === 'admin') {
     routes = admin_routes;
     menuItems = admin_menu_items;
+  }
+
+  if (userType === 'admin' && adminType === 'customerService') {
+    routes = customer_service_routes();
+    menuItems = customer_service_menu_items;
   }
 
   return { routes, menuItems };
@@ -35,7 +46,10 @@ export const getRouteAndSidebarItems = (userType, prefix = '') => {
 export default function Layout() {
   const { currentUser } = useGlobalContext();
   const [sidebar, setSidebar] = useState(false);
-  const { routes, menuItems } = useMemo(() => getRouteAndSidebarItems(currentUser?.userType), [currentUser?.userType]);
+  const { routes, menuItems } = useMemo(
+    () => getRouteAndSidebarItems(currentUser?.userType, currentUser?.adminType),
+    [currentUser?.userType]
+  );
 
   return (
     <Box
