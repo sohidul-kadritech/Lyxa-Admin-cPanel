@@ -1,9 +1,8 @@
 import { Add, Close, Edit } from '@mui/icons-material';
-import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Modal, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
 // eslint-disable-next-line no-unused-vars
 import StyledFormField from '../../components/Form/StyledFormField';
@@ -12,6 +11,7 @@ import AppPagination from '../../components/Common/AppPagination2';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
+import { useGlobalContext } from '../../context/GlobalContext';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -73,7 +73,7 @@ function ServiceZone() {
   const [actionType, setActionType] = useState('add');
 
   const [rowData, setRowData] = useState({});
-
+  const [currentTab, setCurrentTab] = useState(0);
   // eslint-disable-next-line prettier/prettier, no-unused-vars
   const [slectedZoneStatus, setSelectedZoneStatus] = useState('');
   // eslint-disable-next-line prettier/prettier, no-unused-vars
@@ -85,11 +85,14 @@ function ServiceZone() {
   // eslint-disable-next-line prettier/prettier, no-unused-vars
   const [selectedsortBy, setSelectedSortBy] = useState('desc');
 
-  const { account_type } = useSelector((store) => store?.Login?.admin);
+  // const { account_type } = useSelector((store) => store?.Login?.admin);
+
+  const { currentUser } = useGlobalContext();
 
   const queryClient = useQueryClient();
-  const apiurl = account_type === 'admin' ? API_URL.GET_ALL_ZONE : '';
-
+  const apiurl = currentUser?.userType === 'admin' ? API_URL.GET_ALL_ZONE : '';
+  console.log('currentUser: ', currentUser);
+  console.log('url: ', apiurl);
   // getAllZones
   const getAllZones = useQuery(
     [apiurl, { slectedStatus: slectedZoneStatus, searchedValue, pageNo, selectedPageSize, selectedsortBy }],
@@ -143,6 +146,7 @@ function ServiceZone() {
   };
 
   console.log(getAllZones?.data?.data?.zones);
+
   const columns = [
     {
       id: 0,
@@ -268,6 +272,24 @@ function ServiceZone() {
           fontWeight: 700,
         }}
       />
+
+      <Box>
+        <Tabs
+          value={currentTab}
+          onChange={(event, newValue) => {
+            setCurrentTab(newValue);
+          }}
+          sx={{
+            '& .MuiTab-root': {
+              padding: '8px 12px',
+              textTransform: 'none',
+            },
+          }}
+        >
+          <Tab label="Order Detail" />
+          <Tab label="Review" />
+        </Tabs>
+      </Box>
 
       <Stack direction="row" justifyContent="start" gap="17px">
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchedValue(e.target.value)} />
