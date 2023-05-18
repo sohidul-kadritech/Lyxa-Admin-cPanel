@@ -8,6 +8,7 @@ import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 
 import AppPagination from '../../components/Common/AppPagination2';
+import TabPanel from '../../components/Common/TabPanel';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
@@ -273,7 +274,7 @@ function ServiceZone() {
         }}
       />
 
-      <Box>
+      <Box sx={{ marginBottom: '30px' }}>
         <Tabs
           value={currentTab}
           onChange={(event, newValue) => {
@@ -286,110 +287,116 @@ function ServiceZone() {
             },
           }}
         >
-          <Tab label="Order Detail" />
-          <Tab label="Review" />
+          <Tab label="Zone List" />
+          <Tab label="Map Overview" />
         </Tabs>
       </Box>
+      <TabPanel index={0} value={currentTab}>
+        <Stack direction="row" justifyContent="start" gap="17px">
+          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchedValue(e.target.value)} />
+          <StyledFormField
+            // label="Status *"
+            intputType="select"
+            containerProps={{
+              sx: fieldContainerSx,
+            }}
+            inputProps={{
+              name: 'zoneStatus',
+              value: slectedZoneStatus,
+              items: statusOptions,
+              size: 'sm2',
+              //   items: categories,
+              onChange: (e) => setSelectedZoneStatus(e.target.value),
+              //   readOnly: Boolean(newProductCategory) || productReadonly,
+            }}
+          />
 
-      <Stack direction="row" justifyContent="start" gap="17px">
-        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchedValue(e.target.value)} />
-        <StyledFormField
-          // label="Status *"
-          intputType="select"
-          containerProps={{
-            sx: fieldContainerSx,
+          <AddMenuButton
+            onClick={() => {
+              setOpen(() => {
+                setActionType('add');
+                return true;
+              });
+            }}
+          />
+        </Stack>
+
+        <Box
+          sx={{
+            pr: 5,
+            pl: 3.5,
+            pt: 1,
+            pb: 1,
+            border: '1px solid #EEEEEE',
+            borderRadius: '7px',
+            background: '#fff',
+            margin: '30px 0px',
+            // height: 550,
+            // width: '100%',
           }}
-          inputProps={{
-            name: 'zoneStatus',
-            value: slectedZoneStatus,
-            items: statusOptions,
-            size: 'sm2',
-            //   items: categories,
-            onChange: (e) => setSelectedZoneStatus(e.target.value),
-            //   readOnly: Boolean(newProductCategory) || productReadonly,
+        >
+          {!getAllZones?.isLoading ? (
+            <StyledTable
+              columns={columns}
+              rows={getAllZones?.data?.data?.zones || []}
+              getRowId={(row) => row?._id}
+              components={{
+                NoRowsOverlay: () => (
+                  <Stack height="100%" alignItems="center" justifyContent="center">
+                    No zone found
+                  </Stack>
+                ),
+              }}
+            />
+          ) : (
+            <Box>
+              <ServiceZonePageSkeleton />
+            </Box>
+          )}
+        </Box>
+        <AppPagination
+          currentPage={pageNo}
+          lisener={(newPage) => {
+            setPageNo(newPage);
           }}
+          totalPage={2}
         />
-
-        <AddMenuButton
-          onClick={() => {
-            setOpen(() => {
-              setActionType('add');
-              return true;
-            });
-          }}
-        />
-      </Stack>
-
-      <Box
-        sx={{
-          pr: 5,
-          pl: 3.5,
-          pt: 1,
-          pb: 1,
-          border: '1px solid #EEEEEE',
-          borderRadius: '7px',
-          background: '#fff',
-          margin: '30px 0px',
-          // height: 550,
-          // width: '100%',
-        }}
-      >
-        {!getAllZones?.isLoading ? (
-          <StyledTable
-            columns={columns}
-            rows={getAllZones?.data?.data?.zones || []}
-            getRowId={(row) => row?._id}
-            components={{
-              NoRowsOverlay: () => (
-                <Stack height="100%" alignItems="center" justifyContent="center">
-                  No zone found
-                </Stack>
-              ),
-            }}
-          />
-        ) : (
-          <Box>
-            <ServiceZonePageSkeleton />
-          </Box>
-        )}
-      </Box>
-      <AppPagination
-        currentPage={pageNo}
-        lisener={(newPage) => {
-          setPageNo(newPage);
-        }}
-        totalPage={2}
-      />
-      <Modal open={open} centered>
-        {actionType === 'add' ? (
-          <CreateZone
-            allZones={getAllZones?.data?.data?.zones || []}
-            currentLocation={currentLocation}
-            addNewZone={addNewZone}
-            onClose={() => {
-              console.log('add');
-              setOpen(!open);
-            }}
-          />
-        ) : (
-          <EditZone
-            allZones={getAllZones?.data?.data?.zones || []}
-            currentLocation={{
-              loaded: true,
-              coordinates: {
-                lat: rowData?.zoneGeometry?.coordinates[0][0][0],
-                lon: rowData?.zoneGeometry?.coordinates[0][0][1],
-              },
-            }}
-            rowData={rowData || { zoneName: 'no name' }}
-            editZone={updateAZoneQuery}
-            onClose={() => {
-              console.log('edit');
-              setOpen(!open);
-            }}
-          />
-        )}
-      </Modal>
+        <Modal open={open} centered>
+          {actionType === 'add' ? (
+            <CreateZone
+              allZones={getAllZones?.data?.data?.zones || []}
+              currentLocation={currentLocation}
+              addNewZone={addNewZone}
+              onClose={() => {
+                console.log('add');
+                setOpen(!open);
+              }}
+            />
+          ) : (
+            <EditZone
+              allZones={getAllZones?.data?.data?.zones || []}
+              currentLocation={{
+                loaded: true,
+                coordinates: {
+                  lat: rowData?.zoneGeometry?.coordinates[0][0][0],
+                  lon: rowData?.zoneGeometry?.coordinates[0][0][1],
+                },
+              }}
+              rowData={rowData || { zoneName: 'no name' }}
+              editZone={updateAZoneQuery}
+              onClose={() => {
+                console.log('edit');
+                setOpen(!open);
+              }}
+            />
+          )}
+        </Modal>
+      </TabPanel>
+      <TabPanel index={1} value={currentTab}>
+        <Box>
+          <Typography>Hello world</Typography>
+        </Box>
+      </TabPanel>
     </Box>
   );
 }

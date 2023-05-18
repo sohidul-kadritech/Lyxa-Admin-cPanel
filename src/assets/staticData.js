@@ -177,6 +177,13 @@ export const shiftOptions = [
   { label: 'Night', value: 'night' },
 ];
 
+export const zoneOption = [
+  { label: 'Zone A', value: '1' },
+  { label: 'Zone B', value: '2' },
+  { label: 'Zone C', value: '3' },
+  { label: 'Zone D', value: '4' },
+];
+
 export const activeOptions = [
   { label: 'Active', value: 'active' },
   { label: 'Inactive', value: 'inactive' },
