@@ -65,8 +65,9 @@ export default function Layout() {
         <Sidebar sidebar={sidebar} setSidebar={setSidebar} menuItems={menuItems} variant="parent" />
         <Box
           sx={{
-            paddingLeft: 12.5,
-            paddingRight: 12.5,
+            paddingLeft: '50px',
+            paddingRight: '50px',
+            paddingBottom: '36px',
             height: 'calc(100vh - 67px)',
             overflowY: 'scroll',
             backgroundColor: '#fbfbfb',

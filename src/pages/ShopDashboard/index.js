@@ -36,7 +36,7 @@ export default function ShopDashboard() {
           <Tab label="Operations" />
         </Tabs>
       </Stack>
-      <Box pt={7.5} pb={7.5}>
+      <Box pt={7.5}>
         <TabPanel index={0} value={currentTab} noPadding>
           <Orders />
         </TabPanel>
