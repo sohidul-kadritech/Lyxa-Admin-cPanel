@@ -1,18 +1,22 @@
 /* eslint-disable no-unused-vars */
+import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import PhoneInput, { getCountryCallingCode, isValidPhoneNumber } from 'react-phone-number-input';
+import { useQuery, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
-import { activeOptions, shiftOptions } from '../../../assets/staticData';
+import { activeOptions, shiftOptions, zoneOption } from '../../../assets/staticData';
 import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import { callApi } from '../../../components/SingleApiCall';
+import { useGlobalContext } from '../../../context/GlobalContext';
 import { successMsg } from '../../../helpers/successMsg';
-import { IMAGE_UPLOAD, SINGLE_DELIVERY_MAN } from '../../../network/Api';
+import { GET_ALL_ZONE, IMAGE_UPLOAD, SINGLE_DELIVERY_MAN } from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import requestApi from '../../../network/httpRequest';
 import { addDeliveryMan, editDeliveryMan } from '../../../store/DeliveryMan/DeliveryManAction';
 
@@ -22,6 +26,20 @@ function DeliverymanAdd() {
   const history = useHistory();
 
   const { loading, deliveryMans, status } = useSelector((state) => state.deliveryManReducer);
+
+  const { currentUser } = useGlobalContext();
+
+  console.log('===> ', currentUser);
+  // eslint-disable-next-line no-undef
+  const queryClient = useQueryClient();
+
+  const apiurl = currentUser?.userType === 'admin' ? GET_ALL_ZONE : '';
+
+  console.log('===> url: ', apiurl);
+
+  const getAllZones = useQuery([apiurl], () => AXIOS.get(apiurl));
+
+  console.log('===> ', getAllZones?.data?.data?.zones);
 
   const [deliveryBoyAddress, setDeliveryBoyAddress] = useState('');
   // eslint-disable-next-line no-unused-vars
@@ -46,6 +64,7 @@ function DeliverymanAdd() {
   const [isValidPhone, setIsValidPhone] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [shift, setShift] = useState('');
+  const [zone, setZone] = useState('');
   // console.log(shift);
 
   const handlePhoneChange = (value) => {
@@ -163,14 +182,16 @@ function DeliverymanAdd() {
           isLogin: isLoggedIn,
           id,
           status: activeStatus?.value,
-        })
+          // eslint-disable-next-line prettier/prettier
+        }),
       );
     } else {
       dispatch(
         addDeliveryMan({
           ...data,
           deliveryBoyAddress,
-        })
+          // eslint-disable-next-line prettier/prettier
+        }),
       );
     }
   };
@@ -278,7 +299,8 @@ function DeliverymanAdd() {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         formattedSize: formatBytes(file.size),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     if (type === 'nid') {
@@ -293,22 +315,22 @@ function DeliverymanAdd() {
   };
 
   return (
-    <div>
+    <Box>
       <GlobalWrapper>
-        <div className="page-content">
+        <Box className="page-content">
           <Container fluid>
             <Breadcrumb maintitle="Lyxa" breadcrumbItem={id ? 'Edit' : 'Add'} title="Deliveryman" isRefresh={false} />
             <Form onSubmit={submitDeliveryman}>
               <Card>
                 <CardBody>
                   <Row className="pb-3 ">
-                    <div className="mb-3">
+                    <Box className="mb-3">
                       <h5>Delivery Man Informations</h5>
                       <hr />
-                    </div>
+                    </Box>
 
                     <Col lg={6}>
-                      <div className="mb-4">
+                      <Box className="mb-4">
                         <Label>Name</Label>
                         <input
                           className="form-control"
@@ -319,8 +341,8 @@ function DeliverymanAdd() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                         />
-                      </div>
-                      <div className="mb-4">
+                      </Box>
+                      <Box className="mb-4">
                         <label className="control-label">Phone</label>
                         <PhoneInput
                           defaultCountry="BD"
@@ -338,10 +360,10 @@ function DeliverymanAdd() {
                             setIsValidPhone(isValidPhoneNumber(phone.number));
                           }}
                         />
-                        {!isValidPhone && <div style={{ color: 'red', fontSize: '12px' }}>Number is invalid</div>}
-                      </div>
+                        {!isValidPhone && <Box style={{ color: 'red', fontSize: '12px' }}>Number is invalid</Box>}
+                      </Box>
 
-                      <div className="mb-4">
+                      <Box className="mb-4">
                         <label className="control-label">Vehicle Type</label>
                         <input
                           className="form-control"
@@ -352,8 +374,8 @@ function DeliverymanAdd() {
                           value={vehicleType}
                           onChange={(e) => setVehicleType(e.target.value)}
                         />
-                      </div>
-                      <div className="mb-4">
+                      </Box>
+                      <Box className="mb-4">
                         <Label>Vehicle Number</Label>
                         <input
                           className="form-control"
@@ -364,8 +386,8 @@ function DeliverymanAdd() {
                           onChange={(e) => setVehicleNum(e.target.value)}
                           required
                         />
-                      </div>
-                      <div className="mb-4">
+                      </Box>
+                      <Box className="mb-4">
                         <Label>Shift</Label>
                         <Select
                           palceholder="Select Shift"
@@ -377,11 +399,24 @@ function DeliverymanAdd() {
                           onChange={(e) => setShift(e)}
                           defaultValue=""
                         />
-                      </div>
+                      </Box>
+                      <Box className="mb-4">
+                        <Label>Select Zone</Label>
+                        <Select
+                          palceholder="Select Zone"
+                          name="zoneId"
+                          options={zoneOption}
+                          classNamePrefix="select2-selection"
+                          required
+                          value={shift}
+                          onChange={(e) => setShift(e)}
+                          defaultValue=""
+                        />
+                      </Box>
                     </Col>
 
                     <Col lg={6}>
-                      <div className="mb-4">
+                      <Box className="mb-4">
                         <Label>Email</Label>
                         <input
                           className="form-control"
@@ -392,9 +427,9 @@ function DeliverymanAdd() {
                           onChange={(e) => setEmail(e.target.value)}
                           required
                         />
-                      </div>
+                      </Box>
 
-                      <div className="mb-4">
+                      <Box className="mb-4">
                         <Label>{id ? 'New Password' : 'Password'}</Label>
                         <input
                           className="form-control"
@@ -405,10 +440,10 @@ function DeliverymanAdd() {
                           onChange={(e) => setPassword(e.target.value)}
                           required={!id}
                         />
-                      </div>
+                      </Box>
 
                       {!id ? (
-                        <div className="mb-4">
+                        <Box className="mb-4">
                           <Label>Zip Code</Label>
                           <input
                             className="form-control"
@@ -419,9 +454,9 @@ function DeliverymanAdd() {
                             value={pin}
                             onChange={(e) => setPin(e.target.value)}
                           />
-                        </div>
+                        </Box>
                       ) : (
-                        <div className="mb-4">
+                        <Box className="mb-4">
                           <label className="control-label">Status</label>
                           <Select
                             palceholder="Select Status"
@@ -433,10 +468,10 @@ function DeliverymanAdd() {
                             onChange={(e) => setActiveStatus(e)}
                             defaultValue=""
                           />
-                        </div>
+                        </Box>
                       )}
                       {!id && (
-                        <div className="mb-4">
+                        <Box className="mb-4">
                           <Label>Address</Label>
                           <textarea
                             className="form-control"
@@ -449,7 +484,7 @@ function DeliverymanAdd() {
                             value={deliveryBoyAddress}
                             onChange={(e) => setDeliveryBoyAddress(e.target.value)}
                           />
-                        </div>
+                        </Box>
                       )}
                     </Col>
                   </Row>
@@ -457,7 +492,7 @@ function DeliverymanAdd() {
                   <Row>
                     <Col lg={6}>
                       <Label>Profile Image</Label>
-                      <div className="mb-5">
+                      <Box className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, 'profile');
@@ -466,16 +501,16 @@ function DeliverymanAdd() {
                           maxSize={1000 * 1000}
                         >
                           {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
+                            <Box className="dropzone">
+                              <Box
                                 className="dz-message needsclick"
                                 {...getRootProps()}
                                 // onClick={() => setmodal_fullscreen(true)}
                               >
                                 <input {...getInputProps()} />
-                                <div className="mb-3">
+                                <Box className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
+                                </Box>
                                 <h4>Drop files here or click to upload.</h4>
                                 <small
                                   style={{
@@ -485,18 +520,18 @@ function DeliverymanAdd() {
                                 >
                                   * Max Image size allowed Id 1 Mb.
                                 </small>
-                              </div>
-                            </div>
+                              </Box>
+                            </Box>
                           )}
                         </Dropzone>
-                        <div className="dropzone-previews mt-3" id="file-previews">
+                        <Box className="dropzone-previews mt-3" id="file-previews">
                           {profile && (
                             <Card
                               className="
                             mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
                             "
                             >
-                              <div className="p-2">
+                              <Box className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
                                     <img
@@ -519,7 +554,7 @@ function DeliverymanAdd() {
                                     </p>
                                   </Col>
 
-                                  <div
+                                  <Box
                                     className="position-absolute"
                                     style={{
                                       left: '0px',
@@ -537,17 +572,17 @@ function DeliverymanAdd() {
                                         cursor: 'pointer',
                                       }}
                                     ></i>
-                                  </div>
+                                  </Box>
                                 </Row>
-                              </div>
+                              </Box>
                             </Card>
                           )}
-                        </div>
-                      </div>
+                        </Box>
+                      </Box>
                     </Col>
                     <Col lg={6}>
                       <Label> National ID</Label>
-                      <div className="mb-5">
+                      <Box className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, 'nid');
@@ -556,12 +591,12 @@ function DeliverymanAdd() {
                           maxSize={1000 * 1000}
                         >
                           {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div className="dz-message needsclick" {...getRootProps()}>
+                            <Box className="dropzone">
+                              <Box className="dz-message needsclick" {...getRootProps()}>
                                 <input {...getInputProps()} />
-                                <div className="mb-3">
+                                <Box className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
+                                </Box>
                                 <h4>Drop files here or click to upload.</h4>
                                 <small
                                   style={{
@@ -571,18 +606,18 @@ function DeliverymanAdd() {
                                 >
                                   * Max Image size allowed Id 1 Mb.
                                 </small>
-                              </div>
-                            </div>
+                              </Box>
+                            </Box>
                           )}
                         </Dropzone>
-                        <div className="dropzone-previews mt-3" id="file-previews">
+                        <Box className="dropzone-previews mt-3" id="file-previews">
                           {nid && (
                             <Card
                               className="
                             mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
                             "
                             >
-                              <div className="p-2">
+                              <Box className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
                                     <img
@@ -605,7 +640,7 @@ function DeliverymanAdd() {
                                     </p>
                                   </Col>
 
-                                  <div
+                                  <Box
                                     className="position-absolute"
                                     style={{
                                       left: '0px',
@@ -623,17 +658,17 @@ function DeliverymanAdd() {
                                         cursor: 'pointer',
                                       }}
                                     ></i>
-                                  </div>
+                                  </Box>
                                 </Row>
-                              </div>
+                              </Box>
                             </Card>
                           )}
-                        </div>
-                      </div>
+                        </Box>
+                      </Box>
                     </Col>
                     <Col lg={6}>
                       <Label>Vehicle Document</Label>
-                      <div className="mb-5">
+                      <Box className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, 'doc');
@@ -642,12 +677,12 @@ function DeliverymanAdd() {
                           maxSize={1000 * 1000}
                         >
                           {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div className="dz-message needsclick" {...getRootProps()}>
+                            <Box className="dropzone">
+                              <Box className="dz-message needsclick" {...getRootProps()}>
                                 <input {...getInputProps()} />
-                                <div className="mb-3">
+                                <Box className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
+                                </Box>
                                 <h4>Drop files here or click to upload.</h4>
                                 <small
                                   style={{
@@ -657,18 +692,18 @@ function DeliverymanAdd() {
                                 >
                                   * Max Image size allowed Id 1 Mb.
                                 </small>
-                              </div>
-                            </div>
+                              </Box>
+                            </Box>
                           )}
                         </Dropzone>
-                        <div className="dropzone-previews mt-3" id="file-previews">
+                        <Box className="dropzone-previews mt-3" id="file-previews">
                           {vehicleDoc && (
                             <Card
                               className="
                             mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
                             "
                             >
-                              <div className="p-2">
+                              <Box className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
                                     <img
@@ -691,7 +726,7 @@ function DeliverymanAdd() {
                                     </p>
                                   </Col>
 
-                                  <div
+                                  <Box
                                     className="position-absolute"
                                     style={{
                                       left: '0px',
@@ -709,17 +744,17 @@ function DeliverymanAdd() {
                                         cursor: 'pointer',
                                       }}
                                     ></i>
-                                  </div>
+                                  </Box>
                                 </Row>
-                              </div>
+                              </Box>
                             </Card>
                           )}
-                        </div>
-                      </div>
+                        </Box>
+                      </Box>
                     </Col>
                     <Col lg={6}>
                       <Label>Contract Paper</Label>
-                      <div className="mb-5">
+                      <Box className="mb-5">
                         <Dropzone
                           onDrop={(acceptedFiles) => {
                             handleAcceptedFiles(acceptedFiles, 'contract');
@@ -728,12 +763,12 @@ function DeliverymanAdd() {
                           maxSize={1000 * 1000}
                         >
                           {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div className="dz-message needsclick" {...getRootProps()}>
+                            <Box className="dropzone">
+                              <Box className="dz-message needsclick" {...getRootProps()}>
                                 <input {...getInputProps()} />
-                                <div className="mb-3">
+                                <Box className="mb-3">
                                   <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                </div>
+                                </Box>
                                 <h4>Drop files here or click to upload.</h4>
                                 <small
                                   style={{
@@ -743,18 +778,18 @@ function DeliverymanAdd() {
                                 >
                                   * Max Image size allowed Id 1 Mb.
                                 </small>
-                              </div>
-                            </div>
+                              </Box>
+                            </Box>
                           )}
                         </Dropzone>
-                        <div className="dropzone-previews mt-3" id="file-previews">
+                        <Box className="dropzone-previews mt-3" id="file-previews">
                           {contractPaper && (
                             <Card
                               className="
                             mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete
                             "
                             >
-                              <div className="p-2">
+                              <Box className="p-2">
                                 <Row className="align-items-center position-relative">
                                   <Col className="col-auto">
                                     <img
@@ -776,7 +811,7 @@ function DeliverymanAdd() {
                                     </p>
                                   </Col>
 
-                                  <div
+                                  <Box
                                     className="position-absolute"
                                     style={{
                                       left: '0px',
@@ -794,16 +829,16 @@ function DeliverymanAdd() {
                                         cursor: 'pointer',
                                       }}
                                     ></i>
-                                  </div>
+                                  </Box>
                                 </Row>
-                              </div>
+                              </Box>
                             </Card>
                           )}
-                        </div>
-                      </div>
+                        </Box>
+                      </Box>
                     </Col>
                   </Row>
-                  <div className="my-5 d-flex justify-content-center">
+                  <Box className="my-5 d-flex justify-content-center">
                     <Button color="primary" className="px-5" type="submit" disabled={isLoading || loading}>
                       {loading || isLoading ? (
                         <Spinner animation="border" size="sm" variant="success"></Spinner>
@@ -813,9 +848,9 @@ function DeliverymanAdd() {
                         'Add'
                       )}
                     </Button>
-                  </div>
+                  </Box>
                   {isEditMode && (
-                    <div className="my-5 d-flex justify-content-center">
+                    <Box className="my-5 d-flex justify-content-center">
                       <Button
                         color="primary"
                         className="px-5"
@@ -827,15 +862,15 @@ function DeliverymanAdd() {
                       >
                         {isLoggedIn ? 'Force Logout' : 'Not Logged In'}
                       </Button>
-                    </div>
+                    </Box>
                   )}
                 </CardBody>
               </Card>
             </Form>
           </Container>
-        </div>
+        </Box>
       </GlobalWrapper>
-    </div>
+    </Box>
   );
 }
 
