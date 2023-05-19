@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import { Button, Card, CardBody, Col, Container, Form, Label, Row, Spinner } from 'reactstrap';
-import { activeOptions, shiftOptions, zoneOption } from '../../../assets/staticData';
+import { activeOptions, shiftOptions } from '../../../assets/staticData';
 import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
@@ -28,18 +28,12 @@ function DeliverymanAdd() {
   const { loading, deliveryMans, status } = useSelector((state) => state.deliveryManReducer);
 
   const { currentUser } = useGlobalContext();
-
-  console.log('===> ', currentUser);
   // eslint-disable-next-line no-undef
   const queryClient = useQueryClient();
 
   const apiurl = currentUser?.userType === 'admin' ? GET_ALL_ZONE : '';
 
-  console.log('===> url: ', apiurl);
-
   const getAllZones = useQuery([apiurl], () => AXIOS.get(apiurl));
-
-  console.log('===> ', getAllZones?.data?.data?.zones);
 
   const [deliveryBoyAddress, setDeliveryBoyAddress] = useState('');
   // eslint-disable-next-line no-unused-vars
@@ -64,8 +58,7 @@ function DeliverymanAdd() {
   const [isValidPhone, setIsValidPhone] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [shift, setShift] = useState('');
-  const [zone, setZone] = useState('');
-  // console.log(shift);
+  const [zoneId, setZoneId] = useState('');
 
   const handlePhoneChange = (value) => {
     setPhone((prev) => ({ ...prev, number: value }));
@@ -88,10 +81,17 @@ function DeliverymanAdd() {
       countryCode,
       isLogin,
       shift,
+      zone,
+      address,
     } = data;
-
     const findStatus = activeOptions.find((option) => option.value === status);
     const findShift = shiftOptions.find((option) => option.value === shift);
+    const findZone = getAllZones?.data?.data?.zones
+      .map(({ _id, zoneName }) => ({
+        label: zoneName,
+        value: _id,
+      }))
+      .find((option) => option.value === zone);
     setShift(findShift);
     setIsEditMode(true);
     setName(name);
@@ -100,6 +100,9 @@ function DeliverymanAdd() {
       number: `+${getCountryCallingCode('BD')}${number}`,
       country: 'BD',
     });
+
+    setZoneId(findZone);
+    setDeliveryBoyAddress(address);
     setActiveStatus(findStatus);
     setNid(nationalIdDocument);
     setProfile(image);
@@ -118,6 +121,7 @@ function DeliverymanAdd() {
         updateData(findDeliveryMan);
       } else {
         const data = await callApi(id, SINGLE_DELIVERY_MAN, 'delivery');
+
         if (data) {
           updateData(data);
         } else {
@@ -125,7 +129,7 @@ function DeliverymanAdd() {
         }
       }
     }
-  }, [id]);
+  }, [id, getAllZones?.data?.data?.zones]);
 
   //  UPLAOD IMAGE TO SERVER
   // eslint-disable-next-line consistent-return
@@ -173,6 +177,8 @@ function DeliverymanAdd() {
       contractImage: contractUrl,
       image: profileUrl,
       shift: shift.value,
+      zoneId: zoneId.value,
+      deliveryBoyAddress,
     };
 
     if (id) {
@@ -189,7 +195,6 @@ function DeliverymanAdd() {
       dispatch(
         addDeliveryMan({
           ...data,
-          deliveryBoyAddress,
           // eslint-disable-next-line prettier/prettier
         }),
       );
@@ -287,6 +292,7 @@ function DeliverymanAdd() {
         setVehicleDoc(null);
         setContractPaper(null);
         setDeliveryBoyAddress('');
+        setZoneId('');
         window.scrollTo(0, 0);
       }
     }
@@ -405,11 +411,15 @@ function DeliverymanAdd() {
                         <Select
                           palceholder="Select Zone"
                           name="zoneId"
-                          options={zoneOption}
+                          options={getAllZones?.data?.data?.zones.map(({ _id, zoneName }) => ({
+                            label: zoneName,
+                            value: _id,
+                          }))}
+                          // options={zoneOption}
                           classNamePrefix="select2-selection"
                           required
-                          value={shift}
-                          onChange={(e) => setShift(e)}
+                          value={zoneId}
+                          onChange={(e) => setZoneId(e)}
                           defaultValue=""
                         />
                       </Box>
@@ -470,22 +480,20 @@ function DeliverymanAdd() {
                           />
                         </Box>
                       )}
-                      {!id && (
-                        <Box className="mb-4">
-                          <Label>Address</Label>
-                          <textarea
-                            className="form-control"
-                            name="phone"
-                            type="text"
-                            placeholder="Enter Address"
-                            required
-                            multiple
-                            rows="4"
-                            value={deliveryBoyAddress}
-                            onChange={(e) => setDeliveryBoyAddress(e.target.value)}
-                          />
-                        </Box>
-                      )}
+                      <Box className="mb-4">
+                        <Label>Address</Label>
+                        <textarea
+                          className="form-control"
+                          name="phone"
+                          type="text"
+                          placeholder="Enter Address"
+                          required
+                          multiple
+                          rows="4"
+                          value={deliveryBoyAddress}
+                          onChange={(e) => setDeliveryBoyAddress(e.target.value)}
+                        />
+                      </Box>
                     </Col>
                   </Row>
 

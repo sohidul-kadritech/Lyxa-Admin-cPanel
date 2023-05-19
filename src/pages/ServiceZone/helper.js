@@ -23,8 +23,8 @@ export const validateEditedData = (data) => {
   return true;
 };
 export const calculatePolygonArea = (polygon) => {
-  const area = L.GeometryUtil.geodesicArea(polygon.getLatLngs()[0]);
-  console.log('polygon.getLatLngs()[0]', polygon.getLatLngs()[0]);
+  const area = L.GeometryUtil.geodesicArea(polygon?.getLatLngs()[0] || [[0, 0]]);
+  // console.log('polygon.getLatLngs()[0]', polygon?.getLatLngs()[0]);
   return Math.round(area);
 };
 
@@ -45,11 +45,11 @@ export function ConvertArea({ squareMeters }) {
   return (
     <Stack flexDirection="row" alignContent="center" alignItems="center" gap="4px">
       <Typography variant="span">
-        {squareMeters}m<sup>2</sup>
-      </Typography>
-      <Typography sx={{ fontSize: '12px' }} variant="span">
         {squareKilometers.toFixed(2)}km<sup>2</sup>
       </Typography>
+      {/* <Typography sx={{ fontSize: '12px' }} variant="span">
+        {squareKilometers.toFixed(2)}km<sup>2</sup>
+      </Typography> */}
       {/* <Typography sx={{ fontSize: '12px' }} variant="span">
         {squareMiles}miles<sup>2</sup>
       </Typography>

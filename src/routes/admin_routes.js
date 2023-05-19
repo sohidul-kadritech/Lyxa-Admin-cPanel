@@ -25,6 +25,7 @@ import DeliverymanAdd from '../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
 import DeliverymanList from '../pages/Deliveryman/DeliverymanList/DeliverymanList';
 import DropPayList from '../pages/DropPay/DropPayList/DropPayList';
 import Faq from '../pages/Faq';
+import Faq2 from '../pages/Faq2';
 import Marketing from '../pages/Marketing';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import SellerList from '../pages/Seller/SellerList/SellerList';
@@ -216,6 +217,7 @@ export const admin_routes = [
 
   // Chat Reason
   { path: '/settings/support-reasons', component: Faq },
+  { path: '/settings/support-reasons2', component: Faq2 },
   { path: '/settings/ratings', component: RatingSettings },
 
   // NOTIFICATIONS

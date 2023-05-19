@@ -390,6 +390,10 @@ export const admin_menu_items = [
         to: '/settings/support-reasons',
       },
       {
+        label: 'Support Reasons2',
+        to: '/settings/support-reasons2',
+      },
+      {
         label: 'Zone',
         to: '/admin/zone',
       },

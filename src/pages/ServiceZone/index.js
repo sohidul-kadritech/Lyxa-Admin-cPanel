@@ -1,5 +1,5 @@
 import { Add, Close, Edit } from '@mui/icons-material';
-import { Box, Button, Modal, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Box, Button, Fade, Grid, Modal, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -18,7 +18,9 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import CreateZone from './CreateZone';
 import EditZone from './EditZone';
+import MapOverview from './MapOverview';
 import ServiceZonePageSkeleton from './ServiceZonePageSkeleton';
+import SidebarZone from './SidebarZone';
 import useGeoLocation from './useGeoLocation';
 
 const dateFormation = (date) => moment(date).format('MMMM D, YYYY');
@@ -43,7 +45,7 @@ const breadcrumbItems = [
 const statusOptions = [
   {
     label: 'All',
-    value: '',
+    value: 'all',
   },
   {
     label: 'Active',
@@ -67,16 +69,19 @@ function AddMenuButton({ ...props }) {
 
 function ServiceZone() {
   const theme = useTheme();
+
   const currentLocation = useGeoLocation();
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
+
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   const [actionType, setActionType] = useState('add');
 
   const [rowData, setRowData] = useState({});
   const [currentTab, setCurrentTab] = useState(0);
   // eslint-disable-next-line prettier/prettier, no-unused-vars
-  const [slectedZoneStatus, setSelectedZoneStatus] = useState('');
+  const [slectedZoneStatus, setSelectedZoneStatus] = useState('all');
   // eslint-disable-next-line prettier/prettier, no-unused-vars
   const [searchedValue, setSearchedValue] = useState('');
   // eslint-disable-next-line prettier/prettier, no-unused-vars
@@ -100,7 +105,7 @@ function ServiceZone() {
     () =>
       AXIOS.get(apiurl, {
         params: {
-          zoneStatus: slectedZoneStatus,
+          zoneStatus: slectedZoneStatus !== 'all' ? slectedZoneStatus : '',
           searchKey: searchedValue,
           page: pageNo,
           pageSize: selectedPageSize,
@@ -260,143 +265,170 @@ function ServiceZone() {
   ];
 
   return (
-    <Box>
-      <PageTop
-        // title="Zone"
-        backButtonLabel="Back to Settings"
-        breadcrumbItems={breadcrumbItems}
-        sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
-          fontWeight: 700,
-        }}
-      />
-
-      <Box sx={{ marginBottom: '30px' }}>
-        <Tabs
-          value={currentTab}
-          onChange={(event, newValue) => {
-            setCurrentTab(newValue);
-          }}
-          sx={{
-            '& .MuiTab-root': {
-              padding: '8px 12px',
-              textTransform: 'none',
-            },
-          }}
-        >
-          <Tab label="Zone List" />
-          <Tab label="Map Overview" />
-        </Tabs>
-      </Box>
-      <TabPanel index={0} value={currentTab}>
-        <Stack direction="row" justifyContent="start" gap="17px">
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchedValue(e.target.value)} />
-          <StyledFormField
-            // label="Status *"
-            intputType="select"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
-            inputProps={{
-              name: 'zoneStatus',
-              value: slectedZoneStatus,
-              items: statusOptions,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setSelectedZoneStatus(e.target.value),
-              //   readOnly: Boolean(newProductCategory) || productReadonly,
+    <Box sx={{ backgroundColor: '#FBFBFB' }}>
+      <Grid container spacing={2}>
+        <Grid item xs={currentTab === 1 && isSideBarOpen ? 8 : 12} md={currentTab === 1 && isSideBarOpen ? 8 : 12}>
+          <PageTop
+            // title="Zone"
+            backButtonLabel="Back to Settings"
+            breadcrumbItems={breadcrumbItems}
+            sx={{
+              position: 'sticky',
+              top: '-2px',
+              zIndex: '999',
+              backgroundColor: '#fbfbfb',
+              fontWeight: 700,
             }}
           />
-
-          <AddMenuButton
-            onClick={() => {
-              setOpen(() => {
-                setActionType('add');
-                return true;
-              });
-            }}
-          />
-        </Stack>
-
-        <Box
-          sx={{
-            pr: 5,
-            pl: 3.5,
-            pt: 1,
-            pb: 1,
-            border: '1px solid #EEEEEE',
-            borderRadius: '7px',
-            background: '#fff',
-            margin: '30px 0px',
-            // height: 550,
-            // width: '100%',
-          }}
-        >
-          {!getAllZones?.isLoading ? (
-            <StyledTable
-              columns={columns}
-              rows={getAllZones?.data?.data?.zones || []}
-              getRowId={(row) => row?._id}
-              components={{
-                NoRowsOverlay: () => (
-                  <Stack height="100%" alignItems="center" justifyContent="center">
-                    No zone found
-                  </Stack>
-                ),
+          <Box sx={{ marginBottom: '30px' }}>
+            <Tabs
+              value={currentTab}
+              onChange={(event, newValue) => {
+                setCurrentTab(newValue);
+                setIsSideBarOpen(false);
               }}
-            />
-          ) : (
-            <Box>
-              <ServiceZonePageSkeleton />
-            </Box>
-          )}
-        </Box>
-        <AppPagination
-          currentPage={pageNo}
-          lisener={(newPage) => {
-            setPageNo(newPage);
-          }}
-          totalPage={2}
-        />
-        <Modal open={open} centered>
-          {actionType === 'add' ? (
-            <CreateZone
-              allZones={getAllZones?.data?.data?.zones || []}
-              currentLocation={currentLocation}
-              addNewZone={addNewZone}
-              onClose={() => {
-                console.log('add');
-                setOpen(!open);
-              }}
-            />
-          ) : (
-            <EditZone
-              allZones={getAllZones?.data?.data?.zones || []}
-              currentLocation={{
-                loaded: true,
-                coordinates: {
-                  lat: rowData?.zoneGeometry?.coordinates[0][0][0],
-                  lon: rowData?.zoneGeometry?.coordinates[0][0][1],
+              sx={{
+                '& .MuiTab-root': {
+                  padding: '8px 12px',
+                  textTransform: 'none',
                 },
               }}
-              rowData={rowData || { zoneName: 'no name' }}
-              editZone={updateAZoneQuery}
-              onClose={() => {
-                console.log('edit');
-                setOpen(!open);
+            >
+              <Tab label="Zone List" />
+              <Tab label="Map Overview" />
+            </Tabs>
+          </Box>
+          <TabPanel index={0} value={currentTab}>
+            <Stack direction="row" justifyContent="start" gap="17px">
+              <StyledSearchBar
+                sx={{ flex: '1' }}
+                placeholder="Search"
+                onChange={(e) => setSearchedValue(e.target.value)}
+              />
+              <StyledFormField
+                // label="Status *"
+                intputType="select"
+                containerProps={{
+                  sx: fieldContainerSx,
+                }}
+                inputProps={{
+                  name: 'zoneStatus',
+                  value: slectedZoneStatus,
+                  items: statusOptions,
+                  size: 'sm2',
+                  //   items: categories,
+                  onChange: (e) => setSelectedZoneStatus(e.target.value),
+                  //   readOnly: Boolean(newProductCategory) || productReadonly,
+                }}
+              />
+
+              <AddMenuButton
+                onClick={() => {
+                  setOpen(() => {
+                    setActionType('add');
+                    return true;
+                  });
+                }}
+              />
+            </Stack>
+
+            <Box
+              sx={{
+                pr: 5,
+                pl: 3.5,
+                pt: 1,
+                pb: 1,
+                border: '1px solid #EEEEEE',
+                borderRadius: '7px',
+                background: '#fff',
+                margin: '30px 0px',
+                // height: 550,
+                // width: '100%',
               }}
+            >
+              {!getAllZones?.isLoading ? (
+                <StyledTable
+                  columns={columns}
+                  rows={getAllZones?.data?.data?.zones || []}
+                  getRowId={(row) => row?._id}
+                  components={{
+                    NoRowsOverlay: () => (
+                      <Stack height="100%" alignItems="center" justifyContent="center">
+                        No zone found
+                      </Stack>
+                    ),
+                  }}
+                />
+              ) : (
+                <Box>
+                  <ServiceZonePageSkeleton />
+                </Box>
+              )}
+            </Box>
+            <AppPagination
+              currentPage={pageNo}
+              lisener={(newPage) => {
+                setPageNo(newPage);
+              }}
+              totalPage={2}
             />
-          )}
-        </Modal>
-      </TabPanel>
-      <TabPanel index={1} value={currentTab}>
-        <Box>
-          <Typography>Hello world</Typography>
-        </Box>
-      </TabPanel>
+            <Modal open={open} centered>
+              {actionType === 'add' ? (
+                <CreateZone
+                  allZones={getAllZones?.data?.data?.zones || []}
+                  currentLocation={currentLocation}
+                  addNewZone={addNewZone}
+                  onClose={() => {
+                    console.log('add');
+                    setOpen(!open);
+                  }}
+                />
+              ) : (
+                <EditZone
+                  allZones={getAllZones?.data?.data?.zones || []}
+                  currentLocation={{
+                    loaded: true,
+                    coordinates: {
+                      lat: rowData?.zoneGeometry?.coordinates[0][0][0],
+                      lon: rowData?.zoneGeometry?.coordinates[0][0][1],
+                    },
+                  }}
+                  rowData={rowData || { zoneName: 'no name' }}
+                  editZone={updateAZoneQuery}
+                  onClose={() => {
+                    console.log('edit');
+                    setOpen(!open);
+                  }}
+                />
+              )}
+            </Modal>
+          </TabPanel>
+          <TabPanel index={1} value={currentTab}>
+            <Box>
+              <MapOverview setIsSideBarOpen={setIsSideBarOpen} />
+            </Box>
+          </TabPanel>
+        </Grid>
+        {currentTab === 1 && isSideBarOpen && (
+          <Grid item xs={4} md={4}>
+            <Fade in={isSideBarOpen}>
+              <Box
+                sx={{
+                  float: 'right',
+                  width: '100%',
+                  height: '100vh',
+                  padding: '20px',
+                  // backgroundColor: 'blue',
+                  marginRight: '-50px',
+                  backgroundColor: theme.palette.primary.contrastText,
+                }}
+              >
+                <SidebarZone title="Zone A" setIsSideBarOpen={setIsSideBarOpen} />
+              </Box>
+            </Fade>
+          </Grid>
+        )}
+      </Grid>
     </Box>
   );
 }
