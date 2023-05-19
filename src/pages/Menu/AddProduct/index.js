@@ -11,7 +11,7 @@ import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledChip from '../../../components/Styled/StyledChips';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';

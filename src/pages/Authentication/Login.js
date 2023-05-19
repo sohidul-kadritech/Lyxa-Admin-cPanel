@@ -23,7 +23,7 @@ import axios from 'axios';
 import lyxaLogo from '../../assets/images/lyxa.png';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import Footer from '../../components/VerticalLayout/Footer';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { FORGET_PASS } from '../../network/Api';
 import { adminAuth, apiError } from '../../store/actions';
 

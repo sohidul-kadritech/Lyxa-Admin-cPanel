@@ -8,7 +8,7 @@ import {
   seller_menu_items,
   shop_menu_items,
 } from '../../common/sidebar_menu_items';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { admin_routes } from '../../routes/admin_routes';
 import { customer_service_routes } from '../../routes/customerSericeRoutes';
 import { seller_routes } from '../../routes/seller_routes';

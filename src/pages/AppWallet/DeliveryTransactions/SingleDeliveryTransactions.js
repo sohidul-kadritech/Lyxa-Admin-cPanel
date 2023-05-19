@@ -21,7 +21,7 @@ import MakePayment from '../../../components/MakePayment';
 import TopSummery from '../../../components/TopSummery';
 import TransactionsTable from '../../../components/TransactionsTable';
 import { TrxType } from '../../../components/updateTrxsType';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import { SINGLE_DELIVERY_TRX } from '../../../network/Api';
 import requestApi from '../../../network/httpRequest';

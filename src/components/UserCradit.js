@@ -2,7 +2,7 @@ import { Autocomplete, Box, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap';
-import { useGlobalContext } from '../context/GlobalContext';
+import { useGlobalContext } from '../context';
 import { successMsg } from '../helpers/successMsg';
 import { addUserAmount, withdrawUserAmount } from '../store/DropPay/dropPayAction';
 import { getAllAppSettings } from '../store/Settings/settingsAction';

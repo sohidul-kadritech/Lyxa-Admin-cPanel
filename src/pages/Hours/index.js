@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import ConfirmModal from '../../components/Common/ConfirmModal';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';

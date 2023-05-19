@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { seller_menu_items } from '../../../common/sidebar_menu_items';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -29,7 +29,7 @@ export default function AdminToSellerLayout({ routePrefix = '' }) {
     {
       enabled: false,
       onSuccess: (data) => {
-        if (data?.status) {
+        if (data?.status && data?.data?.seller) {
           dispatchCurrentUser({ type: 'seller', payload: { seller: data?.data?.seller } });
         } else {
           history.push('/');
@@ -45,9 +45,8 @@ export default function AdminToSellerLayout({ routePrefix = '' }) {
   );
 
   useEffect(() => {
-    if (!seller?._id) {
-      sellerQuery.refetch();
-    }
+    if (!seller?._id) sellerQuery.refetch();
+    dispatchCurrentUser({ type: 'routeDepth', payload: { routeDepth: 1 } });
   }, []);
 
   if (sellerQuery.isLoading) {

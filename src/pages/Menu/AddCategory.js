@@ -8,7 +8,7 @@ import { confirmActionInit } from '../../assets/staticData';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';

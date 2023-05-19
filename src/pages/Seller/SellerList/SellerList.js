@@ -16,7 +16,7 @@ import GlobalWrapper from '../../../components/GlobalWrapper';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import {
   getAllSeller,
   setSellerStatusFalse,

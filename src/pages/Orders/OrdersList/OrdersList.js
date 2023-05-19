@@ -11,7 +11,7 @@ import GlobalWrapper from '../../../components/GlobalWrapper';
 import AppPagination from '../../../components/AppPagination';
 import OrderTable from '../../../components/OrderTable';
 import Search from '../../../components/Search';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import {
   getAllOrder,
   updateOrderByShopType,

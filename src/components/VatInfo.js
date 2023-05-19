@@ -3,7 +3,7 @@ import moment from 'moment';
 import { useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGlobalContext } from '../context/GlobalContext';
+import { useGlobalContext } from '../context';
 import { getAllVatInfo } from '../store/vat/vatActions';
 import CircularLoader from './CircularLoader';
 

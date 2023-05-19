@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { useGlobalContext } from '../context/GlobalContext';
+import { useGlobalContext } from '../context';
 import {
   ADMIN_DASHBOARD_EARNING_GRAPH,
   ADMIN_DASHBOARD_ORDER_GRAPH,

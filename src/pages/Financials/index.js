@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import Banking from './Banking';
 import Invoices from './Invoices';
 import Overview from './Overview';

@@ -19,7 +19,7 @@ import { liveStatusFilterOptions, shopStatusOptions, shopTypeOptions, sortByOpti
 import Search from '../../../components/Search';
 import ShopTable from '../../../components/ShopTable';
 import { callApi } from '../../../components/SingleApiCall';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { SINGLE_SHOP } from '../../../network/Api';
 
 function ShopList() {

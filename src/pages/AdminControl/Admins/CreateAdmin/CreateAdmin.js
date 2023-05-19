@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import Breadcrumb from '../../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../../components/GlobalWrapper';
-import { useGlobalContext } from '../../../../context/GlobalContext';
+import { useGlobalContext } from '../../../../context';
 import { SINGLE_ADMIN } from '../../../../network/Api';
 import requestApi from '../../../../network/httpRequest';
 import {

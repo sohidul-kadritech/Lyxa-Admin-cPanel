@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ReactComponent as Logo } from '../../../assets/icons/logo-sm.svg';
 import { ReactComponent as NotificationIcon } from '../../../assets/icons/t-notification.svg';
 import { ReactComponent as SupportIcon } from '../../../assets/icons/t-support.svg';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { getProfilePhotoAndAltName } from '../helper';
 import AccountMenu from './AccountMenu';
 import Tabs from './Tabs';

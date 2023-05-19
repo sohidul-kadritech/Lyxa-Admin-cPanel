@@ -8,7 +8,7 @@ import StyledBox from '../../../../components/StyledCharts/StyledBox';
 // project import
 import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
 import StyledDoughnutChart from '../../../../components/StyledCharts/StyledPieChart';
-import { useGlobalContext } from '../../../../context/GlobalContext';
+import { useGlobalContext } from '../../../../context';
 import { calculateDateDifference } from '../../helper';
 
 const customerTypeProps = {

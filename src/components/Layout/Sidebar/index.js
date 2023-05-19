@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, Typography, styled } from '@mui/material';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { getProfilePhotoAndAltName } from '../helper';
 import MenuList from './MenuList';
 

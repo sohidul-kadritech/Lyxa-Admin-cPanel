@@ -29,7 +29,7 @@ import styled from 'styled-components';
 import { successMsg } from '../helpers/successMsg';
 
 // project import
-import { useGlobalContext } from '../context/GlobalContext';
+import { useGlobalContext } from '../context';
 import * as Api from '../network/Api';
 import AXIOS from '../network/axios';
 import { cancelButlerOrderByAdmin, updateButlerOrderIsCancelled } from '../store/Butler/butlerActions';

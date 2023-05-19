@@ -14,7 +14,7 @@ import Breadcrumb from '../../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../../components/GlobalWrapper';
 import TableImgItem from '../../../../components/TableImgItem';
 import ThreeDotsMenu from '../../../../components/ThreeDotsMenu';
-import { useGlobalContext } from '../../../../context/GlobalContext';
+import { useGlobalContext } from '../../../../context';
 import { getAllCategory, setCatStatusFalse, updateCategoryShopType } from '../../../../store/Category/categoryAction';
 
 function CategoryList() {

@@ -39,7 +39,7 @@ import { getAllSeller, updateSellerSearchKey } from '../../../store/Seller/selle
 import { addShop, editShop, getAllCuisine, getAllTags, updateShopSearchKey } from '../../../store/Shop/shopAction';
 
 import { callApi } from '../../../components/SingleApiCall';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 
 function ShopAdd() {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useReducer } from 'react';
 import { currentUserInit, currentUserReducer } from './currentUser';
-import { tabsInit, tabsReducer } from './tabs';
+import { shopTabsInit, shopTabsReducer } from './shopTabs';
 
 /*
 Global Store
@@ -11,9 +11,12 @@ Global Store Provider
 */
 export default function ContextProvider({ children }) {
   const [currentUser, dispatchCurrentUser] = useReducer(currentUserReducer, currentUserInit);
-  const [tabs, dispatchTabs] = useReducer(tabsReducer, tabsInit);
+  const [shopTabs, dispatchShopTabs] = useReducer(shopTabsReducer, shopTabsInit);
 
-  const value = useMemo(() => ({ currentUser, dispatchCurrentUser, tabs, dispatchTabs }), [currentUser, tabs]);
+  const value = useMemo(
+    () => ({ currentUser, dispatchCurrentUser, shopTabs, dispatchShopTabs }),
+    [currentUser, shopTabs]
+  );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

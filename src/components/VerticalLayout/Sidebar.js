@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 // i18n
 import { adminMenuItem, customerServiceMenuItem, sellerMenuItem, shopMenuItem } from '../../assets/SideMenuItem';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import SidebarContent from './SidebarContent';
 
 function Sidebar() {

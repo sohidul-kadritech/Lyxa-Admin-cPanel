@@ -5,12 +5,12 @@ const createTab = (payload) => ({
   currentLocation: payload.location,
 });
 
-export const tabsInit = {
+export const shopTabsInit = {
   currentTabId: null,
   allTabs: [],
 };
 
-export const tabsReducer = (state, { type, payload }) => {
+export const shopTabsReducer = (state, { type, payload }) => {
   if (type === 'add-tab') {
     const newTab = createTab(payload);
 

@@ -1,10 +1,11 @@
 import { Box } from '@mui/material';
+// eslint-disable-next-line no-unused-vars
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { shop_menu_items } from '../../../common/sidebar_menu_items';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -14,13 +15,18 @@ import { replacePathValues } from '../helper';
 import ChildLayout from './ChildLayout';
 
 export default function SellerToShopLayout() {
-  const { currentUser, dispatchCurrentUser, dispatchTabs } = useGlobalContext();
+  const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+
   const params = useParams();
   const location = useLocation();
   const history = useHistory();
+  // eslint-disable-next-line no-unused-vars
 
   const routePrefix = useMemo(() => {
-    if (currentUser?.admin?._id) return '/seller/:shopId/shop/:shopId';
+    if (currentUser?.userType === 'admin') {
+      return '/seller/:shopId/shop/:shopId';
+    }
+
     return '/shop/:shopId';
   }, []);
 
@@ -38,7 +44,7 @@ export default function SellerToShopLayout() {
         if (data?.status) {
           console.log(data?.data);
           dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shop } });
-          dispatchTabs({ type: 'add-tab', payload: { shop: data?.data?.shop || {}, location: location.pathname } });
+          dispatchShopTabs({ type: 'add-tab', payload: { shop: data?.data?.shop || {}, location: location.pathname } });
         } else {
           history.push('/');
           successMsg('Could not find shop');
@@ -53,13 +59,12 @@ export default function SellerToShopLayout() {
   );
 
   useState(() => {
-    if (!currentUser?.shop?._id) {
-      shopQuery.refetch();
-    }
+    // get shop after reload
+    if (!currentUser?.shop?._id) shopQuery.refetch();
   }, []);
 
   useEffect(() => {
-    dispatchTabs({ type: 'change-current-tab-location', payload: { location: location.pathname } });
+    // dispatchShopTabs({ type: 'change-current-tab-location', payload: { location: location.pathname } });
   }, [location]);
 
   if (shopQuery.isLoading) {

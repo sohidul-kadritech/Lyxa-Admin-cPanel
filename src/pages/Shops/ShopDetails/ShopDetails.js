@@ -61,7 +61,7 @@ import {
 // eslint-disable-next-line import/extensions
 import ReviewTable from '../../../components/ReviewTable.js';
 
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { getAllAppSettings } from '../../../store/Settings/settingsAction';
 
 // const marketingTypesInit = {

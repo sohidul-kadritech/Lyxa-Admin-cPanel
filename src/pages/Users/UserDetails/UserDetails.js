@@ -24,7 +24,7 @@ import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
 import OrderTable from '../../../components/OrderTable';
 import { callApi } from '../../../components/SingleApiCall';
 import UserCradit from '../../../components/UserCradit';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { MAP_URL, SINGLE_USER } from '../../../network/Api';
 import { getUserAllOrder, updateUserStatus } from '../../../store/Users/UsersAction';
 

@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledInput from '../../../components/Styled/StyledInput';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';

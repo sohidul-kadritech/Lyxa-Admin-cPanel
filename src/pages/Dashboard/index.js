@@ -19,7 +19,7 @@ import noPhoto from '../../assets/images/noPhoto.jpg';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import InfoTwo from '../../components/InfoTwo';
 import InfoTwoWrapper from '../../components/InfoTwoWrapper';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { MAP_URL } from '../../network/Api';
 import {
   getDashboardSummary,

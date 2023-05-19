@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';

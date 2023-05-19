@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
-import ContextProvider from './context/GlobalContext';
+import ContextProvider from './context';
 import store from './store';
 import ThemeProvider from './theme';
 

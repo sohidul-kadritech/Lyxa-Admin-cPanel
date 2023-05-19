@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import Portals from '../../components/Portals';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 
 function Authmiddleware({ component: Component, layout: Layout, isAuthProtected, ...rest }) {
   // const { account_type } = useSelector((store) => store.Login.admin);

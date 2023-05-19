@@ -21,7 +21,7 @@ import CircularLoader from '../../../components/CircularLoader';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import UserCradit from '../../../components/UserCradit';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { getDashboardSummary } from '../../../store/Dashboard/dashboardAction';
 
 function DropPayList() {

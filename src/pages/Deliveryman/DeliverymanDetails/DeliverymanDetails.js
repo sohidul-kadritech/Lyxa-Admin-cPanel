@@ -26,7 +26,7 @@ import InfoTwo from '../../../components/InfoTwo';
 import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
 import OrderTable from '../../../components/OrderTable';
 import { callApi } from '../../../components/SingleApiCall';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { SINGLE_DELIVERY_MAN } from '../../../network/Api';
 import { getDeliveryAllOrder } from '../../../store/DeliveryMan/DeliveryManAction';
 

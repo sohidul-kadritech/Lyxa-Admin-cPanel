@@ -2,7 +2,7 @@ import { Box } from '@material-ui/core';
 import { Close } from '@mui/icons-material';
 import { Button, Stack, styled } from '@mui/material';
 import { useHistory } from 'react-router-dom';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 
 const StyledTab = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary}!important`,
@@ -31,12 +31,12 @@ const StyledTab = styled(Button)(({ theme }) => ({
 
 export default function Tabs() {
   const history = useHistory();
-  const { tabs, dispatchTabs, dispatchCurrentUser } = useGlobalContext();
+  const { shopTabs, dispatchShopTabs, dispatchCurrentUser } = useGlobalContext();
 
   // on switch tab
   const changeTab = (tab) => {
     history.push(tab?.currentLocation);
-    dispatchTabs({ type: 'change-current-tab', payload: { tabId: tab?.shopId } });
+    dispatchShopTabs({ type: 'change-current-tab', payload: { tabId: tab?.shopId } });
     dispatchCurrentUser({ type: 'shop', payload: { shop: tab.shop } });
   };
 
@@ -45,17 +45,17 @@ export default function Tabs() {
     event.stopPropagation();
     let fallbackTab = null;
 
-    if (tabs.currentTabId !== tab?.shopId) {
-      dispatchTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
+    if (shopTabs.currentTabId !== tab?.shopId) {
+      dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
       return;
     }
 
     // find if any other tab is available
-    if (tabs.allTabs[0]?.shopId !== tab?.shopId) {
+    if (shopTabs.allTabs[0]?.shopId !== tab?.shopId) {
       // eslint-disable-next-line prefer-destructuring
-      fallbackTab = tabs.allTabs[0];
+      fallbackTab = shopTabs.allTabs[0];
     } else {
-      fallbackTab = tabs.allTabs[1] || fallbackTab;
+      fallbackTab = shopTabs.allTabs[1] || fallbackTab;
     }
 
     // if not, redirect to home page
@@ -66,15 +66,15 @@ export default function Tabs() {
       history.push('/');
     }
 
-    dispatchTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
+    dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
   };
 
   return (
     <Stack direction="row" alignItems="center" gap={1.5} position="relative">
-      {tabs.allTabs.map((tab) => (
+      {shopTabs.allTabs.map((tab) => (
         <StyledTab
           key={tab?.shopId}
-          className={tabs?.currentTabId === tab?.shopId ? 'active' : undefined}
+          className={shopTabs?.currentTabId === tab?.shopId ? 'active' : undefined}
           endIcon={
             <Close
               onClick={(event) => {

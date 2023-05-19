@@ -14,7 +14,7 @@ import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';

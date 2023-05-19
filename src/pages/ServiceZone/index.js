@@ -12,7 +12,7 @@ import TabPanel from '../../components/Common/TabPanel';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -107,7 +107,7 @@ function ServiceZone() {
           sortBy: selectedsortBy,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {

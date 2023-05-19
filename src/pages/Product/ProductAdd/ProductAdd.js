@@ -7,7 +7,7 @@ import { Button, Card, CardBody, CardTitle, Col, Container, Form, Label, Row, Sp
 import styled from 'styled-components';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 
 import { getAllCategory, getAllSubCategory, updateCategoryShopType } from '../../../store/Category/categoryAction';
 

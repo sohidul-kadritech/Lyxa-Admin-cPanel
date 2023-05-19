@@ -19,7 +19,7 @@ import MakePayment from '../../../components/MakePayment';
 import Search from '../../../components/Search';
 import TopSummery from '../../../components/TopSummery';
 import TransactionsTable from '../../../components/TransactionsTable';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { getAllAdmin } from '../../../store/AdminControl/Admin/adminAction';
 import {
   getShopTrxs,

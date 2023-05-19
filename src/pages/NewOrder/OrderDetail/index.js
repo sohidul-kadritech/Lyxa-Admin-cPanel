@@ -6,7 +6,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import CloseButton from '../../../components/Common/CloseButton';
 import TabPanel from '../../../components/Common/TabPanel';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import DeliveryDetails from './DeliveryDetails';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';

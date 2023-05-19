@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import ChartBox from '../../components/StyledCharts/ChartBox';
 import StyledAreaChart from '../../components/StyledCharts/StyledAreaChart';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import AXIOS from '../../network/axios';
 
 const dateRangeItit = {

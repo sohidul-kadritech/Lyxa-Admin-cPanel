@@ -11,7 +11,7 @@ import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon
 import { ReactComponent as DiscountIcon } from '../../assets/icons/discount-icon.svg';
 import { ReactComponent as PromoIcon } from '../../assets/icons/featured-icon.svg';
 import { ReactComponent as LoyaltyIcon } from '../../assets/icons/loyalty-icon.svg';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import MSettingsModal from './MSettingsModal';

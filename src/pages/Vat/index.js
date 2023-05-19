@@ -14,7 +14,7 @@ import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import TopSummery from '../../components/TopSummery';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import { getAllAdmin } from '../../store/AdminControl/Admin/adminAction';
 import { getAllVatInfo, settleVat } from '../../store/vat/vatActions';

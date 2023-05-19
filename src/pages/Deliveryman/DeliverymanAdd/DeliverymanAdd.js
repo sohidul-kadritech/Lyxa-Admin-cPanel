@@ -13,7 +13,7 @@ import formatBytes from '../../../common/imageFormatBytes';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import { callApi } from '../../../components/SingleApiCall';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import { GET_ALL_ZONE, IMAGE_UPLOAD, SINGLE_DELIVERY_MAN } from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -183,7 +183,7 @@ function DeliverymanAdd() {
           id,
           status: activeStatus?.value,
           // eslint-disable-next-line prettier/prettier
-        }),
+        })
       );
     } else {
       dispatch(
@@ -191,7 +191,7 @@ function DeliverymanAdd() {
           ...data,
           deliveryBoyAddress,
           // eslint-disable-next-line prettier/prettier
-        }),
+        })
       );
     }
   };
@@ -300,7 +300,7 @@ function DeliverymanAdd() {
         preview: URL.createObjectURL(file),
         formattedSize: formatBytes(file.size),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     if (type === 'nid') {

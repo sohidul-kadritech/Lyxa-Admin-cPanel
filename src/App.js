@@ -21,7 +21,7 @@ import { socketConnect } from './store/socket/socketAction';
 import { Box } from '@mui/material';
 import Router from './Router';
 import { getUserData, removeAuthCookies } from './appHelpers';
-import { useGlobalContext } from './context/GlobalContext';
+import { useGlobalContext } from './context';
 import { successMsg } from './helpers/successMsg';
 
 export default function App() {

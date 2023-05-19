@@ -12,7 +12,7 @@ import { shopsTrxsFilterOptions } from '../../../assets/staticData';
 import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import store from '../../../store';
 import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate } from '../../../store/appWallet/appWalletAction';
 

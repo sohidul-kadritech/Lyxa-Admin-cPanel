@@ -30,7 +30,7 @@ import noPhoto from '../../assets/images/noPhoto.jpg';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import { callApi } from '../../components/SingleApiCall';
 import TableImgItem from '../../components/TableImgItem';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { BUTLER_SINGLE_ORDER } from '../../network/Api';
 
 function OrderInfo({ items = [] }) {

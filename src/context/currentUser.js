@@ -4,6 +4,7 @@ export const currentUserInit = {
   admin: {},
   userType: null,
   adminType: null,
+  // routeDepth: 0,
 };
 
 export const currentUserReducer = (state, { type, payload }) => {
@@ -31,6 +32,12 @@ export const currentUserReducer = (state, { type, payload }) => {
         userType: payload.isCurrentUser ? 'admin' : state.userType,
         adminType: payload.admin?.adminType,
       };
+
+    // case 'routeDepth':
+    //   return {
+    //     ...state,
+    //     routeDepth: payload.routeDepth,
+    //   };
 
     default:
       return state;

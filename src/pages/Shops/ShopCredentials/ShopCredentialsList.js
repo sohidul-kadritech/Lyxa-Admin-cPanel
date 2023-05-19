@@ -4,7 +4,7 @@ import { Container } from 'reactstrap';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import CredentialsTable from '../../../components/CredentialsTable';
 import GlobalWrapper from '../../../components/GlobalWrapper';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { getAllShopCredentials } from '../../../store/AdminControl/Admin/adminAction';
 
 function ShopCredentialsList() {

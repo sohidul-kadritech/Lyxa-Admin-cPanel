@@ -1,5 +1,5 @@
 import { Redirect } from 'react-router-dom';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 
 export default function Authmiddleware({ children }) {
   const { currentUser } = useGlobalContext();

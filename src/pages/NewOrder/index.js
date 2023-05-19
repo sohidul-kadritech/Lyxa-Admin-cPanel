@@ -6,7 +6,7 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import OrderDetail from './OrderDetail';

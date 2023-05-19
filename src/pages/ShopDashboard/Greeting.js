@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 
 export default function Greeting() {
   const theme = useTheme();

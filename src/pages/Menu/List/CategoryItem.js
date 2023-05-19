@@ -6,7 +6,7 @@ import { useMutation } from 'react-query';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ProductsContainer from './ProductsContainer';

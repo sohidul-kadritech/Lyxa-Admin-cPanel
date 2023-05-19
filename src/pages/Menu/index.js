@@ -8,7 +8,7 @@ import { Container, Draggable } from 'react-smooth-dnd';
 
 // project import
 import PageTop from '../../components/Common/PageTop';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import dropSort from '../../helpers/dropSort';
 import { local_product_category_search, local_product_category_subCategory_search } from '../../helpers/localSearch';

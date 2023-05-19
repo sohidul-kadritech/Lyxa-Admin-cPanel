@@ -20,7 +20,7 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import EditShop from './EditShop';
 import FlaggedViews from './FlaggedViews';

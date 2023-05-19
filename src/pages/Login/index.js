@@ -5,7 +5,7 @@ import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as LyxaIcon } from '../../assets/icons/lyxa-logo-lg.svg';
 import { ReactComponent as LyxaText } from '../../assets/icons/lyxa-text-lg.svg';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import setCookiesAsObj from '../../helpers/cookies/setCookiesAsObject';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';

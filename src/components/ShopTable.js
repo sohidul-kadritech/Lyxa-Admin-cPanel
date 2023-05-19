@@ -5,7 +5,7 @@ import Lightbox from 'react-image-lightbox';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
-import { useGlobalContext } from '../context/GlobalContext';
+import { useGlobalContext } from '../context';
 import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
@@ -15,7 +15,7 @@ function ShopTable({ shops = [] }) {
   const history = useHistory();
   const location = useLocation();
 
-  const { dispatchCurrentUser, dispatchTabs } = useGlobalContext();
+  const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
 
   const { loading } = useSelector((state) => state.shopReducer);
 
@@ -68,7 +68,7 @@ function ShopTable({ shops = [] }) {
       }
       history.push(routePath);
       dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
-      dispatchTabs({ type: 'add-tab', payload: { shop: item, location: `/shop/${item._id}` } });
+      dispatchShopTabs({ type: 'add-tab', payload: { shop: item, location: `/shop/${item._id}` } });
     }
   };
 

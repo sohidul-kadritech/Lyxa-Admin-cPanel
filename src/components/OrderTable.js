@@ -33,7 +33,7 @@ import {
 
 import userIcon from '../assets/images/dashboard/user.png';
 import noPhoto from '../assets/images/noPhoto.jpg';
-import { useGlobalContext } from '../context/GlobalContext';
+import { useGlobalContext } from '../context';
 import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';

@@ -22,7 +22,7 @@ import {
 import React, { Fragment, useEffect, useState } from 'react';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import TableLoader from '../../components/Common/TableLoader';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { useGlobalContext } from '../../context';
 import EditUser from './EditUser';
 import UserTablePageSkeleton from './UserTableSkeleton';
 

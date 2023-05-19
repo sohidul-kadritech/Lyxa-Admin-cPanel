@@ -12,7 +12,7 @@ import TopSummery from './TopSummery';
 
 import bagIcon from '../assets/images/dashboard/bag.png';
 import cancelBagIcon from '../assets/images/dashboard/cancel-bag.png';
-import { useGlobalContext } from '../context/GlobalContext';
+import { useGlobalContext } from '../context';
 
 const GraphInfo = lazy(() => import('./GraphInfo'));
 

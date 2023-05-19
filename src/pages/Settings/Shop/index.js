@@ -14,7 +14,7 @@ import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 // data
 
 import ConfirmModal from '../../../components/Common/ConfirmModal';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import {
   DeliverySettings,

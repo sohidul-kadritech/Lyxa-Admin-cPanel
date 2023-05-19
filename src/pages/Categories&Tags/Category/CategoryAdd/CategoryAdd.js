@@ -13,7 +13,7 @@ import { addCategory, editCategory } from '../../../../store/Category/categoryAc
 import { shopTypeOptions2 } from '../../../../assets/staticData';
 import formatBytes from '../../../../common/imageFormatBytes';
 import { callApi } from '../../../../components/SingleApiCall';
-import { useGlobalContext } from '../../../../context/GlobalContext';
+import { useGlobalContext } from '../../../../context';
 import { successMsg } from '../../../../helpers/successMsg';
 import { IMAGE_UPLOAD, SINGLE_CATEGORY } from '../../../../network/Api';
 

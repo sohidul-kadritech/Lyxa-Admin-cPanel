@@ -10,7 +10,7 @@ import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import ProductTable from '../../../components/ProductTable';
 import Search from '../../../components/Search';
-import { useGlobalContext } from '../../../context/GlobalContext';
+import { useGlobalContext } from '../../../context';
 import { getAllCategory, updateCategoryShopType } from '../../../store/Category/categoryAction';
 import {
   getAllProduct,
