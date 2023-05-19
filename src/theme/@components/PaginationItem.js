@@ -5,6 +5,8 @@ export default function Pagination(theme) {
         fontSize: '16px',
         // width: '60px',
         // borderRadius: '30px',
+        border: 'none',
+        boxShadow: 'rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;',
         background: theme.palette.primary.contrastText,
         color: theme.palette.text.primary,
         '&:hover': {

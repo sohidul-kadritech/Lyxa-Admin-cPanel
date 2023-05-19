@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 // mui
 import ReplayIcon from '@mui/icons-material/Replay';
-import { Box, Button, Chip, Paper, Stack, Tooltip, Typography, Unstable_Grid2 as Grid, useTheme } from '@mui/material';
+import { Box, Button, Chip, Unstable_Grid2 as Grid, Paper, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 
 // third party
 import { useEffect, useState } from 'react';
@@ -12,12 +12,12 @@ import { faqType } from '../../assets/staticData';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
 import CloseButton from '../../components/Common/CloseButton';
 import ConfirmModal from '../../components/Common/ConfirmModal';
+import TabPanel from '../../components/Common/TabPanel';
 import TableLoader from '../../components/Common/TableLoader';
 import FilterButton from '../../components/Filter/FilterButton';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import StyledTable from '../../components/Styled/StyledTable';
-import TabPanel from '../../components/Common/TabPanel';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 import { successMsg } from '../../helpers/successMsg';
 import {
@@ -92,7 +92,8 @@ export default function Faq() {
   const dispatch = useDispatch();
   const { faq: faqQueries, loading: faqLoading } = useSelector((store) => store.faqReducer);
   const { chatReasons: chatReasonQueries, loading: chatReasonLoading } = useSelector(
-    (store) => store.chatReasonReducer
+    // eslint-disable-next-line prettier/prettier
+    (store) => store.chatReasonReducer,
   );
 
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
@@ -205,7 +206,8 @@ export default function Faq() {
     if (type !== '') {
       data = data.filter(
         (item) =>
-          (type === 'faq' && item.type !== 'accountSupport' && item.type !== 'orderSupport') || item.type === type
+          // eslint-disable-next-line prettier/prettier
+          (type === 'faq' && item.type !== 'accountSupport' && item.type !== 'orderSupport') || item.type === type,
       );
     }
 
