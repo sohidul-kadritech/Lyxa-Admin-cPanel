@@ -1,5 +1,5 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, MenuItem, OutlinedInput, Select, Tooltip, styled, useTheme } from '@mui/material';
+import { Box, Checkbox, ListItemText, MenuItem, OutlinedInput, Select, Tooltip, styled, useTheme } from '@mui/material';
 import pxToRem from '../../helpers/pxToRem';
 
 const StyledSelect = styled(Select)(({ theme }) => ({
@@ -205,7 +205,17 @@ export default function FilterSelect({
               },
             }}
           >
-            {getLabel ? getLabel(item) : item.label}
+            {props.multiple && (
+              <Checkbox
+                sx={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  paddingLeft: 0,
+                }}
+                checked={props.value.includes(item.value)}
+              />
+            )}
+            <ListItemText disableTypography>{getLabel ? getLabel(item) : item.label}</ListItemText>
           </MenuItem>
         ))}
       </StyledSelect>

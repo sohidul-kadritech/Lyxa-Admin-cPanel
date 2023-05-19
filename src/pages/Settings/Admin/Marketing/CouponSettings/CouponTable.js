@@ -15,6 +15,7 @@ import StyledBox from '../../../../../components/StyledCharts/StyledBox';
 import { successMsg } from '../../../../../helpers/successMsg';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
+import { couponShopTypeOptions } from './AddCoupon/helpers';
 import { getFormatedDuration } from './helpers';
 
 export default function CouponTable({ rows = [], onEdit, couponType }) {
@@ -176,26 +177,42 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
   if (couponType === 'individual_store') {
     columns.splice(1, 0, {
       id: 2,
-      headerName: `STORE`,
+      headerName: `STORE/CATEGORY`,
       sortable: false,
       field: 'couponShops',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value = [] }) => (
-        <Typography
-          sx={{
-            cursor: 'pointer',
-            maxWidth: '100%',
-          }}
-          variant="body4"
-          color="primary"
-          onClick={() => {
-            history.push(`/shops/details/${value[0]?._id}`);
-          }}
-        >
-          {value[0]?.shopName}
-        </Typography>
+      renderCell: ({ value = [], row }) => (
+        <Box>
+          {value?.length ? (
+            <Typography
+              sx={{
+                cursor: 'pointer',
+                maxWidth: '100%',
+              }}
+              variant="body4"
+              color="primary"
+              onClick={() => {
+                history.push(`/shops/details/${value[0]?._id}`);
+              }}
+            >
+              {value[0]?.shopName}
+            </Typography>
+          ) : (
+            <Typography
+              sx={{
+                cursor: 'pointer',
+                maxWidth: '100%',
+              }}
+              variant="body4"
+            >
+              {row?.couponShopTypes
+                ?.map((value) => couponShopTypeOptions?.find((option) => option?.value === value)?.label)
+                .join(', ')}
+            </Typography>
+          )}
+        </Box>
       ),
     });
   }

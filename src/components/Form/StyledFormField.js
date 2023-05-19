@@ -121,7 +121,19 @@ export default function StyledFormField({ containerProps, label, labelProps, int
       )}
 
       {/* select */}
-      {intputType === 'select' && <FilterSelect {...(inputProps || {})} />}
+      {intputType === 'select' && (
+        // <Stack
+        //   position="relative"
+        //   direction="row"
+        //   alignItems="center"
+        //   justifyContent="flex-start"
+        //   gap="16px"
+        //   flexWrap="wrap"
+        //   minHeight="48px"
+        // >
+        // </Stack>
+        <FilterSelect {...(inputProps || {})} />
+      )}
 
       {/* autocomplete */}
       {intputType === 'autocomplete' && (
@@ -170,7 +182,6 @@ export default function StyledFormField({ containerProps, label, labelProps, int
               }
               return (
                 <StyledChip
-                  console={console.log(item)}
                   key={inputProps.getTagKey?.(item) || item?._id}
                   label={inputProps?.getOptionLabel(item) || item?.name}
                   size="lg"

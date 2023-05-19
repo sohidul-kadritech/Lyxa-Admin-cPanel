@@ -3,7 +3,7 @@ import { deepClone } from '../../../../../../helpers/deepClone';
 
 export const couponTypeToTitleMap = {
   global: 'Global',
-  individual_store: 'Store',
+  individual_store: 'Store/Category',
   individual_user: 'User',
   custom_coupon: 'Custom',
 };
@@ -25,13 +25,12 @@ export const getCouponInit = (couponType) => ({
   couponInfluencer: couponType === 'custom_coupon' ? '' : undefined,
   couponUsers: [],
   couponShops: [],
-  couponShopTypes: couponType === 'custom_coupon' ? [] : undefined,
+  couponShopTypes: couponType === 'global' ? undefined : [],
 });
 
 export const couponDiscountTypeOptions = [
   { label: 'Amount', value: 'fixed' },
   { label: 'Percentage', value: 'percentage' },
-  { label: 'Free delivery', value: 'free_delivery' },
 ];
 
 export const couponShopTypeOptions = [
@@ -69,8 +68,8 @@ export const validateCoupon = (coupon, couponType) => {
   }
 
   if (couponType === 'individual_store') {
-    if (!coupon?.couponShops?.length) {
-      error.message = 'Coupon store cannot be empty!';
+    if (!coupon?.couponShops?.length && !coupon?.couponShopTypes?.length) {
+      error.message = 'Must have cuopon shop category or custom shop!';
       return error;
     }
   }
@@ -78,6 +77,11 @@ export const validateCoupon = (coupon, couponType) => {
   if (couponType === 'individual_user') {
     if (!coupon?.couponUsers?.length) {
       error.message = 'Coupon user cannot be empty!';
+      return error;
+    }
+
+    if (!coupon?.couponShops?.length && !coupon?.couponShopTypes?.length) {
+      error.message = 'Must have cuopon shop category or custom shop!';
       return error;
     }
   }
@@ -110,12 +114,6 @@ export const createCouponUploaData = (coupon, checked) => {
   data.couponShops = coupon?.couponShops?.map((shop) => shop?._id);
   data.couponUsers = coupon?.couponUsers?.map((shop) => shop?._id);
   data.couponInfluencer = coupon.couponInfluencer?._id;
-
-  if (coupon?.couponShopTypes?.length) {
-    data.couponShopTypes = coupon?.couponShopTypes?.map((item) => item?.value);
-    data.couponShops = [];
-  }
-
   return {
     ...coupon,
     ...data,
@@ -123,11 +121,8 @@ export const createCouponUploaData = (coupon, checked) => {
 };
 
 export const getCouponEditdData = (editCoupon) => {
+  console.log(editCoupon);
   const coupon = deepClone(editCoupon);
-  coupon.couponShopTypes = coupon.couponShopTypes?.map((type) =>
-    couponShopTypeOptions.find((item) => item?.value === type)
-  );
-  // console.log('==========>', coupon);
   return coupon;
 };
 

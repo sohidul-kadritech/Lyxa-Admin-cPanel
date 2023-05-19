@@ -5,7 +5,6 @@ import { useQuery } from 'react-query';
 
 // project import
 import PageTop from '../../../../../components/Common/PageTop';
-import { useGlobalContext } from '../../../../../context/GlobalContext';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
 import AddCoupon from './AddCoupon';
@@ -26,9 +25,6 @@ export default function CoponSettings() {
       params: filters,
     })
   );
-
-  const context = useGlobalContext();
-  console.log(context);
 
   return (
     <Box>
@@ -51,7 +47,7 @@ export default function CoponSettings() {
         }}
       >
         <Tab label="Global" />
-        <Tab label="Individual Store" />
+        <Tab label="Store/Category" />
         <Tab label="Individual User" />
         <Tab label="Custom Coupon" />
       </Tabs>

@@ -143,15 +143,6 @@ const StyledSelect = styled(Autocomplete)(({ theme }) => ({
   },
 }));
 
-// const CustomPopper = React.forwardRef((props, ref) => (
-//   <Popper
-//     {...props}
-//     placement="bottom"
-//     popperOptions={{ placement: 'bottom-start', strategy: 'fixed', modifiers: [] }}
-//     ref={ref}
-//   />
-// ));
-
 export default function StyledAutocomplete({ label, placeholder, maxHeight, ...props }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -186,6 +177,13 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
               flexDirection: 'row',
               padding: '0px 45px 0px 16px',
             },
+
+            '& .MuiAutocomplete-noOptions': {
+              background: theme.palette.background.secondary,
+              textAlign: 'center',
+              fontWeight: '500',
+              borderRadius: '0 0 40px 40px',
+            },
           }}
           {...props}
         >
@@ -195,7 +193,6 @@ export default function StyledAutocomplete({ label, placeholder, maxHeight, ...p
       renderInput={(params) => (
         <TextField
           {...params}
-          // console={console.log(params)}
           sx={{
             '.MuiInputBase-input': {
               pointerEvents: props.readOnly ? 'none' : 'initial',

@@ -1,7 +1,8 @@
 // thrid party
 import { Box, Button } from '@mui/material';
+import { debounce } from '@mui/material/utils';
 import moment from 'moment';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../../../../assets/icons/down.svg';
 import SidebarContainer from '../../../../../../components/Common/SidebarContainerSm';
@@ -9,7 +10,6 @@ import StyledFormField from '../../../../../../components/Form/StyledFormField';
 import { successMsg } from '../../../../../../helpers/successMsg';
 import * as Api from '../../../../../../network/Api';
 import AXIOS from '../../../../../../network/axios';
-import PageLoader from './PageLoader';
 import {
   checkedInit,
   couponDiscountTypeOptions,
@@ -27,8 +27,10 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
   const [coupon, setCoupon] = useState(editCoupon?._id ? getCouponEditdData(editCoupon) : getCouponInit(couponType));
   const [checked, setChecked] = useState(editCoupon?._id ? getEditCouponChecked(editCoupon) : { ...checkedInit });
-
-  console.log(editCoupon);
+  const [shopSearchKey, setShopSearchKey] = useState('');
+  const [userSearchKey, setUserSearchKey] = useState('');
+  const [shopOptions, setShopOptions] = useState([]);
+  const [userOptions, setUserOptions] = useState([]);
 
   // handlers
   const commonChangeHandler = (e) => {
@@ -40,60 +42,60 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
   };
 
   // shops query
-  const shopsQuery = useQuery([Api.ALL_SHOP, { type: 'all', page: 1, pageSize: 200 }], () =>
-    AXIOS.get(Api.ALL_SHOP, {
-      params: {
-        type: 'all',
-        shopStatus: 'all',
-        page: 1,
-        pageSize: 200,
+  const shopsQuery = useMutation(
+    () =>
+      AXIOS.get(Api.ALL_SHOP, {
+        params: {
+          type: 'all',
+          shopStatus: 'all',
+          page: 1,
+          pageSize: 15,
+          searchKey: shopSearchKey,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        setShopOptions((prev) => data?.data?.shops || prev);
       },
-    })
+    }
   );
 
-  const shopsOptions = shopsQuery?.data?.data?.shops || [];
-
-  // shops query
-  const usersQuery = useQuery([Api.ALL_USERS, { type: 'all' }], () =>
-    AXIOS.get(Api.ALL_USERS, {
-      params: {
-        page: 1,
-        pageSize: 200,
-        searchKey: '',
-        sortBy: 'desc',
-        status: 'all',
-      },
-    })
+  const getShops = useMemo(
+    () =>
+      debounce((value) => {
+        setShopSearchKey(value);
+        shopsQuery.mutate();
+      }, 300),
+    []
   );
 
-  // admins query
-  // const adminsQuery = useQuery([Api.GET_ALL_ADMIN], () => AXIOS.get(Api.GET_ALL_ADMIN), {
-  //   onSuccess: (data) => {
-  //     console.log(data);
-  //   },
-  // });
+  const usersQuery = useMutation(
+    () =>
+      AXIOS.get(Api.ALL_USERS, {
+        params: {
+          page: 1,
+          pageSize: 15,
+          searchKey: userSearchKey,
+          sortBy: 'desc',
+          status: 'all',
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data?.data?.users);
+        setUserOptions((prev) => data?.data?.users || prev);
+      },
+    }
+  );
 
-  // const adminsList = useMemo(() => {
-  //   const options = [];
-  //   adminsQuery?.data?.data?.Admins?.forEach((admin) => {
-  //     if (admin?.adminType === 'admin') {
-  //       options.push({ value: admin?._id, label: admin?.name });
-  //     }
-  //   });
-
-  //   return options;
-  // }, [adminsQuery?.data]);
-
-  // const adminsList = useMemo(
-  //   () =>
-  //     // const options = [];
-  //     adminsQuery?.data?.data?.Admins?.filter((admin) => admin?.adminType === 'admin'),
-
-  //   // return options;
-  //   [adminsQuery?.data]
-  // );
-
-  // console.log(adminsList);
+  const getUsers = useMemo(
+    () =>
+      debounce((value) => {
+        setUserSearchKey(value);
+        usersQuery.mutate();
+      }, 300),
+    []
+  );
 
   // coupon add
   const couponMutation = useMutation(
@@ -134,289 +136,297 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
     },
   });
 
-  const __loading = shopsQuery.isLoading || usersQuery.isLoading;
-
   return (
     <SidebarContainer title={`Generate Coupon: ${couponTypeToTitleMap[couponType]}`} onClose={onClose}>
-      {__loading ? (
-        <PageLoader />
-      ) : (
-        <>
-          {/* name */}
-          <Box position="relative">
-            <StyledFormField
-              label="Name"
-              intputType="text"
-              inputProps={{
-                type: 'text',
-                name: 'couponName',
-                value: coupon.couponName,
-                disabled: autoGenCodeQuery.isFetching,
-                onChange: commonChangeHandler,
-                sx: {
-                  textTransform: 'uppercase',
-                  paddingRight: '105px',
-                },
-              }}
-            />
-            <Button
-              variant="text"
-              sx={{ fontWeight: 600, position: 'absolute', right: '20px', top: '49px' }}
-              onClick={autoGenCodeQuery.refetch}
-            >
-              Generate
-            </Button>
-          </Box>
-          {/* user */}
-          {couponType === 'individual_user' && (
-            <StyledFormField
-              label="User"
-              intputType="autocomplete"
-              inputProps={{
-                maxHeight: '300px',
-                options: usersQuery?.data?.data?.users || [],
-                value: (coupon?.couponUsers && coupon?.couponUsers[0]) || null,
-                isOptionEqualToValue: (option, value) => option?._id === value?._id,
-                getOptionLabel: (option) => option?.name,
-                sx: {
-                  flex: 1,
-                },
-                onChange: (e, v) => {
-                  setCoupon((prev) => ({ ...prev, couponUsers: [v] }));
-                },
-              }}
-            />
-          )}
-          {/* cupon influencer */}
-          {couponType === 'custom_coupon' && (
-            <StyledFormField
-              label="Influencer Name"
-              intputType="autocomplete"
-              inputProps={{
-                maxHeight: '300px',
-                options: usersQuery?.data?.data?.users || [],
-                value: coupon?.couponInfluencer || null,
-                isOptionEqualToValue: (option, value) => option?._id === value?._id,
-                getOptionLabel: (option) => option?.name,
-                sx: {
-                  flex: 1,
-                },
-                onChange: (e, v) => {
-                  setCoupon((prev) => ({ ...prev, couponInfluencer: v }));
-                },
-              }}
-            />
-          )}
-
-          {/* type */}
+      <>
+        {/* name */}
+        <Box position="relative">
           <StyledFormField
-            label="Type"
+            label="Name"
+            intputType="text"
+            inputProps={{
+              type: 'text',
+              name: 'couponName',
+              value: coupon.couponName,
+              disabled: autoGenCodeQuery.isFetching,
+              onChange: commonChangeHandler,
+              sx: {
+                textTransform: 'uppercase',
+                paddingRight: '105px',
+              },
+            }}
+          />
+          <Button
+            variant="text"
+            sx={{ fontWeight: 600, position: 'absolute', right: '20px', top: '49px' }}
+            onClick={autoGenCodeQuery.refetch}
+          >
+            Generate
+          </Button>
+        </Box>
+        {/* user */}
+        {couponType === 'individual_user' && (
+          <StyledFormField
+            label="User"
+            intputType="autocomplete"
+            inputProps={{
+              maxHeight: '300px',
+              options: userOptions,
+              value: (coupon?.couponUsers && coupon?.couponUsers[0]) || null,
+              isOptionEqualToValue: (option, value) => option?._id === value?._id,
+              getOptionLabel: (option) => option?.name,
+              sx: {
+                flex: 1,
+              },
+              onChange: (e, v) => {
+                setCoupon((prev) => ({ ...prev, couponUsers: [v] }));
+              },
+              onInputChange: (e) => {
+                getUsers(e?.target?.value);
+              },
+            }}
+          />
+        )}
+        {/* cupon influencer */}
+        {couponType === 'custom_coupon' && (
+          <StyledFormField
+            label="Influencer Name"
+            intputType="autocomplete"
+            inputProps={{
+              maxHeight: '300px',
+              options: userOptions,
+              value: coupon?.couponInfluencer || null,
+              isOptionEqualToValue: (option, value) => option?._id === value?._id,
+              getOptionLabel: (option) => option?.name,
+              sx: {
+                flex: 1,
+              },
+              onChange: (e, v) => {
+                setCoupon((prev) => ({ ...prev, couponInfluencer: v }));
+              },
+              onInputChange: (e) => {
+                getUsers(e?.target?.value);
+              },
+            }}
+          />
+        )}
+
+        {/* type */}
+        <StyledFormField
+          label="Type"
+          intputType="select"
+          inputProps={{
+            name: 'couponDiscountType',
+            value: coupon.couponDiscountType,
+            items: couponDiscountTypeOptions,
+            onChange: commonChangeHandler,
+          }}
+        />
+        {/* value */}
+        {/* {coupon.couponDiscountType !== 'free_delivery' && ( */}
+        <StyledFormField
+          label="Value"
+          intputType="text"
+          inputProps={{
+            type: 'number',
+            name: 'couponValue',
+            value: coupon.couponValue,
+            onChange: commonChangeHandler,
+          }}
+        />
+        {/* )} */}
+        {/* start date */}
+        <StyledFormField
+          label="Duration start"
+          intputType="date"
+          inputProps={{
+            fullWidth: true,
+            variant: 'form',
+            maxDate: moment(coupon?.couponDuration?.end).subtract(1, 'day'),
+            value: coupon.couponDuration.start,
+            onChange: (e) => {
+              setCoupon((prev) => ({
+                ...prev,
+                couponDuration: {
+                  ...prev.couponDuration,
+                  start: e._d,
+                },
+              }));
+            },
+          }}
+        />
+        {/* start date */}
+        <StyledFormField
+          label="Duration end"
+          intputType="date"
+          inputProps={{
+            fullWidth: true,
+            variant: 'form',
+            value: coupon.couponDuration.end,
+            minDate: moment(coupon?.couponDuration?.start).add(1, 'day'),
+            onChange: (e) => {
+              setCoupon((prev) => ({
+                ...prev,
+                couponDuration: {
+                  ...prev.couponDuration,
+                  end: e._d,
+                },
+              }));
+            },
+          }}
+        />
+        {/* amount limit */}
+        <StyledFormField
+          label="Amount limit"
+          intputType="text-toggle"
+          inputProps={{
+            type: 'number',
+            name: 'couponAmountLimit',
+            value: coupon.couponAmountLimit,
+            onChange: commonChangeHandler,
+            disabled: !checked.couponAmountLimit,
+            checked: checked.couponAmountLimit,
+            onToggle: (event) => commonCheckHandler(event, 'couponAmountLimit'),
+          }}
+        />
+        {/* user limit */}
+        <StyledFormField
+          label="User limit"
+          intputType="text-toggle"
+          inputProps={{
+            type: 'number',
+            name: 'couponUserLimit',
+            value: coupon.couponUserLimit,
+            onChange: commonChangeHandler,
+            disabled: !checked.couponUserLimit,
+            checked: checked.couponUserLimit,
+            onToggle: (event) => commonCheckHandler(event, 'couponUserLimit'),
+          }}
+        />
+        {/* order limit */}
+        <StyledFormField
+          label="Order limit"
+          intputType="text-toggle"
+          inputProps={{
+            type: 'number',
+            name: 'couponOrderLimit',
+            value: coupon.couponOrderLimit,
+            onChange: commonChangeHandler,
+            disabled: !checked.couponOrderLimit,
+            checked: checked.couponOrderLimit,
+            onToggle: (event) => commonCheckHandler(event, 'couponOrderLimit'),
+          }}
+        />
+        {/* min order */}
+        <StyledFormField
+          label="Min. Order"
+          intputType="text-toggle"
+          inputProps={{
+            type: 'number',
+            name: 'couponMinimumOrderValue',
+            value: coupon.couponMinimumOrderValue,
+            onChange: commonChangeHandler,
+            disabled: !checked.couponMinimumOrderValue,
+            checked: checked.couponMinimumOrderValue,
+            onToggle: (event) => commonCheckHandler(event, 'couponMinimumOrderValue'),
+          }}
+        />
+
+        {/* type */}
+        {couponType !== 'global' && (
+          <StyledFormField
+            label="Shop Category"
             intputType="select"
             inputProps={{
-              name: 'couponDiscountType',
-              value: coupon.couponDiscountType,
-              items: couponDiscountTypeOptions,
-              onChange: commonChangeHandler,
-            }}
-          />
-          {/* value */}
-          {coupon.couponDiscountType !== 'free_delivery' && (
-            <StyledFormField
-              label="Value"
-              intputType="text"
-              inputProps={{
-                type: 'number',
-                name: 'couponValue',
-                value: coupon.couponValue,
-                onChange: commonChangeHandler,
-              }}
-            />
-          )}
-          {/* start date */}
-          <StyledFormField
-            label="Duration start"
-            intputType="date"
-            inputProps={{
-              fullWidth: true,
-              variant: 'form',
-              maxDate: moment(coupon?.couponDuration?.end).subtract(1, 'day'),
-              value: coupon.couponDuration.start,
-              onChange: (e) => {
+              name: 'couponShopTypes',
+              value: coupon.couponShopTypes,
+              items: couponShopTypeOptions,
+              onChange: (event) => {
+                commonChangeHandler(event);
                 setCoupon((prev) => ({
                   ...prev,
-                  couponDuration: {
-                    ...prev.couponDuration,
-                    start: e._d,
-                  },
+                  couponShops: prev?.couponShops?.filter((shop) => !event?.target?.value?.includes(shop?.shopType)),
                 }));
+              },
+              multiple: true,
+              renderValue: (seleted) =>
+                seleted
+                  ?.map((value) => couponShopTypeOptions?.find((option) => option?.value === value)?.label)
+                  .join(', '),
+            }}
+          />
+        )}
+
+        {/* store */}
+        {couponType === 'individual_store' && !coupon?.couponShopTypes?.length && (
+          <StyledFormField
+            label="Store name"
+            intputType="autocomplete"
+            inputProps={{
+              maxHeight: '110px',
+              options: shopOptions,
+              value: (coupon?.couponShops && coupon?.couponShops[0]) || null,
+              isOptionEqualToValue: (option, value) => option?._id === value?._id,
+              noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
+              getOptionLabel: (option) => option?.shopName,
+              sx: {
+                flex: 1,
+              },
+              onChange: (e, v) => {
+                setCoupon((prev) => ({ ...prev, couponShops: [v] }));
+              },
+              onInputChange: (e) => {
+                getShops(e?.target?.value);
               },
             }}
           />
-          {/* start date */}
+        )}
+
+        {/* multiple shops */}
+        {couponType !== 'global' && couponType !== 'individual_store' && (
           <StyledFormField
-            label="Duration end"
-            intputType="date"
+            label="Custom Shops"
+            intputType="autocomplete"
             inputProps={{
-              fullWidth: true,
-              variant: 'form',
-              value: coupon.couponDuration.end,
-              minDate: moment(coupon?.couponDuration?.start).add(1, 'day'),
-              onChange: (e) => {
-                setCoupon((prev) => ({
-                  ...prev,
-                  couponDuration: {
-                    ...prev.couponDuration,
-                    end: e._d,
-                  },
-                }));
+              multiple: true,
+              maxHeight: '110px',
+              options: shopOptions?.filter((shop) => !coupon?.couponShopTypes?.includes(shop?.shopType)),
+              value: coupon?.couponShops || [],
+              label: 'Choose',
+              noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
+              getOptionLabel: (option) => option?.shopName,
+              isOptionEqualToValue: (option, value) => option?._id === value?._id,
+              onChange: (e, v) => {
+                setCoupon((prev) => ({ ...prev, couponShops: v.map((item) => item) }));
+              },
+              onInputChange: (e) => {
+                getShops(e?.target?.value);
+              },
+              sx: {
+                '& .MuiFormControl-root': {
+                  minWidth: '100px',
+                },
               },
             }}
           />
-          {/* amount limit */}
-          <StyledFormField
-            label="Amount limit"
-            intputType="text-toggle"
-            inputProps={{
-              type: 'number',
-              name: 'couponAmountLimit',
-              value: coupon.couponAmountLimit,
-              onChange: commonChangeHandler,
-              disabled: !checked.couponAmountLimit,
-              checked: checked.couponAmountLimit,
-              onToggle: (event) => commonCheckHandler(event, 'couponAmountLimit'),
+        )}
+
+        {/* submit */}
+        <Box pt={20} pb={6}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<DropIcon />}
+            disabled={couponMutation?.isLoading}
+            fullWidth
+            onClick={() => {
+              submitCoupon();
             }}
-          />
-          {/* user limit */}
-          <StyledFormField
-            label="User limit"
-            intputType="text-toggle"
-            inputProps={{
-              type: 'number',
-              name: 'couponUserLimit',
-              value: coupon.couponUserLimit,
-              onChange: commonChangeHandler,
-              disabled: !checked.couponUserLimit,
-              checked: checked.couponUserLimit,
-              onToggle: (event) => commonCheckHandler(event, 'couponUserLimit'),
-            }}
-          />
-          {/* order limit */}
-          <StyledFormField
-            label="Order limit"
-            intputType="text-toggle"
-            inputProps={{
-              type: 'number',
-              name: 'couponOrderLimit',
-              value: coupon.couponOrderLimit,
-              onChange: commonChangeHandler,
-              disabled: !checked.couponOrderLimit,
-              checked: checked.couponOrderLimit,
-              onToggle: (event) => commonCheckHandler(event, 'couponOrderLimit'),
-            }}
-          />
-          {/* min order */}
-          <StyledFormField
-            label="Min. Order"
-            intputType="text-toggle"
-            inputProps={{
-              type: 'number',
-              name: 'couponMinimumOrderValue',
-              value: coupon.couponMinimumOrderValue,
-              onChange: commonChangeHandler,
-              disabled: !checked.couponMinimumOrderValue,
-              checked: checked.couponMinimumOrderValue,
-              onToggle: (event) => commonCheckHandler(event, 'couponMinimumOrderValue'),
-            }}
-          />
-          {/* store */}
-          {couponType === 'individual_store' && (
-            <StyledFormField
-              label="Store name"
-              intputType="autocomplete"
-              inputProps={{
-                maxHeight: '110px',
-                options: shopsOptions,
-                value: (coupon?.couponShops && coupon?.couponShops[0]) || null,
-                isOptionEqualToValue: (option, value) => option?._id === value?._id,
-                getOptionLabel: (option) => option?.shopName,
-                sx: {
-                  flex: 1,
-                },
-                onChange: (e, v) => {
-                  setCoupon((prev) => ({ ...prev, couponShops: [v] }));
-                },
-              }}
-            />
-          )}
-          {/* type */}
-          {couponType === 'custom_coupon' && (
-            <StyledFormField
-              label="Shop Category"
-              intputType="autocomplete"
-              inputProps={{
-                multiple: true,
-                maxHeight: '150px',
-                disabled: __loading,
-                options: couponShopTypeOptions,
-                value: coupon.couponShopTypes || [],
-                label: 'Choose',
-                getOptionLabel: (option) => option?.label,
-                isOptionEqualToValue: (option, value) => option?.value === value?.value,
-                getTagKey: (item) => item?.value,
-                onChange: (e, v) => {
-                  setCoupon((prev) => ({ ...prev, couponShopTypes: v.map((item) => item) }));
-                },
-                sx: {
-                  '& .MuiFormControl-root': {
-                    minWidth: '100px',
-                  },
-                },
-              }}
-            />
-          )}
-          {/* multiple shops */}
-          {couponType === 'custom_coupon' && !coupon?.couponShopTypes?.length && (
-            <StyledFormField
-              label="Custom Shops"
-              intputType="autocomplete"
-              inputProps={{
-                multiple: true,
-                maxHeight: '110px',
-                disabled: __loading,
-                options: shopsOptions,
-                value: coupon?.couponShops || [],
-                label: 'Choose',
-                getOptionLabel: (option) => option?.shopName,
-                isOptionEqualToValue: (option, value) => option?._id === value?._id,
-                getTagKey: (item) => item?._id,
-                onChange: (e, v) => {
-                  setCoupon((prev) => ({ ...prev, couponShops: v.map((item) => item) }));
-                },
-                sx: {
-                  '& .MuiFormControl-root': {
-                    minWidth: '100px',
-                  },
-                },
-              }}
-            />
-          )}
-          {/* submit */}
-          <Box pt={20} pb={6}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<DropIcon />}
-              disabled={couponMutation?.isLoading}
-              fullWidth
-              onClick={() => {
-                submitCoupon();
-              }}
-            >
-              Save Item
-            </Button>
-          </Box>
-        </>
-      )}
+          >
+            Save Item
+          </Button>
+        </Box>
+      </>
     </SidebarContainer>
   );
 }
