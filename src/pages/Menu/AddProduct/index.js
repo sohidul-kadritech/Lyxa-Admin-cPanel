@@ -354,8 +354,9 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             value: product?.subCategory,
             items: subCategoriesQuery?.data?.data?.subCategories || [],
             onChange: commonChangeHandler,
-            readOnly: Boolean(newProductCategory) || productReadonly,
+            readOnly: productReadonly,
             disabled: subCategoriesQuery.isLoading || !product?.category,
+            // console: console.log(subCategoriesQuery.isLoading) || console.log(!product?.category),
             getLabel: (item) => item?.name,
             getKey: (item) => item?._id,
             getValue: (item) => item?._id,
@@ -417,32 +418,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         <Box sx={fieldContainerSx} id="add-product-features">
           <StyledFormField
             label={
-              // <span
-              //   style={{
-              //     color:
-              //       editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon
-              //         ? theme.palette.error.main
-              //         : undefined,
-              //   }}
-              // >
-              //   {editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon && (
-              //     <Tooltip
-              //       title={
-              //         <>
-              //           <span>Product is addon inside: </span>
-              //           <ul>
-              //             {isProductAddonQuery?.data?.data?.products?.map((p) => (
-              //               <li>{p.name}</li>
-              //             ))}
-              //           </ul>
-              //         </>
-              //       }
-              //     >
-              //       <InfoIcon />
-              //     </Tooltip>
-              //   )}{' '}
-              //   Attributes
-              // </span>
               <AttributesTitle
                 isEditProduct={Boolean(editProduct?._id)}
                 isAnotherProductAddon={isProductAddonQuery?.data?.data?.isAnotherProductAddon}
@@ -511,7 +486,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       {/* addons */}
       {shop?.shopType === 'food' && (
         <StyledFormField
-          // console={console.log(product?.attributes)}
           label="Add-ons"
           intputType="autocomplete"
           containerProps={{
@@ -519,8 +493,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           }}
           inputProps={{
             readOnly: productReadonly,
-            // disabled: product?.attributes?.reduce((prev, curr) => curr?.required || prev, false),
-            // open: productReadonly ? false : undefined,
             multiple: true,
             label: 'Choose',
             maxHeight: '200px',

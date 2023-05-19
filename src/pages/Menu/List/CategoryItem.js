@@ -191,7 +191,7 @@ export default function CategoryItem({
         )}
         {/* add sub-category */}
         {shop?.shopType !== 'food' && (
-          <Box pl={8.5} pt={2.5} pb={2.5}>
+          <Stack pl={8.5} pt={2.5} pb={2.5} alignItems="center" direction="row" gap={2}>
             <Button
               variant="contained"
               color="primary"
@@ -203,7 +203,18 @@ export default function CategoryItem({
             >
               Add Sub-Category
             </Button>
-          </Box>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<Add />}
+              onClick={() => {
+                setNewProductCategory(category?.category?.category?._id);
+              }}
+            >
+              Add items
+            </Button>
+          </Stack>
         )}
       </AccordionDetails>
     </StyledAccordion>
