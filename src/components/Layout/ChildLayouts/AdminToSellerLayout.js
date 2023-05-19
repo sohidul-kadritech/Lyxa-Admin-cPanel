@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
@@ -13,11 +14,9 @@ import { replacePathValues } from '../helper';
 import ChildLayout from './ChildLayout';
 
 export default function AdminToSellerLayout({ routePrefix = '' }) {
-  const { dispatchCurrentUser } = useGlobalContext();
+  const { dispatchCurrentUser, seller } = useGlobalContext();
   const params = useParams();
   const history = useHistory();
-
-  console.log({ params });
 
   const sellerQuery = useQuery(
     [Api.SINGLE_SELLER, { id: params?.sellerId }],
@@ -44,6 +43,12 @@ export default function AdminToSellerLayout({ routePrefix = '' }) {
       },
     }
   );
+
+  useEffect(() => {
+    if (!seller?._id) {
+      sellerQuery.refetch();
+    }
+  }, []);
 
   if (sellerQuery.isLoading) {
     return (

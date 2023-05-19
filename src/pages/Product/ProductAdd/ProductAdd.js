@@ -26,7 +26,8 @@ import { getAllUnitType } from '../../../store/unitType/unitTypeAction';
 
 function ProductAdd() {
   const dispatch = useDispatch();
-  const { id } = useParams();
+  // const { id } = useParams();
+  const params = useParams();
   const history = useHistory();
   const { search } = useLocation();
   const context = useGlobalContext();
@@ -118,15 +119,15 @@ function ProductAdd() {
   };
 
   useEffect(() => {
-    if (id) {
-      const findProduct = products.find((item) => item._id === id);
+    if (params?.id) {
+      const findProduct = products.find((item) => item._id === params?.id);
 
       if (findProduct) {
         setProductValue(findProduct);
         console.log(findProduct);
       } else {
         (async function getProduct() {
-          const data = await callApi(id, SINGLE_PRODUCT, 'product');
+          const data = await callApi(params?.id, SINGLE_PRODUCT, 'product');
           if (data) {
             setProductValue(data);
             console.log(data);
@@ -136,7 +137,7 @@ function ProductAdd() {
         })();
       }
     }
-  }, [id]);
+  }, [params?.id]);
 
   useEffect(() => {
     dispatch(getAllUnitType(true));
@@ -159,7 +160,7 @@ function ProductAdd() {
           dispatch(updateCategoryShopType(findShop?.shopType));
         } else {
           (async function getProduct() {
-            const data = await callApi(id, SINGLE_PRODUCT, 'product');
+            const data = await callApi(params?.id, SINGLE_PRODUCT, 'product');
             if (data) {
               setProductValue(data);
             } else {
@@ -222,11 +223,11 @@ function ProductAdd() {
       quantity,
     };
 
-    if (id) {
+    if (params?.id) {
       dispatch(
         editProduct({
           ...data,
-          id,
+          id: params?.id,
         })
       );
     } else {
@@ -342,7 +343,7 @@ function ProductAdd() {
   // SUCCESS
   useEffect(() => {
     if (status) {
-      if (id) {
+      if (params?.id) {
         history.push('/products/list');
       } else {
         setShop(null);
@@ -420,7 +421,7 @@ function ProductAdd() {
     <GlobalWrapper>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumb maintitle="Lyxa" breadcrumbItem={id ? 'Edit' : 'Add'} title="Product" isRefresh={false} />
+          <Breadcrumb maintitle="Lyxa" breadcrumbItem={params?.id ? 'Edit' : 'Add'} title="Product" isRefresh={false} />
 
           <Card>
             <CardBody>
@@ -455,7 +456,7 @@ function ProductAdd() {
                           setCategory(null);
                         }}
                         options={shopTypeOptions2}
-                        disabled={!!(searchParams.get('shopId') || id || userType === 'shop')}
+                        disabled={!!(searchParams.get('shopId') || params?.id || userType === 'shop')}
                       />
                     </div>
                     <Tooltip title={`${!type ? 'Select Type First' : ''}`}>
@@ -466,7 +467,7 @@ function ProductAdd() {
                           searchKey={searchKey}
                           onInputChange={(event, newInputValue) => dispatch(updateShopSearchKey(newInputValue))}
                           list={shops}
-                          disabled={!!(!type || id || searchParams.get('shopId') || userType === 'shop')}
+                          disabled={!!(!type || params?.id || searchParams.get('shopId') || userType === 'shop')}
                           type="shop"
                           showImg
                         />
@@ -987,7 +988,7 @@ function ProductAdd() {
                   <Button type="submit" color="primary" className="px-5" disabled={loading || isLoading}>
                     {loading || isLoading ? (
                       <Spinner animation="border" variant="info" size="sm"></Spinner>
-                    ) : id ? (
+                    ) : params?.id ? (
                       'Save'
                     ) : (
                       'Add'

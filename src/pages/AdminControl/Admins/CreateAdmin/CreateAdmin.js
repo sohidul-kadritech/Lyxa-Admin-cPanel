@@ -20,7 +20,7 @@ function CreateAdmin() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { id } = useParams();
+  const params = useParams();
 
   const { status, loading, admins } = useSelector((state) => state.adminReducer);
 
@@ -62,17 +62,17 @@ function CreateAdmin() {
   };
 
   useEffect(() => {
-    if (id) {
-      const findAdmin = admins.find((admin) => admin._id === id);
+    if (params?.id) {
+      const findAdmin = admins.find((admin) => admin._id === params?.id);
 
       if (findAdmin) {
         updateData(findAdmin);
         // console.log(findAdmin);
       } else {
-        callApi(id);
+        callApi(params?.id);
       }
     }
-  }, [id]);
+  }, [params?.id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -86,11 +86,11 @@ function CreateAdmin() {
         adminType: role,
       };
 
-      if (id) {
+      if (params?.id) {
         dispatch(
           editAdmin({
             ...data,
-            id,
+            id: params?.id,
             status: activeStatus,
           })
         );
@@ -119,7 +119,7 @@ function CreateAdmin() {
   // SUCCESS
   useEffect(() => {
     if (status) {
-      if (id) {
+      if (params?.id) {
         history.goBack();
       } else {
         setName('');
@@ -137,7 +137,7 @@ function CreateAdmin() {
         <Container fluid>
           <Breadcrumb
             maintitle="Lyxa"
-            breadcrumbItem={id ? 'Edit' : 'Create'}
+            breadcrumbItem={params?.id ? 'Edit' : 'Create'}
             title={userType === 'shop' ? 'Shop Crediantial' : userType === 'seller' ? 'Seller Crediantial' : 'Admin'}
             isRefresh={false}
           />
@@ -199,7 +199,7 @@ function CreateAdmin() {
                   </Col>
 
                   <Col xl={6}>
-                    {id ? (
+                    {params?.id ? (
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">Status</InputLabel>
                         <Select
@@ -220,12 +220,12 @@ function CreateAdmin() {
                   <Col xl={6}>
                     <TextField
                       id="password"
-                      label={`${id ? 'New Password' : 'Password'}`}
+                      label={`${params?.id ? 'New Password' : 'Password'}`}
                       variant="outlined"
                       style={{ width: '100%' }}
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
-                      required={!id}
+                      required={!params?.id}
                     />
                   </Col>
                   {userType === 'admin' && (
@@ -250,7 +250,7 @@ function CreateAdmin() {
                   <Button color="primary" className="px-5" type="submit" disabled={loading}>
                     {loading ? (
                       <Spinner border="animation" variant="info" size="sm"></Spinner>
-                    ) : id ? (
+                    ) : params?.id ? (
                       'Update'
                     ) : (
                       'Create'

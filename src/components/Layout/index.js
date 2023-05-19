@@ -67,7 +67,7 @@ export default function Layout() {
           sx={{
             paddingLeft: '50px',
             paddingRight: '50px',
-            paddingBottom: '36px',
+            // paddingBottom: '36px',
             height: 'calc(100vh - 67px)',
             overflowY: 'scroll',
             backgroundColor: '#fbfbfb',

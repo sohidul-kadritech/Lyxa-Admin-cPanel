@@ -43,7 +43,7 @@ import { useGlobalContext } from '../../../context/GlobalContext';
 
 function ShopAdd() {
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const params = useParams();
   const history = useHistory();
 
   const { search } = useLocation();
@@ -169,15 +169,15 @@ function ShopAdd() {
   };
 
   useEffect(async () => {
-    if (id) {
-      const findShop = shops.find((item) => item._id === id);
+    if (params?.id) {
+      const findShop = shops.find((item) => item._id === params?.id);
 
       if (findShop) {
         updateData(findShop);
         setShop(findShop);
       } else {
         // callApi(id, SINGLE_SHOP,);
-        const data = await callApi(id, SINGLE_SHOP, 'shop');
+        const data = await callApi(params?.id, SINGLE_SHOP, 'shop');
         if (data) {
           console.log({ data });
           updateData(data);
@@ -187,7 +187,7 @@ function ShopAdd() {
         }
       }
     }
-  }, [id]);
+  }, [params?.id]);
 
   // FIND SELLER
   useEffect(async () => {
@@ -201,7 +201,7 @@ function ShopAdd() {
         if (findSeller) {
           setSeller(findSeller);
         } else {
-          const data = await callApi(id, SINGLE_SELLER, 'seller');
+          const data = await callApi(params?.id, SINGLE_SELLER, 'seller');
           if (data) {
             setSeller(data);
           } else {
@@ -319,10 +319,10 @@ function ShopAdd() {
       account_number: accountNum,
     };
 
-    if (id) {
+    if (params?.id) {
       dispatch(
         editShop({
-          id,
+          id: params?.id,
           ...data,
         })
       );
@@ -372,7 +372,7 @@ function ShopAdd() {
       return successMsg('Please Add Shop Tag');
     }
 
-    if (!id && !address) {
+    if (!params?.id && !address) {
       return successMsg('Select Shop Address');
     }
     if (!shopLogo || !shopBanner) {
@@ -430,7 +430,7 @@ function ShopAdd() {
   // SUCCESS
   useEffect(() => {
     if (status) {
-      if (id) {
+      if (params?.id) {
         history.push('/shops/list');
       } else {
         setSeller(null);
@@ -514,9 +514,9 @@ function ShopAdd() {
         },
       }),
     {
-      enabled: (id && !!shop?._id) || !id,
+      enabled: (params?.id && !!shop?._id) || !params?.id,
       onSuccess: (data) => {
-        if (id) {
+        if (params?.id) {
           setTags(data?.data?.tags?.filter((item) => shop?.tagsId?.includes(item?._id)) || []);
         }
       },
@@ -529,8 +529,8 @@ function ShopAdd() {
         <Container fluid>
           <Breadcrumb
             maintitle="Lyxa"
-            breadcrumbItem={id ? 'Edit' : 'Add'}
-            title={id ? shopName : 'Shop'}
+            breadcrumbItem={params?.id ? 'Edit' : 'Add'}
+            title={params?.id ? shopName : 'Shop'}
             isRefresh={false}
           />
 
@@ -546,7 +546,7 @@ function ShopAdd() {
                     <div className="mb-4">
                       <Autocomplete
                         className="cursor-pointer"
-                        disabled={!!(id || searchParams.get('sellerId') || userType === 'seller')}
+                        disabled={!!(params?.id || searchParams.get('sellerId') || userType === 'seller')}
                         value={seller || null}
                         onChange={(event, newValue) => {
                           setSeller(newValue);
@@ -807,13 +807,13 @@ function ShopAdd() {
                     <div className="mb-4">
                       <TextField
                         id="password"
-                        label={`${id ? 'New Password' : 'Password'}`}
+                        label={`${params?.id ? 'New Password' : 'Password'}`}
                         variant="outlined"
                         style={{ width: '100%' }}
                         autoComplete="off"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
-                        required={!id}
+                        required={!params?.id}
                       />
                     </div>
 
@@ -1207,7 +1207,7 @@ function ShopAdd() {
                   <Button disabled={loading || isLoading} type="submit" color="primary" className="px-5">
                     {loading || isLoading ? (
                       <Spinner animation="border" variant="info" size="sm"></Spinner>
-                    ) : id ? (
+                    ) : params?.id ? (
                       'Save'
                     ) : (
                       'Add'
