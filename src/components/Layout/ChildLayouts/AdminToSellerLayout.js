@@ -62,6 +62,7 @@ export default function AdminToSellerLayout({ routePrefix = '' }) {
       sidebarTitle="Lyxa Seller"
       routes={seller_routes(routePrefix)}
       menuItems={seller_menu_items(replacePathValues(routePrefix, params))}
+      childFor="seller"
     />
   );
 }

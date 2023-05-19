@@ -1,5 +1,6 @@
-import { Box, Stack, Typography, styled } from '@mui/material';
-import { ReactComponent as Logo } from '../../../assets/icons/lyxa-sidebar-logo.svg';
+import { Avatar, Box, Stack, Typography, styled } from '@mui/material';
+import { useGlobalContext } from '../../../context/GlobalContext';
+import { getProfilePhotoAndAltName } from '../helper';
 import MenuList from './MenuList';
 
 const StyledSidebarContaier = styled(Box)(() => ({
@@ -45,7 +46,10 @@ const StyledOverlay = styled(Box)(() => ({
   },
 }));
 
-export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], title }) {
+export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], title, childFor = '' }) {
+  const { currentUser } = useGlobalContext();
+  const { profilePhoto, altName } = getProfilePhotoAndAltName(currentUser, childFor);
+
   return (
     <Box>
       <StyledSidebarContaier
@@ -56,17 +60,23 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
       >
         {/* logo */}
         {variant === 'child' && (
-          <Box
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
             sx={{
               textAlign: 'center',
-              padding: '27px 0px 20px 0px',
+              padding: '20px 0px 20px 0px',
               borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
               top: '0px',
               position: 'sticky',
               background: '#333333',
             }}
           >
-            <Logo />
+            <Avatar src={profilePhoto} alt="photo" sx={{ width: 44, height: 44, textTransform: 'uppercase' }}>
+              {altName}
+            </Avatar>
             <Typography
               variant="h3"
               sx={{
@@ -74,13 +84,12 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
                 fontWeight: '500',
                 fontSize: '22px',
                 lineHeight: '27px',
-                paddingTop: '20px',
                 letterSpacing: '0.05em',
               }}
             >
               {title}
             </Typography>
-          </Box>
+          </Stack>
         )}
         <Stack pb={8.5}>
           {menuItems.map((list, index) => (

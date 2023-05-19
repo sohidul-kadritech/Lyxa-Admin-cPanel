@@ -79,6 +79,7 @@ export default function SellerToShopLayout() {
       sidebarTitle="Lyxa Shop"
       routes={shop_routes(routePrefix)}
       menuItems={shop_menu_items(replacePathValues(routePrefix, params))}
+      childFor="shop"
     />
   );
 }

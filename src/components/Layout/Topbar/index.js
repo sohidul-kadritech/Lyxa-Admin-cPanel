@@ -5,6 +5,7 @@ import { ReactComponent as Logo } from '../../../assets/icons/logo-sm.svg';
 import { ReactComponent as NotificationIcon } from '../../../assets/icons/t-notification.svg';
 import { ReactComponent as SupportIcon } from '../../../assets/icons/t-support.svg';
 import { useGlobalContext } from '../../../context/GlobalContext';
+import { getProfilePhotoAndAltName } from '../helper';
 import AccountMenu from './AccountMenu';
 import Tabs from './Tabs';
 
@@ -39,6 +40,8 @@ export default function Topbar({ setSidebar, sidebar }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const { profilePhoto, altName } = getProfilePhotoAndAltName(currentUser, currentUser?.userType);
 
   return (
     <Stack
@@ -90,8 +93,9 @@ export default function Topbar({ setSidebar, sidebar }) {
           <NotificationIcon />
         </Button>
         <IconButton onClick={handleClick} disableRipple>
-          {/* eslint-disable-next-line react/no-children-prop */}
-          <Avatar src={undefined} alt="U" children="U" sx={{ width: 36, height: 36 }} />
+          <Avatar src={profilePhoto} alt="photo" sx={{ width: 36, height: 36, textTransform: 'uppercase' }}>
+            {altName}
+          </Avatar>
         </IconButton>
       </Stack>
       <AccountMenu anchorEl={anchorEl} handleClose={handleClose} />
