@@ -1,4 +1,5 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, Tooltip, useTheme } from '@mui/material';
+import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
 import { getImageUrl } from '../../helpers/images';
 
 // components
@@ -419,3 +420,38 @@ export const isBestSellerOrFavorite = (bestSellers, favorites, product) => {
 
   return status;
 };
+
+export function AttributesTitle({ isEditProduct, isAnotherProductAddon, products = [] }) {
+  const theme = useTheme();
+
+  return (
+    <span
+      style={{
+        color: isEditProduct && isAnotherProductAddon ? theme.palette.error.main : undefined,
+      }}
+    >
+      {isEditProduct && isAnotherProductAddon && (
+        <Tooltip
+          title={
+            <>
+              <span>This product is addon for other products. Attributes cannot be added untill it's removed from</span>
+              <ol
+                style={{
+                  paddingLeft: '20px',
+                  paddingTop: '6px',
+                }}
+              >
+                {products?.map((p) => (
+                  <li>{p.name}</li>
+                ))}
+              </ol>
+            </>
+          }
+        >
+          <InfoIcon />
+        </Tooltip>
+      )}{' '}
+      Attributes
+    </span>
+  );
+}

@@ -1,11 +1,10 @@
 // third party
-import { Box, Button, Stack, Tab, Tabs, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 // project import
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
-import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import { shopTypeOptions2 } from '../../../assets/staticData';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
@@ -18,6 +17,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import {
+  AttributesTitle,
   attributeOptions,
   attributeTypeAvailableOptions,
   converEditProduct,
@@ -44,7 +44,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
   const queryClient = useQueryClient();
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [render, setRender] = useState(false);
@@ -417,32 +417,37 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         <Box sx={fieldContainerSx} id="add-product-features">
           <StyledFormField
             label={
-              <span
-                style={{
-                  color:
-                    editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon
-                      ? theme.palette.error.main
-                      : undefined,
-                }}
-              >
-                {editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon && (
-                  <Tooltip
-                    title={
-                      <>
-                        <span>Product is addon inside: </span>
-                        <ul>
-                          {isProductAddonQuery?.data?.data?.products?.map((p) => (
-                            <li>{p.name}</li>
-                          ))}
-                        </ul>
-                      </>
-                    }
-                  >
-                    <InfoIcon />
-                  </Tooltip>
-                )}{' '}
-                Attributes
-              </span>
+              // <span
+              //   style={{
+              //     color:
+              //       editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon
+              //         ? theme.palette.error.main
+              //         : undefined,
+              //   }}
+              // >
+              //   {editProduct?._id && isProductAddonQuery?.data?.data?.isAnotherProductAddon && (
+              //     <Tooltip
+              //       title={
+              //         <>
+              //           <span>Product is addon inside: </span>
+              //           <ul>
+              //             {isProductAddonQuery?.data?.data?.products?.map((p) => (
+              //               <li>{p.name}</li>
+              //             ))}
+              //           </ul>
+              //         </>
+              //       }
+              //     >
+              //       <InfoIcon />
+              //     </Tooltip>
+              //   )}{' '}
+              //   Attributes
+              // </span>
+              <AttributesTitle
+                isEditProduct={Boolean(editProduct?._id)}
+                isAnotherProductAddon={isProductAddonQuery?.data?.data?.isAnotherProductAddon}
+                products={isProductAddonQuery?.data?.data?.products}
+              />
             }
             intputType="optionsSelect"
             inputProps={{
