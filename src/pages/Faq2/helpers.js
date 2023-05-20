@@ -28,6 +28,10 @@ export const statusTypeOptions = [
 
 export const supportTypeOptions = [
   {
+    value: 'all',
+    label: 'All',
+  },
+  {
     value: 'accountSupport',
     label: 'Account Support',
   },
