@@ -18,10 +18,10 @@ export const getCouponInit = (couponType) => ({
     start: moment(),
     end: moment().add(7, 'd'),
   },
-  couponAmountLimit: 1,
-  couponUserLimit: 1,
-  couponOrderLimit: 1,
-  couponMinimumOrderValue: 1,
+  couponAmountLimit: 0,
+  couponUserLimit: 0,
+  couponOrderLimit: 0,
+  couponMinimumOrderValue: 0,
   couponInfluencer: couponType === 'custom_coupon' ? '' : undefined,
   couponUsers: [],
   couponShops: [],
@@ -40,10 +40,10 @@ export const couponShopTypeOptions = [
 ];
 
 export const checkedInit = {
-  couponAmountLimit: true,
-  couponUserLimit: true,
-  couponOrderLimit: true,
-  couponMinimumOrderValue: true,
+  couponAmountLimit: false,
+  couponUserLimit: false,
+  couponOrderLimit: false,
+  couponMinimumOrderValue: false,
 };
 
 export const validateCoupon = (coupon, couponType) => {
@@ -114,6 +114,12 @@ export const createCouponUploaData = (coupon, checked) => {
   data.couponShops = coupon?.couponShops?.map((shop) => shop?._id);
   data.couponUsers = coupon?.couponUsers?.map((shop) => shop?._id);
   data.couponInfluencer = coupon.couponInfluencer?._id;
+
+  // // indiviual store type
+  // if (coupon?.couponType === 'individual_store' && coupon?.couponShopTypes?.length) {
+  //   data.couponShops = [];
+  // }
+
   return {
     ...coupon,
     ...data,

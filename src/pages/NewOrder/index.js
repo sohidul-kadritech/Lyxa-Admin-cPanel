@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // third party
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 
@@ -9,7 +8,7 @@ import PageTop from '../../components/Common/PageTop';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import OrderDetail from './OrderDetail';
+import OrderDetail from '../Profile/OrderDetail';
 import OrderTable from './OrderTable';
 import SearchBar from './Searchbar';
 import { fiterOrders, queryParamsInit } from './helpers';

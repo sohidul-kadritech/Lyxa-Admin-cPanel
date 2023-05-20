@@ -1,6 +1,6 @@
 import { Avatar, Stack, Typography, styled } from '@mui/material';
 import { ReactComponent as PhoneIcon } from '../../../assets/icons/phone.svg';
-import { StyledOrderDetailBox } from '../helpers';
+import { StyledOrderDetailBox } from './helpers';
 
 const StyledButton = styled('a')(({ theme }) => ({
   color: theme.palette.primary.main,

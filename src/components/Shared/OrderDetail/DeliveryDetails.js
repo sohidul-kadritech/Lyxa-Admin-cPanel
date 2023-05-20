@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { ReactComponent as MapIcon } from '../../../assets/icons/map-colored.svg';
-import { StyledOrderDetailBox } from '../helpers';
+import { StyledOrderDetailBox } from './helpers';
 
 export default function DeliveryDetails({ deliveryDetails = {} }) {
   return (
