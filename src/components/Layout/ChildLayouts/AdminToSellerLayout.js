@@ -1,8 +1,7 @@
 import { Box } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import { seller_menu_items } from '../../../common/sidebar_menu_items';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
@@ -10,20 +9,20 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { seller_routes } from '../../../routes/seller_routes';
 import CircularLoader from '../../CircularLoader';
-import { replacePathValues } from '../helper';
 import ChildLayout from './ChildLayout';
 
-export default function AdminToSellerLayout({ routePrefix = '' }) {
+export default function AdminToSellerLayout() {
   const { dispatchCurrentUser, seller } = useGlobalContext();
-  const params = useParams();
   const history = useHistory();
+  const routeMatch = useRouteMatch();
+  const { path, url } = useMemo(() => ({ path: routeMatch?.path, url: routeMatch?.url?.replace(/\/$/, '') }), []);
 
   const sellerQuery = useQuery(
-    [Api.SINGLE_SELLER, { id: params?.sellerId }],
+    [Api.SINGLE_SELLER, { id: routeMatch?.params?.sellerId }],
     () =>
       AXIOS.get(Api.SINGLE_SELLER, {
         params: {
-          id: params?.sellerId,
+          id: routeMatch?.params?.sellerId,
         },
       }),
     {
@@ -46,7 +45,6 @@ export default function AdminToSellerLayout({ routePrefix = '' }) {
 
   useEffect(() => {
     if (!seller?._id) sellerQuery.refetch();
-    dispatchCurrentUser({ type: 'routeDepth', payload: { routeDepth: 1 } });
   }, []);
 
   if (sellerQuery.isLoading) {
@@ -64,8 +62,8 @@ export default function AdminToSellerLayout({ routePrefix = '' }) {
   return (
     <ChildLayout
       sidebarTitle="Lyxa Seller"
-      routes={seller_routes(routePrefix)}
-      menuItems={seller_menu_items(replacePathValues(routePrefix, params))}
+      routes={seller_routes(path)}
+      menuItems={seller_menu_items(url)}
       childFor="seller"
     />
   );

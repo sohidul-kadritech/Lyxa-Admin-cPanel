@@ -43,8 +43,8 @@ export const seller_routes = (prefix = '') => [
   { path: `${prefix}/categories/edit/:id`, component: CategoryAdd },
   { path: `${prefix}/category/details/:id`, component: CategoryDetails },
   {
-    path: `${prefix}/shop/:shopId`,
+    path: `${prefix}/shop/dashboard/:shopId`,
     exact: false,
-    component: () => <SellerToShopLayout routePrefix="" />,
+    component: SellerToShopLayout,
   },
 ];

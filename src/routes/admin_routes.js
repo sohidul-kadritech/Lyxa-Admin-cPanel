@@ -109,7 +109,7 @@ export const admin_routes = [
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },
   { path: '/seller/details/:id', component: SellerDetails },
-  { path: '/seller/:sellerId', component: () => <AdminToSellerLayout routePrefix="/seller/:sellerId" />, exact: false },
+  { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
   { path: '/shops/list', component: ShopList },

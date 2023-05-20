@@ -25,8 +25,6 @@ import { useGlobalContext } from './context';
 import { successMsg } from './helpers/successMsg';
 
 export default function App() {
-  console.log('App');
-
   const dispatch = useDispatch();
   const { dispatchCurrentUser, currentUser } = useGlobalContext();
   const { userType } = currentUser;
@@ -63,12 +61,8 @@ export default function App() {
     setAdminDataIsLoading(false);
   };
 
-  // read cookies and fetch admin data
   useEffect(() => {
-    if (!localStorage.getItem('currency')) {
-      dispatch(getAllAppSettings());
-    }
-
+    if (!localStorage.getItem('currency')) dispatch(getAllAppSettings());
     validateUser();
   }, []);
 
