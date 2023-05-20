@@ -1,18 +1,11 @@
 import { Box } from '@material-ui/core';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
+import { Route, Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import Sidebar from '../Sidebar';
 
-export default function ChildLayout({ routes, menuItems, sidebarTitle, childFor }) {
-  // const { currentUser } = useGlobalContext();
-  // const params = useParams();
-
-  // const routePrefix = useMemo(() => {
-  //   if (currentUser?.userType === 'admin') {
-  //     return '/seller/:shopId/shop/:shopId';
-  //   }
-
-  //   return '/shop/:shopId';
-  // }, []);
+export default function ChildLayout({ menuItems, routes, sidebarTitle, childFor }) {
+  // const routeMatch = useRouteMatch();
+  // console.log(routeMatch);
 
   return (
     <Box
@@ -24,32 +17,7 @@ export default function ChildLayout({ routes, menuItems, sidebarTitle, childFor 
         gridTemplateColumns: 'auto 1fr',
       }}
     >
-      {/* sidebar */}
-      {/* {!hideSidebar && ( */}
-      {/* <Box
-          sx={{
-            width: '230px',
-            height: 'calc(100vh - 83px)',
-            position: 'relative',
-          }}
-        >
-          <Box position="absolute" top={0} left={0} width="230px" height="calc(100vh - 83px)">
-          </Box>
-          {
-            currentUser?.admin?._id && currentUser?.shop
-}
-          <Box position="absolute" top={0} left={0} width="230px" height="calc(100vh - 83px)">
-            <Sidebar
-              variant="child"
-              menuItems={shop_menu_items(replacePathValues(routePrefix, params))}
-              title="Lyxa Shop"
-              childFor="shop"
-            />
-          </Box>
-        </Box>
-      )} */}
       <Sidebar variant="child" menuItems={menuItems} title={sidebarTitle} childFor={childFor} />
-
       <Box
         sx={{
           paddingLeft: '50px',
@@ -59,21 +27,29 @@ export default function ChildLayout({ routes, menuItems, sidebarTitle, childFor 
           height: 'calc(100vh - 67px)',
         }}
       >
-        <CacheSwitch>
-          {routes?.map(({ path, component: Component, ...props }) => (
-            <CacheRoute
-              when="always"
-              multiple
-              exact
-              key={path}
-              path={path}
-              component={Component}
-              cacheKey={path}
-              saveScrollPosition
-              {...props}
-            />
-          ))}
-        </CacheSwitch>
+        {childFor === 'shop' ? (
+          <CacheSwitch>
+            {routes?.map(({ path, component: Component, ...props }) => (
+              <CacheRoute
+                when="always"
+                multiple
+                exact
+                key={path}
+                path={path}
+                component={Component}
+                cacheKey={path}
+                saveScrollPosition
+                {...props}
+              />
+            ))}
+          </CacheSwitch>
+        ) : (
+          <Switch>
+            {routes?.map(({ path, component: Component, ...props }) => (
+              <Route exact key={path} path={path} component={Component} {...props} />
+            ))}
+          </Switch>
+        )}
       </Box>
     </Box>
   );

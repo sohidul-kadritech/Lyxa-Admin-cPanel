@@ -358,7 +358,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         )}
 
         {/* store */}
-        {couponType === 'individual_store' && !coupon?.couponShopTypes?.length && (
+        {/* {couponType === 'individual_store' && !coupon?.couponShopTypes?.length && (
           <StyledFormField
             label="Store name"
             intputType="autocomplete"
@@ -377,6 +377,34 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               },
               onInputChange: (e) => {
                 getShops(e?.target?.value);
+              },
+            }}
+          />
+        )} */}
+        {couponType === 'individual_store' && !coupon?.couponShopTypes?.length && (
+          <StyledFormField
+            label="Stores"
+            intputType="autocomplete"
+            inputProps={{
+              multiple: true,
+              maxHeight: '110px',
+              options: shopOptions,
+              value: coupon?.couponShops || [],
+              label: 'Choose',
+              disablePortal: true,
+              noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
+              getOptionLabel: (option) => option?.shopName,
+              isOptionEqualToValue: (option, value) => option?._id === value?._id,
+              onChange: (e, v) => {
+                setCoupon((prev) => ({ ...prev, couponShops: v.map((item) => item) }));
+              },
+              onInputChange: (e) => {
+                getShops(e?.target?.value);
+              },
+              sx: {
+                '& .MuiFormControl-root': {
+                  minWidth: '100px',
+                },
               },
             }}
           />

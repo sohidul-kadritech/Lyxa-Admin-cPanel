@@ -2,7 +2,8 @@ import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import StyledTable from '../../components/Styled/StyledTable3';
-import OrderDetail from './OrderDetail';
+// import OrderDetail from './OrderDetail';
+import OrderDetail from '../../components/Shared/OrderDetail';
 import TableDataPagination from './TableDataPagination';
 
 function FlaggedViews({ filteredData, currentTab }) {

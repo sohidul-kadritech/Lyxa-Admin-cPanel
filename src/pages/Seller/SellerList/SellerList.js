@@ -73,7 +73,7 @@ function SellerList() {
     }
 
     if (menu === 'View as Admin') {
-      history?.push(`/seller/${item._id}`);
+      history?.push(`/seller/dashboard/${item._id}`);
       dispatchCurrentUser({ type: 'seller', payload: { seller: item } });
     }
   };

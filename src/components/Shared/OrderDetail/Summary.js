@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { StyledOrderDetailBox } from '../helper';
+import { StyledOrderDetailBox } from './helpers';
 
 export default function OrderSummary({ productsDetails = [] }) {
   const theme = useTheme();

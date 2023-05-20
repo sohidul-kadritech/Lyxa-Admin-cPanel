@@ -17,10 +17,6 @@ const pagesList = [
     to: '#',
   },
   {
-    label: 'Coupons',
-    to: '/admin/settings2/marketing/coupons',
-  },
-  {
     label: 'Zones',
     to: '#',
   },

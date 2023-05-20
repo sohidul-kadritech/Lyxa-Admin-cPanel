@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { StyledOrderDetailBox } from '../helper';
+import { StyledOrderDetailBox } from './helpers';
 
 function StyledItem({ label, value, total }) {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();

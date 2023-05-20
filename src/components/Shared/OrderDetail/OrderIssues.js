@@ -1,6 +1,6 @@
 import { Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as FlagIcon } from '../../../assets/icons/order-flag.svg';
-import { StyledOrderDetailBox } from '../helper';
+import { StyledOrderDetailBox } from './helpers';
 
 export default function OrderIssues({ flags = [] }) {
   const theme = useTheme();
