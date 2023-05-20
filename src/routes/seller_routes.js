@@ -12,9 +12,10 @@ import ProductAdd from '../pages/Product/ProductAdd/ProductAdd';
 import ProductDetails from '../pages/Product/ProductDetails/ProductDetails';
 import ProductList from '../pages/Product/ProductList/ProductList';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
+import ShopList from '../pages/ShopList';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
-import ShopList from '../pages/Shops/ShopList/ShopList';
+import ShopListOld from '../pages/Shops/ShopList/ShopList';
 
 export const seller_routes = (prefix = '') => [
   { path: `${prefix}/`, component: Dashboard },
@@ -24,6 +25,7 @@ export const seller_routes = (prefix = '') => [
   { path: `${prefix}/products/add`, component: ProductAdd },
   { path: `${prefix}/products/edit/:id`, component: ProductAdd },
   { path: `${prefix}/products/details/:id`, component: ProductDetails },
+  { path: `${prefix}/shops/list-old`, component: ShopListOld },
   { path: `${prefix}/shops/list`, component: ShopList },
   { path: `${prefix}/shops/add`, component: ShopAdd },
   { path: `${prefix}/shops/edit/:id`, component: ShopAdd },
