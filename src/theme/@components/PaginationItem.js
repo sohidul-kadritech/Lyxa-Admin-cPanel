@@ -3,16 +3,14 @@ export default function Pagination(theme) {
     styleOverrides: {
       root: {
         fontSize: '16px',
-        // width: '60px',
-        // borderRadius: '30px',
-        border: 'none',
-        boxShadow: 'rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;',
-        background: theme.palette.primary.contrastText,
+        background: '#fff',
         color: theme.palette.text.primary,
+
         '&:hover': {
           background: theme.palette.primary.main,
           color: theme.palette.primary.contrastText,
         },
+
         '&.Mui-selected': {
           background: `${theme.palette.primary.main}!important`,
           color: theme.palette.primary.contrastText,
@@ -25,11 +23,12 @@ export default function Pagination(theme) {
         },
       },
       previousNext: {
-        background: theme.palette.grey[200],
+        // background: theme.palette.grey[200],
         color: `${theme.palette.text.primary}!important`,
         '&.Mui-disabled': {
           opacity: '.8',
         },
+
         '&:hover': {
           background: theme.palette.grey[300],
           color: `${theme.palette.text.primary}!important`,

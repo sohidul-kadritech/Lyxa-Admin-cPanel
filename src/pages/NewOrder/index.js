@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // third party
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 
@@ -6,10 +5,10 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
+import OrderDetail from '../../components/Shared/OrderDetail';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import OrderDetail from './OrderDetail';
 import OrderTable from './OrderTable';
 import SearchBar from './Searchbar';
 import { fiterOrders, queryParamsInit } from './helpers';

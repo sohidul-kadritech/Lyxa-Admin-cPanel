@@ -51,6 +51,18 @@ export default function Layout() {
     [currentUser?.userType]
   );
 
+  // const location = useLocation();
+
+  // // check and update route depth
+  // useEffect(() => {
+  //   console.log(location);
+  //   // admin
+  //   if (currentUser?.userType === 'admin') {
+
+  //   } else if (currentUser?.userType === 'seller') {
+  //   }
+  // }, [location]);
+
   return (
     <Box
       sx={{
@@ -67,7 +79,6 @@ export default function Layout() {
           sx={{
             paddingLeft: '50px',
             paddingRight: '50px',
-            // paddingBottom: '36px',
             height: 'calc(100vh - 67px)',
             overflowY: 'scroll',
             backgroundColor: '#fbfbfb',

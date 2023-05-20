@@ -183,37 +183,30 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value = [], row }) => (
-        <Box>
-          {value?.length ? (
-            <Typography
-              sx={{
-                cursor: 'pointer',
-                maxWidth: '100%',
-              }}
-              variant="body4"
-              color="primary"
-              onClick={() => {
-                history.push(`/shops/details/${value[0]?._id}`);
-              }}
-            >
-              {value[0]?.shopName}
-            </Typography>
-          ) : (
-            <Typography
-              sx={{
-                cursor: 'pointer',
-                maxWidth: '100%',
-              }}
-              variant="body4"
-            >
-              {row?.couponShopTypes
-                ?.map((value) => couponShopTypeOptions?.find((option) => option?.value === value)?.label)
-                .join(', ')}
-            </Typography>
-          )}
-        </Box>
-      ),
+      renderCell: ({ value = [], row }) => {
+        let title = '';
+        if (value?.length) {
+          title = value?.map((shop) => shop?.shopName).join(', ');
+        } else {
+          title = row?.couponShopTypes
+            ?.map((value) => couponShopTypeOptions?.find((option) => option?.value === value)?.label)
+            .join(', ');
+        }
+
+        return (
+          <Box maxWidth="100%">
+            {value?.length ? (
+              <Typography title={title} className="text-dots" variant="body4">
+                {title}
+              </Typography>
+            ) : (
+              <Typography title={title} className="text-dots" maxWidth="100%" variant="body4">
+                {title}
+              </Typography>
+            )}
+          </Box>
+        );
+      },
     });
   }
 

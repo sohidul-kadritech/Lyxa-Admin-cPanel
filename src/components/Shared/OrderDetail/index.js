@@ -4,9 +4,9 @@ import moment from 'moment';
 
 // project import
 import { useState } from 'react';
-import CloseButton from '../../../components/Common/CloseButton';
-import TabPanel from '../../../components/Common/TabPanel';
 import { useGlobalContext } from '../../../context';
+import CloseButton from '../../Common/CloseButton';
+import TabPanel from '../../Common/TabPanel';
 import DeliveryDetails from './DeliveryDetails';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';

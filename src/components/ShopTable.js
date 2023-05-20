@@ -3,17 +3,22 @@ import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import React, { useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { useGlobalContext } from '../context';
 import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
+
 // import {  } from 'react-router-dom';
 
 function ShopTable({ shops = [] }) {
   const history = useHistory();
   const location = useLocation();
+  const routeMatch = useRouteMatch();
+
+  console.log(routeMatch);
+  console.log(routeMatch?.url?.split('/')?.pop());
 
   const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
 
@@ -56,19 +61,16 @@ function ShopTable({ shops = [] }) {
       let routePath = '';
 
       if (userType === 'seller') {
-        routePath = `/shop/${item._id}`;
+        routePath = `/shop/dashboard/${item._id}`;
       } else {
-        routePath = '';
-        location?.pathname?.split('/')?.forEach((s, i) => {
-          if (i < 3 && s) {
-            routePath += `/${s}`;
-          }
-        });
-        routePath += `/shop/${item._id}`;
+        const pathArr = routeMatch?.url?.split('/');
+        pathArr?.pop();
+        pathArr?.pop();
+        routePath = `${pathArr?.join('/')}/shop/dashboard/${item._id}`;
       }
       history.push(routePath);
       dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop: item, location: `/shop/${item._id}` } });
+      dispatchShopTabs({ type: 'add-tab', payload: { shop: item, location: routePath } });
     }
   };
 

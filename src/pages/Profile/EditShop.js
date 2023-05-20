@@ -57,7 +57,7 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-			})
+      })
     );
     setEditedData((prev) => ({
       ...prev,
@@ -70,7 +70,7 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-			})
+      })
     );
     console.log(newFiles);
     setEditedData((prev) => ({

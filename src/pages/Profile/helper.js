@@ -1,23 +1,46 @@
-import { ExpandMore } from '@mui/icons-material';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  Stack,
-  Typography,
-  styled,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
+
+export const menuOtions = (userType) => {
+  const options = [
+    {
+      label: 'Edit Shop',
+      value: 'edit',
+    },
+  ];
+
+  if (userType !== 'shop') {
+    options?.push({
+      label: 'Access as Shop',
+      value: 'access-shop',
+    });
+  }
+
+  return options;
+};
 
 export function convertTime(timeString) {
   const hours = timeString.slice(0, 2);
   const minutes = timeString.slice(2, 4);
   return `${hours}:${minutes}`;
 }
+
+export const updateShopData = (oldShop, newShop) => {
+  oldShop.address = newShop?.address || oldShop?.address;
+  oldShop.shopName = newShop?.shopName || oldShop?.shopName;
+  oldShop.email = newShop?.email || oldShop?.email;
+  oldShop.password = newShop?.password || oldShop?.password;
+  oldShop.phone_number = newShop?.phone_number || oldShop?.phone_number;
+  oldShop.shopLogo = newShop?.shopLogo || oldShop?.shopLogo;
+  oldShop.shopBanner = newShop?.shopBanner || oldShop?.shopBanner;
+  oldShop.status = newShop?.status || oldShop?.status;
+  oldShop.bank_name = newShop?.bank_name || oldShop?.bank_name;
+  oldShop.account_number = newShop?.account_number || oldShop?.account_number;
+  oldShop.bank_postal_code = newShop?.bank_postal_code || oldShop?.bank_postal_code;
+  oldShop.bank_address = newShop?.bank_address || oldShop?.bank_address;
+  oldShop.account_swift = newShop?.account_swift || oldShop?.account_swift;
+};
 
 export const createShopData = async (shopData) => {
   const img_url_logo = await getImageUrl(shopData.shopLogo[0]);
@@ -26,13 +49,13 @@ export const createShopData = async (shopData) => {
   if (!img_url_logo) {
     return {
       status: false,
-      msg: 'Error while Shop Logo image is uploading!',
+      msg: 'Error uploading shop logo image!',
     };
   }
   if (!img_url_banner) {
     return {
       status: false,
-      msg: 'Error while Shop Banner image is uploading!',
+      msg: 'Error uploading shop banner image',
     };
   }
 
@@ -40,7 +63,6 @@ export const createShopData = async (shopData) => {
   delete shopData.address;
 
   return {
-    //
     id: shopData?._id,
     shopStartTime: convertTime(shopData?.shopStartTime),
     shopEndTime: convertTime(shopData?.shopEndTime),
@@ -55,8 +77,6 @@ export const createShopData = async (shopData) => {
     bank_address: shopData?.bank_address,
     bank_postal_code: shopData?.bank_postal_code,
     account_swift: shopData?.account_swift,
-    //
-
     shopAddress: {
       address: shopData?.shopAddress?.address,
       latitude: shopData?.shopAddress?.latitude,
@@ -157,11 +177,12 @@ export function validateEditedData(shopData) {
   return { status: true };
 }
 
-export function CoverPhotoButton({ label, onDrop }) {
+export function CoverPhotoButton({ label, onDrop, loading }) {
   const theme = useTheme();
 
   return (
     <Button
+      disabled={loading}
       variant="contained"
       aria-label="upload picture"
       component="label"
@@ -184,6 +205,12 @@ export function CoverPhotoButton({ label, onDrop }) {
         '&:hover': {
           background: '#d5d5d5',
         },
+
+        '&.Mui-disabled': {
+          backgroundColor: 'white',
+          opacity: '0.8',
+          color: '#363636!important',
+        },
       }}
     >
       <input hidden onChange={(e) => onDrop([e.target.files[0]])} accept="image/*" type="file" />
@@ -192,89 +219,22 @@ export function CoverPhotoButton({ label, onDrop }) {
   );
 }
 
-export function StyledOrderDetailBox({ title, children }) {
-  const theme = useTheme();
-
-  return (
-    <Box
-      sx={{
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '10px',
-        padding: '12px 16px',
-      }}
-    >
-      {title && (
-        <Typography variant="body4" display="block" pb={2} fontWeight={600}>
-          {title}
-        </Typography>
-      )}
-      {children}
-    </Box>
-  );
-}
-
-export function StyledOrderDetailBox2({ title, children }) {
-  const theme = useTheme();
-  const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-    minHeight: '20px',
-    '&.icon-hidden .MuiAccordionSummary-expandIconWrapper': {
-      visibility: 'hidden',
-    },
-
-    '& .MuiSvgIcon-root': {
-      color: theme.palette.text.primary,
-      fontSize: '24px',
-    },
-
-    '& .MuiAccordionSummary-content': {
-      margin: '0',
-      '&.Mui-expanded': {
-        margin: 0,
-      },
-    },
-  }));
-  return (
-    <Accordion
-      sx={{
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '10px',
-        padding: '12px 16px',
-        '&:before': {
-          display: 'none',
-        },
-      }}
-    >
-      <StyledAccordionSummary
-        expandIcon={<ExpandMore />}
-        sx={{
-          '&.Mui-expanded': {
-            minHeight: '16px',
-          },
-        }}
-        aria-controls="panel1a-content"
-      >
-        {title && (
-          <Typography variant="body4" display="block" pb={2} fontWeight={600}>
-            {title}
-          </Typography>
-        )}
-      </StyledAccordionSummary>
-
-      <AccordionDetails>{children}</AccordionDetails>
-    </Accordion>
-  );
-}
-
 export function ShopProfileBasicInfo({ title, Icon, desc }) {
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center', alignItems: 'center', gap: '11px' }}>
+      <Box
+        sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center', alignItems: 'center', gap: '11px' }}
+        pb={4.5}
+      >
         <Icon />
-        <Typography sx={{ fontSize: '14px', fontWeight: '600' }}>{title}</Typography>
+        <Typography variant="inherit" sx={{ fontSize: '14px', fontWeight: '600' }}>
+          {title}
+        </Typography>
       </Box>
-      <Box sx={{ marginTop: '18px', fontSize: '14px', fontWeight: '500' }}>
-        {' '}
-        <Typography sx={{ textTransform: 'capitalize' }}>{desc}</Typography>
+      <Box>
+        <Typography variant="inherit" sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500' }}>
+          {desc}
+        </Typography>
       </Box>
     </Box>
   );
@@ -317,22 +277,22 @@ export function openingHours(normalHours) {
   };
 
   return (
-    <Stack flexDirection="column" gap="10px">
+    <Stack direction="column" gap="10px">
       {normalHours?.map((week, i) => (
         <Box key={i}>
-          <Stack flexDirection="row">
-            <Typography sx={openingHoursSx} flex={2} variant="span">
+          <Stack direction="row">
+            <Typography sx={openingHoursSx} width="40px" variant="inherit">
               {dayStructure(week.day)}
             </Typography>
             {week.isActive ? (
               <>
                 {' '}
-                <Typography sx={openingHoursSx} flex={8} variant="span">
+                <Typography sx={openingHoursSx} variant="inherit">
                   {convertTimeToAmPm(week.open)} - {convertTimeToAmPm(week.close)}
                 </Typography>
               </>
             ) : (
-              <Typography sx={openingHoursSx} variant="span">
+              <Typography sx={openingHoursSx} variant="inherit">
                 Closed
               </Typography>
             )}
