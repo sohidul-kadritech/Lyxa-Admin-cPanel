@@ -44,6 +44,7 @@ import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransa
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
 import ButlerOrderList from '../pages/Butler';
 import CancelReason from '../pages/CancelReason/CancelReason';
+import CancelReason2 from '../pages/CancelReason2';
 import CategoryAdd from '../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
 import CategoryDetails from '../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails';
 import CategoryList from '../pages/Categories&Tags/Category/CategoryList/CategoryList';
@@ -197,6 +198,7 @@ export const admin_routes = [
   { path: '/percentage-setting', component: PercentageSetting },
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/admin/cancel-reason', component: CancelReason },
+  { path: '/admin/cancel-reason2', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
   { path: '/admin/database/collections', component: DatabaseSettings },
 

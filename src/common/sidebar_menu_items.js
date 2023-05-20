@@ -390,6 +390,14 @@ export const admin_menu_items = [
         to: '/settings/support-reasons',
       },
       {
+        label: 'Cancel Order Reason',
+        to: '/admin/cancel-reason',
+      },
+      {
+        label: 'Cancel Order Reason2',
+        to: '/admin/cancel-reason2',
+      },
+      {
         label: 'Support Reasons2',
         to: '/settings/support-reasons2',
       },
