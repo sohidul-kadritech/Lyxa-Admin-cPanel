@@ -1,11 +1,31 @@
-import { Box } from '@material-ui/core';
+import { Box, Button, styled } from '@mui/material';
+import { useState } from 'react';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import { Route, Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import Sidebar from '../Sidebar';
 
-export default function ChildLayout({ menuItems, routes, sidebarTitle, childFor }) {
-  // const routeMatch = useRouteMatch();
-  // console.log(routeMatch);
+const SidebarWrapper = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'row',
+  width: '460px',
+  transform: 'translateX(-230px)',
+  transition: '300ms ease',
+
+  '&.show-left': {
+    transform: 'translateX(0)',
+  },
+}));
+
+export default function ChildLayout({
+  menuItems,
+  routes,
+  sidebarTitle,
+  childFor,
+  hideSidebar,
+  secondaryMenuItems,
+  sidebarStyle = 'single',
+}) {
+  const [currentSidebar, setCurrentSidebar] = useState('left');
 
   return (
     <Box
@@ -17,7 +37,33 @@ export default function ChildLayout({ menuItems, routes, sidebarTitle, childFor 
         gridTemplateColumns: 'auto 1fr',
       }}
     >
-      <Sidebar variant="child" menuItems={menuItems} title={sidebarTitle} childFor={childFor} />
+      {!hideSidebar && (
+        <Box position="relative" width="230px">
+          {sidebarStyle === 'single' ? (
+            <Sidebar variant="child" menuItems={menuItems} title={sidebarTitle} childFor={childFor} />
+          ) : (
+            <Box overflow="hidden">
+              <Button
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  zIndex: 9,
+                }}
+                onClick={() => {
+                  setCurrentSidebar((prev) => (prev === 'right' ? 'left' : 'right'));
+                }}
+              >
+                {currentSidebar}
+              </Button>
+              <SidebarWrapper className={currentSidebar === 'right' ? 'show-left' : undefined}>
+                <Sidebar variant="child" menuItems={menuItems} title={sidebarTitle} childFor={childFor} />
+                <Sidebar variant="child" menuItems={secondaryMenuItems} title={sidebarTitle} childFor="shop" />
+              </SidebarWrapper>
+            </Box>
+          )}
+        </Box>
+      )}
       <Box
         sx={{
           paddingLeft: '50px',
