@@ -1,6 +1,8 @@
 import { Stack, Typography } from '@mui/material';
 import L from 'leaflet';
 import { successMsg } from '../../helpers/successMsg';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
 
 export const validateEditedData = (data) => {
   if (!data?.zoneName) {
@@ -127,3 +129,48 @@ export const colorList = [
   '#87CEEB', // SkyBlue
   '#6A5ACD', // SlateBlue
 ];
+
+const getZoneStatsById = async (id) => {
+  // API_URL.GET_STAT_ZONE
+
+  const zoneStatesData = await AXIOS.get(API_URL?.GET_STAT_ZONE, {
+    params: {
+      zoneId: id,
+    },
+  });
+
+  const data = await zoneStatesData?.data;
+  return data;
+};
+
+// Map overViewData generator
+export const createDataForTable = async (data) => {
+  const col = await Promise.all(
+    data.map(async ({ _id, zoneName, zoneGeometry }, index) => {
+      const stats = await getZoneStatsById(_id);
+      return {
+        _id,
+        colorId: index + 1,
+        zoneName,
+        stats,
+        zoneGeometry,
+      };
+      // eslint-disable-next-line prettier/prettier
+    }),
+  );
+  return col;
+};
+
+// convert [lon, lat] to [lat,lon]
+export const convertedLonLatToLatLon = (polygon) => polygon.map(([lon, lat]) => [lat, lon]);
+// convert [lat, lon] to [lon,lat]
+export const convertedLatLonToLonLat = (polygon) => polygon.map(([lat, lon]) => [lon, lat]);
+
+export const createZoneInfoData = (data) => {
+  const newData = data.map((info) => ({
+    ...info,
+    name: info?.name || info.shopName,
+  }));
+
+  return newData;
+};

@@ -4,9 +4,10 @@ import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import TableLoader from '../../components/Common/TableLoader';
 import StyledTable4 from '../../components/Styled/StyledTable4';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
+import { getTypeValue } from './helpers';
 
 //
-function FaqTable({ items, faqLoading, threeDotHandler }) {
+function FaqTable({ items, faqLoading, threeDotHandler, supportReason }) {
   const allColumns = [
     {
       id: 1,
@@ -71,7 +72,7 @@ function FaqTable({ items, faqLoading, threeDotHandler }) {
       // eslint-disable-next-line no-unused-vars
       renderCell: (params) => (
         <ThreeDotsMenu
-          menuItems={['Edit', 'Delete']}
+          menuItems={['View', 'Edit', 'Delete']}
           handleMenuClick={(menu) => {
             threeDotHandler(menu, params?.row);
           }}
@@ -79,7 +80,25 @@ function FaqTable({ items, faqLoading, threeDotHandler }) {
       ),
     },
   ];
+
   console.log('Items; ', items);
+
+  const typeColumn = {
+    id: 5,
+    headerName: `TYPE`,
+    flex: 1,
+    renderCell: (params) => (
+      <Typography variant="body1" className="text-capitalize">
+        {getTypeValue(params.row.type)}
+      </Typography>
+    ),
+  };
+
+  // const newColumns = [];
+  if (supportReason?.type === 'faq') {
+    allColumns.splice(1, 0, typeColumn);
+  }
+
   return (
     <Box>
       <StyledTable4

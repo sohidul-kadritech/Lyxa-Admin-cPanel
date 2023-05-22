@@ -374,6 +374,10 @@ export const admin_menu_items = [
         to: '/app/settings',
       },
       {
+        label: 'App Settings2',
+        to: '/app/settings2',
+      },
+      {
         label: 'Percentage Settings',
         to: '/percentage-setting',
       },

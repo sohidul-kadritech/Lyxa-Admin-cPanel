@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 import ModalContainer from './ModalContainer';
 import ZoneMap from './ZoneMap';
-import { ConvertArea, validateEditedData } from './helper';
+import { ConvertArea, convertedLatLonToLonLat, validateEditedData } from './helper';
 
 // eslint-disable-next-line prettier/prettier, no-unused-vars
 const fieldContainerSx = {
@@ -39,12 +39,13 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
   const [selectedLocation, setSelectedLoaction] = useState({ lat: null, lon: null });
 
   const createNewZone = () => {
+    const polygon = convertedLatLonToLonLat(createdZoneGeometry);
     const data = {
       zoneName: createdZoneName,
       zoneArea: createdZoneArea,
       zoneGeometry: {
         type: 'Polygon',
-        coordinates: [createdZoneGeometry],
+        coordinates: [...polygon, polygon[0]],
       },
       zoneStatus: createdZoneStatus,
     };

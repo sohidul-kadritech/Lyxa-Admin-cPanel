@@ -8,7 +8,7 @@ import { FeatureGroup, MapContainer, Marker, Polygon, Popup, TileLayer } from 'r
 import { EditControl } from 'react-leaflet-draw';
 import { successMsg } from '../../helpers/successMsg';
 import './ZoneMap.css';
-import { calculatePolygonArea, colorList } from './helper';
+import { calculatePolygonArea, colorList, convertedLonLatToLatLon } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
 // eslint-disable-next-line no-unused-vars
@@ -29,7 +29,7 @@ function ZoneMap({
   // eslint-disable-next-line no-unused-vars
   const [selectedMarker, setSelectedMarker] = useState({ lat: 0, lon: 0 });
   // eslint-disable-next-line no-unused-vars
-  const [polygonGeoData, setPolygonGeoData] = useState([]);
+  // const [polygonGeoData, setPolygonGeoData] = useState([]);
 
   // Map Pin Icon URL
   delete L.Icon.Default.prototype._getIconUrl;
@@ -50,7 +50,7 @@ function ZoneMap({
     setPolygonArea(calculatePolygonArea(polygon));
     const coordinates = polygon?.getLatLngs()[0]?.map((latLng) => [latLng.lat, latLng.lng]) || [];
     console.log('get geo: ', coordinates);
-    setPolygonGeoData(coordinates);
+    // setPolygonGeoData(coordinates);
     setCreatedZoneGeometry(coordinates);
   };
 
@@ -58,9 +58,10 @@ function ZoneMap({
     successMsg('Polygon edited succesfully', 'success');
     const polygon = e?.layers?.getLayers()[0] || [];
     console.log('polygon: ', polygon);
+    setPolygonArea('polygon area; ', e?.layers);
     setPolygonArea(calculatePolygonArea(polygon));
     const coordinates = polygon?.getLatLngs()[0]?.map((latLng) => [latLng.lat, latLng.lng]) || [];
-    setPolygonGeoData(coordinates);
+    // setPolygonGeoData(coordinates);
     setCreatedZoneGeometry(coordinates);
   };
 
@@ -138,7 +139,7 @@ function ZoneMap({
           <Polygon
             key={i}
             pathOptions={{ color: `${colorList[i % 50]}` }}
-            positions={loc?.zoneGeometry?.coordinates[0]}
+            positions={convertedLonLatToLatLon(loc?.zoneGeometry?.coordinates[0]).slice(0, -1)}
           >
             <Popup>{loc.zoneName}</Popup>
           </Polygon>

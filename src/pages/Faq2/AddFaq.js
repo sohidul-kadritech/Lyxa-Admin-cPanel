@@ -36,7 +36,7 @@ const fieldContainerSx = {
   padding: '14px 0',
 };
 
-function AddFaq({ onClose, submitHandler, isEdit, faq }) {
+function AddFaq({ onClose, submitHandler, isEdit, faq, isReadOnly }) {
   const dispatch = useDispatch();
 
   const {
@@ -61,7 +61,6 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
   // eslint-disable-next-line no-unused-vars
   const changeHandler = (event) => {
     setCurrentFaq((prev) => ({ ...prev, [event.target.name]: event.target.value }));
-    console.log('currentFaq', currentFaq);
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -100,7 +99,16 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
   }, [faq]);
 
   return (
-    <SidebarContainer title={`${isEdit ? 'Edit Q&A' : 'Add New Q&A'}`} onClose={onClose}>
+    <SidebarContainer
+      title={`${
+        isEdit && isReadOnly === false
+          ? 'Edit Q&A'
+          : isEdit === false && isReadOnly === false
+          ? 'Add New Q&A'
+          : 'View Q&A'
+      }`}
+      onClose={onClose}
+    >
       <Stack spacing={6}>
         <Stack direction="column" spacing={5}>
           <Typography
@@ -156,6 +164,7 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
               value: currentFaq?.status || '',
               items: statusOptions,
               onChange: changeHandler,
+              readOnly: isReadOnly,
             }}
           />
         </FormControl>
@@ -170,6 +179,7 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
             type: 'text',
             name: 'question',
             onChange: changeHandler,
+            readOnly: isReadOnly,
           }}
         />
         <StyledFormField
@@ -184,12 +194,13 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
             name: 'ans',
             multiline: true,
             onChange: changeHandler,
+            readOnly: isReadOnly,
           }}
         />
         <Button
           disableElevation
           variant="contained"
-          disabled={(isEdit && !currentFaq?._id) || isFaqLoading || isChatReasonLoading}
+          disabled={(isEdit && !currentFaq?._id) || isFaqLoading || isChatReasonLoading || isReadOnly}
           onClick={() => {
             checkFaqType();
           }}

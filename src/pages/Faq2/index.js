@@ -111,6 +111,7 @@ function Faq() {
   const [status, setStatus] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [isEdit, setIsEdit] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -169,14 +170,22 @@ function Faq() {
   // three dot handler
   const threeDotHandler = (menu, item) => {
     if (menu === 'Edit') {
+      setIsReadOnly(false);
       setIsEdit(true);
       setOpen(true);
       setCurrentFaq(item);
     }
-
     if (menu === 'Delete') {
+      setIsReadOnly(false);
       setIsConfirmModalOpen(true);
       setDeletedFaqData(item);
+    }
+    if (menu === 'View') {
+      console.log('here manu is view');
+      setIsReadOnly(true);
+      setIsEdit(true);
+      setCurrentFaq(item);
+      setOpen(true);
     }
   };
 
@@ -271,6 +280,7 @@ function Faq() {
             onClick={() => {
               setOpen(() => {
                 setIsEdit(false);
+                setIsReadOnly(false);
                 return true;
               });
             }}
@@ -278,12 +288,18 @@ function Faq() {
         </Stack>
 
         <Box>
-          <FaqTable items={filterReasons()} threeDotHandler={threeDotHandler} faqLoading={faqLoading} />
+          <FaqTable
+            supportReason={{ type: currentTab === 0 ? 'orderSupport' : currentTab === 1 ? 'accountSupport' : 'faq' }}
+            items={filterReasons()}
+            threeDotHandler={threeDotHandler}
+            faqLoading={faqLoading}
+          />
         </Box>
       </Box>
       <Drawer open={open} anchor="right">
         <AddFaq
           isEdit={isEdit}
+          isReadOnly={isReadOnly}
           faq={
             isEdit
               ? currentFaq

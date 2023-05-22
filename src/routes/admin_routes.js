@@ -77,6 +77,7 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
+import Appsettings2 from '../pages/AppSettings2';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -195,6 +196,7 @@ export const admin_routes = [
   //  settings
   { path: '/admin/settings', component: AdminSettings },
   { path: '/app/settings', component: AppSettings },
+  { path: '/app/settings2', component: Appsettings2 },
   { path: '/percentage-setting', component: PercentageSetting },
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/admin/cancel-reason', component: CancelReason },
