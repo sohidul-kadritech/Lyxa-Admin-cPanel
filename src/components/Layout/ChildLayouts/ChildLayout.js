@@ -1,4 +1,6 @@
-import { Box, Button, styled } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Box, IconButton, styled } from '@mui/material';
 import { useState } from 'react';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import { Route, Switch } from 'react-router-dom/cjs/react-router-dom.min';
@@ -14,6 +16,15 @@ const SidebarWrapper = styled(Box)(() => ({
   '&.show-left': {
     transform: 'translateX(0)',
   },
+}));
+
+const StyledToggleButton = styled(IconButton)(() => ({
+  position: 'absolute',
+  zIndex: 9,
+  left: '-6px',
+  right: 'auto',
+  top: '22px',
+  color: '#fff',
 }));
 
 export default function ChildLayout({
@@ -43,27 +54,23 @@ export default function ChildLayout({
             <Sidebar variant="child" menuItems={menuItems} title={sidebarTitle} childFor={childFor} />
           ) : (
             <Box overflow="hidden">
-              <Button
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  zIndex: 9,
-                }}
+              <StyledToggleButton
+                disableRipple
                 onClick={() => {
                   setCurrentSidebar((prev) => (prev === 'right' ? 'left' : 'right'));
                 }}
               >
-                {currentSidebar}
-              </Button>
+                {currentSidebar === 'left' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </StyledToggleButton>
               <SidebarWrapper className={currentSidebar === 'right' ? 'show-left' : undefined}>
                 <Sidebar variant="child" menuItems={menuItems} title={sidebarTitle} childFor={childFor} />
-                <Sidebar variant="child" menuItems={secondaryMenuItems} title={sidebarTitle} childFor="shop" />
+                <Sidebar variant="child" menuItems={secondaryMenuItems} title="Lyxa Shop" childFor="shop" />
               </SidebarWrapper>
             </Box>
           )}
         </Box>
       )}
+      {hideSidebar && <Box />}
       <Box
         sx={{
           paddingLeft: '50px',
