@@ -16,12 +16,13 @@ import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import EditShop from './EditShop';
+// import EditShop from './EditShop';
+import AddShop from '../../components/Shared/AddShop';
 import FlaggedViews from './FlaggedViews';
 import ShopDetails from './ShopDetails';
-import { CoverPhotoButton, createShopData, menuOtions, updateShopData } from './helper';
+import { CoverPhotoButton, createShopData, menuOtions } from './helper';
 
-export default function ShopProfile({ setLoading, loading }) {
+export default function ShopProfile({ setLoading = () => {}, loading }) {
   const theme = useTheme();
   const routeMatch = useRouteMatch();
   const history = useHistory();
@@ -59,7 +60,7 @@ export default function ShopProfile({ setLoading, loading }) {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg('Successfully Updated', 'success');
-        updateShopData(shop, data?.data?.shop);
+        currentUser.shop = data?.data?.shop;
         setOpen(false);
       } else {
         successMsg(data?.message);
@@ -263,7 +264,7 @@ export default function ShopProfile({ setLoading, loading }) {
                       }}
                     >
                       <AccessTime sx={{ width: '17px', height: '17px' }} />
-                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }} console={console.log(shop)}>
                         {shop?.avgOrderDeliveryTime < 30
                           ? '30-40'
                           : `${Math.ceil(shop?.avgOrderDeliveryTime)}-${Math.ceil(shop?.avgOrderDeliveryTime) + 10}`}
@@ -367,15 +368,7 @@ export default function ShopProfile({ setLoading, loading }) {
         </Box>
       </Box>
       <Drawer open={open} anchor="right">
-        <EditShop
-          shopMutation={shopMutation}
-          shopData={{
-            ...shop,
-            shopLogo: [{ preview: shop.shopLogo }],
-            shopBanner: [{ preview: shop.shopBanner }],
-          }}
-          onClose={() => setOpen(false)}
-        />
+        <AddShop editShop={shop} onClose={() => setOpen(false)} />
       </Drawer>
     </Box>
   );

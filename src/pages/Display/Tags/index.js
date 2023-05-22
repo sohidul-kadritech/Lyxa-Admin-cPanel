@@ -29,10 +29,6 @@ const typeToTabIndexMap = {
 const filtersInit = {
   searchKey: '',
   status: '',
-  // date: {
-  //   start: moment().startOf('month').format('YYYY-MM-DD'),
-  //   end: moment().endOf('month').format('YYYY-MM-DD'),
-  // },
 };
 
 export default function TagsAndCusines() {

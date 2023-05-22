@@ -18,8 +18,11 @@ export default function SellerToShopLayout() {
   const location = useLocation();
   const history = useHistory();
   const routeMatch = useRouteMatch();
-
-  const { path, url } = useMemo(() => ({ path: routeMatch?.path, url: routeMatch?.url?.replace(/\/$/, '') }), []);
+  const hideSidebar = location?.pathname?.search('/seller/dashboard/') > -1;
+  const { path, url } = useMemo(
+    () => ({ path: routeMatch?.path, url: routeMatch?.url?.replace(/\/$/, '') }),
+    [routeMatch?.params?.shopId]
+  );
 
   const shopQuery = useQuery(
     [Api.SINGLE_SHOP, { id: routeMatch?.params?.shopId }],
@@ -55,6 +58,7 @@ export default function SellerToShopLayout() {
 
   useEffect(() => {
     dispatchShopTabs({ type: 'change-current-tab-location', payload: { location: location.pathname } });
+    // dispatchShopTabs({ type: 'route', payload: { location: location.pathname } });
   }, [location]);
 
   if (shopQuery.isLoading) {
@@ -70,6 +74,12 @@ export default function SellerToShopLayout() {
   }
 
   return (
-    <ChildLayout sidebarTitle="Lyxa Shop" routes={shop_routes(path)} menuItems={shop_menu_items(url)} childFor="shop" />
+    <ChildLayout
+      hideSidebar={hideSidebar}
+      sidebarTitle="Lyxa Shop"
+      routes={shop_routes(path)}
+      menuItems={shop_menu_items(url)}
+      childFor="shop"
+    />
   );
 }

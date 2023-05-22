@@ -1,10 +1,11 @@
 // third party
-import { Box, Typography } from '@mui/material';
+import { Box, Drawer, Typography } from '@mui/material';
 
 // project import
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
+import AddShop from '../../components/Shared/AddShop';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -17,6 +18,7 @@ export default function ShopList() {
   const { currentUser, dispatchCurrentUser } = useGlobalContext();
   const { seller, shop: currentShop } = currentUser;
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const query = useQuery(
     [Api.ALL_SHOP, { sellerId: seller?._id }],
@@ -32,7 +34,7 @@ export default function ShopList() {
   return (
     <Box>
       <PageTop title="Shop List" />
-      <SearchBar searchPlaceHolder="Search 5 shops" />
+      <SearchBar searchPlaceHolder="Search 5 shops" onAdd={() => setOpen(true)} />
       <Typography variant="inherit" fontSize={14} lineHeight="16px" fontWeight={600} color="#737373" pt={10.5} pb={5.5}>
         SHOPS
       </Typography>
@@ -42,6 +44,9 @@ export default function ShopList() {
         <>
           <List shops={query?.data?.data?.shops} loading={loading} />
           <ShopProfile setLoading={setLoading} loading={loading} />
+          <Drawer open={open} anchor="right">
+            <AddShop onClose={() => setOpen(false)} />
+          </Drawer>
         </>
       )}
     </Box>
