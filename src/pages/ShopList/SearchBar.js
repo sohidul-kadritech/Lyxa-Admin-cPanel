@@ -16,7 +16,7 @@ const listFilterOptions = [
   },
 ];
 
-export default function SearchBar({ filtersValue = {}, setFiltersValue, searchPlaceHolder }) {
+export default function SearchBar({ filtersValue = {}, setFiltersValue, searchPlaceHolder, onAdd }) {
   return (
     <Stack direction="row" alignItems="center" gap="20px">
       <StyledSearchBar
@@ -55,7 +55,7 @@ export default function SearchBar({ filtersValue = {}, setFiltersValue, searchPl
           //   setFiltersValue((prev) => ({ ...prev, status: e.target.value }));
         }}
       />
-      <Button size="small" variant="contained" startIcon={<Add />}>
+      <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>
         Add
       </Button>
     </Stack>
