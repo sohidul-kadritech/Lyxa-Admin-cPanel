@@ -4,7 +4,7 @@ import React from 'react';
 function PageSkeleton() {
   return (
     <Box>
-      <Skeleton variant="rectangular" width={210} height={30}></Skeleton>
+      <Skeleton variant="rectangular" width={210} height={60}></Skeleton>
       <Box
         sx={{
           display: 'grid',
@@ -36,12 +36,12 @@ function PageSkeleton() {
           </Stack>
           <Skeleton variant="rectangle" width={300} height={50} sx={{ marginTop: '60px' }}></Skeleton>
           {/* table */}
-          <Skeleton
+          {/* <Skeleton
             variant="rectangle"
             width="100%"
             height={350}
             sx={{ marginTop: '30px', borderRadius: '7px' }}
-          ></Skeleton>
+          ></Skeleton> */}
         </Box>
 
         <Box sx={{ width: '20%' }}>

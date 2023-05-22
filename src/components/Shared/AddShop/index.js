@@ -18,7 +18,9 @@ import {
   getShopEditData,
   shopInit,
   updateShopData,
-  validateShop,
+  validateBankDetails,
+  validateShopDetails,
+  validateShopFeatures,
 } from './helper';
 
 export default function AddShop({ onClose, editShop }) {
@@ -27,7 +29,7 @@ export default function AddShop({ onClose, editShop }) {
   const queryClient = useQueryClient();
 
   const [loading, setLoading] = useState(false);
-  const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit());
+  const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit(seller?._id));
   const [currentTab, setCurrentTab] = useState(0);
   const tabMax = editShop?._id ? 1 : 2;
 
@@ -89,15 +91,8 @@ export default function AddShop({ onClose, editShop }) {
 
   const onSubmitShop = async () => {
     const createShopData = editShop?._id ? createEditShopData : createAddShopData;
-    const isValid = validateShop(shop);
-
-    if (isValid?.status === false) {
-      successMsg(isValid.msg);
-      return;
-    }
 
     setLoading(true);
-
     const shopData = await createShopData(shop);
     if (shopData?.status === false) {
       successMsg(shopData?.msg);
@@ -105,6 +100,34 @@ export default function AddShop({ onClose, editShop }) {
     }
 
     shopMutation.mutate(shopData);
+  };
+
+  const buttonHandler = () => {
+    let isValid = { status: true };
+
+    if (currentTab === 0) {
+      isValid = validateShopDetails(shop, editShop?._id);
+    }
+
+    if (currentTab === 1 && !editShop?._id) {
+      isValid = validateShopFeatures(shop);
+    }
+
+    if ((currentTab === 1 && editShop?._id) || (currentTab === 2 && !editShop?._id)) {
+      isValid = validateBankDetails(shop);
+    }
+
+    if (!isValid.status) {
+      successMsg(isValid.msg);
+      return;
+    }
+
+    if (currentTab === tabMax) {
+      onSubmitShop();
+      return;
+    }
+
+    setCurrentTab((prev) => prev + 1);
   };
 
   return (
@@ -165,13 +188,7 @@ export default function AddShop({ onClose, editShop }) {
           variant="contained"
           disabled={loading}
           color="primary"
-          onClick={() => {
-            if (currentTab === tabMax) {
-              onSubmitShop();
-              return;
-            }
-            setCurrentTab((prev) => prev + 1);
-          }}
+          onClick={buttonHandler}
           startIcon={currentTab === tabMax ? <ArrowDownward /> : <ArrowForward />}
           fullWidth
         >

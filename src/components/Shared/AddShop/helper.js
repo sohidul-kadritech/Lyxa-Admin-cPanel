@@ -42,7 +42,7 @@ export const getShopEditData = (shop) => ({
   shopBanner: [{ preview: shop.shopBanner }],
 });
 
-export function validateShop(shopData, isEditShop) {
+export const validateShopDetails = (shopData, isEditShop) => {
   const status = {
     status: false,
     msg: null,
@@ -50,17 +50,23 @@ export function validateShop(shopData, isEditShop) {
 
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 
-  if (!shopData?.email?.trim()) {
-    status.msg = 'Please provide your email';
+  if (!shopData?.shopName?.trim()) {
+    status.msg = 'Please provide shop name';
     return status;
   }
+
+  if (!shopData?.email?.trim()) {
+    status.msg = 'Please provide shop email';
+    return status;
+  }
+
   if (shopData?.email && !emailRegex.test(shopData?.email)) {
     status.msg = 'Email is not valid';
     return status;
   }
 
   if (!shopData?.password && !isEditShop) {
-    status.msg = 'Please provide your password first';
+    status.msg = 'Please provide shop password';
     return status;
   }
 
@@ -70,37 +76,46 @@ export function validateShop(shopData, isEditShop) {
   }
 
   if (!shopData?.phone_number) {
-    status.msg = 'Please provide your phone number';
+    status.msg = 'Please provide shop phone number';
     return status;
   }
 
   if (!shopData?.address) {
-    status.msg = 'Please provide your phone number';
+    status.msg = 'Please provide shop address';
     return status;
   }
 
   if (!shopData?.address?.pin) {
-    status.msg = 'Please provide your Zip Code';
+    status.msg = 'Please provide shop Zip Code';
     return status;
   }
 
-  if (!shopData?.shopLogo) {
-    status.msg = 'Please provide your Shop logo';
+  if (!shopData?.shopLogo?.length) {
+    status.msg = 'Please provide Shop logo';
     return status;
   }
 
-  if (!shopData?.shopBanner) {
-    status.msg = 'Please provide your Shop Banner';
+  if (!shopData?.shopBanner.length) {
+    status.msg = 'Please provide shop Shop Banner';
     return status;
   }
 
   if (!shopData?.shopStatus) {
-    status.msg = 'Please Select your Shop Status';
+    status.msg = 'Please Select shop Shop Status';
     return status;
   }
 
+  return { status: true };
+};
+
+export const validateShopFeatures = (shopData) => {
+  const status = {
+    status: false,
+    msg: null,
+  };
+
   if (!shopData?.expensive) {
-    status.msg = 'Please Select Shop Price Range';
+    status.msg = 'Please Select shop Price Range';
     return status;
   }
 
@@ -123,6 +138,15 @@ export function validateShop(shopData, isEditShop) {
     status.msg = 'Please select at least one tag or cuisine option';
     return status;
   }
+
+  return { status: true };
+};
+
+export const validateBankDetails = (shopData) => {
+  const status = {
+    status: false,
+    msg: null,
+  };
 
   if (!shopData?.bank_name) {
     status.msg = 'Please provide your bank account';
@@ -155,7 +179,7 @@ export function validateShop(shopData, isEditShop) {
   }
 
   return { status: true };
-}
+};
 
 export const createEditShopData = async (shopData) => {
   const img_url_logo = await getImageUrl(shopData.shopLogo[0]);

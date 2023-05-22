@@ -19,6 +19,8 @@ function StyledShopButton({ shop, isActiveShop, onSelect, disabled }) {
         padding: '15px 12px',
         transition: 'all 150ms ease',
         cursor: 'pointer',
+        width: '250px',
+        flex: '0 0 auto',
 
         '&:hover': {
           border: `1px solid ${theme.palette.primary.main}`,
@@ -59,11 +61,11 @@ export default function List({ shops = [], loading }) {
   const { shop: currentShop } = currentUser;
 
   return (
-    <Box
+    <Stack
+      direction="row"
       sx={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr 1fr',
         gap: '15px',
+        overflow: 'auto',
       }}
     >
       {shops.map((shop) => (
@@ -77,6 +79,7 @@ export default function List({ shops = [], loading }) {
           }}
         />
       ))}
-    </Box>
+      {!shops.length && <Typography variant="body4">No shop found</Typography>}
+    </Stack>
   );
 }
