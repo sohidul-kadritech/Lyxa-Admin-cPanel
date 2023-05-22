@@ -2,6 +2,7 @@ import { Box } from '@material-ui/core';
 import { Close } from '@mui/icons-material';
 import { Button, Stack, styled } from '@mui/material';
 import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { useGlobalContext } from '../../../context';
 
 const StyledTab = styled(Button)(({ theme }) => ({
@@ -10,12 +11,19 @@ const StyledTab = styled(Button)(({ theme }) => ({
   fontWeight: '600',
   border: '1px solid #E5E5E5',
   borderBottom: '0',
-  padding: 0,
+  padding: '0 8px',
   width: '130px',
   height: '40px',
   borderRadius: '7px 7px 0px 0px',
   zIndex: '99',
   background: '#F2F2F2',
+  justifyContent: 'space-between',
+
+  '& span': {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
 
   '&:hover': {
     background: '#F2F2F2',
@@ -31,7 +39,9 @@ const StyledTab = styled(Button)(({ theme }) => ({
 
 export default function Tabs() {
   const history = useHistory();
-  const { shopTabs, dispatchShopTabs, dispatchCurrentUser } = useGlobalContext();
+  const location = useLocation();
+  const { shopTabs, dispatchShopTabs, dispatchCurrentUser, currentUser } = useGlobalContext();
+  const { userType, seller } = currentUser;
 
   // on switch tab
   const changeTab = (tab) => {
@@ -43,29 +53,31 @@ export default function Tabs() {
   // on remove tab
   const removeTab = (event, tab) => {
     event.stopPropagation();
-    let fallbackTab = null;
 
+    // is not inside shop dashboard
+    if (location?.pathname?.search('/shop/dashboard/') === -1) {
+      dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
+      return;
+    }
+
+    // is not current tab
     if (shopTabs.currentTabId !== tab?.shopId) {
       dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
       return;
     }
 
-    // find if any other tab is available
-    if (shopTabs.allTabs[0]?.shopId !== tab?.shopId) {
-      // eslint-disable-next-line prefer-destructuring
-      fallbackTab = shopTabs.allTabs[0];
-    } else {
-      fallbackTab = shopTabs.allTabs[1] || fallbackTab;
-    }
-
-    // if not, redirect to home page
-    if (fallbackTab) {
-      changeTab(fallbackTab);
-    } else {
+    // is current and only tab
+    if (shopTabs?.allTabs?.length === 1) {
+      const fallbackpath = userType === 'admin' ? `/seller/dashboard/${seller?._id}/shops/list` : '/shops/list';
+      history.push(fallbackpath);
       dispatchCurrentUser({ type: 'shop', payload: { shop: {} } });
-      history.push('/');
+      dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
+      return;
     }
 
+    // is current but tab are available
+    const fallbackTab = shopTabs.allTabs[0]?.shopId === tab?.shopId ? shopTabs.allTabs[1] : shopTabs.allTabs[0];
+    changeTab(fallbackTab);
     dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
   };
 
@@ -87,7 +99,7 @@ export default function Tabs() {
             changeTab(tab);
           }}
         >
-          {tab?.shopName}
+          <span>{tab?.shopName}</span>
         </StyledTab>
       ))}
       <Box

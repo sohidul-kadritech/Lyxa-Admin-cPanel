@@ -1,21 +1,35 @@
 import { Box } from '@mui/material';
 import { useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
-import { seller_menu_items } from '../../../common/sidebar_menu_items';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
+import { seller_menu_items, shop_menu_items } from '../../../common/sidebar_menu_items';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { seller_routes } from '../../../routes/seller_routes';
+import { shop_routes } from '../../../routes/shop_routes';
 import CircularLoader from '../../CircularLoader';
 import ChildLayout from './ChildLayout';
+// import {  } from '../../../common/sidebar_menu_items';
 
 export default function AdminToSellerLayout() {
-  const { dispatchCurrentUser, seller } = useGlobalContext();
+  const { dispatchCurrentUser, currentUser } = useGlobalContext();
+  const { seller, shop } = currentUser;
   const history = useHistory();
   const routeMatch = useRouteMatch();
+  const location = useLocation();
   const { path, url } = useMemo(() => ({ path: routeMatch?.path, url: routeMatch?.url?.replace(/\/$/, '') }), []);
+  const sidebarStyle = location?.pathname?.search('/shop/dashboard/') > -1 ? 'double' : 'single';
+  const { shopPath, shopUrl } = useMemo(
+    () => ({
+      shopPath: `${path}/shop/dashboard/:shopId`,
+      shopUrl: `${url}/shop/dashboard/${shop?._id}`,
+    }),
+    [shop?._id]
+  );
+
+  console.log({ path, url });
 
   const sellerQuery = useQuery(
     [Api.SINGLE_SELLER, { id: routeMatch?.params?.sellerId }],
@@ -61,9 +75,12 @@ export default function AdminToSellerLayout() {
 
   return (
     <ChildLayout
+      sidebarStyle={sidebarStyle}
       sidebarTitle="Lyxa Seller"
       routes={seller_routes(path)}
       menuItems={seller_menu_items(url)}
+      secondaryRoutes={shop_routes(shopPath)}
+      secondaryMenuItems={shop_menu_items(shopUrl)}
       childFor="seller"
     />
   );
