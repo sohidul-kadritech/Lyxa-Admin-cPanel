@@ -349,6 +349,10 @@ export const admin_menu_items = [
     title: 'Terms & Conditions',
     menu: [
       {
+        label: 'Terms And Conditions2',
+        to: '/terms-and-conditions2',
+      },
+      {
         label: 'User App',
         to: '/terms-and-conditions/user-app',
       },
