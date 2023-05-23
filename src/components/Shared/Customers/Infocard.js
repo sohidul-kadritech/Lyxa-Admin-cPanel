@@ -2,8 +2,8 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 
 // project import
-import IncreaseDecrease from '../../../components/StyledCharts/IncreaseDecrease';
-import StyledBox from '../../../components/StyledCharts/StyledBox';
+import IncreaseDecrease from '../../StyledCharts/IncreaseDecrease';
+import StyledBox from '../../StyledCharts/StyledBox';
 
 export default function CustomerInfoCard({ title, percentage, dotColor, amount, isActive, onClick, index }) {
   const theme = useTheme();

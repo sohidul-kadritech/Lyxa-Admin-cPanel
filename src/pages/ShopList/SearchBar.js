@@ -16,35 +16,33 @@ const listFilterOptions = [
   },
 ];
 
-export default function SearchBar({ filtersValue = {}, setFiltersValue, searchPlaceHolder, onAdd }) {
+export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder, onAdd }) {
   return (
     <Stack direction="row" alignItems="center" gap="20px">
       <StyledSearchBar
         fullWidth
         placeholder={searchPlaceHolder}
-        value={filtersValue.searchKey}
+        value={filters.searchKey}
         onChange={(e) => {
-          filtersValue((prev) => ({ ...prev, searchKey: e.target.value }));
+          setFilters((prev) => ({ ...prev, searchKey: e.target.value }));
         }}
       />
-      <FilterSelect
+      {/* <FilterSelect
         items={listFilterOptions}
-        // value={filtersValue.status}
+        value={filters.sort}
         placeholder="Sort"
-        value=""
         tooltip="Sort"
         size="sm"
         sx={{
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          //   setFiltersValue((prev) => ({ ...prev, status: e.target.value }));
+          setFilters((prev) => ({ ...prev, sort: e.target.value }));
         }}
-      />
+      /> */}
       <FilterSelect
         items={listFilterOptions}
-        // value={filtersValue.status}
-        value=""
+        value={filters.status}
         placeholder="Status"
         tooltip="Status"
         size="sm"
@@ -52,7 +50,7 @@ export default function SearchBar({ filtersValue = {}, setFiltersValue, searchPl
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          //   setFiltersValue((prev) => ({ ...prev, status: e.target.value }));
+          setFilters((prev) => ({ ...prev, status: e.target.value }));
         }}
       />
       <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>

@@ -11,13 +11,12 @@ import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import AddShop from '../../components/Shared/AddShop';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-// import EditShop from './EditShop';
-import AddShop from '../../components/Shared/AddShop';
 import FlaggedViews from './FlaggedViews';
 import ShopDetails from './ShopDetails';
 import { CoverPhotoButton, createShopData, menuOtions } from './helper';

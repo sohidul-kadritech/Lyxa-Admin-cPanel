@@ -13,7 +13,7 @@ import ShopSettings2 from '../pages/Settings/Shop';
 import ShopDashboard from '../pages/ShopDashboard';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
 import ShopList from '../pages/Shops/ShopList/ShopList';
-import Users2 from '../pages/Users2';
+import Users from '../pages/Users2';
 
 export const shop_routes = (prefix = '') => {
   const routes = [
@@ -27,7 +27,7 @@ export const shop_routes = (prefix = '') => {
     { path: `${prefix}/products/list`, component: ProductList },
     { path: `${prefix}/shops/list`, component: ShopList },
     // old pages ---
-    { path: `${prefix}/users`, component: Users2 },
+    { path: `${prefix}/users`, component: () => <Users userType="shop" /> },
     { path: `${prefix}/hours`, component: ShopHourSettings },
     { path: `${prefix}/profile`, component: ShopProfile },
     { path: `${prefix}/menu`, component: MenuPage },

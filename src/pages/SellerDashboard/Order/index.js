@@ -4,12 +4,11 @@ import CommonAreaChart from '../../../components/StyledCharts/CommonAreaChart';
 import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
-import ItemRanking from './ItemRanking';
-import OrderByHours from './OrderByHours';
+import ShopList from './ShopList';
 
 export default function Orders() {
   const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
+  const { seller } = currentUser;
 
   return (
     <Grid container spacing={6.5}>
@@ -17,7 +16,7 @@ export default function Orders() {
         title="Total Orders"
         api={Api.SHOP_DASHBOARD_ORDER_GRAPH}
         params={{
-          shopId: shop?._id,
+          shopId: seller?._id,
         }}
         generateData={(data = {}) =>
           generateGraphData(
@@ -27,22 +26,7 @@ export default function Orders() {
           )
         }
       />
-      <ItemRanking />
-      <OrderByHours />
-      <CommonAreaChart
-        title="Orders with issues"
-        api={Api.SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH}
-        params={{
-          shopId: shop?._id,
-        }}
-        generateData={(data = {}) =>
-          generateGraphData(
-            data?.data?.info || [],
-            (item) => item.ordersIssue,
-            (item) => moment(item?.date).format('MMMM DD')
-          )
-        }
-      />
+      <ShopList />
     </Grid>
   );
 }
