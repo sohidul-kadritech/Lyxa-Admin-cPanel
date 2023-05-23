@@ -62,6 +62,7 @@ export default function AddShop({ onClose, editShop }) {
     },
     {
       onSuccess: (data) => {
+        setLoading(false);
         successMsg(data?.message, data?.status ? 'success' : undefined);
         if (data?.status) {
           if (editShop?._id) {
@@ -75,6 +76,7 @@ export default function AddShop({ onClose, editShop }) {
 
       onError: (error) => {
         console.log(error);
+        setLoading(false);
       },
     }
   );
@@ -96,6 +98,7 @@ export default function AddShop({ onClose, editShop }) {
     const shopData = await createShopData(shop);
     if (shopData?.status === false) {
       successMsg(shopData?.msg);
+      setLoading(false);
       return;
     }
 
@@ -110,7 +113,7 @@ export default function AddShop({ onClose, editShop }) {
     }
 
     if (currentTab === 1 && !editShop?._id) {
-      isValid = validateShopFeatures(shop);
+      isValid = validateShopFeatures(shop, seller?.sellerType);
     }
 
     if ((currentTab === 1 && editShop?._id) || (currentTab === 2 && !editShop?._id)) {
@@ -176,7 +179,13 @@ export default function AddShop({ onClose, editShop }) {
         </TabPanel>
         {!editShop?._id && (
           <TabPanel index={1} value={currentTab} noPadding>
-            <ShopFeatures shop={shop} tags={tagsQuery?.data?.data?.tags} onChange={onChangeHandler} />
+            <ShopFeatures
+              shop={shop}
+              tagsCuisine={tagsQuery?.data?.data?.tags}
+              onChange={onChangeHandler}
+              sellerType={seller?.sellerType}
+              console={console.log(seller)}
+            />
           </TabPanel>
         )}
         <TabPanel index={tabMax} value={currentTab} noPadding>

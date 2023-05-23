@@ -26,7 +26,7 @@ export default function ShopDetails({ shop }) {
       <ShopProfileBasicInfo title="Payment Options" desc={shop?.paymentOption?.join(', ')} Icon={InfoIcon} />
       <ShopProfileBasicInfo
         title="Tags & cuisines"
-        desc={TagsAndCuisines(shop?.tagsId, shop?.cuisineType)}
+        desc={TagsAndCuisines(shop?.tags, shop?.cuisineType)}
         Icon={TagIcon}
       />
       <ShopProfileBasicInfo

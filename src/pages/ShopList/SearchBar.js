@@ -27,7 +27,7 @@ export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder,
           setFilters((prev) => ({ ...prev, searchKey: e.target.value }));
         }}
       />
-      <FilterSelect
+      {/* <FilterSelect
         items={listFilterOptions}
         value={filters.sort}
         placeholder="Sort"
@@ -39,7 +39,7 @@ export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder,
         onChange={(e) => {
           setFilters((prev) => ({ ...prev, sort: e.target.value }));
         }}
-      />
+      /> */}
       <FilterSelect
         items={listFilterOptions}
         value={filters.status}

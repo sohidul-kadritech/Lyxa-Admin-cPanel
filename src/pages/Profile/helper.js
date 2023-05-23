@@ -141,11 +141,12 @@ export function ShopProfileBasicInfo({ title, Icon, desc }) {
 }
 
 export function AverageOrderValue(totalProductsAmount, totalOrder) {
-  return totalProductsAmount / totalOrder;
+  return totalProductsAmount / totalOrder || 0;
 }
 
 export function TagsAndCuisines(tags, cuisines) {
-  return `${cuisines?.map((cuisines) => cuisines.name).join(', ')}, ${tags?.map((tags) => tags.name).join(', ')}`;
+  console.log(tags, cuisines);
+  return ` ${tags.join(', ')}${cuisines?.length ? ', ' : ''}${cuisines?.map((cuisines) => cuisines.name).join(', ')}`;
 }
 
 export function convertTimeToAmPm(time) {

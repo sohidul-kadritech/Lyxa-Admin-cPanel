@@ -1,13 +1,25 @@
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { dietryOptions } from '../../../pages/Menu/helpers';
 import IncrementDecrementInput from '../../Form/IncrementDecrementInput';
 import StyledFormField from '../../Form/StyledFormField';
 import OpenDays from './OpenDays';
 import { deliveryOptions, paymentOptions, priceRangeOptions } from './helper';
 
-export default function ShopFeatures({ shop, onChange, tags = [] }) {
+const filterTagsAndCuisine = (tagsCuisine) => {
+  const tagsOptions = [];
+  const cuisinesOptions = [];
+
+  tagsCuisine?.forEach((tag) => {
+    if (tag?.type === 'tag') tagsOptions.push(tag);
+    else cuisinesOptions.push(tag);
+  });
+
+  return { tagsOptions, cuisinesOptions };
+};
+
+export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerType }) {
   const [render, setRender] = useState();
 
   const optionSelectHandler = (value, item) => {
@@ -21,6 +33,8 @@ export default function ShopFeatures({ shop, onChange, tags = [] }) {
 
     setRender(!render);
   };
+
+  const { tagsOptions, cuisinesOptions } = useMemo(() => filterTagsAndCuisine(tagsCuisine), [tagsCuisine]);
 
   return (
     <Box>
@@ -120,7 +134,7 @@ export default function ShopFeatures({ shop, onChange, tags = [] }) {
       />
       {/* tags */}
       <StyledFormField
-        label="Tags & Cuisine"
+        label="Tags"
         intputType="autocomplete"
         inputProps={{
           multiple: true,
@@ -132,7 +146,7 @@ export default function ShopFeatures({ shop, onChange, tags = [] }) {
             },
           },
           maxHeight: '200px',
-          options: tags,
+          options: tagsOptions,
           value: shop.tags,
           isOptionEqualToValue: (option, value) => option?._id === value?._id,
           onChange: (e, v) => {
@@ -141,6 +155,32 @@ export default function ShopFeatures({ shop, onChange, tags = [] }) {
           },
         }}
       />
+      {/* cuisine */}
+      {sellerType === 'food' && (
+        <StyledFormField
+          label="Cuisine"
+          intputType="autocomplete"
+          inputProps={{
+            multiple: true,
+            getOptionLabel: (option) => option?.name || 'Choose',
+            label: 'Choose',
+            sx: {
+              '& .MuiFormControl-root': {
+                minWidth: '100px',
+              },
+            },
+            maxHeight: '200px',
+            options: cuisinesOptions,
+            value: shop.cuisineType,
+            isOptionEqualToValue: (option, value) => option?._id === value?._id,
+            onChange: (e, v) => {
+              shop.cuisineType = v.map((item) => item);
+              setRender(!render);
+            },
+          }}
+        />
+      )}
+
       {/* dietary */}
       <StyledFormField
         intputType="optionsSelect"

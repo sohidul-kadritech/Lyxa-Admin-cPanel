@@ -59,6 +59,7 @@ function StyledShopButton({ shop, isActiveShop, onSelect, disabled }) {
 export default function List({ shops = [], loading }) {
   const { currentUser, dispatchCurrentUser } = useGlobalContext();
   const { shop: currentShop } = currentUser;
+  const theme = useTheme();
 
   return (
     <Stack
@@ -79,7 +80,17 @@ export default function List({ shops = [], loading }) {
           }}
         />
       ))}
-      {!shops.length && <Typography variant="body4">No shop found</Typography>}
+      {!shops.length && (
+        <Stack
+          sx={{ height: '68px', background: theme.palette.custom.border, px: 5 }}
+          alignItems="center"
+          justifyContent="center"
+          borderRadius={8}
+          flex={1}
+        >
+          <Typography variant="body4">No shop found</Typography>
+        </Stack>
+      )}
     </Stack>
   );
 }
