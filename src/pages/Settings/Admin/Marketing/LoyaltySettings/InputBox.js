@@ -1,7 +1,17 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import StyledInput from '../../../../../components/Styled/StyledInput';
 
-export default function StyledBox({ title, inputValue, inputType, onInputChange, endAdornment, placement }) {
+export default function StyledBox({
+  title,
+  inputValue,
+  inputType,
+  onInputChange,
+  endAdornment,
+  placement,
+  sx,
+  sxLeft,
+  sxRight,
+}) {
   return (
     <Stack
       direction="row"
@@ -24,10 +34,13 @@ export default function StyledBox({ title, inputValue, inputType, onInputChange,
             lg: '370px',
             xs: '100%',
           },
+          ...sx,
         }}
       >
-        <Typography variant="body1">{title}</Typography>
-        <Stack direction="row" alignItems="center" gap={3}>
+        <Box sx={{ ...sxLeft }}>
+          <Typography variant="body1">{title}</Typography>
+        </Box>
+        <Stack direction="row" alignItems="center" gap={3} sx={{ ...sxRight }}>
           <StyledInput
             value={inputValue}
             type={inputType}
