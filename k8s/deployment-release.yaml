@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lyxa-admin-release
+  namespace: default
+  labels:
+    app: lyxa-admin-release
+spec:
+  selector:
+    matchLabels:
+      app: lyxa-admin-release
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  replicas: 2 # number of pods
+  template:
+    metadata:
+      labels:
+        app: lyxa-admin-release
+    spec:
+      containers:
+        - name: lyxa-admin-release
+          image: gcr.io/for-poc-325210/lyxa-admin-release:$COMMIT_SHA
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+              protocol: TCP
+      imagePullSecrets:
+        - name: dropimagepullkey
+# docker build -t gcr.io/for-poc-325210/drop-admin:v50 .
+
+# docker push gcr.io/for-poc-325210/drop-admin:v50
+
+# kubectl apply -f k8s/deployment.yaml
+
+# gcloud auth login
