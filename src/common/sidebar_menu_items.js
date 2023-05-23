@@ -138,6 +138,11 @@ export const seller_menu_items = (prefix = '') => [
         label: 'Orders',
         to: `${prefix}/orders/list`,
       },
+      {
+        label: 'Users',
+        icon: UsersIcon,
+        to: `${prefix}/users`,
+      },
     ],
   },
   {

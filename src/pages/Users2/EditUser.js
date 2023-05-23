@@ -1,20 +1,64 @@
 import { ArrowDownward } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { useMutation } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
+import { validateUser } from './helpers';
 
-const fieldContainerSx = {
-  padding: '14px 0px 23px 0',
-};
-function EditUser({ onClose, editUser, ...props }) {
-  const [userData, setUserData] = useState(props.data);
+const getEditUserData = (editUser) => ({
+  email: editUser?.email,
+  name: editUser?.name,
+  password: '',
+  repeated_password: '',
+  id: editUser?._id,
+  isParentUser: editUser?.isParentUser,
+});
+
+const userTypeToApiMap = { shop: Api.UPDATE_SHOP_CREDENTIAL };
+
+function EditUser({ onClose, editUser, userType, refetch }) {
+  const { currentUser } = useGlobalContext();
+  const [user, setUserData] = useState(getEditUserData(editUser));
+
   const userEditOnChangeHandler = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    setUserData({ ...user, [e.target.name]: e.target.value });
   };
 
-  const onSubmitHandler = () => {
-    props.editUserHandler(userData);
+  const editUserMutation = useMutation(
+    (data) => AXIOS.post(userTypeToApiMap[userType], { isParentUser: undefined, ...data }),
+    {
+      onSuccess: (data, args) => {
+        if (data?.status) {
+          successMsg(data.message, 'success');
+          onClose();
+          refetch();
+
+          console.log(args);
+
+          if (args?.isParentUser) {
+            currentUser[userType].name = args?.name;
+          }
+        } else {
+          successMsg(data.message, 'error');
+        }
+      },
+    }
+  );
+
+  const onSubmit = () => {
+    const status = validateUser(user);
+
+    if (!status.status) {
+      successMsg(status?.message);
+      return;
+    }
+
+    editUserMutation.mutate(user);
   };
 
   const theme = useTheme();
@@ -26,13 +70,10 @@ function EditUser({ onClose, editUser, ...props }) {
           <StyledFormField
             label="Full Name"
             intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
               type: 'text',
               name: 'name',
-              value: userData.name,
+              value: user.name,
               onChange: userEditOnChangeHandler,
             }}
           />
@@ -51,7 +92,7 @@ function EditUser({ onClose, editUser, ...props }) {
               readOnly: true,
               type: 'email',
               name: 'email',
-              value: userData.email,
+              value: user.email,
             }}
           />
 
@@ -59,12 +100,9 @@ function EditUser({ onClose, editUser, ...props }) {
           <StyledFormField
             label="New password"
             intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
               type: 'password',
-              name: 'new_password',
+              name: 'password',
               onChange: userEditOnChangeHandler,
             }}
           />
@@ -72,12 +110,9 @@ function EditUser({ onClose, editUser, ...props }) {
           <StyledFormField
             label="Confirm new password"
             intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
               type: 'password',
-              name: 'confirm_new_password',
+              name: 'repeated_password',
               onChange: userEditOnChangeHandler,
             }}
           />
@@ -96,8 +131,8 @@ function EditUser({ onClose, editUser, ...props }) {
             settings.
           </Typography>
           <Button
-            onClick={onSubmitHandler}
-            disabled={props?.loading}
+            onClick={onSubmit}
+            disabled={editUserMutation.isLoading}
             variant="contained"
             color="primary"
             startIcon={<ArrowDownward />}

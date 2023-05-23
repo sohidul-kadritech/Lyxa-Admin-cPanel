@@ -16,6 +16,7 @@ import ShopList from '../pages/ShopList';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import ShopListOld from '../pages/Shops/ShopList/ShopList';
+import Users from '../pages/Users2';
 
 export const seller_routes = (prefix = '') => [
   { path: `${prefix}/`, component: Dashboard },
@@ -30,6 +31,7 @@ export const seller_routes = (prefix = '') => [
   { path: `${prefix}/shops/add`, component: ShopAdd },
   { path: `${prefix}/shops/edit/:id`, component: ShopAdd },
   { path: `${prefix}/shops/details/:id`, component: ShopDetails },
+  { path: `${prefix}/users`, component: () => <Users userType="seller" /> },
   {
     path: `${prefix}/app-wallet/seller/shops-transactions`,
     component: ShopsTransactions,
