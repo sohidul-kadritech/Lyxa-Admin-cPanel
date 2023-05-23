@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 // project import
 import TabPanel from '../../components/Common/TabPanel';
-import Customers from './Customers';
+import Customers from '../../components/Shared/Customers';
 import Greeting from './Greeting';
 import Operations from './Operations';
 import Orders from './Orders';
@@ -41,10 +41,10 @@ export default function ShopDashboard() {
           <Orders />
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
-          <Customers />
+          <Customers viewUserType="shop" />
         </TabPanel>
         <TabPanel index={2} value={currentTab} noPadding>
-          <Operations />
+          <Operations viewUserType="shop" />
         </TabPanel>
       </Box>
     </Box>

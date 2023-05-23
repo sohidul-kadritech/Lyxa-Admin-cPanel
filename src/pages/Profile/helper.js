@@ -146,7 +146,7 @@ export function AverageOrderValue(totalProductsAmount, totalOrder) {
 
 export function TagsAndCuisines(tags, cuisines) {
   console.log(tags, cuisines);
-  return ` ${tags.join(', ')}${cuisines?.length ? ', ' : ''}${cuisines?.map((cuisines) => cuisines.name).join(', ')}`;
+  return ` ${tags?.join(', ')}${cuisines?.length ? ', ' : ''}${cuisines?.map((cuisines) => cuisines.name).join(', ')}`;
 }
 
 export function convertTimeToAmPm(time) {

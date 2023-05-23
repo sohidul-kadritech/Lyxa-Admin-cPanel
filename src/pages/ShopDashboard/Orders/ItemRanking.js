@@ -1,22 +1,18 @@
 // third party
 import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+// import { useState } from 'react';
+import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
-import StyledBox from '../../../components/StyledCharts/StyledBox';
-// project import
 import IncreaseDecrease from '../../../components/StyledCharts/IncreaseDecrease';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 
-export default function ItemRanking({ rankedData, loading }) {
+export default function ItemRanking() {
+  const itemsQuery = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING], () => AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING));
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
-
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
-  const [pageNo, setPageNo] = useState(1);
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
-  const [selectedPageSize, setSelectedPageSize] = useState(50);
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
-  const [selectedPagingRange, setSelectedPagingRange] = useState(5);
 
   const column = [
     {
@@ -83,16 +79,18 @@ export default function ItemRanking({ rankedData, loading }) {
         </Typography>
         <StyledTable
           columns={column}
-          rows={rankedData.map((row, index) => ({
-            ...row,
-            rowNumber: index + 1,
-          }))}
+          rows={
+            itemsQuery?.data?.data?.items?.map((row, index) => ({
+              ...row,
+              rowNumber: index + 1,
+            })) || []
+          }
           getRowId={(row) => row?.product?._id}
           rowHeight={71}
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
-                {loading ? '' : 'No Flags found'}
+                {itemsQuery?.isLoading ? '' : 'No Items found'}
               </Stack>
             ),
           }}

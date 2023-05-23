@@ -269,7 +269,7 @@ export const updateShopData = (oldShop, newShop) => {
   oldShop.phone_number = newShop?.phone_number || oldShop?.phone_number;
   oldShop.shopLogo = newShop?.shopLogo || oldShop?.shopLogo;
   oldShop.shopBanner = newShop?.shopBanner || oldShop?.shopBanner;
-  oldShop.status = newShop?.status || oldShop?.status;
+  oldShop.shopStatus = newShop?.shopStatus || oldShop?.shopStatus;
   oldShop.bank_name = newShop?.bank_name || oldShop?.bank_name;
   oldShop.account_number = newShop?.account_number || oldShop?.account_number;
   oldShop.bank_postal_code = newShop?.bank_postal_code || oldShop?.bank_postal_code;

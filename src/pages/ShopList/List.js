@@ -3,6 +3,7 @@ import { useGlobalContext } from '../../context';
 
 function StyledShopButton({ shop, isActiveShop, onSelect, disabled }) {
   const theme = useTheme();
+  console.log(shop);
 
   return (
     <Stack
@@ -42,7 +43,12 @@ function StyledShopButton({ shop, isActiveShop, onSelect, disabled }) {
           width: '12px',
           height: '12px',
           borderRadius: '50%',
-          background: shop?.shopStatus === 'active' ? theme?.palette.success.main : theme?.palette.error.main,
+          background:
+            shop?.shopStatus === 'inactive'
+              ? '#F89C5B'
+              : shop?.liveStatus === 'online'
+              ? theme?.palette.success.main
+              : theme?.palette.error.main,
         }}
       ></Box>
       <Avatar src={shop?.shopLogo} alt="photo" sx={{ width: 36, height: 36, textTransform: 'uppercase' }}>

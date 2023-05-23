@@ -99,6 +99,7 @@ export const SELLER_DROP_CHARGE = `${ADMIN_ENDPOINT}/seller/add-drop-charge`;
 export const ADD_SELLER_CREDENTIAL = `${ADMIN_ENDPOINT}/seller/add-credential`;
 export const GET_SELLER_CREDENTIALS = `${ADMIN_ENDPOINT}/seller/credential`;
 export const REMOVE_SELLER_CREDENTIAL = `${ADMIN_ENDPOINT}/seller/delete-credential`;
+export const UPDATE_SELLER_CREDENTIAL = `${ADMIN_ENDPOINT}/seller/update-credential`;
 
 // SHOP
 export const ADD_SHOP_DEAL = `${ADMIN_ENDPOINT}/shop/add-deal`;
