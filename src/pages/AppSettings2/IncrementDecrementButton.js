@@ -13,8 +13,8 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
         borderRadius: '25px',
         background: theme.palette.background.secondary,
         display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
+        // justifyContent: 'center',
+        // alignContent: 'center',
       }}
     >
       <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
