@@ -1,9 +1,10 @@
 import { Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
-import CommonAreaChart from '../../components/StyledCharts/CommonAreaChart';
-import { useGlobalContext } from '../../context';
-import { generateGraphData } from '../../helpers/generateGraphData';
-import * as Api from '../../network/Api';
+import CommonAreaChart from '../../../components/StyledCharts/CommonAreaChart';
+import { useGlobalContext } from '../../../context';
+import { generateGraphData } from '../../../helpers/generateGraphData';
+import * as Api from '../../../network/Api';
+import ShopList from './ShopList';
 
 export default function Orders() {
   const { currentUser } = useGlobalContext();
@@ -25,6 +26,7 @@ export default function Orders() {
           )
         }
       />
+      <ShopList />
     </Grid>
   );
 }

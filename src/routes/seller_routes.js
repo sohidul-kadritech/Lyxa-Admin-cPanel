@@ -6,6 +6,7 @@ import CategoryAdd from '../pages/Categories&Tags/Category/CategoryAdd/CategoryA
 import CategoryDetails from '../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails';
 import CategoryList from '../pages/Categories&Tags/Category/CategoryList/CategoryList';
 import Dashboard from '../pages/Dashboard/index';
+import Financials from '../pages/Financials';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import ProductAdd from '../pages/Product/ProductAdd/ProductAdd';
@@ -34,6 +35,7 @@ export const seller_routes = (prefix = '') => [
   { path: `${prefix}/shops/edit/:id`, component: ShopAdd },
   { path: `${prefix}/shops/details/:id`, component: ShopDetails },
   { path: `${prefix}/users`, component: () => <Users userType="seller" /> },
+  { path: `${prefix}/financials`, component: Financials },
   {
     path: `${prefix}/app-wallet/seller/shops-transactions`,
     component: ShopsTransactions,

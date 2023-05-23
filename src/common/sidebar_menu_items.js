@@ -139,6 +139,11 @@ export const seller_menu_items = (prefix = '') => [
         to: `${prefix}/orders/list`,
       },
       {
+        label: 'Financials',
+        icon: FinancialIcon,
+        to: `${prefix}/financials`,
+      },
+      {
         label: 'Users',
         icon: UsersIcon,
         to: `${prefix}/users`,
