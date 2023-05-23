@@ -374,6 +374,10 @@ export const admin_menu_items = [
         to: '/app/settings',
       },
       {
+        label: 'App Settings2',
+        to: '/app/settings2',
+      },
+      {
         label: 'Percentage Settings',
         to: '/percentage-setting',
       },
@@ -388,6 +392,14 @@ export const admin_menu_items = [
       {
         label: 'Support Reasons',
         to: '/settings/support-reasons',
+      },
+      {
+        label: 'Cancel Order Reason',
+        to: '/admin/cancel-reason',
+      },
+      {
+        label: 'Cancel Order Reason2',
+        to: '/admin/cancel-reason2',
       },
       {
         label: 'Support Reasons2',

@@ -44,6 +44,7 @@ import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransa
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
 import ButlerOrderList from '../pages/Butler';
 import CancelReason from '../pages/CancelReason/CancelReason';
+import CancelReason2 from '../pages/CancelReason2';
 import CategoryAdd from '../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
 import CategoryDetails from '../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails';
 import CategoryList from '../pages/Categories&Tags/Category/CategoryList/CategoryList';
@@ -76,6 +77,7 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
+import Appsettings2 from '../pages/AppSettings2';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -194,9 +196,11 @@ export const admin_routes = [
   //  settings
   { path: '/admin/settings', component: AdminSettings },
   { path: '/app/settings', component: AppSettings },
+  { path: '/app/settings2', component: Appsettings2 },
   { path: '/percentage-setting', component: PercentageSetting },
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/admin/cancel-reason', component: CancelReason },
+  { path: '/admin/cancel-reason2', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
   { path: '/admin/database/collections', component: DatabaseSettings },
 

@@ -91,14 +91,14 @@ function ServiceZone() {
   // eslint-disable-next-line prettier/prettier, no-unused-vars
   const [selectedsortBy, setSelectedSortBy] = useState('desc');
 
-  // const { account_type } = useSelector((store) => store?.Login?.admin);
+  const [currentRowData, setCurrentRowData] = useState({});
 
   const { currentUser } = useGlobalContext();
 
   const queryClient = useQueryClient();
+
   const apiurl = currentUser?.userType === 'admin' ? API_URL.GET_ALL_ZONE : '';
-  console.log('currentUser: ', currentUser);
-  console.log('url: ', apiurl);
+
   // getAllZones
   const getAllZones = useQuery(
     [apiurl, { slectedStatus: slectedZoneStatus, searchedValue, pageNo, selectedPageSize, selectedsortBy }],
@@ -112,7 +112,7 @@ function ServiceZone() {
           sortBy: selectedsortBy,
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
@@ -201,6 +201,7 @@ function ServiceZone() {
       id: 2,
       sortable: false,
       flex: 2,
+      align: 'right',
       minWidth: 270,
       renderCell: (value) => (
         <Stack flexDirection="row" gap="16px">
@@ -389,8 +390,8 @@ function ServiceZone() {
                   currentLocation={{
                     loaded: true,
                     coordinates: {
-                      lat: rowData?.zoneGeometry?.coordinates[0][0][0],
-                      lon: rowData?.zoneGeometry?.coordinates[0][0][1],
+                      lat: rowData?.zoneGeometry?.coordinates[0][0][1],
+                      lon: rowData?.zoneGeometry?.coordinates[0][0][0],
                     },
                   }}
                   rowData={rowData || { zoneName: 'no name' }}
@@ -405,7 +406,11 @@ function ServiceZone() {
           </TabPanel>
           <TabPanel index={1} value={currentTab}>
             <Box>
-              <MapOverview setIsSideBarOpen={setIsSideBarOpen} />
+              <MapOverview
+                setCurrentRowData={setCurrentRowData}
+                getAllZone={getAllZones?.data?.data?.zones || []}
+                setIsSideBarOpen={setIsSideBarOpen}
+              />
             </Box>
           </TabPanel>
         </Grid>
@@ -423,7 +428,7 @@ function ServiceZone() {
                   backgroundColor: theme.palette.primary.contrastText,
                 }}
               >
-                <SidebarZone title="Zone A" setIsSideBarOpen={setIsSideBarOpen} />
+                <SidebarZone currentRowData={currentRowData} setIsSideBarOpen={setIsSideBarOpen} />
               </Box>
             </Fade>
           </Grid>

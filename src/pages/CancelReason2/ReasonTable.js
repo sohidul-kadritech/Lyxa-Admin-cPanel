@@ -4,31 +4,33 @@ import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import TableLoader from '../../components/Common/TableLoader';
 import StyledTable4 from '../../components/Styled/StyledTable4';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
-import { getTypeValue } from './helpers';
-
-//
-function FaqTable({ items, faqLoading, threeDotHandler, supportReason }) {
+// eslint-disable-next-line no-unused-vars
+function ReasonTable({ items, loading, threeDotHandler }) {
   const allColumns = [
     {
       id: 1,
-      headerName: `Q&A`,
+      headerName: `Reason`,
       flex: 1.5,
-      renderCell: (params) => (
-        <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
-          <HandleIcon className="drag-handler" />
-          <Box>
-            <Typography variant="body1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-              {params?.row?.question}
-            </Typography>
+      renderCell: (params) => {
+        console.log('params: ', params);
+        return (
+          <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
+            <HandleIcon className="drag-handler" />
             <Typography
-              variant="body3"
-              sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', lineHeight: '1.5' }}
+              variant="body1"
+              style={{
+                margin: '0 0',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                textTransform: 'capitalize',
+                width: '100%',
+              }}
             >
-              {params?.row?.ans}
+              {params?.row?.name}
             </Typography>
-          </Box>
-        </Stack>
-      ),
+          </Stack>
+        );
+      },
     },
     {
       id: 2,
@@ -72,7 +74,7 @@ function FaqTable({ items, faqLoading, threeDotHandler, supportReason }) {
       // eslint-disable-next-line no-unused-vars
       renderCell: (params) => (
         <ThreeDotsMenu
-          menuItems={['View', 'Edit', 'Delete']}
+          menuItems={['Edit', 'Delete']}
           handleMenuClick={(menu) => {
             threeDotHandler(menu, params?.row);
           }}
@@ -80,36 +82,17 @@ function FaqTable({ items, faqLoading, threeDotHandler, supportReason }) {
       ),
     },
   ];
-
-  console.log('Items; ', items);
-
-  const typeColumn = {
-    id: 5,
-    headerName: `TYPE`,
-    flex: 1,
-    renderCell: (params) => (
-      <Typography variant="body1" className="text-capitalize">
-        {getTypeValue(params.row.type)}
-      </Typography>
-    ),
-  };
-
-  // const newColumns = [];
-  if (supportReason?.type === 'faq') {
-    allColumns.splice(1, 0, typeColumn);
-  }
-
   return (
-    <Box>
+    <Box paddingBottom="40px">
       <StyledTable4
         columns={allColumns}
         rows={items}
         getRowKey={(row) => row?._id}
         //   onDrop={onDrop}
-        noRowsMessage={faqLoading ? <TableLoader /> : 'No Q&A Found'}
+        noRowsMessage={loading ? <TableLoader /> : 'No Q&A Found'}
       />
     </Box>
   );
 }
 
-export default FaqTable;
+export default ReasonTable;

@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import CloseButton from '../../components/Common/CloseButton';
 import TabPanel from '../../components/Common/TabPanel';
 import ZoneMap2 from './ZoneMap2';
+import { createZoneInfoData } from './helper';
 
+// eslint-disable-next-line no-unused-vars
 const riderStatic = [
   {
     id: 1,
@@ -63,7 +65,9 @@ const store = [
   },
 ];
 
-function ZoneInfo({ theme, setIsSideBarOpen }) {
+function ZoneInfo({ theme, setIsSideBarOpen, infoData, polygon, zoneName }) {
+  console.log('infoData', infoData, polygon);
+  console.log('infodata new: ', createZoneInfoData(infoData));
   const zoneConsumerSx = {
     backgroundColor: theme.palette.primary.contrastText,
     padding: '14px',
@@ -79,14 +83,22 @@ function ZoneInfo({ theme, setIsSideBarOpen }) {
     <Stack justifyContent="space-between" gap="40px" height="100%">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <Box sx={{ width: '100%', height: '400px' }}>
-          <ZoneMap2 />
+          <ZoneMap2 polygon={polygon} infoData={createZoneInfoData(infoData)} zoneName={zoneName} />
         </Box>
         <Stack flexDirection="row" flexWrap="wrap" gap="14px">
-          {riderStatic.map((rider, i) => (
-            <Box sx={zoneConsumerSx} key={i}>
-              <Typography sx={{ textAlign: 'center', fontWeight: '600', fontSize: '16px' }}>{rider?.name}</Typography>
-            </Box>
-          ))}
+          <>
+            {createZoneInfoData(infoData).map((data, i) => (
+              <Box sx={zoneConsumerSx} key={i}>
+                <Typography sx={{ textAlign: 'center', fontWeight: '600', fontSize: '16px' }}>{data?.name}</Typography>
+              </Box>
+            ))}
+
+            {createZoneInfoData(infoData).length === 0 && (
+              <Box sx={zoneConsumerSx}>
+                <Typography sx={{ textAlign: 'center', fontWeight: '600', fontSize: '16px' }}>No Data</Typography>
+              </Box>
+            )}
+          </>
         </Stack>
       </Box>
       <Button
@@ -102,17 +114,21 @@ function ZoneInfo({ theme, setIsSideBarOpen }) {
     </Stack>
   );
 }
-function SidebarZone({ setIsSideBarOpen, title }) {
+function SidebarZone({ setIsSideBarOpen, currentRowData }) {
+  const statsTracker = {
+    0: 'users',
+    1: 'riders',
+    2: 'orders',
+    3: 'shops',
+  };
+  console.log('currentRowdata', currentRowData);
+  console.log('polygon currenr zone', currentRowData?.zoneGeometry?.coordinates);
   const theme = useTheme();
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(3);
   return (
     <Stack
       justifyContent="space-between"
       sx={{
-        // minWidth: '400px',
-        // maxWidth: '400px',
-        // paddingLeft: '20px',
-        // paddingRight: '20px',
         paddingTop: '20px',
         top: '0px',
         position: 'relative',
@@ -129,10 +145,11 @@ function SidebarZone({ setIsSideBarOpen, title }) {
             fontSize: '18px',
             fontWeight: '600',
             color: theme.palette.text.main,
+            textTransform: 'capitalize',
           }}
           flex={1}
         >
-          {title}
+          {`${currentRowData?.zoneName} Zone` || ''}
         </Typography>
         <CloseButton
           onClick={() => {
@@ -161,7 +178,13 @@ function SidebarZone({ setIsSideBarOpen, title }) {
         </Tabs>
 
         <TabPanel index={currentTab} value={currentTab}>
-          <ZoneInfo theme={theme} setIsSideBarOpen={setIsSideBarOpen} />
+          <ZoneInfo
+            zoneName={currentRowData?.zoneName}
+            theme={theme}
+            setIsSideBarOpen={setIsSideBarOpen}
+            infoData={currentRowData.stats[statsTracker[currentTab]]}
+            polygon={currentRowData?.zoneGeometry?.coordinates}
+          />
         </TabPanel>
       </Box>
     </Stack>

@@ -4,6 +4,7 @@ import * as actionType from '../actionType';
 
 const initialState = {
   loading: false,
+  isUpdated: false,
   status: false,
   error: null,
   googleMapKey: '',
@@ -350,6 +351,7 @@ const settingsReducer = (state = initialState, action) => {
         cancelReasons: [...state.cancelReasons, payload],
         loading: false,
         status: true,
+        isUpdated: true,
       };
     case actionType.ADD_REASON_REQUEST_FAIL:
       return {
@@ -404,6 +406,7 @@ const settingsReducer = (state = initialState, action) => {
         cancelReasons: state.cancelReasons.map((item) => (item._id === payload._id ? payload : item)),
         loading: false,
         status: true,
+        isUpdated: true,
       };
 
     case actionType.UPDATE_REASON_REQUEST_FAIL:

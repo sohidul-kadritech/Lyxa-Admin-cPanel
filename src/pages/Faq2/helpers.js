@@ -28,6 +28,10 @@ export const statusTypeOptions = [
 
 export const supportTypeOptions = [
   {
+    value: 'all',
+    label: 'All',
+  },
+  {
     value: 'accountSupport',
     label: 'Account Support',
   },
@@ -40,3 +44,26 @@ export const supportTypeOptions = [
     label: 'FAQ',
   },
 ];
+
+// type value
+export const getTypeValue = (type) => {
+  switch (type) {
+    case 'user':
+      return 'User FAQ';
+
+    case 'shop':
+      return 'Shop FAQ';
+
+    case 'deliveryBoy':
+      return 'Rider FAQ';
+
+    case 'accountSupport':
+      return 'Account Support';
+
+    case 'orderSupport':
+      return 'Order Support';
+
+    default:
+      return '';
+  }
+};
