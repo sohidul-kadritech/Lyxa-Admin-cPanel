@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: drop-admin
+  name: lyxa-admin-develop
   namespace: default
   labels:
-    app: drop-admin
+    app: lyxa-admin-develop
 spec:
   selector:
     matchLabels:
-      app: drop-admin
+      app: lyxa-admin-develop
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,14 +18,14 @@ spec:
   template:
     metadata:
       labels:
-        app: drop-admin
+        app: lyxa-admin-develop
     spec:
       containers:
-        - name: drop-admin
-          image: gcr.io/for-poc-325210/drop-admin:v70
+        - name: lyxa-admin-develop
+          image: gcr.io/for-poc-325210/lyxa-admin-develop:$COMMIT_SHA
           imagePullPolicy: Always
           ports:
-            - containerPort: 30038
+            - containerPort: 3001
               protocol: TCP
       imagePullSecrets:
         - name: dropimagepullkey
