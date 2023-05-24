@@ -2,6 +2,7 @@ import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { useGlobalContext } from '../../context';
@@ -9,105 +10,56 @@ import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddUser from './AddUser';
-import UsersTable from './UsersTable';
+import EditUser from './EditUser';
+import Table from './Table';
 
-// styled button
-function AddMenuButton({ ...props }) {
-  return (
-    <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
-      Add user
-    </Button>
-  );
-}
+const createCurrentUesrItem = (currentUser, userType) => {
+  const user = currentUser[userType];
+  return { _id: user?._id, name: user?.name ? user?.name : user?.account_name, email: user?.email, isParentUser: true };
+};
 
-function Users2() {
-  const [open, setOpen] = useState(false);
+const userTypeToApiMap = { shop: API_URL.GET_SHOP_CREDENTIALS, seller: API_URL.GET_SELLER_CREDENTIALS };
 
+export default function Users({ userType }) {
+  const { currentUser } = useGlobalContext();
+  const [open, setOpen] = useState(null);
+  const [user, setUser] = useState({});
   const [isConfirm, setIsConfirm] = useState(false);
-
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
   const [searchFilteredData, setSearchFilteredData] = useState([]);
 
-  // const shop = useSelector((store) => store.Login.admin);
-  const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
-
-  const { data, isLoading, refetch } = useQuery(
-    'get-shop-credentials',
+  const { data, refetch } = useQuery(
+    [userTypeToApiMap[userType], { id: currentUser[userType]?._id }],
     () =>
-      // eslint-disable-next-line prettier/prettier
-      AXIOS.get(`${API_URL.GET_SHOP_CREDENTIALS}?id=${shop._id}`),
+      AXIOS.get(userTypeToApiMap[userType], {
+        params: {
+          id: currentUser[userType]?._id,
+        },
+      }),
     {
       onSuccess: (data) => {
         if (data?.status) {
           setSearchFilteredData([
+            createCurrentUesrItem(currentUser, userType),
             ...(data?.data?.credentials?.credentials || []),
-            { ...shop, name: shop.name ? shop.name : shop.account_name, isParentUser: true },
           ]);
         } else {
           successMsg(data.message, 'error');
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
-  const closeEditSidebar = () => setIsEditOpen(false);
-
-  const closeConfirmModal = () => setIsConfirm(false);
-
-  const openEditSideBar = () => setIsEditOpen(true);
-
-  const openConfirmModal = () => setIsConfirm(true);
-
-  const addUser = useMutation((data) => AXIOS.post(API_URL.ADD_SHOP_CREDENTIAL, data), {
+  const deleteUserMutation = useMutation((data) => AXIOS.post(API_URL.REMOVE_SHOP_CREDENTIAL, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data.message, 'success');
-        refetch();
-        setOpen(false);
-      } else {
-        successMsg(data.message, 'error');
-      }
-    },
-  });
-
-  const editUserAction = useMutation(
-    (data) => AXIOS.post(API_URL.UPDATE_SHOP_CREDENTIAL, { isParentUser: undefined, ...data }),
-    {
-      onSuccess: (data, args) => {
-        console.log('args: ', args);
-        if (data?.status) {
-          successMsg(data.message, 'success');
-          closeEditSidebar();
-          if (args?.isParentUser) {
-            shop.name = args?.name;
-          }
-          refetch();
-        } else {
-          successMsg(data.message, 'error');
-        }
-      },
-      // eslint-disable-next-line prettier/prettier
-    }
-  );
-
-  const DeleteUser = useMutation((data) => AXIOS.post(API_URL.REMOVE_SHOP_CREDENTIAL, data), {
-    onSuccess: (data) => {
-      if (data?.status) {
-        successMsg(data.message, 'success');
-        closeConfirmModal();
+        setIsConfirm(false);
         refetch();
       } else {
         successMsg(data.message, 'error');
       }
     },
   });
-
-  const RemoveUserHandler = (data) => {
-    DeleteUser.mutate(data);
-  };
 
   const onChangeSearchHandler = (e) => {
     if (e.target.value !== '') {
@@ -115,71 +67,12 @@ function Users2() {
         searchFilteredData.filter(
           (user) =>
             user?.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            // eslint-disable-next-line prettier/prettier
             user?.email.toLowerCase().includes(e.target.value.toLowerCase())
-          // eslint-disable-next-line prettier/prettier
         )
       );
-    } else if (e.target.value === '') {
-      setSearchFilteredData([
-        ...data.data.credentials.credentials,
-        { ...shop, name: shop.name ? shop.name : shop.account_name },
-      ]);
+    } else {
+      setSearchFilteredData([createCurrentUesrItem(currentUser, userType), ...data.data.credentials.credentials]);
     }
-  };
-
-  const editUserHandler = (data) => {
-    console.log(data);
-    const { name, new_password, confirm_new_password, _id, isParentUser } = data;
-
-    const tempNewPass = new_password || '';
-    const tempconfirmPass = confirm_new_password || '';
-
-    const newData = { id: _id, name, password: tempNewPass, isParentUser };
-
-    if (tempNewPass === tempconfirmPass) {
-      editUserAction.mutate(newData);
-      // setOpen(false)
-    } else successMsg("Passsword doesn't match");
-  };
-
-  const addNewUser = async (data) => {
-    const { name, email, password, repeated_password } = data;
-
-    const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
-    // get data for shop credentials
-
-    if (!name) {
-      successMsg('Please provide your name!');
-      return;
-    }
-
-    if (!password) {
-      successMsg('Please provide your password!');
-      return;
-    }
-
-    if (!repeated_password) {
-      successMsg('Please provide your repeated password!');
-      return;
-    }
-
-    if (!email) {
-      successMsg('Please provide your email address!');
-      return;
-    }
-
-    if (password !== repeated_password) {
-      successMsg('Pasword not match please check again !');
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
-      successMsg('email is not valid!');
-      return;
-    }
-
-    addUser.mutate({ shopId: shop._id, name, email, password });
   };
 
   return (
@@ -194,34 +87,53 @@ function Users2() {
           fontWeight: 700,
         }}
       />
-      <Stack direction="row" justifyContent="start" gap="17px">
+      <Stack direction="row" justifyContent="start" gap="17px" pb={9}>
         <StyledSearchBar sx={{ width: '319px' }} onChange={onChangeSearchHandler} placeholder="Search" />
-        <AddMenuButton onClick={() => setOpen(true)} />
+        <Button variant="contained" color="primary" size="small" startIcon={<Add />} onClick={() => setOpen('add')}>
+          Add user
+        </Button>
       </Stack>
-
-      <>
-        <Box>
-          <UsersTable
-            isConfirm={isConfirm}
-            isEditOpen={isEditOpen}
-            closeConfirmModal={closeConfirmModal}
-            closeEditSidebar={closeEditSidebar}
-            openEditSideBar={openEditSideBar}
-            openConfirmModal={openConfirmModal}
-            RemoveUserHandler={RemoveUserHandler}
-            editUserHandler={editUserHandler}
-            data={searchFilteredData}
-            loading={isLoading}
-            editUserLoading={editUserAction?.isLoading}
-            deleteUserLoading={DeleteUser?.isLoading}
+      <Table
+        rows={searchFilteredData}
+        onEdit={(row) => {
+          setUser(row);
+          setOpen('edit');
+        }}
+        onDelete={(row) => {
+          setUser(row);
+          setIsConfirm(true);
+        }}
+      />
+      <Drawer open={Boolean(open)} anchor="right">
+        {open === 'add' && <AddUser onClose={() => setOpen(null)} userType={userType} refetch={refetch} />}
+        {open === 'edit' && (
+          <EditUser
+            onClose={() => {
+              setOpen(null);
+              setUser({});
+            }}
+            editUser={user}
+            userType={userType}
+            refetch={refetch}
           />
-        </Box>
-        <Drawer open={open} anchor="right">
-          <AddUser loading={addUser?.isLoading} addUser={addNewUser} onClose={() => setOpen(false)} />
-        </Drawer>
-      </>
+        )}
+      </Drawer>
+      <ConfirmModal
+        message="Are you confirm to remove the user?"
+        isOpen={isConfirm}
+        loading={deleteUserMutation.isLoading}
+        blurClose
+        onCancel={() => {
+          setIsConfirm(false);
+          setUser({});
+        }}
+        onConfirm={() => {
+          // removeCredential(removedUserId);
+          // setIsConfirmModalOpen(false);
+        }}
+      />
     </Box>
   );
 }
 
-export default Users2;
+//  Users2;

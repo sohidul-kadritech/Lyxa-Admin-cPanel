@@ -1,12 +1,15 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useState } from 'react';
-import AppPagination from '../../components/Common/AppPagination2';
+import React, { useEffect, useState } from 'react';
 import StyledTable from '../../components/Styled/StyledTable3';
-import { colorList } from './helper';
+import { colorList, createDataForTable } from './helper';
 
-function MapOverview({ setIsSideBarOpen }) {
-  const [pageNo, setPageNo] = useState(1);
+function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
+  const [loading, setIsloading] = useState(true);
+  const [tempAllZones, setTempAllZones] = useState([]);
   const theme = useTheme();
+
+  // console.log('data is ready for table: ', Promise.resolve(createDataForTable(getAllZone)));
+  // eslint-disable-next-line no-unused-vars
   const allZones = [
     {
       _id: 1,
@@ -35,33 +38,29 @@ function MapOverview({ setIsSideBarOpen }) {
       density: 'comfortable',
       flex: 1,
       // minWidth: 270,
-      renderCell: (value) => {
-        console.log('value: ', value);
-        return (
-          <Stack flexDirection="row" alignItems="center" gap="10px">
-            <Box
-              sx={{
-                width: '14px',
-                height: '14px',
-                borderRadius: '50%',
-                background: `${colorList[value.row._id % 50]}`,
-              }}
-            ></Box>{' '}
-            <Typography sx={{ color: theme.palette.primary.main, textTransform: 'capitalize' }}>
-              {value?.row?.zoneName}
-            </Typography>
-          </Stack>
-        );
-      },
+      renderCell: (value) => (
+        <Stack flexDirection="row" alignItems="center" gap="10px">
+          <Box
+            sx={{
+              width: '14px',
+              height: '14px',
+              borderRadius: '50%',
+              background: `${colorList[value.row.colorId % 50]}`,
+            }}
+          ></Box>{' '}
+          <Typography sx={{ color: theme.palette.primary.main, textTransform: 'capitalize' }}>
+            {value?.row?.zoneName}
+          </Typography>
+        </Stack>
+      ),
     },
     {
       id: 1,
       headerName: 'CUSTOMERS',
-      field: 'customers',
       sortable: false,
       flex: 1,
       //   minWidth: 270,
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <Box
           sx={{
             padding: '0px 8px',
@@ -69,7 +68,7 @@ function MapOverview({ setIsSideBarOpen }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {value || null}
+            {row?.stats?.users?.length || 0}
           </Typography>
         </Box>
       ),
@@ -81,7 +80,7 @@ function MapOverview({ setIsSideBarOpen }) {
       sortable: false,
       flex: 1,
       //   minWidth: 270,
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <Box
           sx={{
             padding: '0px 8px',
@@ -89,7 +88,7 @@ function MapOverview({ setIsSideBarOpen }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {value || null}
+            {row?.stats?.orders?.length || 0}
           </Typography>
         </Box>
       ),
@@ -101,7 +100,7 @@ function MapOverview({ setIsSideBarOpen }) {
       sortable: false,
       flex: 1,
       //   minWidth: 270,
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <Box
           sx={{
             padding: '0px 8px',
@@ -109,7 +108,7 @@ function MapOverview({ setIsSideBarOpen }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {value || null}
+            {row?.stats?.riders?.length || 0}
           </Typography>
         </Box>
       ),
@@ -121,7 +120,7 @@ function MapOverview({ setIsSideBarOpen }) {
       sortable: false,
       flex: 1,
       //   minWidth: 270,
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <Box
           sx={{
             padding: '0px 8px',
@@ -129,12 +128,21 @@ function MapOverview({ setIsSideBarOpen }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {value || null}
+            {row?.stats?.shops?.length || 0}
           </Typography>
         </Box>
       ),
     },
   ];
+
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
+    const data = createDataForTable(getAllZone).then((data) => {
+      setTempAllZones(data);
+      setIsloading(false);
+    });
+    // console.log('get data all data: ', data);
+  }, [getAllZone]);
 
   return (
     <Box>
@@ -147,15 +155,14 @@ function MapOverview({ setIsSideBarOpen }) {
           borderRadius: '7px',
           background: '#fff',
           marginBottom: '30px 0px',
-          // height: 550,
-          // width: '100%',
         }}
       >
         <StyledTable
           columns={columns}
-          rows={allZones || []}
-          onRowClick={() => {
+          rows={tempAllZones || []}
+          onRowClick={(data) => {
             setIsSideBarOpen(true);
+            setCurrentRowData(data?.row);
           }}
           getRowId={(row) => row?._id}
           sx={{
@@ -171,19 +178,10 @@ function MapOverview({ setIsSideBarOpen }) {
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
-                No zone found
+                {loading ? 'Loading...' : 'No zone found'}
               </Stack>
             ),
           }}
-        />
-      </Box>
-      <Box sx={{ marginTop: '30px' }}>
-        <AppPagination
-          currentPage={pageNo}
-          lisener={(newPage) => {
-            setPageNo(newPage);
-          }}
-          totalPage={2}
         />
       </Box>
     </Box>

@@ -2,12 +2,13 @@ import { Box, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import DateRange from '../../../components/StyledCharts/DateRange';
+import { useGlobalContext } from '../../../context';
 import { dateRangeInit } from '../../../helpers/dateRangeInit';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import CommonAreaChart from '../CommonAreaChart';
+import CommonAreaChart from '../../StyledCharts/CommonAreaChart';
+import DateRange from '../../StyledCharts/DateRange';
 import CustomerBreakdown from './CustomerBreakdown';
 import CustomerInfoCard from './Infocard';
 
@@ -33,9 +34,34 @@ const tabValueToPropsMap = {
   },
 };
 
-export default function Customers() {
+export default function Customers({ viewUserType }) {
   const [currentTab, setCurrentTab] = useState('total');
   const [range, setRange] = useState({ ...dateRangeInit });
+  const { currentUser } = useGlobalContext();
+  const { shop, seller } = currentUser;
+
+  const viewUserTypeToApiMap = {
+    shop: {
+      dashboard: {
+        api: Api.SHOP_DASHBOARD_CUSTOMER_INFO,
+        params: { shopId: shop?._id },
+      },
+      graph: {
+        api: Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH,
+        params: { shopId: shop?._id },
+      },
+    },
+    seller: {
+      dashboard: {
+        api: Api.SHOP_DASHBOARD_CUSTOMER_INFO,
+        params: { sellerId: seller?._id },
+      },
+      graph: {
+        api: Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH,
+        params: { sellerId: seller?._id },
+      },
+    },
+  };
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
@@ -43,27 +69,28 @@ export default function Customers() {
 
   const query = useQuery(
     [
-      'SHOP_DASHBOARD_CUSTOMER_INFO',
+      viewUserTypeToApiMap[viewUserType]?.dashboard?.api,
       {
         endDate: range.end,
         startDate: range.start,
         year: undefined,
         type: 'normal',
+        ...viewUserTypeToApiMap[viewUserType]?.dashboard?.params,
       },
     ],
     () =>
-      AXIOS.get(Api.SHOP_DASHBOARD_CUSTOMER_INFO, {
+      AXIOS.get(viewUserTypeToApiMap[viewUserType]?.dashboard?.api, {
         params: {
           endDate: range.end,
           startDate: range.start,
+          ...viewUserTypeToApiMap[viewUserType]?.dashboard?.params,
         },
       }),
     {
       onSuccess: (data) => {
         console.log(data);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (
@@ -121,15 +148,17 @@ export default function Customers() {
           />
         </Grid>
         <CommonAreaChart
-          api={Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH}
-          cacheKey="SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH"
+          console={console.log(viewUserTypeToApiMap[viewUserType]?.graph?.params)}
+          api={viewUserTypeToApiMap[viewUserType]?.graph?.api}
           title={tabValueToPropsMap[currentTab].title}
+          params={{
+            ...viewUserTypeToApiMap[viewUserType]?.graph?.params,
+          }}
           generateData={(data = {}) =>
             generateGraphData(
               data?.data?.info || [],
               (item) => item[tabValueToPropsMap[currentTab].graphValueProp],
-              // eslint-disable-next-line prettier/prettier
-              (item) => moment(item?.date).format('MMMM DD'),
+              (item) => moment(item?.date).format('MMMM DD')
             )
           }
         />

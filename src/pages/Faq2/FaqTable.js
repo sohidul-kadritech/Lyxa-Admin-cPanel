@@ -1,12 +1,13 @@
 import { Box, Chip, Stack, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import TableLoader from '../../components/Common/TableLoader';
 import StyledTable4 from '../../components/Styled/StyledTable4';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
+import { getTypeValue } from './helpers';
 
 //
-function FaqTable({ items, faqLoading, threeDotHandler }) {
+function FaqTable({ items, faqLoading, threeDotHandler, supportReason, onDrop, setDataCounter, dataCounter }) {
   const allColumns = [
     {
       id: 1,
@@ -23,7 +24,7 @@ function FaqTable({ items, faqLoading, threeDotHandler }) {
               variant="body3"
               sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', lineHeight: '1.5' }}
             >
-              {params?.row?.ans}
+              {params?.row?.ans || params?.row?.answer}
             </Typography>
           </Box>
         </Stack>
@@ -71,7 +72,7 @@ function FaqTable({ items, faqLoading, threeDotHandler }) {
       // eslint-disable-next-line no-unused-vars
       renderCell: (params) => (
         <ThreeDotsMenu
-          menuItems={['Edit', 'Delete']}
+          menuItems={['View', 'Edit', 'Delete']}
           handleMenuClick={(menu) => {
             threeDotHandler(menu, params?.row);
           }}
@@ -79,14 +80,37 @@ function FaqTable({ items, faqLoading, threeDotHandler }) {
       ),
     },
   ];
-  console.log('Items; ', items);
+
+  const typeColumn = {
+    id: 5,
+    headerName: `TYPE`,
+    flex: 1,
+    renderCell: (params) => (
+      <Typography variant="body1" className="text-capitalize">
+        {getTypeValue(params.row.type)}
+      </Typography>
+    ),
+  };
+
+  // const newColumns = [];
+  if (supportReason?.type === 'faq') {
+    allColumns.splice(1, 0, typeColumn);
+  }
+
+  useEffect(() => {
+    const oldDataCounter = dataCounter;
+    oldDataCounter[supportReason?.type] = items?.length;
+    console.log('oldDataCounter: ', oldDataCounter);
+    setDataCounter({ ...oldDataCounter });
+  }, [supportReason?.type]);
+
   return (
     <Box>
       <StyledTable4
         columns={allColumns}
         rows={items}
         getRowKey={(row) => row?._id}
-        //   onDrop={onDrop}
+        onDrop={onDrop}
         noRowsMessage={faqLoading ? <TableLoader /> : 'No Q&A Found'}
       />
     </Box>

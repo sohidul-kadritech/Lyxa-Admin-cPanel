@@ -77,6 +77,7 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
+import Appsettings2 from '../pages/AppSettings2';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -85,6 +86,7 @@ import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySetti
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
+import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
 
@@ -195,6 +197,7 @@ export const admin_routes = [
   //  settings
   { path: '/admin/settings', component: AdminSettings },
   { path: '/app/settings', component: AppSettings },
+  { path: '/app/settings2', component: Appsettings2 },
   { path: '/percentage-setting', component: PercentageSetting },
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/admin/cancel-reason', component: CancelReason },
@@ -210,6 +213,7 @@ export const admin_routes = [
   { path: '/admin/settings2/marketing/coupons', component: CouponSettings },
 
   // terms and conditions
+  { path: '/terms-and-conditions2', component: TermsAndConditions },
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
   { path: '/terms-and-conditions/shop-app', component: ShopTermsAndConditions },
   {

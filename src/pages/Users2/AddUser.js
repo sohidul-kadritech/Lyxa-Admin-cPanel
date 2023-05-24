@@ -1,27 +1,48 @@
+/* eslint-disable no-unused-vars */
 import { EmailOutlined } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { useMutation } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
+import { addUserInit, validateUser } from './helpers';
 
-// Style
-const fieldContainerSx = {
-  padding: '14px 0px 23px 0',
-};
-function AddUser({ onClose, editCategory, loading, ...props }) {
-  const [userData, setUserData] = useState({});
+const userTypeToApiMap = { shop: Api.ADD_SHOP_CREDENTIAL, seller: Api.ADD_SELLER_CREDENTIAL };
 
-  console.log(editCategory);
-
+function AddUser({ onClose, userType, refetch }) {
   const theme = useTheme();
+  const { currentUser } = useGlobalContext();
 
-  const userOnBlurHandler = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+  const [user, setUser] = useState(addUserInit(userType, currentUser[userType]?._id));
+  console.log(addUserInit(userType, currentUser[userType]?._id));
+
+  const addUserMutation = useMutation((data) => AXIOS.post(userTypeToApiMap[userType], data), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        onClose();
+        refetch();
+      }
+    },
+  });
+
+  const onChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const onSubmitHandler = () => {
-    console.log('added user data for credential: ', userData);
-    props.addUser(userData);
+  const onSubmit = () => {
+    const status = validateUser(user);
+
+    if (!status.status) {
+      successMsg(status?.message);
+      return;
+    }
+
+    addUserMutation.mutate(user);
   };
 
   return (
@@ -32,13 +53,11 @@ function AddUser({ onClose, editCategory, loading, ...props }) {
           <StyledFormField
             label="Full Name"
             intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
               type: 'text',
               name: 'name',
-              onBlur: userOnBlurHandler,
+              value: user.name,
+              onChange,
             }}
           />
           {/* email */}
@@ -53,8 +72,8 @@ function AddUser({ onClose, editCategory, loading, ...props }) {
             inputProps={{
               type: 'email',
               name: 'email',
-              onBlur: userOnBlurHandler,
-              // autoComplete: 'off',
+              onChange,
+              value: user.email,
               inputProps: {
                 autoComplete: 'off',
               },
@@ -69,26 +88,22 @@ function AddUser({ onClose, editCategory, loading, ...props }) {
           <StyledFormField
             label="Password"
             intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
               type: 'password',
+              value: user.password,
               name: 'password',
-              onBlur: userOnBlurHandler,
+              onChange,
             }}
           />
           {/* repeated password */}
           <StyledFormField
             label="Repeat Password"
             intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
+              value: user.repeated_password,
               type: 'password',
               name: 'repeated_password',
-              onBlur: userOnBlurHandler,
+              onChange,
             }}
           />
         </Box>
@@ -108,8 +123,8 @@ function AddUser({ onClose, editCategory, loading, ...props }) {
           <Button
             variant="contained"
             color="primary"
-            disabled={loading}
-            onClick={onSubmitHandler}
+            disabled={addUserMutation.isLoading}
+            onClick={onSubmit}
             startIcon={<EmailOutlined />}
             fullWidth
           >

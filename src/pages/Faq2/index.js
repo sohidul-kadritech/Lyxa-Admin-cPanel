@@ -1,26 +1,20 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 // eslint-disable-next-line import/order, no-unused-vars
 import DateRange from '../../components/StyledCharts/DateRange';
-import { dateRangeInit, statusTypeOptions } from './helpers';
+import { createUpdateData, dateRangeInit, statusTypeOptions } from './helpers';
 
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import { successMsg } from '../../helpers/successMsg';
-import {
-  addChatReason,
-  deleteChatReason,
-  getAllChatReason,
-  updateChatReason,
-} from '../../store/ChatReason/chatReasonActions';
-import { addFaq, deleteFaq, getAllFaq, updateFaq } from '../../store/faq/faqActions';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
 import AddFaq from './AddFaq';
 import FaqTable from './FaqTable';
-// import { dateRangeInit } from './helpers/dateRangeInit';
 
 // faq validation
 const queryValidation = (item) => {
@@ -29,7 +23,7 @@ const queryValidation = (item) => {
       successMsg('Q&A type cannot be empty');
       return false;
 
-    case Boolean(item?.ans?.trim()):
+    case Boolean(item?.ans?.trim() || item?.answer?.trim()):
       successMsg('Q&A answer cannot be empty');
       return false;
 
@@ -66,90 +60,179 @@ function AddMenuButton({ ...props }) {
 }
 
 function Faq() {
-  // eslint-disable-next-line no-unused-vars
+  const queryClient = useQueryClient();
 
-  // eslint-disable-next-line no-unused-vars
-  const dispatch = useDispatch();
-  // eslint-disable-next-line no-unused-vars
-  const { faq: faqQueries, loading: faqLoading } = useSelector((store) => store.faqReducer);
-  // eslint-disable-next-line no-unused-vars
-  const { chatReasons: chatReasonQueries, loading: chatReasonLoading } = useSelector(
-    // eslint-disable-next-line prettier/prettier
-    (store) => store.chatReasonReducer,
-  );
+  const [range, setRange] = useState({ ...dateRangeInit });
+
+  const [currentTab, setCurrentTab] = useState(0);
+
+  const [currentFaq, setCurrentFaq] = useState({});
+
+  const [deleteFaqData, setDeletedFaqData] = useState({});
+
+  const [searchKey, setSearchKey] = useState('');
+
+  const [dataCounter, setDataCounter] = useState({
+    orderSupport: 0,
+    accountSupport: 0,
+    faq: 0,
+  });
+  const [type, setType] = useState('orderSupport');
+
+  const [status, setStatus] = useState('active');
+
+  const [isEdit, setIsEdit] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   // React Query will implement here
   /*--------------------------------*/
-  // const getChatReason = useQuery([API_URL?.GET_CHAT_REASON], () =>
-  //   AXIOS.get(API_URL?.GET_CHAT_REASON, {
-  //     params: {
-  //       status: 'active',
-  //       type: 'faq',
-  //     },
-  //     // eslint-disable-next-line prettier/prettier
-  //   }),
-  // );
+  // eslint-disable-next-line no-unused-vars
+  const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, { status, type, searchKey }], () =>
+    AXIOS.get(API_URL?.GET_CHAT_REASON, {
+      params: {
+        status,
+        type,
+        searchKey,
+        // startDate: range.start,
+        // endDate: range.end,
+      },
+      // eslint-disable-next-line prettier/prettier
+    }),
+  );
+
+  // eslint-disable-next-line no-unused-vars
+  const getChatFaq = useQuery([API_URL?.GET_FAQ, { status, searchKey, range }], () =>
+    AXIOS.get(API_URL?.GET_FAQ, {
+      params: {
+        status,
+        searchKey,
+        startDate: range.start,
+        endDate: range.end,
+      },
+      // eslint-disable-next-line prettier/prettier
+    }),
+  );
+
+  console.log('faq data: ', getChatFaq?.data?.data?.list);
+  console.log('chat reason data: ', getChatReason?.data?.data?.chatReason);
   /*--------------------------------*/
-  const [range, setRange] = useState({ ...dateRangeInit });
+
+  const faqSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_FAQ, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        queryClient.invalidateQueries(API_URL?.GET_FAQ);
+      }
+    },
+  });
   // eslint-disable-next-line no-unused-vars
-  const [query, setQuery] = useState([]);
+  const faqAddQuery = useMutation((data) => AXIOS.post(API_URL.ADD_FAQ, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg('Successfully added!', 'success');
+        queryClient.invalidateQueries(API_URL?.GET_FAQ);
+      }
+    },
+  });
+  // eslint-disable-next-line no-unused-vars
+  const faqUpdateQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_FAQ, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg('Successfully Updated !', 'success');
+        queryClient.invalidateQueries(API_URL?.GET_FAQ);
+      } else {
+        successMsg('Q&A not found');
+      }
+    },
+  });
 
   // eslint-disable-next-line no-unused-vars
-  const [currentTab, setCurrentTab] = useState(0);
+  const faqDeleteQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_FAQ, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg('Successfully deleted!', 'success');
+        queryClient.invalidateQueries(API_URL?.GET_FAQ);
+      }
+    },
+  });
 
   // eslint-disable-next-line no-unused-vars
-  const [currentFaq, setCurrentFaq] = useState({});
+  const reasonSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_CHAT_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        queryClient.invalidateQueries(API_URL?.GET_CHAT_REASON);
+      }
+    },
+  });
 
   // eslint-disable-next-line no-unused-vars
-  const [deleteFaqData, setDeletedFaqData] = useState({});
+  const reasonAddQuery = useMutation((data) => AXIOS.post(API_URL.ADD_CHAT_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg('Successfully added!', 'success');
+        queryClient.invalidateQueries(API_URL?.GET_CHAT_REASON);
+      }
+    },
+  });
 
-  // filters
   // eslint-disable-next-line no-unused-vars
-  const [sort, setSort] = useState('');
-  const [type, setType] = useState('orderSupport');
-  // eslint-disable-next-line no-unused-vars
-  const [status, setStatus] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  const [isEdit, setIsEdit] = useState(false);
+  const reasonUpdateQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_CHAT_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg('Successfully Updated !', 'success');
+        queryClient.invalidateQueries(API_URL?.GET_CHAT_REASON);
+      } else {
+        successMsg('Q&A not found');
+      }
+    },
+  });
 
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   // eslint-disable-next-line no-unused-vars
-  const [open, setOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [childType, setChildType] = useState('');
-  // get all faqs
-  const callGetAllFaq = () => {
-    dispatch(getAllFaq());
-  };
+  const reasonDeleteQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_CHAT_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg('Successfully deleted!', 'success');
+        queryClient.invalidateQueries(API_URL?.GET_CHAT_REASON);
+      }
+    },
+  });
 
-  // get all chatReason
-  const callGetAllChatReason = () => {
-    dispatch(getAllChatReason());
-  };
-
-  // update faq
-  const callUpdateFaq = (item) => {
-    if (!queryValidation(item)) {
-      return;
+  // three dot handler
+  const threeDotHandler = (menu, item) => {
+    console.log('item----> ', item);
+    if (menu === 'Edit') {
+      setIsReadOnly(false);
+      setIsEdit(true);
+      setOpen(true);
+      setCurrentFaq(item);
     }
-
-    if (item.type === 'orderSupport' || item.type === 'accountSupport') {
-      dispatch(updateChatReason({ ...item, answer: item.ans }));
-      return;
+    if (menu === 'Delete') {
+      setIsReadOnly(false);
+      setIsConfirmModalOpen(true);
+      setDeletedFaqData(item);
     }
-
-    dispatch(updateFaq(item));
+    if (menu === 'View') {
+      setIsReadOnly(true);
+      setIsEdit(true);
+      setCurrentFaq(item);
+      setOpen(true);
+    }
   };
 
-  // delete faq
   const callDeleteFaq = () => {
     if (deleteFaqData.type === 'orderSupport' || deleteFaqData.type === 'accountSupport') {
-      dispatch(deleteChatReason(deleteFaqData?._id));
-      // eslint-disable-next-line no-useless-return
+      reasonDeleteQuery.mutate({ id: deleteFaqData?._id });
       return;
     }
 
-    dispatch(deleteFaq(deleteFaqData?._id));
+    faqDeleteQuery.mutate({ id: deleteFaqData?._id });
   };
 
   // add faq
@@ -159,62 +242,49 @@ function Faq() {
     }
 
     if (item.type === 'orderSupport' || item.type === 'accountSupport') {
-      dispatch(addChatReason({ ...item, answer: item.ans }));
+      reasonAddQuery.mutate(item);
       return;
     }
 
-    dispatch(addFaq(item));
+    faqAddQuery.mutate(item);
   };
 
-  // three dot handler
-  const threeDotHandler = (menu, item) => {
-    if (menu === 'Edit') {
-      setIsEdit(true);
-      setOpen(true);
-      setCurrentFaq(item);
+  // update faq
+  const callUpdateFaq = (item) => {
+    if (!queryValidation(item)) {
+      return;
     }
 
-    if (menu === 'Delete') {
-      setIsConfirmModalOpen(true);
-      setDeletedFaqData(item);
+    if (item.type === 'orderSupport' || item.type === 'accountSupport') {
+      reasonUpdateQuery.mutate(createUpdateData(item));
+      return;
     }
+
+    faqUpdateQuery.mutate(createUpdateData(item));
   };
 
-  useEffect(() => {
-    if (faqQueries?.length === 0) {
-      callGetAllFaq();
+  const dropSort = ({ removedIndex, addedIndex }) => {
+    if (removedIndex === null || addedIndex === null) return;
+    if (type === 'faq') {
+      const item = getChatFaq?.data?.data?.list.splice(removedIndex, 1);
+      getChatFaq?.data?.data?.list.splice(addedIndex, 0, item[0]);
+      faqSortQuery.mutate({
+        faqs: getChatFaq?.data?.data?.list.map((item, index) => ({
+          id: item._id,
+          sortingOrder: index + 1,
+        })),
+      });
+    } else {
+      const item = getChatReason?.data?.data?.chatReason.splice(removedIndex, 1);
+      getChatReason?.data?.data?.chatReason.splice(addedIndex, 0, item[0]);
+      reasonSortQuery.mutate({
+        chatReasons: getChatReason?.data?.data?.chatReason.map((item, index) => ({
+          id: item._id,
+          sortingOrder: index + 1,
+        })),
+      });
     }
-    if (chatReasonQueries?.length === 0) {
-      callGetAllChatReason();
-    }
-  }, []);
-
-  useEffect(() => {
-    const convertedChatReasons = chatReasonQueries.map((item) => ({ ...item, ans: item.answer }));
-
-    setQuery([...faqQueries, ...convertedChatReasons]);
-  }, [faqQueries, chatReasonQueries]);
-
-  const filterReasons = () => {
-    let data = query;
-
-    if (type !== '') {
-      data = data.filter(
-        (item) =>
-          // eslint-disable-next-line prettier/prettier
-          (type === 'faq' && item.type !== 'accountSupport' && item.type !== 'orderSupport') || item.type === type,
-      );
-    }
-
-    if (childType !== '') {
-      data = data.filter((item) => item.type === childType);
-    }
-
-    if (status !== '') {
-      data = data.filter((item) => item.status === status);
-    }
-
-    return data;
+    // faqSortQuery.mutation();
   };
 
   return (
@@ -249,7 +319,7 @@ function Faq() {
         </Box>
 
         <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" />
+          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
           <DateRange range={range} setRange={setRange} />
           <StyledFormField
             intputType="select"
@@ -271,6 +341,7 @@ function Faq() {
             onClick={() => {
               setOpen(() => {
                 setIsEdit(false);
+                setIsReadOnly(false);
                 return true;
               });
             }}
@@ -278,12 +349,27 @@ function Faq() {
         </Stack>
 
         <Box>
-          <FaqTable items={filterReasons()} threeDotHandler={threeDotHandler} faqLoading={faqLoading} />
+          <FaqTable
+            supportReason={{ type: currentTab === 0 ? 'orderSupport' : currentTab === 1 ? 'accountSupport' : 'faq' }}
+            items={currentTab !== 2 ? getChatReason?.data?.data?.chatReason || [] : getChatFaq?.data?.data?.list || []}
+            // items={filterReasons()}
+            threeDotHandler={threeDotHandler}
+            faqLoading={getChatReason?.isLoading || getChatFaq?.isLoading}
+            setDataCounter={setDataCounter}
+            dataCounter={dataCounter}
+            onDrop={dropSort}
+          />
         </Box>
       </Box>
       <Drawer open={open} anchor="right">
         <AddFaq
           isEdit={isEdit}
+          isReadOnly={isReadOnly}
+          loading={
+            currentTab !== 2
+              ? reasonUpdateQuery?.isLoading || reasonAddQuery?.isLoading
+              : faqUpdateQuery?.isLoading || faqAddQuery?.isLoading
+          }
           faq={
             isEdit
               ? currentFaq

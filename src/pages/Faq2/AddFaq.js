@@ -1,12 +1,9 @@
 import { Button, FormControl, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { faqType as faqTypeOptions } from '../../assets/staticData';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import OptionsSelect from '../../components/Filter/OptionsSelect';
 import StyledFormField from '../../components/Form/StyledFormField';
-import { updateChatReasonIsAdded, updateChatReasonIsUpdated } from '../../store/ChatReason/chatReasonActions';
-import { updateFaqIsAdded, updateFaqIsUpdated } from '../../store/faq/faqActions';
 
 const initialFaq = {
   type: 'accountSupport',
@@ -36,23 +33,7 @@ const fieldContainerSx = {
   padding: '14px 0',
 };
 
-function AddFaq({ onClose, submitHandler, isEdit, faq }) {
-  const dispatch = useDispatch();
-
-  const {
-    isUpdated: isFaqUpdated,
-    isAdded: isFaqAdded,
-    // eslint-disable-next-line no-unused-vars
-    loading: isFaqLoading,
-  } = useSelector((store) => store.faqReducer);
-
-  const {
-    isUpdated: isChatReasonUpdated,
-    isAdded: isChatReasonAdded,
-    // eslint-disable-next-line no-unused-vars
-    loading: isChatReasonLoading,
-  } = useSelector((store) => store.chatReasonReducer);
-
+function AddFaq({ onClose, submitHandler, isEdit, faq, isReadOnly, loading }) {
   const [currentFaq, setCurrentFaq] = useState(faq || initialFaq);
   // eslint-disable-next-line no-unused-vars
   const [faqType, setFaqType] = useState('');
@@ -61,7 +42,6 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
   // eslint-disable-next-line no-unused-vars
   const changeHandler = (event) => {
     setCurrentFaq((prev) => ({ ...prev, [event.target.name]: event.target.value }));
-    console.log('currentFaq', currentFaq);
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -72,21 +52,6 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
       submitHandler(currentFaq);
     }
   };
-
-  useEffect(() => {
-    if (isFaqUpdated || isChatReasonUpdated) {
-      onClose();
-      dispatch(updateFaqIsUpdated(false));
-      dispatch(updateChatReasonIsUpdated(false));
-    }
-
-    if (isFaqAdded || isChatReasonAdded) {
-      onClose();
-      setCurrentFaq(initialFaq);
-      dispatch(updateFaqIsAdded(false));
-      dispatch(updateChatReasonIsAdded(false));
-    }
-  }, [isFaqAdded, isFaqUpdated, isChatReasonUpdated, isChatReasonAdded]);
 
   useEffect(() => {
     if (isEdit) {
@@ -100,7 +65,16 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
   }, [faq]);
 
   return (
-    <SidebarContainer title={`${isEdit ? 'Edit Q&A' : 'Add New Q&A'}`} onClose={onClose}>
+    <SidebarContainer
+      title={`${
+        isEdit && isReadOnly === false
+          ? 'Edit Q&A'
+          : isEdit === false && isReadOnly === false
+          ? 'Add New Q&A'
+          : 'View Q&A'
+      }`}
+      onClose={onClose}
+    >
       <Stack spacing={6}>
         <Stack direction="column" spacing={5}>
           <Typography
@@ -156,6 +130,7 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
               value: currentFaq?.status || '',
               items: statusOptions,
               onChange: changeHandler,
+              readOnly: isReadOnly,
             }}
           />
         </FormControl>
@@ -170,6 +145,7 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
             type: 'text',
             name: 'question',
             onChange: changeHandler,
+            readOnly: isReadOnly,
           }}
         />
         <StyledFormField
@@ -179,17 +155,18 @@ function AddFaq({ onClose, submitHandler, isEdit, faq }) {
             sx: fieldContainerSx,
           }}
           inputProps={{
-            value: currentFaq?.ans,
+            value: currentFaq?.ans || currentFaq?.answer,
             type: 'textarea',
-            name: 'ans',
+            name: `${currentFaq.type === 'faq' ? 'ans' : 'answer'}`,
             multiline: true,
             onChange: changeHandler,
+            readOnly: isReadOnly,
           }}
         />
         <Button
           disableElevation
           variant="contained"
-          disabled={(isEdit && !currentFaq?._id) || isFaqLoading || isChatReasonLoading}
+          disabled={loading}
           onClick={() => {
             checkFaqType();
           }}

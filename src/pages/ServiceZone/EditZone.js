@@ -6,7 +6,13 @@ import React, { useState } from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 import ModalContainer from './ModalContainer';
 import ZoneMap from './ZoneMap';
-import { ConvertArea, createdGetLatLngsData, validateEditedData } from './helper';
+import {
+  ConvertArea,
+  convertedLatLonToLonLat,
+  convertedLonLatToLatLon,
+  createdGetLatLngsData,
+  validateEditedData,
+} from './helper';
 // eslint-disable-next-line prettier/prettier, no-unused-vars
 const fieldContainerSx = {
   padding: '14px 0px 23px 0',
@@ -14,7 +20,7 @@ const fieldContainerSx = {
 };
 
 const calculateCurrentPolygonArea = (polygon) => {
-  const convetedData = createdGetLatLngsData(polygon);
+  const convetedData = createdGetLatLngsData(convertedLonLatToLatLon(polygon));
   const area = L.GeometryUtil.geodesicArea(convetedData);
   return Math.round(area);
 };
@@ -27,12 +33,12 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
   const [searchLoading, setSearchLoading] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [createdZoneGeometry, setCreatedZoneGeometry] = useState(
-    rowData?.zoneGeometry?.coordinates[0] || [
+    convertedLonLatToLatLon(rowData?.zoneGeometry?.coordinates[0]).slice(0, -1) || [
       [0, 0],
       [0, 0],
       [0, 0],
       // eslint-disable-next-line prettier/prettier
-		]
+    ],
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -45,30 +51,24 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
   const [searchResult, setSearchResult] = useState([]);
 
   const [selectedLocation, setSelectedLoaction] = useState({ lat: null, lon: null });
-  console.log(
-    'getArear here: ',
-    L.GeometryUtil.geodesicArea([
-      { lat: 23.2254654, lng: 45.55 },
-      { lat: 25.2254654, lng: 48.55 },
-      { lat: 28.2254654, lng: 50.55 },
-    ])
-  );
 
   console.log(createdGetLatLngsData(rowData?.zoneGeometry?.coordinates[0]), 'funciton call here');
-  // console.log('getArear here: ', L.GeometryUtil.geodesicArea(rowData?.zoneGeometry?.coordinates[0]));
   // eslint-disable-next-line no-unused-vars
   const [polygonArea, setPolygonArea] = useState(
-    calculateCurrentPolygonArea(rowData?.zoneGeometry?.coordinates[0]) || 0
+    // eslint-disable-next-line prettier/prettier
+    calculateCurrentPolygonArea(rowData?.zoneGeometry?.coordinates[0]) || 0,
   );
 
   const updateZone = () => {
+    // const convertedLatLonToLonLat = createdZoneGeometry.map(([lat, lon]) => [lon, lat]);
+    const polygon = convertedLatLonToLonLat(createdZoneGeometry);
     const data = {
       zoneId: rowData?._id,
       zoneName: createdZoneName,
       zoneArea: createdZoneArea,
       zoneGeometry: {
         type: 'Polygon',
-        coordinates: [createdZoneGeometry],
+        coordinates: [...polygon, polygon[0]],
       },
       zoneStatus: createdZoneStatus,
     };
@@ -94,7 +94,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
         [0, 0],
         [0, 0],
         // eslint-disable-next-line prettier/prettier
-			]
+      ],
     );
     setCreatedZoneName(rowData?.zoneName || '');
     setCreatedZoneArea(rowData?.zoneArea || '');

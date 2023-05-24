@@ -1,15 +1,21 @@
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-unused-vars */
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
+import moment from 'moment';
 import { useSelector } from 'react-redux';
-import StyledBox from '../../../../components/StyledCharts/StyledBox';
+import StyledBox from '../../../StyledCharts/StyledBox';
 
 // project import
 import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
-import StyledDoughnutChart from '../../../../components/StyledCharts/StyledPieChart';
 import { useGlobalContext } from '../../../../context';
-import { calculateDateDifference } from '../../helper';
+import StyledDoughnutChart from '../../../StyledCharts/StyledPieChart';
+
+export function calculateDateDifference(date1, date2, unit) {
+  const momentDate1 = moment(date1);
+  const momentDate2 = moment(date2);
+  const difference = momentDate2.diff(momentDate1, unit);
+  return difference;
+}
 
 const customerTypeProps = {
   total: {
@@ -67,7 +73,6 @@ function AmountItem({ amount, title }) {
 
 export default function CustomerBreakdown({ title, customerType, range, details = {} }) {
   const theme = useTheme();
-  // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 

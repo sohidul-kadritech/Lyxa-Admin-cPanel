@@ -18,7 +18,9 @@ import {
   getShopEditData,
   shopInit,
   updateShopData,
-  validateShop,
+  validateBankDetails,
+  validateShopDetails,
+  validateShopFeatures,
 } from './helper';
 
 export default function AddShop({ onClose, editShop }) {
@@ -27,7 +29,7 @@ export default function AddShop({ onClose, editShop }) {
   const queryClient = useQueryClient();
 
   const [loading, setLoading] = useState(false);
-  const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit());
+  const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit(seller?._id));
   const [currentTab, setCurrentTab] = useState(0);
   const tabMax = editShop?._id ? 1 : 2;
 
@@ -60,6 +62,7 @@ export default function AddShop({ onClose, editShop }) {
     },
     {
       onSuccess: (data) => {
+        setLoading(false);
         successMsg(data?.message, data?.status ? 'success' : undefined);
         if (data?.status) {
           if (editShop?._id) {
@@ -73,6 +76,7 @@ export default function AddShop({ onClose, editShop }) {
 
       onError: (error) => {
         console.log(error);
+        setLoading(false);
       },
     }
   );
@@ -89,22 +93,44 @@ export default function AddShop({ onClose, editShop }) {
 
   const onSubmitShop = async () => {
     const createShopData = editShop?._id ? createEditShopData : createAddShopData;
-    const isValid = validateShop(shop);
-
-    if (isValid?.status === false) {
-      successMsg(isValid.msg);
-      return;
-    }
 
     setLoading(true);
-
     const shopData = await createShopData(shop);
     if (shopData?.status === false) {
       successMsg(shopData?.msg);
+      setLoading(false);
       return;
     }
 
     shopMutation.mutate(shopData);
+  };
+
+  const buttonHandler = () => {
+    let isValid = { status: true };
+
+    if (currentTab === 0) {
+      isValid = validateShopDetails(shop, editShop?._id);
+    }
+
+    if (currentTab === 1 && !editShop?._id) {
+      isValid = validateShopFeatures(shop, seller?.sellerType);
+    }
+
+    if ((currentTab === 1 && editShop?._id) || (currentTab === 2 && !editShop?._id)) {
+      isValid = validateBankDetails(shop);
+    }
+
+    if (!isValid.status) {
+      successMsg(isValid.msg);
+      return;
+    }
+
+    if (currentTab === tabMax) {
+      onSubmitShop();
+      return;
+    }
+
+    setCurrentTab((prev) => prev + 1);
   };
 
   return (
@@ -153,7 +179,13 @@ export default function AddShop({ onClose, editShop }) {
         </TabPanel>
         {!editShop?._id && (
           <TabPanel index={1} value={currentTab} noPadding>
-            <ShopFeatures shop={shop} tags={tagsQuery?.data?.data?.tags} onChange={onChangeHandler} />
+            <ShopFeatures
+              shop={shop}
+              tagsCuisine={tagsQuery?.data?.data?.tags}
+              onChange={onChangeHandler}
+              sellerType={seller?.sellerType}
+              console={console.log(seller)}
+            />
           </TabPanel>
         )}
         <TabPanel index={tabMax} value={currentTab} noPadding>
@@ -165,13 +197,7 @@ export default function AddShop({ onClose, editShop }) {
           variant="contained"
           disabled={loading}
           color="primary"
-          onClick={() => {
-            if (currentTab === tabMax) {
-              onSubmitShop();
-              return;
-            }
-            setCurrentTab((prev) => prev + 1);
-          }}
+          onClick={buttonHandler}
           startIcon={currentTab === tabMax ? <ArrowDownward /> : <ArrowForward />}
           fullWidth
         >

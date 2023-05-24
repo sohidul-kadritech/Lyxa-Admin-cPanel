@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 
 // project import
 import StyledBox from '../../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../../context';
 import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
 import OrderByHoursChart from './Chart';
@@ -13,11 +14,15 @@ const tabValueToOrderTypeMap = { 0: 'delivered', 1: 'incomplete' };
 
 export default function OrdersByHour() {
   const [currentTab, setCurrentTab] = useState(0);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
-  const ordersGraph = useQuery(['order-by-hours', { type: tabValueToOrderTypeMap[currentTab] }], () =>
-    AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
-      params: { type: tabValueToOrderTypeMap[currentTab] },
-    })
+  const ordersGraph = useQuery(
+    [Api.SHOP_DASHBOARD_ORDER_BY_HOURS, { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id }],
+    () =>
+      AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
+        params: { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id },
+      })
   );
 
   return (
