@@ -55,15 +55,28 @@ const timelineStatusNoteMap = {
   ready_to_pickup: 'Waiting for rider',
   order_on_the_way: 'Your order is on the move',
   delivered: 'Your order has been delivered!',
+  cancelled: 'Order got cancelled',
 };
 
-export default function OrderTimeline({ orderTimeline = [], ...props }) {
+export default function OrderTimeline({ order = {}, ...props }) {
   const theme = useTheme();
+  const orderTimeline = [...(order?.timeline || [])];
+
+  if (order?.orderStatus === 'cancelled') {
+    orderTimeline?.push({
+      active: true,
+      createdAt: order?.orderCancel?.createdAt,
+      status: 'cancelled',
+      note: `Order got cancelled ${order?.orderCancel?.canceledBy !== 'automatically' ? 'by' : ''} ${
+        order?.orderCancel?.canceledBy
+      }`,
+    });
+  }
 
   return (
     <StyledOrderDetailBox title="Order Timeline">
       <StyledTimeline {...props}>
-        {orderTimeline.map((timeline, index, array) => (
+        {orderTimeline?.map((timeline, index, array) => (
           <TimelineItem key={`${index}`}>
             <TimelineSeparator>
               <TimelineDot>
@@ -102,7 +115,9 @@ export default function OrderTimeline({ orderTimeline = [], ...props }) {
                 >
                   {timeline?.active ? moment(timeline?.createdAt).format('hh:mm a') : '_'}
                 </span>
-                <span>{timelineStatusNoteMap[timeline?.status]}</span>
+                <span>
+                  {timeline?.status === 'cancelled' ? timeline?.note : timelineStatusNoteMap[timeline?.status]}
+                </span>
               </Typography>
             </TimelineContent>
           </TimelineItem>

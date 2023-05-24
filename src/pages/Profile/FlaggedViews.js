@@ -125,10 +125,10 @@ export default function FlaggedViews({ filteredData, currentTab }) {
         }}
         totalPage={Math.ceil(filteredData.length / 5)}
       />
-
       <Drawer open={open} anchor="right">
         <OrderDetail
           order={currentOrder}
+          hideIssues
           onClose={() => {
             setOpen(false);
             setCurrentOrder({});
@@ -138,5 +138,3 @@ export default function FlaggedViews({ filteredData, currentTab }) {
     </>
   );
 }
-
-// FlaggedViews;

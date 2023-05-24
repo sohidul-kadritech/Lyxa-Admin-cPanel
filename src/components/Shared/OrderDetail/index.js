@@ -17,12 +17,14 @@ import Review from './Review';
 import Rider from './Rider';
 import OrderSummary from './Summary';
 
-export default function OrderDetail({ order, onClose }) {
+export default function OrderDetail({ order, onClose, hideIssues }) {
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
 
   const [currentTab, setCurrentTab] = useState(0);
   const theme = useTheme();
+
+  console.log(order);
 
   return (
     <Box
@@ -104,8 +106,8 @@ export default function OrderDetail({ order, onClose }) {
           }}
         >
           <Stack gap={5}>
-            {order?.flag?.length ? <OrderIssues flags={order?.flag} /> : null}
-            <OrderTimeline orderTimeline={order?.timeline} />
+            {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
+            <OrderTimeline order={order} />
             <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
             {order?.orderFor === 'global' && order?.deliveryBoy && (
               <Rider rider={order?.deliveryBoy} isDelivered={order?.orderStatus === 'delivered'} />
