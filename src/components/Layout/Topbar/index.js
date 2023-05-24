@@ -11,7 +11,7 @@ import Tabs from './Tabs';
 
 const getConsoleName = (userType, adminType) => {
   if (userType === 'admin' && adminType === 'admin') {
-    return 'Admin Console-Develop';
+    return 'Admin Console-Release';
   }
 
   if (userType === 'admin' && adminType === 'customerService') {
