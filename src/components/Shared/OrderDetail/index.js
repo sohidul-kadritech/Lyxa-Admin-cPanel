@@ -108,7 +108,7 @@ export default function OrderDetail({ order, onClose }) {
           <Stack gap={5}>
             {order?.flag?.length ? <OrderIssues flags={order?.flag} /> : null}
             <OrderTimeline orderTimeline={order?.timeline} />
-            <DeliveryDetails deliveryDetails={order?.dropOffLocation} />
+            <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
             {order?.orderFor === 'global' && order?.deliveryBoy && (
               <Rider rider={order?.deliveryBoy} isDelivered={order?.orderStatus === 'delivered'} />
             )}
