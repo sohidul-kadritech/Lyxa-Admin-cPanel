@@ -19,7 +19,6 @@ import OrderSummary from './Summary';
 import { reviews } from './mock';
 
 export default function OrderDetail({ order, onClose }) {
-  // const admin = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
 
