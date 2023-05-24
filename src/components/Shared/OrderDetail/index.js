@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useGlobalContext } from '../../../context';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
+import CallUser from './CallUser';
 import DeliveryDetails from './DeliveryDetails';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
@@ -14,7 +15,6 @@ import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
 import PaymentMethod from './PaymentMethod';
 import Review from './Review';
-import Rider from './Rider';
 import OrderSummary from './Summary';
 
 export default function OrderDetail({ order, onClose, hideIssues }) {
@@ -110,7 +110,15 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
             <OrderTimeline order={order} />
             <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
             {order?.orderFor === 'global' && order?.deliveryBoy && (
-              <Rider rider={order?.deliveryBoy} isDelivered={order?.orderStatus === 'delivered'} />
+              <CallUser
+                user={{
+                  name: order?.deliveryBoy?.name,
+                  image: order?.deliveryBoy?.image,
+                  secondary: order?.orderStatus === 'delivered' ? 'Delivered' : 'Delivering',
+                  vehicleNumber: order?.deliveryBoy?.vehicleNumber,
+                  number: order?.deliveryBoy?.number,
+                }}
+              />
             )}
             <OrderSummary productsDetails={order?.productsDetails} />
             <PaymentMethod method={order?.paymentMethod} />
