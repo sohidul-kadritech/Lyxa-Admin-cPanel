@@ -10,7 +10,7 @@ import {
 } from '../../common/sidebar_menu_items';
 import { useGlobalContext } from '../../context';
 import { admin_routes } from '../../routes/admin_routes';
-import { customer_service_routes } from '../../routes/customerSericeRoutes';
+import { customer_service_routes } from '../../routes/customer_serice_routes';
 import { seller_routes } from '../../routes/seller_routes';
 import { shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';

@@ -5,7 +5,8 @@ import Customers from '../../components/Shared/Customers';
 import { useGlobalContext } from '../../context';
 import Operations from '../ShopDashboard/Operations';
 import Orders from './Order';
-import SellerInfo from './SellerInfo';
+// import SellerInfo from './SellerInfo';
+import UserProfileInfo from '../../components/Common/UserProfileInfo';
 
 export default function SellerDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -17,7 +18,15 @@ export default function SellerDashboard() {
       <Typography variant="h4" pt={9} pb={9}>
         Dashboard
       </Typography>
-      <SellerInfo seller={seller} />
+      <UserProfileInfo
+        user={{
+          name: seller?.name,
+          phone: seller?.phone_number,
+          email: seller?.email,
+          profile: seller?.profile_photo,
+          address: seller?.addressSeller?.address,
+        }}
+      />
       <Tabs
         value={currentTab}
         onChange={(event, newValue) => {

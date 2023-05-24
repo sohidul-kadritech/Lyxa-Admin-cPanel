@@ -16,12 +16,12 @@ import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
+import OngoingTickets from '../pages/OngoingTickets';
 
 export const customer_service_routes = [
-  // orders
+  { path: `/ongoing-tickets`, component: OngoingTickets },
   { path: `/orders/list`, component: OrdersList },
   { path: `/orders/details/:id`, component: OrderDetails },
-  // users
   { path: `/users/list`, component: UsersList },
   { path: `/users/details/:id`, component: UserDetails },
   { path: `/seller/list`, component: SellerList },

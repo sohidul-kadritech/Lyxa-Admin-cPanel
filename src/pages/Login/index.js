@@ -69,7 +69,7 @@ export default function Login({ loginFor }) {
 
     // redirect after login success
     if (currentUser?.account_type === 'admin' && currentUser?.adminType === 'customerService')
-      history.push('/orders/list');
+      history.push('/ongoing-tickets');
     else history.push('/');
   };
 
