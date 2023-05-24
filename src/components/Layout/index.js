@@ -36,7 +36,7 @@ export const getRouteAndSidebarItems = (userType, adminType, prefix = '') => {
   }
 
   if (userType === 'admin' && adminType === 'customerService') {
-    routes = customer_service_routes();
+    routes = customer_service_routes;
     menuItems = customer_service_menu_items;
   }
 

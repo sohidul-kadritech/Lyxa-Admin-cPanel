@@ -7,7 +7,9 @@ import { ReactComponent as FinanceAdminIcon } from '../assets/icons/menu-icons/f
 import { ReactComponent as FinancialIcon } from '../assets/icons/menu-icons/financials.svg';
 import { ReactComponent as MarketingIcon } from '../assets/icons/menu-icons/marketing.svg';
 import { ReactComponent as MenuIcon } from '../assets/icons/menu-icons/menu.svg';
+import { ReactComponent as OngoingTickets } from '../assets/icons/menu-icons/ongoing-ticket.svg';
 import { ReactComponent as OrderIcon } from '../assets/icons/menu-icons/order.svg';
+import { ReactComponent as PastTickets } from '../assets/icons/menu-icons/past-tickets.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icons/menu-icons/profile.svg';
 import { ReactComponent as RidersAdminIcons } from '../assets/icons/menu-icons/riders.svg';
 import { ReactComponent as SellersIcon } from '../assets/icons/menu-icons/sellers.svg';
@@ -16,7 +18,9 @@ import { ReactComponent as SettingsIcon } from '../assets/icons/menu-icons/setti
 import { ReactComponent as ShopIcon } from '../assets/icons/menu-icons/shop.svg';
 import { ReactComponent as RatingIcon } from '../assets/icons/menu-icons/star.svg';
 import { ReactComponent as TeamIcon } from '../assets/icons/menu-icons/team.svg';
-import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/usrs.svg';
+import { ReactComponent as TrxIcon } from '../assets/icons/menu-icons/trx.svg';
+import { ReactComponent as UserIcon } from '../assets/icons/menu-icons/user.svg';
+import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/users.svg';
 
 /* ======== shop ======== */
 export const shop_menu_items = (prefix = '') => [
@@ -471,21 +475,53 @@ export const admin_menu_items = [
 
 export const customer_service_menu_items = [
   {
-    title: 'User & Delivery',
+    title: 'Management',
     menu: [
       {
-        label: 'User',
-        to: '/users/list',
+        label: 'Ongoing Tickets',
+        icon: OngoingTickets,
+        to: '/ongoing-tickets',
       },
       {
-        label: 'Delivery Boy List',
+        label: 'Past Tickets',
+        icon: PastTickets,
+        to: '/past-tickets',
+      },
+      {
+        label: 'All Orders',
+        icon: AdminOrdersIcon,
+        to: '/orders',
+      },
+      {
+        label: 'Riders',
+        to: '/riders',
+        icon: RidersAdminIcons,
+      },
+      {
+        label: 'User',
+        to: '/users',
+        icon: UserIcon,
+        SellersIcon,
+      },
+      {
+        label: 'Sellers',
         to: '/deliveryman/list',
+        icon: SellersIcon,
+      },
+      {
+        label: 'Lyxa Pay TRX ',
+        to: '/transactions',
+        icon: TrxIcon,
       },
     ],
   },
   {
     title: 'Sellers & Shop',
     menu: [
+      {
+        label: 'Delivery Boy List',
+        to: '/deliveryman/list',
+      },
       {
         label: 'Sellers List',
         to: '/seller/list',

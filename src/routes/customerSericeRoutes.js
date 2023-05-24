@@ -17,27 +17,27 @@ import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 
-export const customer_service_routes = (prefix = '') => [
+export const customer_service_routes = [
   // orders
-  { path: `${prefix}/orders/list`, component: OrdersList },
-  { path: `${prefix}/orders/details/:id`, component: OrderDetails },
+  { path: `/orders/list`, component: OrdersList },
+  { path: `/orders/details/:id`, component: OrderDetails },
   // users
-  { path: `${prefix}/users/list`, component: UsersList },
-  { path: `${prefix}/users/details/:id`, component: UserDetails },
-  { path: `${prefix}/seller/list`, component: SellerList },
-  { path: `${prefix}/seller/details/:id`, component: SellerDetails },
-  { path: `${prefix}/shops/list`, component: ShopList },
-  { path: `${prefix}/shops/details/:id`, component: ShopDetails },
-  { path: `${prefix}/deliveryman/list`, component: DeliverymanList },
-  { path: `${prefix}/deliveryman/details/:id`, component: DeliverymanDetails },
-  { path: `${prefix}/deliveryman/add`, component: DeliverymanAdd },
-  { path: `${prefix}/drop-pay`, component: DropPayList },
-  { path: `${prefix}/customer-support`, component: Chats },
+  { path: `/users/list`, component: UsersList },
+  { path: `/users/details/:id`, component: UserDetails },
+  { path: `/seller/list`, component: SellerList },
+  { path: `/seller/details/:id`, component: SellerDetails },
+  { path: `/shops/list`, component: ShopList },
+  { path: `/shops/details/:id`, component: ShopDetails },
+  { path: `/deliveryman/list`, component: DeliverymanList },
+  { path: `/deliveryman/details/:id`, component: DeliverymanDetails },
+  { path: `/deliveryman/add`, component: DeliverymanAdd },
+  { path: `/drop-pay`, component: DropPayList },
+  { path: `/customer-support`, component: Chats },
   {
-    path: `${prefix}/customer-support/chats-by-single-order/:id`,
+    path: `/customer-support/chats-by-single-order/:id`,
     component: ChatsListByOrder,
   },
-  { path: `${prefix}/customer-support/details/:id`, component: ChatDetails },
+  { path: `/customer-support/details/:id`, component: ChatDetails },
   // this route should be at the end of all other routes
-  { path: `${prefix}/`, exact: true, component: () => <Redirect to="/orders/list" /> },
+  { path: `/`, exact: true, component: () => <Redirect to="/orders/list" /> },
 ];
