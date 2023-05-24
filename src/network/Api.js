@@ -166,6 +166,7 @@ export const APP_SETTINGS = '/admin/setting/app-setting';
 export const ADD_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/add`;
 export const UPDATE_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/edit`;
 export const ALL_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel`;
+export const SORT_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/sort`;
 
 export const SET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge/add-global-drop-charge`;
 export const GET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge`;
@@ -281,12 +282,14 @@ export const GET_FAQ = `${ADMIN_ENDPOINT}/faq`;
 export const ADD_FAQ = `${ADMIN_ENDPOINT}/faq/add`;
 export const UPDATE_FAQ = `${ADMIN_ENDPOINT}/faq/update`;
 export const DELETE_FAQ = `${ADMIN_ENDPOINT}/faq/delete`;
+export const SORT_FAQ = `${ADMIN_ENDPOINT}/faq/sort`;
 
 // CHAT REASON
 export const GET_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason`;
 export const ADD_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/add`;
 export const UPDATE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/edit`;
 export const DELETE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/delete`;
+export const SORT_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/sort`;
 
 // RATING
 export const GET_ALL_RATINGS = `${ADMIN_ENDPOINT}/setting/rating`;
