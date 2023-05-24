@@ -6,7 +6,7 @@ import OrderDetail from '../../components/Shared/OrderDetail';
 import StyledTable from '../../components/Styled/StyledTable3';
 import TableDataPagination from './TableDataPagination';
 
-function FlaggedViews({ filteredData, currentTab }) {
+export default function FlaggedViews({ filteredData, currentTab }) {
   const [rowPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -139,4 +139,4 @@ function FlaggedViews({ filteredData, currentTab }) {
   );
 }
 
-export default FlaggedViews;
+// FlaggedViews;
