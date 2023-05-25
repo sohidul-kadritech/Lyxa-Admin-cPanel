@@ -2,7 +2,7 @@ import { Stack, Typography } from '@mui/material';
 import Rating from './Rating';
 
 export default function Review({ reviews = [] }) {
-  console.log(reviews);
+  // console.log(reviews);
 
   return (
     <Stack>

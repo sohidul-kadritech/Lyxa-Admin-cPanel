@@ -7,7 +7,7 @@ import { StyledOrderDetailBox } from './helpers';
 
 export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation = {} }) {
   const [mapOpen, setOpen] = useState(false);
-  console.log(pickUpLocation);
+  // console.log(pickUpLocation);
 
   return (
     <StyledOrderDetailBox

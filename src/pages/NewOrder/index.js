@@ -28,7 +28,6 @@ export default function NewOrders() {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, shop: shop?._id });
   const [currentTab, setCurrentTab] = useState(0);
 
-  console.log('currentOrder: ', currentOrder);
   const ordersQuery = useQuery(
     [Api.ORDER_LIST, { ...queryParams }],
     () =>

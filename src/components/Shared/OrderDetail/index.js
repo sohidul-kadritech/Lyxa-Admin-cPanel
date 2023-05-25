@@ -8,6 +8,7 @@ import { useGlobalContext } from '../../../context';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
 import CallUser from './CallUser';
+import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
@@ -108,6 +109,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           <Stack gap={5}>
             {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
             <OrderTimeline order={order} />
+            {order.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
             <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
             {order?.orderFor === 'global' && order?.deliveryBoy && (
               <CallUser

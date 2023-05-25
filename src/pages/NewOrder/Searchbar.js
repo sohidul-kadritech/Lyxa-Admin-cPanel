@@ -1,41 +1,38 @@
 import { Stack } from '@mui/material';
+import { debounce } from '@mui/material/utils';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import FilterDate from '../../components/Filter/FilterDate';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import { deepClone } from '../../helpers/deepClone';
-import { Throttler } from '../../helpers/throttle';
 import { sortOptions } from './helpers';
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams }) {
-  const Throttle = new Throttler(300);
-  const [localState, setLocalState] = useState(deepClone(queryParams));
-
-  useEffect(() => {
-    Throttle.exec(() => {
-      setQueryParams(deepClone(localState));
-    });
-  }, [localState]);
+  const updateSearch = useMemo(
+    () =>
+      debounce((e) => {
+        setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
+      }, 300),
+    []
+  );
 
   return (
     <Stack direction="row" alignItems="center" gap="20px" pb={6.5}>
       <StyledSearchBar
         fullWidth
         placeholder={searchPlaceHolder}
-        value={localState.searchKey}
         onChange={(e) => {
-          setLocalState((prev) => ({ ...prev, searchKey: e.target.value }));
+          updateSearch(e);
         }}
       />
       {/* start date */}
       <FilterDate
         tooltip="Start Date"
-        maxDate={moment(localState.endDate).subtract(1, 'day')}
-        value={localState.startDate}
+        maxDate={moment(queryParams.endDate).subtract(1, 'day')}
+        value={queryParams.startDate}
         size="sm"
         onChange={(e) => {
-          setLocalState((prev) => ({
+          setQueryParams((prev) => ({
             ...prev,
             startDate: e._d,
           }));
@@ -44,11 +41,11 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       {/* end date */}
       <FilterDate
         tooltip="End Date"
-        minDate={moment(localState.startDate).add(1, 'day')}
-        value={localState.endDate}
+        minDate={moment(queryParams.startDate).add(1, 'day')}
+        value={queryParams.endDate}
         size="sm"
         onChange={(e) => {
-          setLocalState((prev) => ({
+          setQueryParams((prev) => ({
             ...prev,
             endDate: e._d,
           }));
@@ -57,7 +54,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       {/* sort */}
       <FilterSelect
         items={sortOptions}
-        value={localState.sortBy}
+        value={queryParams.sortBy}
         placeholder="Sort"
         tooltip="Sort"
         size="sm"
@@ -65,7 +62,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          setLocalState((prev) => ({ ...prev, sortBy: e.target.value }));
+          setQueryParams((prev) => ({ ...prev, sortBy: e.target.value }));
         }}
       />
     </Stack>
