@@ -1,5 +1,5 @@
 import { Box, Button, Stack } from '@mui/material';
-import { mockAddress, mockCoupons, mockTransactions } from '../../mock';
+import { mockAddress, mockCoupons, mockTransactions } from '../../../../pages/OngoingTickets/mock';
 import AccountInfomation from './AccountInformation';
 import Address from './Address';
 import Coupons from './Coupon';

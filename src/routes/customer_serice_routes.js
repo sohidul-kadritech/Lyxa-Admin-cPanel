@@ -17,9 +17,11 @@ import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import OngoingTickets from '../pages/OngoingTickets';
+import PastTickets from '../pages/PastTickets';
 
 export const customer_service_routes = [
   { path: `/ongoing-tickets`, component: OngoingTickets },
+  { path: `/past-tickets`, component: PastTickets },
   { path: `/orders/list`, component: OrdersList },
   { path: `/orders/details/:id`, component: OrderDetails },
   { path: `/users/list`, component: UsersList },

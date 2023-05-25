@@ -1,7 +1,7 @@
 import { Avatar, Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
-import CloseButton from '../../../components/Common/CloseButton';
-import TabPanel from '../../../components/Common/TabPanel';
+import CloseButton from '../../Common/CloseButton';
+import TabPanel from '../../Common/TabPanel';
 // import OrderDetail from '../../../components/Shared/OrderDetail';
 import Chat from './Chat';
 import ChatOrderDetail from './Detail';

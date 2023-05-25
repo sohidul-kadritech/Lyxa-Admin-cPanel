@@ -1,31 +1,13 @@
-import { Box, Tab, Tabs, Typography, styled } from '@mui/material';
+import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import { useGlobalContext } from '../../context';
-import ChatDetails from './ChatDetail';
+// import ChatDetails from './ChatDetail';
+import ChatDetails from '../../components/Shared/ChatDetail';
 import ChatsList from './ChatsList';
+import SlideInContainer from './SlideInContainer';
 import { order } from './mock';
-
-const StyledDetailContainer = styled(Box)(() => ({
-  height: 'calc(100% - 18px)',
-  overflowY: 'auto',
-  position: 'absolute',
-  paddingBottom: '20px',
-  top: 0,
-  background: '#fff',
-  right: '0',
-  width: 'calc(calc(100vw / 10) * 4)',
-  zIndex: '99',
-  transform: 'translateX(100%)',
-  transition: '200ms ease-in-out',
-  opacity: 0,
-
-  '&.sidebar-open': {
-    transform: 'translateX(0)',
-    opacity: 1,
-  },
-}));
 
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
@@ -47,16 +29,7 @@ export default function OngoingTickets() {
           overflowY: 'auto',
         }}
       >
-        <Box
-          className={sidebarOpen ? 'sidebar-open' : ''}
-          pt={9}
-          sx={{
-            '&.sidebar-open': {
-              paddingRight: 'calc(calc(100vw / 10) * 4)',
-              transition: '200ms ease-in-out',
-            },
-          }}
-        >
+        <SlideInContainer open={sidebarOpen} type="static" pt={9}>
           <Typography variant="h4" pb={10}>
             Dashboard
           </Typography>
@@ -78,7 +51,6 @@ export default function OngoingTickets() {
             }}
             sx={{
               paddingTop: '40px',
-
               '& .MuiTab-root': {
                 padding: '8px 12px',
                 textTransform: 'none',
@@ -92,12 +64,15 @@ export default function OngoingTickets() {
             <TabPanel index={0} value={currentTab} noPadding>
               <ChatsList onOpen={setSidebarOpen} />
             </TabPanel>
+            <TabPanel index={1} value={currentTab} noPadding>
+              <ChatsList onOpen={setSidebarOpen} />
+            </TabPanel>
           </Box>
-        </Box>
+        </SlideInContainer>
       </Box>
-      <StyledDetailContainer className={sidebarOpen ? 'sidebar-open' : ''}>
+      <SlideInContainer type="dynamic" open={sidebarOpen}>
         <ChatDetails chat={chat} onClose={() => setSidebarOpen(false)} />
-      </StyledDetailContainer>
+      </SlideInContainer>
     </Box>
   );
 }

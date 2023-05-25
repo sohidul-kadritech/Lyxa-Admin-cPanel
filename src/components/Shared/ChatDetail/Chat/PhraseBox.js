@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material';
-import StyledChip from '../../../../components/Styled/StyledChips';
-import { mockPhrases } from '../../mock';
+import { mockPhrases } from '../../../../pages/OngoingTickets/mock';
+import StyledChip from '../../../Styled/StyledChips';
 
 export function PhraseBox({ open }) {
   return (
