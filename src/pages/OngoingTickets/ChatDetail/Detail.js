@@ -1,5 +1,4 @@
 import { Button, Stack } from '@mui/material';
-import StyledFormField from '../../../components/Form/StyledFormField';
 import CallUser from '../../../components/Shared/OrderDetail/CallUser';
 import DeliveryDetails from '../../../components/Shared/OrderDetail/DeliveryDetails';
 import OrderTimeline from '../../../components/Shared/OrderDetail/OrderTimeline';
@@ -33,7 +32,7 @@ export default function ChatOrderDetail({ order }) {
       <OrderSummary productsDetails={order?.productsDetails} />
       <PaymentMethod method={order?.paymentMethod} />
       <PaymentDetails order={order} /> {/* note */}
-      <StyledFormField
+      {/* <StyledFormField
         label={
           <span>
             Notes
@@ -52,7 +51,7 @@ export default function ChatOrderDetail({ order }) {
           name: 'note',
           multiline: true,
         }}
-      />
+      /> */}
       <Button
         variant="contained"
         color="primary"

@@ -11,7 +11,6 @@ export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
   const [currentTab, setCurrentTab] = useState(0);
-
   const chat = { order };
 
   return (
