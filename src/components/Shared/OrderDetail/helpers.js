@@ -1,5 +1,4 @@
-import { Box, useTheme } from '@mui/material';
-import Typography from '../../../theme/@components/Typography';
+import { Box, Typography, useTheme } from '@mui/material';
 
 // Order Details Handling
 export function StyledOrderDetailBox({ title, children }) {

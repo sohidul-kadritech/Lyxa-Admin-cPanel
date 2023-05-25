@@ -386,7 +386,7 @@ export function OngoingTag({ label }) {
         background: '#F6F8FA',
         color: '#5E97A9',
         gap: '0px',
-        padding: '4px 12px',
+        padding: '3px 12px',
         textTransform: 'capitalize',
 
         '&:hover': {

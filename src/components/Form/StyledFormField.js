@@ -13,7 +13,6 @@ import StyledSwitch from '../Styled/StyledSwitch';
 
 export default function StyledFormField({ containerProps, label, labelProps, intputType, inputProps }) {
   const theme = useTheme();
-
   return (
     <Stack
       gap={2}
@@ -188,7 +187,8 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                   onDelete={() => {
                     inputProps.onChange(
                       undefined,
-                      inputProps.value.filter((dItem, dIndex) => index !== dIndex)
+                      // eslint-disable-next-line prettier/prettier
+                      inputProps.value.filter((dItem, dIndex) => index !== dIndex),
                     );
                   }}
                 />

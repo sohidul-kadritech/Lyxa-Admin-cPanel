@@ -61,15 +61,21 @@ export default function Login({ loginFor }) {
     );
 
     localStorage.setItem('lastLoginType', JSON.stringify(currentUser.account_type));
+
     // save user information in global store
     dispatchCurrentUser({
       type: currentUser?.account_type,
       payload: { [currentUser?.account_type]: currentUser, isCurrentUser: true },
     });
 
+    dispatchCurrentUser({
+      type: 'credentialUserId',
+      payload: { credentialUserId: currentUser?.credentialUserId || currentUser._id },
+    });
+
     // redirect after login success
     if (currentUser?.account_type === 'admin' && currentUser?.adminType === 'customerService')
-      history.push('/orders/list');
+      history.push('/ongoing-tickets');
     else history.push('/');
   };
 
@@ -117,8 +123,8 @@ export default function Login({ loginFor }) {
             hilightAccountType={hilightAccountType}
           />
         </Stack>
+        {/* logo */}
         <Stack alignItems="center" height="calc(100vh - 47px)" justifyContent="center">
-          {/* logo */}
           <Stack alignItems="center" justifyContent="center" gap={2} pb={17}>
             <LyxaIcon />
             <LyxaText />

@@ -67,3 +67,28 @@ export const getTypeValue = (type) => {
       return '';
   }
 };
+
+export const createUpdateData = (data) => {
+  console.log('data', data);
+
+  if (data.ans) {
+    return {
+      id: data?._id,
+      question: data?.question,
+      ans: data?.ans,
+      type: data?.type,
+      status: data?.status,
+    };
+  }
+  if (data?.answer) {
+    return {
+      id: data?._id,
+      question: data?.question,
+      answer: data?.answer,
+      type: data?.type,
+      status: data?.status,
+    };
+  }
+
+  return {};
+};

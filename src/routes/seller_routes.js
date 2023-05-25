@@ -6,12 +6,14 @@ import CategoryAdd from '../pages/Categories&Tags/Category/CategoryAdd/CategoryA
 import CategoryDetails from '../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails';
 import CategoryList from '../pages/Categories&Tags/Category/CategoryList/CategoryList';
 import Dashboard from '../pages/Dashboard/index';
+import Financials from '../pages/Financials';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import ProductAdd from '../pages/Product/ProductAdd/ProductAdd';
 import ProductDetails from '../pages/Product/ProductDetails/ProductDetails';
 import ProductList from '../pages/Product/ProductList/ProductList';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
+import SellerDashboard from '../pages/SellerDashboard';
 import ShopList from '../pages/ShopList';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
@@ -19,7 +21,8 @@ import ShopListOld from '../pages/Shops/ShopList/ShopList';
 import Users from '../pages/Users2';
 
 export const seller_routes = (prefix = '') => [
-  { path: `${prefix}/`, component: Dashboard },
+  { path: `${prefix}/`, component: SellerDashboard },
+  { path: `${prefix}/old`, component: Dashboard },
   { path: `${prefix}/orders/list`, component: OrdersList },
   { path: `${prefix}/orders/details/:id`, component: OrderDetails },
   { path: `${prefix}/products/list`, component: ProductList },
@@ -32,6 +35,7 @@ export const seller_routes = (prefix = '') => [
   { path: `${prefix}/shops/edit/:id`, component: ShopAdd },
   { path: `${prefix}/shops/details/:id`, component: ShopDetails },
   { path: `${prefix}/users`, component: () => <Users userType="seller" /> },
+  { path: `${prefix}/financials`, component: Financials },
   {
     path: `${prefix}/app-wallet/seller/shops-transactions`,
     component: ShopsTransactions,

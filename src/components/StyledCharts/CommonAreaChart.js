@@ -2,30 +2,28 @@
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import ChartBox from '../../components/StyledCharts/ChartBox';
-import StyledAreaChart from '../../components/StyledCharts/StyledAreaChart';
-import { useGlobalContext } from '../../context';
 import AXIOS from '../../network/axios';
+import ChartBox from './ChartBox';
+import StyledAreaChart from './StyledAreaChart';
 
 const dateRangeItit = {
   end: moment().format('YYYY-MM-DD'),
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
 
-export default function CommonAreaChart({ title, generateData, api, cacheKey }) {
-  const { currentUser } = useGlobalContext();
-
+export default function CommonAreaChart({ title, generateData, api, params }) {
   const [range, setRange] = useState({ ...dateRangeItit });
+  console.log(params);
 
   const query = useQuery(
     [
-      cacheKey,
+      api,
       {
         endDate: range.end,
         startDate: range.start,
         year: undefined,
         type: 'normal',
-        shopId: currentUser?.shop?._id,
+        ...params,
       },
     ],
     () =>
@@ -35,7 +33,7 @@ export default function CommonAreaChart({ title, generateData, api, cacheKey }) 
           startDate: range.start,
           year: undefined,
           type: 'normal',
-          shopId: currentUser?.shop?._id,
+          ...params,
         },
       })
   );

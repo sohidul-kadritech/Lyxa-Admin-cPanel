@@ -1,12 +1,15 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import DateRange from '../../components/StyledCharts/DateRange';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
 import {
   addCancelReason,
   getAllCancelReasons,
@@ -106,6 +109,20 @@ function CancelReason() {
   };
 
   // eslint-disable-next-line no-unused-vars
+  const cancelReasonsSort = useMutation((data) => AXIOS.post(API_URL.SORT_ORDER_CANCEL_REASON, data));
+
+  const dropSort = ({ removedIndex, addedIndex }) => {
+    if (removedIndex === null || addedIndex === null) return;
+    const item = cancelReasons.splice(removedIndex, 1);
+    cancelReasons.splice(addedIndex, 0, item[0]);
+    cancelReasonsSort.mutate({
+      cancelReasons: cancelReasons.map((item, index) => ({
+        id: item?._id,
+        sortingOrder: index + 1,
+      })),
+    });
+  };
+  // eslint-disable-next-line no-unused-vars
   const callReasonsList = (refresh = false) => {
     dispatch(getAllCancelReasons(refresh));
   };
@@ -184,7 +201,12 @@ function CancelReason() {
       </Stack>
 
       <Box>
-        <ReasonTable items={cancelReasons || []} threeDotHandler={threeDotHandler} loading={loading} />
+        <ReasonTable
+          onDrop={dropSort}
+          items={cancelReasons || []}
+          threeDotHandler={threeDotHandler}
+          loading={loading}
+        />
       </Box>
 
       <Drawer open={open} anchor="right">
