@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import StyledTable from '../../components/Styled/StyledTable3';
-import TableDataPagination from './TableDataPagination';
+// import TableDataPagination from './TableDataPagination';
+// import TableDataPagination from '../../components/Shared/TableDataPagination';
+// import TablePagination from '@mui/material';
+import TablePagination from '../../components/Common/TablePagination';
 
 export default function FlaggedViews({ filteredData, currentTab }) {
   const [rowPerPage] = useState(5);
@@ -118,7 +121,7 @@ export default function FlaggedViews({ filteredData, currentTab }) {
           }}
         />
       </Box>
-      <TableDataPagination
+      <TablePagination
         currentPage={currentPage}
         lisener={(page) => {
           setCurrentPage(page);
