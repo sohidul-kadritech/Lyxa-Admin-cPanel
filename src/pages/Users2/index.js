@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable default-param-last */
 import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useState } from 'react';
@@ -12,25 +14,49 @@ import AXIOS from '../../network/axios';
 import AddUser from './AddUser';
 import EditUser from './EditUser';
 import Table from './Table';
+import UserTablePageSkeleton from './UserTableSkeleton';
 
-const createCurrentUesrItem = (currentUser, userType) => {
+const createCurrentUesrItem = (allCredentials = [], currentUser, userType) => {
+  console.log(allCredentials);
+
   const user = currentUser[userType];
-  return { _id: user?._id, name: user?.name ? user?.name : user?.account_name, email: user?.email, isParentUser: true };
+  const credentialUserId = currentUser?.credentialUserId;
+
+  const allUsers = allCredentials?.map((u) => {
+    if (u?._id === credentialUserId) return { ...u, isNotEditable: true };
+    return u;
+  });
+
+  allUsers.unshift({
+    _id: user?._id,
+    name: user?.name ? user?.name : user?.account_name,
+    email: user?.email,
+    isParentUser: true,
+    isNotEditable: true,
+  });
+  return allUsers;
 };
 
-const userTypeToApiMap = { shop: API_URL.GET_SHOP_CREDENTIALS, seller: API_URL.GET_SELLER_CREDENTIALS };
+const userTypeToApiMap = {
+  shop: { get: API_URL.GET_SHOP_CREDENTIALS, delete: API_URL.REMOVE_SHOP_CREDENTIAL },
+  seller: {
+    get: API_URL.GET_SELLER_CREDENTIALS,
+    delete: API_URL.REMOVE_SELLER_CREDENTIAL,
+  },
+};
 
 export default function Users({ userType }) {
   const { currentUser } = useGlobalContext();
   const [open, setOpen] = useState(null);
   const [user, setUser] = useState({});
   const [isConfirm, setIsConfirm] = useState(false);
-  const [searchFilteredData, setSearchFilteredData] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [render, setRender] = useState(false);
 
-  const { data, refetch } = useQuery(
-    [userTypeToApiMap[userType], { id: currentUser[userType]?._id }],
+  const { data, refetch, isLoading } = useQuery(
+    [userTypeToApiMap[userType]?.get, { id: currentUser[userType]?._id }],
     () =>
-      AXIOS.get(userTypeToApiMap[userType], {
+      AXIOS.get(userTypeToApiMap[userType]?.get, {
         params: {
           id: currentUser[userType]?._id,
         },
@@ -38,10 +64,7 @@ export default function Users({ userType }) {
     {
       onSuccess: (data) => {
         if (data?.status) {
-          setSearchFilteredData([
-            createCurrentUesrItem(currentUser, userType),
-            ...(data?.data?.credentials?.credentials || []),
-          ]);
+          setAllUsers(createCurrentUesrItem(data?.data?.credentials?.credentials, currentUser, userType));
         } else {
           successMsg(data.message, 'error');
         }
@@ -49,7 +72,7 @@ export default function Users({ userType }) {
     }
   );
 
-  const deleteUserMutation = useMutation((data) => AXIOS.post(API_URL.REMOVE_SHOP_CREDENTIAL, data), {
+  const deleteUserMutation = useMutation((data) => AXIOS.post(userTypeToApiMap[userType]?.delete, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data.message, 'success');
@@ -61,18 +84,20 @@ export default function Users({ userType }) {
     },
   });
 
-  const onChangeSearchHandler = (e) => {
-    if (e.target.value !== '') {
-      setSearchFilteredData(
-        searchFilteredData.filter(
-          (user) =>
-            user?.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            user?.email.toLowerCase().includes(e.target.value.toLowerCase())
-        )
-      );
+  const searchUser = (key) => {
+    if (key) {
+      let isMatch;
+      allUsers.forEach((user) => {
+        isMatch =
+          user?.name.toLowerCase().includes(key.toLowerCase()) || user?.email.toLowerCase().includes(key.toLowerCase());
+        user.hidden = !isMatch;
+      });
     } else {
-      setSearchFilteredData([createCurrentUesrItem(currentUser, userType), ...data.data.credentials.credentials]);
+      allUsers.forEach((user) => {
+        user.hidden = false;
+      });
     }
+    setRender((prev) => !prev);
   };
 
   return (
@@ -88,22 +113,31 @@ export default function Users({ userType }) {
         }}
       />
       <Stack direction="row" justifyContent="start" gap="17px" pb={9}>
-        <StyledSearchBar sx={{ width: '319px' }} onChange={onChangeSearchHandler} placeholder="Search" />
+        <StyledSearchBar
+          sx={{ width: '319px' }}
+          onChange={(e) => {
+            searchUser(e.target.value);
+          }}
+          placeholder="Search"
+        />
         <Button variant="contained" color="primary" size="small" startIcon={<Add />} onClick={() => setOpen('add')}>
           Add user
         </Button>
       </Stack>
-      <Table
-        rows={searchFilteredData}
-        onEdit={(row) => {
-          setUser(row);
-          setOpen('edit');
-        }}
-        onDelete={(row) => {
-          setUser(row);
-          setIsConfirm(true);
-        }}
-      />
+      {isLoading && <UserTablePageSkeleton />}
+      {!isLoading && (
+        <Table
+          rows={allUsers.filter((user) => user.hidden !== true)}
+          onEdit={(row) => {
+            setUser(row);
+            setOpen('edit');
+          }}
+          onDelete={(row) => {
+            setUser(row);
+            setIsConfirm(true);
+          }}
+        />
+      )}
       <Drawer open={Boolean(open)} anchor="right">
         {open === 'add' && <AddUser onClose={() => setOpen(null)} userType={userType} refetch={refetch} />}
         {open === 'edit' && (
@@ -119,7 +153,7 @@ export default function Users({ userType }) {
         )}
       </Drawer>
       <ConfirmModal
-        message="Are you confirm to remove the user?"
+        message="Are you sure to remove this user?"
         isOpen={isConfirm}
         loading={deleteUserMutation.isLoading}
         blurClose
@@ -128,12 +162,10 @@ export default function Users({ userType }) {
           setUser({});
         }}
         onConfirm={() => {
-          // removeCredential(removedUserId);
-          // setIsConfirmModalOpen(false);
+          setIsConfirm(false);
+          deleteUserMutation.mutate({ [userType === 'shop' ? 'shopId' : 'sellerId']: user._id });
         }}
       />
     </Box>
   );
 }
-
-//  Users2;
