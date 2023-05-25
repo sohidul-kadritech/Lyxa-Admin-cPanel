@@ -78,6 +78,7 @@ import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import Appsettings2 from '../pages/AppSettings2';
+import RequestedArea from '../pages/RequestedArea';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -239,4 +240,5 @@ export const admin_routes = [
   { path: '/display/banner/add', component: AddBanner },
   { path: '/display/banner/edit/:id', component: AddBanner },
   { path: '/admin/zone', component: ServiceZone },
+  { path: '/admin/requested-area', component: RequestedArea },
 ];

@@ -349,3 +349,4 @@ export const GET_STAT_ZONE = `${ADMIN_ENDPOINT}/zone/statistics`;
 export const CREATE_ZONE = `${ADMIN_ENDPOINT}/zone/add`;
 export const UPDATE_ZONE = `${ADMIN_ENDPOINT}/zone/update`;
 export const DELETE_ZONE = `${ADMIN_ENDPOINT}/zone/delete`;
+export const REQUESTED_AREA = `${ADMIN_ENDPOINT}/request-area`;

@@ -428,6 +428,10 @@ export const admin_menu_items = [
         to: '/admin/zone',
       },
       {
+        label: 'Requested Area',
+        to: '/admin/requested-area',
+      },
+      {
         label: 'Database Collection',
         to: '/admin/database/collections',
       },
