@@ -1,4 +1,4 @@
-import { Box, Unstable_Grid2 as Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography, styled } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
@@ -7,28 +7,56 @@ import ChatDetails from './ChatDetail';
 import ChatsList from './ChatsList';
 import { order } from './mock';
 
+const StyledDetailContainer = styled(Box)(() => ({
+  height: 'calc(100% - 18px)',
+  overflowY: 'auto',
+  position: 'absolute',
+  paddingBottom: '20px',
+  top: 0,
+  background: '#fff',
+  right: '0',
+  width: 'calc(calc(100vw / 10) * 4)',
+  zIndex: '99',
+  transform: 'translateX(100%)',
+  transition: '200ms ease-in-out',
+  opacity: 0,
+
+  '&.sidebar-open': {
+    transform: 'translateX(0)',
+    opacity: 1,
+  },
+}));
+
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
   const [currentTab, setCurrentTab] = useState(0);
   const chat = { order };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <Grid
-      container
+    <Box
       sx={{
         height: 'calc(100vh - 83px)',
         overflowY: 'hidden',
       }}
     >
-      <Grid
-        lg={7}
+      <Box
         sx={{
           height: '100%',
           overflowY: 'auto',
         }}
       >
-        <Box pt={9}>
+        <Box
+          className={sidebarOpen ? 'sidebar-open' : ''}
+          pt={9}
+          sx={{
+            '&.sidebar-open': {
+              paddingRight: 'calc(calc(100vw / 10) * 4)',
+              transition: '200ms ease-in-out',
+            },
+          }}
+        >
           <Typography variant="h4" pb={10}>
             Dashboard
           </Typography>
@@ -62,20 +90,14 @@ export default function OngoingTickets() {
           </Tabs>
           <Box pt={9}>
             <TabPanel index={0} value={currentTab} noPadding>
-              <ChatsList />
+              <ChatsList onOpen={setSidebarOpen} />
             </TabPanel>
           </Box>
         </Box>
-      </Grid>
-      <Grid
-        lg={5}
-        sx={{
-          height: '100%',
-          overflowY: 'auto',
-        }}
-      >
-        <ChatDetails chat={chat} />
-      </Grid>
-    </Grid>
+      </Box>
+      <StyledDetailContainer className={sidebarOpen ? 'sidebar-open' : ''}>
+        <ChatDetails chat={chat} onClose={() => setSidebarOpen(false)} />
+      </StyledDetailContainer>
+    </Box>
   );
 }

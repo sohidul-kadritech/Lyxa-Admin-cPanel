@@ -11,15 +11,16 @@ export default function ChatDetails({ chat, onClose }) {
   const [currentTab, setCurrentTab] = useState(0);
 
   return (
-    <Box
+    <Stack
       sx={{
         background: '#fff',
         paddingTop: 6,
         height: '100%',
         px: 5,
+        paddingBottom: '20px',
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" alignItems="center" justifyContent="space-between" pb={10}>
         <Stack direction="row" alignItems="center" gap={3}>
           <Avatar alt="user-image" src={chat?.order?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
             {chat?.order?.user?.name?.length && chat?.order?.user?.name[0]}
@@ -45,8 +46,6 @@ export default function ChatDetails({ chat, onClose }) {
           setCurrentTab(newValue);
         }}
         sx={{
-          paddingTop: '40px',
-
           '& .MuiTab-root': {
             padding: '8px 12px',
             textTransform: 'none',
@@ -58,18 +57,17 @@ export default function ChatDetails({ chat, onClose }) {
         <Tab label="Order Details" />
         <Tab label="Profile" />
       </Tabs>
-      <Box pt={7.5}>
-        <TabPanel index={0} value={currentTab} noPadding>
+      <Box pt={7.5} flex={1}>
+        <TabPanel index={0} value={currentTab} sx={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}>
           <Chat order={chat?.order} />
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
           <ChatOrderDetail order={chat?.order} />
         </TabPanel>
         <TabPanel index={2} value={currentTab} noPadding>
-          {/* <ChatOrderDetail order={chat?.order} /> */}
           <UserProfile user={chat?.order?.user} />
         </TabPanel>
       </Box>
-    </Box>
+    </Stack>
   );
 }

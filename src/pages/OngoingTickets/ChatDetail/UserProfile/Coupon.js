@@ -34,7 +34,7 @@ function CouponItem({ coupon, isFirst, isLast }) {
           lineHeight: '17px',
           fontWeight: '400',
           color: 'text.secondary2',
-          padding: '15px 12px',
+          padding: '12px 15px',
           borderRadius: '10px',
           background: '#F5F5F5',
         }}

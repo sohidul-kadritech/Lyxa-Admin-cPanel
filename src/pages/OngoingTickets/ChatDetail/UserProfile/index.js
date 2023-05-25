@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { mockAddress, mockCoupons, mockTransactions } from '../../mock';
 import AccountInfomation from './AccountInformation';
 import Address from './Address';
@@ -16,6 +16,19 @@ export default function UserProfile({ user }) {
       <Coupons coupons={mockCoupons} />
       <Transactions transactions={mockTransactions} />
       <LastOrders />
+      <Stack direction="row" gap={5} pt={2.5}>
+        <Button variant="outlined" fullWidth>
+          Remove Credit
+        </Button>
+        <Button variant="contained" fullWidth>
+          Add Credit
+        </Button>
+      </Stack>
+      <Box>
+        <Button variant="text" fullWidth sx={{ color: 'error.main', fontWeight: '400', textDecoration: 'underline' }}>
+          Deactivate Account
+        </Button>
+      </Box>
     </Stack>
   );
 }
