@@ -13,7 +13,7 @@ export default function ShopDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
 
   return (
-    <Box pt={9} pb={4}>
+    <Box pt={9} pb={12}>
       <Greeting />
       <Typography variant="h4" pt={14}>
         Dashboard

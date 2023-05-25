@@ -10,6 +10,7 @@ export default function PageTop({
   onAdd,
   addButtonLabel,
   title,
+  titleSx,
   subtitle,
   tag,
   ...rest
@@ -47,7 +48,7 @@ export default function PageTop({
       {title && (
         <>
           <Stack direction="row" alignItems="center" gap={3}>
-            <Typography variant="h4" color={theme.palette.text.primary}>
+            <Typography variant="h4" color={theme.palette.text.primary} sx={titleSx}>
               {title}
             </Typography>
             {tag && tag}

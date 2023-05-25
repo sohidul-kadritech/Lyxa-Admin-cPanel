@@ -41,7 +41,7 @@ export default function App() {
     const { account_type, account_id, access_token, credentialUserId } = getCookiesAsObject();
 
     // any cookie is missing
-    if (!account_type || !account_id || !access_token) {
+    if (!account_type || !account_id || !access_token || !credentialUserId) {
       removeAuthCookies();
       setAdminDataIsLoading(false);
       return;
@@ -58,6 +58,7 @@ export default function App() {
     }
 
     dispatchCurrentUser({ type: account_type, payload: { [account_type]: userData?.user, isCurrentUser: true } });
+    dispatchCurrentUser({ type: 'credentialUserId', payload: { credentialUserId: credentialUserId } });
     setAdminDataIsLoading(false);
   };
 

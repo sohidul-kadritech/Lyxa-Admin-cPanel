@@ -4,9 +4,12 @@ import React, { useState } from 'react';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import StyledTable from '../../components/Styled/StyledTable3';
-import TableDataPagination from './TableDataPagination';
+// import TableDataPagination from './TableDataPagination';
+// import TableDataPagination from '../../components/Shared/TableDataPagination';
+// import TablePagination from '@mui/material';
+import TablePagination from '../../components/Common/TablePagination';
 
-function FlaggedViews({ filteredData, currentTab }) {
+export default function FlaggedViews({ filteredData, currentTab }) {
   const [rowPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -118,17 +121,17 @@ function FlaggedViews({ filteredData, currentTab }) {
           }}
         />
       </Box>
-      <TableDataPagination
+      <TablePagination
         currentPage={currentPage}
         lisener={(page) => {
           setCurrentPage(page);
         }}
         totalPage={Math.ceil(filteredData.length / 5)}
       />
-
       <Drawer open={open} anchor="right">
         <OrderDetail
           order={currentOrder}
+          hideIssues
           onClose={() => {
             setOpen(false);
             setCurrentOrder({});
@@ -138,5 +141,3 @@ function FlaggedViews({ filteredData, currentTab }) {
     </>
   );
 }
-
-export default FlaggedViews;

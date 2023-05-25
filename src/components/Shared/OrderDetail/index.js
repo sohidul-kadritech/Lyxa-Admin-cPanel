@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { useGlobalContext } from '../../../context';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
+import CallUser from './CallUser';
+import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
@@ -14,16 +16,15 @@ import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
 import PaymentMethod from './PaymentMethod';
 import Review from './Review';
-import Rider from './Rider';
 import OrderSummary from './Summary';
-import { reviews } from './mock';
 
-export default function OrderDetail({ order, onClose }) {
+export default function OrderDetail({ order, onClose, hideIssues }) {
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
 
   const [currentTab, setCurrentTab] = useState(0);
   const theme = useTheme();
+
   console.log(order);
 
   return (
@@ -47,7 +48,7 @@ export default function OrderDetail({ order, onClose }) {
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Stack direction="row" alignItems="center" gap={3}>
               <Avatar alt="user-image" src={order?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
-                {order?.user?.name[0]}
+                {order?.user?.name?.length && order?.user?.name[0]}
               </Avatar>
               <Stack gap={0.5}>
                 <Typography variant="body4">{order?.user?.name}</Typography>
@@ -106,11 +107,20 @@ export default function OrderDetail({ order, onClose }) {
           }}
         >
           <Stack gap={5}>
-            {order?.flag?.length ? <OrderIssues flags={order?.flag} /> : null}
-            <OrderTimeline orderTimeline={order?.timeline} />
-            <DeliveryDetails deliveryDetails={order?.dropOffLocation} />
+            {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
+            <OrderTimeline order={order} />
+            {order.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
+            <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
             {order?.orderFor === 'global' && order?.deliveryBoy && (
-              <Rider rider={order?.deliveryBoy} isDelivered={order?.orderStatus === 'delivered'} />
+              <CallUser
+                user={{
+                  name: order?.deliveryBoy?.name,
+                  image: order?.deliveryBoy?.image,
+                  secondary: order?.orderStatus === 'delivered' ? 'Delivered' : 'Delivering',
+                  vehicleNumber: order?.deliveryBoy?.vehicleNumber,
+                  number: order?.deliveryBoy?.number,
+                }}
+              />
             )}
             <OrderSummary productsDetails={order?.productsDetails} />
             <PaymentMethod method={order?.paymentMethod} />
@@ -129,7 +139,7 @@ export default function OrderDetail({ order, onClose }) {
             paddingBottom: 0,
           }}
         >
-          <Review reviews={reviews} />
+          <Review reviews={order?.reviews} />
         </TabPanel>
       </Box>
     </Box>

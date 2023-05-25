@@ -5,6 +5,7 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
+import TablePagination from '../../components/Common/TablePagination';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
@@ -23,12 +24,12 @@ export default function NewOrders() {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
+  const [totalPage, setTotalPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, shop: shop?._id });
   const [currentTab, setCurrentTab] = useState(0);
 
-  console.log('currentOrder: ', currentOrder);
   const ordersQuery = useQuery(
     [Api.ORDER_LIST, { ...queryParams }],
     () =>
@@ -38,12 +39,13 @@ export default function NewOrders() {
     {
       onSuccess: (data) => {
         console.log(data);
+        setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
     }
   );
 
   return (
-    <Box>
+    <Box pb={9}>
       <PageTop title="Orders" />
       <Tabs
         value={currentTab}
@@ -71,6 +73,13 @@ export default function NewOrders() {
           setCurrentOrder(row);
           setSidebarOpen(true);
         }}
+      />
+      <TablePagination
+        currentPage={queryParams?.page}
+        lisener={(page) => {
+          setQueryParams((prev) => ({ ...prev, page }));
+        }}
+        totalPage={totalPage}
       />
       <Drawer open={Boolean(sidebarOpen)} anchor="right">
         <OrderDetail

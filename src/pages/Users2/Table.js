@@ -6,7 +6,7 @@ import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 
-export default function UserTable({ rows, onEdit }) {
+export default function UserTable({ rows, onEdit, onDelete }) {
   const columns = [
     {
       id: 1,
@@ -50,7 +50,7 @@ export default function UserTable({ rows, onEdit }) {
           {/* delete */}
           <StyledIconButton
             color="primary"
-            disabled={params?.row?.isParentUser}
+            disabled={params?.row?.isNotEditable}
             sx={{
               '&.Mui-disabled': {
                 color: '#c1c1c1',
@@ -58,7 +58,7 @@ export default function UserTable({ rows, onEdit }) {
               },
             }}
             onClick={() => {
-              // onDelete(params.row);
+              onDelete(params.row);
             }}
           >
             <DeleteIcon />

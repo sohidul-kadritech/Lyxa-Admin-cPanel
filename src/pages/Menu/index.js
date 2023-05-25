@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
-import { Drawer } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 // import { useHistory } from 'react-router-dom';
@@ -127,9 +127,12 @@ export default function MenuPage() {
       <PageTop
         title={`Menu (${shop?.shopName})`}
         tag={Deals.deals.hasActiveDeal ? <OngoingTag label={Deals.get_promotion_str()} /> : undefined}
+        titleSx={{
+          lineHeight: '28px',
+        }}
         sx={{
           position: 'sticky',
-          top: '-2px',
+          top: '0px',
           zIndex: '999',
           backgroundColor: '#fbfbfb',
         }}
@@ -147,7 +150,7 @@ export default function MenuPage() {
             }}
             sx={{
               position: 'sticky',
-              top: '88px',
+              top: '94px',
               zIndex: '999',
               backgroundColor: '#fbfbfb',
             }}
@@ -155,7 +158,7 @@ export default function MenuPage() {
             searchValue={searchValue}
             shopType={shop?.shopType}
           />
-          <>
+          <Box pb={9}>
             {shop.shopType === 'food' && searchValue === '' && (
               <>
                 <CategoryItem category={bestSellers} gOpen={category_open} />
@@ -193,7 +196,7 @@ export default function MenuPage() {
                 );
               })}
             </Container>
-          </>
+          </Box>
         </>
       )}
       <Drawer open={Boolean(sidebar)} anchor="right">
