@@ -19,18 +19,24 @@ export default function RidersTable({ rows = [], onSelect }) {
       flex: 1.5,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ row }) => <UserAvatar name={row?.name} imgStyle="circular" subTitle={row?.autoGenId} />,
+      renderCell: ({ row }) => (
+        <UserAvatar imgUrl={row?.image} name={row?.name} imgStyle="circular" subTitle={row?.autoGenId} />
+      ),
     },
     {
       id: 2,
-      headerName: `SHOP`,
+      headerName: `SHIFT`,
       sortable: false,
       field: 'shift',
       flex: 1.5,
       align: 'left',
       headerAlign: 'left',
       minWidth: 180,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography variant="body4" textTransform="capitalize">
+          {value}
+        </Typography>
+      ),
     },
     {
       id: 3,
@@ -40,13 +46,13 @@ export default function RidersTable({ rows = [], onSelect }) {
       flex: 1.5,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Rating amount={value} status="positive" />,
+      renderCell: ({ value }) => <Rating amount={value} status={value > 2.5 ? 'positive' : 'negative'} />,
     },
     {
       id: 4,
       headerName: `ORDERS`,
       sortable: false,
-      field: 'orders',
+      field: 'totalOrder',
       flex: 1.5,
       align: 'left',
       headerAlign: 'left',
@@ -121,18 +127,13 @@ export default function RidersTable({ rows = [], onSelect }) {
           autoHeight
           columns={columns}
           getRowId={(row) => row?._id}
-          sx={{
-            '& .MuiDataGrid-row': {
-              cursor: 'pointer',
-            },
-          }}
           onRowClick={onSelect}
           rows={rows}
           rowHeight={71}
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
-                No Coupon found
+                No Rider found
               </Stack>
             ),
           }}
