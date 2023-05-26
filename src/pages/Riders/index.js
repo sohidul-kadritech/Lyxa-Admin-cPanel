@@ -1,10 +1,11 @@
-import { Box, Drawer, Typography } from '@mui/material';
+import { Box, Drawer, Modal, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import TablePagination from '../../components/Common/TablePagination';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddRider from './AddRider';
+import RiderLocation from './RiderLocation';
 import RidersTable from './RiderTable';
 import SearchBar from './Searchbar';
 import TableSkeleton from './TableSkeleton';
@@ -13,6 +14,7 @@ import { queryParamsInit } from './helper';
 export default function RiderList() {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
   const [currentRider, setCurrentRider] = useState({});
 
@@ -49,6 +51,10 @@ export default function RiderList() {
               setCurrentRider(rider);
               setSidebarOpen(true);
             }}
+            onLocationView={(rider) => {
+              setCurrentRider(rider);
+              setModalOpen(true);
+            }}
           />
           <TablePagination
             currentPage={queryParams.page}
@@ -61,8 +67,31 @@ export default function RiderList() {
         </Box>
       )}
       <Drawer open={sidebarOpen} anchor="right">
-        <AddRider onClose={() => setSidebarOpen(false)} editRider={currentRider} />
+        <AddRider
+          onClose={() => {
+            setSidebarOpen(false);
+            setCurrentRider({});
+          }}
+          editRider={currentRider}
+        />
       </Drawer>
+      <Modal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setCurrentRider({});
+        }}
+      >
+        <Box>
+          <RiderLocation
+            riderId={currentRider?._id}
+            onClose={() => {
+              setModalOpen(false);
+              setCurrentRider({});
+            }}
+          />
+        </Box>
+      </Modal>
     </Box>
   );
 }

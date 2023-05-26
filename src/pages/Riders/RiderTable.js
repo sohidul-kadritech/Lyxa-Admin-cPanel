@@ -7,9 +7,9 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
-import { statusColorVariants } from './helper';
+import { getRiderStatus, statusColorVariants } from './helper';
 
-export default function RidersTable({ rows = [], onEdit }) {
+export default function RidersTable({ rows = [], onEdit, onLocationView }) {
   const columns = [
     {
       id: 1,
@@ -26,7 +26,7 @@ export default function RidersTable({ rows = [], onEdit }) {
               width: '10px',
               height: '10px',
               borderRadius: '50%',
-              background: statusColorVariants[row?.status]?.color,
+              background: statusColorVariants[getRiderStatus(row)]?.color,
             }}
           />
           <UserAvatar imgUrl={row?.image} name={row?.name} imgStyle="circular" subTitle={row?.autoGenId} />
@@ -76,19 +76,22 @@ export default function RidersTable({ rows = [], onEdit }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ row }) => (
-        <Chip
-          label={row?.status}
-          sx={{
-            height: 'auto',
-            padding: '12px 23px',
-            borderRadius: '40px',
-            textTransform: 'capitalize',
-            ...(statusColorVariants[row?.status] || {}),
-          }}
-          variant="contained"
-        />
-      ),
+      renderCell: ({ row }) => {
+        const status = getRiderStatus(row);
+        return (
+          <Chip
+            label={status}
+            sx={{
+              height: 'auto',
+              padding: '12px 23px',
+              borderRadius: '40px',
+              textTransform: 'capitalize',
+              ...(statusColorVariants[status] || {}),
+            }}
+            variant="contained"
+          />
+        );
+      },
     },
     {
       id: 4,
@@ -99,7 +102,12 @@ export default function RidersTable({ rows = [], onEdit }) {
       headerAlign: 'right',
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
-          <StyledIconButton color="primary" onClick={() => {}}>
+          <StyledIconButton
+            color="primary"
+            onClick={() => {
+              onLocationView(row);
+            }}
+          >
             <LocationIcon />
           </StyledIconButton>
           <StyledIconButton
