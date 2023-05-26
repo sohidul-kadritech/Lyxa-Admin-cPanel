@@ -10,7 +10,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
-        setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
+        setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
     []
   );
@@ -35,7 +35,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          setQueryParams((prev) => ({ ...prev, liveStatus: e.target.value }));
+          setQueryParams((prev) => ({ ...prev, liveStatus: e.target.value, page: 1 }));
         }}
       />
       {/* status */}
@@ -49,7 +49,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          setQueryParams((prev) => ({ ...prev, status: e.target.value }));
+          setQueryParams((prev) => ({ ...prev, status: e.target.value, page: 1 }));
         }}
       />
       <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>

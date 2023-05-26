@@ -167,7 +167,7 @@ export const createRiderData = async (rider) => {
   return {
     name: rider?.name?.trim(),
     email: rider?.email?.trim(),
-    password: rider?.password,
+    password: rider?.password || undefined,
     number: rider?.number?.trim(),
     deliveryBoyAddress: rider?.deliveryBoyAddress?.trim(),
     image,
@@ -181,23 +181,24 @@ export const createRiderData = async (rider) => {
     deliveryBoyType: rider?.deliveryBoyType,
     shopId: rider?.deliveryBoyType === 'shopRider' ? rider?.shopId : undefined,
     status: rider?.status,
+    id: rider?._id,
   };
 };
 
-// const val = {
-//   name: 'Nazib Talukdar',
-//   email: 'nazibtalukdar29@gmail.com',
-//   password: '123321',
-//   number: '1734888985',
-//   countryCode: 'BD',
-//   vehicleType: 'Bike',
-//   vehicleNumber: '2336870',
-//   nationalIdDocument: 'https://storage.googleapis.com/dropnode/istockphoto-1293175039-612x612-lyxa-260523111035-3.jpg',
-//   vehicleRegistrationDocument:
-//     'https://storage.googleapis.com/dropnode/istockphoto-1293175039-612x612-lyxa-260523111038-83.jpg',
-//   contractImage: 'https://storage.googleapis.com/dropnode/istockphoto-1293175039-612x612-lyxa-260523111039-69.jpg',
-//   image: 'https://storage.googleapis.com/dropnode/istockphoto-1293175039-612x612-lyxa-260523111036-80.jpg',
-//   shift: 'day',
-//   zoneId: '646f22fd7932acb3e49edc7a',
-//   deliveryBoyAddress: 'Gulshan 1, Dhaka, Bangladesh',
-// };
+export const convertEditRiderData = (rider) => ({
+  ...rider,
+  image: [{ preview: rider?.image }],
+  contractImage: [{ preview: rider?.contractImage }],
+  nationalIdDocument: [{ preview: rider?.nationalIdDocument }],
+  vehicleRegistrationDocument: [{ preview: rider?.vehicleRegistrationDocument }],
+  deliveryBoyAddress: rider?.address,
+  zoneId: rider?.zone,
+  shopId: rider?.shop,
+  password: '',
+  id: rider?._id,
+});
+
+export const statusOptions = [
+  { label: 'Active', value: 'active' },
+  { label: 'Deactive', value: 'deactive' },
+];

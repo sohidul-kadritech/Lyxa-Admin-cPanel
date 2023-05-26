@@ -9,7 +9,7 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 import { statusColorVariants } from './helper';
 
-export default function RidersTable({ rows = [], onSelect }) {
+export default function RidersTable({ rows = [], onEdit }) {
   const columns = [
     {
       id: 1,
@@ -20,7 +20,17 @@ export default function RidersTable({ rows = [], onSelect }) {
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => (
-        <UserAvatar imgUrl={row?.image} name={row?.name} imgStyle="circular" subTitle={row?.autoGenId} />
+        <Stack direction="row" gap={2.5} alignItems="center">
+          <Box
+            sx={{
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              background: statusColorVariants[row?.status]?.color,
+            }}
+          />
+          <UserAvatar imgUrl={row?.image} name={row?.name} imgStyle="circular" subTitle={row?.autoGenId} />
+        </Stack>
       ),
     },
     {
@@ -84,14 +94,20 @@ export default function RidersTable({ rows = [], onSelect }) {
       id: 4,
       headerName: ``,
       flex: 1,
+      field: 'action',
       align: 'right',
       headerAlign: 'right',
-      renderCell: () => (
+      renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
           <StyledIconButton color="primary" onClick={() => {}}>
             <LocationIcon />
           </StyledIconButton>
-          <StyledIconButton onClick={() => {}} color="primary">
+          <StyledIconButton
+            onClick={() => {
+              onEdit(row);
+            }}
+            color="primary"
+          >
             <Edit />
           </StyledIconButton>
           <StyledIconButton color="primary" onClick={() => {}}>
@@ -127,7 +143,6 @@ export default function RidersTable({ rows = [], onSelect }) {
           autoHeight
           columns={columns}
           getRowId={(row) => row?._id}
-          onRowClick={onSelect}
           rows={rows}
           rowHeight={71}
           components={{
