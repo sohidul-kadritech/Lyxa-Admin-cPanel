@@ -25,6 +25,7 @@ export default function AccountInfomation({ user }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
           rowGap: '30px',
+          columnGap: '20px',
         }}
       >
         <ListItem label="Full Name" value={user?.name} />

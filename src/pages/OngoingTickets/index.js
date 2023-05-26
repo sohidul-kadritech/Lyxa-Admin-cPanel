@@ -1,35 +1,35 @@
-import { Box, Unstable_Grid2 as Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import { useGlobalContext } from '../../context';
-import ChatDetails from './ChatDetail';
+// import ChatDetails from './ChatDetail';
+import ChatDetails from '../../components/Shared/ChatDetail';
 import ChatsList from './ChatsList';
+import SlideInContainer from './SlideInContainer';
 import { order } from './mock';
 
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
   const [currentTab, setCurrentTab] = useState(0);
-
   const chat = { order };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <Grid
-      container
+    <Box
       sx={{
         height: 'calc(100vh - 83px)',
         overflowY: 'hidden',
       }}
     >
-      <Grid
-        lg={7}
+      <Box
         sx={{
           height: '100%',
           overflowY: 'auto',
         }}
       >
-        <Box pt={9}>
+        <SlideInContainer open={sidebarOpen} type="static" pt={9}>
           <Typography variant="h4" pb={10}>
             Dashboard
           </Typography>
@@ -51,7 +51,6 @@ export default function OngoingTickets() {
             }}
             sx={{
               paddingTop: '40px',
-
               '& .MuiTab-root': {
                 padding: '8px 12px',
                 textTransform: 'none',
@@ -63,20 +62,17 @@ export default function OngoingTickets() {
           </Tabs>
           <Box pt={9}>
             <TabPanel index={0} value={currentTab} noPadding>
-              <ChatsList />
+              <ChatsList onOpen={setSidebarOpen} />
+            </TabPanel>
+            <TabPanel index={1} value={currentTab} noPadding>
+              <ChatsList onOpen={setSidebarOpen} />
             </TabPanel>
           </Box>
-        </Box>
-      </Grid>
-      <Grid
-        lg={5}
-        sx={{
-          height: '100%',
-          overflowY: 'auto',
-        }}
-      >
-        <ChatDetails chat={chat} />
-      </Grid>
-    </Grid>
+        </SlideInContainer>
+      </Box>
+      <SlideInContainer type="dynamic" open={sidebarOpen}>
+        <ChatDetails showingFor="ongoing" chat={chat} onClose={() => setSidebarOpen(false)} />
+      </SlideInContainer>
+    </Box>
   );
 }

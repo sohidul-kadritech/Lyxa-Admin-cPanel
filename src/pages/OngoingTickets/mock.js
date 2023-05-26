@@ -1066,3 +1066,62 @@ export const order = {
   lastSearchKm: 1000,
   userCancelTnx: null,
 };
+
+export const mockAddress = [
+  {
+    _id: 1,
+    type: 'Home',
+    address: 'Midway Chalet, Faraya, Main Road',
+  },
+  {
+    _id: 2,
+    type: 'Home',
+    address: 'Midway Chalet, Faraya, Main Road',
+  },
+];
+
+export const mockCoupons = [
+  {
+    _id: 1,
+    title: 'Get 20% off your order (Referred by Adam)',
+    date: 'Jan 07, 2023',
+    code: '20%NEXT',
+  },
+  {
+    _id: 2,
+    title: 'Get 20% off your order (Referred by Adam)',
+    date: 'Jan 07, 2023',
+    code: '20%NEXT',
+  },
+];
+
+export const mockTransactions = [
+  {
+    date: '02 Feb 2022',
+    time: '12:10 PM',
+    type: 'card',
+    title: 'Visa Card **655',
+    id: '166461217',
+    amount: '$420',
+  },
+  {
+    date: '02 Feb 2022',
+    time: '12:10 PM',
+    type: 'card',
+    title: 'Visa Card **655',
+    id: '166461217',
+    amount: '$420',
+  },
+];
+
+export const mockPhrases = [
+  'Unacceptable',
+  'Bad Service',
+  'Portion',
+  'Food Presentation',
+  'Prices',
+  'Rude Staff',
+  'Quantity',
+  'Overcooked',
+  'Undercooked',
+];
