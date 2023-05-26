@@ -10,24 +10,6 @@ function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
 
   // console.log('data is ready for table: ', Promise.resolve(createDataForTable(getAllZone)));
   // eslint-disable-next-line no-unused-vars
-  const allZones = [
-    {
-      _id: 1,
-      zoneName: 'Zone A',
-      customers: '24',
-      orders: '24',
-      riders: '24',
-      store: '24',
-    },
-    {
-      _id: 2,
-      zoneName: 'Zone A',
-      customers: '24',
-      orders: '24',
-      riders: '24',
-      store: '24',
-    },
-  ];
 
   const columns = [
     {
@@ -141,7 +123,6 @@ function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
       setTempAllZones(data);
       setIsloading(false);
     });
-    // console.log('get data all data: ', data);
   }, [getAllZone]);
 
   return (

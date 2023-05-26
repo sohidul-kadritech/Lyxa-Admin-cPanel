@@ -161,7 +161,7 @@ function ServiceZone() {
       sortable: false,
       density: 'comfortable',
       flex: 3,
-      minWidth: 270,
+
       renderCell: ({ value }) => (
         <Box sx={{ flex: '3' }}>
           <Typography>{value}</Typography>
@@ -174,7 +174,7 @@ function ServiceZone() {
       field: 'zoneArea',
       sortable: false,
       flex: 3,
-      minWidth: 270,
+
       renderCell: ({ value }) => (
         <Box
           sx={{
@@ -194,7 +194,7 @@ function ServiceZone() {
       field: 'createdAt',
       sortable: false,
       flex: 2,
-      minWidth: 270,
+
       renderCell: ({ value }) => <Typography>{dateFormation(value)}</Typography>,
     },
     {
@@ -202,7 +202,7 @@ function ServiceZone() {
       sortable: false,
       flex: 2,
       align: 'right',
-      minWidth: 270,
+
       renderCell: (value) => (
         <Stack flexDirection="row" gap="16px">
           <StyledSwitch

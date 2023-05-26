@@ -1,5 +1,7 @@
 import { Stack, Typography } from '@mui/material';
+import axios from 'axios';
 import L from 'leaflet';
+import { GOOGLE_API_KEY2 } from '../../assets/staticData';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -173,4 +175,16 @@ export const createZoneInfoData = (data) => {
   }));
 
   return newData;
+};
+
+// gel location form lat lon
+export const getLocationFromLatLng = async (lat, lng) => {
+  console.log('lat lng; ', lat, lng);
+  const location = await axios.get(API_URL.GET_LOCATION_FROM_LATLNG, {
+    params: {
+      latlng: `${lat},${lng}`,
+      key: GOOGLE_API_KEY2,
+    },
+  });
+  return location;
 };

@@ -91,14 +91,14 @@ function Faq() {
   // React Query will implement here
   /*--------------------------------*/
   // eslint-disable-next-line no-unused-vars
-  const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, { status, type, searchKey }], () =>
+  const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, { status, type, searchKey, range }], () =>
     AXIOS.get(API_URL?.GET_CHAT_REASON, {
       params: {
         status,
         type,
         searchKey,
-        // startDate: range.start,
-        // endDate: range.end,
+        startDate: range.start,
+        endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
     }),
@@ -284,7 +284,6 @@ function Faq() {
         })),
       });
     }
-    // faqSortQuery.mutation();
   };
 
   return (

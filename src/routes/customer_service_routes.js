@@ -18,7 +18,7 @@ import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import OngoingTickets from '../pages/OngoingTickets';
 import PastTickets from '../pages/PastTickets';
-import RiderList from '../pages/RidersList.js';
+import RiderList from '../pages/Riders';
 
 export const customer_service_routes = [
   { path: `/ongoing-tickets`, component: OngoingTickets },
