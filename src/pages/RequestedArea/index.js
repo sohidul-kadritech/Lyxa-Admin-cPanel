@@ -1,5 +1,5 @@
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Box, Button, Modal, Stack, Typography } from '@mui/material';
+import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import GoogleMapReact from 'google-map-react';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -13,22 +13,26 @@ import ModalContainer from '../ServiceZone/ModalContainer';
 import RequestedAreaTable from './RequestedAreaTable';
 
 function PointerWrapper() {
-  return <LocationOnIcon />;
+  return <LocationOnIcon style={{ transform: 'scale(1.5)' }} />;
 }
 function RequestedArea() {
   const [range, setRange] = useState({ ...dateRangeInit });
+  // eslint-disable-next-line no-unused-vars
+  const [currentArea, setCurrentArea] = useState([
+    {
+      location: {
+        coordinates: [0, 0],
+      },
+    },
+  ]);
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const [zoemLevel, setZoomLevel] = useState(12);
 
   // eslint-disable-next-line no-unused-vars
   const [isSinglePoint, setIsSinglePoint] = useState(false);
   const getRequestedAreaQuery = useQuery([API_URL.REQUESTED_AREA], () => AXIOS.get(API_URL.REQUESTED_AREA));
-  const defaultProps = {
-    center: {
-      lat: 0,
-      lng: 0,
-    },
-    zoom: 12,
-  };
+
   return (
     <Box>
       <PageTop
@@ -44,7 +48,18 @@ function RequestedArea() {
 
       <Stack flexDirection="row" justifyContent="flex-end" gap="20px">
         <DateRange range={range} setRange={setRange} />
-        <Button variant="contained" color="primary" size="small" onClick={() => setOpen(true)}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() =>
+            setOpen(() => {
+              setZoomLevel(0);
+              setCurrentArea(getRequestedAreaQuery?.data?.data?.areas);
+              return true;
+            })
+          }
+        >
           Map View
         </Button>
       </Stack>
@@ -52,34 +67,75 @@ function RequestedArea() {
       {getRequestedAreaQuery.isLoading ? (
         <Typography>Loading...</Typography>
       ) : (
-        <Box sx={{ padding: '30px 0px' }}>
-          <RequestedAreaTable setIsSinglePoint={setIsSinglePoint} areas={getRequestedAreaQuery?.data?.data?.areas} />
+        <Box
+          sx={{
+            padding: '20px 20px',
+            marginTop: '30px',
+            overflow: 'auto',
+            height: '70vh',
+            border: `1px solid ${theme.palette.custom.border}`,
+          }}
+        >
+          <RequestedAreaTable
+            setOpen={setOpen}
+            setCurrentArea={setCurrentArea}
+            setIsSinglePoint={setIsSinglePoint}
+            areas={getRequestedAreaQuery?.data?.data?.areas}
+            setZoomLevel={setZoomLevel}
+          />
         </Box>
       )}
       <Modal open={open} centered>
         <ModalContainer
           title="Map view"
           onClose={() => setOpen(false)}
-          sx={{ padding: '40px', width: '90vw', height: '90vh', backgroundColor: '#ffffff', borderRadius: '7px' }}
+          sx={{
+            width: '96vw',
+            height: '96vh',
+            margin: '2vh 2vw',
+            padding: '36px',
+            overflow: 'hidden',
+            backgroundColor: theme.palette.primary.contrastText,
+            borderRadius: '10px',
+          }}
         >
-          <Box width="100%" height="100%" paddingBottom="40px" paddingTop="40px" sx={{ borderRadius: '7px' }}>
-            <GoogleMapReact
-              bootstrapURLKeys={{
-                key: GOOGLE_API_KEY,
-                language: 'en',
-                region: 'US',
-                libraries: ['places'],
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              padding: '40px 0px',
+              overflow: 'hidden',
+            }}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '7px',
+                // backgroundColor: 'red',
+                overflow: 'hidden',
               }}
-              yesIWantToUseGoogleMapApiInternals
-              defaultCenter={defaultProps.center}
-              defaultZoom={defaultProps.zoom}
             >
-              {/* <PointerWrapper lat={defaultProps.center.lat} lng={defaultProps.center.lng} /> */}
-
-              {getRequestedAreaQuery?.data?.data?.areas.map((area, i) => (
-                <PointerWrapper key={i} lat={area?.location?.coordinates[0]} lng={area?.location?.coordinates[1]} />
-              ))}
-            </GoogleMapReact>
+              <GoogleMapReact
+                bootstrapURLKeys={{
+                  key: GOOGLE_API_KEY,
+                  language: 'en',
+                  region: 'US',
+                  libraries: ['places'],
+                }}
+                // style={{ borderRadius: '7px' }}
+                yesIWantToUseGoogleMapApiInternals
+                defaultCenter={{
+                  lat: currentArea[0]?.location?.coordinates[1],
+                  lng: currentArea[0]?.location?.coordinates[0],
+                }}
+                defaultZoom={zoemLevel}
+              >
+                {currentArea.map((area, i) => (
+                  <PointerWrapper key={i} lat={area?.location?.coordinates[1]} lng={area?.location?.coordinates[0]} />
+                ))}
+              </GoogleMapReact>
+            </Box>
           </Box>
         </ModalContainer>
       </Modal>
