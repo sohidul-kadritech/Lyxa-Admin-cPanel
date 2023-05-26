@@ -40,7 +40,7 @@ function RequestedAreaTable({ areas = [], setCurrentArea, setIsSinglePoint, setO
       minWidth: '100%',
       renderCell: ({ row }) => (
         // console.log('params: ', row);
-        <Typography variant="body2">{row?.city || row?.state || 'No city'}</Typography>
+        <Typography variant="body2">{row?.city || row?.state || 'No city found'}</Typography>
       ),
     },
     {
@@ -76,7 +76,13 @@ function RequestedAreaTable({ areas = [], setCurrentArea, setIsSinglePoint, setO
               },
             }}
             onClick={() => {
-              setCurrentArea([row]);
+              setCurrentArea([
+                row || {
+                  location: {
+                    coordinates: [0, 0],
+                  },
+                },
+              ]);
               setZoomLevel(13);
               setOpen(true);
               setIsSinglePoint(true);

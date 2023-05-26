@@ -413,3 +413,4 @@ export const logoSvg = (
 );
 
 export const GOOGLE_API_KEY = '"AIzaSyA_ciMsx74Ck21Firr3yS0xwvL7M7gonf8"';
+export const GOOGLE_API_KEY2 = 'AIzaSyA_ciMsx74Ck21Firr3yS0xwvL7M7gonf8';

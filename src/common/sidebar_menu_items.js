@@ -474,6 +474,10 @@ export const admin_menu_items = [
         to: '/settings/ratings',
       },
       {
+        label: 'Ratings2',
+        to: '/settings/ratings2',
+      },
+      {
         label: 'Cancel Reason',
         to: '/admin/cancel-reason',
       },

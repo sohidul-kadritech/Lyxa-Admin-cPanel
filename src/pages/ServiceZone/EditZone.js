@@ -1,5 +1,5 @@
 import { LocationOnOutlined } from '@mui/icons-material';
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
 import L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import React, { useState } from 'react';
@@ -236,14 +236,28 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
           </Box>
         </Stack>
 
-        <Box>
+        <Box sx={{ position: 'relative' }}>
           <ZoneMap
             setPolygonArea={setPolygonArea}
             allZones={allZones}
             setCreatedZoneGeometry={setCreatedZoneGeometry}
             selectedLocation={selectedLocation}
             currentLocation={currentLocation}
+            setCreatedZoneArea={setCreatedZoneArea}
           ></ZoneMap>
+          {editZone?.isLoading && (
+            <Stack
+              sx={{ position: 'absolute', top: '0', left: '0', zIndex: '9999', backdropFilter: 'blur(10px)' }}
+              justifyContent="center"
+              alignContent="center"
+              alignItems="center"
+              width="100%"
+              height="100%"
+            >
+              <CircularProgress color="primary" sx={{ width: '100px !important', height: '100px !important' }} />
+              <Typography>Please Wait...</Typography>
+            </Stack>
+          )}
         </Box>
         <Box>
           <Stack flexDirection="row" sx={{ marginTop: '40px' }}>
@@ -256,7 +270,6 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
               <Typography
                 sx={{ color: theme.palette.text.primary, fontSize: '28px', fontWeight: 500, lineHeight: '20px' }}
               >
-                {/* {polygonArea}m<sup>2</sup> */}
                 <ConvertArea squareMeters={polygonArea} />
               </Typography>
             </Box>

@@ -1,5 +1,5 @@
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Modal, Stack, useTheme } from '@mui/material';
 import GoogleMapReact from 'google-map-react';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -10,6 +10,7 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { dateRangeInit } from '../Faq2/helpers';
 import ModalContainer from '../ServiceZone/ModalContainer';
+import RequestedAreaSkeleton from './RequestedAreaSkeleton';
 import RequestedAreaTable from './RequestedAreaTable';
 
 function PointerWrapper() {
@@ -31,7 +32,12 @@ function RequestedArea() {
 
   // eslint-disable-next-line no-unused-vars
   const [isSinglePoint, setIsSinglePoint] = useState(false);
-  const getRequestedAreaQuery = useQuery([API_URL.REQUESTED_AREA], () => AXIOS.get(API_URL.REQUESTED_AREA));
+  const getRequestedAreaQuery = useQuery([API_URL.REQUESTED_AREA, { startDate: range.start, endDate: range.end }], () =>
+    AXIOS.get(API_URL.REQUESTED_AREA, {
+      params: { startDate: range.start, endDate: range.end },
+      // eslint-disable-next-line prettier/prettier
+    }),
+  );
 
   return (
     <Box>
@@ -55,7 +61,16 @@ function RequestedArea() {
           onClick={() =>
             setOpen(() => {
               setZoomLevel(0);
-              setCurrentArea(getRequestedAreaQuery?.data?.data?.areas);
+              setCurrentArea(
+                getRequestedAreaQuery?.data?.data?.areas || [
+                  {
+                    location: {
+                      coordinates: [0, 0],
+                    },
+                  },
+                  // eslint-disable-next-line prettier/prettier
+                ],
+              );
               return true;
             })
           }
@@ -65,7 +80,7 @@ function RequestedArea() {
       </Stack>
 
       {getRequestedAreaQuery.isLoading ? (
-        <Typography>Loading...</Typography>
+        <RequestedAreaSkeleton />
       ) : (
         <Box
           sx={{
@@ -73,6 +88,8 @@ function RequestedArea() {
             marginTop: '30px',
             overflow: 'auto',
             height: '70vh',
+            maxHeight: '700px',
+            borderRadius: '7px',
             border: `1px solid ${theme.palette.custom.border}`,
           }}
         >
