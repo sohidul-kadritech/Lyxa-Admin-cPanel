@@ -1,11 +1,13 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Chip, Stack, Typography } from '@mui/material';
 import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
+import { statusColorVariants } from './helper';
 
-export default function TicketTable({ rows = [], onSelect }) {
+export default function TicketTable({ rows = [], onSelect, ticketType }) {
   const columns = [
     {
+      showFor: ['order', 'account'],
       id: 1,
       headerName: `ACCOUNT`,
       sortable: false,
@@ -16,6 +18,7 @@ export default function TicketTable({ rows = [], onSelect }) {
       renderCell: ({ row }) => <UserAvatar name={row?.user?.name} imgStyle="circular" subTitle={row?.user?.orderId} />,
     },
     {
+      showFor: ['order'],
       id: 2,
       headerName: `SHOP`,
       sortable: false,
@@ -27,6 +30,7 @@ export default function TicketTable({ rows = [], onSelect }) {
       renderCell: ({ row }) => <UserAvatar name={row?.user?.name} imgStyle="circular" subTitle={row?.user?.orderId} />,
     },
     {
+      showFor: ['order'],
       id: 3,
       headerName: `RIDER`,
       sortable: false,
@@ -37,7 +41,42 @@ export default function TicketTable({ rows = [], onSelect }) {
       renderCell: ({ row }) => <UserAvatar name={row?.user?.name} imgStyle="circular" subTitle={row?.user?.orderId} />,
     },
     {
+      showFor: ['account'],
       id: 4,
+      headerName: `STATUS`,
+      sortable: false,
+      field: 'status',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => (
+        <Chip
+          label={row?.status}
+          sx={{
+            height: 'auto',
+            padding: '12px 23px',
+            borderRadius: '40px',
+            textTransform: 'capitalize',
+            ...(statusColorVariants[row?.status] || {}),
+          }}
+          variant="contained"
+        />
+      ),
+    },
+    {
+      showFor: ['account'],
+      id: 5,
+      headerName: `LOCATION`,
+      sortable: false,
+      field: 'zone',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+    },
+    {
+      showFor: ['order', 'account'],
+      id: 6,
       headerName: `DATE`,
       sortable: false,
       field: 'couponOrderLimit',
@@ -78,7 +117,7 @@ export default function TicketTable({ rows = [], onSelect }) {
       >
         <StyledTable
           autoHeight
-          columns={columns}
+          columns={columns.filter((col) => col.showFor.includes(ticketType))}
           getRowId={(row) => row?._id}
           sx={{
             '& .MuiDataGrid-row': {

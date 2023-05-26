@@ -1,11 +1,14 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
+import TabPanel from '../../components/Common/TabPanel';
 import TablePagination from '../../components/Common/TablePagination';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import SlideInContainer from '../OngoingTickets/SlideInContainer';
 import { order } from '../OngoingTickets/mock';
 import TicketTable from './TicketTable';
 import { pastTickets } from './mock';
+
+const tabValueToShowingForMap = { 0: 'pastOrder', 1: 'pastAccount' };
 
 export default function PastTickets() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -35,6 +38,7 @@ export default function PastTickets() {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
+              // setSidebarOpen(false);
             }}
             sx={{
               '& .MuiTab-root': {
@@ -46,25 +50,49 @@ export default function PastTickets() {
             <Tab label="Orders" />
             <Tab label="Account" />
           </Tabs>
+
           <Box pt={9}>
-            <TicketTable
-              rows={pastTickets(10)}
-              onSelect={() => {
-                setSidebarOpen(true);
-              }}
-            />
-            <TablePagination
-              currentPage={1}
-              lisener={() => {
-                // setQueryParams((prev) => ({ ...prev, page }));
-              }}
-              totalPage={5}
-            />
+            <TabPanel index={0} value={currentTab} noPadding>
+              <TicketTable
+                ticketType="order"
+                rows={pastTickets(10)}
+                onSelect={() => {
+                  setSidebarOpen(true);
+                }}
+              />
+              <TablePagination
+                currentPage={1}
+                lisener={() => {
+                  // setQueryParams((prev) => ({ ...prev, page }));
+                }}
+                totalPage={5}
+              />
+            </TabPanel>
+            <TabPanel index={1} value={currentTab} noPadding>
+              <TicketTable
+                rows={pastTickets(10)}
+                ticketType="account"
+                onSelect={() => {
+                  setSidebarOpen(true);
+                }}
+              />
+              <TablePagination
+                currentPage={1}
+                lisener={() => {
+                  // setQueryParams((prev) => ({ ...prev, page }));
+                }}
+                totalPage={5}
+              />
+            </TabPanel>
           </Box>
         </Box>
       </SlideInContainer>
       <SlideInContainer type="dynamic" open={sidebarOpen}>
-        <ChatDetails chat={chat} onClose={() => setSidebarOpen(false)} />
+        <ChatDetails
+          showingFor={tabValueToShowingForMap[currentTab]}
+          chat={chat}
+          onClose={() => setSidebarOpen(false)}
+        />
       </SlideInContainer>
     </Box>
   );

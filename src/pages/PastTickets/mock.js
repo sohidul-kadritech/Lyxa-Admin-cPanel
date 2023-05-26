@@ -1,3 +1,5 @@
+const statusOptions = ['active', 'inactive', 'suspended'];
+
 export const pastTickets = (size) => {
   const items = [];
 
@@ -9,6 +11,8 @@ export const pastTickets = (size) => {
       rider: { name: 'Karina Clark' },
       createdAt: 'Sep 9, 2020',
       time: '7:15 PM',
+      status: statusOptions[Math.floor(Math.random() * statusOptions.length)],
+      zone: 'Tegaon',
     });
   }
 
