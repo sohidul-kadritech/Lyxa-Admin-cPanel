@@ -1,10 +1,10 @@
 import { Button, Stack } from '@mui/material';
-import CallUser from '../../../components/Shared/OrderDetail/CallUser';
-import DeliveryDetails from '../../../components/Shared/OrderDetail/DeliveryDetails';
-import OrderTimeline from '../../../components/Shared/OrderDetail/OrderTimeline';
-import PaymentDetails from '../../../components/Shared/OrderDetail/PaymentDetails';
-import PaymentMethod from '../../../components/Shared/OrderDetail/PaymentMethod';
-import OrderSummary from '../../../components/Shared/OrderDetail/Summary';
+import CallUser from '../OrderDetail/CallUser';
+import DeliveryDetails from '../OrderDetail/DeliveryDetails';
+import OrderTimeline from '../OrderDetail/OrderTimeline';
+import PaymentDetails from '../OrderDetail/PaymentDetails';
+import PaymentMethod from '../OrderDetail/PaymentMethod';
+import OrderSummary from '../OrderDetail/Summary';
 
 export default function ChatOrderDetail({ order }) {
   return (

@@ -1113,3 +1113,15 @@ export const mockTransactions = [
     amount: '$420',
   },
 ];
+
+export const mockPhrases = [
+  'Unacceptable',
+  'Bad Service',
+  'Portion',
+  'Food Presentation',
+  'Prices',
+  'Rude Staff',
+  'Quantity',
+  'Overcooked',
+  'Undercooked',
+];

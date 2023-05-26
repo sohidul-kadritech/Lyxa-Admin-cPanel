@@ -1,13 +1,14 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { getMockChats } from './mock';
 
-function ChatItem({ chat }) {
+function ChatItem({ chat, onOpen }) {
   return (
     <Stack
       direction="row"
       alignItems="center"
       justifyContent="space-between"
       className={chat?.status === 'new' ? 'new' : undefined}
+      onClick={() => onOpen(true)}
       sx={{
         padding: '12px 20px',
         border: '1px solid',
@@ -64,11 +65,11 @@ function ChatItem({ chat }) {
   );
 }
 
-export default function ChatsList() {
+export default function ChatsList({ onOpen }) {
   return (
-    <Stack gap={5}>
+    <Stack gap={5} pb={9}>
       {getMockChats(10)?.map((chat) => (
-        <ChatItem chat={chat} key={chat?.orderId} />
+        <ChatItem chat={chat} key={chat?.orderId} onOpen={onOpen} />
       ))}
     </Stack>
   );

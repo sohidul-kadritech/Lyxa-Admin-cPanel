@@ -1,25 +1,50 @@
 import { Avatar, Box, Stack, Tab, Tabs, Typography } from '@mui/material';
-import { useState } from 'react';
-import CloseButton from '../../../components/Common/CloseButton';
-import TabPanel from '../../../components/Common/TabPanel';
+import { useEffect, useState } from 'react';
+import CloseButton from '../../Common/CloseButton';
+import TabPanel from '../../Common/TabPanel';
 // import OrderDetail from '../../../components/Shared/OrderDetail';
 import Chat from './Chat';
 import ChatOrderDetail from './Detail';
 import UserProfile from './UserProfile';
 
-export default function ChatDetails({ chat, onClose }) {
+const showingForToTabValuesMap = {
+  ongoing: {
+    chat: 0,
+    order: 1,
+    profile: 2,
+    lables: ['Chat', 'Order Details', 'Profile'],
+  },
+  pastOrder: {
+    order: 0,
+    chat: 1,
+    profile: 2,
+    lables: ['Order Details', 'Chat', 'Profile'],
+  },
+  pastAccount: {
+    chat: 1,
+    order: 0,
+    lables: ['Chat', 'Order Details'],
+  },
+};
+
+export default function ChatDetails({ chat, onClose, showingFor }) {
   const [currentTab, setCurrentTab] = useState(0);
 
+  useEffect(() => {
+    setCurrentTab(0);
+  }, [showingFor]);
+
   return (
-    <Box
+    <Stack
       sx={{
         background: '#fff',
         paddingTop: 6,
         height: '100%',
         px: 5,
+        paddingBottom: '20px',
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" alignItems="center" justifyContent="space-between" pb={10}>
         <Stack direction="row" alignItems="center" gap={3}>
           <Avatar alt="user-image" src={chat?.order?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
             {chat?.order?.user?.name?.length && chat?.order?.user?.name[0]}
@@ -45,8 +70,6 @@ export default function ChatDetails({ chat, onClose }) {
           setCurrentTab(newValue);
         }}
         sx={{
-          paddingTop: '40px',
-
           '& .MuiTab-root': {
             padding: '8px 12px',
             textTransform: 'none',
@@ -54,22 +77,25 @@ export default function ChatDetails({ chat, onClose }) {
           },
         }}
       >
-        <Tab label="Chat" />
-        <Tab label="Order Details" />
-        <Tab label="Profile" />
+        {showingForToTabValuesMap[showingFor]?.lables?.map((label, index) => (
+          <Tab label={label} key={index} />
+        ))}
       </Tabs>
-      <Box pt={7.5}>
-        <TabPanel index={0} value={currentTab} noPadding>
+      <Box pt={7.5} flex={1}>
+        <TabPanel
+          index={showingForToTabValuesMap[showingFor].chat}
+          value={currentTab}
+          sx={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}
+        >
           <Chat order={chat?.order} />
         </TabPanel>
-        <TabPanel index={1} value={currentTab} noPadding>
+        <TabPanel index={showingForToTabValuesMap[showingFor].order} value={currentTab} noPadding>
           <ChatOrderDetail order={chat?.order} />
         </TabPanel>
-        <TabPanel index={2} value={currentTab} noPadding>
-          {/* <ChatOrderDetail order={chat?.order} /> */}
+        <TabPanel index={showingForToTabValuesMap[showingFor].profile} value={currentTab} noPadding>
           <UserProfile user={chat?.order?.user} />
         </TabPanel>
       </Box>
-    </Box>
+    </Stack>
   );
 }
