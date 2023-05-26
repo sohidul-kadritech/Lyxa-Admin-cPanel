@@ -1,6 +1,7 @@
 export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
 export const SOCKET_CONNECTION = 'https://apiv2.drop-deliveryapp.com';
 export const MAP_URL = 'http://maps.google.com/maps';
+export const GET_LOCATION_FROM_LATLNG = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 const ADMIN_ENDPOINT = 'admin';
 
@@ -349,3 +350,4 @@ export const GET_STAT_ZONE = `${ADMIN_ENDPOINT}/zone/statistics`;
 export const CREATE_ZONE = `${ADMIN_ENDPOINT}/zone/add`;
 export const UPDATE_ZONE = `${ADMIN_ENDPOINT}/zone/update`;
 export const DELETE_ZONE = `${ADMIN_ENDPOINT}/zone/delete`;
+export const REQUESTED_AREA = `${ADMIN_ENDPOINT}/request-area`;
