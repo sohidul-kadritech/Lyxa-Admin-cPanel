@@ -1,6 +1,5 @@
 import { Box, Stack } from '@mui/material';
 import { useState } from 'react';
-import MetaTags from 'react-meta-tags';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as LyxaIcon } from '../../assets/icons/lyxa-logo-lg.svg';
@@ -101,9 +100,9 @@ export default function Login({ loginFor }) {
 
   return (
     <>
-      <MetaTags>
+      {/* <MetaTags>
         <title>Login | Lyxa</title>
-      </MetaTags>
+      </MetaTags> */}
       <Box
         sx={{
           backgroundColor: '#363636',
@@ -129,7 +128,7 @@ export default function Login({ loginFor }) {
             <LyxaIcon />
             <LyxaText />
           </Stack>
-          <Form onSubmit={onSubmit} loginError={loginError} loading={loginMutation.isLoading} />
+          <Form onSubmit={onSubmit} loginError={loginError} loading={loginMutation.isLoading} loginFor={loginFor} />
         </Stack>
       </Box>
     </>

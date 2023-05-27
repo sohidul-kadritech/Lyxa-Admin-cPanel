@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
@@ -35,6 +36,8 @@ export const credentialsInit = {
   password: '',
   email: '',
 };
+
+export const validateEmail = (email) => email?.match(/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/);
 
 export const validateForm = (data, errors, setErrors) => {
   console.log('triggered');
@@ -86,3 +89,14 @@ export const getParentUser = async (credentialUser) => {
     return { status: false, message: error?.message, parentUser: null };
   }
 };
+
+// export const businessAccountTypes = [
+//   {
+//     label: 'Seller',
+//     value: 'seller',
+//   },
+//   {
+//     label: 'Shop',
+//     value: 'shop',
+//   },
+// ];

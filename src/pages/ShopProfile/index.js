@@ -1,14 +1,14 @@
 import { AccessTime } from '@mui/icons-material';
-import { Avatar, Box, Drawer, IconButton, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useRouteMatch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
+import CameraIconButton from '../../components/Common/CameraIconButton';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import AddShop from '../../components/Shared/AddShop';
@@ -154,31 +154,16 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                   .reduce((prev, cur) => prev + cur.charAt(0), '')
                   .slice(0, 3)}
               </Avatar>
-              <IconButton
-                disabled={shopMutation.isLoading || loading}
+              <CameraIconButton
                 sx={{
                   position: 'absolute',
                   top: '129px',
                   left: '129px',
-                  backgroundColor: '#E4E6EB',
-                  width: '38px',
-                  height: '38px',
-                  padding: '9px 9px 11px 9px',
-                  '&:hover': {
-                    backgroundColor: theme.palette.background.secondaryHover,
-                  },
-
-                  '&.Mui-disabled': {
-                    backgroundColor: '#E4E6EB',
-                  },
                 }}
-                color={theme.palette.text.primary}
-                aria-label="upload picture"
-                component="label"
-              >
-                <input hidden accept="image/*" type="file" onChange={(e) => onDrop([e.target.files[0]], 'logo')} />
-                <CameraIcon />
-              </IconButton>
+                onFileSelect={(e) => {
+                  onDrop([e.target.files[0]], 'logo');
+                }}
+              />
             </Box>
             <Box sx={{ width: '100%' }}>
               <Box
@@ -218,7 +203,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                   </Box>
                 </Box>
               </Box>
-
               <Box sx={{ marginLeft: '20px', marginTop: '9px' }}>
                 <Typography
                   sx={{
@@ -229,7 +213,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                 >
                   Lunch, Dinner, Cafes, Breakfast . $$
                 </Typography>
-
                 <Box>
                   <Box
                     sx={{
@@ -248,7 +231,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                       (100+ Reviews)
                     </Typography>
                   </Box>
-
                   <Stack flexDirection="row" gap="16px" sx={{ marginTop: '20px' }}>
                     <Box
                       sx={{

@@ -112,7 +112,7 @@ export default function TicketTable({ rows = [], onSelect, ticketType }) {
     >
       <Box
         sx={{
-          minWidth: '1070px',
+          minWidth: '650px',
         }}
       >
         <StyledTable

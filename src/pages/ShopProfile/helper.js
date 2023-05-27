@@ -20,12 +20,6 @@ export const menuOtions = (userType) => {
   return options;
 };
 
-export function convertTime(timeString) {
-  const hours = timeString.slice(0, 2);
-  const minutes = timeString.slice(2, 4);
-  return `${hours}:${minutes}`;
-}
-
 export const createShopData = async (shopData) => {
   const img_url_logo = await getImageUrl(shopData.shopLogo[0]);
   const img_url_banner = await getImageUrl(shopData.shopBanner[0]);
@@ -48,8 +42,6 @@ export const createShopData = async (shopData) => {
 
   return {
     id: shopData?._id,
-    shopStartTime: convertTime(shopData?.shopStartTime),
-    shopEndTime: convertTime(shopData?.shopEndTime),
     shopName: shopData?.shopName,
     email: shopData?.email,
     password: shopData?.password,
@@ -116,27 +108,6 @@ export function CoverPhotoButton({ label, onDrop, loading }) {
       <input hidden onChange={(e) => onDrop([e.target.files[0]])} accept="image/*" type="file" />
       {label}
     </Button>
-  );
-}
-
-export function ShopProfileBasicInfo({ title, Icon, desc }) {
-  return (
-    <Box>
-      <Box
-        sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center', alignItems: 'center', gap: '11px' }}
-        pb={4.5}
-      >
-        <Icon />
-        <Typography variant="inherit" sx={{ fontSize: '14px', fontWeight: '600' }}>
-          {title}
-        </Typography>
-      </Box>
-      <Box>
-        <Typography variant="inherit" sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500' }}>
-          {desc}
-        </Typography>
-      </Box>
-    </Box>
   );
 }
 
