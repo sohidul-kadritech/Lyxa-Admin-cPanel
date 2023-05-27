@@ -1,12 +1,23 @@
-// SINGLE_DELIVERY_TRX
+/* eslint-disable no-unused-vars */
 import { Box, Unstable_Grid2 as Grid, Stack, Tooltip, Typography } from '@mui/material';
-import InfoCard from '../../../components/StyledCharts/InfoCard';
-// import Transactions from '../../../components/Shared/ChatDetail/UserProfile/Transactions';
+import moment from 'moment';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
-import TransactionsTable from '../Transactions/Table';
-import { getMockTrx } from '../Transactions/mock';
-// import TransactionsTable from './Table';
-// import { getMockTrx } from './mock';
+import InfoCard from '../../../components/StyledCharts/InfoCard';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import ActivityTable from './Table';
+
+const queryParamsInit = {
+  page: 1,
+  pageSize: 15,
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+  searchKey: '',
+  sortBy: 'desc',
+  status: '',
+};
 
 function CardTitle({ title, tooltip }) {
   return (
@@ -21,7 +32,17 @@ function CardTitle({ title, tooltip }) {
   );
 }
 
-export default function RiderTimeStamp() {
+export default function RiderTimeStamp({ riderId }) {
+  const [queryParams, setQueryParams] = useState({ id: riderId, ...queryParamsInit });
+
+  const query = useQuery([Api.TRACK_DELIVERY_MAN, queryParams], () =>
+    AXIOS.get(Api.TRACK_DELIVERY_MAN, {
+      params: queryParams,
+    })
+  );
+
+  console.log(query?.data);
+
   return (
     <Box>
       <Grid container spacing={5} pb={7.5}>
@@ -58,7 +79,8 @@ export default function RiderTimeStamp() {
           lg={3}
         />
       </Grid>
-      <TransactionsTable rows={getMockTrx(5)} />
+      {/* <TransactionsTable rows={getMockTrx(5)} /> */}
+      <ActivityTable />
     </Box>
   );
 }
