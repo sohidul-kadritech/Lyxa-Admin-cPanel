@@ -1,6 +1,7 @@
 import { Box, Drawer, Modal, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import TablePagination from '../../components/Common/TablePagination';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -12,6 +13,7 @@ import TableSkeleton from './TableSkeleton';
 import { queryParamsInit } from './helper';
 
 export default function RiderList() {
+  const history = useHistory();
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,6 +56,11 @@ export default function RiderList() {
             onLocationView={(rider) => {
               setCurrentRider(rider);
               setModalOpen(true);
+            }}
+            onProfileView={(rider) => {
+              history.push(`/riders/${rider?._id}`, {
+                rider,
+              });
             }}
           />
           <TablePagination

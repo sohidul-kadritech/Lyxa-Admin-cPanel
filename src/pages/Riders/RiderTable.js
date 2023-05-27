@@ -9,7 +9,7 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 import { getRiderStatus, statusColorVariants } from './helper';
 
-export default function RidersTable({ rows = [], onEdit, onLocationView }) {
+export default function RidersTable({ rows = [], onEdit, onLocationView, onProfileView }) {
   const columns = [
     {
       id: 1,
@@ -118,7 +118,12 @@ export default function RidersTable({ rows = [], onEdit, onLocationView }) {
           >
             <Edit />
           </StyledIconButton>
-          <StyledIconButton color="primary" onClick={() => {}}>
+          <StyledIconButton
+            color="primary"
+            onClick={() => {
+              onProfileView(row);
+            }}
+          >
             <Visibility />
           </StyledIconButton>
         </Stack>

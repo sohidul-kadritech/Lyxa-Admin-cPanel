@@ -8,7 +8,7 @@ const dynamicSx = {
   top: 0,
   background: '#fff',
   right: '0',
-  width: 'calc(calc(100vw / 10) * 4)',
+  width: 'calc(calc(100vw / 10) * 3)',
   zIndex: '99',
   transform: 'translateX(100%)',
   transition: '200ms ease-in-out',
@@ -22,7 +22,7 @@ const dynamicSx = {
 
 const staticSx = {
   '&.sidebar-open': {
-    paddingRight: 'calc(calc(100vw / 10) * 4)',
+    paddingRight: 'calc(calc(100vw / 10) * 3)',
     transition: '200ms ease-in-out',
   },
 };
