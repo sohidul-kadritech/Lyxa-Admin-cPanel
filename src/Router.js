@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
+import LoginOld from './pages/Authentication/Login';
 import Login from './pages/Login';
 import Authmiddleware from './routes/middleware/Authmiddleware';
 
@@ -10,9 +11,9 @@ export default function Router() {
         <Route exact path="/login/team">
           <Login loginFor="team" />
         </Route>
-        {/* <Route exact path="/login/old">
+        <Route exact path="/login/old">
           <LoginOld />
-        </Route> */}
+        </Route>
         <Route exact path="/login/business">
           <Login loginFor="business" />
         </Route>

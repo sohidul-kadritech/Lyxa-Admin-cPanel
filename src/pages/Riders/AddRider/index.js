@@ -248,9 +248,13 @@ export default function AddRider({ onClose, editRider }) {
                     name: 'shopId',
                     value: rider.shopId,
                     onPaste: async () => {
-                      const textData = await navigator.clipboard.readText();
-                      rider.shopId = textData || '';
-                      setRender(!render);
+                      try {
+                        const textData = await navigator.clipboard.readText();
+                        rider.shopId = textData || '';
+                        setRender(!render);
+                      } catch (error) {
+                        console.log(error);
+                      }
                     },
                     sx: {
                       paddingRight: '80px!important',
@@ -262,10 +266,14 @@ export default function AddRider({ onClose, editRider }) {
                   variant="text"
                   sx={{ fontWeight: 600, position: 'absolute', right: '20px', top: '49px' }}
                   onClick={async () => {
-                    const textData = await navigator.clipboard.readText();
-                    if (textData) {
-                      rider.shopId = textData;
-                      setRender(!render);
+                    try {
+                      const textData = await navigator.clipboard.readText();
+                      if (textData) {
+                        rider.shopId = textData;
+                        setRender(!render);
+                      }
+                    } catch (error) {
+                      console.log(error);
                     }
                   }}
                 >
