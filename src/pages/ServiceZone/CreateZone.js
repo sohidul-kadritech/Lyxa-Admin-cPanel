@@ -1,12 +1,12 @@
 import { LocationOnOutlined } from '@mui/icons-material';
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
-
+import { Box, Button, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
 // eslint-disable-next-line no-unused-vars
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import React, { useState } from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 import ModalContainer from './ModalContainer';
 import ZoneMap from './ZoneMap';
+
 import { ConvertArea, convertedLatLonToLonLat, validateEditedData } from './helper';
 
 // eslint-disable-next-line prettier/prettier, no-unused-vars
@@ -38,6 +38,10 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
 
   const [selectedLocation, setSelectedLoaction] = useState({ lat: null, lon: null });
 
+  // eslint-disable-next-line no-unused-vars
+
+  // getLocationFromLatLng(40.714224, -73.961452);
+
   const createNewZone = () => {
     const polygon = convertedLatLonToLonLat(createdZoneGeometry);
     const data = {
@@ -49,10 +53,11 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
       },
       zoneStatus: createdZoneStatus,
     };
+    console.log('data-->', data);
     if (validateEditedData(data)) {
       addNewZone.mutate(data);
     }
-    console.log(data);
+    // console.log(data);
   };
 
   const mapSearchResult = async (e) => {
@@ -198,14 +203,28 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
           </Box>
         </Stack>
 
-        <Box>
+        <Box sx={{ position: 'relative' }}>
           <ZoneMap
             setPolygonArea={setPolygonArea}
             currentLocation={currentLocation}
             allZones={allZones}
             setCreatedZoneGeometry={setCreatedZoneGeometry}
             selectedLocation={selectedLocation}
+            setCreatedZoneArea={setCreatedZoneArea}
           ></ZoneMap>
+          {addNewZone?.isLoading && (
+            <Stack
+              sx={{ position: 'absolute', top: '0', left: '0', zIndex: '9999', backdropFilter: 'blur(10px)' }}
+              justifyContent="center"
+              alignContent="center"
+              alignItems="center"
+              width="100%"
+              height="100%"
+            >
+              <CircularProgress color="primary" sx={{ width: '100px !important', height: '100px !important' }} />
+              <Typography>Please Wait...</Typography>
+            </Stack>
+          )}
         </Box>
         <Box>
           <Stack flexDirection="row" sx={{ marginTop: '40px' }}>

@@ -126,8 +126,10 @@ function OrderTable({ orders = [], status, loading }) {
           shop,
           deliveryBoy: deliveryBoy?._id,
         },
-        socket
-      )
+        // eslint-disable-next-line prettier/prettier
+        socket,
+        // eslint-disable-next-line prettier/prettier
+      ),
     );
   };
 
@@ -196,7 +198,8 @@ function OrderTable({ orders = [], status, loading }) {
         user: flagedUser && user ? '' : user ? selectFlagOrder?.user?._id : '',
         shop: flagedShop && shop ? '' : shop ? selectFlagOrder?.shop?._id : '',
         delivery: flagedRider && rider ? '' : rider ? selectFlagOrder?.deliveryBoy?._id : '',
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
   };
 
@@ -285,7 +288,8 @@ function OrderTable({ orders = [], status, loading }) {
       cancelOrderByAdmin({
         ...orderCancel,
         cancelReason: orderCancel?.cancelReason?._id ?? '',
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
   };
 
@@ -301,7 +305,8 @@ function OrderTable({ orders = [], status, loading }) {
         item?.shop?._id,
         item?.orderStatus,
         item?.shopDeliveryMethod,
-        item?.orderFor === 'specific'
+        // eslint-disable-next-line prettier/prettier
+        item?.orderFor === 'specific',
       );
     } else if (menu === 'Cancel Order') {
       setOpenCancelModal(!openCancelModal);

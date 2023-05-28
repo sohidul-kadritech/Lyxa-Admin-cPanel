@@ -8,9 +8,10 @@ import { FeatureGroup, MapContainer, Marker, Polygon, Popup, TileLayer } from 'r
 import { EditControl } from 'react-leaflet-draw';
 import { successMsg } from '../../helpers/successMsg';
 import './ZoneMap.css';
-import { calculatePolygonArea, colorList, convertedLonLatToLatLon } from './helper';
+import { calculatePolygonArea, colorList, convertedLonLatToLatLon, getLocationFromLatLng } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
+const defaultCenter = { lat: 23.8103, lon: 90.4125 };
 // eslint-disable-next-line no-unused-vars
 
 // eslint-disable-next-line no-unused-vars
@@ -20,16 +21,15 @@ function ZoneMap({
   allZones = [],
   currentLocation = {},
   setPolygonArea = 0,
+  setCreatedZoneArea,
 }) {
   // eslint-disable-next-line no-unused-vars
   const [center, setCenter] = useState(
     // eslint-disable-next-line prettier/prettier
-    currentLocation?.loaded ? currentLocation?.coordinates : { lat: 23.8103, lon: 90.4125 },
+    currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
   );
   // eslint-disable-next-line no-unused-vars
   const [selectedMarker, setSelectedMarker] = useState({ lat: 0, lon: 0 });
-  // eslint-disable-next-line no-unused-vars
-  // const [polygonGeoData, setPolygonGeoData] = useState([]);
 
   // Map Pin Icon URL
   delete L.Icon.Default.prototype._getIconUrl;
@@ -46,20 +46,25 @@ function ZoneMap({
 
   const createdPolygon = (e) => {
     const polygon = e.layer;
-    console.log('polygon: ', polygon);
     setPolygonArea(calculatePolygonArea(polygon));
     const coordinates = polygon?.getLatLngs()[0]?.map((latLng) => [latLng.lat, latLng.lng]) || [];
-    console.log('get geo: ', coordinates);
-    // setPolygonGeoData(coordinates);
+    const polygonCenter = polygon.getBounds().getCenter();
+    const location = getLocationFromLatLng(polygonCenter.lat, polygonCenter.lng).catch((error) => console.log(error));
+    location.then((res) => {
+      setCreatedZoneArea(res?.data?.results[0]?.formatted_address);
+    });
     setCreatedZoneGeometry(coordinates);
   };
 
   const polygonEdited = (e) => {
     successMsg('Polygon edited succesfully', 'success');
     const polygon = e?.layers?.getLayers()[0] || [];
-    console.log('polygon: ', polygon);
-    setPolygonArea('polygon area; ', e?.layers);
     setPolygonArea(calculatePolygonArea(polygon));
+    const polygonCenter = polygon.getBounds().getCenter();
+    const location = getLocationFromLatLng(polygonCenter.lat, polygonCenter.lng).catch((error) => console.log(error));
+    location.then((res) => {
+      setCreatedZoneArea(res?.data?.results[0]?.formatted_address);
+    });
     const coordinates = polygon?.getLatLngs()[0]?.map((latLng) => [latLng.lat, latLng.lng]) || [];
     // setPolygonGeoData(coordinates);
     setCreatedZoneGeometry(coordinates);
@@ -112,7 +117,7 @@ function ZoneMap({
     <Box sx={{ width: '100%', height: '60vh', zIndex: '-1' }}>
       <MapContainer
         style={{ zIndex: '9999' }}
-        center={[center.lat, center.lon]}
+        center={[center?.lat, center?.lon]}
         zoom={zoom_level}
         ref={mapRef}
         scrollWheelZoom
@@ -148,7 +153,7 @@ function ZoneMap({
         <TileLayer url={mapUrlProvider.maptiler.url}></TileLayer>
 
         {/* Location marker here */}
-        <Marker position={[center.lat, center.lon]}>
+        <Marker position={[center?.lat, center?.lon]}>
           <Popup>{JSON.stringify(center)}</Popup>
         </Marker>
       </MapContainer>

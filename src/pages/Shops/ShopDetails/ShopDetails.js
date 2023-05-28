@@ -18,7 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import AlternateEmailOutlinedIcon from '@mui/icons-material/AlternateEmailOutlined';
@@ -347,13 +346,13 @@ function ShopDetails() {
                       mapLink={`${MAP_URL}?z=10&t=m&q=loc:${shop?.address?.latitude}+${shop?.address?.longitude}`}
                       name="Location"
                     />
-                    <InfoTwo
+                    {/* <InfoTwo
                       value={`Mon to Fri - ${shop?.shopStartTimeText} ${
-                        shop?.shopStartTimeText.split(':')[0] < 12 ? 'AM' : 'PM'
+                        shop?.shopStartTimeText?.split(':') && shop?.shopStartTimeText?.split(':')[0] < 12 ? 'AM' : 'PM'
                       } - ${shop?.shopEndTimeText} ${shop?.shopEndTimeText.split(':')[0] < 12 ? 'AM' : 'PM'}`}
                       Icon={AccessTimeOutlinedIcon}
                       name="Available"
-                    />
+                    /> */}
                     <InfoTwo Icon={StoreOutlinedIcon} value={`${shop?.shopType}`} name="Shop Type" />
                     <InfoTwo
                       Icon={AccountBalanceWalletOutlinedIcon}

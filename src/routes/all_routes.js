@@ -82,8 +82,8 @@ import MenuPage from '../pages/Menu';
 import NewOrders from '../pages/NewOrder';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
-import ShopProfile from '../pages/Profile';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
+import ShopProfile from '../pages/ShopProfile';
 
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
