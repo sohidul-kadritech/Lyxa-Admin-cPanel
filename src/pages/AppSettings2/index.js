@@ -12,6 +12,7 @@ import AXIOS from '../../network/axios';
 import InputBox from '../Settings/Admin/Marketing/LoyaltySettings/InputBox';
 import StyledBox from '../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
 import IncrementDecrementButton from './IncrementDecrementButton';
+import { separatesUpdatedData } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -24,18 +25,35 @@ const breadcrumbItems = [
   },
 ];
 
-export const validateList = (newValue, oldList) => {
-  if (Number(newValue) < 1) {
+export const validateList = (newValue, oldList, type) => {
+  if (Number(newValue) < 1 && type === 'number') {
     successMsg('Bundle cannot be smaller than 1');
     return false;
   }
 
-  if (Number.isNaN(Number(newValue))) {
+  if (Number.isNaN(Number(newValue)) && type === 'number') {
     successMsg('Please enter a valid value');
     return false;
   }
 
-  if (oldList.includes(Number(newValue))) {
+  if (oldList.includes(Number(newValue) && type === 'number')) {
+    successMsg('Bundle item already exists');
+    return false;
+  }
+
+  if (Number(newValue) < 1 && type === 'number') {
+    successMsg('Bundle cannot be smaller than 1');
+    return false;
+  }
+
+  // for text type
+
+  if (!newValue && type === 'text') {
+    successMsg('Bundle cannot be smaller than 1 character');
+    return false;
+  }
+
+  if (oldList.includes(newValue) && type === 'text') {
     successMsg('Bundle item already exists');
     return false;
   }
@@ -52,8 +70,13 @@ function Appsettings2() {
 
   const getShopSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS));
 
-  console.log('shop data: ', getShopSettingsData?.data?.data?.appSetting);
+  const getAllUnits = useQuery([API_URL.GET_ALL_UNIT], () => AXIOS.get(API_URL.GET_ALL_UNIT));
 
+  console.log('shop data: ', getShopSettingsData?.data?.data?.appSetting);
+  console.log('units data: ', getAllUnits?.data?.data);
+
+  // eslint-disable-next-line no-unused-vars
+  const [deletedUnitId, setDeletedUnitId] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [maxTotalEstItemsPriceForButler, setMaxTotalEstItemsPriceForButler] = useState(0);
   // eslint-disable-next-line no-unused-vars
@@ -72,7 +95,11 @@ function Appsettings2() {
   const [nearByShopKm, setNearByShopKm] = useState(0);
 
   // eslint-disable-next-line no-unused-vars
-  const [maxDiscount, setMaxDiscount] = useState(0);
+  const [maxDiscount, setMaxDiscount] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [units, setUnits] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [oldUnits, setOldUnits] = useState([]);
 
   // eslint-disable-next-line no-unused-vars
   const [currency, setCurrency] = useState({});
@@ -95,7 +122,10 @@ function Appsettings2() {
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
     // eslint-disable-next-line no-unused-vars
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || {});
-  }, [getShopSettingsData?.data]);
+
+    setUnits(getAllUnits?.data?.data || []);
+    setOldUnits(getAllUnits?.data?.data.map((unit) => unit?.name) || []);
+  }, [getShopSettingsData?.data?.data, getAllUnits?.data?.data]);
 
   // eslint-disable-next-line prettier/prettier
 
@@ -109,6 +139,30 @@ function Appsettings2() {
       }
     },
   });
+
+  // eslint-disable-next-line no-unused-vars
+  const updateQuery2 = useMutation(
+    async (data1, data2) => {
+      // eslint-disable-next-line no-unused-vars
+      const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data1);
+      // eslint-disable-next-line no-unused-vars
+      const response2 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data2);
+
+      return [response1, response2];
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        if (data[0].status && data[1].status) {
+          successMsg('Updated2 Succesfully', 'success');
+          setHasChanged(false);
+        } else {
+          successMsg('Something Went Wrong 2');
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
 
   // eslint-disable-next-line no-unused-vars
   const populateData = () => {
@@ -133,9 +187,19 @@ function Appsettings2() {
     setType(oldType);
   };
 
-  const addNewBundleItem = (bundle, setBundle, oldbundle) => {
-    if (validateList(bundle, oldbundle)) {
+  const addNewBundleItem = (bundle, setBundle, oldbundle, type = 'number') => {
+    if (validateList(bundle, oldbundle, type) && type === 'number') {
       setBundle((prev) => [...prev, Number(bundle)]);
+      // setGlobalChange(true);
+
+      return true;
+    }
+
+    if (validateList(bundle, oldbundle, type) && type === 'text') {
+      setBundle((prev) => {
+        console.log('new data: ', [...prev, { name: bundle, isNew: true }]);
+        return [...prev, { name: bundle, isNew: true }];
+      });
       // setGlobalChange(true);
 
       return true;
@@ -178,6 +242,16 @@ function Appsettings2() {
     };
     console.log('Created Data', data);
 
+    const updateDUnits = separatesUpdatedData(
+      oldUnits,
+      // eslint-disable-next-line prettier/prettier
+      units.map((unit) => unit.name),
+    );
+    console.log('old data: ', oldUnits);
+    console.log('new data: ', units);
+    console.log('updated data: ', updateDUnits);
+    console.log('deleted data: ', deletedUnitId);
+
     if (hasChanged) updateQuery.mutate(data);
     else successMsg('Please make some changes first !');
     // createDataForAppSettings(data);
@@ -198,7 +272,7 @@ function Appsettings2() {
         }}
       />
       <Box sx={{ backgroundColor: '#ffffff', borderRadius: '7px', padding: '30px' }}>
-        {getShopSettingsData.isLoading ? (
+        {getShopSettingsData.isLoading || getAllUnits.isLoading ? (
           <Typography>Loading...</Typography>
         ) : (
           <>
@@ -255,6 +329,7 @@ function Appsettings2() {
                 setType={setType}
               />
             </StyledBox>
+
             <StyledBox title="Delivery Boy Search Area (KM)">
               <Taglist
                 listContainerSx={{
@@ -304,6 +379,35 @@ function Appsettings2() {
                 onDelete={(item) => {
                   setTypeValidation(type, setType, 'maxDiscount');
                   setMaxDiscount((prev) => prev.filter((value) => value !== item));
+                }}
+              />
+            </StyledBox>
+
+            <StyledBox title="Units">
+              <Taglist
+                listContainerSx={{
+                  mb: 2.5,
+                  mt: 2,
+                }}
+                type="text"
+                addButtonLabel="Add"
+                items={units.map((u) => u.name) || []}
+                onAdd={(value) => {
+                  // setTypeValidation(type, setType, 'maxDiscount');
+                  addNewBundleItem(value, setUnits, units, 'text');
+                }}
+                onDelete={(item) => {
+                  // setTypeValidation(type, setType, 'maxDiscount');
+                  setUnits((prev) => {
+                    setDeletedUnitId((deletedUnit) => {
+                      const deletedId = prev.find((value) => value.name === item);
+                      if (deletedId) return [...deletedUnit, deletedId._id];
+                      return [...deletedUnit];
+                    });
+
+                    return prev.filter((value) => value.name !== item);
+                  });
+                  // setDeletedUnitId((prev) => [...prev, { id: units.find((value) => value.name === item) }]);
                 }}
               />
             </StyledBox>
@@ -359,7 +463,14 @@ function Appsettings2() {
         >
           Discard
         </Button>
-        <Button onClick={updateData} variant="contained" color="primary" disabled={updateQuery?.isLoading}>
+        <Button
+          onClick={() => {
+            updateData();
+          }}
+          variant="contained"
+          color="primary"
+          disabled={updateQuery?.isLoading}
+        >
           Save Changes
         </Button>
       </Stack>
