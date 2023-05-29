@@ -15,8 +15,9 @@ export default function RiderProfile() {
   const location = useLocation();
   const [rider, setRider] = useState(location?.state?.rider);
   const params = useParams();
-
   const [currentTab, setCurrentTab] = useState(0);
+
+  console.log(rider);
 
   return (
     <Box>
@@ -80,7 +81,7 @@ export default function RiderProfile() {
               <RiderTimeStamp riderId={rider?._id} />
             </TabPanel>
             <TabPanel index={4} value={currentTab}>
-              <RiderFlags />
+              <RiderFlags flags={rider?.flags} />
             </TabPanel>
           </Box>
         </Box>
