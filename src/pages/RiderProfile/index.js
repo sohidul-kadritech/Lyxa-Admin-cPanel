@@ -15,8 +15,9 @@ export default function RiderProfile() {
   const location = useLocation();
   const [rider, setRider] = useState(location?.state?.rider);
   const params = useParams();
-
   const [currentTab, setCurrentTab] = useState(0);
+
+  console.log(rider);
 
   return (
     <Box>
@@ -71,16 +72,16 @@ export default function RiderProfile() {
               <RiderOrders riderId={rider?._id} />
             </TabPanel>
             <TabPanel index={1} value={currentTab}>
-              <RiderTransactions />
+              <RiderTransactions riderId={rider?._id} showFor="transactions" />
             </TabPanel>
             <TabPanel index={2} value={currentTab}>
-              <RiderTransactions riderId={rider?._id} />
+              <RiderTransactions riderId={rider?._id} showFor="cashOrderList" />
             </TabPanel>
             <TabPanel index={3} value={currentTab}>
               <RiderTimeStamp riderId={rider?._id} />
             </TabPanel>
             <TabPanel index={4} value={currentTab}>
-              <RiderFlags />
+              <RiderFlags flags={rider?.flags} />
             </TabPanel>
           </Box>
         </Box>

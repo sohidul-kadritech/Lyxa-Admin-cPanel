@@ -349,6 +349,10 @@ export const admin_menu_items = [
         to: '/admin/notifications/list',
       },
       {
+        label: 'Notifications List2',
+        to: '/admin/notifications',
+      },
+      {
         label: 'Notifications Add',
         to: '/admin/send-notifications',
       },

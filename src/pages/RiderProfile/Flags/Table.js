@@ -21,7 +21,7 @@ export default function FlagsTable({ rows = [], onRowClick }) {
       flex: 1,
       minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value?.orderId}</Typography>,
     },
     {
       id: 3,
@@ -68,7 +68,7 @@ export default function FlagsTable({ rows = [], onRowClick }) {
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              No Order found
+              No Flags found
             </Stack>
           ),
         }}

@@ -3,6 +3,29 @@ import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
+export const getTrxType = (type) => {
+  let newType = '';
+  if (type === 'adminSettlebalanceShop') {
+    newType = 'Settle shop';
+  } else if (type === 'adminAddBalanceShop') {
+    newType = 'Add shop credit';
+  } else if (type === 'sellerCashInHandAdjust') {
+    newType = 'Adjust hand cash';
+  } else if (type === 'adminRemoveBalanceShop') {
+    newType = 'Remove shop credit';
+  } else if (type === 'deliveryBoyAmountSettle') {
+    newType = 'Settle Rider';
+  } else if (type === 'deliveryBoyAdminAmountReceivedCash') {
+    newType = 'Received rider cash';
+  } else if (type === 'deliveryBoyOrderDeliveredCash') {
+    newType = 'Order Delivered Cash';
+  } else {
+    newType = 'Unknown';
+  }
+
+  return newType;
+};
+
 export default function TransactionsTable({ rows = [], onRowClick }) {
   const columns = [
     {
@@ -27,17 +50,17 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
       id: 3,
       headerName: 'TYPE',
       field: 'type',
-      flex: 1,
+      flex: 1.5,
       minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{getTrxType(value)}</Typography>,
     },
     {
       id: 4,
       headerName: `DATE`,
       sortable: false,
       field: 'createdAt',
-      flex: 2,
+      flex: 1.5,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => (
@@ -52,11 +75,11 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
     {
       id: 5,
       headerName: 'ADMIN',
-      field: 'admin',
+      field: 'adminBy',
       flex: 0.7,
       minWidth: 100,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value?.name}</Typography>,
     },
   ];
 
@@ -78,15 +101,10 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
         getRowId={(row) => row?._id}
         rowHeight={71}
         onRowClick={onRowClick}
-        sx={{
-          '& .MuiDataGrid-row': {
-            cursor: 'pointer',
-          },
-        }}
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              No Order found
+              No transactions found
             </Stack>
           ),
         }}
