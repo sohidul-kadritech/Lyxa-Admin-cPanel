@@ -18,7 +18,7 @@ import { accountTypeOptionsFilter, activeStatusOptions, notificationTypeOptionsF
 const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '/',
+    to: '/settings',
   },
   {
     label: 'Notifications',
@@ -58,7 +58,7 @@ function Notification() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -93,6 +93,7 @@ function Notification() {
       <PageTop
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

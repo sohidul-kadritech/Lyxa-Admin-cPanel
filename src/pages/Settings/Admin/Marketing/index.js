@@ -6,19 +6,19 @@ import PageTop from '../../../../components/Common/PageTop';
 const pagesList = [
   {
     label: 'Loyalty',
-    to: '/admin/settings2/marketing/loyalty',
+    to: '/settings/marketing/loyalty',
   },
   {
     label: 'Deals',
-    to: '/admin/settings2/marketing/deals',
+    to: '/settings/marketing/deals',
   },
   {
     label: 'Featured',
-    to: '/admin/settings2/marketing/featured',
+    to: '/settings/marketing/featured',
   },
   {
     label: 'Coupons',
-    to: '/admin/settings2/marketing/coupons',
+    to: '/settings/marketing/coupons',
   },
 ];
 
@@ -29,7 +29,7 @@ export default function AdminMarketingSettings() {
         title="Settings"
         subtitle="Customize admin settings"
         backButtonLabel="Back to Settings"
-        backTo="/admin/settings2"
+        backTo="/settings"
       />
       <PageList items={pagesList} />
     </Box>

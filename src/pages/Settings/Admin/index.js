@@ -6,71 +6,79 @@ import PageTop from '../../../components/Common/PageTop';
 const pagesList = [
   {
     label: 'Marketing',
-    to: '/admin/settings2/marketing',
-  },
-  {
-    label: 'Users',
-    to: '/admin/settings2/users',
-  },
-  {
-    label: 'Invoices',
-    to: '#',
+    to: 'settings/marketing',
   },
   {
     label: 'Zones',
+    to: '/settings/zone',
+  },
+  {
+    label: 'Products',
+    to: '/settings/products/list',
+  },
+  {
+    label: 'Categories List',
     to: '#',
   },
   {
-    label: 'Units',
-    to: '/products/unit-types',
-  },
-  {
-    label: 'Products *',
-    to: '/products/list',
-  },
-  {
-    label: 'Notifications',
-    to: '/admin/notifications/list',
-  },
-  {
-    label: 'Support',
-    to: '/settings/support-reasons',
-  },
-  {
-    label: 'App Configuration',
-    to: '/app/settings',
-  },
-  {
-    label: 'Percentages',
-    to: '/percentage-setting',
-  },
-  {
-    label: 'Cancellation Reasons',
-    to: '/settings/support-reasons',
+    label: 'Chat',
+    to: '#',
   },
   {
     label: 'Rating',
     to: '/settings/ratings',
   },
   {
-    label: 'Database Collection',
-    to: '/admin/database/collections',
+    label: 'Support Reasons',
+    to: '/settings/support-reasons',
+  },
+  {
+    label: 'Cancel Order Reasons',
+    to: '/settings/cancel-reason',
+  },
+  // {
+  //   label: 'Invoices',
+  //   to: '#',
+  // },
+  // {
+  //   label: 'Units',
+  //   to: '/products/unit-types',
+  // },
+  {
+    label: 'Products *',
+    to: '/products/list',
+  },
+  {
+    label: 'Notifications',
+    to: '/settings/notifications',
+  },
+  {
+    label: 'Invoice Configuration',
+    to: '#',
+  },
+  {
+    label: 'Percentages',
+    to: '/percentage-setting',
+  },
+  {
+    label: 'App Settings',
+    to: '/settings/app-settings',
   },
   {
     label: 'Admin Log',
     to: '/add-wallet/admin-log-history',
   },
   {
+    label: 'Database Collection',
+    to: '/admin/database/collections',
+  },
+  {
     label: 'Privacy',
     to: '#',
   },
   {
-    label: 'FAQ',
-    to: '/settings/support-reasons',
-  },
-  {
     label: 'Terms & Conditions',
-    to: '/terms-and-conditions/user-app',
+    to: '/terms-and-conditions2',
   },
 ];
 
