@@ -1,11 +1,13 @@
-import { Box, Button, Chip, Stack, TextField, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
+import Taglist from '../../components/Common/Taglist';
 import OptionsSelect from '../../components/Filter/OptionsSelect';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import StyledBox from '../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
 
 // eslint-disable-next-line no-unused-vars
 const ratingOptions = [
@@ -27,6 +29,20 @@ const initRating = {
   tags: [],
   type: 'shop',
 };
+
+export const validateList = (newValue, oldList) => {
+  if (newValue.length < 1) {
+    successMsg('Tag cannot be smaller than 1 character');
+    return false;
+  }
+
+  if (oldList.includes(newValue)) {
+    successMsg('Tag item already exists');
+    return false;
+  }
+
+  return true;
+};
 // eslint-disable-next-line no-unused-vars
 function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFlags }) {
   // eslint-disable-next-line no-undef
@@ -35,9 +51,6 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
   const queryClient = useQueryClient();
 
   const [currentRating, setCurrentRating] = useState({ ...initRating });
-
-  const [tag, setTag] = useState('');
-
   // add new rating
   const addNewRating = useMutation((ratings) => AXIOS.post(API_URL.ADD_NEW_RATING, ratings), {
     onSuccess: (data) => {
@@ -81,28 +94,18 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
     }
   };
 
-  const handleAddTag = (e) => {
-    if (e.key === 'Enter') {
-      if (tag.trim() === '') {
-        return;
-      }
-      setCurrentRating((prev) => ({ ...prev, tags: [tag.trim(), ...prev.tags] }));
-      setTag('');
-    }
-  };
-
-  const deleteTag = (index) => {
-    const newTags = currentRating?.tags?.filter((item, i) => i !== index);
-    setCurrentRating((prev) => ({ ...prev, tags: newTags }));
-  };
-
   useEffect(() => {
     setCurrentRating({ ...rating });
   }, [rating]);
 
+  const addNewBundleItem = (bundle) => {
+    if (validateList(bundle, currentRating.tags))
+      setCurrentRating((prev) => ({ ...prev, tags: [bundle.trim(), ...prev.tags] }));
+  };
+
   return (
     <SidebarContainer title={`${isEdit === false ? 'Add New Rating' : 'Edit Rating'}`} onClose={onClose}>
-      <Stack spacing={6}>
+      <Stack spacing={6} paddingBottom="40px">
         <Stack direction="column" spacing={5}>
           <Typography
             variant="h6"
@@ -145,70 +148,24 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
           />
         </Stack>
 
-        <TextField
-          label="Tag"
-          placeholder="Press 'Enter' to add"
-          name="tag"
-          variant="outlined"
-          value={tag}
-          onChange={(e) => {
-            setTag(e.target.value);
-          }}
-          onKeyUp={handleAddTag}
-          sx={{
-            width: '100%',
-          }}
-        />
-        <Stack spacing={3}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: '600',
-              fontSize: '15px',
-              lineHeight: '18px',
+        <StyledBox title="Tag">
+          <Taglist
+            listContainerSx={{
+              mb: 2.5,
+              mt: 2,
             }}
-          >
-            New Tags
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 2,
-              background: 'rgba(0, 0, 0, 0.08)',
-              minHeight: '80px',
-              padding: 2,
-              borderRadius: 2,
+            type="text"
+            addButtonLabel="Add"
+            items={currentRating?.tags || []}
+            onAdd={(value) => {
+              addNewBundleItem(value);
             }}
-          >
-            {currentRating?.tags?.length === 0 && (
-              <Typography
-                textAlign="center"
-                variant="body3"
-                sx={{
-                  flexShrink: 0,
-                  marginTop: {
-                    xl: '0px',
-                    lg: '6px',
-                  },
-                }}
-              >
-                Empty
-              </Typography>
-            )}
-            {currentRating?.tags?.map((item, index) => (
-              <Chip
-                key={index}
-                label={item}
-                color="info"
-                variant="contained"
-                onDelete={() => {
-                  deleteTag(index);
-                }}
-              />
-            ))}
-          </Box>
-        </Stack>
+            onDelete={(item) => {
+              setCurrentRating((prev) => ({ ...prev, tags: prev.tags.filter((value) => value !== item) }));
+              // setCurrentRating((prev) => prev.filter((value) => value !== item));
+            }}
+          />
+        </StyledBox>
         <Button
           disableElevation
           variant="contained"
