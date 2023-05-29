@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import currenciesList from '../../common/data/currencyList';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
@@ -65,15 +65,14 @@ export const validateList = (newValue, oldList, type) => {
 
 function Appsettings2() {
   //   const theme = useTheme();
+
+  const queryClient = useQueryClient();
   // eslint-disable-next-line no-unused-vars
   const [lyxaLimit, setLyxaLimit] = useState(25);
 
   const getShopSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS));
 
   const getAllUnits = useQuery([API_URL.GET_ALL_UNIT], () => AXIOS.get(API_URL.GET_ALL_UNIT));
-
-  console.log('shop data: ', getShopSettingsData?.data?.data?.appSetting);
-  console.log('units data: ', getAllUnits?.data?.data);
 
   // eslint-disable-next-line no-unused-vars
   const [deletedUnitId, setDeletedUnitId] = useState([]);
@@ -124,40 +123,49 @@ function Appsettings2() {
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || {});
 
     setUnits(getAllUnits?.data?.data || []);
-    setOldUnits(getAllUnits?.data?.data.map((unit) => unit?.name) || []);
+    setOldUnits(getAllUnits?.data?.data || []);
   }, [getShopSettingsData?.data?.data, getAllUnits?.data?.data]);
-
-  // eslint-disable-next-line prettier/prettier
-
-  const updateQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data), {
-    onSuccess: (data) => {
-      if (data.status) {
-        successMsg('Updated Succesfully', 'success');
-        setHasChanged(false);
-      } else {
-        successMsg('Something Went Wrong');
-      }
-    },
-  });
 
   // eslint-disable-next-line no-unused-vars
   const updateQuery2 = useMutation(
-    async (data1, data2) => {
-      // eslint-disable-next-line no-unused-vars
-      const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data1);
-      // eslint-disable-next-line no-unused-vars
-      const response2 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data2);
+    async (data) => {
+      if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length > 0) {
+        const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
+        const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
+        return [response1, response3];
+      }
+      if (data?.addUnit?.nameList?.length > 0 && data?.deleteUnit?.idList?.length === 0) {
+        const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
+        const response2 = await AXIOS.post(API_URL.ADD_UNIT, data?.addUnit);
+        return [response1, response2];
+      }
+      if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length === 0) {
+        const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
+        return [response1];
+      }
 
-      return [response1, response2];
+      const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
+      const response2 = await AXIOS.post(API_URL.ADD_UNIT, data?.addUnit);
+      const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
+
+      return [response1, response2, response3];
     },
     {
       onSuccess: (data) => {
-        console.log(data);
-        if (data[0].status && data[1].status) {
-          successMsg('Updated2 Succesfully', 'success');
+        if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
+          successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
+          queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
+        } else if (data.length === 2 && data[0].status && data[1].status) {
+          successMsg('Updated Succesfully', 'success');
+          setHasChanged(false);
+          queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
+        } else if (data.length === 1 && data[0].status) {
+          successMsg('Updated Succesfully', 'success');
+          setHasChanged(false);
+          queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else {
-          successMsg('Something Went Wrong 2');
+          successMsg('Something Went Wrong');
         }
       },
       // eslint-disable-next-line prettier/prettier
@@ -174,6 +182,7 @@ function Appsettings2() {
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || {});
+    setUnits(getAllUnits?.data?.data || []);
     setType([]);
   };
 
@@ -190,18 +199,27 @@ function Appsettings2() {
   const addNewBundleItem = (bundle, setBundle, oldbundle, type = 'number') => {
     if (validateList(bundle, oldbundle, type) && type === 'number') {
       setBundle((prev) => [...prev, Number(bundle)]);
-      // setGlobalChange(true);
-
       return true;
     }
 
-    if (validateList(bundle, oldbundle, type) && type === 'text') {
+    if (
+      validateList(
+        bundle,
+        oldbundle.map((data) => data?.name),
+        // eslint-disable-next-line prettier/prettier
+        type,
+      ) &&
+      type === 'text'
+    ) {
+      setHasChanged(true);
       setBundle((prev) => {
-        console.log('new data: ', [...prev, { name: bundle, isNew: true }]);
+        const previousData = oldUnits.find((unit) => unit.name === bundle);
+        if (previousData) {
+          setDeletedUnitId((prev) => prev.filter((id) => id !== previousData._id));
+          return [...prev, previousData];
+        }
         return [...prev, { name: bundle, isNew: true }];
       });
-      // setGlobalChange(true);
-
       return true;
     }
     return false;
@@ -229,7 +247,7 @@ function Appsettings2() {
 
   const updateData = () => {
     // setting/app-setting/edit
-    const data = {
+    const appsettignsData = {
       maxTotalEstItemsPriceForButler,
       nearByShopKm,
       maxDistanceForButler,
@@ -240,20 +258,26 @@ function Appsettings2() {
       vat,
       type,
     };
-    console.log('Created Data', data);
 
     const updateDUnits = separatesUpdatedData(
-      oldUnits,
+      oldUnits.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
       units.map((unit) => unit.name),
     );
-    console.log('old data: ', oldUnits);
-    console.log('new data: ', units);
-    console.log('updated data: ', updateDUnits);
-    console.log('deleted data: ', deletedUnitId);
 
-    if (hasChanged) updateQuery.mutate(data);
-    else successMsg('Please make some changes first !');
+    // if (hasChanged) updateQuery.mutate(data);
+
+    if (hasChanged) {
+      updateQuery2.mutate({
+        appSettings: appsettignsData,
+        addUnit: {
+          nameList: updateDUnits,
+        },
+        deleteUnit: {
+          idList: deletedUnitId,
+        },
+      });
+    } else successMsg('Please make some changes first !');
     // createDataForAppSettings(data);
   };
 
@@ -398,10 +422,11 @@ function Appsettings2() {
                 }}
                 onDelete={(item) => {
                   // setTypeValidation(type, setType, 'maxDiscount');
+                  setHasChanged(true);
                   setUnits((prev) => {
                     setDeletedUnitId((deletedUnit) => {
-                      const deletedId = prev.find((value) => value.name === item);
-                      if (deletedId) return [...deletedUnit, deletedId._id];
+                      const deletedId = prev.find((value) => value.name === item && value._id);
+                      if (deletedId && !deletedUnit.includes(deletedId?._id)) return [...deletedUnit, deletedId._id];
                       return [...deletedUnit];
                     });
 
@@ -430,7 +455,6 @@ function Appsettings2() {
                   }),
                   //   items: categories,
                   onChange: (e) => {
-                    console.log('currency value: ', e.target.value);
                     const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
                     setTypeValidation(type, setType, 'currency');
                     setCurrency(selectedCurrency);
@@ -469,7 +493,7 @@ function Appsettings2() {
           }}
           variant="contained"
           color="primary"
-          disabled={updateQuery?.isLoading}
+          disabled={updateQuery2?.isLoading}
         >
           Save Changes
         </Button>

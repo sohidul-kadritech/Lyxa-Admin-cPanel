@@ -400,6 +400,10 @@ export const admin_menu_items = [
         to: '/app/settings2',
       },
       {
+        label: 'Refer A Friend',
+        to: '/admin/refer-friend',
+      },
+      {
         label: 'Percentage Settings',
         to: '/percentage-setting',
       },

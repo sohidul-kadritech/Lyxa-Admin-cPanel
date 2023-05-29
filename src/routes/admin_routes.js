@@ -80,6 +80,7 @@ import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSeller
 import Appsettings2 from '../pages/AppSettings2';
 import Notification from '../pages/Notification2';
 import RatingSettings2 from '../pages/Ratings2';
+import ReferFriend from '../pages/ReferFriend';
 import RequestedArea from '../pages/RequestedArea';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
@@ -203,6 +204,7 @@ export const admin_routes = [
   { path: '/app/settings2', component: Appsettings2 },
   { path: '/percentage-setting', component: PercentageSetting },
   { path: '/admin/percentage-settings-history', component: AdminLog },
+  { path: '/admin/refer-friend', component: ReferFriend },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/admin/cancel-reason2', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
