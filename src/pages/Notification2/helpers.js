@@ -30,7 +30,7 @@ export const accountTypeOptionsFilter = [
   },
   {
     value: 'deliveryBoy',
-    label: 'Delivery Boy',
+    label: 'Rider',
   },
 ];
 
@@ -45,7 +45,7 @@ export const accountTypeOptionsAdd = [
   },
   {
     value: 'deliveryBoy',
-    label: 'Delivery Boy',
+    label: 'Rider',
   },
 ];
 export const notificationTypeOptionsFilter = [
@@ -101,7 +101,7 @@ export const notificationDataValidation = (data) => {
       successMsg('Please select a user!');
       return false;
     }
-    if (data.deliveryMan === null && data.accountType === 'delivery_boy') {
+    if (data.deliveryMan === null && data.accountType === 'deliveryBoy') {
       successMsg('Please select a rider!');
       return false;
     }
@@ -128,7 +128,7 @@ export const generateData = (data) => {
       user: data.user,
     };
   }
-  if (data.accountType === 'delivery_boy') {
+  if (data.accountType === 'deliveryBoy') {
     return {
       ...notificationData,
       deliveryBoy: data.deliveryBoy,
@@ -136,4 +136,17 @@ export const generateData = (data) => {
   }
 
   return notificationData;
+};
+
+export const getSpecificUser = (data) => {
+  if (data.accountType === 'shop') {
+    return { name: data.shop?.shopName, email: data?.shop?.email };
+  }
+  if (data.accountType === 'user') {
+    return { name: data.user?.name, email: data?.user?.email };
+  }
+  if (data.accountType === 'deliveryBoy') {
+    return { name: data.deliveryBoy?.name, email: data?.deliveryBoy?.email };
+  }
+  return '';
 };

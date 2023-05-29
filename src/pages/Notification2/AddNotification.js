@@ -43,7 +43,7 @@ function AddNotification({ isEdit = false, onClose, notifiction, sendNotificatio
   const sendNotificationHandler = () => {
     const data = currentNotificaion;
     if (data.type === 'specific') {
-      if (data.accountType === 'delivery_boy') {
+      if (data.accountType === 'deliveryBoy') {
         data.deliveryBoy = selectedRiderOptions;
       } else if (data.accountType === 'shop') {
         data.shop = selectedShopOptions;
@@ -286,7 +286,7 @@ function AddNotification({ isEdit = false, onClose, notifiction, sendNotificatio
         />
       )}
 
-      {currentNotificaion.accountType === 'delivery_boy' && currentNotificaion.type === 'specific' && (
+      {currentNotificaion.accountType === 'deliveryBoy' && currentNotificaion.type === 'specific' && (
         <StyledFormField
           label="Select Rider"
           intputType="autocomplete"

@@ -1,6 +1,6 @@
 import { Box, Drawer, Stack, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 // eslint-disable-next-line import/no-named-as-default
@@ -13,6 +13,7 @@ import { AddMenuButton } from '../Faq2';
 import { dateRangeInit } from '../Faq2/helpers';
 import AddNotification from './AddNotification';
 import NotificationList from './NotificationList';
+import TablePageSkeleton from './TablePageSkeleton';
 import { accountTypeOptionsFilter, activeStatusOptions, notificationTypeOptionsFilter } from './helpers';
 
 const breadcrumbItems = [
@@ -30,6 +31,7 @@ function Notification() {
   const [range, setRange] = useState({ ...dateRangeInit });
 
   const [open, setOpen] = useState(false);
+  const [isConfirm, setIsConfirm] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const [status, setStatus] = useState('all');
@@ -40,15 +42,24 @@ function Notification() {
   const [type, setType] = useState('');
   // eslint-disable-next-line no-unused-vars
 
-  const getAllNotifications = useQuery([API_URL.GET_NOTIFICATIONS, { status, accountType, type }], () =>
-    AXIOS.get(API_URL.GET_NOTIFICATIONS, {
-      params: {
-        status,
-        accountType,
-        type,
-      },
-      // eslint-disable-next-line prettier/prettier
-    }),
+  const [searchKey, setSearchKey] = useState('');
+
+  const queryClient = useQueryClient();
+
+  const getAllNotifications = useQuery(
+    [API_URL.GET_NOTIFICATIONS, { status, accountType, type, startDate: range.start, endDate: range.end, searchKey }],
+    () =>
+      AXIOS.get(API_URL.GET_NOTIFICATIONS, {
+        params: {
+          searchKey,
+          status,
+          accountType,
+          type,
+          startDate: range.start,
+          endDate: range.end,
+        },
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -56,7 +67,7 @@ function Notification() {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg('Successfully Added', 'success');
-        getAllNotifications.refetch();
+        queryClient.invalidateQueries(API_URL.GET_NOTIFICATIONS);
         setOpen(false);
       } else {
         successMsg('Something Went Wrong!');
@@ -68,7 +79,8 @@ function Notification() {
     onSuccess: (data) => {
       if (data.status) {
         successMsg('Successfully Deleted', 'success');
-        getAllNotifications.refetch();
+        queryClient.invalidateQueries(API_URL.GET_NOTIFICATIONS);
+        setIsConfirm(false);
       } else {
         successMsg('Something went wrong!');
       }
@@ -91,11 +103,7 @@ function Notification() {
         }}
       />
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-        <StyledSearchBar
-          sx={{ flex: '1' }}
-          placeholder="Search"
-          // onChange={(e) => setSearchKey(e.target.value)}
-        />
+        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
         <DateRange range={range} setRange={setRange} />
         <StyledFormField
           intputType="select"
@@ -159,11 +167,17 @@ function Notification() {
           overflow: 'auto',
         }}
       >
-        <NotificationList
-          data={getAllNotifications?.data?.data?.notifications}
-          loading={getAllNotifications.isLoading}
-          deleteQuery={deleteNotificationQuery}
-        />
+        {getAllNotifications.isLoading ? (
+          <TablePageSkeleton column={5} row={6} />
+        ) : (
+          <NotificationList
+            data={getAllNotifications?.data?.data?.notifications}
+            loading={getAllNotifications.isLoading}
+            deleteQuery={deleteNotificationQuery}
+            isConfirm={isConfirm}
+            setIsConfirm={setIsConfirm}
+          />
+        )}
       </Box>
 
       <Drawer open={open} anchor="right">

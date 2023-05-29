@@ -8,11 +8,12 @@ import ConfirmModal from '../../components/Common/ConfirmModal';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
+import { getSpecificUser } from './helpers';
 
 // eslint-disable-next-line no-unused-vars
-function NotificationList({ data = [], loading, deleteQuery }) {
+function NotificationList({ data = [], loading, deleteQuery, isConfirm, setIsConfirm }) {
   // eslint-disable-next-line no-unused-vars
-  const [isConfirm, setIsConfirm] = useState(false);
+  // const [isConfirm, setIsConfirm] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [id, setId] = useState('');
   const allColumns = [
@@ -49,7 +50,7 @@ function NotificationList({ data = [], loading, deleteQuery }) {
               variant="body1"
               style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textTransform: 'capitalize' }}
             >
-              {params?.row?.accountType}
+              {params?.row?.accountType !== 'deliveryBoy' ? params?.row?.accountType : 'Rider'}
             </Typography>
           </Box>
         </Stack>
@@ -64,8 +65,23 @@ function NotificationList({ data = [], loading, deleteQuery }) {
       renderCell: (params) => (
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
           <Box>
-            <Typography variant="body1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-              {params?.row?.type === 'global' ? 'All user' : 'Specific user'}
+            <Typography
+              variant="body1"
+              style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textTransform: 'capitalize' }}
+            >
+              {params?.row?.type === 'global' ? 'All user' : getSpecificUser(params?.row)?.name}
+            </Typography>
+            <Typography
+              variant="body3"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                width: '100%',
+                lineHeight: '1.5',
+                textTransform: 'capitalize',
+              }}
+            >
+              {params?.row?.type !== 'global' && getSpecificUser(params?.row)?.email}
             </Typography>
           </Box>
         </Stack>
@@ -148,15 +164,16 @@ function NotificationList({ data = [], loading, deleteQuery }) {
       />
 
       <ConfirmModal
-        message="Are you confirm?"
+        message="Are you sure you want to delete the notification?"
         isOpen={isConfirm}
+        loading={deleteQuery?.isLoading}
         blurClose
         onCancel={() => {
           setIsConfirm(false);
         }}
         onConfirm={() => {
           // callDeleteFaq();
-          setIsConfirm(false);
+          // setIsConfirm(false);
           console.log('id: ', id);
           deleteQuery.mutate({ id });
         }}
