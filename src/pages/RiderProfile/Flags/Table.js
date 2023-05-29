@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
-export default function FlagsTable({ rows = [], onRowClick }) {
+export default function FlagsTable({ rows = [] }) {
   const columns = [
     {
       id: 1,
@@ -59,12 +59,6 @@ export default function FlagsTable({ rows = [], onRowClick }) {
         rows={rows}
         getRowId={(row) => row?._id}
         rowHeight={71}
-        onRowClick={onRowClick}
-        sx={{
-          '& .MuiDataGrid-row': {
-            cursor: 'pointer',
-          },
-        }}
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">

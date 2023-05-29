@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import Documents from './Documents';
 import RiderFlags from './Flags';
 import RiderOrders from './Orders';
 import RiderDetails from './RiderDetails';
@@ -16,8 +17,6 @@ export default function RiderProfile() {
   const [rider, setRider] = useState(location?.state?.rider);
   const params = useParams();
   const [currentTab, setCurrentTab] = useState(0);
-
-  console.log(rider);
 
   return (
     <Box>
@@ -35,7 +34,7 @@ export default function RiderProfile() {
           }}
         >
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" pb={12}>
-            <TopInfo />
+            <TopInfo rider={rider} />
             <Button
               disableRipple
               variant="text"
@@ -64,7 +63,7 @@ export default function RiderProfile() {
             <Tab label="Transactions" />
             <Tab label="Cash Orders" />
             <Tab label="Timestamp" />
-            <Tab label="Flags" />
+            <Tab label="Flaged" />
             <Tab label="Documents" />
           </Tabs>
           <Box>
@@ -82,6 +81,9 @@ export default function RiderProfile() {
             </TabPanel>
             <TabPanel index={4} value={currentTab}>
               <RiderFlags flags={rider?.flags} />
+            </TabPanel>
+            <TabPanel index={5} value={currentTab}>
+              <Documents rider={rider} />
             </TabPanel>
           </Box>
         </Box>

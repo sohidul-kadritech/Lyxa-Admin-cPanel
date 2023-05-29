@@ -27,11 +27,11 @@ const defaultStyle = {
   cursor: 'pointer',
 };
 
-const readonlyS = {
+const readonlyStyle = {
   pointerEvents: 'none',
 };
 
-export default function StyledFileDropzone({ text, classes, readOnly, ...args }) {
+export default function StyledFileDropzone({ text, readOnly, ...args }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     maxSize: 1000 * 1000,
     ...args,
@@ -42,7 +42,7 @@ export default function StyledFileDropzone({ text, classes, readOnly, ...args })
       ...(isFocused ? focusedStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
-      ...(readOnly ? readonlyS : {}),
+      ...(readOnly ? readonlyStyle : {}),
     }),
     [isFocused, isDragAccept, isDragReject, readOnly]
   );
@@ -64,14 +64,6 @@ export default function StyledFileDropzone({ text, classes, readOnly, ...args })
         <span>
           <UploadIcon /> Drop files here or click to upload
         </span>
-        {/* <span
-          style={{
-            fontSize: '11px',
-            lineHeight: '1',
-          }}
-        >
-          Max Image size allowed is 1 Mib
-        </span> */}
       </p>
     </div>
   );
