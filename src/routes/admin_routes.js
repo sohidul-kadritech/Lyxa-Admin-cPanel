@@ -78,6 +78,7 @@ import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import Appsettings2 from '../pages/AppSettings2';
+import Notification from '../pages/Notification2';
 import RatingSettings2 from '../pages/Ratings2';
 import RequestedArea from '../pages/RequestedArea';
 import ServiceZone from '../pages/ServiceZone';
@@ -232,6 +233,7 @@ export const admin_routes = [
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },
+  { path: '/admin/notifications', component: Notification },
 
   // DISPLAY
   { path: '/display', component: DisplaySettings },

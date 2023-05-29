@@ -51,10 +51,10 @@ const breadcrumbItems = [
   },
 ];
 
-function AddMenuButton({ ...props }) {
+export function AddMenuButton({ title = 'Add', ...props }) {
   return (
     <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
-      Add
+      {title}
     </Button>
   );
 }

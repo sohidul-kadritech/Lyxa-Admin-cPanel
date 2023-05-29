@@ -61,7 +61,7 @@ export default function OrderTable({ orders = [], onRowClick }) {
       headerName: 'RIDER RATING',
       field: 'rating',
       sortable: false,
-      flex: 1,
+      flex: 1.5,
       renderCell: ({ row }) => {
         const r = row?.reviews?.find((r) => r?.type === 'deliveryBoy');
 

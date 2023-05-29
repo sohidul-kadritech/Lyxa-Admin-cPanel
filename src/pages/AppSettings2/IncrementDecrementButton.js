@@ -1,5 +1,6 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Stack, useTheme } from '@mui/material';
 import React from 'react';
+import StyledFormField from '../../components/Form/StyledFormField';
 
 function IncrementDecrementButton({
   currentValue,
@@ -34,16 +35,34 @@ function IncrementDecrementButton({
           >
             -
           </Button>
-          <Typography
-            sx={{
-              marginLeft: '0 !important',
-              fontSize: { lg: '18px', md: '16px', xs: '16px' },
-              fontWeight: 400,
-              color: '#363636',
+          <StyledFormField
+            intputType="text"
+            containerProps={{
+              sx: {
+                width: '120px',
+                padding: '0 0',
+                textAlign: 'center',
+                borderRadius: '0px',
+              },
             }}
-          >
-            {currentValue}
-          </Typography>
+            inputProps={{
+              type: 'number',
+              name: 'incrementdecrement',
+              placeholder: '0',
+              value: currentValue || '',
+              sx: {
+                padding: '0 0',
+                textAlign: 'center',
+                borderRadius: '0px',
+                // background: 'red',
+              },
+              onChange: (e) => {
+                setValue(e.target.value);
+                setTypeValidation(types, setType, type);
+              },
+              //   readOnly: Boolean(newProductCategory) || productReadonly,
+            }}
+          />
           <Button
             disableRipple
             sx={{ fontSize: '32px', marginLeft: '0 !important' }}

@@ -1,30 +1,64 @@
+/* eslint-disable consistent-return */
 import { Box } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchBar from './Searchbar';
 import FlagsTable from './Table';
-import { getMockFlags } from './mock';
 
 export const queryParamsInit = {
   page: 1,
   pageSize: 5,
   sortBy: 'DESC',
-  type: 'all',
   startDate: moment().startOf('month').format('YYYY-MM-DD'),
   endDate: moment().format('YYYY-MM-DD'),
   searchKey: '',
-  shop: '',
-  orderType: 'all',
-  model: 'order',
 };
 
-export default function RiderFlags() {
+const filterFlags = (filters, flags) => {
+  const temp = [];
+  console.log('triggereeed');
+
+  flags?.forEach((flag) => {
+    const key = filters.searchKey.toLowerCase();
+
+    if (key && !flag?.orderId?.orderId?.toLowerCase()?.includes(key) && !flag?.comment?.toLowerCase()?.includes(key)) {
+      console.log('remove by search key');
+      return;
+    }
+    if (moment(flag?.createdAt).isBefore(filters.startDate)) {
+      console.log('remove by start date');
+      return;
+    }
+
+    if (moment(flag?.createdAt).subtract(1, 'day').isAfter(filters.endDate)) {
+      console.log('remove by end date');
+      return;
+    }
+
+    temp.push(flag);
+  });
+
+  if (filters.sortBy === 'ASC') {
+    temp.sort((a, b) => new Date(b.createdAt).getSeconds() - new Date(a.createdAt).getSeconds());
+  } else {
+    temp.sort((a, b) => new Date(a.createdAt).getSeconds() - new Date(b.createdAt).getSeconds());
+  }
+
+  return temp;
+};
+
+export default function RiderFlags({ flags = [] }) {
+  const [flagList, setFlagList] = useState(flags);
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+
+  useEffect(() => {
+    setFlagList(filterFlags(queryParams, flags));
+  }, [queryParams]);
 
   return (
     <Box>
-      <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
-      <FlagsTable rows={getMockFlags(10)} />
+      <SearchBar searchPlaceHolder="Search Flags" queryParams={queryParams} setQueryParams={setQueryParams} />
+      <FlagsTable rows={flagList} />
     </Box>
   );
 }
