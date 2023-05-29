@@ -44,10 +44,10 @@ const pagesList = [
   //   label: 'Units',
   //   to: '/products/unit-types',
   // },
-  {
-    label: 'Products *',
-    to: '/products/list',
-  },
+  // {
+  //   label: 'Products *',
+  //   to: '/products/list',
+  // },
   {
     label: 'Notifications',
     to: '/settings/notifications',
