@@ -3,7 +3,16 @@ import React from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 import IncrementDecrementButton from './IncrementDecrementButton';
 
-function InputBox({ inputProps, intputType, title, currentValue, incrementHandler, decrementHandler, setValue }) {
+function InputBox({
+  inputProps,
+  intputType,
+  title,
+  currentValue,
+  incrementHandler,
+  decrementHandler,
+  setValue,
+  setTypeValidation,
+}) {
   return (
     <Stack
       direction="row"
@@ -41,6 +50,7 @@ function InputBox({ inputProps, intputType, title, currentValue, incrementHandle
           incrementHandler={incrementHandler}
           decrementHandler={decrementHandler}
           setValue={setValue}
+          setTypeValidation={setTypeValidation}
         />
       )}
     </Stack>

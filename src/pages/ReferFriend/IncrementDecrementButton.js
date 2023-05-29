@@ -2,7 +2,7 @@ import { Box, Button, Stack, useTheme } from '@mui/material';
 import React from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 
-function IncrementDecrementButton({ currentValue, incrementHandler, decrementHandler, setValue }) {
+function IncrementDecrementButton({ currentValue, incrementHandler, decrementHandler, setValue, setTypeValidation }) {
   const theme = useTheme();
   return (
     <Box
@@ -20,6 +20,7 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
             disableRipple
             sx={{ fontSize: '32px', fontWeight: 600 }}
             onClick={() => {
+              setTypeValidation();
               decrementHandler(setValue);
             }}
           >
@@ -47,6 +48,7 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
                 // background: 'red',
               },
               onChange: (e) => {
+                setTypeValidation();
                 setValue(e.target.value);
               },
               //   readOnly: Boolean(newProductCategory) || productReadonly,
@@ -56,6 +58,7 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
             disableRipple
             sx={{ fontSize: '32px', marginLeft: '0 !important' }}
             onClick={() => {
+              setTypeValidation();
               incrementHandler(setValue);
             }}
           >

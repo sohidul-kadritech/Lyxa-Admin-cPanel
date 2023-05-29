@@ -31,10 +31,6 @@ export const discountOptions = [
     label: '50%',
   },
   {
-    value: '50',
-    label: '50%',
-  },
-  {
     value: '60',
     label: '60%',
   },
@@ -58,20 +54,28 @@ export const discountOptions = [
 
 export const durationOptions = [
   {
-    value: '7',
-    label: 'One Week',
+    value: '30',
+    label: 'One Month',
   },
   {
-    value: '14',
-    label: 'Two Week',
+    value: '60',
+    label: 'Three Month',
   },
   {
-    value: '21',
-    label: 'Three Week',
+    value: '180',
+    label: 'Sixth Month',
   },
   {
-    value: '28',
-    label: 'Four Week',
+    value: '365',
+    label: 'One Year',
+  },
+  {
+    value: '515',
+    label: 'One Year Five Month',
+  },
+  {
+    value: '730',
+    label: 'Two Year',
   },
 ];
 
