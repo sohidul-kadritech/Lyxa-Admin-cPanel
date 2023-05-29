@@ -47,12 +47,12 @@ function InfoItem({ text, isFirst }) {
   );
 }
 
-export default function TopInfo() {
+export default function TopInfo({ rider }) {
   return (
     <Stack direction="row" gap="20px">
       <Box sx={{ position: 'relative' }}>
-        <Avatar alt="Shop" variant="circular" sx={{ width: 100, height: 100 }}>
-          {'Nazib Talukdar'
+        <Avatar alt="Shop" variant="circular" src={rider?.image} sx={{ width: 100, height: 100 }}>
+          {rider?.name
             ?.split(' ')
             .reduce((prev, cur) => prev + cur.charAt(0), '')
             .slice(0, 3)}
@@ -67,16 +67,16 @@ export default function TopInfo() {
       </Box>
       <Box>
         <Typography variant="h2" sx={{ fontSize: '30px', fontWeight: 500 }}>
-          Nazib Talukdar
+          {rider?.name}
         </Typography>
         <Stack direction="row" alignItems="center" pt={2} pb={2}>
-          <InfoItem text="Total income $250" isFirst />
-          <InfoItem text="Balance  $150" />
+          <InfoItem text={`Total income ${rider?.totalIncome}`} isFirst />
+          <InfoItem text={`Balance ${rider?.balance}`} />
         </Stack>
         <Stack direction="row" alignItems="center" gap={1}>
-          <Rating amount=" 4.2" status="positive" />
+          <Rating amount={rider?.rating} />
           <Typography variant="body1" color="text.secondary2">
-            (100+ Reviews)
+            ({rider?.reviews?.length <= 100 ? `${rider?.reviews?.length}` : `100+`} Reviews)
           </Typography>
         </Stack>
       </Box>

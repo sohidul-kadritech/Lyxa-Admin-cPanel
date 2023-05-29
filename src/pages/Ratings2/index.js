@@ -13,7 +13,7 @@ import AddRating from './AddRating';
 const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '#',
+    to: '/settings',
   },
   {
     label: 'Ratings',
@@ -52,7 +52,7 @@ function RatingSettings2() {
     {
       staleTime: minInMiliSec(3),
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   // get stars
   const getStars = (stars) => {
@@ -125,6 +125,7 @@ function RatingSettings2() {
         // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

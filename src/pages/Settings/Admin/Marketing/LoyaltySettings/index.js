@@ -228,11 +228,7 @@ export default function LoyaltySettings() {
   return (
     <Box>
       <Box>
-        <PageTop
-          breadcrumbItems={breadcrumbItems}
-          backButtonLabel="Back to Marketing"
-          backTo="/admin/settings2/marketing"
-        />
+        <PageTop breadcrumbItems={breadcrumbItems} backButtonLabel="Back to Marketing" backTo="/settings/marketing" />
         {settingsQuery.isLoading ? (
           <SkeletonLoader />
         ) : (

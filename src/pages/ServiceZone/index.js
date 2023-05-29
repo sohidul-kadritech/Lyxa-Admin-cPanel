@@ -33,7 +33,7 @@ const fieldContainerSx = {
 const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '#',
+    to: '/settings',
   },
   {
     label: 'Zone',
@@ -112,7 +112,7 @@ function ServiceZone() {
           sortBy: selectedsortBy,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
@@ -273,6 +273,7 @@ function ServiceZone() {
             // title="Zone"
             backButtonLabel="Back to Settings"
             breadcrumbItems={breadcrumbItems}
+            backTo="/settings"
             sx={{
               position: 'sticky',
               top: '-2px',
