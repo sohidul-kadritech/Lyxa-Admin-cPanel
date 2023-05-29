@@ -11,7 +11,7 @@ import OrderTable from './Table';
 
 export const queryParamsInit = {
   page: 1,
-  pageSize: 5,
+  pageSize: 10,
   sortBy: 'DESC',
   type: 'all',
   startDate: moment().startOf('month').format('YYYY-MM-DD'),
@@ -23,7 +23,6 @@ export const queryParamsInit = {
 };
 
 export default function RiderOrders({ riderId }) {
-  console.log({ riderId });
   const [totalPage, setTotalPage] = useState(1);
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, deliveryBoy: riderId });
 

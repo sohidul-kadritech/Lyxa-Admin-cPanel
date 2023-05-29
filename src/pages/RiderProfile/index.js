@@ -71,10 +71,10 @@ export default function RiderProfile() {
               <RiderOrders riderId={rider?._id} />
             </TabPanel>
             <TabPanel index={1} value={currentTab}>
-              <RiderTransactions />
+              <RiderTransactions riderId={rider?._id} showFor="transactions" />
             </TabPanel>
             <TabPanel index={2} value={currentTab}>
-              <RiderTransactions riderId={rider?._id} />
+              <RiderTransactions riderId={rider?._id} showFor="cashOrderList" />
             </TabPanel>
             <TabPanel index={3} value={currentTab}>
               <RiderTimeStamp riderId={rider?._id} />
