@@ -1,16 +1,17 @@
 {
   "files": {
     "main.css": "/static/css/main.c85e7915.css",
-    "main.js": "/static/js/main.900c9875.js",
-    "static/js/949.c68d5322.chunk.js": "/static/js/949.c68d5322.chunk.js",
-    "static/js/332.e8180b7c.chunk.js": "/static/js/332.e8180b7c.chunk.js",
-    "static/js/943.627408da.chunk.js": "/static/js/943.627408da.chunk.js",
+    "main.js": "/static/js/main.ba67e097.js",
+    "static/js/949.ba89b272.chunk.js": "/static/js/949.ba89b272.chunk.js",
+    "static/js/332.31a557dc.chunk.js": "/static/js/332.31a557dc.chunk.js",
+    "static/js/943.8aac5df1.chunk.js": "/static/js/943.8aac5df1.chunk.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.aee5e39f.chunk.js": "/static/js/867.aee5e39f.chunk.js",
     "static/js/576.cb61413e.chunk.js": "/static/js/576.cb61413e.chunk.js",
     "static/media/materialdesignicons-webfont.eot": "/static/media/materialdesignicons-webfont.52adde0de9840940801f.eot",
     "static/media/materialdesignicons-webfont.ttf?v=5.8.55": "/static/media/materialdesignicons-webfont.506bc8215df8660d8f04.ttf",
+    "static/media/lyxa.png": "/static/media/lyxa.eafeffd3cf26edcdc503.png",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.18df003f90a7f1313b98.svg",
     "static/media/fa-brands-400.svg": "/static/media/fa-brands-400.3c45c98f6f6c1b009c08.svg",
     "static/media/materialdesignicons-webfont.woff?v=5.8.55": "/static/media/materialdesignicons-webfont.d06df622bc47f0db9812.woff",
@@ -85,6 +86,7 @@
     "static/media/upload.svg": "/static/media/upload.f3d0d8cc101bc489475dc935fa5f6364.svg",
     "static/media/warning-icon.svg": "/static/media/warning-icon.95fa95854995a18e93a9534e5804fa4e.svg",
     "index.html": "/index.html",
+    "static/media/media-cloud-icon.svg": "/static/media/media-cloud-icon.0ef20c38a2084854a7ab13c4cc119b94.svg",
     "static/media/star.svg": "/static/media/star.c9fe819cd1dc23b4a3f5ac9a5954ed5b.svg",
     "static/media/shop.svg": "/static/media/shop.0cdc9e6c1e0bb6f6ce930c21041914d8.svg",
     "static/media/map-colored.svg": "/static/media/map-colored.5ef48c0d7d9c67a9fa610a839e70d70e.svg",
@@ -119,6 +121,6 @@
   },
   "entrypoints": [
     "static/css/main.c85e7915.css",
-    "static/js/main.900c9875.js"
+    "static/js/main.ba67e097.js"
   ]
 }
