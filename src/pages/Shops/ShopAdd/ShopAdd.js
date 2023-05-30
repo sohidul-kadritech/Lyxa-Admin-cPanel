@@ -613,7 +613,6 @@ function ShopAdd() {
                         }}
                       />
                     </div>
-
                     <div className="mb-4">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">Status</InputLabel>
