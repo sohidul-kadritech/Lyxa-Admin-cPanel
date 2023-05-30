@@ -8,7 +8,6 @@ import DateRange from '../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../context';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { AddMenuButton } from '../Faq2';
 import { dateRangeInit, sortOptions, statusTypeOptions } from '../Faq2/helpers';
 import AddProducts from './AddProducts';
 import ProductList from './ProductList';
@@ -133,7 +132,7 @@ function Product() {
               onChange: (e) => setStatus(e.target.value),
             }}
           />
-          <AddMenuButton onClick={() => setOpen(true)} />
+          {/* <AddMenuButton onClick={() => setOpen(true)} /> */}
         </Stack>
       </Box>
       <ProductList
