@@ -13,6 +13,7 @@ import { AddMenuButton } from '../Faq2';
 import { dateRangeInit } from '../Faq2/helpers';
 import AddNotification from './AddNotification';
 import NotificationList from './NotificationList';
+import TablePageSkeleton from './TablePageSkeleton';
 import { accountTypeOptionsFilter, activeStatusOptions, notificationTypeOptionsFilter } from './helpers';
 
 const breadcrumbItems = [
@@ -168,9 +169,9 @@ function Notification() {
         }}
       >
         {getAllNotifications.isLoading ? (
-          // <TablePageSkeleton column={5} row={6} />
-          <p>loading...</p>
+          <TablePageSkeleton column={5} row={6} />
         ) : (
+          // <p>loading...</p>
           <NotificationList
             data={getAllNotifications?.data?.data?.notifications}
             loading={getAllNotifications.isLoading}
