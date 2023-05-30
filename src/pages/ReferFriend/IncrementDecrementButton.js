@@ -1,9 +1,29 @@
 import { Box, Button, Stack, useTheme } from '@mui/material';
 import React from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { successMsg } from '../../helpers/successMsg';
+
+const inputValidation = (input) => {
+  // Regular expression to match numbers in the format "123"
+  const numberPattern = /^\d+$/;
+
+  // Check if the input matches the number pattern
+  if (numberPattern.test(input)) {
+    return true; // Valid number
+  }
+  return false; // Invalid number
+};
 
 function IncrementDecrementButton({ currentValue, incrementHandler, decrementHandler, setValue, setTypeValidation }) {
   const theme = useTheme();
+
+  const onBlurInputValueHanlder = () => {
+    if (inputValidation(currentValue)) {
+      return;
+    }
+    successMsg('Please provide valid number!');
+    setValue(0);
+  };
   return (
     <Box
       sx={{
@@ -18,6 +38,7 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
         <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
           <Button
             disableRipple
+            disabled={currentValue <= 0}
             sx={{ fontSize: '32px', fontWeight: 600 }}
             onClick={() => {
               setTypeValidation();
@@ -39,19 +60,19 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
             inputProps={{
               type: 'number',
               name: 'incrementdecrement',
-              placeholder: '0',
-              value: currentValue || '',
+              placeholder: 'Value',
+              value: currentValue || 0,
               sx: {
                 padding: '0 0',
                 textAlign: 'center',
                 borderRadius: '0px',
                 // background: 'red',
               },
+              onBlur: onBlurInputValueHanlder,
               onChange: (e) => {
                 setTypeValidation();
-                setValue(e.target.value);
+                setValue(() => (e.target.value >= 0 ? e.target.value : 0));
               },
-              //   readOnly: Boolean(newProductCategory) || productReadonly,
             }}
           />
           <Button

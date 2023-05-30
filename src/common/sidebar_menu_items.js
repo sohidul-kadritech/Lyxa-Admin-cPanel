@@ -172,7 +172,7 @@ export const seller_menu_items = (prefix = '') => [
     menu: [
       {
         label: 'List',
-        to: `${prefix}/products/list`,
+        to: `${prefix}/products/list2`,
       },
       {
         label: 'Add',
@@ -300,6 +300,10 @@ export const admin_menu_items = [
       {
         label: 'Products List',
         to: '/products/list',
+      },
+      {
+        label: 'Products List2',
+        to: '/products/list2',
       },
       {
         label: 'Product Add',
