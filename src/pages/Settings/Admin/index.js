@@ -68,6 +68,10 @@ const pagesList = [
     label: 'Terms & Conditions',
     to: '/terms-and-conditions',
   },
+  {
+    label: 'Refer A Friend',
+    to: '/settings/refer-friend',
+  },
 ];
 
 export default function AdminSettings() {

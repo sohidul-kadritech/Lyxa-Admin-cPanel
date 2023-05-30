@@ -20,6 +20,10 @@ const pagesList = [
     label: 'For VAT',
     to: '/vat',
   },
+  {
+    label: 'For VAT 2',
+    to: '/vat2',
+  },
 ];
 
 export default function AdminFinancials() {
