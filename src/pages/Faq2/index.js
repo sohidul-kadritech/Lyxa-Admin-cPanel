@@ -51,9 +51,9 @@ const breadcrumbItems = [
   },
 ];
 
-export function AddMenuButton({ title = 'Add', ...props }) {
+export function AddMenuButton({ title = 'Add', isIcon = true, ...props }) {
   return (
-    <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
+    <Button variant="contained" color="primary" size="small" startIcon={isIcon ? <Add /> : ''} {...props}>
       {title}
     </Button>
   );
@@ -99,7 +99,7 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -112,7 +112,7 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   const faqSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_FAQ, data), {
