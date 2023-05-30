@@ -18,11 +18,11 @@ const pagesList = [
   },
   {
     label: 'Categories List',
-    to: '#',
+    to: '/settings/categories/list',
   },
   {
     label: 'Chat',
-    to: '#',
+    to: '/customer-support',
   },
   {
     label: 'Rating',
@@ -36,18 +36,6 @@ const pagesList = [
     label: 'Cancel Order Reasons',
     to: '/settings/cancel-reason',
   },
-  // {
-  //   label: 'Invoices',
-  //   to: '#',
-  // },
-  // {
-  //   label: 'Units',
-  //   to: '/products/unit-types',
-  // },
-  // {
-  //   label: 'Products *',
-  //   to: '/products/list',
-  // },
   {
     label: 'Notifications',
     to: '/settings/notifications',
@@ -78,7 +66,7 @@ const pagesList = [
   },
   {
     label: 'Terms & Conditions',
-    to: '/terms-and-conditions2',
+    to: '/terms-and-conditions',
   },
 ];
 

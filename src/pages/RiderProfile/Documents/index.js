@@ -46,6 +46,10 @@ export default function Documents({ rider }) {
     },
   });
 
+  const replaceDocument = (document) => {
+    updateRiderMutation.mutate({ id: rider?._id, [document?.propertyName]: document?.url });
+  };
+
   const columns = [
     {
       id: 1,
@@ -132,7 +136,27 @@ export default function Documents({ rider }) {
         }}
       />
       <Modal open={editDocumentOpen} onClose={() => setEditDocumentOpen(false)}>
-        <EditDocument document={currentDocumet} onClose={() => setEditDocumentOpen(false)} />
+        <Box
+          sx={{
+            height: '100vh',
+            width: '100%',
+            WebkitFlex: '1',
+            MsFlex: '1',
+            flex: '1',
+            display: 'flex',
+            overflowY: 'scroll',
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingTop: '30px',
+            paddingBottom: '30px',
+          }}
+        >
+          <EditDocument
+            document={currentDocumet}
+            onClose={() => setEditDocumentOpen(false)}
+            onReplaceDoc={replaceDocument}
+          />
+        </Box>
       </Modal>
     </Box>
   );

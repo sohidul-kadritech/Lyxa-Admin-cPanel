@@ -35,7 +35,7 @@ export const shop_routes = (prefix = '') => {
     { path: `${prefix}/financials`, component: Financials },
     { path: `${prefix}/marketing`, component: Marketing },
     { path: `${prefix}/marketing/dashboard/:type/:id`, component: MarketingDashboard },
-    { path: `${prefix}/new-orders`, component: NewOrders },
+    { path: `${prefix}/new-orders`, component: () => <NewOrders showFor="shop" /> },
     { path: `${prefix}/dashboard`, component: ShopDashboard },
     { path: `${prefix}/*`, component: NotFoundPage },
   ];
