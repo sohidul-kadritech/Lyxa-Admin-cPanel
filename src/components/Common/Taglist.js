@@ -13,6 +13,7 @@ export default function Taglist({
   listContainerSx,
   buttonSx,
   inputSx,
+  type = 'number',
   ...props
 }) {
   const [showAdd, setShowAdd] = useState(false);
@@ -43,7 +44,7 @@ export default function Taglist({
           >
             <StyledInput
               ref={inputRef}
-              type="number"
+              type={type}
               value={newItem}
               sx={{
                 width: '90px',

@@ -4,12 +4,15 @@ import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import Lightbox from 'react-image-lightbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useGlobalContext } from '../context';
 import { updateProductStatus } from '../store/Product/productAction';
 import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
 function ProductTable({ products, loading }) {
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
   const history = useHistory();
   const dispatch = useDispatch();
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
@@ -31,7 +34,11 @@ function ProductTable({ products, loading }) {
 
   const handleMenu = (menu, item) => {
     if (menu === 'Edit') {
-      history.push(`/products/edit/${item?._id}`);
+      if (userType === 'admin') {
+        history.push(`/settings/products/edit/${item?._id}`);
+      } else {
+        history.push(`/products/edit/${item?._id}`);
+      }
     } else if (menu === 'Update Status') {
       updateStatus(item?._id, item?.status);
     }
@@ -40,7 +47,11 @@ function ProductTable({ products, loading }) {
   // GO TO DETAILS
 
   const goToDetails = (id) => {
-    history.push(`/products/details/${id}`);
+    if (userType === 'admin') {
+      history.push(`/settings/products/details/${id}`);
+    } else {
+      history.push(`/products/details/${id}`);
+    }
   };
 
   return (

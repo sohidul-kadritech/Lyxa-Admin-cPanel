@@ -1,13 +1,16 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import StyledFormInput from './StyledFormInput';
 import { credentialsInit, validateForm } from './helper';
+// import forgetPassword from '../../store/auth/forgetpwd/reducer';
+import ForgotPassword from './ForgotPassword';
 
-export default function Form({ onSubmit, loginError, loading }) {
+export default function Form({ onSubmit, loginError, loading, loginFor }) {
   const theme = useTheme();
   const [credentials, setCredentials] = useState({ ...credentialsInit });
   const [errors, setErrors] = useState({ email: undefined, password: undefined });
   const [touched, setTouched] = useState({ email: false, password: false });
+  const [modal, setModal] = useState(false);
 
   const checkValidSubmit = () => {
     if (!touched.email && !touched.password) {
@@ -81,6 +84,15 @@ export default function Form({ onSubmit, loginError, loading }) {
             fontWeight={500}
             pt={2}
             textAlign="right"
+            onClick={() => setModal(true)}
+            sx={{
+              cursor: 'pointer',
+              transition: '200ms ease',
+
+              '&:hover': {
+                color: 'error.main',
+              },
+            }}
           >
             Forgot Password
           </Typography>
@@ -99,19 +111,24 @@ export default function Form({ onSubmit, loginError, loading }) {
           >
             Log In
           </Button>
-          <Typography
-            variant="inherit"
-            color="#fff"
-            fontSize={14}
-            lineHeight="20px"
-            fontWeight={500}
-            pt={3}
-            textAlign="center"
-          >
-            Join our network of restaurant partners
-          </Typography>
+          {loginFor === 'business' && (
+            <Typography
+              variant="inherit"
+              color="#fff"
+              fontSize={14}
+              lineHeight="20px"
+              fontWeight={500}
+              pt={3}
+              textAlign="center"
+            >
+              Join our network of restaurant partners
+            </Typography>
+          )}
         </Box>
       </Stack>
+      <Modal open={modal} onClose={() => setModal(false)}>
+        <ForgotPassword onClose={() => setModal(false)} loginFor={loginFor} />
+      </Modal>
     </Box>
   );
 }

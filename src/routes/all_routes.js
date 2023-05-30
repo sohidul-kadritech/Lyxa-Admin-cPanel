@@ -82,9 +82,10 @@ import MenuPage from '../pages/Menu';
 import NewOrders from '../pages/NewOrder';
 import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
-import ShopProfile from '../pages/Profile';
 import SellerCredentialsList from '../pages/Seller/SellerCredentials/SellerCredentialsList';
+import ShopProfile from '../pages/ShopProfile';
 
+import RiderList from '../pages/Riders';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -110,6 +111,9 @@ export const adminRoutes = [
   { path: '/orders/details/butler/:id', component: ButlerOrderDetails },
   { path: '/orders/list/cancel', component: ButlerCancelOrders },
   { path: '/orders/list/flagged', component: ButlerFlaggedOrder },
+
+  // riders
+  { path: '/riders', component: RiderList },
 
   // vat
   { path: '/vat', component: Vat },

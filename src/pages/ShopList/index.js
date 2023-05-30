@@ -9,7 +9,7 @@ import AddShop from '../../components/Shared/AddShop';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import ShopProfile from '../Profile';
+import ShopProfile from '../ShopProfile';
 import List from './List';
 import PageSkeleton from './PageSkeleton';
 import SearchBar from './SearchBar';

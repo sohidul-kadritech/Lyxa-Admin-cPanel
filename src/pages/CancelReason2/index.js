@@ -25,7 +25,7 @@ import { statusTypeOptions } from './helper';
 export const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '#',
+    to: '/settings',
   },
   {
     label: 'Cancel Reason',
@@ -143,6 +143,7 @@ function CancelReason() {
         // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

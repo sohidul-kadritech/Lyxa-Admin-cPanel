@@ -78,7 +78,7 @@ function TermsAndConditions() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const updateDescription = async (state) => {
@@ -104,6 +104,7 @@ function TermsAndConditions() {
       <PageTop
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

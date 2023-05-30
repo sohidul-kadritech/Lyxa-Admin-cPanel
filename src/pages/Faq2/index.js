@@ -43,7 +43,7 @@ const fieldContainerSx = {
 const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '#',
+    to: '/settings',
   },
   {
     label: 'Support Reasons',
@@ -51,10 +51,10 @@ const breadcrumbItems = [
   },
 ];
 
-function AddMenuButton({ ...props }) {
+export function AddMenuButton({ title = 'Add', ...props }) {
   return (
     <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
-      Add
+      {title}
     </Button>
   );
 }
@@ -101,7 +101,7 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -114,7 +114,7 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   console.log('faq data: ', getChatFaq?.data?.data?.list);
@@ -293,6 +293,7 @@ function Faq() {
           // title="Zone"
           backButtonLabel="Back to Settings"
           breadcrumbItems={breadcrumbItems}
+          backTo="/settings"
           sx={{
             position: 'sticky',
             top: '-2px',

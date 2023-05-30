@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
 export const SOCKET_CONNECTION = 'https://apiv2.drop-deliveryapp.com';
 export const MAP_URL = 'http://maps.google.com/maps';
@@ -212,7 +213,12 @@ export const SELLERS_TRX = `${ADMIN_ENDPOINT}/drop-wallet/sellers`;
 export const SELLER_TRX = `${ADMIN_ENDPOINT}/drop-wallet/seller/shops`;
 export const SHOP_TRX = `${ADMIN_ENDPOINT}/drop-wallet/seller/shops-details`;
 export const DELIVERY_TRX = `${ADMIN_ENDPOINT}/drop-wallet/delivery-boy-transection`;
+// --old
 export const SINGLE_DELIVERY_TRX = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info`;
+// --old
+export const SINGLE_DELIVERY_WALLET_SUMMARY = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info`;
+export const SINGLE_DELIVERY_WALLET_TRANSACTIONS = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info/transaction`;
+export const SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info/cash-order-list`;
 export const DROP_TRX = `${ADMIN_ENDPOINT}/wallet/admin`;
 export const ALL_TRX = `${ADMIN_ENDPOINT}/drop-wallet/transection`;
 export const SHOP_MAKE_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/settle-amount-seller`;
