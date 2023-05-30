@@ -27,11 +27,11 @@ function Configuration() {
   const [receiverReferralMinimumOrderValue, setReceiverReferralMinimumOrderValue] = useState(0);
 
   // eslint-disable-next-line no-unused-vars
-  const [senderReferralDiscount, setSenderReferralDiscount] = useState(0);
+  const [senderReferralDiscount, setSenderReferralDiscount] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [senderReferralDiscountType, setSenderReferralDiscountType] = useState('');
   // eslint-disable-next-line no-unused-vars
-  const [senderReferralDuration, setSenderReferralDuration] = useState(0);
+  const [senderReferralDuration, setSenderReferralDuration] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [senderReferralMinimumOrderValue, setSenderReferralMinimumOrderValue] = useState(0);
   // eslint-disable-next-line no-unused-vars
@@ -39,50 +39,46 @@ function Configuration() {
   const queryClient = useQueryClient();
   const getReferFriendSettings = useQuery([API_URL.GET_REFER_A_FRIEND_SETTINGS], () =>
     // eslint-disable-next-line prettier/prettier
-		AXIOS.get(API_URL.GET_REFER_A_FRIEND_SETTINGS)
+    AXIOS.get(API_URL.GET_REFER_A_FRIEND_SETTINGS),
   );
 
   const populate = () => {
     setHasChanged(false);
     setLoading(false);
-    setReceiverReferralDiscount(getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDiscount || 0);
+    setReceiverReferralDiscount(getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDiscount || '');
     setReceiverReferralDiscountType(
       // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDiscountType || ''
-    );
-    setReceiverReferralDiscountType(
-      // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDiscountType || ''
+      getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDiscountType || '',
     );
 
     setReceiverReferralDuration(
       // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDuration || 30
+      getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDuration || '',
     );
 
     setReceiverReferralMinimumOrderValue(
       // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.receiver_referralMinimumOrderValue || 0
+      getReferFriendSettings?.data?.data?.referralSetting.receiver_referralMinimumOrderValue || 0,
     );
 
-    setSenderReferralDiscount(getReferFriendSettings?.data?.data?.referralSetting.sender_referralDiscount || 0);
+    setSenderReferralDiscount(getReferFriendSettings?.data?.data?.referralSetting.sender_referralDiscount || '');
     setSenderReferralDiscountType(
       // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.sender_referralDiscountType || ''
+      getReferFriendSettings?.data?.data?.referralSetting.sender_referralDiscountType || '',
     );
     setSenderReferralDiscountType(
       // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.sender_referralDiscountType || ''
+      getReferFriendSettings?.data?.data?.referralSetting.sender_referralDiscountType || '',
     );
 
     setSenderReferralDuration(
       // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.sender_referralDuration || 30
+      getReferFriendSettings?.data?.data?.referralSetting.sender_referralDuration || '',
     );
 
     setSenderReferralMinimumOrderValue(
       // eslint-disable-next-line prettier/prettier
-			getReferFriendSettings?.data?.data?.referralSetting.sender_referralMinimumOrderValue || 0
+      getReferFriendSettings?.data?.data?.referralSetting.sender_referralMinimumOrderValue || 0,
     );
     setType([]);
     setIsConfirm(false);
@@ -96,7 +92,7 @@ function Configuration() {
     setValue((prev) => prev + 1);
   };
   const decrementHandler = (setValue) => {
-    setValue((prev) => prev + 1);
+    setValue((prev) => prev - 1);
   };
 
   // eslint-disable-next-line no-unused-vars

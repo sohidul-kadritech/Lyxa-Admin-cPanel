@@ -5,7 +5,7 @@ import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import TabPanel from '../../components/Common/TabPanel';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
-import { createShopData, validateEditedData } from './helper';
+import { createShopData } from './helper';
 
 function EditShop({ onClose, shopData, loading, editShopData }) {
   // Style
@@ -57,7 +57,7 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
     setEditedData((prev) => ({
       ...prev,
@@ -70,7 +70,7 @@ function EditShop({ onClose, shopData, loading, editShopData }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
     console.log(newFiles);
     setEditedData((prev) => ({

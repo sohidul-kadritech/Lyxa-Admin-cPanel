@@ -81,6 +81,7 @@ import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
+import Product from '../pages/Product1';
 import RatingSettings2 from '../pages/Ratings2';
 import ReferFriend from '../pages/ReferFriend';
 import RequestedArea from '../pages/RequestedArea';
@@ -134,6 +135,14 @@ export const admin_routes = [
   { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/marketing/:id', component: Marketing },
   { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
+
+  // product
+  { path: '/products/list2', component: ProductList },
+  { path: '/products/list', component: Product },
+  { path: '/products/add', component: ProductAdd },
+  { path: '/products/edit/:id', component: ProductAdd },
+  { path: '/products/details/:id', component: ProductDetails },
+  { path: '/products/unit-types', component: UnitTypes },
 
   // delivery man
   { path: '/deliveryman/list', component: DeliverymanList },

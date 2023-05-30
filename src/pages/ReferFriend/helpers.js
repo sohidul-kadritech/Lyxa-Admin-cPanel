@@ -63,15 +63,15 @@ export const durationOptions = [
   },
   {
     value: '180',
-    label: 'Sixth Month',
+    label: 'Six Month',
   },
   {
     value: '365',
     label: 'One Year',
   },
   {
-    value: '515',
-    label: 'One Year Five Month',
+    value: '545',
+    label: 'One Year Six Month',
   },
   {
     value: '730',
