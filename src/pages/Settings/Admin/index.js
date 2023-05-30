@@ -14,7 +14,7 @@ const pagesList = [
   },
   {
     label: 'Products',
-    to: '/settings/products/list',
+    to: '/settings/products',
   },
   {
     label: 'Categories List',

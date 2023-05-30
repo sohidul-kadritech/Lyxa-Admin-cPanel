@@ -138,7 +138,7 @@ export const admin_routes = [
 
   // product
   { path: '/products/list2', component: ProductList },
-  { path: '/products/list', component: Product },
+  { path: '/settings/products', component: Product },
   { path: '/products/add', component: ProductAdd },
   { path: '/products/edit/:id', component: ProductAdd },
   { path: '/products/details/:id', component: ProductDetails },
