@@ -217,6 +217,7 @@ export const SINGLE_DELIVERY_TRX = `${ADMIN_ENDPOINT}/drop-wallet/single-deliver
 // --old
 export const SINGLE_DELIVERY_WALLET_SUMMARY = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info`;
 export const SINGLE_DELIVERY_WALLET_TRANSACTIONS = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info/transaction`;
+// eslint-disable-next-line max-len
 export const SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info/cash-order-list`;
 export const DROP_TRX = `${ADMIN_ENDPOINT}/wallet/admin`;
 export const ALL_TRX = `${ADMIN_ENDPOINT}/drop-wallet/transection`;
