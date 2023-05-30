@@ -81,7 +81,9 @@ import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
+import Product from '../pages/Product1';
 import RatingSettings2 from '../pages/Ratings2';
+import ReferFriend from '../pages/ReferFriend';
 import RequestedArea from '../pages/RequestedArea';
 import RiderProfile from '../pages/RiderProfile';
 import RiderList from '../pages/Riders';
@@ -133,6 +135,14 @@ export const admin_routes = [
   { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/marketing/:id', component: Marketing },
   { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
+
+  // product
+  { path: '/products/list2', component: ProductList },
+  { path: '/settings/products', component: Product },
+  { path: '/products/add', component: ProductAdd },
+  { path: '/products/edit/:id', component: ProductAdd },
+  { path: '/products/details/:id', component: ProductDetails },
+  { path: '/products/unit-types', component: UnitTypes },
 
   // delivery man
   { path: '/deliveryman/list', component: DeliverymanList },
@@ -205,6 +215,7 @@ export const admin_routes = [
   { path: '/settings/app-settings', component: Appsettings2 },
   { path: '/admin/settings2', component: AdminSettings },
   { path: '/admin/percentage-settings-history', component: AdminLog },
+  { path: '/admin/refer-friend', component: ReferFriend },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },

@@ -35,14 +35,21 @@ export const statusOptions = [
   },
 ];
 
-export const getShopEditData = (shop) => ({
-  ...deepClone(shop),
-  password: '',
-  shopLogo: [{ preview: shop.shopLogo }],
-  shopBanner: [{ preview: shop.shopBanner }],
-});
+export const getShopEditData = (shop) => {
+  const clone = deepClone(shop);
+
+  return {
+    ...clone,
+    shopAddress: clone?.address,
+    password: '',
+    shopLogo: [{ preview: shop.shopLogo }],
+    shopBanner: [{ preview: shop.shopBanner }],
+  };
+};
 
 export const validateShopDetails = (shopData, isEditShop) => {
+  console.log(shopData);
+
   const status = {
     status: false,
     msg: null,
@@ -80,12 +87,12 @@ export const validateShopDetails = (shopData, isEditShop) => {
     return status;
   }
 
-  if (!shopData?.address) {
+  if (!shopData?.shopAddress?.address) {
     status.msg = 'Please provide shop address';
     return status;
   }
 
-  if (!shopData?.address?.pin) {
+  if (!shopData?.shopAddress?.pin) {
     status.msg = 'Please provide shop Zip Code';
     return status;
   }
@@ -350,12 +357,12 @@ export const shopInit = (sellerId) => ({
   shopNote: '',
   shopAddress: {
     address: '',
-    latitude: 23.7820624,
-    longitude: 90.4160527,
-    city: 'Dhaka',
-    state: 'Gulshan',
-    country: 'Bangladesh',
-    placeId: 'ChIJq07Cv57HVTcRekUSP1arfeo',
+    latitude: '',
+    longitude: '',
+    city: '',
+    state: '',
+    country: '',
+    placeId: '',
     pin: '',
     primary: true,
     note: '',
