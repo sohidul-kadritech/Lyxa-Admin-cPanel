@@ -85,7 +85,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   // categories
   const categoriesQuery = useQuery(
-    ['single-shop-category', { shopId: shop?._id }],
+    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
         params: {
@@ -95,6 +95,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           sortBy: 'desc',
           status: 'active',
           type: shop?.shopType,
+          shopId: shop?._id,
           userType: 'shop',
         },
       }),

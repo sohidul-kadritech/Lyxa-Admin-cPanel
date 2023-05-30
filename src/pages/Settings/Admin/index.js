@@ -72,6 +72,10 @@ const pagesList = [
     label: 'Refer A Friend',
     to: '/settings/refer-friend',
   },
+  {
+    label: 'Request New Area',
+    to: '/admin/requested-area',
+  },
 ];
 
 export default function AdminSettings() {
