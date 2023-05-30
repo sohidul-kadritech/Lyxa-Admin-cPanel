@@ -55,7 +55,7 @@ export default function AddCategory({ onClose, editCategory }) {
 
   const [category, setCategory] = useState(
     // eslint-disable-next-line prettier/prettier
-    editCategory?._id ? getEditCategoryData(editCategory, shop?.shopType) : getCategoryInit(shop?.shopType),
+    editCategory?._id ? getEditCategoryData(editCategory, shop?.shopType) : getCategoryInit(shop?.shopType)
   );
 
   // input handler
@@ -69,7 +69,7 @@ export default function AddCategory({ onClose, editCategory }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     setCategory((prev) => ({
@@ -98,11 +98,11 @@ export default function AddCategory({ onClose, editCategory }) {
 
         if (data?.status) {
           queryClient.invalidateQueries('category-wise-products');
+          queryClient.invalidateQueries([Api.GET_ALL_CATEGORY]);
           onClose();
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const onSubmit = async () => {

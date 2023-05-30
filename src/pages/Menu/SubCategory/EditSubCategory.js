@@ -16,10 +16,6 @@ import AXIOS from '../../../network/axios';
 import { validateSubCategory } from '../helpers';
 import PageSkeleton from './PageSkeleton';
 
-const fieldContainerSx = {
-  padding: '14px 0',
-};
-
 export default function EditSubCategory({ onClose, editSubCategory }) {
   // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
@@ -28,7 +24,7 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
   const queryClient = useQueryClient();
 
   const categoriesQuery = useQuery(
-    ['single-shop-category', { shopId: shop?._id }],
+    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
         params: {
@@ -110,9 +106,6 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
             <StyledFormField
               label="Category"
               intputType="select"
-              containerProps={{
-                sx: fieldContainerSx,
-              }}
               inputProps={{
                 name: 'category',
                 value: subCategory?.category,
@@ -131,9 +124,6 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
             <StyledFormField
               label="Name"
               intputType="text"
-              containerProps={{
-                sx: fieldContainerSx,
-              }}
               inputProps={{
                 type: 'text',
                 name: 'name',
@@ -141,17 +131,7 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
                 onChange: commonChangeHandler,
               }}
             />
-            <Stack
-            // height="100%"
-            // sx={{
-            //   height: 'auto',
-            //   position: 'absolute',
-            //   left: '0',
-            //   right: '0',
-            //   bottom: '0',
-            //   padding: '24px 16px',
-            // }}
-            >
+            <Stack>
               <Button
                 variant="contained"
                 color="primary"

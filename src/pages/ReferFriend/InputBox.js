@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
+import StyledSwitch from '../../components/Styled/StyledSwitch';
 import IncrementDecrementButton from './IncrementDecrementButton';
 
 function InputBox({
@@ -52,6 +53,9 @@ function InputBox({
           setValue={setValue}
           setTypeValidation={setTypeValidation}
         />
+      )}
+      {intputType === 'status' && (
+        <StyledSwitch checked={inputProps.checked} onClick={inputProps.onClick}></StyledSwitch>
       )}
     </Stack>
   );

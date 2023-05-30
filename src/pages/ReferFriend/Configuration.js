@@ -14,6 +14,8 @@ import { discountOptions, discountTypeOptions, durationOptions, typeList } from 
 function Configuration() {
   // eslint-disable-next-line no-unused-vars
   const [isConfirm, setIsConfirm] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [referralStatus, setReferralStatus] = useState(false);
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [hasChanged, setHasChanged] = useState(false);
@@ -43,6 +45,10 @@ function Configuration() {
   );
 
   const populate = () => {
+    setReferralStatus(
+      // eslint-disable-next-line prettier/prettier
+      getReferFriendSettings?.data?.data?.referralSetting.referralStatus === 'active',
+    );
     setHasChanged(false);
     setLoading(false);
     setReceiverReferralDiscount(getReferFriendSettings?.data?.data?.referralSetting.receiver_referralDiscount || '');
@@ -129,6 +135,7 @@ function Configuration() {
       receiver_referralDiscount: receiverReferralDiscount,
       receiver_referralMinimumOrderValue: receiverReferralMinimumOrderValue,
       receiver_referralDuration: receiverReferralDuration,
+      referralStatus: referralStatus ? 'active' : 'inactive',
       type,
     };
     updateConfigurationQuery.mutate(data);
@@ -141,6 +148,17 @@ function Configuration() {
       ) : (
         <>
           <Stack>
+            <InputBox
+              title="Referral Status"
+              intputType="status"
+              inputProps={{
+                checked: referralStatus,
+                onClick: () => {
+                  setTypeValidation(type, setType, typeList[8]);
+                  setReferralStatus(!referralStatus);
+                },
+              }}
+            />
             <StyledBox title="Sender">
               <Stack flexDirection="row" flexWrap="wrap" gap="10%">
                 <InputBox

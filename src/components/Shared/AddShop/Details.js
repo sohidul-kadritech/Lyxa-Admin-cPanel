@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 import StyledFormField from '../../Form/StyledFormField';
 import StyledInput from '../../Styled/StyledInput';
-import { statusOptions } from './helper';
 
 const addressInit = {
   address: '',
@@ -234,7 +233,7 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
           helperText2: 'Pixels: Minimum 320 for width and height',
         }}
       />
-      <StyledFormField
+      {/* <StyledFormField
         label="Status *"
         intputType="select"
         inputProps={{
@@ -243,7 +242,7 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
           items: statusOptions,
           onChange,
         }}
-      />
+      /> */}
     </Box>
   );
 }
