@@ -21,11 +21,9 @@ const addressInit = {
 
 export default function ShopDetails({ shop, onChange, onDrop }) {
   const [render, setRender] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(shop?.shopAddress?.address);
 
-  const [selectedAddress, setSelectedAddress] = useState('');
-  const [address, setAddress] = useState({
-    ...addressInit,
-  });
+  console.log({ selectedAddress });
 
   const generateShopAddress = async (address = {}, placeId = '') => {
     const { address_components, formatted_address } = address;
@@ -194,7 +192,7 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
         label="Zip Code *"
         intputType="text"
         inputProps={{
-          value: shop?.address?.pin,
+          value: shop.shopAddress.pin,
           type: 'text',
           name: 'pin',
           onChange: (event) => {
