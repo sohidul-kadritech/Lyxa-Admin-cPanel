@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
+// export const API_URL = 'https://api.drop-deliveryapp.com/';
 export const SOCKET_CONNECTION = 'https://apiv2.drop-deliveryapp.com';
 export const MAP_URL = 'http://maps.google.com/maps';
 export const GET_LOCATION_FROM_LATLNG = 'https://maps.googleapis.com/maps/api/geocode/json';
@@ -160,11 +161,15 @@ export const DELIVERY_BOY_ORDERS = `${ADMIN_ENDPOINT}/order/delivery`;
 export const DELIVERY_BOY_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/get-current-location`;
 
 //  SETTINGS
-export const ADMINS_SETTINGS = '/admin/setting/admin-setting';
-export const UPDATE_ADMINS_SETTINGS = '/admin/setting/admin-setting/edit';
+export const ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting`;
+export const UPDATE_ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting/edit`;
 
-export const UPDATE_APP_SETTINGS = '/admin/setting/app-setting/edit';
-export const APP_SETTINGS = '/admin/setting/app-setting';
+export const UPDATE_APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting/edit`;
+export const APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting`;
+// REFER A FRIEND
+export const GET_REFER_A_FRIEND_SETTINGS = `${ADMIN_ENDPOINT}/setting/referral-setting`;
+export const EDIT_REFER_A_FRIEND_SETTINGS = `${ADMIN_ENDPOINT}/setting/referral-setting/edit`;
+
 export const ADD_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/add`;
 export const UPDATE_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/edit`;
 export const ALL_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel`;
