@@ -215,7 +215,7 @@ export const admin_routes = [
   { path: '/settings/app-settings', component: Appsettings2 },
   { path: '/admin/settings2', component: AdminSettings },
   { path: '/admin/percentage-settings-history', component: AdminLog },
-  { path: '/admin/refer-friend', component: ReferFriend },
+  { path: '/settings/refer-friend', component: ReferFriend },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
