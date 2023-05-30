@@ -109,7 +109,9 @@ function ShopAdd() {
 
   const handleAddressSelect = (address, placeId) => {
     setSelectedAddress(address);
+
     geocodeByAddress(address);
+
     geocodeByPlaceId(placeId)
       .then((results) => setAddress(results[0]))
       .catch((error) => console.error('Error', error));
