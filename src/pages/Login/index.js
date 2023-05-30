@@ -1,6 +1,5 @@
 import { Box, Stack } from '@mui/material';
 import { useState } from 'react';
-import MetaTags from 'react-meta-tags';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as LyxaIcon } from '../../assets/icons/lyxa-logo-lg.svg';
@@ -61,15 +60,21 @@ export default function Login({ loginFor }) {
     );
 
     localStorage.setItem('lastLoginType', JSON.stringify(currentUser.account_type));
+
     // save user information in global store
     dispatchCurrentUser({
       type: currentUser?.account_type,
       payload: { [currentUser?.account_type]: currentUser, isCurrentUser: true },
     });
 
+    dispatchCurrentUser({
+      type: 'credentialUserId',
+      payload: { credentialUserId: currentUser?.credentialUserId || currentUser._id },
+    });
+
     // redirect after login success
     if (currentUser?.account_type === 'admin' && currentUser?.adminType === 'customerService')
-      history.push('/orders/list');
+      history.push('/ongoing-tickets');
     else history.push('/');
   };
 
@@ -95,9 +100,9 @@ export default function Login({ loginFor }) {
 
   return (
     <>
-      <MetaTags>
+      {/* <MetaTags>
         <title>Login | Lyxa</title>
-      </MetaTags>
+      </MetaTags> */}
       <Box
         sx={{
           backgroundColor: '#363636',
@@ -117,13 +122,13 @@ export default function Login({ loginFor }) {
             hilightAccountType={hilightAccountType}
           />
         </Stack>
+        {/* logo */}
         <Stack alignItems="center" height="calc(100vh - 47px)" justifyContent="center">
-          {/* logo */}
           <Stack alignItems="center" justifyContent="center" gap={2} pb={17}>
             <LyxaIcon />
             <LyxaText />
           </Stack>
-          <Form onSubmit={onSubmit} loginError={loginError} loading={loginMutation.isLoading} />
+          <Form onSubmit={onSubmit} loginError={loginError} loading={loginMutation.isLoading} loginFor={loginFor} />
         </Stack>
       </Box>
     </>

@@ -8,9 +8,9 @@ import MenuPage from '../pages/Menu';
 import NewOrders from '../pages/NewOrder';
 import NotFoundPage from '../pages/NotFound';
 import ProductList from '../pages/Product/ProductList/ProductList';
-import ShopProfile from '../pages/Profile';
 import ShopSettings2 from '../pages/Settings/Shop';
 import ShopDashboard from '../pages/ShopDashboard';
+import ShopProfile from '../pages/ShopProfile';
 import ShopCredentialsList from '../pages/Shops/ShopCredentials/ShopCredentialsList';
 import ShopList from '../pages/Shops/ShopList/ShopList';
 import Users from '../pages/Users2';
@@ -35,7 +35,7 @@ export const shop_routes = (prefix = '') => {
     { path: `${prefix}/financials`, component: Financials },
     { path: `${prefix}/marketing`, component: Marketing },
     { path: `${prefix}/marketing/dashboard/:type/:id`, component: MarketingDashboard },
-    { path: `${prefix}/new-orders`, component: NewOrders },
+    { path: `${prefix}/new-orders`, component: () => <NewOrders showFor="shop" /> },
     { path: `${prefix}/dashboard`, component: ShopDashboard },
     { path: `${prefix}/*`, component: NotFoundPage },
   ];

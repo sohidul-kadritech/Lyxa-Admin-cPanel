@@ -5,7 +5,7 @@ import TableLoader from '../../components/Common/TableLoader';
 import StyledTable4 from '../../components/Styled/StyledTable4';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
 // eslint-disable-next-line no-unused-vars
-function ReasonTable({ items, loading, threeDotHandler }) {
+function ReasonTable({ items, loading, threeDotHandler, onDrop }) {
   const allColumns = [
     {
       id: 1,
@@ -87,6 +87,7 @@ function ReasonTable({ items, loading, threeDotHandler }) {
       <StyledTable4
         columns={allColumns}
         rows={items}
+        onDrop={onDrop}
         getRowKey={(row) => row?._id}
         //   onDrop={onDrop}
         noRowsMessage={loading ? <TableLoader /> : 'No Q&A Found'}

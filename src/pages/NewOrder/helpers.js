@@ -66,7 +66,7 @@ export const sortOptions = [
   },
 ];
 
-export const queryParamsInit = {
+const queryParamsInit = {
   page: 1,
   pageSize: 25,
   sortBy: 'DESC',
@@ -77,6 +77,14 @@ export const queryParamsInit = {
   shop: '',
   orderType: 'all',
   model: 'order',
+};
+
+export const getQueryParamsInit = (showFor, currentUser) => {
+  if (showFor === 'shop') {
+    return { ...queryParamsInit, shop: currentUser?.shop?._id };
+  }
+
+  return { ...queryParamsInit };
 };
 
 export const fiterOrders = (orders = [], filter) => {

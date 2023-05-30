@@ -19,7 +19,7 @@ const getEditUserData = (editUser) => ({
   isParentUser: editUser?.isParentUser,
 });
 
-const userTypeToApiMap = { shop: Api.UPDATE_SHOP_CREDENTIAL };
+const userTypeToApiMap = { shop: Api.UPDATE_SHOP_CREDENTIAL, seller: Api.UPDATE_SELLER_CREDENTIAL };
 
 function EditUser({ onClose, editUser, userType, refetch }) {
   const { currentUser } = useGlobalContext();

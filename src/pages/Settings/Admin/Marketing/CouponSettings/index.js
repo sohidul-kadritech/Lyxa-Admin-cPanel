@@ -28,11 +28,7 @@ export default function CoponSettings() {
 
   return (
     <Box>
-      <PageTop
-        backButtonLabel="Back to Marketing"
-        backTo="/admin/settings2/marketing"
-        breadcrumbItems={breadcrumbItems}
-      />
+      <PageTop backButtonLabel="Back to Marketing" backTo="/settings/marketing" breadcrumbItems={breadcrumbItems} />
       <Tabs
         value={currentTab}
         onChange={(event, newValue) => {

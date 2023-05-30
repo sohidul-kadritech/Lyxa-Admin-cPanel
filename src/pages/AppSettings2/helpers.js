@@ -1,3 +1,6 @@
-export const createDataForAppSettings = (data) => {
-  console.log('create data for app settings: ', data);
+export const separatesUpdatedData = (oldUnits, NewUnits) => {
+  const data = NewUnits.filter((unit) => !oldUnits.includes(unit));
+  // const deleted = NewUnits.filter((unit) => !oldUnits.includes(unit.name));
+
+  return data;
 };

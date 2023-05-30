@@ -5,13 +5,15 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
+import TablePagination from '../../components/Common/TablePagination';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import OrderTable from './OrderTable';
+import PageSkeleton from './PageSkeleton';
 import SearchBar from './Searchbar';
-import { fiterOrders, queryParamsInit } from './helpers';
+import { fiterOrders, getQueryParamsInit } from './helpers';
 
 const orderFilterToTabValueMap = {
   0: 'ongoing',
@@ -19,31 +21,31 @@ const orderFilterToTabValueMap = {
   2: 'incomplete',
 };
 
-export default function NewOrders() {
+export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
 
+  const [totalPage, setTotalPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
-  const [queryParams, setQueryParams] = useState({ ...queryParamsInit, shop: shop?._id });
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(showFor, currentUser));
   const [currentTab, setCurrentTab] = useState(0);
 
-  console.log('currentOrder: ', currentOrder);
   const ordersQuery = useQuery(
-    [Api.ORDER_LIST, { ...queryParams }],
+    [Api.ORDER_LIST, queryParams],
     () =>
       AXIOS.get(Api.ORDER_LIST, {
-        params: { ...queryParams },
+        params: queryParams,
       }),
     {
       onSuccess: (data) => {
         console.log(data);
+        setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
     }
   );
 
   return (
-    <Box>
+    <Box pb={9}>
       <PageTop title="Orders" />
       <Tabs
         value={currentTab}
@@ -64,13 +66,23 @@ export default function NewOrders() {
         <Tab label="Incomplete" />
       </Tabs>
       <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
-      <OrderTable
-        orders={fiterOrders(ordersQuery?.data?.data.orders, orderFilterToTabValueMap[currentTab])}
-        orderFilter={orderFilterToTabValueMap[currentTab]}
-        onRowClick={({ row }) => {
-          setCurrentOrder(row);
-          setSidebarOpen(true);
+      {ordersQuery.isLoading && <PageSkeleton />}
+      {!ordersQuery.isLoading && (
+        <OrderTable
+          orders={fiterOrders(ordersQuery?.data?.data.orders, orderFilterToTabValueMap[currentTab])}
+          orderFilter={orderFilterToTabValueMap[currentTab]}
+          onRowClick={({ row }) => {
+            setCurrentOrder(row);
+            setSidebarOpen(true);
+          }}
+        />
+      )}
+      <TablePagination
+        currentPage={queryParams?.page}
+        lisener={(page) => {
+          setQueryParams((prev) => ({ ...prev, page }));
         }}
+        totalPage={totalPage}
       />
       <Drawer open={Boolean(sidebarOpen)} anchor="right">
         <OrderDetail

@@ -77,7 +77,14 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
+import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
+import NewOrders from '../pages/NewOrder';
+import Notification from '../pages/Notification2';
+import RatingSettings2 from '../pages/Ratings2';
+import RequestedArea from '../pages/RequestedArea';
+import RiderProfile from '../pages/RiderProfile';
+import RiderList from '../pages/Riders';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -86,12 +93,15 @@ import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySetti
 import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
 import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
 import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
+import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
 
 export const admin_routes = [
   // dashboard
   { path: '/', component: Dashboard },
+  { path: '/financials', component: AdminFinancials },
+  { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
 
   { path: '/orders/list', component: ButlerOrderList },
   { path: '/orders/details/regular/:id', component: OrderDetails },
@@ -101,6 +111,8 @@ export const admin_routes = [
 
   // vat
   { path: '/vat', component: Vat },
+  { path: '/riders', component: RiderList },
+  { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
   { path: '/users/list', component: UsersList },
@@ -121,13 +133,6 @@ export const admin_routes = [
   { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/marketing/:id', component: Marketing },
   { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
-
-  // product
-  { path: '/products/list', component: ProductList },
-  { path: '/products/add', component: ProductAdd },
-  { path: '/products/edit/:id', component: ProductAdd },
-  { path: '/products/details/:id', component: ProductDetails },
-  { path: '/products/unit-types', component: UnitTypes },
 
   // delivery man
   { path: '/deliveryman/list', component: DeliverymanList },
@@ -181,9 +186,6 @@ export const admin_routes = [
   { path: '/customer-support/details/:id', component: ChatDetails },
 
   // catagories and tags
-  { path: '/categories/list', component: CategoryList },
-  { path: '/categories/edit/:id', component: CategoryAdd },
-  { path: '/category/details/:id', component: CategoryDetails },
   { path: '/tags/list', component: TagsList },
   { path: '/tags/add', component: TagAdd },
 
@@ -193,40 +195,60 @@ export const admin_routes = [
   { path: '/admin/edit/:id', component: CreateAdmin },
   { path: '/admin/role', component: Role },
 
-  //  settings
-  { path: '/admin/settings', component: AdminSettings },
-  { path: '/app/settings', component: AppSettings },
-  { path: '/app/settings2', component: Appsettings2 },
   { path: '/percentage-setting', component: PercentageSetting },
+
+  //  settings
+  { path: '/app/settings', component: AppSettings },
+
+  { path: '/testing', component: AdminSettings2 },
+
+  { path: '/settings/app-settings', component: Appsettings2 },
+  { path: '/admin/settings2', component: AdminSettings },
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/admin/cancel-reason', component: CancelReason },
-  { path: '/admin/cancel-reason2', component: CancelReason2 },
+  { path: '/settings/cancel-reason', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
   { path: '/admin/database/collections', component: DatabaseSettings },
 
-  { path: '/admin/settings2', component: AdminSettings2 },
-  { path: '/admin/settings2/marketing', component: AdminMarketingSettings },
-  { path: '/admin/settings2/marketing/loyalty', component: AdminLoyaltySettings },
-  { path: '/admin/settings2/marketing/deals', component: AdminDealSettings },
-  { path: '/admin/settings2/marketing/featured', component: AdminFeaturedSettings },
-  { path: '/admin/settings2/marketing/coupons', component: CouponSettings },
+  // settings
+  { path: '/settings', component: AdminSettings2 },
+
+  // marketing
+  { path: '/settings/marketing', component: AdminMarketingSettings },
+  { path: '/settings/marketing/loyalty', component: AdminLoyaltySettings },
+  { path: '/settings/marketing/deals', component: AdminDealSettings },
+  { path: '/settings/marketing/featured', component: AdminFeaturedSettings },
+  { path: '/settings/marketing/coupons', component: CouponSettings },
+  { path: '/settings/zone', component: ServiceZone },
+  { path: '/settings/products/list', component: ProductList },
+  { path: '/settings/products/add', component: ProductAdd },
+  { path: '/settings/products/edit/:id', component: ProductAdd },
+  { path: '/settings/products/details/:id', component: ProductDetails },
+  { path: '/settings/products/unit-types', component: UnitTypes },
+  { path: '/settings/ratings', component: RatingSettings2 },
+  { path: '/settings/categories/list', component: CategoryList },
+  { path: '/settings/categories/edit/:id', component: CategoryAdd },
+  { path: '/settings/category/details/:id', component: CategoryDetails },
 
   // terms and conditions
+  { path: '/terms-and-conditions', component: TermsAndConditions },
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
   { path: '/terms-and-conditions/shop-app', component: ShopTermsAndConditions },
   {
     path: '/terms-and-conditions/delivery-app',
     component: DeliveryTermsAndConditions,
   },
+  { path: '/admin/settings/zone', component: ServiceZone },
 
   // Chat Reason
-  { path: '/settings/support-reasons', component: Faq },
-  { path: '/settings/support-reasons2', component: Faq2 },
-  { path: '/settings/ratings', component: RatingSettings },
+  { path: '/settings/support-reasons2', component: Faq },
+  { path: '/settings/support-reasons', component: Faq2 },
+  { path: '/settings/ratings2', component: RatingSettings },
 
   // NOTIFICATIONS
   { path: '/admin/send-notifications', component: SendNotifications },
   { path: '/admin/notifications/list', component: NotificationsList },
+  { path: '/settings/notifications', component: Notification },
 
   // DISPLAY
   { path: '/display', component: DisplaySettings },
@@ -236,5 +258,5 @@ export const admin_routes = [
   { path: '/display/banner', component: BannerPage },
   { path: '/display/banner/add', component: AddBanner },
   { path: '/display/banner/edit/:id', component: AddBanner },
-  { path: '/admin/zone', component: ServiceZone },
+  { path: '/admin/requested-area', component: RequestedArea },
 ];

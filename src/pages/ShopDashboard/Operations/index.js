@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
+import { useGlobalContext } from '../../../context';
 import { dateRangeInit } from '../../../helpers/dateRangeInit';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -49,22 +50,31 @@ function CardTitle({ title, tooltip }) {
 }
 
 // project import
-export default function Operations() {
+export default function Operations({ viewUserType = 'shop' }) {
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
+
+  const viewUserTypeToApiMap = {
+    shop: {
+      api: Api.GET_SHOP_DASHBOARD_OPERATIONS,
+      params: {
+        shopId: shop?._id,
+      },
+    },
+  };
+
   const theme = useTheme();
   const [range, setRange] = useState({ ...dateRangeInit });
 
   const query = useQuery(
-    [Api.GET_SHOP_DASHBOARD_OPERATIONS, { startDate: range.start, endDate: range.end }],
+    [
+      viewUserTypeToApiMap[viewUserType]?.api,
+      { startDate: range.start, endDate: range.end, ...viewUserTypeToApiMap[viewUserType]?.params },
+    ],
     () =>
-      AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
-        params: { startDate: range.start, endDate: range.end },
-      }),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
+      AXIOS.get(viewUserTypeToApiMap[viewUserType]?.api, {
+        params: { startDate: range.start, endDate: range.end, ...viewUserTypeToApiMap[viewUserType]?.params },
+      })
   );
 
   console.log('query for order operation: ', query?.data?.data);
@@ -84,7 +94,7 @@ export default function Operations() {
                 tooltip="How many orders were declined by your store during business hours?"
               />
             }
-            value={query?.data?.data?.totalRejectedOrder}
+            value={query?.data?.data?.totalRejectedOrder || 0}
             isDropdown
             sm={6}
             md={4}
@@ -106,7 +116,7 @@ export default function Operations() {
                 tooltip="How many orders were reported by customers as having missing or incorrect items, resulting in refund being issued?"
               />
             }
-            value={query?.data?.data?.totalRefundedOrder}
+            value={query?.data?.data?.totalRefundedOrder || 0}
             sm={6}
             md={4}
             lg={3}
@@ -119,7 +129,7 @@ export default function Operations() {
                 tooltip="What is the number of orders that your store accepted but subsequently canceled?"
               />
             }
-            value={query?.data?.data?.totalCanceledOrder}
+            value={query?.data?.data?.totalCanceledOrder || 0}
             sm={6}
             md={4}
             lg={3}
@@ -127,8 +137,8 @@ export default function Operations() {
 
           <InfoCard
             title={<CardTitle title="Downtime" tooltip="How much time was your store unavailable during menu hours?" />}
-            value={`${query?.data?.data?.totalDownTime?.hours || 0}h ${
-              query?.data?.data?.totalDownTime?.minutes || 0
+            value={`${Math.floor(query?.data?.data?.totalDownTime?.hours) || 0}h ${
+              Math.floor(query?.data?.data?.totalDownTime?.minutes) || 0
             }m`}
             isDropdown
             sm={6}
@@ -138,25 +148,23 @@ export default function Operations() {
           >
             {query?.data?.data?.totalDownTime?.hours !== 0 && query?.data?.data?.totalDownTime?.minutes !== 0 ? (
               <Stack gap={2.5}>
-                {query?.data?.data?.dateWiseDowntime.map((downTime, i) => (
-                  <Box key={i}>
-                    {downTime?.hours !== 0 && downTime?.minutes !== 0 && (
+                {query?.data?.data?.dateWiseDowntime.map((downTime, i) => {
+                  if (downTime?.hours === 0 && downTime?.minutes === 0) return null;
+
+                  return (
+                    <Box key={i}>
                       <ListItem
                         label={dateFormation(downTime?.date)}
-                        value={`${downTime.hours}h ${downTime.minutes}m`}
+                        value={`${Math.floor(downTime.hours) || 0}h ${Math.floor(downTime.minutes) || 0}m`}
                       />
-                    )}
-                  </Box>
-                ))}
+                    </Box>
+                  );
+                })}
               </Stack>
             ) : (
-              <ListItem
-                label="No downtime found"
-                // value={`${downTime.hours}h ${downTime.minutes}m`}
-              />
+              <ListItem label="No downtime found" />
             )}
           </InfoCard>
-
           <InfoCard
             title={
               <CardTitle
@@ -164,7 +172,7 @@ export default function Operations() {
                 tooltip="How many orders were reported by customers as having missing or incorrect items, resulting in refund being issued?"
               />
             }
-            value={query?.data?.data?.totalMissedOrder}
+            value={query?.data?.data?.totalMissedOrder || 0}
             sm={6}
             md={4}
             lg={3}

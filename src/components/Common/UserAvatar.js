@@ -4,7 +4,7 @@ export default function UserAvatar({ imgUrl, imgAlt, imgStyle, imgFallbackCharac
   return (
     <Stack direction="row" alignItems="center" gap={5}>
       <Avatar alt={imgAlt} src={imgUrl} variant={imgStyle} sx={{ width: 36, height: 36 }}>
-        {imgFallbackCharacter}
+        {imgFallbackCharacter || name?.charAt(0)}
       </Avatar>
       <Stack gap={1.5}>
         <Typography variant="body4">{name}</Typography>

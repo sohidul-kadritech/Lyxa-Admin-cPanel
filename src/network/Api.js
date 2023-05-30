@@ -1,6 +1,7 @@
 export const API_URL = 'https://api.drop-deliveryapp.com/';
 export const SOCKET_CONNECTION = 'https://api.drop-deliveryapp.com/';
 export const MAP_URL = 'http://maps.google.com/maps';
+export const GET_LOCATION_FROM_LATLNG = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 const ADMIN_ENDPOINT = 'admin';
 
@@ -99,6 +100,7 @@ export const SELLER_DROP_CHARGE = `${ADMIN_ENDPOINT}/seller/add-drop-charge`;
 export const ADD_SELLER_CREDENTIAL = `${ADMIN_ENDPOINT}/seller/add-credential`;
 export const GET_SELLER_CREDENTIALS = `${ADMIN_ENDPOINT}/seller/credential`;
 export const REMOVE_SELLER_CREDENTIAL = `${ADMIN_ENDPOINT}/seller/delete-credential`;
+export const UPDATE_SELLER_CREDENTIAL = `${ADMIN_ENDPOINT}/seller/update-credential`;
 
 // SHOP
 export const ADD_SHOP_DEAL = `${ADMIN_ENDPOINT}/shop/add-deal`;
@@ -165,6 +167,7 @@ export const APP_SETTINGS = '/admin/setting/app-setting';
 export const ADD_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/add`;
 export const UPDATE_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/edit`;
 export const ALL_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel`;
+export const SORT_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/sort`;
 
 export const SET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge/add-global-drop-charge`;
 export const GET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge`;
@@ -209,7 +212,12 @@ export const SELLERS_TRX = `${ADMIN_ENDPOINT}/drop-wallet/sellers`;
 export const SELLER_TRX = `${ADMIN_ENDPOINT}/drop-wallet/seller/shops`;
 export const SHOP_TRX = `${ADMIN_ENDPOINT}/drop-wallet/seller/shops-details`;
 export const DELIVERY_TRX = `${ADMIN_ENDPOINT}/drop-wallet/delivery-boy-transection`;
+// --old
 export const SINGLE_DELIVERY_TRX = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info`;
+// --old
+export const SINGLE_DELIVERY_WALLET_SUMMARY = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info`;
+export const SINGLE_DELIVERY_WALLET_TRANSACTIONS = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info/transaction`;
+export const SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST = `${ADMIN_ENDPOINT}/drop-wallet/single-delivery-boy-info/cash-order-list`;
 export const DROP_TRX = `${ADMIN_ENDPOINT}/wallet/admin`;
 export const ALL_TRX = `${ADMIN_ENDPOINT}/drop-wallet/transection`;
 export const SHOP_MAKE_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/settle-amount-seller`;
@@ -280,12 +288,14 @@ export const GET_FAQ = `${ADMIN_ENDPOINT}/faq`;
 export const ADD_FAQ = `${ADMIN_ENDPOINT}/faq/add`;
 export const UPDATE_FAQ = `${ADMIN_ENDPOINT}/faq/update`;
 export const DELETE_FAQ = `${ADMIN_ENDPOINT}/faq/delete`;
+export const SORT_FAQ = `${ADMIN_ENDPOINT}/faq/sort`;
 
 // CHAT REASON
 export const GET_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason`;
 export const ADD_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/add`;
 export const UPDATE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/edit`;
 export const DELETE_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/delete`;
+export const SORT_CHAT_REASON = `${ADMIN_ENDPOINT}/chat-reason/sort`;
 
 // RATING
 export const GET_ALL_RATINGS = `${ADMIN_ENDPOINT}/setting/rating`;
@@ -345,3 +355,4 @@ export const GET_STAT_ZONE = `${ADMIN_ENDPOINT}/zone/statistics`;
 export const CREATE_ZONE = `${ADMIN_ENDPOINT}/zone/add`;
 export const UPDATE_ZONE = `${ADMIN_ENDPOINT}/zone/update`;
 export const DELETE_ZONE = `${ADMIN_ENDPOINT}/zone/delete`;
+export const REQUESTED_AREA = `${ADMIN_ENDPOINT}/request-area`;

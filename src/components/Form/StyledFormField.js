@@ -188,6 +188,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                   onDelete={() => {
                     inputProps.onChange(
                       undefined,
+                      // eslint-disable-next-line prettier/prettier
                       inputProps.value.filter((dItem, dIndex) => index !== dIndex)
                     );
                   }}

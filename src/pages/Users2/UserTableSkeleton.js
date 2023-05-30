@@ -24,7 +24,13 @@ function Row() {
 
 export default function UserTablePageSkeleton() {
   return (
-    <Stack>
+    <Stack
+      sx={{
+        padding: '16px 18px',
+        border: '1px solid',
+        borderColor: 'custom.border',
+      }}
+    >
       <Row />
       <Row />
       <Row />

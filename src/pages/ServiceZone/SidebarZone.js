@@ -65,7 +65,7 @@ const store = [
   },
 ];
 
-function ZoneInfo({ theme, setIsSideBarOpen, infoData, polygon, zoneName }) {
+function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName }) {
   console.log('infoData', infoData, polygon);
   console.log('infodata new: ', createZoneInfoData(infoData));
   const zoneConsumerSx = {
@@ -116,10 +116,8 @@ function ZoneInfo({ theme, setIsSideBarOpen, infoData, polygon, zoneName }) {
 }
 function SidebarZone({ setIsSideBarOpen, currentRowData }) {
   const statsTracker = {
-    0: 'users',
-    1: 'riders',
-    2: 'orders',
-    3: 'shops',
+    0: 'riders',
+    1: 'shops',
   };
   console.log('currentRowdata', currentRowData);
   console.log('polygon currenr zone', currentRowData?.zoneGeometry?.coordinates);
@@ -171,9 +169,7 @@ function SidebarZone({ setIsSideBarOpen, currentRowData }) {
             },
           }}
         >
-          <Tab label="Customers" />
           <Tab label="Riders" />
-          <Tab label="Orders" />
           <Tab label="Stores" />
         </Tabs>
 

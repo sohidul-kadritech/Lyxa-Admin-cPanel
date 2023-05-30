@@ -19,6 +19,10 @@ const useGeoLocation = () => {
   const onError = (error) => {
     setLocation({
       loaded: true,
+      coordinates: {
+        lat: 0,
+        lon: 0,
+      },
       error: {
         code: error.code,
         message: error.message,
