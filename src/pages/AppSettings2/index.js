@@ -161,7 +161,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -245,7 +245,7 @@ function Appsettings2() {
     const updateDUnits = separatesUpdatedData(
       oldUnits,
       // eslint-disable-next-line prettier/prettier
-      units.map((unit) => unit.name),
+      units.map((unit) => unit.name)
     );
     console.log('old data: ', oldUnits);
     console.log('new data: ', units);
@@ -263,6 +263,7 @@ function Appsettings2() {
         // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

@@ -216,7 +216,7 @@ export const admin_menu_items = [
       {
         label: 'Orders',
         icon: AdminOrdersIcon,
-        to: '/orders/list',
+        to: '/new-orders',
       },
       {
         label: 'Sellers',
@@ -245,7 +245,7 @@ export const admin_menu_items = [
       },
       {
         label: 'Financials',
-        to: '/',
+        to: '/financials',
         icon: FinanceAdminIcon,
       },
       {
@@ -403,10 +403,10 @@ export const admin_menu_items = [
   //       label: 'Percentage Settings',
   //       to: '/percentage-setting',
   //     },
-  //     // {
-  //     //   label: 'Reward Settings',
-  //     //   to: '/admin/settings/reward-settings',
-  //     // },
+  //     {
+  //       label: 'Reward Settings',
+  //       to: '/admin/settings/reward-settings',
+  //     },
   //     {
   //       label: 'Default Message',
   //       to: '/admin/default-chat-message',
@@ -445,6 +445,10 @@ export const admin_menu_items = [
   //   title: 'Need Design',
   //   menu: [
   //     {
+  //       label: 'Admin Settings',
+  //       to: '/admin/settings2',
+  //     },
+  //     {
   //       label: 'Deals List',
   //       to: '/deals/list',
   //     },
@@ -466,9 +470,8 @@ export const admin_menu_items = [
   //     },
   //     {
   //       label: 'Categories List',
-  //       to: '/categories/list',
+  //       to: '/settings/categories/list',
   //     },
-
   //     {
   //       label: 'Admin Log',
   //       to: '/admin/percentage-settings-history',

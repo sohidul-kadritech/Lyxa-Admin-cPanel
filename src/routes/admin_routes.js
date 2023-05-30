@@ -77,7 +77,9 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
+import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
+import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
 import RatingSettings2 from '../pages/Ratings2';
 import RequestedArea from '../pages/RequestedArea';
@@ -98,6 +100,8 @@ import Vat from '../pages/Vat';
 export const admin_routes = [
   // dashboard
   { path: '/', component: Dashboard },
+  { path: '/financials', component: AdminFinancials },
+  { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
 
   { path: '/orders/list', component: ButlerOrderList },
   { path: '/orders/details/regular/:id', component: OrderDetails },
@@ -182,9 +186,6 @@ export const admin_routes = [
   { path: '/customer-support/details/:id', component: ChatDetails },
 
   // catagories and tags
-  { path: '/categories/list', component: CategoryList },
-  { path: '/categories/edit/:id', component: CategoryAdd },
-  { path: '/category/details/:id', component: CategoryDetails },
   { path: '/tags/list', component: TagsList },
   { path: '/tags/add', component: TagAdd },
 
@@ -198,10 +199,11 @@ export const admin_routes = [
 
   //  settings
   { path: '/app/settings', component: AppSettings },
+
+  { path: '/testing', component: AdminSettings2 },
+
   { path: '/settings/app-settings', component: Appsettings2 },
-
-  { path: 'admin/settings2', component: AdminSettings },
-
+  { path: '/admin/settings2', component: AdminSettings },
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
@@ -224,9 +226,12 @@ export const admin_routes = [
   { path: '/settings/products/details/:id', component: ProductDetails },
   { path: '/settings/products/unit-types', component: UnitTypes },
   { path: '/settings/ratings', component: RatingSettings2 },
+  { path: '/settings/categories/list', component: CategoryList },
+  { path: '/settings/categories/edit/:id', component: CategoryAdd },
+  { path: '/settings/category/details/:id', component: CategoryDetails },
 
   // terms and conditions
-  { path: '/terms-and-conditions2', component: TermsAndConditions },
+  { path: '/terms-and-conditions', component: TermsAndConditions },
   { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
   { path: '/terms-and-conditions/shop-app', component: ShopTermsAndConditions },
   {
