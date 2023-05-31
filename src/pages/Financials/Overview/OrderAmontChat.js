@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { useState } from 'react';
 import ChartBox from '../../../components/StyledCharts/ChartBox';
 import StyledAreaChart from '../../../components/StyledCharts/StyledAreaChart';
+import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -14,19 +15,33 @@ const dateRangeItit = {
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
 
-export default function OrderAmountChart() {
+export default function OrderAmountChart({ viewUserType }) {
   const [range, setRange] = useState({ ...dateRangeItit });
+  const { currentUser } = useGlobalContext();
+
+  console.log({ viewUserType });
 
   // order amount graph
   const orderAmountGraphQuery = useQuery(
-    ['shop-order-amount-graph', { startDate: range.start, endDate: range.end }],
+    [
+      Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH,
+      {
+        startDate: moment(range.start).format('YYYY-MM-DD'),
+        endDate: moment(range.end).format('YYYY-MM-DD'),
+        id: currentUser[viewUserType]?._id,
+        type: viewUserType,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, {
-        params: { startDate: range.start, endDate: range.end, type: 'normal' },
+        params: {
+          startDate: moment(range.start).format('YYYY-MM-DD'),
+          endDate: moment(range.end).format('YYYY-MM-DD'),
+          id: currentUser[viewUserType]?._id,
+          type: viewUserType,
+        },
       })
   );
-
-  // console.log(orderAmountGraphQuery?.data);
 
   const orderAmountData = generateGraphData(
     orderAmountGraphQuery?.data?.data?.info || [],

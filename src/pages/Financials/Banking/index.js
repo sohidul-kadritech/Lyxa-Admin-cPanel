@@ -1,9 +1,7 @@
 import { Unstable_Grid2 as Grid } from '@mui/material';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
-import { bankingDetailsInit } from './helpers';
+import { useGlobalContext } from '../../../context';
 
 // eslint-disable-next-line no-unused-vars
 const inputSx = {
@@ -12,20 +10,9 @@ const inputSx = {
 };
 
 export default function Banking() {
-  const [bankingDetails, setBankingDetails] = useState({ ...bankingDetailsInit });
-  const shop = useSelector((store) => store.Login.admin);
-
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
   console.log(shop);
-
-  // eslint-disable-next-line no-unused-vars
-  const commonChangeHandler = (event) => {
-    setBankingDetails((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
-  };
-
-  console.log(bankingDetails);
 
   return (
     <StyledBox
@@ -44,8 +31,7 @@ export default function Banking() {
               type: 'text',
               placeholder: 'Vegan Pizza',
               name: 'accountName',
-              value: 'Not added yet',
-              // onChange: commonChangeHandler,
+              value: shop?.bank_name,
               sx: inputSx,
             }}
           />
@@ -60,7 +46,6 @@ export default function Banking() {
               placeholder: 'Vegan Pizza',
               name: 'accountOwner',
               value: shop.account_name,
-              // onChange: commonChangeHandler,
               sx: inputSx,
             }}
           />
@@ -74,8 +59,7 @@ export default function Banking() {
               type: 'text',
               placeholder: 'Vegan Pizza',
               name: 'address',
-              value: shop.address?.address,
-              // onChange: commonChangeHandler,
+              value: shop.bank_address,
               sx: inputSx,
             }}
           />
@@ -90,7 +74,6 @@ export default function Banking() {
               placeholder: 'Vegan Pizza',
               name: 'city',
               value: shop.address?.city,
-              // onChange: commonChangeHandler,
               sx: inputSx,
             }}
           />
@@ -104,7 +87,7 @@ export default function Banking() {
               type: 'number',
               placeholder: 'XXXX',
               name: 'postalCode',
-              value: shop?.bank_postal_code || '',
+              value: shop?.bank_postal_code,
               // onChange: commonChangeHandler,
               sx: inputSx,
             }}
@@ -119,8 +102,7 @@ export default function Banking() {
               type: 'number',
               placeholder: 'XXXXXXXXXXXXXXXX24',
               name: 'iban',
-              value: shop?.account_swift || '',
-              // onChange: commonChangeHandler,
+              value: shop?.account_swift,
               sx: inputSx,
             }}
           />
@@ -134,8 +116,7 @@ export default function Banking() {
               type: 'text',
               placeholder: 'AHHJFIIUWHA',
               name: 'swift',
-              value: shop?.account_swift || '',
-              // onChange: commonChangeHandler,
+              value: shop?.account_swift,
               sx: inputSx,
             }}
           />
@@ -148,9 +129,8 @@ export default function Banking() {
               type: 'text',
               placeholder: 'Weekly',
               name: 'payoutFrequency',
-              value: shop?.payout_frequency || '',
-              // onChange: commonChangeHandler,
-              sx: inputSx,
+              value: shop?.payout_frequency,
+              sx: { ...inputSx, textTransform: 'capitalize' },
             }}
           />
         </Grid>

@@ -3,6 +3,8 @@ import DateRange from './DateRange';
 import StyledBox from './StyledBox';
 
 export default function ChartBox({ dateRange, setDateRange, title, chartHeight, children, loading, ...props }) {
+  // console.log({ dateRange });
+
   return (
     <Grid {...props}>
       <StyledBox padding loading={loading}>

@@ -3,48 +3,7 @@ import { Avatar, Stack, Typography } from '@mui/material';
 import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
-
-export function InfoItem({ icon: Icon, title, isFirst }) {
-  return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="start"
-      className={isFirst ? 'first-info' : ''}
-      gap="6px"
-      sx={{
-        position: 'relative',
-        padding: '0 20px',
-
-        '&::before': {
-          content: "''",
-          position: 'absolute',
-          width: '5px',
-          height: '5px',
-          borderRadius: '50%',
-          backgroundColor: 'text.primary',
-          display: 'block',
-          left: '0px',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        },
-
-        '&.first-info': {
-          paddingLeft: 0,
-
-          '&::before': {
-            display: 'none',
-          },
-        },
-      }}
-    >
-      <Icon />
-      <Typography variant="h4" fontWeight={500}>
-        {title}
-      </Typography>
-    </Stack>
-  );
-}
+import InfoListItem from './InfoListItem';
 
 export default function UserProfileInfo({ user, avatarProps, containerProps }) {
   return (
@@ -63,9 +22,9 @@ export default function UserProfileInfo({ user, avatarProps, containerProps }) {
         </Typography>
         {/* info */}
         <Stack direction="row" alignItems="center" justifyContent="start">
-          {user.email && <InfoItem icon={Email} title={user?.email} isFirst />}
-          {user.address && <InfoItem icon={Loacation} title={user?.address} />}
-          {user.phone && <InfoItem icon={Phone} title={user?.phone} />}
+          {user.email && <InfoListItem icon={Email} title={user?.email} isFirst />}
+          {user.address && <InfoListItem icon={Loacation} title={user?.address} />}
+          {user.phone && <InfoListItem icon={Phone} title={user?.phone} />}
         </Stack>
         {/* rating */}
         {user?.rating && (

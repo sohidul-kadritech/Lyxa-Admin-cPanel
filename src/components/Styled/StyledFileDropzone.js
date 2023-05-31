@@ -34,6 +34,10 @@ const readonlyStyle = {
 export default function StyledFileDropzone({ text, readOnly, ...args }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     maxSize: 1000 * 1000,
+    multiple: false,
+    accept: {
+      'image/png': ['.png', '.jpg', '.jpeg'],
+    },
     ...args,
   });
 

@@ -1,4 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
+import { isNumber } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import currenciesList from '../../common/data/currencyList';
@@ -24,6 +25,16 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+const initialCurrency = {
+  symbol: '€',
+  name: 'Euro',
+  symbol_native: '€',
+  decimal_digits: 2,
+  rounding: 0,
+  code: 'EUR',
+  name_plural: 'euros',
+  _id: '647707ce1afe457826284190',
+};
 
 export const validateList = (newValue, oldList, type) => {
   if (Number(newValue) < 1 && type === 'number') {
@@ -101,7 +112,7 @@ function Appsettings2() {
   const [oldUnits, setOldUnits] = useState([]);
 
   // eslint-disable-next-line no-unused-vars
-  const [currency, setCurrency] = useState({});
+  const [currency, setCurrency] = useState(initialCurrency);
 
   // eslint-disable-next-line no-unused-vars
   const [type, setType] = useState([]);
@@ -118,9 +129,9 @@ function Appsettings2() {
     setVat(getShopSettingsData?.data?.data?.appSetting?.vat || 0);
     setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
-    setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
+    setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || []);
     // eslint-disable-next-line no-unused-vars
-    setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || {});
+    setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || initialCurrency);
 
     setUnits(getAllUnits?.data?.data || []);
     setOldUnits(getAllUnits?.data?.data || []);
@@ -169,7 +180,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -228,21 +239,37 @@ function Appsettings2() {
   // Handle Incremented by one
 
   const incrementByOneHandler = (setValue) => {
-    setValue((prev) => prev + 1);
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 1;
+      if (prev === '') return 1;
+      return prev;
+    });
   };
   // Handle decremented by one
   const decrementByOneHandler = (setValue) => {
-    setValue((prev) => prev - 1);
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
+      if (prev === '' || prev <= 0) return 0;
+      return prev;
+    });
   };
 
   // Handle Incremented by five
 
   const incrementByFiveHandler = (setValue) => {
-    setValue((prev) => prev + 5);
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 5;
+      if (prev === '') return 1;
+      return prev;
+    });
   };
   // Handle decremented by one
   const decrementByFiveHandler = (setValue) => {
-    setValue((prev) => prev - 5);
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 5;
+      if (prev === '' || prev <= 0) return 0;
+      return prev;
+    });
   };
 
   const updateData = () => {
@@ -262,7 +289,7 @@ function Appsettings2() {
     const updateDUnits = separatesUpdatedData(
       oldUnits.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units.map((unit) => unit.name)
+      units.map((unit) => unit.name),
     );
 
     // if (hasChanged) updateQuery.mutate(data);
@@ -309,7 +336,7 @@ function Appsettings2() {
                   inputValue={`${maxTotalEstItemsPriceForButler}`}
                   inputType="number"
                   sxLeft={{ width: '200px' }}
-                  sxRight={{ width: '110px' }}
+                  sxRight={{ width: '140px' }}
                   onInputChange={(e) => {
                     setMaxTotalEstItemsPriceForButler(e?.target?.value);
                     setTypeValidation(type, setType, 'maxTotalEstItemsPriceForButler');
@@ -317,7 +344,7 @@ function Appsettings2() {
                 />
                 <InputBox
                   sxLeft={{ width: '200px' }}
-                  sxRight={{ width: '110px' }}
+                  sxRight={{ width: '140px' }}
                   title="Maximum Distance"
                   endAdornment="KM"
                   inputValue={`${maxDistanceForButler}`}
@@ -433,7 +460,6 @@ function Appsettings2() {
 
                     return prev.filter((value) => value.name !== item);
                   });
-                  // setDeletedUnitId((prev) => [...prev, { id: units.find((value) => value.name === item) }]);
                 }}
               />
             </StyledBox>

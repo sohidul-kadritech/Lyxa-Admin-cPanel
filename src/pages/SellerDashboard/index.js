@@ -1,12 +1,11 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
-import Customers from '../../components/Shared/Customers';
-import { useGlobalContext } from '../../context';
-import Operations from '../ShopDashboard/Operations';
-import Orders from './Order';
-// import SellerInfo from './SellerInfo';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
+import Customers from '../../components/Shared/Customers';
+import Operations from '../../components/Shared/Operations';
+import { useGlobalContext } from '../../context';
+import Orders from './Order';
 
 export default function SellerDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -45,7 +44,7 @@ export default function SellerDashboard() {
         <Tab label="Customers" />
         <Tab label="Operations" />
       </Tabs>
-      <Box pt={7.5}>
+      <Box pt={7.5} pb={12}>
         <TabPanel index={0} value={currentTab} noPadding>
           <Orders viewUserType="seller" />
         </TabPanel>
