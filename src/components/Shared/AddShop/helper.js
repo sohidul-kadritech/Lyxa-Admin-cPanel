@@ -106,10 +106,10 @@ export const validateShopDetails = (shopData, isEditShop) => {
     return status;
   }
 
-  if (!shopData?.shopStatus) {
-    status.msg = 'Please Select shop Shop Status';
-    return status;
-  }
+  // if (!shopData?.shopStatus) {
+  //   status.msg = 'Please Select shop Shop Status';
+  //   return status;
+  // }
 
   return { status: true };
 };
@@ -130,8 +130,8 @@ export const validateShopFeatures = (shopData, sellerType) => {
     return status;
   }
 
-  if (!shopData?.minOrderAmount) {
-    status.msg = 'Please add minimum order admount';
+  if (!shopData?.minOrderAmount || Number(shopData?.minOrderAmount) < 1) {
+    status.msg = 'Please add valid minimum order admount';
     return status;
   }
 
@@ -331,18 +331,16 @@ const shopNoramalHours = [
 
 export const shopInit = (sellerId) => ({
   seller: sellerId,
-  shopStartTime: '10:00',
-  shopEndTime: '20:00',
   shopName: '',
   password: '',
   isCuisine: false,
-  minOrderAmount: '',
+  minOrderAmount: 0,
   email: '',
   phone_number: '',
   shopType: '',
   shopLogo: [],
   shopBanner: [],
-  shopStatus: '',
+  shopStatus: 'active',
   shopDescription: '',
   tags: [],
   tagsId: [],

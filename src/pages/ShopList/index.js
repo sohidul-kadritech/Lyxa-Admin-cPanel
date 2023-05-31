@@ -41,7 +41,6 @@ export default function ShopList() {
   );
 
   useEffect(() => {
-    console.log(filterShops(query?.data?.data?.shops, filters));
     setShops(filterShops(query?.data?.data?.shops, filters));
   }, [filters.searchKey, filters.status, filters.sort]);
 
@@ -49,7 +48,7 @@ export default function ShopList() {
     <Box>
       <PageTop title="Shop List" />
       <SearchBar
-        searchPlaceHolder="Search 5 shops"
+        searchPlaceHolder={`Search ${shops?.length} shops`}
         onAdd={() => setOpen(true)}
         filters={filters}
         setFilters={setFilters}
@@ -62,7 +61,7 @@ export default function ShopList() {
       ) : (
         <>
           <List shops={shops} loading={loading} />
-          <ShopProfile setLoading={setLoading} loading={loading} />
+          {shops?.length ? <ShopProfile setLoading={setLoading} loading={loading} /> : null}
           <Drawer open={open} anchor="right">
             <AddShop onClose={() => setOpen(false)} />
           </Drawer>
