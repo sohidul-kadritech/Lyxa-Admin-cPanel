@@ -76,6 +76,10 @@ const pagesList = [
     label: 'Request New Area',
     to: '/admin/requested-area',
   },
+  {
+    label: 'Transaction',
+    to: '/admin/transactions',
+  },
 ];
 
 export default function AdminSettings() {

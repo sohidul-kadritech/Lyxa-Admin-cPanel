@@ -64,6 +64,7 @@ export default function Taglist({
                     setNewItem('');
                     setShowAdd(false);
                   }
+                  setNewItem('');
                 }
               }}
             />
