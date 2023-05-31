@@ -40,7 +40,8 @@ function ShopList() {
   } = useSelector((state) => state.shopReducer);
   // const { userType, adminType, _id: Id } = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
-  const { userType, seller, adminType } = currentUser;
+  // const { userType, seller, adminType } = currentUser;
+  const { userType, seller } = currentUser;
 
   const [myShop, setMyShop] = useState([]);
 
@@ -80,8 +81,8 @@ function ShopList() {
             loading={loading}
             callList={callShopList}
             isRefresh={userType !== 'shop'}
-            isAddNew={userType === 'admin' && adminType !== 'customerService'}
-            addNewRoute="shops/add"
+            // isAddNew={userType === 'admin' && adminType !== 'customerService'}
+            // addNewRoute="shops/add"
           />
 
           {userType !== 'shop' && (
