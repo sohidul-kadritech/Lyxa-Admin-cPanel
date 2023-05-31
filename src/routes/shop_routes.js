@@ -32,7 +32,7 @@ export const shop_routes = (prefix = '') => {
     { path: `${prefix}/profile`, component: ShopProfile },
     { path: `${prefix}/menu`, component: MenuPage },
     { path: `${prefix}/settings`, component: ShopSettings2 },
-    { path: `${prefix}/financials`, component: Financials },
+    { path: `${prefix}/financials`, component: () => <Financials viewUserType="shop" /> },
     { path: `${prefix}/marketing`, component: Marketing },
     { path: `${prefix}/marketing/dashboard/:type/:id`, component: MarketingDashboard },
     { path: `${prefix}/new-orders`, component: () => <NewOrders showFor="shop" /> },

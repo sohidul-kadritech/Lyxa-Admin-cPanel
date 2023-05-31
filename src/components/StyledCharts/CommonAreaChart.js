@@ -19,8 +19,8 @@ export default function CommonAreaChart({ title, generateData, api, params }) {
     [
       api,
       {
-        endDate: range.end,
-        startDate: range.start,
+        endDate: moment(range.end).format('YYYY-MM-DD'),
+        startDate: moment(range.start).format('YYYY-MM-DD'),
         year: undefined,
         type: 'normal',
         ...params,
@@ -29,8 +29,8 @@ export default function CommonAreaChart({ title, generateData, api, params }) {
     () =>
       AXIOS.get(api, {
         params: {
-          endDate: range.end,
-          startDate: range.start,
+          endDate: moment(range.end).format('YYYY-MM-DD'),
+          startDate: moment(range.start).format('YYYY-MM-DD'),
           year: undefined,
           type: 'normal',
           ...params,

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import ChartBox from '../../../components/StyledCharts/ChartBox';
 import StyledAreaChart from '../../../components/StyledCharts/StyledAreaChart';
+import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
@@ -33,16 +34,30 @@ const dateRangeItit = {
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
 
-export default function MarketingSpentChart() {
+export default function MarketingSpentChart({ viewUserType = 'shop' }) {
   const [range, setRange] = useState({ ...dateRangeItit });
+  const { currentUser } = useGlobalContext();
 
   const marketingSpentQuery = useQuery(
-    ['shop-marketing-spent-graph', { startDate: range.start, endDate: range.end }],
+    [
+      Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH,
+      {
+        startDate: moment(range.start).format('YYYY-MM-DD'),
+        endDate: moment(range.end).format('YYYY-MM-DD'),
+        id: currentUser[viewUserType]?._id,
+        type: viewUserType,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
-        params: { startDate: range.start, endDate: range.end, type: 'normal' },
+        params: {
+          startDate: moment(range.start).format('YYYY-MM-DD'),
+          endDate: moment(range.end).format('YYYY-MM-DD'),
+          id: currentUser[viewUserType]?._id,
+          type: viewUserType,
+        },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   console.log('marketing data: ', marketingSpentQuery?.data?.data);

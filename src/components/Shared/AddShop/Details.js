@@ -209,7 +209,7 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
             onDrop(acceptedFiles, 'shopLogo');
           },
           name: 'shopLogo',
-          accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
+          // accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
           maxSize: 1000 * 1000,
           text: 'Drag and drop or chose photo',
           files: shop?.shopLogo,
@@ -225,7 +225,7 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
           onDrop: (acceptedFiles) => {
             onDrop(acceptedFiles, 'shopBanner');
           },
-          accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
+          // accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
           maxSize: 1000 * 1000,
           text: 'Drag and drop or chose photo',
           files: shop?.shopBanner,

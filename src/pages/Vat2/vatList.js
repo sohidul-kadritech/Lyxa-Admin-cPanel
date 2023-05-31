@@ -1,14 +1,15 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 import StyledTable from '../../components/Styled/StyledTable3';
 
-function VatList({ data = [], getCurrentCurrency, loading = false }) {
+function VatList({ data, getCurrentCurrency, loading }) {
+  const theme = useTheme();
   const allColumns = [
     {
       id: 1,
       headerName: `TRX ID`,
-      field: 'shopName',
+      field: 'autogenId',
       flex: 1,
       sortable: false,
       renderCell: (params) => (
@@ -23,7 +24,7 @@ function VatList({ data = [], getCurrentCurrency, loading = false }) {
                 textTransform: 'capitalize',
               }}
             >
-              {params?.row?.shop?.shopName}
+              {params?.row?.autoGenId}
             </Typography>
           </Box>
         </Stack>
@@ -32,7 +33,7 @@ function VatList({ data = [], getCurrentCurrency, loading = false }) {
 
     {
       id: 3,
-      field: 'price',
+      field: 'amount',
       headerName: `AMOUNT (${getCurrentCurrency?.code})`,
       sortable: false,
       flex: 1,
@@ -42,14 +43,14 @@ function VatList({ data = [], getCurrentCurrency, loading = false }) {
       renderCell: ({ row }) => (
         <Typography variant="body1">
           {getCurrentCurrency?.symbol}
-          {row?.price}
+          {row?.amount}
         </Typography>
       ),
     },
 
     {
       id: 4,
-      field: 'createdAt',
+      field: 'name',
       headerName: 'PAID BY',
       sortable: false,
       flex: 1,
@@ -58,9 +59,7 @@ function VatList({ data = [], getCurrentCurrency, loading = false }) {
       align: 'center',
       renderCell: ({ row }) => (
         <Stack>
-          <Typography variant="body1">{moment(row?.createdAt).format('MMMM DD, YYYY')}</Typography>
-          {/* <Typography variant="body1">{new Date(row?.createdAt || undefined).toLocaleDateString()}</Typography> */}
-          <Typography variant="body3">{moment(row?.createdAt).format('hh:mm A')}</Typography>
+          <Typography variant="body1">{row?.adminBy?.name}</Typography>
         </Stack>
       ),
     },
@@ -69,7 +68,7 @@ function VatList({ data = [], getCurrentCurrency, loading = false }) {
       id: 4,
       field: 'updatedAt',
       headerName: 'CREATION DATE',
-      sortable: true,
+      sortable: false,
       flex: 1,
       minWidth: 100,
       headerAlign: 'center',
@@ -83,10 +82,18 @@ function VatList({ data = [], getCurrentCurrency, loading = false }) {
     },
   ];
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: theme?.palette?.primary?.contrastText,
+        border: `1px solid ${theme?.palette?.custom?.border}`,
+        borderRadius: '7px',
+        padding: '10px 20px',
+        marginTop: '30px',
+      }}
+    >
       <StyledTable
         columns={allColumns}
-        rows={data}
+        rows={data || []}
         getRowHeight={() => 'auto'}
         getRowId={(row) => row?._id}
         //   onRowClick={({ row }) => {

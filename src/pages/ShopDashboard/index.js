@@ -5,8 +5,8 @@ import { useState } from 'react';
 // project import
 import TabPanel from '../../components/Common/TabPanel';
 import Customers from '../../components/Shared/Customers';
+import Operations from '../../components/Shared/Operations';
 import Greeting from './Greeting';
-import Operations from './Operations';
 import Orders from './Orders';
 
 export default function ShopDashboard() {
