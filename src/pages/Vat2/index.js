@@ -1,6 +1,6 @@
 import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
@@ -26,6 +26,7 @@ const breadcrumbItems = [
   },
 ];
 function Vat2() {
+  const queryClient = useQueryClient();
   const [range, setRange] = useState({ ...dateRangeInit });
   const [range2, setRange2] = useState({ ...dateRangeInit });
   const { currentUser } = useGlobalContext();
@@ -77,7 +78,17 @@ function Vat2() {
 
   // pay vat
   // eslint-disable-next-line no-unused-vars
-  const payVatQuery = useMutation((data) => AXIOS.post(API_URL.SETTLE_ADMIN_VAT, data));
+  const payVatQuery = useMutation((data) => AXIOS.post(API_URL.SETTLE_ADMIN_VAT, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg('Successfully Paid!', 'success');
+        queryClient.invalidateQueries(API_URL.GET_ALL_ADMIN_VAT);
+      } else {
+        successMsg(data.message, 'warn');
+      }
+    },
+  });
 
   console.log(getAllTransaction?.data?.data?.summary);
   console.log(getAllTransaction?.data?.data?.transactions);

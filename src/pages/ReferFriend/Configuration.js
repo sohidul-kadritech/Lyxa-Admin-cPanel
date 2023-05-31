@@ -1,6 +1,7 @@
 import { Box, Button, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 // import StyledBox from '../Settings/Admin/Marketing/LoyaltySettings/InputBox';
+import { isNumber } from 'lodash';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import { successMsg } from '../../helpers/successMsg';
@@ -13,6 +14,8 @@ import { discountOptions, discountTypeOptions, durationOptions, typeList } from 
 
 function Configuration() {
   // eslint-disable-next-line no-unused-vars
+  const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  // eslint-disable-next-line no-unused-vars
   const [isConfirm, setIsConfirm] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [referralStatus, setReferralStatus] = useState(false);
@@ -22,6 +25,8 @@ function Configuration() {
   // eslint-disable-next-line no-unused-vars
   const [receiverReferralDiscount, setReceiverReferralDiscount] = useState(0);
   // eslint-disable-next-line no-unused-vars
+  const [tempDiscount, setTempDiscount] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [receiverReferralDiscountType, setReceiverReferralDiscountType] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [receiverReferralDuration, setReceiverReferralDuration] = useState(0);
@@ -30,6 +35,8 @@ function Configuration() {
 
   // eslint-disable-next-line no-unused-vars
   const [senderReferralDiscount, setSenderReferralDiscount] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [tempDiscount2, setTempDiscount2] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [senderReferralDiscountType, setSenderReferralDiscountType] = useState('');
   // eslint-disable-next-line no-unused-vars
@@ -94,13 +101,28 @@ function Configuration() {
     populate();
   }, [getReferFriendSettings?.data?.data?.referralSetting]);
 
-  const incrementHandler = (setValue) => {
-    setValue((prev) => prev + 1);
-  };
-  const decrementHandler = (setValue) => {
-    setValue((prev) => prev - 1);
-  };
+  // const incrementHandler = (setValue) => {
+  //   setValue((prev) => prev + 1);
+  // };
+  // const decrementHandler = (setValue) => {
+  //   setValue((prev) => prev - 1);
+  // };
 
+  const incrementHandler = (setValue) => {
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 1;
+      if (prev === '') return 1;
+      return prev;
+    });
+  };
+  // Handle decremented by one
+  const decrementHandler = (setValue) => {
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
+      if (prev === '' || prev <= 0) return 0;
+      return prev;
+    });
+  };
   // eslint-disable-next-line no-unused-vars
   const updateConfigurationQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_REFER_A_FRIEND_SETTINGS, data), {
     onSuccess: (data) => {
@@ -135,7 +157,6 @@ function Configuration() {
       receiver_referralDiscount: receiverReferralDiscount,
       receiver_referralMinimumOrderValue: receiverReferralMinimumOrderValue,
       receiver_referralDuration: receiverReferralDuration,
-      referralStatus: referralStatus ? 'active' : 'inactive',
       type,
     };
     updateConfigurationQuery.mutate(data);
@@ -148,17 +169,6 @@ function Configuration() {
       ) : (
         <>
           <Stack>
-            <InputBox
-              title="Referral Status"
-              intputType="status"
-              inputProps={{
-                checked: referralStatus,
-                onClick: () => {
-                  setTypeValidation(type, setType, typeList[8]);
-                  setReferralStatus(!referralStatus);
-                },
-              }}
-            />
             <StyledBox title="Sender">
               <Stack flexDirection="row" flexWrap="wrap" gap="10%">
                 <InputBox
@@ -172,13 +182,19 @@ function Configuration() {
                     //   items: categories,
                     onChange: (e) => {
                       setTypeValidation(type, setType, typeList[0]);
-                      setSenderReferralDiscountType(() => e.target.value);
+                      setSenderReferralDiscountType(() => {
+                        setTempDiscount((prev) => {
+                          setSenderReferralDiscount(prev);
+                          return senderReferralDiscount;
+                        });
+                        return e.target.value;
+                      });
                     },
                   }}
                 />
                 <InputBox
-                  title="Discount (%)"
-                  intputType="select"
+                  title={`Discount (${senderReferralDiscountType === 'fixed' ? getCurrentCurrency?.symbol : '%'})`}
+                  intputType={senderReferralDiscountType === 'percentage' ? 'select' : 'incrementButton'}
                   inputProps={{
                     name: 'discount',
                     placeholder: 'Discount',
@@ -190,9 +206,16 @@ function Configuration() {
                       setSenderReferralDiscount(() => e.target.value);
                     },
                   }}
+                  currentValue={senderReferralDiscount}
+                  setValue={setSenderReferralDiscount}
+                  incrementHandler={incrementHandler}
+                  decrementHandler={decrementHandler}
+                  setTypeValidation={() => {
+                    setTypeValidation(type, setType, typeList[1]);
+                  }}
                 />
                 <InputBox
-                  title="Minimum Order Value ($)"
+                  title={`Minimum Order Value (${getCurrentCurrency?.symbol})`}
                   intputType="incrementButton"
                   currentValue={senderReferralMinimumOrderValue}
                   setValue={setSenderReferralMinimumOrderValue}
@@ -232,13 +255,19 @@ function Configuration() {
                     //   items: categories,
                     onChange: (e) => {
                       setTypeValidation(type, setType, typeList[4]);
-                      setReceiverReferralDiscountType(() => e.target.value);
+                      setReceiverReferralDiscountType(() => {
+                        setTempDiscount2((prev) => {
+                          setReceiverReferralDiscount(prev);
+                          return receiverReferralDiscount;
+                        });
+                        return e.target.value;
+                      });
                     },
                   }}
                 />
                 <InputBox
-                  title="Discount (%)"
-                  intputType="select"
+                  title={`Discount (${receiverReferralDiscountType === 'fixed' ? getCurrentCurrency?.symbol : '%'})`}
+                  intputType={receiverReferralDiscountType === 'percentage' ? 'select' : 'incrementButton'}
                   inputProps={{
                     name: 'discountType',
                     placeholder: 'Discount',
@@ -252,9 +281,16 @@ function Configuration() {
                       });
                     },
                   }}
+                  currentValue={receiverReferralDiscount}
+                  setValue={setReceiverReferralDiscount}
+                  incrementHandler={incrementHandler}
+                  decrementHandler={decrementHandler}
+                  setTypeValidation={() => {
+                    setTypeValidation(type, setType, typeList[5]);
+                  }}
                 />
                 <InputBox
-                  title="Minimum Order Value ($)"
+                  title={`Minimum Order Value (${getCurrentCurrency?.symbol})`}
                   intputType="incrementButton"
                   currentValue={receiverReferralMinimumOrderValue}
                   setValue={setReceiverReferralMinimumOrderValue}
