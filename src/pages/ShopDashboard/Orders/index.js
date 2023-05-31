@@ -33,7 +33,8 @@ export default function Orders() {
         title="Orders with issues"
         api={Api.SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH}
         params={{
-          shopId: shop?._id,
+          id: shop?._id,
+          type: 'shop',
         }}
         generateData={(data = {}) =>
           generateGraphData(
