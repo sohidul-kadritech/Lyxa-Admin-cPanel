@@ -80,7 +80,7 @@ export default function Payout({ paymentDetails }) {
             // Shop-powered deliveries: 10%.
             // VAT inclusive"
             titleAmount={Math.abs(paymentDetails?.totalDropGet)}
-            titleAmountStatus={paymentDetails?.totalDropGet < 0 ? 'minus' : ''}
+            titleAmountStatus={paymentDetails?.totalDropGet > 0 ? 'minus' : ''}
             // isOpen={currentExpanedTab === 1}
             // onChange={(closed) => {
             //   seCurrentExpanedTab(closed ? 1 : -1);

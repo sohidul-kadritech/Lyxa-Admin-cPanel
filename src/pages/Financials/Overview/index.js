@@ -92,20 +92,20 @@ export default function Overview() {
           Math.round(
             shopDashboardQuery?.data?.data?.summary?.orderValue?.deliveryFee +
               // eslint-disable-next-line prettier/prettier
-              shopDashboardQuery?.data?.data?.summary?.toalShopProfile
+              shopDashboardQuery?.data?.data?.summary?.totalShopProfit
           ) || 0
         }`}
         Tag={
           <IncreaseDecreaseTag
             status={`${
-              Math.round(shopDashboardQuery?.data?.data?.summary?.toalShopProfitAvgInPercentage) >= 0
+              Math.round(shopDashboardQuery?.data?.data?.summary?.totalShopProfitAvgInPercentage) >= 0
                 ? 'increase'
                 : 'decrement'
             }`}
             amount={`${
               Math.round(
                 // eslint-disable-next-line prettier/prettier
-                Math.abs(shopDashboardQuery?.data?.data?.summary?.toalShopProfitAvgInPercentage)
+                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalShopProfitAvgInPercentage)
               ) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
@@ -116,18 +116,18 @@ export default function Overview() {
       />
       <InfoCard
         title="Orders"
-        value={`${shopDashboardQuery?.data?.data?.summary?.totalDeliverOrder || 0}`}
+        value={`${shopDashboardQuery?.data?.data?.summary?.totalDeliveredOrder || 0}`}
         Tag={
           <IncreaseDecreaseTag
             status={
-              Math.round(shopDashboardQuery?.data?.data?.summary?.totalDeliverOrderAvgInPercentage) >= 0
+              Math.round(shopDashboardQuery?.data?.data?.summary?.totalDeliveredOrderAvgInPercentage) >= 0
                 ? 'increase'
                 : 'decrement'
             }
             amount={`${
               Math.round(
                 // eslint-disable-next-line prettier/prettier
-                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalDeliverOrderAvgInPercentage)
+                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalDeliveredOrderAvgInPercentage)
               ) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
