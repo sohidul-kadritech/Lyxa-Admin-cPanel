@@ -32,7 +32,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
 
   // parent categories query
   const categoriesQuery = useQuery(
-    ['single-shop-category', { shopId: shop?._id }],
+    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
         params: {

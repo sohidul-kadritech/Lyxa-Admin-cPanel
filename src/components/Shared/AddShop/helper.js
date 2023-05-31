@@ -37,7 +37,6 @@ export const statusOptions = [
 
 export const getShopEditData = (shop) => {
   const clone = deepClone(shop);
-
   return {
     ...clone,
     shopAddress: clone?.address,
@@ -224,9 +223,10 @@ export const createEditShopData = async (shopData) => {
     bank_address: shopData?.bank_address,
     bank_postal_code: shopData?.bank_postal_code,
     account_swift: shopData?.account_swift,
-    shopAddress: {
-      ...shopData?.address,
-    },
+    shopAddress: shopData?.shopAddress,
+    // shopAddress: {
+    //   ...shopData?.address,
+    // },
     shopLogo,
     shopBanner,
   };

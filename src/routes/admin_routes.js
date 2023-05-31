@@ -98,6 +98,7 @@ import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndCondi
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
+import Vat2 from '../pages/Vat2';
 
 export const admin_routes = [
   // dashboard
@@ -112,7 +113,8 @@ export const admin_routes = [
   { path: '/orders/list/flagged', component: ButlerFlaggedOrder },
 
   // vat
-  { path: '/vat', component: Vat },
+  { path: '/vat2', component: Vat },
+  { path: '/vat', component: Vat2 },
   { path: '/riders', component: RiderList },
   { path: `/riders/:riderId`, component: RiderProfile },
 
@@ -215,7 +217,7 @@ export const admin_routes = [
   { path: '/settings/app-settings', component: Appsettings2 },
   { path: '/admin/settings2', component: AdminSettings },
   { path: '/admin/percentage-settings-history', component: AdminLog },
-  { path: '/admin/refer-friend', component: ReferFriend },
+  { path: '/settings/refer-friend', component: ReferFriend },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
