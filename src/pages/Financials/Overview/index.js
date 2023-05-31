@@ -42,11 +42,19 @@ export default function Overview() {
   const shopDashboardQuery = useQuery(
     [
       Api.GET_SHOP_DASHBOARD_SUMMARY,
-      { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end, shopId: shop?._id },
+      {
+        startDate: moment(paymentDetailsRange.start).format('YYYY-MM-DD'),
+        endDate: moment(paymentDetailsRange.end).format('YYYY-MM-DD'),
+        shopId: shop?._id,
+      },
     ],
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_SUMMARY, {
-        params: { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end, shopId: shop?._id },
+        params: {
+          startDate: moment(paymentDetailsRange.start).format('YYYY-MM-DD'),
+          endDate: moment(paymentDetailsRange.end).format('YYYY-MM-DD'),
+          shopId: shop?._id,
+        },
       })
   );
 
