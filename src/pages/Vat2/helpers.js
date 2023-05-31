@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const calculatePaidVat = (total, unpaid) => total - unpaid;
 
 // eslint-disable-next-line prettier/prettier
@@ -15,3 +17,8 @@ export const vatTrxsAmountFilterOptions = [
   { label: 'Greater Then', value: '>' },
   { label: 'Equal', value: '=' },
 ];
+
+export const dateRangeInit = {
+  end: moment().format('YYYY-MM-DD'),
+  start: moment().subtract(30, 'd').format('YYYY-MM-DD'),
+};

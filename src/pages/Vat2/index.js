@@ -10,9 +10,9 @@ import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
-import { dateRangeInit, sortOptions } from '../Faq2/helpers';
+import { sortOptions } from '../Faq2/helpers';
 import ModalContainer from '../ServiceZone/ModalContainer';
-import { calculatePaidVat, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
+import { calculatePaidVat, dateRangeInit, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
 import VatList from './vatList';
 
 const breadcrumbItems = [
@@ -357,7 +357,7 @@ function Vat2() {
           </Box>
 
           <Stack flexDirection="row" justifyContent="flex-end" marginTop="30px">
-            <Button variant="contained" color="primary" size="small" onClick={payVat}>
+            <Button variant="contained" color="primary" size="small" onClick={payVat} disabled={payVatQuery?.isLoading}>
               Pay
             </Button>
           </Stack>
