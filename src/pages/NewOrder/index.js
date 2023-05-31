@@ -13,17 +13,16 @@ import AXIOS from '../../network/axios';
 import OrderTable from './OrderTable';
 import PageSkeleton from './PageSkeleton';
 import SearchBar from './Searchbar';
-import { fiterOrders, getQueryParamsInit } from './helpers';
+import { getQueryParamsInit } from './helpers';
 
 const orderFilterToTabValueMap = {
   0: 'ongoing',
   1: 'delivered',
-  2: 'incomplete',
+  2: 'cancelled',
 };
 
 export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
-
   const [totalPage, setTotalPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -51,6 +50,7 @@ export default function NewOrders({ showFor }) {
         value={currentTab}
         onChange={(event, newValue) => {
           setCurrentTab(newValue);
+          setQueryParams((prev) => ({ ...prev, type: orderFilterToTabValueMap[newValue], page: 1 }));
         }}
         sx={{
           paddingBottom: '30px',
@@ -69,7 +69,7 @@ export default function NewOrders({ showFor }) {
       {ordersQuery.isLoading && <PageSkeleton />}
       {!ordersQuery.isLoading && (
         <OrderTable
-          orders={fiterOrders(ordersQuery?.data?.data.orders, orderFilterToTabValueMap[currentTab])}
+          orders={ordersQuery?.data?.data.orders}
           orderFilter={orderFilterToTabValueMap[currentTab]}
           onRowClick={({ row }) => {
             setCurrentOrder(row);
