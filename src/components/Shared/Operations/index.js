@@ -52,8 +52,8 @@ export default function Operations({ viewUserType = 'shop' }) {
     [
       Api.GET_SHOP_DASHBOARD_OPERATIONS,
       {
-        startDate: range.start,
-        endDate: range.end,
+        startDate: moment(range.start).format('YYYY-MM-DD'),
+        endDate: moment(range.end).format('YYYY-MM-DD'),
         id: currentUser[viewUserType]?._id,
         type: viewUserType,
       },
@@ -61,8 +61,8 @@ export default function Operations({ viewUserType = 'shop' }) {
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
         params: {
-          startDate: range.start,
-          endDate: range.end,
+          startDate: moment(range.start).format('YYYY-MM-DD'),
+          endDate: moment(range.end).format('YYYY-MM-DD'),
           id: currentUser[viewUserType]?._id,
           type: viewUserType,
         },
@@ -131,7 +131,7 @@ export default function Operations({ viewUserType = 'shop' }) {
           lg={3}
           valueSx={{ color: `${theme.palette.error.main}!important` }}
         >
-          {query?.data?.data?.totalDownTime?.hours !== 0 && query?.data?.data?.totalDownTime?.minutes !== 0 ? (
+          {query?.data?.data?.totalDownTime?.hours !== 0 || query?.data?.data?.totalDownTime?.minutes !== 0 ? (
             <Stack gap={2.5}>
               {query?.data?.data?.dateWiseDowntime.map((downTime, i) => {
                 if (downTime?.hours === 0 && downTime?.minutes === 0) return null;

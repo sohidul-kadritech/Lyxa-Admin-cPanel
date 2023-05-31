@@ -7,7 +7,7 @@ import Banking from './Banking';
 import Invoices from './Invoices';
 import Overview from './Overview';
 
-export default function Financials() {
+export default function Financials({ viewUserType = 'shop' }) {
   const [currentTab, setCurrentTab] = useState(0);
   const store = useGlobalContext();
   console.log(store);
@@ -23,8 +23,9 @@ export default function Financials() {
       >
         <Tab label="Overview" />
         <Tab label="Invoices" />
-        <Tab label="Banking" />
+        {viewUserType === 'shop' && <Tab label="Banking" />}
       </Tabs>
+
       <TabPanel
         index={0}
         value={currentTab}
@@ -32,8 +33,9 @@ export default function Financials() {
           padding: 0,
         }}
       >
-        <Overview />
+        <Overview viewUserType={viewUserType} />
       </TabPanel>
+
       <TabPanel
         index={1}
         value={currentTab}
@@ -43,15 +45,18 @@ export default function Financials() {
       >
         <Invoices />
       </TabPanel>
-      <TabPanel
-        index={2}
-        value={currentTab}
-        sx={{
-          paddingTop: 7.5,
-        }}
-      >
-        <Banking />
-      </TabPanel>
+
+      {viewUserType === 'shop' && (
+        <TabPanel
+          index={2}
+          value={currentTab}
+          sx={{
+            paddingTop: 7.5,
+          }}
+        >
+          <Banking />
+        </TabPanel>
+      )}
     </Box>
   );
 }

@@ -47,8 +47,8 @@ export default function Customers({ viewUserType }) {
     [
       Api.SHOP_DASHBOARD_CUSTOMER_INFO,
       {
-        endDate: range.end,
-        startDate: range.start,
+        endDate: moment(range.end).format('YYYY-MM-DD'),
+        startDate: moment(range.start).format('YYYY-MM-DD'),
         type: viewUserType,
         id: currentUser[viewUserType]?._id,
       },
@@ -56,8 +56,8 @@ export default function Customers({ viewUserType }) {
     () =>
       AXIOS.get(Api.SHOP_DASHBOARD_CUSTOMER_INFO, {
         params: {
-          endDate: range.end,
-          startDate: range.start,
+          endDate: moment(range.end).format('YYYY-MM-DD'),
+          startDate: moment(range.start).format('YYYY-MM-DD'),
           type: viewUserType,
           id: currentUser[viewUserType]?._id,
         },

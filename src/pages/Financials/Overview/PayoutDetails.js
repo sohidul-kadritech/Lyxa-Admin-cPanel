@@ -2,13 +2,15 @@
 import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
+// import StyledBox from '../../StyledCharts/StyledBox';
+
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
 import PriceItem from './PriceItem';
 
 export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
-  console.log(paymentDetails);
+  // console.log(paymentDetails);
 
   console.log('currentExpandTab', currentExpanedTab);
 
@@ -170,13 +172,11 @@ export default function Payout({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={Math.abs(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalShopProfit)}
+            titleAmount={Math.abs(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalProfit)}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
-            titleAmountStatus={
-              paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalShopProfit < 0 ? 'minus' : ''
-            }
+            titleAmountStatus={paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalProfit < 0 ? 'minus' : ''}
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);
@@ -187,22 +187,22 @@ export default function Payout({ paymentDetails }) {
           >
             {Math.abs(
               paymentDetails?.orderValue?.deliveryFee +
-                paymentDetails?.totalShopProfit -
+                paymentDetails?.totalProfit -
                 // eslint-disable-next-line prettier/prettier
-                paymentDetails?.totalShopUnsettle
+                paymentDetails?.totalUnsettle
             ) > 0 && (
               <PriceItem
                 title="Paid"
                 amount={Math.abs(
                   paymentDetails?.orderValue?.deliveryFee +
-                    paymentDetails?.totalShopProfit -
+                    paymentDetails?.totalProfit -
                     // eslint-disable-next-line prettier/prettier
-                    paymentDetails?.totalShopUnsettle
+                    paymentDetails?.totalUnsettle
                 )}
                 amountStatus={
                   paymentDetails?.orderValue?.deliveryFee +
-                    paymentDetails?.totalShopProfit -
-                    paymentDetails?.totalShopUnsettle <
+                    paymentDetails?.totalProfit -
+                    paymentDetails?.totalUnsettle <
                   0
                     ? 'minus'
                     : ''
@@ -210,11 +210,11 @@ export default function Payout({ paymentDetails }) {
               />
             )}
 
-            {Math.abs(paymentDetails?.totalShopUnsettle) > 0 && (
+            {Math.abs(paymentDetails?.totalUnsettle) > 0 && (
               <PriceItem
                 title="Unpaid"
-                amount={Math.abs(paymentDetails?.totalShopUnsettle)}
-                amountStatus={paymentDetails?.totalShopUnsettle < 0 ? 'minus' : ''}
+                amount={Math.abs(paymentDetails?.totalUnsettle)}
+                amountStatus={paymentDetails?.totalUnsettle < 0 ? 'minus' : ''}
               />
             )}
           </DetailsAccordion>

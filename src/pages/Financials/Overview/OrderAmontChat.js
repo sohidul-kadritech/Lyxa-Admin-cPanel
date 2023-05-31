@@ -15,9 +15,11 @@ const dateRangeItit = {
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
 
-export default function OrderAmountChart({ viewUserType = 'shop' }) {
+export default function OrderAmountChart({ viewUserType }) {
   const [range, setRange] = useState({ ...dateRangeItit });
   const { currentUser } = useGlobalContext();
+
+  console.log({ viewUserType });
 
   // order amount graph
   const orderAmountGraphQuery = useQuery(
