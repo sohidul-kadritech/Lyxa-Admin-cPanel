@@ -253,7 +253,10 @@ function ShopInfo() {
       // address: { address, latitude, longitude },
     },
   } = useSelector((state) => state.Login);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   return (
     <InfoWrapper>

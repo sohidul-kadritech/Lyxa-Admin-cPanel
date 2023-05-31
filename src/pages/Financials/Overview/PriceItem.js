@@ -1,8 +1,10 @@
 import { Stack, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useGlobalContext } from '../../../context';
 
 export default function PriceItem({ title, amount, amountStatus }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between">

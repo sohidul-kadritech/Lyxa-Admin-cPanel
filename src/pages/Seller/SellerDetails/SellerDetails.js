@@ -21,6 +21,7 @@ import InfoTwo from '../../../components/InfoTwo';
 import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
 import ShopTable from '../../../components/ShopTable';
 import { callApi } from '../../../components/SingleApiCall';
+import { useGlobalContext } from '../../../context';
 import { MAP_URL, SINGLE_SELLER } from '../../../network/Api';
 import { getAllShop } from '../../../store/Shop/shopAction';
 
@@ -32,7 +33,10 @@ function SellerDetails() {
 
   const { paging, hasNextPage, hasPreviousPage, currentPage } = useSelector((state) => state.shopReducer);
   const { account_type, adminType } = useSelector((store) => store.Login.admin);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   const [seller, setSeller] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);

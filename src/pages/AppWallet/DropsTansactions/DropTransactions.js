@@ -9,6 +9,7 @@ import AppPagination from '../../../components/AppPagination';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import TransactionsCard from '../../../components/TransactionsCard';
+import { useGlobalContext } from '../../../context';
 import {
   getDropTrx,
   updateDeliveryTrxEndDate,
@@ -17,7 +18,10 @@ import {
 
 function DropTransactions() {
   const history = useHistory();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   const { loading, dropTrxs, dropTrxStartDate, dropTrxEndDate, paging, hasNextPage, currentPage, hasPreviousPage } =
     useSelector((state) => state.appWalletReducer);

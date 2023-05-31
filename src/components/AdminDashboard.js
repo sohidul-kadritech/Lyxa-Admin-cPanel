@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react';
-import { useSelector } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Card, CardBody, Col, Row } from 'reactstrap';
 import GlobalWrapper from './GlobalWrapper';
@@ -27,12 +26,15 @@ import cashInHandIcon from '../assets/images/dashboard/cash-in-hand.png';
 import riderIcon from '../assets/images/dashboard/rider.png';
 import timerIcon from '../assets/images/dashboard/timer.png';
 import vatIcon from '../assets/images/dashboard/vat.png';
+import { useGlobalContext } from '../context';
 
 // const GraphInfo = lazy(() => import('./GraphInfo'));
 // const TopSummery = lazy(() => import('./TopSummery'));
 
 function AdminDashboard({ summary, topActivity }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   const topSummaryData = [
     {

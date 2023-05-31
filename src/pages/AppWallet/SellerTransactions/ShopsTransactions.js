@@ -13,65 +13,66 @@ import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import { useGlobalContext } from '../../../context';
-import store from '../../../store';
 import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate } from '../../../store/appWallet/appWalletAction';
 
-const state = store.getState();
-const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
-
-const columns = [
-  {
-    label: 'ID',
-    field: 'id',
-    sort: 'asc',
-    width: 150,
-  },
-  {
-    label: 'Shop',
-    field: 'shop',
-    sort: 'asc',
-    width: 270,
-  },
-  {
-    label: 'Orders',
-    field: 'orders',
-    sort: 'asc',
-    width: 200,
-  },
-  {
-    label: `Order Amount (${currency})`,
-    field: 'orderAmount',
-    sort: 'asc',
-    width: 100,
-  },
-  {
-    label: `Delivery fee (${currency})`,
-    field: 'deliveryFee',
-    sort: 'asc',
-    width: 150,
-  },
-  {
-    label: `Lyxa earning (${currency})`,
-    field: 'dropEarning',
-    sort: 'asc',
-    width: 100,
-  },
-  {
-    label: `Unsettled Amount (${currency})`,
-    field: 'unsettledAmount',
-    sort: 'asc',
-    width: 100,
-  },
-  {
-    label: `Shop Earning (${currency})`,
-    field: 'shopEarning',
-    sort: 'asc',
-    width: 100,
-  },
-];
+// const state = store.getState();
+// const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
 
 function ShopsTransactions() {
   const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = useSelector((state) => state.appWalletReducer);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
+
+  const columns = [
+    {
+      label: 'ID',
+      field: 'id',
+      sort: 'asc',
+      width: 150,
+    },
+    {
+      label: 'Shop',
+      field: 'shop',
+      sort: 'asc',
+      width: 270,
+    },
+    {
+      label: 'Orders',
+      field: 'orders',
+      sort: 'asc',
+      width: 200,
+    },
+    {
+      label: `Order Amount (${currency})`,
+      field: 'orderAmount',
+      sort: 'asc',
+      width: 100,
+    },
+    {
+      label: `Delivery fee (${currency})`,
+      field: 'deliveryFee',
+      sort: 'asc',
+      width: 150,
+    },
+    {
+      label: `Lyxa earning (${currency})`,
+      field: 'dropEarning',
+      sort: 'asc',
+      width: 100,
+    },
+    {
+      label: `Unsettled Amount (${currency})`,
+      field: 'unsettledAmount',
+      sort: 'asc',
+      width: 100,
+    },
+    {
+      label: `Shop Earning (${currency})`,
+      field: 'shopEarning',
+      sort: 'asc',
+      width: 100,
+    },
+  ];
 
   const { search } = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);

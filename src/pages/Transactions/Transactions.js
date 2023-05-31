@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import React, { useEffect } from 'react';
@@ -13,6 +12,7 @@ import CircularLoader from '../../components/CircularLoader';
 import Breadcrumb from '../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import Search from '../../components/Search';
+import { useGlobalContext } from '../../context';
 import {
   getAllTransctions,
   updateAllTrxAccountType,
@@ -52,7 +52,9 @@ function Transactions() {
       callTransList(true);
     }
   }, [trxSortByKey, trxSearchKey, trxAccountType]);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   const updateTrxType = (trx) => {
     let newType = null;

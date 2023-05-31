@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 
 import Lightbox from 'react-image-lightbox';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 import { updateProductStatus } from '../store/Product/productAction';
@@ -11,11 +11,12 @@ import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
 function ProductTable({ products, loading }) {
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
   const history = useHistory();
   const dispatch = useDispatch();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const currency = general?.currency?.code?.toUpperCase();
 
   // eslint-disable-next-line no-unused-vars
   const [selectedImg, setSelectedImg] = useState(null);

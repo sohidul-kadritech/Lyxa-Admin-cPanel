@@ -1,5 +1,4 @@
 import React, { lazy, Suspense } from 'react';
-import { useSelector } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import earningFlowIcon from '../assets/images/dashboard/earning-flow.png';
 import moneyExchangeIcon from '../assets/images/dashboard/money-exchange.png';
@@ -17,10 +16,11 @@ import { useGlobalContext } from '../context';
 const GraphInfo = lazy(() => import('./GraphInfo'));
 
 function ShopDashboard({ summary }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   // const { haveOwnDeliveryBoy } = useSelector((store) => store.Login.admin);
   // console.log(haveOwnDeliveryBoy);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+  const currency = general?.currency?.code;
   const { shop } = currentUser;
 
   let topSummaryData = [

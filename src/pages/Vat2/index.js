@@ -28,7 +28,7 @@ const breadcrumbItems = [
 function Vat2() {
   const [range, setRange] = useState({ ...dateRangeInit });
   const [range2, setRange2] = useState({ ...dateRangeInit });
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   console.log(currentUser);
   const [sort, setSort] = useState('asc');
   // eslint-disable-next-line no-unused-vars
@@ -41,7 +41,8 @@ function Vat2() {
   // eslint-disable-next-line no-unused-vars
   const [adminId, setAdminId] = useState();
   const [open, setOpen] = useState(false);
-  const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  // const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  const getCurrentCurrency = general?.currency;
   const theme = useTheme();
   // get all admins here
   const getAllAdminQuery = useQuery([API_URL.GET_ALL_ADMIN], () => AXIOS.get(API_URL.GET_ALL_ADMIN));
@@ -72,7 +73,7 @@ function Vat2() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   // pay vat
@@ -245,7 +246,7 @@ function Vat2() {
               {calculatePaidVat(
                 getAllTransaction?.data?.data?.summary?.totalVat,
                 // eslint-disable-next-line prettier/prettier
-                getAllTransaction?.data?.data?.summary?.totalUnsettleVat,
+                getAllTransaction?.data?.data?.summary?.totalUnsettleVat
               ) || 0}
             </Typography>
           </Box>
