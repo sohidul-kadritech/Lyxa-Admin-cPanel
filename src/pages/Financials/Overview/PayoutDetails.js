@@ -97,39 +97,38 @@ export default function Payout({ paymentDetails }) {
           />
 
           {/* Other payments */}
-          {paymentDetails?.freeDeliveryShopCut > 0 ||
-            (paymentDetails?.freeDeliveryShopCut <= 0 && (
-              <DetailsAccordion
-                title="Other Payments"
-                tooltip="Fee for Lyxa-powered deliveries: 20%
+          {(paymentDetails?.freeDeliveryShopCut > 0 || paymentDetails?.totalFeaturedAmount > 0) && (
+            <DetailsAccordion
+              title="Other Payments"
+              tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
-                titleAmount={paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount}
-                titleAmountStatus={`${
-                  paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''
-                }`}
-                isOpen={currentExpanedTab === 2}
-                onChange={(closed) => {
-                  seCurrentExpanedTab(closed ? 2 : -1);
-                }}
-              >
-                {Math.round(Math.abs(paymentDetails?.freeDeliveryShopCut)) > 0 && (
-                  <PriceItem
-                    title="Promotion: free delivery"
-                    amount={paymentDetails?.freeDeliveryShopCut}
-                    amountStatus={`${Math.round(paymentDetails?.freeDeliveryShopCut) < 0 ? 'minus' : ''}`}
-                  />
-                )}
+              titleAmount={paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount}
+              titleAmountStatus={`${
+                paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''
+              }`}
+              isOpen={currentExpanedTab === 2}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 2 : -1);
+              }}
+            >
+              {Math.abs(paymentDetails?.freeDeliveryShopCut) > 0 && (
+                <PriceItem
+                  title="Promotion: free delivery"
+                  amount={paymentDetails?.freeDeliveryShopCut}
+                  amountStatus={`${paymentDetails?.freeDeliveryShopCut < 0 ? 'minus' : ''}`}
+                />
+              )}
 
-                {Math.round(Math.abs(paymentDetails?.totalFeaturedAmount)) > 0 && (
-                  <PriceItem
-                    title="Featured"
-                    amount={paymentDetails?.totalFeaturedAmount}
-                    amountStatus={`${Math.round(paymentDetails?.totalFeaturedAmount) < 0 ? 'minus' : ''}`}
-                  />
-                )}
-              </DetailsAccordion>
-            ))}
+              {Math.abs(paymentDetails?.totalFeaturedAmount) > 0 && (
+                <PriceItem
+                  title="Featured"
+                  amount={paymentDetails?.totalFeaturedAmount}
+                  amountStatus={`${paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''}`}
+                />
+              )}
+            </DetailsAccordion>
+          )}
 
           {/* delivery */}
           {paymentDetails?.orderValue?.deliveryFee > 0 && (
@@ -171,12 +170,12 @@ export default function Payout({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={Math.abs(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile)}
+            titleAmount={Math.abs(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalShopProfit)}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
             titleAmountStatus={
-              paymentDetails?.orderValue?.deliveryFee + paymentDetails?.toalShopProfile < 0 ? 'minus' : ''
+              paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalShopProfit < 0 ? 'minus' : ''
             }
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
@@ -188,21 +187,21 @@ export default function Payout({ paymentDetails }) {
           >
             {Math.abs(
               paymentDetails?.orderValue?.deliveryFee +
-                paymentDetails?.toalShopProfile -
+                paymentDetails?.totalShopProfit -
                 // eslint-disable-next-line prettier/prettier
-                paymentDetails?.totalShopUnsettle,
+                paymentDetails?.totalShopUnsettle
             ) > 0 && (
               <PriceItem
                 title="Paid"
                 amount={Math.abs(
                   paymentDetails?.orderValue?.deliveryFee +
-                    paymentDetails?.toalShopProfile -
+                    paymentDetails?.totalShopProfit -
                     // eslint-disable-next-line prettier/prettier
-                    paymentDetails?.totalShopUnsettle,
+                    paymentDetails?.totalShopUnsettle
                 )}
                 amountStatus={
                   paymentDetails?.orderValue?.deliveryFee +
-                    paymentDetails?.toalShopProfile -
+                    paymentDetails?.totalShopProfit -
                     paymentDetails?.totalShopUnsettle <
                   0
                     ? 'minus'

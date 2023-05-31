@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
+import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MarketingSpentChart from './MarketingSpentChart';
@@ -34,16 +35,21 @@ export function calculateDateDifference(date1, date2, unit) {
 export default function Overview() {
   const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency);
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
 
   // summary
   const shopDashboardQuery = useQuery(
-    ['shop-dashboard', { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end }],
+    [
+      Api.GET_SHOP_DASHBOARD_SUMMARY,
+      { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end, shopId: shop?._id },
+    ],
     () =>
       AXIOS.get(Api.GET_SHOP_DASHBOARD_SUMMARY, {
-        params: { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end },
-        // eslint-disable-next-line prettier/prettier
-      }),
+        params: { startDate: paymentDetailsRange.start, endDate: paymentDetailsRange.end, shopId: shop?._id },
+      })
   );
+
   console.log('shopDashBoard: ', shopDashboardQuery.data?.data?.summary);
   // order amount graph
   const marketingSpentAmount =
@@ -86,7 +92,7 @@ export default function Overview() {
           Math.round(
             shopDashboardQuery?.data?.data?.summary?.orderValue?.deliveryFee +
               // eslint-disable-next-line prettier/prettier
-              shopDashboardQuery?.data?.data?.summary?.toalShopProfile,
+              shopDashboardQuery?.data?.data?.summary?.toalShopProfile
           ) || 0
         }`}
         Tag={
@@ -99,7 +105,7 @@ export default function Overview() {
             amount={`${
               Math.round(
                 // eslint-disable-next-line prettier/prettier
-                Math.abs(shopDashboardQuery?.data?.data?.summary?.toalShopProfitAvgInPercentage),
+                Math.abs(shopDashboardQuery?.data?.data?.summary?.toalShopProfitAvgInPercentage)
               ) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
@@ -121,7 +127,7 @@ export default function Overview() {
             amount={`${
               Math.round(
                 // eslint-disable-next-line prettier/prettier
-                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalDeliverOrderAvgInPercentage),
+                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalDeliverOrderAvgInPercentage)
               ) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
@@ -142,10 +148,7 @@ export default function Overview() {
                 : 'decrement'
             }
             amount={`${
-              Math.round(
-                // eslint-disable-next-line prettier/prettier
-                Math.abs(shopDashboardQuery?.data?.data?.summary?.totalMarketingSpentAvgInPercentage),
-              ) || 0
+              Math.round(Math.abs(shopDashboardQuery?.data?.data?.summary?.totalMarketingSpentAvgInPercentage)) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }
@@ -164,6 +167,7 @@ export default function Overview() {
             amount={shopDashboardQuery?.data?.data?.summary?.orderValue?.totalRewardAmount}
           />
           <PriceItem title="Free delivery" amount={shopDashboardQuery?.data?.data?.summary?.freeDeliveryShopCut} />
+          <PriceItem title="Featured" amount={shopDashboardQuery?.data?.data?.summary?.totalFeaturedAmount} />
         </Stack>
       </InfoCard>
       <PayoutDetails paymentDetails={shopDashboardQuery?.data?.data?.summary} />
