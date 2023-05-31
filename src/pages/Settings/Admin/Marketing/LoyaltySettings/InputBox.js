@@ -45,7 +45,7 @@ export default function StyledBox({
             value={inputValue}
             type={inputType}
             sx={{
-              width: '74px',
+              width: '120px',
               '& input': {
                 textAlign: 'center',
               },

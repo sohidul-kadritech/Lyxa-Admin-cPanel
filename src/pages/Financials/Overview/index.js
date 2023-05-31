@@ -107,9 +107,7 @@ export default function Overview({ viewUserType }) {
       <InfoCard
         console={console.log(query?.data?.data)}
         title="Total Profit"
-        value={`${currency?.symbol_native} ${
-          Math.round(query?.data?.data?.summary?.orderValue?.deliveryFee + query?.data?.data?.summary?.totalProfit) || 0
-        }`}
+        value={`${currency?.symbol_native} ${(query?.data?.data?.summary?.totalProfit || 0).toFixed(2)}`}
         Tag={
           <IncreaseDecreaseTag
             status={`${
@@ -144,7 +142,7 @@ export default function Overview({ viewUserType }) {
       <InfoCard
         title="Marketing Spent"
         isDropdown
-        value={`${currency?.symbol_native} ${marketingSpentAmount || 0}`}
+        value={`${currency?.symbol_native} ${(marketingSpentAmount || 0).toFixed(2)}`}
         Tag={
           <IncreaseDecreaseTag
             status={

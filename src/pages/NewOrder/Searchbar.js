@@ -11,7 +11,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
-        setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
+        setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
     []
   );
@@ -35,6 +35,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           setQueryParams((prev) => ({
             ...prev,
             startDate: e._d,
+            page: 1,
           }));
         }}
       />
@@ -48,6 +49,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           setQueryParams((prev) => ({
             ...prev,
             endDate: e._d,
+            page: 1,
           }));
         }}
       />
@@ -62,7 +64,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          setQueryParams((prev) => ({ ...prev, sortBy: e.target.value }));
+          setQueryParams((prev) => ({ ...prev, sortBy: e.target.value, page: 1 }));
         }}
       />
     </Stack>

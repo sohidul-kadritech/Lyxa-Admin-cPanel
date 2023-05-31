@@ -7,9 +7,10 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
-import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import CameraIconButton from '../../components/Common/CameraIconButton';
+import InfoListItem from '../../components/Common/InfoListItem';
 import PageTop from '../../components/Common/PageTop';
+import Rating from '../../components/Common/Rating';
 import TabPanel from '../../components/Common/TabPanel';
 import AddShop from '../../components/Shared/AddShop';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
@@ -97,6 +98,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
     shopMutation.mutate({ ...shopData });
   };
+
+  // console.log(shop);
 
   return (
     <Box>
@@ -204,105 +207,105 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                 </Box>
               </Box>
               <Box sx={{ marginLeft: '20px', marginTop: '9px' }}>
-                <Typography
-                  sx={{
-                    color: theme.palette.text.secondary2,
-                    fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '20px' },
-                    fontWeight: 500,
-                  }}
-                >
-                  Lunch, Dinner, Cafes, Breakfast . $$
-                </Typography>
-                <Box>
+                <Stack direction="row" alignItems="center">
+                  <InfoListItem
+                    isFirst
+                    title={shop?.tags?.join(',')}
+                    titleSx={{
+                      color: 'text.secondary2',
+                    }}
+                  />
+                  <InfoListItem
+                    title={new Array(shop?.expensive)?.fill(0)?.reduce((acc) => `${acc}$`, '')}
+                    dotColor="text.secondary2"
+                    titleSx={{
+                      color: 'text.secondary2',
+                    }}
+                  />
+                </Stack>
+                <Stack direction="row" alignItems="center" gap={1} pt={2.5}>
+                  <Rating
+                    amount={shop?.rating}
+                    titleSx={{
+                      fontSize: '18px',
+                      fontWeight: 500,
+                    }}
+                  />
+                  <Typography variant="inherit" fontSize="18px" sx={{ fontWeight: 400, color: 'text.secondary2' }}>
+                    ({shop?.reviews?.length > 100 ? '100+' : shop?.reviews?.length} reviews)
+                  </Typography>
+                </Stack>
+                <Stack flexDirection="row" gap="16px" sx={{ marginTop: '16px' }}>
                   <Box
                     sx={{
-                      color: '#417C45',
-                      marginTop: '14px',
-                      fontSize: { xs: '12px', sm: '12px', md: '14px', lg: '16px' },
+                      display: 'flex',
+                      alignItems: 'center',
+                      alignContents: 'center',
+                      gap: '6px',
+                      backgroundColor: '#F7F9FA',
+                      color: '#3F3D56',
+                      padding: '10px 16px',
+                      borderRadius: '7px',
                     }}
                   >
-                    {' '}
-                    <StarIcon /> {/* this review data are dummy */}
-                    <Typography variant="span" sx={{ fontWeight: 600 }}>
-                      4.2
-                    </Typography>{' '}
-                    {/* this review data are dummy */}
-                    <Typography variant="span" sx={{ fontWeight: 400, color: theme.palette.text.secondary2 }}>
-                      (100+ Reviews)
+                    <AccessTime sx={{ width: '17px', height: '17px' }} />
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }} console={console.log(shop)}>
+                      {shop?.avgOrderDeliveryTime < 30
+                        ? '30-40'
+                        : `${Math.ceil(shop?.avgOrderDeliveryTime)}-${Math.ceil(shop?.avgOrderDeliveryTime) + 10}`}
+                      min
                     </Typography>
                   </Box>
-                  <Stack flexDirection="row" gap="16px" sx={{ marginTop: '20px' }}>
+                  {shop?.rewardSystem !== 'off' && (
                     <Box
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
                         alignContents: 'center',
                         gap: '6px',
-                        backgroundColor: '#F7F9FA',
-                        color: '#3F3D56',
+                        backgroundColor: '#EFF8FA',
+                        color: '#15BFCA',
                         padding: '10px 16px',
                         borderRadius: '7px',
                       }}
                     >
-                      <AccessTime sx={{ width: '17px', height: '17px' }} />
-                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }} console={console.log(shop)}>
-                        {shop?.avgOrderDeliveryTime < 30
-                          ? '30-40'
-                          : `${Math.ceil(shop?.avgOrderDeliveryTime)}-${Math.ceil(shop?.avgOrderDeliveryTime) + 10}`}
-                        min
-                      </Typography>
+                      <RewardIcon style={{ width: '17px', height: '17px' }} />{' '}
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Rewards</Typography>
                     </Box>
-                    {shop?.rewardSystem !== 'off' && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          alignContents: 'center',
-                          gap: '6px',
-                          backgroundColor: '#EFF8FA',
-                          color: '#15BFCA',
-                          padding: '10px 16px',
-                          borderRadius: '7px',
-                        }}
-                      >
-                        <RewardIcon style={{ width: '17px', height: '17px' }} />{' '}
-                        <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Rewards</Typography>
-                      </Box>
-                    )}
-                    {shop?.freeDelivery && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          alignContents: 'center',
-                          gap: '6px',
-                          backgroundColor: '#5BBD4E12',
-                          color: '#5BBD4E',
-                          padding: '10px 16px',
-                          borderRadius: '7px',
-                        }}
-                      >
-                        <DeliveryIcon style={{ width: '17px', height: '17px' }} />
-                        <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Free</Typography>
-                      </Box>
-                    )}
+                  )}
+                  {shop?.freeDelivery && (
                     <Box
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
                         alignContents: 'center',
                         gap: '6px',
-                        backgroundColor: '#FCF9F0',
-                        color: '#F78C3F',
+                        backgroundColor: '#5BBD4E12',
+                        color: '#5BBD4E',
                         padding: '10px 16px',
                         borderRadius: '7px',
                       }}
                     >
-                      <CartIcon style={{ width: '17px', height: '17px' }} />
-                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Min. ${shop?.minOrderAmount}</Typography>
+                      <DeliveryIcon style={{ width: '17px', height: '17px' }} />
+                      <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Free</Typography>
                     </Box>
-                  </Stack>
-                </Box>
+                  )}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      alignContents: 'center',
+                      gap: '6px',
+                      backgroundColor: '#FCF9F0',
+                      color: '#F78C3F',
+                      padding: '10px 16px',
+                      borderRadius: '7px',
+                    }}
+                  >
+                    <CartIcon style={{ width: '17px', height: '17px' }} />
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Min. ${shop?.minOrderAmount}</Typography>
+                  </Box>
+                </Stack>
               </Box>
             </Box>
           </Stack>

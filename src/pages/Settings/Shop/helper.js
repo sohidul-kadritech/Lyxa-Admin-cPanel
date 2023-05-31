@@ -17,24 +17,15 @@ export const DeliverySettings = [
   { label: 'Lyxa', value: false },
 ];
 
-export const maxDeliveryOptions = [
-  {
-    label: '10',
-    value: '10',
-  },
-  {
-    label: '100',
-    value: '100',
-  },
-  {
-    label: '1000',
-    value: '1000',
-  },
-  {
-    label: '10000',
-    value: '10000',
-  },
-];
+export const maxDiscountOptions = (options) => {
+  console.log('options:', options);
+  if (options?.length > 0) {
+    const generatedOptions = options.map((value) => ({ label: value.toString(), value: value.toString() }));
+    console.log('options:', generatedOptions);
+    return generatedOptions;
+  }
+  return [{ label: 'No options', value: '' }];
+};
 
 export const DietarySettings = [
   { label: 'Vegetarian', value: 'vegetarian' },
@@ -55,12 +46,11 @@ export function createShopSettingsData(
   minimumOrder,
   newPayMentInformation,
   newDietary,
-  newPriceRange
+  // eslint-disable-next-line prettier/prettier
+  newPriceRange,
 ) {
   return {
     id: shop?._id,
-    shopStartTime: convertTime(shop?.shopStartTime),
-    shopEndTime: convertTime(shop?.shopEndTime),
     shopName: shop?.shopName,
     password: '',
     isCuisine: shop?.isCuisine,

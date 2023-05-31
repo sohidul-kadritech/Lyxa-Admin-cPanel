@@ -1,4 +1,5 @@
 import { Box, Button, Stack, useTheme } from '@mui/material';
+import { isNumber } from 'lodash';
 import React from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 
@@ -27,6 +28,7 @@ function IncrementDecrementButton({
         <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
           <Button
             disableRipple
+            disabled={currentValue <= 0}
             sx={{ fontSize: '32px', fontWeight: 600 }}
             onClick={() => {
               decrementHandler(setValue);
@@ -39,7 +41,7 @@ function IncrementDecrementButton({
             intputType="text"
             containerProps={{
               sx: {
-                width: '120px',
+                width: `${currentValue.toString().length > 0 ? currentValue.toString().length * 10 : '50'}px`,
                 padding: '0 0',
                 textAlign: 'center',
                 borderRadius: '0px',
@@ -47,8 +49,9 @@ function IncrementDecrementButton({
             }}
             inputProps={{
               type: 'number',
+              min: '0',
               name: 'incrementdecrement',
-              placeholder: '0',
+              placeholder: 'value',
               value: currentValue || '',
               sx: {
                 padding: '0 0',
@@ -57,7 +60,8 @@ function IncrementDecrementButton({
                 // background: 'red',
               },
               onChange: (e) => {
-                setValue(e.target.value);
+                if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0) setValue(0);
+                else setValue(e.target.value);
                 setTypeValidation(types, setType, type);
               },
               //   readOnly: Boolean(newProductCategory) || productReadonly,

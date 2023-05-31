@@ -349,12 +349,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       return;
     }
 
-    if (new Date(duration.end).getTime() < new Date().getTime()) {
+    if (new Date(duration.end).getTime() < new Date().getTime() && marketingType !== 'featured') {
       successMsg('Invalid end date', 'warn');
       return;
     }
 
-    if (new Date(duration.end).getTime() < new Date(duration.start).getTime()) {
+    if (new Date(duration.end).getTime() < new Date(duration.start).getTime() && marketingType !== 'featured') {
       successMsg('Invalid start date', 'warn');
       return;
     }

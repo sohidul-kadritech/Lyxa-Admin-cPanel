@@ -5,7 +5,17 @@ import { ShopAction2 } from '../ShopAction/ShopAction2';
 
 //
 
-export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMethod, options, isInput, ...props }) {
+export function ShopSettingsSection2({
+  title,
+  title2,
+  isButton,
+  buttonType,
+  isMethod,
+  options,
+  isInput,
+  placeholder = 'Select an options',
+  ...props
+}) {
   const theme = useTheme();
   console.log(buttonType);
 
@@ -51,6 +61,7 @@ export function ShopSettingsSection2({ title, title2, isButton, buttonType, isMe
             name: 'shopStatus',
             value: props?.value,
             items: options,
+            placeholder,
             //   items: categories,
             onChange: (e) => props.action(e.target.value),
             //   readOnly: Boolean(newProductCategory) || productReadonly,

@@ -172,11 +172,11 @@ export default function Payout({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={Math.abs(paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalProfit)}
+            titleAmount={Math.abs(paymentDetails?.totalProfit)}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
-            titleAmountStatus={paymentDetails?.orderValue?.deliveryFee + paymentDetails?.totalProfit < 0 ? 'minus' : ''}
+            titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);
@@ -185,28 +185,11 @@ export default function Payout({ paymentDetails }) {
               borderBottom: '0',
             }}
           >
-            {Math.abs(
-              paymentDetails?.orderValue?.deliveryFee +
-                paymentDetails?.totalProfit -
-                // eslint-disable-next-line prettier/prettier
-                paymentDetails?.totalUnsettle
-            ) > 0 && (
+            {Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle) > 0 && (
               <PriceItem
                 title="Paid"
-                amount={Math.abs(
-                  paymentDetails?.orderValue?.deliveryFee +
-                    paymentDetails?.totalProfit -
-                    // eslint-disable-next-line prettier/prettier
-                    paymentDetails?.totalUnsettle
-                )}
-                amountStatus={
-                  paymentDetails?.orderValue?.deliveryFee +
-                    paymentDetails?.totalProfit -
-                    paymentDetails?.totalUnsettle <
-                  0
-                    ? 'minus'
-                    : ''
-                }
+                amount={Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}
+                amountStatus={paymentDetails?.totalProfit - paymentDetails?.totalUnsettle < 0 ? 'minus' : ''}
               />
             )}
 
