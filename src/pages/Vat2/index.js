@@ -1,15 +1,17 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import DateRange from '../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import { dateRangeInit, sortOptions } from '../Faq2/helpers';
+import ModalContainer from '../ServiceZone/ModalContainer';
 import { calculatePaidVat, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
 import VatList from './vatList';
 
@@ -25,6 +27,7 @@ const breadcrumbItems = [
 ];
 function Vat2() {
   const [range, setRange] = useState({ ...dateRangeInit });
+  const [range2, setRange2] = useState({ ...dateRangeInit });
   const { currentUser } = useGlobalContext();
   console.log(currentUser);
   const [sort, setSort] = useState('asc');
@@ -34,13 +37,15 @@ function Vat2() {
   const [amountRangeType, setAmountRangeType] = useState('');
   const [searchKey, setSearchKey] = useState('');
   // eslint-disable-next-line no-unused-vars
+  const [settleAmount, setSettleAmount] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [adminId, setAdminId] = useState();
+  const [open, setOpen] = useState(false);
   const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
   const theme = useTheme();
   // get all admins here
   const getAllAdminQuery = useQuery([API_URL.GET_ALL_ADMIN], () => AXIOS.get(API_URL.GET_ALL_ADMIN));
 
-  // get all transaction
   const getAllTransaction = useQuery(
     [
       API_URL.GET_ALL_ADMIN_VAT,
@@ -66,11 +71,41 @@ function Vat2() {
           startDate: range.start,
           endDate: range.end,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
+
+  // pay vat
+  // eslint-disable-next-line no-unused-vars
+  const payVatQuery = useMutation((data) => AXIOS.post(API_URL.SETTLE_ADMIN_VAT, data));
+
   console.log(getAllTransaction?.data?.data?.summary);
   console.log(getAllTransaction?.data?.data?.transactions);
   console.log(getAllAdminQuery?.data?.data);
+
+  // eslint-disable-next-line no-unused-vars
+  const payVat = () => {
+    if (new Date(range.start).getTime() > new Date(range.end).getTime()) {
+      successMsg('Start date cannot be greater than end date', 'error');
+      return;
+    }
+    if (settleAmount < 1) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+    if (settleAmount > getAllTransaction?.data?.data?.summary?.totalUnsettleVat) {
+      successMsg('Can not pay more than unpaid amount', 'error');
+      return;
+    }
+
+    const reqBody = {
+      amount: settleAmount,
+      startDate: range.start,
+      endDate: range.end,
+    };
+
+    payVatQuery.mutate(reqBody);
+  };
   return (
     <Box>
       <PageTop
@@ -174,11 +209,7 @@ function Vat2() {
               onChange: (e) => setAdminId(e.target.value),
             }}
           />
-          <AddMenuButton
-            title="Make Payment"
-            isIcon={false}
-            //   onClick={() => setOpen(true)}
-          />
+          <AddMenuButton title="Make Payment" isIcon={false} onClick={() => setOpen(true)} />
         </Stack>
       </Box>
 
@@ -213,7 +244,8 @@ function Vat2() {
             <Typography variant="h2">
               {calculatePaidVat(
                 getAllTransaction?.data?.data?.summary?.totalVat,
-                getAllTransaction?.data?.data?.summary?.totalUnsettleVat
+                // eslint-disable-next-line prettier/prettier
+                getAllTransaction?.data?.data?.summary?.totalUnsettleVat,
               ) || 0}
             </Typography>
           </Box>
@@ -239,6 +271,87 @@ function Vat2() {
         loading={getAllTransaction?.isLoading}
         getCurrentCurrency={getCurrentCurrency}
       />
+
+      <Modal open={open} centered>
+        <ModalContainer
+          onClose={() => setOpen(false)}
+          title="Pay Vat"
+          sx={{
+            width: '600px',
+            height: 'auto',
+            margin: '2vh 2vw',
+            padding: '36px',
+            overflow: 'auto',
+            backgroundColor: theme.palette.primary.contrastText,
+            borderRadius: '10px',
+          }}
+        >
+          <Box marginTop="30px">
+            <Stack gap="10px">
+              <Typography sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '20px' }} variant="h4">
+                Date
+              </Typography>
+              <DateRange size="md" range={range2} setRange={setRange2} />
+            </Stack>
+          </Box>
+          <Box marginTop="10px">
+            <Stack gap="10px">
+              <StyledFormField
+                label={
+                  <Typography sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '20px' }} variant="h4">
+                    Amount
+                  </Typography>
+                }
+                intputType="text"
+                containerProps={{
+                  sx: {
+                    padding: '14px 0px 23px 0',
+                    flex: '1',
+                  },
+                }}
+                inputProps={{
+                  defaultValue: settleAmount,
+                  type: 'number',
+                  name: 'zoneName',
+                  onChange: (e) => setSettleAmount(e.target.value),
+                }}
+              />
+            </Stack>
+          </Box>
+          <Box
+            marginTop="10px"
+            sx={{ paddingBottom: '10px', borderBottom: `1px solid ${theme.palette.custom.border}` }}
+          >
+            <Stack gap="10px" flexDirection="row" justifyContent="space-between">
+              <Typography>Unpaid VAT</Typography>{' '}
+              <Typography>
+                {getAllTransaction?.data?.data?.summary?.totalUnsettleVat.toFixed(2)} {getCurrentCurrency?.symbol}
+              </Typography>
+            </Stack>
+            <Stack gap="10px" flexDirection="row" justifyContent="space-between">
+              <Typography>Amount to pay</Typography>{' '}
+              <Typography>
+                {-settleAmount} {getCurrentCurrency?.symbol}
+              </Typography>
+            </Stack>
+          </Box>
+          <Box marginTop="30px">
+            <Stack gap="10px" flexDirection="row" justifyContent="space-between">
+              <Typography>Unpaid VAT</Typography>{' '}
+              <Typography>
+                {calculatePaidVat(getAllTransaction?.data?.data?.summary?.totalUnsettleVat, settleAmount).toFixed(2)}
+                {getCurrentCurrency?.symbol}
+              </Typography>
+            </Stack>
+          </Box>
+
+          <Stack flexDirection="row" justifyContent="flex-end" marginTop="30px">
+            <Button variant="contained" color="primary" size="small" onClick={payVat}>
+              Pay
+            </Button>
+          </Stack>
+        </ModalContainer>
+      </Modal>
     </Box>
   );
 }
