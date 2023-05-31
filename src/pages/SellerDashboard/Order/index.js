@@ -14,9 +14,9 @@ export default function Orders() {
     <Grid container spacing={6.5}>
       <CommonAreaChart
         title="Total Orders"
-        api={Api.SHOP_DASHBOARD_ORDER_GRAPH}
+        api={Api.SELLER_DASHBOARD_ORDER_GRAPH}
         params={{
-          shopId: seller?._id,
+          sellerId: seller?._id,
         }}
         generateData={(data = {}) =>
           generateGraphData(

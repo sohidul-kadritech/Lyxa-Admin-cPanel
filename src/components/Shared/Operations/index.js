@@ -5,12 +5,12 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
-import DateRange from '../../../components/StyledCharts/DateRange';
-import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { useGlobalContext } from '../../../context';
 import { dateRangeInit } from '../../../helpers/dateRangeInit';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import DateRange from '../../StyledCharts/DateRange';
+import InfoCard from '../../StyledCharts/InfoCard';
 
 function ListItem({ label, value }) {
   return (
