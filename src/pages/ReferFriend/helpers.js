@@ -88,5 +88,4 @@ export const typeList = [
   'receiver_referralDiscount',
   'receiver_referralMinimumOrderValue',
   'receiver_referralDuration',
-  'referralStatus',
 ];

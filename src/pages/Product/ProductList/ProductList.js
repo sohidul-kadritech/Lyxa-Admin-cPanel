@@ -98,8 +98,8 @@ function ProductList() {
             title={shop ? shop?.shopName : 'Product'}
             loading={loading}
             callList={callProductList}
-            isAddNew
-            addNewRoute="products/add"
+            // isAddNew={}
+            // addNewRoute="products/add"
             params={shop?._id ? `shopId=${shop?._id}` : null}
           />
 

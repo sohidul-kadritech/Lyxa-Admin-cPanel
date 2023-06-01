@@ -24,6 +24,7 @@ function ReferFriend() {
         // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

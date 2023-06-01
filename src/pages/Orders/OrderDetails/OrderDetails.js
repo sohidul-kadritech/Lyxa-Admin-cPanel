@@ -60,7 +60,9 @@ function OrderInfo({ items = [] }) {
 }
 
 function SummaryInfo({ title, value }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   return (
     <div className="item">
@@ -129,7 +131,7 @@ function Riders({ list = [], heading }) {
 
 function OrderDetails() {
   // const { account_type } = useSelector((store) => store.Login.admin);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
 
   const { id } = useParams();
@@ -139,7 +141,8 @@ function OrderDetails() {
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg] = useState(null);
   const [orderTimeline, setOrderTimeline] = useState([]);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const currency = general?.currency?.code;
 
   const getProperOrderTimeline = (orderObj) => {
     if (orderObj?.orderFor === 'specific') {

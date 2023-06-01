@@ -43,11 +43,12 @@ function DropPayList() {
   const {
     dashboardData: { summary = {} },
   } = useSelector((state) => state.dashboardReducer);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { userType, adminType } = currentUser;
 
   const [balAddModal, setBalAddModal] = useState(false);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const currency = general?.currency?.code?.toUpperCase();
 
   useEffect(() => {
     dispatch(

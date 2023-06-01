@@ -1,12 +1,15 @@
 import React from 'react';
 
-import { useSelector } from 'react-redux';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
+import { useGlobalContext } from '../context';
 import CircularLoader from './CircularLoader';
 import { TrxType } from './updateTrxsType';
 
 function TransactionsTable({ trxs = [], loading }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   return (
     <div>

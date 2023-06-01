@@ -127,9 +127,9 @@ function OrderTable({ orders = [], status, loading }) {
           deliveryBoy: deliveryBoy?._id,
         },
         // eslint-disable-next-line prettier/prettier
-        socket,
+        socket
         // eslint-disable-next-line prettier/prettier
-      ),
+      )
     );
   };
 
@@ -199,7 +199,7 @@ function OrderTable({ orders = [], status, loading }) {
         shop: flagedShop && shop ? '' : shop ? selectFlagOrder?.shop?._id : '',
         delivery: flagedRider && rider ? '' : rider ? selectFlagOrder?.deliveryBoy?._id : '',
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
   };
 
@@ -289,7 +289,7 @@ function OrderTable({ orders = [], status, loading }) {
         ...orderCancel,
         cancelReason: orderCancel?.cancelReason?._id ?? '',
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
   };
 
@@ -306,7 +306,7 @@ function OrderTable({ orders = [], status, loading }) {
         item?.orderStatus,
         item?.shopDeliveryMethod,
         // eslint-disable-next-line prettier/prettier
-        item?.orderFor === 'specific',
+        item?.orderFor === 'specific'
       );
     } else if (menu === 'Cancel Order') {
       setOpenCancelModal(!openCancelModal);
@@ -337,7 +337,10 @@ function OrderTable({ orders = [], status, loading }) {
       updateIsFlaged(item?.flag);
     }
   };
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   const goToDetails = (id) => {
     history.push(`/orders/details/${id}`);

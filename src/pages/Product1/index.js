@@ -56,12 +56,14 @@ function Product() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   console.log('data', getAllProduct?.data?.data?.products);
 
-  const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  // const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  const { general } = useGlobalContext();
+  const getCurrentCurrency = general?.currency?.code;
 
   console.log('currency', getCurrentCurrency);
 
@@ -71,6 +73,7 @@ function Product() {
         // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

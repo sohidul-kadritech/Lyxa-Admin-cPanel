@@ -1,8 +1,8 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Tooltip, Typography, styled } from '@mui/material';
 import { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
+import { useGlobalContext } from '../../../context';
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   flexDirection: 'row-reverse',
@@ -56,7 +56,11 @@ export default function DetailsAccordion({
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
+
   const Icon = open ? ExpandLess : ExpandMore;
 
   return (
