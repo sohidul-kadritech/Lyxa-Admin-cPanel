@@ -168,19 +168,6 @@ export const seller_menu_items = (prefix = '') => [
     ],
   },
   {
-    title: 'Products',
-    menu: [
-      {
-        label: 'List',
-        to: `${prefix}/products/list2`,
-      },
-      {
-        label: 'Add',
-        to: `${prefix}/products/add`,
-      },
-    ],
-  },
-  {
     title: 'Arbiatry',
     menu: [
       {
@@ -189,14 +176,6 @@ export const seller_menu_items = (prefix = '') => [
       },
       {
         label: 'Categories List',
-        to: `${prefix}/seller/credentials/list`,
-      },
-      {
-        label: 'Categories Add',
-        to: `${prefix}/admin/create`,
-      },
-      {
-        label: 'List',
         to: `${prefix}/categories/list`,
       },
     ],

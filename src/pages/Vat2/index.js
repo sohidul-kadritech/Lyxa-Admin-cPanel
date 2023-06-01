@@ -1,6 +1,6 @@
 import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
@@ -10,9 +10,9 @@ import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
-import { dateRangeInit, sortOptions } from '../Faq2/helpers';
+import { sortOptions } from '../Faq2/helpers';
 import ModalContainer from '../ServiceZone/ModalContainer';
-import { calculatePaidVat, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
+import { calculatePaidVat, dateRangeInit, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
 import VatList from './vatList';
 
 const breadcrumbItems = [
@@ -26,6 +26,7 @@ const breadcrumbItems = [
   },
 ];
 function Vat2() {
+  const queryClient = useQueryClient();
   const [range, setRange] = useState({ ...dateRangeInit });
   const [range2, setRange2] = useState({ ...dateRangeInit });
   const { currentUser, general } = useGlobalContext();
@@ -78,7 +79,17 @@ function Vat2() {
 
   // pay vat
   // eslint-disable-next-line no-unused-vars
-  const payVatQuery = useMutation((data) => AXIOS.post(API_URL.SETTLE_ADMIN_VAT, data));
+  const payVatQuery = useMutation((data) => AXIOS.post(API_URL.SETTLE_ADMIN_VAT, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg('Successfully Paid!', 'success');
+        queryClient.invalidateQueries(API_URL.GET_ALL_ADMIN_VAT);
+      } else {
+        successMsg(data.message, 'warn');
+      }
+    },
+  });
 
   console.log(getAllTransaction?.data?.data?.summary);
   console.log(getAllTransaction?.data?.data?.transactions);
@@ -347,7 +358,7 @@ function Vat2() {
           </Box>
 
           <Stack flexDirection="row" justifyContent="flex-end" marginTop="30px">
-            <Button variant="contained" color="primary" size="small" onClick={payVat}>
+            <Button variant="contained" color="primary" size="small" onClick={payVat} disabled={payVatQuery?.isLoading}>
               Pay
             </Button>
           </Stack>

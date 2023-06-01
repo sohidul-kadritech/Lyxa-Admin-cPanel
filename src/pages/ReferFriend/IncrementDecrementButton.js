@@ -1,29 +1,10 @@
 import { Box, Button, Stack, useTheme } from '@mui/material';
+import { isNumber } from 'lodash';
 import React from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
-import { successMsg } from '../../helpers/successMsg';
-
-const inputValidation = (input) => {
-  // Regular expression to match numbers in the format "123"
-  const numberPattern = /^\d+$/;
-
-  // Check if the input matches the number pattern
-  if (numberPattern.test(input)) {
-    return true; // Valid number
-  }
-  return false; // Invalid number
-};
 
 function IncrementDecrementButton({ currentValue, incrementHandler, decrementHandler, setValue, setTypeValidation }) {
   const theme = useTheme();
-
-  const onBlurInputValueHanlder = () => {
-    if (inputValidation(currentValue)) {
-      return;
-    }
-    successMsg('Please provide valid number!');
-    setValue(0);
-  };
   return (
     <Box
       sx={{
@@ -51,7 +32,7 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
             intputType="text"
             containerProps={{
               sx: {
-                width: '50px',
+                width: `${currentValue.toString().length > 0 ? currentValue.toString().length * 10 : '50'}px`,
                 padding: '0 0',
                 textAlign: 'center',
                 borderRadius: '0px',
@@ -68,10 +49,10 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
                 borderRadius: '0px',
                 // background: 'red',
               },
-              onBlur: onBlurInputValueHanlder,
               onChange: (e) => {
                 setTypeValidation();
-                setValue(() => (e.target.value >= 0 ? e.target.value : 0));
+                if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0) setValue(0);
+                else setValue(e.target.value);
               },
             }}
           />
