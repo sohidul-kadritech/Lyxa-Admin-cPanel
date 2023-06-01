@@ -1,4 +1,5 @@
 import { Box, Button, Tooltip, useTheme } from '@mui/material';
+import { uniqueId } from 'lodash';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
 import { getImageUrl } from '../../helpers/images';
 
@@ -138,20 +139,21 @@ export const dietryOptions = [
   },
 ];
 
-export const attrItemInit = {
+export const attrItemInit = () => ({
   name: '',
-  price: '',
-};
+  extraPrice: '',
+});
 
 // state inits
-export const productAttrInit = {
+export const productAttrInit = () => ({
   name: '',
   required: false,
-  select: '',
-  items: [{ ...attrItemInit }],
-};
+  select: 'single',
+  items: [attrItemInit()],
+  xid: uniqueId('attr_'),
+});
 
-export const productInit = {
+export const productInit = () => ({
   name: '',
   type: '',
   shop: '',
@@ -160,15 +162,15 @@ export const productInit = {
   seoDescription: '',
   price: '',
   images: [],
-  attributes: [{ ...productAttrInit }],
+  attributes: [productAttrInit()],
   addons: [],
   dietary: [],
   note: '',
   isStockEnabled: false,
   stockQuantity: 1,
-};
+});
 
-export const createProductData = async (product, shop, isEditProduct) => {
+export const createProductData = async (product, shop, isEditProduct, hasAttribute) => {
   const imgUrl = await getImageUrl(product?.images[0]);
 
   if (!imgUrl) {
@@ -190,20 +192,28 @@ export const createProductData = async (product, shop, isEditProduct) => {
     subCategory = undefined;
     addons = product?.addons?.map((p) => p?._id);
 
-    if (attributes?.length) {
+    if (attributes?.length && hasAttribute) {
       const attrs = [];
 
       attributes?.forEach((attr) => {
+        // attr name not added
+        if (attr?.name?.trim() === 'Untitled Attribute' || !attr?.name?.trim()) return;
+
+        // filter attr items
         const items = attr?.items?.filter((item) => item.name && item.extraPrice);
+
         if (items?.length) {
           attrs.push({
             ...attr,
             items,
+            xid: undefined,
           });
         }
       });
 
       attributes = attrs;
+    } else {
+      attributes = [];
     }
   } else {
     dietry = undefined;
@@ -225,15 +235,23 @@ export const createProductData = async (product, shop, isEditProduct) => {
   };
 };
 
-export const getAttrOptionsValues = (product) => {
+// export const getAttrOptionsValues = (product) => {
+//   const values = [];
+//   if (product?.attributes[0] && product?.attributes[0]?.required) values.push('required');
+//   if (product?.attributes[0] && product?.attributes[0]?.select === 'multiple') values.push('multiple');
+//   return values;
+// };
+
+export const getAttrOptionsValues = (attributeItem) => {
   const values = [];
-  if (product?.attributes[0] && product?.attributes[0]?.required) values.push('required');
-  if (product?.attributes[0] && product?.attributes[0]?.select === 'multiple') values.push('multiple');
+  if (attributeItem?.required) values.push('required');
+  if (attributeItem?.select === 'multiple') values.push('multiple');
+  console.log(values);
   return values;
 };
 
 export const getProductInit = (shop, categoryId) => {
-  const data = { ...productInit };
+  const data = productInit();
 
   data.type = shop?.shopType || '';
   data.shop = shop?._id || '';
@@ -250,7 +268,7 @@ export const converEditProduct = (product) => {
     images: product?.images?.map((url) => ({
       preview: url,
     })),
-    attributes: product?.attributes?.length ? product?.attributes : [{ ...productAttrInit }],
+    // attributes: product?.attributes?.length ? product?.attributes : [{ ...productAttrInit }],
   };
 
   return {
@@ -328,15 +346,18 @@ export const validateProduct = (product) => {
     return status;
   }
 
-  if (
-    product?.type === 'food' &&
-    product?.attributes[0] &&
-    (product?.attributes[0]?.required || product?.attributes[0]?.select) &&
-    !product?.attributes[0]?.name
-  ) {
-    status.msg = 'Please add attribte title or keep as default';
-    return status;
-  }
+  // if (product?.type === 'food') {
+  //   let error = false;
+
+  //   product?.attributes?.forEach((attr) => {
+  //     if (attr?.items?.length && (!attr?.name?.trim() || attr?.name?.trim() === 'Untitled Attribute')) error = true;
+  //   });
+
+  //   if (error) {
+  //     status.msg = 'Please add attribte title or keep as default';
+  //     return status;
+  //   }
+  // }
 
   if (
     product?.type === 'food' &&

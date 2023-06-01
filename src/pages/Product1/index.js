@@ -1,17 +1,19 @@
 import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import DateRange from '../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { dateRangeInit, sortOptions, statusTypeOptions } from '../Faq2/helpers';
+import { dateRangeInit, sortOptions } from '../Faq2/helpers';
 import AddProducts from './AddProducts';
 import ProductList from './ProductList';
-import { shopType } from './helpers';
+import ProductPageSkeleton from './ProductPageSkeleton';
+import { shopType, statusTypeOptions } from './helpers';
 
 // eslint-disable-next-line no-unused-vars
 const breadcrumbItems = [
@@ -41,6 +43,7 @@ function Product() {
   const [open, setOpen] = useState(false);
   const [searchKey, setSearchKey] = useState('');
 
+  const queryClient = useQueryClient();
   const url = currentUser.userType === 'admin' ? API_URL.ALL_PRODUCT : '';
 
   const getAllProduct = useQuery(
@@ -56,14 +59,24 @@ function Product() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
+
+  // eslint-disable-next-line no-unused-vars
+  const updateStatusQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_PRODUCT, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(url);
+      }
+    },
+  });
 
   console.log('data', getAllProduct?.data?.data?.products);
 
   // const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
   const { general } = useGlobalContext();
-  const getCurrentCurrency = general?.currency?.code;
+  const getCurrentCurrency = general?.currency;
 
   console.log('currency', getCurrentCurrency);
 
@@ -138,11 +151,21 @@ function Product() {
           {/* <AddMenuButton onClick={() => setOpen(true)} /> */}
         </Stack>
       </Box>
-      <ProductList
-        data={getAllProduct?.data?.data?.products}
-        loading={getAllProduct.isLoading}
-        getCurrentCurrency={getCurrentCurrency}
-      />
+      {getAllProduct?.isLoading ? (
+        <Box
+          sx={{
+            padding: '20px',
+          }}
+        >
+          <ProductPageSkeleton />
+        </Box>
+      ) : (
+        <ProductList
+          data={getAllProduct?.data?.data?.products}
+          getCurrentCurrency={getCurrentCurrency}
+          updateStatusQuery={updateStatusQuery}
+        />
+      )}
 
       <Drawer open={open} anchor="right">
         <AddProducts onClose={() => setOpen(false)} />

@@ -31,6 +31,21 @@ export const shopTypeOption = [
   },
 ];
 
+export const statusTypeOptions = [
+  {
+    value: 'all',
+    label: 'All',
+  },
+  {
+    value: 'active',
+    label: 'Active',
+  },
+  {
+    value: 'inactive',
+    label: 'Inactive',
+  },
+];
+
 export const products = [
   {
     _id: '6465b3223cda802ff21692c6',

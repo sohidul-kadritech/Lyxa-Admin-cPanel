@@ -300,7 +300,18 @@ function ShopSettings() {
             >
               Discard
             </Button>
-            <Button onClick={updateShopSettings} variant="contained" color="primary" disabled={updateData.isLoading}>
+            <Button
+              onClick={() => {
+                if (has_unsaved_change) {
+                  updateShopSettings();
+                } else {
+                  successMsg('Please make some changes first!');
+                }
+              }}
+              variant="contained"
+              color="primary"
+              disabled={updateData.isLoading}
+            >
               Save Changes
             </Button>
           </Stack>

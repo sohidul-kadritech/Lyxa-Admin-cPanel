@@ -1,17 +1,17 @@
-import { Edit } from '@mui/icons-material';
-import { Avatar, Box, Chip, Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import { Avatar, Box, Chip, Drawer, Stack, Typography, useTheme } from '@mui/material';
+import React, { useState } from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import moment from 'moment';
-import ConfirmModal from '../../components/Common/ConfirmModal';
-import TableLoader from '../../components/Common/TableLoader';
 // eslint-disable-next-line import/no-named-as-default
-import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
 
-function ProductList({ data = [], loading, getCurrentCurrency }) {
+import AddProduct from '../Menu/AddProduct';
+
+function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
   const theme = useTheme();
+  const [open, setOpen] = useState();
+  const [currentSelectedProduct, setCurrentSelectedProduct] = useState({});
 
   const allColumns = [
     {
@@ -27,34 +27,37 @@ function ProductList({ data = [], loading, getCurrentCurrency }) {
             <Stack>
               <Typography
                 variant="h6"
+                onClick={() => {
+                  setCurrentSelectedProduct(params?.row);
+                  setOpen(true);
+                }}
                 style={{
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   width: '100%',
                   color: theme.palette.primary?.main,
+                  cursor: 'pointer',
                   textTransform: 'capitalize',
                 }}
               >
                 {params?.row?.name}
               </Typography>
               <Typography
-                variant="body2"
+                variant="body3"
                 style={{
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   width: '100%',
-                  color: theme.palette.primary?.main,
                 }}
               >
                 {params?.row?.category?.name}
               </Typography>
               <Typography
-                variant="body2"
+                variant="body3"
                 style={{
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   width: '100%',
-                  color: theme.palette.primary?.main,
                 }}
               >
                 {params?.row?.autoGenId}
@@ -81,6 +84,7 @@ function ProductList({ data = [], loading, getCurrentCurrency }) {
                 width: '100%',
                 textTransform: 'capitalize',
                 color: theme.palette.primary?.main,
+                cursor: 'pointer',
               }}
             >
               {params?.row?.shop?.shopName}
@@ -139,24 +143,6 @@ function ProductList({ data = [], loading, getCurrentCurrency }) {
         </Stack>
       ),
     },
-
-    {
-      id: 4,
-      field: 'updatedAt',
-      headerName: 'EDITED ON',
-      sortable: true,
-      flex: 1,
-      minWidth: 100,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: ({ row }) => (
-        <Stack>
-          <Typography variant="body1">{moment(row?.updatedAt).format('MMMM DD, YYYY')}</Typography>
-          <Typography variant="body3">{moment(row?.updatedAt).format('hh:mm A')}</Typography>
-        </Stack>
-      ),
-    },
-
     {
       id: 5,
       headerName: '',
@@ -166,31 +152,30 @@ function ProductList({ data = [], loading, getCurrentCurrency }) {
       minWidth: 100,
       headerAlign: 'center',
       align: 'center',
-      renderCell: () => (
+      renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
           {/* delete */}
-          <StyledSwitch />
-          <StyledIconButton
-            color="primary"
-            sx={{
-              '&.Mui-disabled': {
-                color: '#c1c1c1',
-                backgroundColor: '#F3F6F9',
-              },
+          <StyledSwitch
+            checked={row?.status === 'active'}
+            onClick={() => {
+              updateStatusQuery.mutate({ id: row._id, status: row?.status === 'active' ? 'inactive' : 'active' });
             }}
-            //   onClick={() => {
-            //     setIsConfirm(true);
-            //     setId(row._id);
-            //   }}
-          >
-            <Edit />
-          </StyledIconButton>
+          />
         </Stack>
       ),
     },
   ];
+
   return (
-    <Box>
+    <Box
+      sx={{
+        padding: '20px',
+        maxHeight: '500px',
+        overflow: 'auto',
+        border: `1px solid ${theme.palette.custom.border}`,
+        borderRadius: '7px',
+      }}
+    >
       <StyledTable
         columns={allColumns}
         rows={data}
@@ -212,13 +197,13 @@ function ProductList({ data = [], loading, getCurrentCurrency }) {
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? <TableLoader /> : 'No Products Found'}
+              No Products Found
             </Stack>
           ),
         }}
       />
 
-      <ConfirmModal
+      {/* <ConfirmModal
         message="Are you sure you want to delete the products?"
         // isOpen={isConfirm}
         // loading={deleteQuery?.isLoading}
@@ -232,7 +217,21 @@ function ProductList({ data = [], loading, getCurrentCurrency }) {
           //   console.log('id: ', id);
           //   deleteQuery.mutate({ id });
         }}
-      />
+      /> */}
+
+      <Drawer open={open} anchor="right">
+        <AddProduct
+          // newProductCategory={newProductCategory}
+          productReadonly
+          editProduct={currentSelectedProduct}
+          onClose={() => {
+            setOpen(false);
+            // setNewProductCategory(null);
+            // setEditProduct({});
+            // setProductReadonly(false);
+          }}
+        />
+      </Drawer>
     </Box>
   );
 }
