@@ -10,7 +10,6 @@ import React, { useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from 'react-redux';
 import CircularLoader from './components/CircularLoader';
-import { getAllAppSettings } from './store/Settings/settingsAction';
 
 // Import scss
 import './assets/scss/theme.scss';
@@ -19,17 +18,30 @@ import { incrementOpenChats } from './store/chat/chatAction';
 import { socketConnect } from './store/socket/socketAction';
 
 import { Box } from '@mui/material';
+import { useQuery } from 'react-query';
 import Router from './Router';
 import { getUserData, removeAuthCookies } from './appHelpers';
 import { useGlobalContext } from './context';
 import { successMsg } from './helpers/successMsg';
+import * as Api from './network/Api';
+import AXIOS from './network/axios';
 
 export default function App() {
   const dispatch = useDispatch();
-  const { dispatchCurrentUser, currentUser } = useGlobalContext();
+  const { dispatchCurrentUser, currentUser, dispatchGeneral } = useGlobalContext();
   const { userType } = currentUser;
   const { socket } = useSelector((state) => state.socketReducer);
   const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
+
+  const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
+    enabled: false,
+    onSuccess: (data) => {
+      console.log('==========> ', data);
+      if (data?.status && data?.data?.appSetting?.currency) {
+        dispatchGeneral({ type: 'currency', payload: { currency: data?.data?.appSetting?.currency } });
+      }
+    },
+  });
 
   const validateUser = async () => {
     // no cookie found inside user browser
@@ -63,8 +75,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!localStorage.getItem('currency')) dispatch(getAllAppSettings());
     validateUser();
+    settingsQuery.refetch();
   }, []);
 
   useEffect(() => {

@@ -12,6 +12,7 @@ import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
+import { useGlobalContext } from '../../../context';
 import {
   getSellersTrx,
   updateSellerTrxEndDate,
@@ -22,7 +23,9 @@ import {
 function SellerTransactions() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   const {
     loading,

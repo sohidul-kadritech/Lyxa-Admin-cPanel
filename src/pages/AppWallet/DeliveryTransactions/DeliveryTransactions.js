@@ -14,6 +14,7 @@ import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
+import { useGlobalContext } from '../../../context';
 import {
   getDeliveryTrx,
   updateDeliverySearchKey,
@@ -35,7 +36,10 @@ function DeliveryTransactions() {
     deliverySortByKey,
     deliverySearchKey,
   } = useSelector((state) => state.appWalletReducer);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   const dispatch = useDispatch();
   const history = useHistory();

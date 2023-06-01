@@ -39,13 +39,14 @@ function DeliverymanDetails() {
     (state) => state.deliveryManReducer
   );
   // const { account_type, adminType } = useSelector((store) => store.Login.admin);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { userType, adminType } = currentUser;
 
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const currency = general?.currency?.code?.toUpperCase();
 
   useEffect(async () => {
     if (id) {

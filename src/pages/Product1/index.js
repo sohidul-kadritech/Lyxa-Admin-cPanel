@@ -56,12 +56,14 @@ function Product() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   console.log('data', getAllProduct?.data?.data?.products);
 
-  const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  // const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  const { general } = useGlobalContext();
+  const getCurrentCurrency = general?.currency?.code;
 
   console.log('currency', getCurrentCurrency);
 

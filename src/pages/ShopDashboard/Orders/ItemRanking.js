@@ -2,17 +2,19 @@
 import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 // import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import IncreaseDecrease from '../../../components/StyledCharts/IncreaseDecrease';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
 export default function ItemRanking() {
   const itemsQuery = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING], () => AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING));
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   const column = [
     {

@@ -1,10 +1,12 @@
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useGlobalContext } from '../../../context';
 
 export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, current, ...props }) {
   const theme = useTheme();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   console.log('currency', currency);
   return (
