@@ -148,9 +148,17 @@ export default function Payout({ paymentDetails }) {
                 seCurrentExpanedTab(closed ? 2 : -1);
               }}
             >
-              <PriceItem title="Cash" amount={paymentDetails?.orderValue?.deliveryFeeCash} />
-              <PriceItem title="Online" amount={paymentDetails?.orderValue?.deliveryFeeOnline} />
-              <PriceItem title="Rider tip" amount={paymentDetails?.orderValue?.deliveryFeeOnline} />
+              {paymentDetails?.orderValue?.deliveryFeeCash > 0 && (
+                <PriceItem title="Cash" amount={paymentDetails?.orderValue?.deliveryFeeCash} />
+              )}
+
+              {paymentDetails?.orderValue?.deliveryFeeOnline > 0 && (
+                <PriceItem title="Online" amount={paymentDetails?.orderValue?.deliveryFeeOnline} />
+              )}
+
+              {paymentDetails?.orderValue?.riderTipOnline > 0 && (
+                <PriceItem title="Rider tip" amount={paymentDetails?.orderValue?.riderTipOnline} />
+              )}
             </DetailsAccordion>
           )}
 

@@ -160,10 +160,10 @@ export const seller_menu_items = (prefix = '') => [
         label: 'Shop List',
         to: `${prefix}/shops/list`,
       },
-      {
-        label: 'Shop Add',
-        to: `${prefix}/shops/add`,
-      },
+      // {
+      //   label: 'Shop Add',
+      //   to: `${prefix}/shops/add`,
+      // },
     ],
   },
   {
@@ -194,7 +194,7 @@ export const admin_menu_items = [
       {
         label: 'Orders',
         icon: AdminOrdersIcon,
-        to: '/orders/list',
+        to: '/new-orders',
       },
       {
         label: 'Sellers',

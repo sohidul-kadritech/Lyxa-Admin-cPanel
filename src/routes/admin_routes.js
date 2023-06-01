@@ -135,8 +135,11 @@ export const admin_routes = [
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
-  { path: '/shops/marketing/:id', component: Marketing },
-  { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
+  { path: '/shops/marketing/:id', component: () => <Marketing viewUserType="admin" /> },
+  {
+    path: '/shops/marketing/dashboard/:shopId/:type/:id',
+    component: () => <MarketingDashboard viewUserType="admin" />,
+  },
 
   // product
   { path: '/products/list2', component: ProductList },

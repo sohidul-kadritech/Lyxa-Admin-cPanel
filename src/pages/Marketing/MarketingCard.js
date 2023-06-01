@@ -51,7 +51,17 @@ function StatusTag({ status }) {
   );
 }
 
-export default function MCard({ icon: Icon, title, description, onOpen, disabled, ongoingBy, status, loading }) {
+export default function MCard({
+  icon: Icon,
+  title,
+  description,
+  onOpen,
+  disabled,
+  ongoingBy,
+  status,
+  loading,
+  readOnly,
+}) {
   const theme = useTheme();
   const matches = useMediaQuery('(max-width: 1400px)');
 
@@ -100,9 +110,9 @@ export default function MCard({ icon: Icon, title, description, onOpen, disabled
           borderRadius: '12px',
           border: '1px solid #EEEEEE',
           padding: '16px',
-          cursor: 'pointer',
+          // cursor: 'pointer',
         }}
-        onClick={onOpen}
+        onClick={readOnly ? undefined : onOpen}
       >
         {status && (
           <Stack
@@ -149,7 +159,7 @@ export default function MCard({ icon: Icon, title, description, onOpen, disabled
           sx={{
             paddingTop: 5,
             paddingBottom: 7.5,
-            cursor: 'pointer',
+            cursor: readOnly ? 'not-allowed' : 'pointer',
             display: 'inline-flex',
           }}
         >
