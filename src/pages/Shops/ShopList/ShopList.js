@@ -22,7 +22,7 @@ import { callApi } from '../../../components/SingleApiCall';
 import { useGlobalContext } from '../../../context';
 import { SINGLE_SHOP } from '../../../network/Api';
 
-function ShopList() {
+function ShopList({ viewUserType }) {
   const dispatch = useDispatch();
 
   const {
@@ -161,8 +161,8 @@ function ShopList() {
 
           <Card>
             <CardBody>
-              <CardTitle className="h4"> {userType !== 'shop' ? 'Shop List' : 'My Shop'}</CardTitle>
-              <ShopTable shops={userType === 'shop' ? myShop : shops} />
+              <CardTitle className="h4">{userType !== 'shop' ? 'Shop List' : 'My Shop'}</CardTitle>
+              <ShopTable shops={userType === 'shop' ? myShop : shops} viewUserType={viewUserType} />
             </CardBody>
           </Card>
           <Row>
