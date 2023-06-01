@@ -35,8 +35,9 @@ export function calculateDateDifference(date1, date2, unit) {
 export default function Overview({ viewUserType }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { currentUser, general } = useGlobalContext();
+
   const { shop, seller } = currentUser;
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency;
 
   const viewUserTypeToApiMap = {
     shop: {

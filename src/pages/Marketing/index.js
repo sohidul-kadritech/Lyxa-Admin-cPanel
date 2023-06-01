@@ -62,7 +62,6 @@ const getActiveDeals = (dealSetting, shopType) => {
 
 export default function Marketing() {
   const history = useHistory();
-  // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
@@ -70,20 +69,20 @@ export default function Marketing() {
   const [activeDeals, setActiveDeals] = useState(activeDealsInit);
   const params = useParams();
   const [currentShop, setCurrentShop] = useState(shop?.shopType ? shop : {});
-
   const [appliedDeals, setAppliedDeals] = useState(marketingTypesInit);
+  console.log({ params });
 
   const shopQuery = useQuery(
     [
-      `single-shop`,
+      Api.SINGLE_SHOP,
       {
-        id: params?.shopId,
+        id: params?.id,
       },
     ],
     () =>
       AXIOS.get(Api.SINGLE_SHOP, {
         params: {
-          id: params?.shopId,
+          id: params?.id,
         },
       }),
     {
@@ -95,7 +94,7 @@ export default function Marketing() {
     [
       'deal-settings',
       {
-        id: params?.shopId,
+        id: params?.id,
       },
     ],
     () =>
