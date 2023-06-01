@@ -12,6 +12,7 @@ import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import { sortOptions } from '../Faq2/helpers';
 import ModalContainer from '../ServiceZone/ModalContainer';
+import VatSummerySkeleton from './VatSummerySkeleton';
 import { calculatePaidVat, dateRangeInit, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
 import VatList from './vatList';
 
@@ -33,7 +34,7 @@ function Vat2() {
   console.log(currentUser);
   const [sort, setSort] = useState('asc');
   // eslint-disable-next-line no-unused-vars
-  const [amountRange, setAmountRange] = useState(0);
+  const [amountRange, setAmountRange] = useState('');
 
   const [amountRangeType, setAmountRangeType] = useState('');
   const [searchKey, setSearchKey] = useState('');
@@ -74,7 +75,7 @@ function Vat2() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   // pay vat
@@ -84,6 +85,7 @@ function Vat2() {
       if (data.status) {
         setOpen(false);
         successMsg('Successfully Paid!', 'success');
+        setSettleAmount(0);
         queryClient.invalidateQueries(API_URL.GET_ALL_ADMIN_VAT);
       } else {
         successMsg(data.message, 'warn');
@@ -122,6 +124,7 @@ function Vat2() {
     <Box>
       <PageTop
         backButtonLabel="Back to Financials"
+        backTo="/financials"
         breadcrumbItems={breadcrumbItems}
         sx={{
           position: 'sticky',
@@ -162,35 +165,37 @@ function Vat2() {
               onChange: (e) => setSort(e.target.value),
             }}
           />
-          <StyledFormField
-            intputType="text"
-            containerProps={{
-              sx: {
-                padding: '0px 0px',
-                '& .MuiInputBase-root': {
-                  height: '20px',
-                  width: '150px',
-                  background: theme.palette.background.secondary,
+          {Boolean(amountRangeType) && (
+            <StyledFormField
+              intputType="text"
+              containerProps={{
+                sx: {
+                  padding: '0px 0px',
+                  '& .MuiInputBase-root': {
+                    height: '20px',
+                    width: '150px',
+                    background: theme.palette.background.secondary,
+                  },
+                  '& input': {
+                    paddingTop: '7.5px',
+                    paddingBottom: '7.5px',
+                    fontWeight: '500',
+                    borderRadius: '30px',
+                    background: theme.palette.background.secondary,
+                  },
                 },
-                '& input': {
-                  paddingTop: '7.5px',
-                  paddingBottom: '7.5px',
-                  fontWeight: '500',
-                  borderRadius: '30px',
-                  background: theme.palette.background.secondary,
-                },
-              },
-            }}
-            inputProps={{
-              name: 'amount_range',
-              type: 'number',
-              placeholder: 'Amount Range',
-              value: amountRange,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setAmountRange(e.target.value),
-            }}
-          />
+              }}
+              inputProps={{
+                name: 'amount_range',
+                type: 'number',
+                placeholder: 'Amount Range',
+                value: amountRange,
+                size: 'sm2',
+                //   items: categories,
+                onChange: (e) => setAmountRange(e.target.value),
+              }}
+            />
+          )}
           <StyledFormField
             intputType="select"
             containerProps={{
@@ -198,7 +203,7 @@ function Vat2() {
             }}
             inputProps={{
               name: 'amountType',
-              placeholder: 'Ampunt Filter Type',
+              placeholder: 'Amount Filter Type',
               value: amountRangeType,
               items: vatTrxsAmountFilterOptions,
               size: 'sm2',
@@ -225,58 +230,62 @@ function Vat2() {
         </Stack>
       </Box>
 
-      <Stack flexDirection="row" gap="26px">
-        <Box
-          flex="1"
-          sx={{
-            backgroundColor: theme.palette.primary.contrastText,
-            border: `1px solid ${theme.palette.custom.border}`,
-            borderRadius: '7px',
-            padding: '14px 30px 23px',
-          }}
-        >
-          <Box>
-            <Typography variant="h5">Unpaid VAT</Typography>
-            <Typography variant="h2">
-              {getAllTransaction?.data?.data?.summary?.totalUnsettleVat.toFixed(2) || 0}
-            </Typography>
+      {getAllTransaction?.isLoading ? (
+        <VatSummerySkeleton />
+      ) : (
+        <Stack flexDirection="row" gap="26px">
+          <Box
+            flex="1"
+            sx={{
+              backgroundColor: theme.palette.primary.contrastText,
+              border: `1px solid ${theme.palette.custom.border}`,
+              borderRadius: '7px',
+              padding: '14px 30px 23px',
+            }}
+          >
+            <Box>
+              <Typography variant="h5">Unpaid VAT</Typography>
+              <Typography variant="h2">
+                {getAllTransaction?.data?.data?.summary?.totalUnsettleVat.toFixed(2) || 0}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-        <Box
-          flex="1"
-          sx={{
-            backgroundColor: theme.palette.primary.contrastText,
-            border: `1px solid ${theme.palette.custom.border}`,
-            borderRadius: '7px',
-            padding: '14px 30px 23px',
-          }}
-        >
-          <Box>
-            <Typography variant="h5">Paid VAT</Typography>
-            <Typography variant="h2">
-              {calculatePaidVat(
-                getAllTransaction?.data?.data?.summary?.totalVat,
-                // eslint-disable-next-line prettier/prettier
-                getAllTransaction?.data?.data?.summary?.totalUnsettleVat
-              ) || 0}
-            </Typography>
+          <Box
+            flex="1"
+            sx={{
+              backgroundColor: theme.palette.primary.contrastText,
+              border: `1px solid ${theme.palette.custom.border}`,
+              borderRadius: '7px',
+              padding: '14px 30px 23px',
+            }}
+          >
+            <Box>
+              <Typography variant="h5">Paid VAT</Typography>
+              <Typography variant="h2">
+                {calculatePaidVat(
+                  getAllTransaction?.data?.data?.summary?.totalVat,
+                  // eslint-disable-next-line prettier/prettier
+                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat,
+                ) || 0}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-        <Box
-          flex="1"
-          sx={{
-            backgroundColor: theme.palette.primary.contrastText,
-            border: `1px solid ${theme.palette.custom.border}`,
-            borderRadius: '7px',
-            padding: '14px 30px 23px',
-          }}
-        >
-          <Box>
-            <Typography variant="h5">Target VAT</Typography>
-            <Typography variant="h2">{getAllTransaction?.data?.data?.summary?.totalVat}</Typography>
+          <Box
+            flex="1"
+            sx={{
+              backgroundColor: theme.palette.primary.contrastText,
+              border: `1px solid ${theme.palette.custom.border}`,
+              borderRadius: '7px',
+              padding: '14px 30px 23px',
+            }}
+          >
+            <Box>
+              <Typography variant="h5">Target VAT</Typography>
+              <Typography variant="h2">{getAllTransaction?.data?.data?.summary?.totalVat}</Typography>
+            </Box>
           </Box>
-        </Box>
-      </Stack>
+        </Stack>
+      )}
 
       <VatList
         data={getAllTransaction?.data?.data?.transactions}

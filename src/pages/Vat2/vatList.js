@@ -2,6 +2,7 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 import StyledTable from '../../components/Styled/StyledTable3';
+import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 
 function VatList({ data, getCurrentCurrency, loading }) {
   const theme = useTheme();
@@ -91,32 +92,36 @@ function VatList({ data, getCurrentCurrency, loading }) {
         marginTop: '30px',
       }}
     >
-      <StyledTable
-        columns={allColumns}
-        rows={data || []}
-        getRowHeight={() => 'auto'}
-        getRowId={(row) => row?._id}
-        //   onRowClick={({ row }) => {
-        //     setCurrentRating(row);
-        //     setIsEdit(true);
-        //     setIsRightBarOpen(true);
-        //   }}
-        sx={{
-          '& .MuiDataGrid-cell': {
-            cursor: 'defualt',
-          },
-          //   '& .MuiDataGrid-row:hover': {
-          //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          //   },
-        }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading' : 'No Products Found'}
-            </Stack>
-          ),
-        }}
-      />
+      {loading ? (
+        <TablePageSkeleton row={3} column={4} />
+      ) : (
+        <StyledTable
+          columns={allColumns}
+          rows={data || []}
+          getRowHeight={() => 'auto'}
+          getRowId={(row) => row?._id}
+          //   onRowClick={({ row }) => {
+          //     setCurrentRating(row);
+          //     setIsEdit(true);
+          //     setIsRightBarOpen(true);
+          //   }}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              cursor: 'defualt',
+            },
+            //   '& .MuiDataGrid-row:hover': {
+            //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
+            //   },
+          }}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                No Transaction Found
+              </Stack>
+            ),
+          }}
+        />
+      )}
     </Box>
   );
 }
