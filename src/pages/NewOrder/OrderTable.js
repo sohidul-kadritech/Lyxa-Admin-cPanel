@@ -4,11 +4,12 @@ import moment from 'moment';
 import Rating from '../../components/Common/Rating';
 import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
+import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
-import { getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
+import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 // import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 
-export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
+export default function OrderTable({ orders = [], onRowClick, orderFilter, adminType, threeDotHandler }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   // const theme = useTheme();
   // console.log('order table: ', orders, 'order fileter: ', orderFilter);
@@ -126,6 +127,31 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
       ),
     },
   ];
+
+  console.log('admintype', adminType);
+
+  const newColumn = {
+    showFor: ['ongoing', 'delivered', 'cancelled'],
+    id: 6,
+    headerName: `ACTION`,
+    sortable: false,
+    align: 'right',
+    headerAlign: 'right',
+    flex: 1,
+    renderCell: (params) => (
+      <ThreeDotsMenu
+        handleMenuClick={(menu) => {
+          threeDotHandler(menu, params?.row);
+        }}
+        menuItems={getThreedotMenuOptions(params?.row?.orderStatus, adminType)}
+      />
+    ),
+  };
+
+  // const newColumns = [];
+  if (adminType === 'admin') {
+    columns.push(newColumn);
+  }
 
   return (
     <Box
