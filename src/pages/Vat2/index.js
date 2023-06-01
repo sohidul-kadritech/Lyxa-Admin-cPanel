@@ -22,7 +22,7 @@ const breadcrumbItems = [
     to: '/financials',
   },
   {
-    label: 'Vat',
+    label: 'VAT',
     to: '#',
   },
 ];
@@ -165,6 +165,22 @@ function Vat2() {
               onChange: (e) => setSort(e.target.value),
             }}
           />
+
+          <StyledFormField
+            intputType="select"
+            containerProps={{
+              sx: { padding: '0px 0px' },
+            }}
+            inputProps={{
+              name: 'amountType',
+              placeholder: 'Amount Filter Type',
+              value: amountRangeType,
+              items: vatTrxsAmountFilterOptions,
+              size: 'sm2',
+              //   items: categories,
+              onChange: (e) => setAmountRangeType(e.target.value),
+            }}
+          />
           {Boolean(amountRangeType) && (
             <StyledFormField
               intputType="text"
@@ -196,21 +212,6 @@ function Vat2() {
               }}
             />
           )}
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'amountType',
-              placeholder: 'Amount Filter Type',
-              value: amountRangeType,
-              items: vatTrxsAmountFilterOptions,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setAmountRangeType(e.target.value),
-            }}
-          />
           <StyledFormField
             intputType="select"
             containerProps={{

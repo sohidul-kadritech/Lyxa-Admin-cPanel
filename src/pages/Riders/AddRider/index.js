@@ -33,23 +33,10 @@ export default function AddRider({ onClose, editRider }) {
   // eslint-disable-next-line no-unused-vars
   const [searchKeyShop, setSearchKeyShop] = useState('');
   // eslint-disable-next-line no-unused-vars
-  const [searchKeyUser, setSearchKeyUser] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  const [searchKeyRider, setSearchKeyRider] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [searchedShopOptions, setSearchedShopOptions] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [searchedUserOptions, setSearchedUserOptions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
-  const [searchedRiderOptions, setSearchedRiderOptions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [selectedShopOptions, setSelectedShopOptions] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [selectedRiderOptions, setSelectedRiderOptions] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [selectedUserOptions, setSelectedUserOptions] = useState(null);
   const [isConfirm, setIsConfirm] = useState(false);
-
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE));
 
   // input handler
@@ -305,9 +292,11 @@ export default function AddRider({ onClose, editRider }) {
                     isOptionEqualToValue: (option, value) => option?._id === value?._id,
                     onChange: (e, v) => {
                       console.log('value: ', v);
+                      setRider((prev) => {
+                        console.log({ ...prev, shopId: v._id });
+                        return { ...prev, shopId: v._id };
+                      });
                       setSelectedShopOptions(v);
-                      setSelectedRiderOptions(null);
-                      setSelectedUserOptions(null);
                     },
                     onInputChange: (e) => {
                       getShops(e?.target?.value);
