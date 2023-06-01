@@ -38,7 +38,7 @@ export default function Payout({ paymentDetails }) {
             titleAmount={
               paymentDetails?.orderValue?.productAmount -
               (paymentDetails?.orderValue?.totalDiscount +
-                paymentDetails?.orderValue?.totalDoubleMenuItemPrice +
+                // paymentDetails?.orderValue?.totalDoubleMenuItemPrice +
                 paymentDetails?.orderValue?.totalRewardAmount)
             }
             isOpen={currentExpanedTab === 0}
@@ -63,7 +63,7 @@ export default function Payout({ paymentDetails }) {
               <PriceItem
                 title="Buy 1 Get 1"
                 amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
-                amountStatus="minus"
+                amountStatus="secondary"
               />
             )}
             {paymentDetails?.orderValue?.totalRewardAmount > 0 && (
