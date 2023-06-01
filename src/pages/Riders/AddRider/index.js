@@ -1,6 +1,6 @@
 import { Delete } from '@mui/icons-material';
-import { Box, Button, Stack } from '@mui/material';
-import { useState } from 'react';
+import { Box, Button, Stack, debounce } from '@mui/material';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
@@ -27,7 +27,27 @@ export default function AddRider({ onClose, editRider }) {
   const [rider, setRider] = useState(editRider?._id ? convertEditRiderData(editRider) : { ...riderInit });
 
   const [loading, setLoading] = useState(false);
+
+  // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [searchKeyShop, setSearchKeyShop] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [searchKeyUser, setSearchKeyUser] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [searchKeyRider, setSearchKeyRider] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [searchedShopOptions, setSearchedShopOptions] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [searchedUserOptions, setSearchedUserOptions] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [searchedRiderOptions, setSearchedRiderOptions] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedShopOptions, setSelectedShopOptions] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedRiderOptions, setSelectedRiderOptions] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedUserOptions, setSelectedUserOptions] = useState(null);
   const [isConfirm, setIsConfirm] = useState(false);
 
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE));
@@ -41,7 +61,8 @@ export default function AddRider({ onClose, editRider }) {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     if (newFiles?.length) {
@@ -69,7 +90,8 @@ export default function AddRider({ onClose, editRider }) {
         successMsg(error?.message);
         setLoading(false);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   //  upload data
@@ -103,6 +125,35 @@ export default function AddRider({ onClose, editRider }) {
   //     }
   //   },
   // });
+
+  const shopsQuery = useMutation(
+    () =>
+      AXIOS.get(Api.ALL_SHOP, {
+        params: {
+          type: 'all',
+          shopStatus: 'all',
+          page: 1,
+          pageSize: 15,
+          searchKey: searchKeyShop,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        setSearchedShopOptions((prev) => data?.data?.shops || prev);
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+
+  const getShops = useMemo(
+    () =>
+      debounce((value) => {
+        setSearchKeyShop(value);
+        shopsQuery.mutate();
+      }, 300),
+    // eslint-disable-next-line prettier/prettier
+    [],
+  );
 
   return (
     <>
@@ -241,44 +292,33 @@ export default function AddRider({ onClose, editRider }) {
             {rider.deliveryBoyType === 'shopRider' && (
               <Box position="relative">
                 <StyledFormField
-                  label="Shop ID"
-                  intputType="text"
+                  label="Select Shop"
+                  intputType="autocomplete"
                   inputProps={{
-                    type: 'text',
-                    name: 'shopId',
-                    value: rider.shopId,
-                    onPaste: async () => {
-                      try {
-                        const textData = await navigator.clipboard.readText();
-                        rider.shopId = textData || '';
-                        setRender(!render);
-                      } catch (error) {
-                        console.log(error);
-                      }
+                    multiple: false,
+                    maxHeight: '110px',
+                    options: searchedShopOptions,
+                    value: selectedShopOptions,
+                    placeholder: 'Choose',
+                    noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
+                    getOptionLabel: (option) => option?.shopName,
+                    isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                    onChange: (e, v) => {
+                      console.log('value: ', v);
+                      setSelectedShopOptions(v);
+                      setSelectedRiderOptions(null);
+                      setSelectedUserOptions(null);
+                    },
+                    onInputChange: (e) => {
+                      getShops(e?.target?.value);
                     },
                     sx: {
-                      paddingRight: '80px!important',
+                      '& .MuiFormControl-root': {
+                        minWidth: '200px',
+                      },
                     },
                   }}
                 />
-                <Button
-                  disableRipple
-                  variant="text"
-                  sx={{ fontWeight: 600, position: 'absolute', right: '20px', top: '49px' }}
-                  onClick={async () => {
-                    try {
-                      const textData = await navigator.clipboard.readText();
-                      if (textData) {
-                        rider.shopId = textData;
-                        setRender(!render);
-                      }
-                    } catch (error) {
-                      console.log(error);
-                    }
-                  }}
-                >
-                  Paste
-                </Button>
               </Box>
             )}
             {/* Photo */}
