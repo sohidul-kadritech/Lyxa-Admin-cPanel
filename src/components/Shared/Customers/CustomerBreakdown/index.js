@@ -2,12 +2,12 @@
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
 import StyledBox from '../../../StyledCharts/StyledBox';
 
 // project import
 // import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
 // import { useGlobalContext } from '../../../../context';
+import { useGlobalContext } from '../../../../context';
 import StyledDoughnutChart from '../../../StyledCharts/StyledPieChart';
 
 export function calculateDateDifference(date1, date2, unit) {
@@ -73,10 +73,8 @@ function AmountItem({ amount, title }) {
 
 export default function CustomerBreakdown({ title, customerType, range, details = {} }) {
   const theme = useTheme();
-  // const { currentUser } = useGlobalContext();
-  // const { shop } = currentUser;
-
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   const sales = customerTypeProps[customerType]?.sales || '';
   const orders = customerTypeProps[customerType]?.orders || '';

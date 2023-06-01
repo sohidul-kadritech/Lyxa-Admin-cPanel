@@ -1,17 +1,20 @@
 // project import
 import { Box, Chip, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
 import Rating from '../../components/Common/Rating';
 import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
+import { useGlobalContext } from '../../context';
 import { getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
 // import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 
 export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   // const theme = useTheme();
   // console.log('order table: ', orders, 'order fileter: ', orderFilter);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
+
   const columns = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled'],

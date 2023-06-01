@@ -38,7 +38,7 @@ export default function Payout({ paymentDetails }) {
             titleAmount={
               paymentDetails?.orderValue?.productAmount -
               (paymentDetails?.orderValue?.totalDiscount +
-                paymentDetails?.orderValue?.totalDoubleMenuItemPrice +
+                // paymentDetails?.orderValue?.totalDoubleMenuItemPrice +
                 paymentDetails?.orderValue?.totalRewardAmount)
             }
             isOpen={currentExpanedTab === 0}
@@ -63,7 +63,7 @@ export default function Payout({ paymentDetails }) {
               <PriceItem
                 title="Buy 1 Get 1"
                 amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
-                amountStatus="minus"
+                amountStatus="secondary"
               />
             )}
             {paymentDetails?.orderValue?.totalRewardAmount > 0 && (
@@ -106,9 +106,10 @@ export default function Payout({ paymentDetails }) {
           Shop-powered deliveries: 10%. 
           VAT inclusive"
               titleAmount={paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount}
-              titleAmountStatus={`${
-                paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''
-              }`}
+              // titleAmountStatus={`${
+              //   paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''
+              // }`}
+              titleAmountStatus="minus"
               isOpen={currentExpanedTab === 2}
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 2 : -1);
@@ -118,15 +119,17 @@ export default function Payout({ paymentDetails }) {
                 <PriceItem
                   title="Promotion: free delivery"
                   amount={paymentDetails?.freeDeliveryShopCut}
-                  amountStatus={`${paymentDetails?.freeDeliveryShopCut < 0 ? 'minus' : ''}`}
+                  // amountStatus={`${paymentDetails?.freeDeliveryShopCut < 0 ? 'minus' : ''}`}
+                  amountStatus="minus"
                 />
               )}
 
               {Math.abs(paymentDetails?.totalFeaturedAmount) > 0 && (
                 <PriceItem
-                  title="Featured"
+                  title="Promotion: featured"
                   amount={paymentDetails?.totalFeaturedAmount}
-                  amountStatus={`${paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''}`}
+                  amountStatus="minus"
+                  // amountStatus={`${paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''}`}
                 />
               )}
             </DetailsAccordion>

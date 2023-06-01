@@ -1,15 +1,18 @@
 import StarIcon from '@mui/icons-material/Star';
 import { Avatar, Box, Skeleton, Stack, Typography, useTheme } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as BikeIcon } from '../../assets/icons/delivery2.svg';
 import { ReactComponent as HeartIcon } from '../../assets/icons/heart.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
+import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
 
 export default function ShopPreview({ shop, loading }) {
   const theme = useTheme();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   if (loading) {
     return <ComponentSkeleton />;

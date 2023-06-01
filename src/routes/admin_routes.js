@@ -131,7 +131,7 @@ export const admin_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  { path: '/shops/list', component: ShopList },
+  { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },

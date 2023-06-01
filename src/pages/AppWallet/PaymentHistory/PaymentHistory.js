@@ -1,12 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Table, Tbody, Th, Thead, Tr } from 'react-super-responsive-table';
 import { Card, CardBody, CardTitle, Col, Container, Row } from 'reactstrap';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
+import { useGlobalContext } from '../../../context';
 
 function PaymentHistory() {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   return (
     <GlobalWrapper>

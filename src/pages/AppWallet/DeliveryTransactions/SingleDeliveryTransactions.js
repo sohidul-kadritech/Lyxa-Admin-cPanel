@@ -81,7 +81,7 @@ function SingleDeliveryTransactions() {
   const [cashOrders, setCashOrders] = useState([]);
   const [tabItem, setTabItem] = useState(0);
 
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const {
     status,
@@ -92,8 +92,9 @@ function SingleDeliveryTransactions() {
     loading: isLoading,
   } = useSelector((state) => state.appWalletReducer);
   // const { userType } = useSelector((store) => store.Login.admin);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
+  const currency = general?.currency?.code?.toUpperCase();
 
   const callApi = async (deiveryId, page = 1) => {
     setLoading(true);

@@ -16,7 +16,6 @@ import { ReactComponent as SellersIcon } from '../assets/icons/menu-icons/seller
 import { ReactComponent as SettingsAdminIcon } from '../assets/icons/menu-icons/settings-admin.svg';
 import { ReactComponent as SettingsIcon } from '../assets/icons/menu-icons/settings.svg';
 import { ReactComponent as ShopIcon } from '../assets/icons/menu-icons/shop.svg';
-import { ReactComponent as RatingIcon } from '../assets/icons/menu-icons/star.svg';
 import { ReactComponent as TeamIcon } from '../assets/icons/menu-icons/team.svg';
 import { ReactComponent as TrxIcon } from '../assets/icons/menu-icons/trx.svg';
 import { ReactComponent as UserIcon } from '../assets/icons/menu-icons/user.svg';
@@ -52,11 +51,11 @@ export const shop_menu_items = (prefix = '') => [
         icon: OrderIcon,
         to: `${prefix}/new-orders`,
       },
-      {
-        label: 'Driver Rating',
-        icon: RatingIcon,
-        to: `${prefix}/`,
-      },
+      // {
+      //   label: 'Driver Rating',
+      //   icon: RatingIcon,
+      //   to: `${prefix}/`,
+      // },
       {
         label: 'Settings',
         icon: SettingsIcon,
@@ -89,44 +88,44 @@ export const shop_menu_items = (prefix = '') => [
       },
     ],
   },
-  {
-    title: 'No Icons',
-    menu: [
-      {
-        label: 'My Shop',
-        to: `${prefix}/shops/list`,
-      },
-      {
-        label: 'Menu Old',
-        to: `${prefix}/products/list`,
-      },
-      {
-        label: 'App Wallet',
-        to: `${prefix}/add-wallet/shop-transactions`,
-      },
-      {
-        label: 'Credentials',
-        to: `${prefix}/shop/credentials/list`,
-      },
-      {
-        label: 'Categories Old',
-        to: `${prefix}/categories/list`,
-      },
-      {
-        label: 'Old Orders',
-        to: `${prefix}/orders/list`,
-      },
-      {
-        label: 'Zone',
-        to: `${prefix}/shop/zone`,
-      },
-      {
-        label: 'Old Dashboard',
-        icon: DashBoardIcon,
-        to: `${prefix}/dashboard`,
-      },
-    ],
-  },
+  // {
+  //   title: 'No Icons',
+  //   menu: [
+  //     {
+  //       label: 'My Shop',
+  //       to: `${prefix}/shops/list`,
+  //     },
+  //     {
+  //       label: 'Menu Old',
+  //       to: `${prefix}/products/list`,
+  //     },
+  //     {
+  //       label: 'App Wallet',
+  //       to: `${prefix}/add-wallet/shop-transactions`,
+  //     },
+  //     {
+  //       label: 'Credentials',
+  //       to: `${prefix}/shop/credentials/list`,
+  //     },
+  //     {
+  //       label: 'Categories Old',
+  //       to: `${prefix}/categories/list`,
+  //     },
+  //     {
+  //       label: 'Old Orders',
+  //       to: `${prefix}/orders/list`,
+  //     },
+  //     {
+  //       label: 'Zone',
+  //       to: `${prefix}/shop/zone`,
+  //     },
+  //     {
+  //       label: 'Old Dashboard',
+  //       icon: DashBoardIcon,
+  //       to: `${prefix}/dashboard`,
+  //     },
+  //   ],
+  // },
 ];
 
 /* ======== seller ======== */
@@ -168,19 +167,6 @@ export const seller_menu_items = (prefix = '') => [
     ],
   },
   {
-    title: 'Products',
-    menu: [
-      {
-        label: 'List',
-        to: `${prefix}/products/list2`,
-      },
-      {
-        label: 'Add',
-        to: `${prefix}/products/add`,
-      },
-    ],
-  },
-  {
     title: 'Arbiatry',
     menu: [
       {
@@ -189,14 +175,6 @@ export const seller_menu_items = (prefix = '') => [
       },
       {
         label: 'Categories List',
-        to: `${prefix}/seller/credentials/list`,
-      },
-      {
-        label: 'Categories Add',
-        to: `${prefix}/admin/create`,
-      },
-      {
-        label: 'List',
         to: `${prefix}/categories/list`,
       },
     ],

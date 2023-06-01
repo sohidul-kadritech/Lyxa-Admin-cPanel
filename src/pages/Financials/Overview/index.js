@@ -5,7 +5,6 @@ import { Button, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 
 // local
 import DateRange from '../../../components/StyledCharts/DateRange';
@@ -34,10 +33,11 @@ export function calculateDateDifference(date1, date2, unit) {
 }
 
 export default function Overview({ viewUserType }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency);
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+
   const { shop, seller } = currentUser;
+  const currency = general?.currency;
 
   const viewUserTypeToApiMap = {
     shop: {

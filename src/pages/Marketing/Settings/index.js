@@ -6,7 +6,6 @@
 import { Box, Button, Checkbox, FormControlLabel, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
 
 // project import
 import moment from 'moment';
@@ -20,6 +19,7 @@ import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledAutocomplete from '../../../components/Styled/StyledAutocomplete';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import { useGlobalContext } from '../../../context';
 import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -40,7 +40,10 @@ import {
 } from './helpers';
 
 export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
+
   const theme = useTheme();
   const queryClient = useQueryClient();
 

@@ -10,6 +10,7 @@ import CircularLoader from '../../../components/CircularLoader';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import DropCharge from '../../../components/DropCharge';
 import GlobalWrapper from '../../../components/GlobalWrapper';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import {
   deleteSellerSpecialDropCharge,
@@ -21,7 +22,10 @@ import {
 
 function PercentageSetting() {
   const dispatch = useDispatch();
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
+
   const { loading, dropCharge, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
     (state) => state.settingsReducer
   );

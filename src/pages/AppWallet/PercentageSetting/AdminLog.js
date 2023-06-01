@@ -8,7 +8,7 @@ import { adminLogTypeOptions, sortByOptions } from '../../../assets/staticData';
 import AppPagination from '../../../components/AppPagination';
 import Breadcrumb from '../../../components/Common/Breadcrumb';
 import GlobalWrapper from '../../../components/GlobalWrapper';
-import store from '../../../store';
+import { useGlobalContext } from '../../../context';
 import {
   getAdminLogHistory,
   updateAdminLogSortKey,
@@ -17,6 +17,9 @@ import {
 
 function AdminLog() {
   const dispatch = useDispatch();
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
+
   const { loading, adminLogType, logSortBy, adminLogs, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.settingsReducer);
 
@@ -44,8 +47,8 @@ function AdminLog() {
 
   // GET  VALUE
   const getValue = (type, value) => {
-    const state = store.getState();
-    const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
+    // const state = store.getState();
+    // const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
 
     console.log(type);
 

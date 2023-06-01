@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
 import SidebarContainer from '../../../../../components/Common/SidebarContainerSm';
+import { useGlobalContext } from '../../../../../context';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
 import ProductCard from './ProductCard';
@@ -9,7 +9,9 @@ import ProductCard from './ProductCard';
 const skeletons_count = new Array(5).fill(0);
 
 export default function BundleProducts({ onClose, rewardBundle }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   const productsQuery = useQuery(
     [
