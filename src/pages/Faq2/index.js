@@ -51,9 +51,9 @@ const breadcrumbItems = [
   },
 ];
 
-export function AddMenuButton({ title = 'Add', ...props }) {
+export function AddMenuButton({ title = 'Add', isIcon = true, ...props }) {
   return (
-    <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
+    <Button variant="contained" color="primary" size="small" startIcon={isIcon ? <Add /> : ''} {...props}>
       {title}
     </Button>
   );
@@ -88,8 +88,6 @@ function Faq() {
 
   const [open, setOpen] = useState(false);
 
-  // React Query will implement here
-  /*--------------------------------*/
   // eslint-disable-next-line no-unused-vars
   const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, { status, type, searchKey, range }], () =>
     AXIOS.get(API_URL?.GET_CHAT_REASON, {
@@ -101,7 +99,7 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -114,12 +112,8 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
-
-  console.log('faq data: ', getChatFaq?.data?.data?.list);
-  console.log('chat reason data: ', getChatReason?.data?.data?.chatReason);
-  /*--------------------------------*/
 
   const faqSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_FAQ, data), {
     onSuccess: (data) => {

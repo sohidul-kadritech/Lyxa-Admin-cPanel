@@ -33,13 +33,13 @@ const mTypeMap = {
   featured: 'Featured',
 };
 
-export default function MarketingDashboard() {
+export default function MarketingDashboard({ viewUserType }) {
   const params = useParams();
   const history = useHistory();
 
   // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
+  const { shop, userType } = currentUser;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(shop);
@@ -230,12 +230,20 @@ export default function MarketingDashboard() {
     }
   }, [__loading]);
 
+  const getBackToUrl = (viewUserType) => {
+    if (viewUserType === 'shop' && userType === 'shop') return '/marketing';
+    if (viewUserType === 'shop' && userType === 'seller') return `/shop/dashboard/${params?.shopId}/marketing`;
+    if (viewUserType === 'admin') return `/shops/marketing/${params?.shopId}`;
+    return '';
+  };
+
   return (
     <Box>
       <PageTop
         breadcrumbItems={breadCrumbItems}
         backButtonLabel="Back to Marketing"
-        backTo={params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing'}
+        // backTo={viewUserType ? `/shops/marketing/${params?.shopId}` : '/marketing'}
+        backTo={getBackToUrl(viewUserType)}
         addButtonLabel="Manage Promotions"
         onAdd={() => {
           setIsModalOpen(true);

@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 // project import
+import { Add } from '@mui/icons-material';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import { shopTypeOptions2 } from '../../../assets/staticData';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
@@ -19,16 +20,14 @@ import AXIOS from '../../../network/axios';
 import {
   AttributesTitle,
   attributeOptions,
-  attributeTypeAvailableOptions,
   converEditProduct,
   createProductData,
   dietryOptions,
-  getAttrOptionsValues,
   getProductInit,
   productAttrInit,
   validateProduct,
 } from '../helpers';
-import AttributeList from './AttributeList';
+import AttributeItem from './AttributeItem';
 import PageSkeleton from './PageSkeleton';
 
 const fieldContainerSx = {
@@ -52,10 +51,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const [categories, setCategories] = useState([]);
 
   const [hasAttribute, setHasAttribute] = useState('no');
-
   const [product, setProduct] = useState(
     editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
   );
+
+  console.log(product);
 
   // addons
   const productsQuery = useQuery(
@@ -85,7 +85,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   // categories
   const categoriesQuery = useQuery(
-    ['single-shop-category', { shopId: shop?._id }],
+    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
         params: {
@@ -95,6 +95,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           sortBy: 'desc',
           status: 'active',
           type: shop?.shopType,
+          shopId: shop?._id,
           userType: 'shop',
         },
       }),
@@ -194,17 +195,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }));
   };
 
-  const attrOptionsHandler = (option) => {
-    if (option.value === 'required') {
-      if (product?.attributes[0]?.required !== undefined) {
-        product.attributes[0].required = !product.attributes[0].required;
-      }
-    } else if (product?.attributes[0]?.select !== undefined) {
-      product.attributes[0].select = product.attributes[0].select === 'multiple' ? '' : 'multiple';
-    }
-    setRender((prev) => !prev);
-  };
-
   // product mutation
   const productMutation = useMutation(
     (data) => {
@@ -231,7 +221,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }
 
     setLoading(true);
-    const productData = await createProductData(product, shop, !!editProduct?._id);
+    const productData = await createProductData(product, shop, !!editProduct?._id, hasAttribute);
 
     if (productData?.status === false) {
       successMsg(productData?.message);
@@ -436,53 +426,44 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           />
         </Box>
       )}
-
       {hasAttribute === 'yes' && (
-        <Box>
-          <StyledFormField
-            label="Attribute Title"
-            intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
+        <Box pb={4}>
+          <Box pb={4}>
+            {product?.attributes?.map((item, index) => (
+              <AttributeItem
+                attributItem={item}
+                readonly={productReadonly}
+                key={item?.xid}
+                onDelete={() => {
+                  product?.attributes?.splice(index, 1);
+                  setRender(!render);
+                }}
+              />
+            ))}
+          </Box>
+          <Button
+            disableRipple
+            color="primary"
+            variant="text"
+            startIcon={<Add />}
+            sx={{
+              fontSize: '14px',
+              lineHeight: '17px',
             }}
-            inputProps={{
-              type: 'text',
-              readOnly: productReadonly,
-              name: 'attributeTitle',
-              value: product?.attributes[0] ? product?.attributes[0]?.name : '',
-              onChange: (e) => {
-                if (product?.attributes[0]?.name !== undefined) {
-                  product.attributes[0].name = e.target.value;
-                } else {
-                  product.attributes.push(productAttrInit);
-                }
-                setRender(!render);
-              },
+            onClick={() => {
+              if (productReadonly) {
+                return;
+              }
+
+              console.log(product?.attributes);
+              product?.attributes?.push(productAttrInit());
+              setRender(!render);
             }}
-          />
-          {/* type options */}
-          <StyledFormField
-            intputType="checkbox"
-            containerProps={{
-              sx: {
-                paddingBottom: '20px',
-              },
-            }}
-            inputProps={{
-              items: attributeTypeAvailableOptions,
-              value: getAttrOptionsValues(product),
-              onChange: attrOptionsHandler,
-              readOnly: productReadonly,
-            }}
-          />
-          {/* attribute list */}
-          <AttributeList
-            items={product?.attributes?.length ? product?.attributes[0]?.items : []}
-            readOnly={productReadonly}
-          />
+          >
+            Add New Attribute
+          </Button>
         </Box>
       )}
-
       {/* addons */}
       {shop?.shopType === 'food' && (
         <StyledFormField
@@ -646,3 +627,51 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     </SidebarContainer>
   );
 }
+
+/*
+
+{hasAttribute === 'yes' && (
+        <Box>
+          <StyledFormField
+            label="Attribute Title"
+            intputType="text"
+            containerProps={{
+              sx: fieldContainerSx,
+            }}
+            inputProps={{
+              type: 'text',
+              readOnly: productReadonly,
+              name: 'attributeTitle',
+              value: product?.attributes[0] ? product?.attributes[0]?.name : '',
+              onChange: (e) => {
+                if (product?.attributes[0]?.name !== undefined) {
+                  product.attributes[0].name = e.target.value;
+                } else {
+                  product.attributes.push(productAttrInit);
+                }
+                setRender(!render);
+              },
+            }}
+          />
+          <StyledFormField
+            intputType="checkbox"
+            containerProps={{
+              sx: {
+                paddingBottom: '20px',
+              },
+            }}
+            inputProps={{
+              items: attributeTypeAvailableOptions,
+              value: getAttrOptionsValues(product),
+              onChange: attrOptionsHandler,
+              readOnly: productReadonly,
+            }}
+          />
+          <AttributeList
+            items={product?.attributes?.length ? product?.attributes[0]?.items : []}
+            readOnly={productReadonly}
+          />
+        </Box>
+      )}
+
+*/

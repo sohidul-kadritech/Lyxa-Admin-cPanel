@@ -35,14 +35,20 @@ export const statusOptions = [
   },
 ];
 
-export const getShopEditData = (shop) => ({
-  ...deepClone(shop),
-  password: '',
-  shopLogo: [{ preview: shop.shopLogo }],
-  shopBanner: [{ preview: shop.shopBanner }],
-});
+export const getShopEditData = (shop) => {
+  const clone = deepClone(shop);
+  return {
+    ...clone,
+    shopAddress: clone?.address,
+    password: '',
+    shopLogo: [{ preview: shop.shopLogo }],
+    shopBanner: [{ preview: shop.shopBanner }],
+  };
+};
 
 export const validateShopDetails = (shopData, isEditShop) => {
+  console.log(shopData);
+
   const status = {
     status: false,
     msg: null,
@@ -80,12 +86,12 @@ export const validateShopDetails = (shopData, isEditShop) => {
     return status;
   }
 
-  if (!shopData?.address) {
+  if (!shopData?.shopAddress?.address) {
     status.msg = 'Please provide shop address';
     return status;
   }
 
-  if (!shopData?.address?.pin) {
+  if (!shopData?.shopAddress?.pin) {
     status.msg = 'Please provide shop Zip Code';
     return status;
   }
@@ -100,10 +106,10 @@ export const validateShopDetails = (shopData, isEditShop) => {
     return status;
   }
 
-  if (!shopData?.shopStatus) {
-    status.msg = 'Please Select shop Shop Status';
-    return status;
-  }
+  // if (!shopData?.shopStatus) {
+  //   status.msg = 'Please Select shop Shop Status';
+  //   return status;
+  // }
 
   return { status: true };
 };
@@ -124,8 +130,8 @@ export const validateShopFeatures = (shopData, sellerType) => {
     return status;
   }
 
-  if (!shopData?.minOrderAmount) {
-    status.msg = 'Please add minimum order admount';
+  if (!shopData?.minOrderAmount || Number(shopData?.minOrderAmount) < 1) {
+    status.msg = 'Please add valid minimum order admount';
     return status;
   }
 
@@ -217,9 +223,10 @@ export const createEditShopData = async (shopData) => {
     bank_address: shopData?.bank_address,
     bank_postal_code: shopData?.bank_postal_code,
     account_swift: shopData?.account_swift,
-    shopAddress: {
-      ...shopData?.address,
-    },
+    shopAddress: shopData?.shopAddress,
+    // shopAddress: {
+    //   ...shopData?.address,
+    // },
     shopLogo,
     shopBanner,
   };
@@ -324,18 +331,16 @@ const shopNoramalHours = [
 
 export const shopInit = (sellerId) => ({
   seller: sellerId,
-  shopStartTime: '10:00',
-  shopEndTime: '20:00',
   shopName: '',
   password: '',
   isCuisine: false,
-  minOrderAmount: '',
+  minOrderAmount: 0,
   email: '',
   phone_number: '',
   shopType: '',
   shopLogo: [],
   shopBanner: [],
-  shopStatus: '',
+  shopStatus: 'active',
   shopDescription: '',
   tags: [],
   tagsId: [],
@@ -350,12 +355,12 @@ export const shopInit = (sellerId) => ({
   shopNote: '',
   shopAddress: {
     address: '',
-    latitude: 23.7820624,
-    longitude: 90.4160527,
-    city: 'Dhaka',
-    state: 'Gulshan',
-    country: 'Bangladesh',
-    placeId: 'ChIJq07Cv57HVTcRekUSP1arfeo',
+    latitude: '',
+    longitude: '',
+    city: '',
+    state: '',
+    country: '',
+    placeId: '',
     pin: '',
     primary: true,
     note: '',

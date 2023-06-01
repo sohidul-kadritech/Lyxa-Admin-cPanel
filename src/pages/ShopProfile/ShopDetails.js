@@ -1,4 +1,5 @@
 import { AccessTimeFilled, Email } from '@mui/icons-material';
+import HashIcon from '@mui/icons-material/Tag';
 import { Box, Stack } from '@mui/material';
 import { ReactComponent as AverageIcon } from '../../assets/icons/averageIcon.svg';
 import { ReactComponent as CalenderIcon } from '../../assets/icons/calender.svg';
@@ -15,6 +16,7 @@ export default function ShopDetails({ shop }) {
   return (
     <Stack gap="40px" flexDirection="column">
       <ProfileSidebarInfo label="Seller" value={shop?.shopName} icon={CalenderIcon} />
+      <ProfileSidebarInfo label="Unique ID" value={shop?.autoGenId} icon={HashIcon} />
       <ProfileSidebarInfo label="Shop Type" value={shop?.shopType} icon={CalenderIcon} />
       <ProfileSidebarInfo label="Location" value={shop?.address?.address} icon={Loacation} />
       <ProfileSidebarInfo label="Delivery by" value={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'} icon={DeliveryIcon} />

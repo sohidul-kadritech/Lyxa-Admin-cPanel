@@ -2,11 +2,11 @@
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
 import StyledBox from '../../../StyledCharts/StyledBox';
 
 // project import
-import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
+// import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
+// import { useGlobalContext } from '../../../../context';
 import { useGlobalContext } from '../../../../context';
 import StyledDoughnutChart from '../../../StyledCharts/StyledPieChart';
 
@@ -73,10 +73,8 @@ function AmountItem({ amount, title }) {
 
 export default function CustomerBreakdown({ title, customerType, range, details = {} }) {
   const theme = useTheme();
-  const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
-
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
 
   const sales = customerTypeProps[customerType]?.sales || '';
   const orders = customerTypeProps[customerType]?.orders || '';
@@ -115,7 +113,7 @@ export default function CustomerBreakdown({ title, customerType, range, details 
       <Typography variant="body4" pb={4} color={theme.palette.text.secondary2}>
         Customers who ordered: Last {calculateDateDifference(range.start, range.end, 'day')} days
       </Typography>
-      <Typography
+      {/* <Typography
         variant="body1"
         lineHeight="19px"
         fontWeight={600}
@@ -125,7 +123,7 @@ export default function CustomerBreakdown({ title, customerType, range, details 
         gap={2}
       >
         <StarIcon /> {shop?.rating?.toFixed(1)}
-      </Typography>
+      </Typography> */}
       <Grid container mt={15}>
         <Grid xs={12} lg={6}>
           <Box sx={{ width: 260, height: 260, position: 'relative' }}>

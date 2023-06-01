@@ -109,7 +109,9 @@ function ShopAdd() {
 
   const handleAddressSelect = (address, placeId) => {
     setSelectedAddress(address);
+
     geocodeByAddress(address);
+
     geocodeByPlaceId(placeId)
       .then((results) => setAddress(results[0]))
       .catch((error) => console.error('Error', error));
@@ -611,7 +613,6 @@ function ShopAdd() {
                         }}
                       />
                     </div>
-
                     <div className="mb-4">
                       <FormControl fullWidth required>
                         <InputLabel id="demo-simple-select-label">Status</InputLabel>

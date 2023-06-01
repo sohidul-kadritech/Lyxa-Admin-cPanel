@@ -10,9 +10,7 @@ import CircularLoader from './CircularLoader';
 import TableImgItem from './TableImgItem';
 import ThreeDotsMenu from './ThreeDotsMenu';
 
-// import {  } from 'react-router-dom';
-
-function ShopTable({ shops = [] }) {
+function ShopTable({ shops = [], viewUserType }) {
   const history = useHistory();
   const location = useLocation();
   const routeMatch = useRouteMatch();
@@ -24,17 +22,15 @@ function ShopTable({ shops = [] }) {
 
   const { loading } = useSelector((state) => state.shopReducer);
 
-  // eslint-disable-next-line no-unused-vars
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  // const { userType, adminType } = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { userType, adminType } = currentUser;
 
   // GO TO SHOP PRODUCT LIST
   const goToShopProductList = (shopId) => {
     history.push({
-      pathname: `/products/list`,
+      pathname: `/products/list2`,
       search: `?shopId=${shopId}`,
     });
   };
@@ -146,9 +142,8 @@ function ShopTable({ shops = [] }) {
                 <ThreeDotsMenu
                   handleMenuClick={(menu) => handleMenu(menu, item)}
                   menuItems={[
-                    userType !== 'shop' && 'View As Admin',
+                    viewUserType === 'seller' && 'View As Admin',
                     userType !== 'shop' && 'Edit',
-                    'Details',
                     userType === 'admin' && adminType !== 'customerService' && 'Products',
                     'Orders',
                   ]}

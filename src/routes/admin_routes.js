@@ -81,7 +81,9 @@ import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
+import Product from '../pages/Product1';
 import RatingSettings2 from '../pages/Ratings2';
+import ReferFriend from '../pages/ReferFriend';
 import RequestedArea from '../pages/RequestedArea';
 import RiderProfile from '../pages/RiderProfile';
 import RiderList from '../pages/Riders';
@@ -96,6 +98,7 @@ import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndCondi
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
+import Vat2 from '../pages/Vat2';
 
 export const admin_routes = [
   // dashboard
@@ -110,7 +113,8 @@ export const admin_routes = [
   { path: '/orders/list/flagged', component: ButlerFlaggedOrder },
 
   // vat
-  { path: '/vat', component: Vat },
+  { path: '/vat2', component: Vat },
+  { path: '/vat', component: Vat2 },
   { path: '/riders', component: RiderList },
   { path: `/riders/:riderId`, component: RiderProfile },
 
@@ -127,12 +131,23 @@ export const admin_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  { path: '/shops/list', component: ShopList },
+  { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
-  { path: '/shops/marketing/:id', component: Marketing },
-  { path: '/shops/marketing/dashboard/:shopId/:type/:id', component: MarketingDashboard },
+  { path: '/shops/marketing/:id', component: () => <Marketing viewUserType="admin" /> },
+  {
+    path: '/shops/marketing/dashboard/:shopId/:type/:id',
+    component: () => <MarketingDashboard viewUserType="admin" />,
+  },
+
+  // product
+  { path: '/products/list2', component: ProductList },
+  { path: '/settings/products', component: Product },
+  { path: '/products/add', component: ProductAdd },
+  { path: '/products/edit/:id', component: ProductAdd },
+  { path: '/products/details/:id', component: ProductDetails },
+  { path: '/products/unit-types', component: UnitTypes },
 
   // delivery man
   { path: '/deliveryman/list', component: DeliverymanList },
@@ -205,6 +220,7 @@ export const admin_routes = [
   { path: '/settings/app-settings', component: Appsettings2 },
   { path: '/admin/settings2', component: AdminSettings },
   { path: '/admin/percentage-settings-history', component: AdminLog },
+  { path: '/settings/refer-friend', component: ReferFriend },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },

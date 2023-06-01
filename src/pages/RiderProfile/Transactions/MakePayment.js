@@ -3,13 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form } from 'reactstrap';
 import styled from 'styled-components';
+import { useGlobalContext } from '../../../context';
 import { riderMakePayment, shopMakePayment } from '../../../store/appWallet/appWalletAction';
 
 function MakePayment({ unSettleAmount = 0, id, userType }) {
   const dispatch = useDispatch();
   //   const [isFirst, setIsFirst] = useState(true);
   const { loading } = useSelector((state) => state.appWalletReducer);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code?.toUpperCase();
   const [settleAmount, setSettleAmount] = useState('');
 
   useEffect(() => {

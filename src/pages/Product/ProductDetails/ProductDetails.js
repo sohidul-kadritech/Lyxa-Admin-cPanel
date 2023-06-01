@@ -34,6 +34,7 @@ import DealForAdd from '../../../components/DealForAdd';
 import GlobalWrapper from '../../../components/GlobalWrapper';
 import InfoTwo from '../../../components/InfoTwo';
 import InfoTwoWrapper from '../../../components/InfoTwoWrapper';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import { SINGLE_PRODUCT } from '../../../network/Api';
@@ -48,7 +49,10 @@ function ProductDetails() {
 
   const { products, status } = useSelector((state) => state.productReducer);
 
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   const [product, setProduct] = useState(null);
   const [isOpen, setIsOpen] = useState(false);

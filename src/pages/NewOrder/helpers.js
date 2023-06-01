@@ -68,9 +68,9 @@ export const sortOptions = [
 
 const queryParamsInit = {
   page: 1,
-  pageSize: 25,
+  pageSize: 20,
   sortBy: 'DESC',
-  type: 'all',
+  type: 'ongoing',
   startDate: moment().startOf('month').format('YYYY-MM-DD'),
   endDate: moment().format('YYYY-MM-DD'),
   searchKey: '',
@@ -114,5 +114,28 @@ export const fiterOrders = (orders = [], filter) => {
 
 export const getOrderProfit = (order) => {
   const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
-  return totalAmount - order?.dropCharge?.dropChargeFromOrder;
+  return (totalAmount - order?.dropCharge?.dropChargeFromOrder)?.toFixed(2);
+};
+
+export const getThreedotMenuOptions = (orderStatus, userType) => {
+  const options = [];
+  const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+  console.log('Order status: ', orderStatus);
+  if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+    options.push({ label: 'Update Status', value: 'update_status' });
+  }
+
+  if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+    options.push({ label: 'Cancel Order', value: 'cancel_order' });
+  }
+
+  if (userType === 'admin' && orderStatus === 'delivered') {
+    options.push({ label: 'Refund Order', value: 'cancel_order' });
+  }
+
+  if (userType === 'admin') {
+    options.push({ label: 'Flag', value: 'flag' });
+  }
+
+  return options;
 };

@@ -29,7 +29,8 @@ import { MAP_URL, SINGLE_USER } from '../../../network/Api';
 import { getUserAllOrder, updateUserStatus } from '../../../store/Users/UsersAction';
 
 function UserDetails() {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const { general } = useGlobalContext();
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -45,8 +46,9 @@ function UserDetails() {
   } = useSelector((state) => state.usersReducer);
   const { status } = useSelector((state) => state.dropPayReducer);
   // const { account_type, adminType } = useSelector((store) => store.Login.admin);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
+  const currency = general?.currency?.code?.toUpperCase();
 
   const [user, setUser] = useState({});
   const [balAddModal, setBalAddModal] = useState(false);

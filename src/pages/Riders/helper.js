@@ -55,6 +55,17 @@ export const riderStatusOptions = [
   },
 ];
 
+export const riderType = [
+  {
+    value: 'dropRider',
+    label: 'Drop Rider',
+  },
+  {
+    value: 'shopRider ',
+    label: 'Shop Rider',
+  },
+];
+
 export const queryParamsInit = {
   page: 1,
   pageSize: 25,

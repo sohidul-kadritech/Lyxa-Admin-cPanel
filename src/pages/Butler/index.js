@@ -1,12 +1,13 @@
 // third pary
-import { Box, Stack, Tooltip, Unstable_Grid2 as Grid } from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Unstable_Grid2 as Grid, Stack, Tooltip } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 // prodject import
 import ReplayIcon from '@mui/icons-material/Replay';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { orderStatusOptionsAll, orderTypeOptionsAll } from '../../assets/staticData';
 import AppPagination from '../../components/Common/AppPagination2';
 import BreadCrumbs from '../../components/Common/BreadCrumb2';
@@ -16,7 +17,6 @@ import FilterSearch from '../../components/Filter/FilterSearch';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import GlobalWrapper from '../../components/GlobalWrapper';
 import OrderTable from '../../components/OrderTable2';
-import minInMiliSec from '../../helpers/minInMiliSec';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
@@ -47,7 +47,7 @@ const sortByOptions = [
   },
 ];
 
-const getAllOrders = (page, sortBy, orderStatus, startDate, endDate, searchKey, orderType, service) =>
+const getAllOrders = (page, sortBy, orderStatus, startDate, endDate, searchKey, orderType, service, shop) =>
   AXIOS.get(Api.ORDER_LIST, {
     params: {
       page,
@@ -59,6 +59,7 @@ const getAllOrders = (page, sortBy, orderStatus, startDate, endDate, searchKey, 
       searchKey,
       orderType,
       model: service,
+      shop,
     },
   });
 
@@ -68,8 +69,10 @@ const butlerTypeOptions = [
 ];
 
 export default function ButlerOrderList() {
-  const history = useHistory();
+  const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
+  const history = useHistory();
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('DESC');
@@ -81,12 +84,38 @@ export default function ButlerOrderList() {
   const [orderType, setOrderType] = useState('all');
   const [service, setService] = useState('');
 
+  console.log('======>', searchParams?.get('shopId'));
+
   // get all data
   const allOrdersQuery = useQuery(
-    ['all-orders', { currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderTypeMain, service }],
-    () => getAllOrders(currentPage, sortBy, orderStatus, startDate, endDate, searchKey, orderTypeMain, service),
+    [
+      'all-orders',
+      {
+        currentPage,
+        sortBy,
+        orderStatus,
+        startDate,
+        endDate,
+        searchKey,
+        orderTypeMain,
+        service,
+        shop: searchParams.get('shopId'),
+      },
+    ],
+    () =>
+      getAllOrders(
+        currentPage,
+        sortBy,
+        orderStatus,
+        startDate,
+        endDate,
+        searchKey,
+        orderTypeMain,
+        service,
+        searchParams.get('shopId')
+      ),
     {
-      staleTime: minInMiliSec(3),
+      // staleTime: minInMiliSec(3),
     }
   );
 
@@ -123,20 +152,22 @@ export default function ButlerOrderList() {
             {/* filters */}
             <Stack direction="row" spacing={3} pt={6.5} pb={4.5}>
               {/* order type */}
-              <Tooltip title="Order Type">
-                <Box>
-                  <FilterSelect
-                    items={orderTypeOptionsAll}
-                    value={orderType}
-                    placeholder="Order Type"
-                    filterName="Order Type:"
-                    onChange={(e) => {
-                      handleOrderTypeChange(e.target.value);
-                      setIsFilterApplied(true);
-                    }}
-                  />
-                </Box>
-              </Tooltip>
+              {!searchParams?.get('shopId') && (
+                <Tooltip title="Order Type">
+                  <Box>
+                    <FilterSelect
+                      items={orderTypeOptionsAll}
+                      value={orderType}
+                      placeholder="Order Type"
+                      filterName="Order Type:"
+                      onChange={(e) => {
+                        handleOrderTypeChange(e.target.value);
+                        setIsFilterApplied(true);
+                      }}
+                    />
+                  </Box>
+                </Tooltip>
+              )}
               {/* butler order type */}
               {orderType === 'butler' && (
                 <Tooltip title="Butler Type">

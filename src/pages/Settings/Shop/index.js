@@ -2,7 +2,7 @@ import { Box } from '@material-ui/core';
 import { Button, Divider, Stack } from '@mui/material';
 import { cloneDeep } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import PageTop from '../../../components/Common/PageTop';
 import { deepClone } from '../../../helpers/deepClone';
 import * as Api from '../../../network/Api';
@@ -22,7 +22,7 @@ import {
   PaymentInformationList,
   PriceRange,
   createShopSettingsData,
-  maxDeliveryOptions,
+  maxDiscountOptions,
 } from './helper';
 
 const boxSx2 = {
@@ -50,11 +50,7 @@ function ShopSettings() {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
-  console.log('shop', shop.credentialUserId);
-
   const [newShop, setNewShop] = useState(deepClone(shop));
-
-  console.log('shop', newShop);
 
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
 
@@ -72,20 +68,10 @@ function ShopSettings() {
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const updateShopSettings = () => {
-    const data = createShopSettingsData(
-      shop,
-      newMaxDiscount,
-      minimumOrder,
-      newPayMentInformation,
-      newDietary,
-      // eslint-disable-next-line prettier/prettier
-      newPriceRange
-    );
-    return Axios.post(Api.EDIT_SHOP, data);
-  };
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS));
+  console.log('getShopSettingsData', getAppSettingsData?.data?.data?.appSetting?.maxDiscount);
 
-  const updateData = useMutation(updateShopSettings, {
+  const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data.status ? 'success' : undefined);
       if (data?.status) {
@@ -100,6 +86,23 @@ function ShopSettings() {
       }
     },
   });
+
+  const updateShopSettings = () => {
+    const data = createShopSettingsData(
+      shop,
+      newMaxDiscount,
+      minimumOrder,
+      newPayMentInformation,
+      newDietary,
+      // eslint-disable-next-line prettier/prettier
+      newPriceRange,
+    );
+    if (data) {
+      updateData.mutate(data);
+    } else {
+      successMsg('Please check your data');
+    }
+  };
 
   const actionHandler = (isActive, title) => {
     const oldShop = newShop;
@@ -118,7 +121,7 @@ function ShopSettings() {
     setNewDietary(shop?.dietary);
     setMinimumOrder(shop?.minOrderAmount);
     setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
-    setNewMaxDiscount(shop?.maxDiscount?.toString() || '100');
+    setNewMaxDiscount(shop?.maxDiscount?.toString() || '');
   };
 
   useEffect(() => {
@@ -269,8 +272,8 @@ function ShopSettings() {
               buttonType={2}
               title="Change Maximum Discount"
               // title2=""
-              value={newMaxDiscount}
-              options={maxDeliveryOptions}
+              value={newMaxDiscount || ''}
+              options={maxDiscountOptions(getAppSettingsData?.data?.data?.appSetting?.maxDiscount || [])}
               action={maxDiscountHandler}
               isInput
               // isMethod
@@ -297,7 +300,18 @@ function ShopSettings() {
             >
               Discard
             </Button>
-            <Button onClick={updateData.mutate} variant="contained" color="primary" disabled={updateData.isLoading}>
+            <Button
+              onClick={() => {
+                if (has_unsaved_change) {
+                  updateShopSettings();
+                } else {
+                  successMsg('Please make some changes first!');
+                }
+              }}
+              variant="contained"
+              color="primary"
+              disabled={updateData.isLoading}
+            >
               Save Changes
             </Button>
           </Stack>

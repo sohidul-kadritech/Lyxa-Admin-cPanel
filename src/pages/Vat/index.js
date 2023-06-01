@@ -24,7 +24,7 @@ function SingleShopTransactions() {
 
   // eslint-disable-next-line no-unused-vars
   // const { shopName: name, _id: accountId, userType } = useSelector((store) => store.Login.admin);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { admin, userType } = currentUser;
 
   const {
@@ -35,7 +35,8 @@ function SingleShopTransactions() {
     loading,
     status,
   } = useSelector((store) => store.vatReducer);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  const currency = general?.currency?.code?.toUpperCase();
   const { admins } = useSelector((state) => state.adminReducer);
 
   const [isModalOpen, setIsModalOpen] = useState(false);

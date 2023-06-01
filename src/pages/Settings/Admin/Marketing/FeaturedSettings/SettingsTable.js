@@ -2,14 +2,16 @@
 import { Edit } from '@mui/icons-material';
 import { Box, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import StyledIconButton from '../../../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
 import StyledTable from '../../../../../components/Styled/StyledTable3';
+import { useGlobalContext } from '../../../../../context';
 
 export default function SettingsTable({ rows = [], onEdit, onStatusChange }) {
   const [render, setRender] = useState(false);
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   const columns = [
     {

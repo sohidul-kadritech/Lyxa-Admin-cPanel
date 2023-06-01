@@ -14,7 +14,7 @@ const pagesList = [
   },
   {
     label: 'Products',
-    to: '/settings/products/list',
+    to: '/settings/products',
   },
   {
     label: 'Categories List',
@@ -67,6 +67,18 @@ const pagesList = [
   {
     label: 'Terms & Conditions',
     to: '/terms-and-conditions',
+  },
+  {
+    label: 'Refer A Friend',
+    to: '/settings/refer-friend',
+  },
+  {
+    label: 'Request New Area',
+    to: '/admin/requested-area',
+  },
+  {
+    label: 'Transaction',
+    to: '/admin/transactions',
   },
 ];
 

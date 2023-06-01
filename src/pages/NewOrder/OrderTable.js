@@ -1,22 +1,28 @@
 // project import
-import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Chip, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
+import Rating from '../../components/Common/Rating';
 import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
-import { getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
+import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
+import { useGlobalContext } from '../../context';
+import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
+// import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 
-export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
-  const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-  const theme = useTheme();
-  console.log('order table: ', orders, 'order fileter: ', orderFilter);
+export default function OrderTable({ orders = [], onRowClick, orderFilter, adminType, threeDotHandler }) {
+  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+  // const theme = useTheme();
+  // console.log('order table: ', orders, 'order fileter: ', orderFilter);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
+
   const columns = [
     {
-      showFor: ['ongoing', 'delivered', 'incomplete'],
+      showFor: ['ongoing', 'delivered', 'cancelled'],
       id: 1,
       headerName: 'ORDERS',
       field: 'orders',
-      flex: orderFilter === 'incomplete' ? 1.5 : 1,
+      flex: orderFilter === 'cancelled ' ? 1.5 : 1,
       sortable: false,
       minWidth: 270,
       renderCell: ({ row }) => (
@@ -44,13 +50,13 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'incomplete'],
+      showFor: ['ongoing', 'delivered', 'cancelled'],
       id: 3,
       headerName: 'DATE',
       field: 'createdAt',
       minWidth: 240,
       sortable: false,
-      flex: orderFilter === 'incomplete' ? 1.5 : 1,
+      flex: orderFilter === 'cancelled' ? 1.5 : 1,
       renderCell: ({ value }) => <Typography variant="body4">{moment(value).format('MMM D, YYYY h:mm a')}</Typography>,
     },
     {
@@ -77,23 +83,15 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
       field: 'rating',
       sortable: false,
       flex: 1,
-      renderCell: () => (
-        <Typography
-          variant="body4"
-          fontWeight={600}
-          display="flex"
-          color={theme.palette.primary.main}
-          sx={{
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          {/* <StarIcon /> {review?.rating} */}_
-        </Typography>
-      ),
+      // eslint-disable-next-line arrow-body-style, no-unused-vars
+      renderCell: ({ row }) => {
+        const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
+        if (rating) return <Rating amount={rating?.rating} />;
+        return '_';
+      },
     },
     {
-      showFor: ['ongoing', 'incomplete'],
+      showFor: ['ongoing', 'cancelled'],
       id: 4,
       headerName: 'STATUS',
       field: 'orderStatus',
@@ -114,7 +112,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'incomplete'],
+      showFor: ['ongoing', 'delivered', 'cancelled'],
       id: 5,
       headerName: 'PROFIT',
       field: 'profit',
@@ -129,6 +127,31 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter }) {
       ),
     },
   ];
+
+  console.log('admintype', adminType);
+
+  const newColumn = {
+    showFor: ['ongoing', 'delivered', 'cancelled'],
+    id: 6,
+    headerName: `ACTION`,
+    sortable: false,
+    align: 'right',
+    headerAlign: 'right',
+    flex: 1,
+    renderCell: (params) => (
+      <ThreeDotsMenu
+        handleMenuClick={(menu) => {
+          threeDotHandler(menu, params?.row);
+        }}
+        menuItems={getThreedotMenuOptions(params?.row?.orderStatus, adminType)}
+      />
+    ),
+  };
+
+  // const newColumns = [];
+  if (adminType === 'admin') {
+    columns.push(newColumn);
+  }
 
   return (
     <Box

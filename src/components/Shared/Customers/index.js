@@ -38,30 +38,6 @@ export default function Customers({ viewUserType }) {
   const [currentTab, setCurrentTab] = useState('total');
   const [range, setRange] = useState({ ...dateRangeInit });
   const { currentUser } = useGlobalContext();
-  const { shop, seller } = currentUser;
-
-  const viewUserTypeToApiMap = {
-    shop: {
-      dashboard: {
-        api: Api.SHOP_DASHBOARD_CUSTOMER_INFO,
-        params: { shopId: shop?._id },
-      },
-      graph: {
-        api: Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH,
-        params: { shopId: shop?._id },
-      },
-    },
-    seller: {
-      dashboard: {
-        api: Api.SHOP_DASHBOARD_CUSTOMER_INFO,
-        params: { sellerId: seller?._id },
-      },
-      graph: {
-        api: Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH,
-        params: { sellerId: seller?._id },
-      },
-    },
-  };
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
@@ -69,21 +45,21 @@ export default function Customers({ viewUserType }) {
 
   const query = useQuery(
     [
-      viewUserTypeToApiMap[viewUserType]?.dashboard?.api,
+      Api.SHOP_DASHBOARD_CUSTOMER_INFO,
       {
-        endDate: range.end,
-        startDate: range.start,
-        year: undefined,
-        type: 'normal',
-        ...viewUserTypeToApiMap[viewUserType]?.dashboard?.params,
+        endDate: moment(range.end).format('YYYY-MM-DD'),
+        startDate: moment(range.start).format('YYYY-MM-DD'),
+        type: viewUserType,
+        id: currentUser[viewUserType]?._id,
       },
     ],
     () =>
-      AXIOS.get(viewUserTypeToApiMap[viewUserType]?.dashboard?.api, {
+      AXIOS.get(Api.SHOP_DASHBOARD_CUSTOMER_INFO, {
         params: {
-          endDate: range.end,
-          startDate: range.start,
-          ...viewUserTypeToApiMap[viewUserType]?.dashboard?.params,
+          endDate: moment(range.end).format('YYYY-MM-DD'),
+          startDate: moment(range.start).format('YYYY-MM-DD'),
+          type: viewUserType,
+          id: currentUser[viewUserType]?._id,
         },
       }),
     {
@@ -148,11 +124,11 @@ export default function Customers({ viewUserType }) {
           />
         </Grid>
         <CommonAreaChart
-          console={console.log(viewUserTypeToApiMap[viewUserType]?.graph?.params)}
-          api={viewUserTypeToApiMap[viewUserType]?.graph?.api}
+          api={Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH}
           title={tabValueToPropsMap[currentTab].title}
           params={{
-            ...viewUserTypeToApiMap[viewUserType]?.graph?.params,
+            type: viewUserType,
+            id: currentUser[viewUserType]?._id,
           }}
           generateData={(data = {}) =>
             generateGraphData(

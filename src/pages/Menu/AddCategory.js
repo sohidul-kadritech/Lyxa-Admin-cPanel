@@ -54,6 +54,7 @@ export default function AddCategory({ onClose, editCategory }) {
   const [loading, setLoading] = useState(false);
 
   const [category, setCategory] = useState(
+    // eslint-disable-next-line prettier/prettier
     editCategory?._id ? getEditCategoryData(editCategory, shop?.shopType) : getCategoryInit(shop?.shopType)
   );
 
@@ -67,6 +68,7 @@ export default function AddCategory({ onClose, editCategory }) {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
+        // eslint-disable-next-line prettier/prettier
       })
     );
 
@@ -84,9 +86,9 @@ export default function AddCategory({ onClose, editCategory }) {
         url: API,
         method: 'POST',
         data,
-        params: {
-          userType: 'shop',
-        },
+        // params: {
+        //   userType: 'shop',
+        // },
       });
     },
     {
@@ -96,6 +98,7 @@ export default function AddCategory({ onClose, editCategory }) {
 
         if (data?.status) {
           queryClient.invalidateQueries('category-wise-products');
+          queryClient.invalidateQueries([Api.GET_ALL_CATEGORY]);
           onClose();
         }
       },
@@ -127,6 +130,7 @@ export default function AddCategory({ onClose, editCategory }) {
       ...category,
       image: imgUrl,
       id: editCategory?._id,
+      shopId: shop._id,
     });
 
     setLoading(false);
