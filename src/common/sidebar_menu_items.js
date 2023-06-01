@@ -160,10 +160,10 @@ export const seller_menu_items = (prefix = '') => [
         label: 'Shop List',
         to: `${prefix}/shops/list`,
       },
-      {
-        label: 'Shop Add',
-        to: `${prefix}/shops/add`,
-      },
+      // {
+      //   label: 'Shop Add',
+      //   to: `${prefix}/shops/add`,
+      // },
     ],
   },
   {
