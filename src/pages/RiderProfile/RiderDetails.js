@@ -9,7 +9,14 @@ export default function RiderDetails({ rider }) {
 
   return (
     <Stack gap="40px" flexDirection="column">
-      <ProfileSidebarInfo label="Email" value={rider?.email} icon={Email} />
+      <ProfileSidebarInfo
+        label="Email"
+        value={rider?.email}
+        icon={Email}
+        valueSx={{
+          textTransform: 'none',
+        }}
+      />
       <ProfileSidebarInfo label="Phone number" value={rider?.number} icon={Phone} />
       <ProfileSidebarInfo label="Location" value={rider?.address} icon={Loacation} />
       <ProfileSidebarInfo label="Vehicle Type" value={rider?.vehicleType} icon={Loacation} />

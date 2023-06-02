@@ -1,8 +1,18 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { useGlobalContext } from '../../../context';
+import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
 
-export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, current, ...props }) {
+export default function MinimumOrder({
+  TypoSx,
+  incrementOrder,
+  decrementOrder,
+  setHasChanged,
+  setValue,
+  current = 0,
+  ...props
+}) {
+  // eslint-disable-next-line no-unused-vars
   const theme = useTheme();
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
@@ -15,17 +25,9 @@ export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, c
       <Box
         sx={{
           marginTop: '15px',
-          height: '48px',
-          width: '157px',
-          padding: '20px 0px',
-          borderRadius: '25px',
-          background: theme.palette.background.secondary,
-          display: 'flex',
-          justifyContent: 'center',
-          alignContent: 'center',
         }}
       >
-        <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
+        {/* <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
           <Button disableRipple sx={{ fontSize: '32px', fontWeight: 600 }} onClick={decrementOrder}>
             -
           </Button>
@@ -35,7 +37,15 @@ export default function MinimumOrder({ TypoSx, incrementOrder, decrementOrder, c
           <Button disableRipple sx={{ fontSize: '32px' }} onClick={incrementOrder}>
             +
           </Button>
-        </Stack>
+        </Stack> */}
+
+        <IncrementDecrementButton
+          currentValue={current}
+          setValue={setValue}
+          incrementHandler={incrementOrder}
+          decrementHandler={decrementOrder}
+          setTypeValidation={setHasChanged}
+        />
       </Box>
     </Box>
   );

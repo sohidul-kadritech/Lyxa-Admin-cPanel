@@ -243,6 +243,7 @@ export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`
 export const SEND_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag`;
 export const DELETE_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag/delete`;
 export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
+export const REFUND_ORDER = `${ADMIN_ENDPOINT}/order/refund-after-delivered`;
 export const ACTIVE_DEIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-nearby-delivery-boy-order`;
 
 // BUTLER

@@ -122,10 +122,10 @@ function SingleDeliveryTransactions() {
         }));
         setCashOrders(list);
       } else {
-        history.push('/add-wallet/delivery-transactions', { replace: true });
+        // history.push('/add-wallet/delivery-transactions', { replace: true });
       }
     } catch (error) {
-      history.push('/add-wallet/delivery-transactions', { replace: true });
+      // history.push('/add-wallet/delivery-transactions', { replace: true });
     }
   };
 
@@ -454,7 +454,7 @@ function SingleDeliveryTransactions() {
                         <CircularLoader />
                       </div>
                     )}
-                    {!loading && trxs?.cashOrderList.length < 1 && (
+                    {!loading && trxs?.cashOrderList?.length < 1 && (
                       <div className="text-center">
                         <h4>No Tansactions!</h4>
                       </div>

@@ -80,7 +80,8 @@ export default function AddTag({ onClose, shopType, tag }) {
           onClose();
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   // image
@@ -90,7 +91,8 @@ export default function AddTag({ onClose, shopType, tag }) {
       image: acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        })
+          // eslint-disable-next-line prettier/prettier
+        }),
       ),
     }));
   };
@@ -203,7 +205,6 @@ export default function AddTag({ onClose, shopType, tag }) {
               }}
               inputProps={{
                 onDrop,
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: currentTag.image,

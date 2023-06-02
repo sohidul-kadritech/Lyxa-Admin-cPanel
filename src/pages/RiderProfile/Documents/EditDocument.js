@@ -7,7 +7,7 @@ import StyledFileDropzone from '../../../components/Styled/StyledFileDropzone';
 import { getImageUrl } from '../../../helpers/images';
 import { successMsg } from '../../../helpers/successMsg';
 
-export default function EditDocument({ onClose, document, onReplaceDoc }) {
+export default function EditDocument({ onClose, document, onReplaceDoc, loading }) {
   const [currentFile, setCurrentFile] = useState(document?.url);
   const [files, setFiles] = useState([]);
 
@@ -74,7 +74,7 @@ export default function EditDocument({ onClose, document, onReplaceDoc }) {
         <Button
           variant="contained"
           fullWidth
-          disabled={!files.length || uploadDoc.isLoading}
+          disabled={!files.length || uploadDoc.isLoading || loading}
           onClick={() => {
             uploadDoc.mutate();
           }}

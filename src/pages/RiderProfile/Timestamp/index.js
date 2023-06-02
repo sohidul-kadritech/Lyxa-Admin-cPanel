@@ -37,33 +37,31 @@ export default function RiderTimeStamp({ riderId }) {
           title={<CardTitle title="Active Time" tooltip="How much time was the rider active during business hours?" />}
           value={calcActiveTime(query?.data?.data?.deliveryBoySummery?.totalMinutes || 0)}
           sm={6}
-          md={4}
-          lg={3}
+          md={3}
         />
         <InfoCard
-          title={<CardTitle title="Downtime" tooltip="How much time was your rider unavailable during menu hours?" />}
-          value="25 min"
+          title={
+            <CardTitle title="Rider Canceled" tooltip="How many orders were rejected by rider during working hours?" />
+          }
+          value="pending"
           sm={6}
-          md={4}
-          lg={3}
+          md={3}
         />
         <InfoCard
           title={
             <CardTitle title="Rider Rejecterd" tooltip="How many orders were rejected by rider during working hours?" />
           }
-          value="2551"
+          value="pending"
           sm={6}
-          md={4}
-          lg={3}
+          md={3}
         />
         <InfoCard
           title={
             <CardTitle title="Missed Orders" tooltip="How many orders were missed by rider during working hours?" />
           }
-          value="2551"
+          value="pending"
           sm={6}
-          md={4}
-          lg={3}
+          md={3}
         />
       </Grid>
       <ActivityTable rows={query?.data?.data?.activities} />

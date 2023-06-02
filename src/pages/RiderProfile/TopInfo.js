@@ -65,21 +65,28 @@ export default function TopInfo({ rider }) {
           }}
         />
       </Box>
-      <Box>
+      <Stack justifyContent="center">
         <Typography variant="h2" sx={{ fontSize: '30px', fontWeight: 500 }}>
           {rider?.name}
         </Typography>
-        {/* <Stack direction="row" alignItems="center" pt={2} pb={2}>
-          <InfoItem text={`Total income ${rider?.totalIncome}`} isFirst />
-          <InfoItem text={`Balance ${rider?.balance}`} />
-        </Stack> */}
-        <Stack direction="row" alignItems="center" pt={2} gap={1}>
+        <Typography
+          pt={1}
+          variant="inherit"
+          sx={{
+            color: 'text.secondary2',
+            fontSize: '20px',
+            fontWeight: 500,
+          }}
+        >
+          # {rider?.autoGenId}
+        </Typography>
+        <Stack direction="row" alignItems="center" pt={1} gap={1}>
           <Rating amount={rider?.rating} />
           <Typography variant="body1" color="text.secondary2">
             ({rider?.reviews?.length <= 100 ? `${rider?.reviews?.length}` : `100+`} Reviews)
           </Typography>
         </Stack>
-      </Box>
+      </Stack>
     </Stack>
   );
 }

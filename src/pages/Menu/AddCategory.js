@@ -55,7 +55,7 @@ export default function AddCategory({ onClose, editCategory }) {
 
   const [category, setCategory] = useState(
     // eslint-disable-next-line prettier/prettier
-    editCategory?._id ? getEditCategoryData(editCategory, shop?.shopType) : getCategoryInit(shop?.shopType)
+    editCategory?._id ? getEditCategoryData(editCategory, shop?.shopType) : getCategoryInit(shop?.shopType),
   );
 
   // input handler
@@ -69,7 +69,7 @@ export default function AddCategory({ onClose, editCategory }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
 
     setCategory((prev) => ({
@@ -102,7 +102,8 @@ export default function AddCategory({ onClose, editCategory }) {
           onClose();
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const onSubmit = async () => {
@@ -176,7 +177,6 @@ export default function AddCategory({ onClose, editCategory }) {
               }}
               inputProps={{
                 onDrop,
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: category.image,

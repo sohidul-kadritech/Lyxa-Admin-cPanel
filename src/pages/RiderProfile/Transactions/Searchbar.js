@@ -17,7 +17,15 @@ export const sortOptions = [
   },
 ];
 
-export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onMakePayment }) {
+export default function SearchBar({
+  searchPlaceHolder,
+  queryParams,
+  setQueryParams,
+  onMakePayment,
+  showFor,
+  onReceiveCash,
+  loading,
+}) {
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
@@ -78,10 +86,17 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         }}
       />
       {/* make payment */}
-      <Box flexShrink={0} onClick={onMakePayment}>
-        <Button size="small" variant="contained">
-          Make Payment
-        </Button>
+      <Box flexShrink={0}>
+        {showFor === 'cashOrderList' && (
+          <Button size="small" variant="contained" onClick={onReceiveCash} disabled={loading}>
+            Receive Cash
+          </Button>
+        )}
+        {showFor === 'transactions' && (
+          <Button size="small" variant="contained" onClick={onMakePayment}>
+            Make Payment
+          </Button>
+        )}
       </Box>
     </Stack>
   );

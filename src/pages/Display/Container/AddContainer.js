@@ -51,7 +51,8 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [container, setContainer] = useState(
-    containerType === 'list' ? { ...containerInit, image: [], banner: [] } : containerInit
+    // eslint-disable-next-line prettier/prettier
+    containerType === 'list' ? { ...containerInit, image: [], banner: [] } : containerInit,
   );
 
   // image
@@ -59,7 +60,8 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     setContainer((prev) => ({
@@ -74,7 +76,8 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
       params: {
         type: shopType === 'food' ? 'restaurant' : shopType,
       },
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   const dealsOptions = useMemo(() => {
@@ -106,7 +109,8 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
         pageSize: 500,
         shopType,
       },
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   const tagsOptions = tagsQuery?.data?.data?.tags?.filter((item) => item.type === 'tag') || [];
@@ -117,7 +121,8 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
       params: {
         type: shopType,
       },
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   const shopsOptions = shopsQuery?.data?.data?.shops || [];
@@ -141,7 +146,8 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
           successMsg(data.message, 'error');
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   // update container
@@ -230,7 +236,6 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
                   onDrop: (...props) => {
                     onDrop(...props, 'image');
                   },
-                  accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                   maxSize: 1000 * 1000,
                   text: 'Drag and drop or chose photo',
                   files: container.image,
@@ -250,7 +255,6 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
                   onDrop: (...props) => {
                     onDrop(...props, 'banner');
                   },
-                  accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                   maxSize: 1000 * 1000,
                   text: 'Drag and drop or chose photo',
                   files: container.banner,

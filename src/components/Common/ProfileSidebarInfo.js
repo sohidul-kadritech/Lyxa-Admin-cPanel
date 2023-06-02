@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 
-export default function ProfileSidebarInfo({ label, value, icon: Icon }) {
+export default function ProfileSidebarInfo({ label, value, icon: Icon, valueSx }) {
   return (
     <Box>
       <Stack direction="row" sx={{ justifyItems: 'center', alignItems: 'center', gap: '11px' }} pb={4.5}>
@@ -9,7 +9,10 @@ export default function ProfileSidebarInfo({ label, value, icon: Icon }) {
           {label}
         </Typography>
       </Stack>
-      <Typography variant="inherit" sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500' }}>
+      <Typography
+        variant="inherit"
+        sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500', ...valueSx }}
+      >
         {value}
       </Typography>
     </Box>

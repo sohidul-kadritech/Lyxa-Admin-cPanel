@@ -52,7 +52,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   const [hasAttribute, setHasAttribute] = useState('no');
   const [product, setProduct] = useState(
-    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
+    // eslint-disable-next-line prettier/prettier
+    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory),
   );
 
   console.log(product);
@@ -75,12 +76,15 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       staleTime: minInMiliSec(10),
-    }
+      // eslint-disable-next-line prettier/prettier
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const adddons = useMemo(
     () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
-    [productsQuery?.data?.data?.products]
+    // eslint-disable-next-line prettier/prettier
+    [productsQuery?.data?.data?.products],
   );
 
   // categories
@@ -104,10 +108,14 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       onSuccess: (data) => {
         console.log(data);
         setCategories(
-          (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
+          // eslint-disable-next-line prettier/prettier
+          (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev,
         );
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+      // eslint-disable-next-line prettier/prettier
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const subCategoriesQuery = useQuery(
@@ -123,7 +131,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           status: 'active',
           categoryId: product?.category,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   useEffect(() => {
@@ -131,7 +140,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       setCategories(
         (prev) =>
           categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
-          prev
+          // eslint-disable-next-line prettier/prettier
+          prev,
       );
     }
 
@@ -160,7 +170,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       enabled: Boolean(editProduct?._id),
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const productIsAddonMessage = `Product is used as  addon inside ${isProductAddonQuery?.data?.data?.products
@@ -186,7 +197,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     setProduct((prev) => ({
@@ -210,7 +222,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           onClose();
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const uploadProduct = async () => {
@@ -379,7 +392,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         }}
         inputProps={{
           onDrop,
-          accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
           maxSize: 1000 * 1000,
           text: 'Drag and drop or chose photo',
           files: product.images,

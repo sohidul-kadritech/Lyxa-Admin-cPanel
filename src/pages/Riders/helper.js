@@ -66,7 +66,7 @@ export const riderType = [
   },
 ];
 
-export const queryParamsInit = {
+export const getQueryParamsInit = (viewUserType, shopId) => ({
   page: 1,
   pageSize: 25,
   searchKey: '',
@@ -75,9 +75,9 @@ export const queryParamsInit = {
   liveStatus: '',
   shift: '',
   zoneId: '',
-  deliveryBoyType: '',
-  shopId: '',
-};
+  deliveryBoyType: viewUserType === 'admin' ? 'dropRider' : 'shopRider ',
+  shopId: viewUserType === 'shop' ? shopId : undefined,
+});
 
 export const getRiderStatus = (rider) => {
   if (rider?.status === 'deactive') return 'deactive';
