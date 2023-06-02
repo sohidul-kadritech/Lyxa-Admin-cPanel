@@ -24,6 +24,7 @@ export default function SearchBar({
   onMakePayment,
   showFor,
   onReceiveCash,
+  loading,
 }) {
   const updateSearch = useMemo(
     () =>
@@ -87,7 +88,7 @@ export default function SearchBar({
       {/* make payment */}
       <Box flexShrink={0}>
         {showFor === 'cashOrderList' && (
-          <Button size="small" variant="contained" onClick={onReceiveCash}>
+          <Button size="small" variant="contained" onClick={onReceiveCash} disabled={loading}>
             Receive Cash
           </Button>
         )}

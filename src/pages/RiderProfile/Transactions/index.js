@@ -125,6 +125,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         onMakePayment={() => setMakePayment(true)}
         onReceiveCash={onReceiveCash}
         showFor={showFor}
+        loading={receiveCashMutation.isLoading}
       />
       <Grid container spacing={5} pb={7.5}>
         <InfoCard

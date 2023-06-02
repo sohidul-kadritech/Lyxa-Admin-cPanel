@@ -1,18 +1,21 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import AddRider from '../Riders/AddRider';
 import Documents from './Documents';
 import RiderFlags from './Flags';
 import RiderOrders from './Orders';
 import RiderDetails from './RiderDetails';
+import RiderRating from './RiderRating';
 import RiderTimeStamp from './Timestamp';
 import TopInfo from './TopInfo';
 import RiderTransactions from './Transactions';
 
 export default function RiderProfile() {
+  const [open, setOpen] = useState(false);
   const location = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
@@ -41,6 +44,9 @@ export default function RiderProfile() {
               disableRipple
               variant="text"
               color="primary"
+              onClick={() => {
+                setOpen(true);
+              }}
               sx={{
                 textDecoration: 'underline',
                 marginTop: '4px',
@@ -67,6 +73,7 @@ export default function RiderProfile() {
             <Tab label="Timestamp" />
             <Tab label="Flagged" />
             <Tab label="Documents" />
+            <Tab label="Shop Rating" />
           </Tabs>
           <Box>
             <TabPanel index={0} value={currentTab}>
@@ -87,6 +94,9 @@ export default function RiderProfile() {
             <TabPanel index={5} value={currentTab}>
               <Documents rider={rider} />
             </TabPanel>
+            <TabPanel index={6} value={currentTab}>
+              <RiderRating rider={rider} />
+            </TabPanel>
           </Box>
         </Box>
         {/* right */}
@@ -100,6 +110,9 @@ export default function RiderProfile() {
           <RiderDetails rider={rider} />
         </Box>
       </Box>
+      <Drawer open={open} onClose={() => setOpen(false)} anchor="right">
+        <AddRider editRider={rider} onClose={() => setOpen(false)} />
+      </Drawer>
     </Box>
   );
 }

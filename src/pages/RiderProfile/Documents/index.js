@@ -58,6 +58,10 @@ export default function Documents({ rider }) {
     updateRiderMutation.mutate({ id: rider?._id, [document?.propertyName]: document?.url });
   };
 
+  const removeDocument = () => {
+    updateRiderMutation.mutate({ id: rider?._id, [currentDocumet?.propertyName]: '' });
+  };
+
   const columns = [
     {
       id: 1,
@@ -99,6 +103,7 @@ export default function Documents({ rider }) {
             color="primary"
             onClick={() => {
               setConfirmOpen(true);
+              setCurrentDocumet(row);
             }}
           >
             <CloseIcon />
@@ -136,11 +141,14 @@ export default function Documents({ rider }) {
       <ConfirmModal
         message="Are you sure you want to delete this resource?"
         isOpen={confirmOpen}
+        loading={updateRiderMutation?.isLoading}
         onCancel={() => {
-          confirmOpen(false);
+          setConfirmOpen(false);
+          setCurrentDocumet({});
         }}
         onConfirm={() => {
-          confirmOpen(false);
+          setConfirmOpen(false);
+          removeDocument(currentDocumet);
         }}
       />
       <Modal open={editDocumentOpen} onClose={() => setEditDocumentOpen(false)}>
@@ -162,7 +170,10 @@ export default function Documents({ rider }) {
           <EditDocument
             loading={updateRiderMutation.isLoading}
             document={currentDocumet}
-            onClose={() => setEditDocumentOpen(false)}
+            onClose={() => {
+              setEditDocumentOpen(false);
+              setCurrentDocumet({});
+            }}
             onReplaceDoc={replaceDocument}
           />
         </Box>

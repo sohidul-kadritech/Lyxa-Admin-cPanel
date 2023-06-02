@@ -115,7 +115,7 @@ export const admin_routes = [
   // vat
   { path: '/vat2', component: Vat },
   { path: '/vat', component: Vat2 },
-  { path: '/riders', component: RiderList },
+  { path: '/riders', component: () => <RiderList viewUserType="admin" /> },
   { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
