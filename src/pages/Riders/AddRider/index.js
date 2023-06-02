@@ -22,19 +22,11 @@ import {
 
 export default function AddRider({ onClose, editRider }) {
   const queryClient = useQueryClient();
-  console.log(editRider);
-
   const [rider, setRider] = useState(editRider?._id ? convertEditRiderData(editRider) : { ...riderInit });
-
   const [loading, setLoading] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
-  const [render, setRender] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [searchKeyShop, setSearchKeyShop] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [searchedShopOptions, setSearchedShopOptions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [selectedShopOptions, setSelectedShopOptions] = useState(null);
   const [isConfirm, setIsConfirm] = useState(false);
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE));
@@ -48,8 +40,7 @@ export default function AddRider({ onClose, editRider }) {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     if (newFiles?.length) {
@@ -77,8 +68,7 @@ export default function AddRider({ onClose, editRider }) {
         successMsg(error?.message);
         setLoading(false);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   //  upload data
@@ -128,8 +118,7 @@ export default function AddRider({ onClose, editRider }) {
       onSuccess: (data) => {
         setSearchedShopOptions((prev) => data?.data?.shops || prev);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getShops = useMemo(
@@ -138,8 +127,7 @@ export default function AddRider({ onClose, editRider }) {
         setSearchKeyShop(value);
         shopsQuery.mutate();
       }, 300),
-    // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   return (
@@ -316,7 +304,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'image'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.image || [],
@@ -329,7 +316,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'nationalIdDocument'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.nationalIdDocument || [],
@@ -342,7 +328,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'vehicleRegistrationDocument'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.vehicleRegistrationDocument || [],
@@ -355,7 +340,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'contractImage'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.contractImage || [],

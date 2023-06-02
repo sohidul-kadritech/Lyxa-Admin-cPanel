@@ -70,7 +70,7 @@ export default function EditDocument({ onClose, document, onReplaceDoc }) {
         <img src={currentFile} alt="doc" />
       </Box>
       <Stack gap="20px" pt={8.5}>
-        <StyledFileDropzone onDrop={onDrop} multiple={false} accept={{ 'image/*': [] }} maxFiles={1} />
+        <StyledFileDropzone onDrop={onDrop} multiple={false} maxFiles={1} />
         <Button
           variant="contained"
           fullWidth
