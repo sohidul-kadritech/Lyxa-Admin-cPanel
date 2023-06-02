@@ -316,7 +316,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'image'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.image || [],
@@ -329,7 +328,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'nationalIdDocument'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.nationalIdDocument || [],
@@ -342,7 +340,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'vehicleRegistrationDocument'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.vehicleRegistrationDocument || [],
@@ -355,7 +352,6 @@ export default function AddRider({ onClose, editRider }) {
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'contractImage'),
-                accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
                 maxSize: 1000 * 1000,
                 text: 'Drag and drop or chose photo',
                 files: rider.contractImage || [],

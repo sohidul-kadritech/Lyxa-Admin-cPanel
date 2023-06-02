@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { isNumber } from 'lodash';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ConfirmModal from '../../components/Common/ConfirmModal';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -14,7 +15,8 @@ import { discountOptions, discountTypeOptions, durationOptions, typeList } from 
 
 function Configuration() {
   // eslint-disable-next-line no-unused-vars
-  const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
+  const { currentUser, general } = useGlobalContext();
+  const getCurrentCurrency = general?.currency;
   // eslint-disable-next-line no-unused-vars
   const [isConfirm, setIsConfirm] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -183,10 +185,7 @@ function Configuration() {
                     onChange: (e) => {
                       setTypeValidation(type, setType, typeList[0]);
                       setSenderReferralDiscountType(() => {
-                        setTempDiscount((prev) => {
-                          setSenderReferralDiscount(prev);
-                          return senderReferralDiscount;
-                        });
+                        setSenderReferralDiscount('');
                         return e.target.value;
                       });
                     },
@@ -256,10 +255,7 @@ function Configuration() {
                     onChange: (e) => {
                       setTypeValidation(type, setType, typeList[4]);
                       setReceiverReferralDiscountType(() => {
-                        setTempDiscount2((prev) => {
-                          setReceiverReferralDiscount(prev);
-                          return receiverReferralDiscount;
-                        });
+                        setReceiverReferralDiscount('');
                         return e.target.value;
                       });
                     },

@@ -1,6 +1,6 @@
 import { Box } from '@material-ui/core';
 import { Button, Divider, Stack } from '@mui/material';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isNaN, isNumber } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import PageTop from '../../../components/Common/PageTop';
@@ -42,11 +42,6 @@ const section2Sx = {
 };
 
 function ShopSettings() {
-  // const shop = useSelector((store) => {
-  //   console.log('useSelector:', store);
-  //   return store.Login.admin;
-  // });
-
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
@@ -58,7 +53,7 @@ function ShopSettings() {
 
   const [newDietary, setNewDietary] = useState(newShop?.dietary || []);
 
-  const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount);
+  const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount || 0);
 
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
 
@@ -69,7 +64,6 @@ function ShopSettings() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS));
-  console.log('getShopSettingsData', getAppSettingsData?.data?.data?.appSetting?.maxDiscount);
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
@@ -81,7 +75,7 @@ function ShopSettings() {
         shop.dietary = data?.data?.shop.dietary || shop.dietary;
         shop.minOrderAmount = data?.data?.shop.minOrderAmount || shop.minOrderAmount;
         shop.haveOwnDeliveryBoy = data?.data?.shop.haveOwnDeliveryBoy || shop.haveOwnDeliveryBoy;
-        console.log('Data Updated: ', data.data);
+
         set_has_unsaved_change(false);
       }
     },
@@ -109,9 +103,8 @@ function ShopSettings() {
     const index = oldShop.paymentOption.indexOf(title.toLowerCase());
     if (index !== -1) oldShop.paymentOption.splice(index, 1); // remove 1 element at index
     else oldShop.paymentOption.push(title.toLowerCase());
-    console.log('old shop', oldShop.paymentOption);
+
     setNewShop(oldShop);
-    console.log(isActive);
     return !isActive;
   };
 
@@ -136,15 +129,22 @@ function ShopSettings() {
     },
   ];
 
-  // Handle Incremented by one
-  const incrementOrder = () => {
+  const incrementOrder = (setValue) => {
     set_has_unsaved_change(true);
-    setMinimumOrder((prev) => prev + 1);
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '' && !isNaN(prev) && prev) return parseInt(prev, 10) + 1;
+      if (prev === '' || isNaN(prev) || !prev) return 1;
+      return prev;
+    });
   };
   // Handle decremented by one
-  const decrementOrder = () => {
+  const decrementOrder = (setValue) => {
     set_has_unsaved_change(true);
-    setMinimumOrder((prev) => prev - 1);
+    setValue((prev) => {
+      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
+      if (prev === '' || prev <= 0) return 0;
+      return prev;
+    });
   };
 
   // HandlePaymentInformation where we deal with muliple payment system
@@ -182,7 +182,6 @@ function ShopSettings() {
   // Handle max discount
 
   const maxDiscountHandler = (value) => {
-    console.log('prev:', newMaxDiscount, 'value: ', value);
     setNewMaxDiscount(value);
     set_has_unsaved_change(true);
   };
@@ -254,7 +253,11 @@ function ShopSettings() {
               }}
               incrementOrder={incrementOrder}
               decrementOrder={decrementOrder}
-              current={minimumOrder}
+              setValue={setMinimumOrder}
+              setHasChanged={() => {
+                set_has_unsaved_change(true);
+              }}
+              current={minimumOrder !== null ? minimumOrder : 0}
               TypoSx={TypoSx}
             />
           </Box>

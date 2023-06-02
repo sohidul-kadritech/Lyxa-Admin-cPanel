@@ -173,7 +173,6 @@ function AddProducts({ isEdit, onClose }) {
             inputProps={{
               //   onDrop,
               name: 'shopLogo',
-              accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
               maxSize: 1000 * 1000,
               text: 'Drag and drop or chose photo',
               //   files: editedData?.shopLogo,
