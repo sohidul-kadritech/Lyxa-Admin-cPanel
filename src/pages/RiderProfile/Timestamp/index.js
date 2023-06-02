@@ -38,15 +38,8 @@ export default function RiderTimeStamp({ riderId }) {
           value={calcActiveTime(query?.data?.data?.deliveryBoySummery?.totalMinutes || 0)}
           sm={6}
           md={4}
-          lg={3}
         />
-        <InfoCard
-          title={<CardTitle title="Downtime" tooltip="How much time was your rider unavailable during menu hours?" />}
-          value="25 min"
-          sm={6}
-          md={4}
-          lg={3}
-        />
+
         <InfoCard
           title={
             <CardTitle title="Rider Rejecterd" tooltip="How many orders were rejected by rider during working hours?" />
@@ -54,7 +47,6 @@ export default function RiderTimeStamp({ riderId }) {
           value="2551"
           sm={6}
           md={4}
-          lg={3}
         />
         <InfoCard
           title={
@@ -63,7 +55,6 @@ export default function RiderTimeStamp({ riderId }) {
           value="2551"
           sm={6}
           md={4}
-          lg={3}
         />
       </Grid>
       <ActivityTable rows={query?.data?.data?.activities} />

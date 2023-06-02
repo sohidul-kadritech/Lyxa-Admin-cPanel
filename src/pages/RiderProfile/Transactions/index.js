@@ -3,9 +3,10 @@
 import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
+import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import PriceItem from '../../Financials/Overview/PriceItem';
@@ -86,6 +87,35 @@ export default function RiderTransactions({ riderId, showFor }) {
     }
   );
 
+  // on receive cash
+  const receiveCashMutation = useMutation((data) => AXIOS.post(Api.RIDER_RECEIVED_PAYMENT, data), {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries([Api.DELIVERY_TRX]);
+      queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
+      queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);
+    },
+  });
+
+  const onReceiveCash = () => {
+    const items = [];
+
+    listQuery?.data?.data?.cashOrderList?.forEach((trx) => {
+      if (trx.selected) {
+        items.push(trx?._id);
+      }
+    });
+
+    if (items?.length < 1) {
+      successMsg('Please select atleast one item to receive cash');
+      return;
+    }
+
+    receiveCashMutation.mutate({
+      deliveryBoyId: riderId,
+      idList: items,
+    });
+  };
+
   return (
     <Box>
       <SearchBar
@@ -93,6 +123,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         onMakePayment={() => setMakePayment(true)}
+        onReceiveCash={onReceiveCash}
         showFor={showFor}
       />
       <Grid container spacing={5} pb={7.5}>
@@ -150,7 +181,12 @@ export default function RiderTransactions({ riderId, showFor }) {
           </Stack>
         </InfoCard>
       </Grid>
-      <TransactionsTable rows={listQuery?.data?.data?.[showFor]} showFor={showFor} />
+      <TransactionsTable
+        loading={receiveCashMutation.isloading}
+        rows={listQuery?.data?.data?.[showFor]}
+        showFor={showFor}
+        queryParams={queryParams}
+      />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {

@@ -1,7 +1,8 @@
 // project import
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import StyledCheckbox from '../../../components/Styled/StyledCheckbox';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
@@ -28,8 +29,18 @@ export const getTrxType = (type) => {
   return newType;
 };
 
-export default function TransactionssTable({ rows = [], showFor }) {
+export default function TransactionssTable({ rows = [], showFor, loading, queryParams }) {
   const [allSelected, setAllSelected] = useState(false);
+  const [render, setRender] = useState(false);
+
+  useEffect(() => {
+    if (showFor === 'cashOrderList') {
+      setAllSelected(false);
+      rows?.forEach((row) => {
+        row.selected = false;
+      });
+    }
+  }, [queryParams]);
 
   const columns = [
     {
@@ -46,7 +57,7 @@ export default function TransactionssTable({ rows = [], showFor }) {
       showFor: ['transactions', 'cashOrderList'],
       id: 2,
       headerName: 'AMOUNT',
-      field: 'amount',
+      field: showFor === 'transactions' ? 'amount' : 'receivedAmount',
       flex: 1,
       minWidth: 200,
       sortable: false,
@@ -97,7 +108,19 @@ export default function TransactionssTable({ rows = [], showFor }) {
         <Stack
           direction="row"
           alignItems="center"
-          onClick={() => setAllSelected(!allSelected)}
+          onClick={() => {
+            if (allSelected) {
+              rows?.forEach((row) => {
+                row.selected = false;
+              });
+              setAllSelected(false);
+            } else {
+              rows?.forEach((row) => {
+                row.selected = true;
+              });
+              setAllSelected(true);
+            }
+          }}
           sx={{ cursor: 'pointer' }}
         >
           <Typography variant="inherit" fontSize="14px" lineHeight="17px" fontWeight={600} color="#737373">
@@ -117,6 +140,7 @@ export default function TransactionssTable({ rows = [], showFor }) {
           checked={Boolean(row?.selected)}
           onChange={() => {
             row.selected = !row.selected;
+            setRender(!render);
           }}
         />
       ),
@@ -135,6 +159,7 @@ export default function TransactionssTable({ rows = [], showFor }) {
         background: '#fff',
       }}
     >
+      {loading && <LoadingOverlay />}
       <StyledTable
         columns={columns.filter((col) => col.showFor.includes(showFor))}
         rows={rows}
