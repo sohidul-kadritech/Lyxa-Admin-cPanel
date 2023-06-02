@@ -854,52 +854,9 @@ export default function NewOrders({ showFor }) {
                 />
               </div>
 
-              {isOtherReason && (
-                <div className="mt-2">
-                  <TextField
-                    type="text"
-                    multiline
-                    className="form-control"
-                    placeholder="Type other reason"
-                    maxRows={4}
-                    required={isOtherReason}
-                    label="Other reason"
-                    value={orderCancel.otherReason}
-                    onChange={(e) =>
-                      setOrderCancel({
-                        ...orderCancel,
-                        otherReason: e.target.value,
-                        cancelReasonId: null,
-                      })
-                    }
-                  />
-                </div>
-              )}
-
-              <FormControl className="py-3">
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  value={orderCancel?.refundType}
-                  onChange={(e) => updateRefundType(e.target.value)}
-                  required
-                >
-                  {orderCancel?.paymentMethod !== 'cash' && (
-                    <>
-                      <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
-                      {orderCancel?.deliveryBoy?._id && (
-                        <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
-                      )}
-                    </>
-                  )}
-                  <FormControlLabel value="none" control={<Radio />} label="No Refund" />
-                </RadioGroup>
-              </FormControl>
               {orderCancel?.refundType === 'partial' && (
                 <CancelOrderRefunds>
-                  <div className="refund_item_wrapper">
-                    <input
+                  {/* <input
                       type="number"
                       className="form-control refund_input"
                       placeholder="Enter Admin Amount"
@@ -908,27 +865,30 @@ export default function NewOrders({ showFor }) {
                       onChange={updateRefundAmount}
                       name="admin"
                       value={orderCancel?.partialPayment?.admin}
-                    />
-                    <span>Lyxa Earning: {orderPayment?.admin}</span>
-                  </div>
-                  {orderCancel?.deliveryBoy?._id && (
-                    <div className="refund_item_wrapper">
-                      <input
-                        type="number"
-                        className="form-control refund_input"
-                        placeholder="Enter Delivery Amount"
-                        min={0}
-                        max={orderPayment?.deliveryBoy}
-                        onChange={updateRefundAmount}
-                        name="deliveryBoy"
-                        value={orderCancel?.partialPayment?.deliveryBoy}
-                      />
-                      <span>Delivery Earning: {orderPayment?.deliveryBoy}</span>
-                    </div>
-                  )}
+                    /> */}
+                  <StyledFormField
+                    label={<span>Lyxa Earning: {orderPayment?.admin}</span>}
+                    intputType="text"
+                    containerProps={{
+                      sx: {
+                        padding: '14px 0px 23px 0',
+                        flex: '1',
+                      },
+                    }}
+                    inputProps={{
+                      value: orderCancel?.partialPayment?.admin,
+                      min: 0,
+                      type: 'number',
+                      name: 'admin',
+                      placeholder: 'Enter Admin Amount',
+                      onChange: updateRefundAmount,
+                    }}
+                  />
+                  {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
+
                   {orderCancel?.shop?._id && (
                     <div className="refund_item_wrapper">
-                      <input
+                      {/* <input
                         type="number"
                         className="form-control refund_input"
                         placeholder="Enter Shop Amount"
@@ -938,7 +898,25 @@ export default function NewOrders({ showFor }) {
                         name="shop"
                         value={orderCancel?.partialPayment?.shop}
                       />
-                      <span>Shop Earning: {orderPayment?.shop}</span>
+                      <span>Shop Earning: {orderPayment?.shop}</span> */}
+                      <StyledFormField
+                        label={<span>Shop Earning: {orderPayment?.shop}</span>}
+                        intputType="text"
+                        containerProps={{
+                          sx: {
+                            padding: '14px 0px 23px 0',
+                            flex: '1',
+                          },
+                        }}
+                        inputProps={{
+                          value: orderCancel?.partialPayment?.shop,
+                          type: 'number',
+                          min: 0,
+                          name: 'shop',
+                          placeholder: 'Enter Shop Amount',
+                          onChange: updateRefundAmount,
+                        }}
+                      />
                     </div>
                   )}
                 </CancelOrderRefunds>

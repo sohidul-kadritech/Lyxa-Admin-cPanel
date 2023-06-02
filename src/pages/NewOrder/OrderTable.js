@@ -114,7 +114,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
     {
       showFor: ['ongoing', 'delivered', 'cancelled'],
       id: 5,
-      headerName: `${adminType === 'admin' ? 'AMOUNT' : 'PROFIT'}`,
+      headerName: `${adminType === 'admin' ? 'ORDER AMOUNT' : 'PROFIT'}`,
       field: 'profit',
       sortable: false,
       align: 'right',
@@ -122,7 +122,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       flex: 1,
       renderCell: ({ row }) => (
         <Typography variant="body4">
-          {currency} {getOrderProfit(row)}
+          {currency} {getOrderProfit(row, adminType)}
         </Typography>
       ),
     },
