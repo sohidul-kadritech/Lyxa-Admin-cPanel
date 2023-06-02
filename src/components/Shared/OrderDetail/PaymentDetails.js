@@ -34,12 +34,15 @@ function StyledItem({ label, value, total }) {
 }
 
 export default function PaymentDetails({ order = {} }) {
+  console.log('Order details: ', order);
   const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>
         <StyledItem label="Subtotal" value={totalAmount} />
         <StyledItem label="Lyxa fee" value={order?.dropCharge?.dropChargeFromOrder} />
+        <StyledItem label="Rider fee" value={order?.dropCharge?.dropChargeFromDelivery} />
+        <StyledItem label="VAT" value={order?.dropCharge?.dropChargeFromOrder} />
         <StyledItem label="Profit" value={totalAmount - order?.dropCharge?.dropChargeFromOrder} total />
       </Box>
     </StyledOrderDetailBox>

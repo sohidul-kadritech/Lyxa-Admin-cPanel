@@ -112,9 +112,11 @@ export const fiterOrders = (orders = [], filter) => {
   return orders.filter((order) => cFilter && cFilter[order?.orderStatus]);
 };
 
-export const getOrderProfit = (order) => {
+export const getOrderProfit = (order, adminType = 'shop') => {
   const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
-  return (totalAmount - order?.dropCharge?.dropChargeFromOrder)?.toFixed(2);
+
+  if (adminType === 'shop') return (totalAmount - order?.dropCharge?.dropChargeFromOrder)?.toFixed(2);
+  return totalAmount;
 };
 
 export const getThreedotMenuOptions = (orderStatus, userType) => {
