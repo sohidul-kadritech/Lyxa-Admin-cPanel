@@ -114,7 +114,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
     {
       showFor: ['ongoing', 'delivered', 'cancelled'],
       id: 5,
-      headerName: 'PROFIT',
+      headerName: `${adminType === 'admin' ? 'AMOUNT' : 'PROFIT'}`,
       field: 'profit',
       sortable: false,
       align: 'right',
