@@ -126,7 +126,14 @@ export default function TransactionssTable({ rows = [], showFor, loading, queryP
           <Typography variant="inherit" fontSize="14px" lineHeight="17px" fontWeight={600} color="#737373">
             {allSelected ? 'UNSELECT' : 'SELECT'}
           </Typography>
-          <StyledCheckbox checked={allSelected} />
+          <StyledCheckbox
+            checked={allSelected}
+            sx={{
+              '& .MuiSvgIcon-root': {
+                color: '#9f9f9f!important',
+              },
+            }}
+          />
         </Stack>
       ),
       field: 'selected',
@@ -141,6 +148,11 @@ export default function TransactionssTable({ rows = [], showFor, loading, queryP
           onChange={() => {
             row.selected = !row.selected;
             setRender(!render);
+          }}
+          sx={{
+            '& .MuiSvgIcon-root': {
+              color: '#9f9f9f!important',
+            },
           }}
         />
       ),
