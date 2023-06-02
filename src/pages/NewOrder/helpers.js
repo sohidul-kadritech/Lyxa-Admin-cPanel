@@ -114,9 +114,10 @@ export const fiterOrders = (orders = [], filter) => {
 
 export const getOrderProfit = (order, adminType = 'shop') => {
   const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
+  const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
   if (adminType === 'shop') return (totalAmount - order?.dropCharge?.dropChargeFromOrder)?.toFixed(2);
-  return totalAmount;
+  return totalPayment;
 };
 
 export const getThreedotMenuOptions = (orderStatus, userType) => {
