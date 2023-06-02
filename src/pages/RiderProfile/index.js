@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Tab, Tabs } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
@@ -14,9 +14,12 @@ import RiderTransactions from './Transactions';
 
 export default function RiderProfile() {
   const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+
   const [rider, setRider] = useState(location?.state?.rider);
   const params = useParams();
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(Number(searchParams?.get('tabId')) || 0);
+  // console.log(searchParams?.get('tabId'));
 
   return (
     <Box>
@@ -63,7 +66,7 @@ export default function RiderProfile() {
             <Tab label="Transactions" />
             <Tab label="Cash Orders" />
             <Tab label="Timestamp" />
-            <Tab label="Flaged" />
+            <Tab label="Flagged" />
             <Tab label="Documents" />
           </Tabs>
           <Box>

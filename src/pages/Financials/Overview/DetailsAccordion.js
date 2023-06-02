@@ -92,7 +92,12 @@ export default function DetailsAccordion({
               </Tooltip>
             )}
           </Stack>
-          <Typography variant="body1" fontWeight={600} color={titleAmountStatus === 'minus' ? 'error' : undefined}>
+          <Typography
+            variant="body1"
+            fontWeight={600}
+            // color={titleAmountStatus === 'minus' ? 'error' : undefined}
+            color={titleAmountStatus === 'minus' ? 'error' : titleAmountStatus === 'secondary' ? '#818181' : undefined}
+          >
             {titleAmountStatus === 'minus' ? '-' : ''} {currency} {(titleAmount || 0).toFixed(2)}
           </Typography>
         </Stack>
