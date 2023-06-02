@@ -1,6 +1,6 @@
 import { AccessTime } from '@mui/icons-material';
 import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useRouteMatch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
@@ -22,13 +22,18 @@ import FlaggedViews from './FlaggedViews';
 import ShopDetails from './ShopDetails';
 import { CoverPhotoButton, createShopData, menuOtions } from './helper';
 
+import { ShopDeals } from '../../helpers/ShopDeals';
+
 export default function ShopProfile({ setLoading = () => {}, loading }) {
   const theme = useTheme();
   const routeMatch = useRouteMatch();
   const history = useHistory();
 
-  const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+  const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
   const { shop } = currentUser;
+  const currency = general?.currency;
+
+  const Deals = useMemo(() => new ShopDeals(shop || {}), []);
 
   const [open, setOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
@@ -216,7 +221,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                     }}
                   />
                   <InfoListItem
-                    title={new Array(shop?.expensive)?.fill(0)?.reduce((acc) => `${acc}$`, '')}
+                    title={new Array(shop?.expensive)?.fill(0)?.reduce((acc) => `${acc}${currency?.symbol_native}`, '')}
                     dotColor="text.secondary2"
                     titleSx={{
                       color: 'text.secondary2',
@@ -249,14 +254,14 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                     }}
                   >
                     <AccessTime sx={{ width: '17px', height: '17px' }} />
-                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }} console={console.log(shop)}>
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
                       {shop?.avgOrderDeliveryTime < 30
                         ? '30-40'
                         : `${Math.ceil(shop?.avgOrderDeliveryTime)}-${Math.ceil(shop?.avgOrderDeliveryTime) + 10}`}
                       min
                     </Typography>
                   </Box>
-                  {shop?.rewardSystem !== 'off' && (
+                  {Deals.deals.reward.isActive && (
                     <Box
                       sx={{
                         display: 'flex',
@@ -269,11 +274,11 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                         borderRadius: '7px',
                       }}
                     >
-                      <RewardIcon style={{ width: '17px', height: '17px' }} />{' '}
+                      <RewardIcon style={{ width: '17px', height: '17px' }} />
                       <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Rewards</Typography>
                     </Box>
                   )}
-                  {shop?.freeDelivery && (
+                  {Deals.deals.free_delivery && (
                     <Box
                       sx={{
                         display: 'flex',
@@ -303,7 +308,11 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                     }}
                   >
                     <CartIcon style={{ width: '17px', height: '17px' }} />
-                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Min. ${shop?.minOrderAmount}</Typography>
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
+                      {console.log(currency)}
+                      Min. {currency?.symbol_native}
+                      {shop?.minOrderAmount}
+                    </Typography>
                   </Box>
                 </Stack>
               </Box>

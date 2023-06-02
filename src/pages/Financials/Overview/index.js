@@ -124,14 +124,14 @@ export default function Overview({ viewUserType }) {
       />
       <InfoCard
         title="Orders"
-        value={`${query?.data?.data?.summary?.totalDeliveredOrder || 0}`}
+        value={`${query?.data?.data?.summary?.totalExpectedOrder || 0}`}
         Tag={
           <IncreaseDecreaseTag
             status={
-              Math.round(query?.data?.data?.summary?.totalDeliveredOrderAvgInPercentage) >= 0 ? 'increase' : 'decrement'
+              Math.round(query?.data?.data?.summary?.totalExpectedOrderAvgInPercentage) >= 0 ? 'increase' : 'decrement'
             }
             amount={`${
-              Math.round(Math.abs(query?.data?.data?.summary?.totalDeliveredOrderAvgInPercentage)) || 0
+              Math.round(Math.abs(query?.data?.data?.summary?.totalExpectedOrderAvgInPercentage)) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }

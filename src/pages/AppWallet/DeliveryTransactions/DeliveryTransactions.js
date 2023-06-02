@@ -215,7 +215,11 @@ function DeliveryTransactions() {
                           fontSize: '15px',
                           fontWeight: '500',
                         }}
-                        onClick={() => history.push(`/add-wallet/single-delivery-transactions/${item._id}`)}
+                        onClick={() =>
+                          history.push(`/riders/${item._id}?tabId=1`, {
+                            rider: item,
+                          })
+                        }
                       >
                         <Th title="Click to see details">
                           <TableImgItem name={item?.name} id={item?.autoGenId} />

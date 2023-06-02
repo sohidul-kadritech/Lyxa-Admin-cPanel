@@ -53,8 +53,8 @@ export default function FlaggedViews({ filteredData, currentTab }) {
       id: 2,
       headerName: 'COMMENT',
       field: 'comment',
-      align: currentTab === 0 ? 'right' : 'left',
-      headerAlign: currentTab === 0 ? 'right' : 'left',
+      // align: currentTab === 0 ? 'right' : 'left',
+      // headerAlign: currentTab === 0 ? 'right' : 'left',
       flex: 1,
       sortable: false,
       renderCell: ({ row }) => (
