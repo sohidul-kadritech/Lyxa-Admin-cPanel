@@ -21,7 +21,14 @@ export default function ShopDetails({ shop }) {
       <ProfileSidebarInfo label="Location" value={shop?.address?.address} icon={Loacation} />
       <ProfileSidebarInfo label="Delivery by" value={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'} icon={DeliveryIcon} />
       <ProfileSidebarInfo label="Phone number" value={shop?.phone_number} icon={Phone} />
-      <ProfileSidebarInfo label="Email" value={shop?.email} icon={Email} />
+      <ProfileSidebarInfo
+        label="Email"
+        value={shop?.email}
+        icon={Email}
+        valueSx={{
+          textTransform: 'none',
+        }}
+      />
       <ProfileSidebarInfo label="Payment Options" value={shop?.paymentOption?.join(', ')} icon={InfoIcon} />
       <ProfileSidebarInfo
         label="Tags & cuisines"
