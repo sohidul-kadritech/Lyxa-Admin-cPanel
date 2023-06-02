@@ -240,11 +240,8 @@ export default function Marketing({ viewUserType }) {
     shopQuery.isLoading;
 
   const __readonly = viewUserType === 'shop' && userType === 'admin';
-  console.log('1', dealSettingsQuery.isFetchedAfterMount);
-  console.log('2', discountSettingsQuery.isFetchedAfterMount);
-  console.log('3', doubleDealSettingsQuery.isFetchedAfterMount);
-  console.log('4', freeDeliverySettingsQuery.isFetchedAfterMount);
-  console.log('4', rewardSettingsQuery.isFetchedAfterMount);
+
+  console.log(shopQuery?.data?.data?.shop);
 
   return (
     <Box sx={{ pt: 8.5 }}>
@@ -312,21 +309,23 @@ export default function Marketing({ viewUserType }) {
         </Grid>
         {viewUserType === 'shop' && (
           <>
-            <Grid md={6} lg={4}>
-              <MCard
-                description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
-                title="Loyalty Points"
-                loading={__loading || rewardSettingsQuery.isFetching}
-                readOnly={__readonly}
-                status={getPromotionStatus(rewardSettingsQuery)}
-                icon={LoyaltyIcon}
-                onOpen={() => {
-                  if (!rewardSettingsQuery.isLoading) {
-                    openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
-                  }
-                }}
-              />
-            </Grid>
+            {shop?.haveOwnDeliveryBoy === false && (
+              <Grid md={6} lg={4}>
+                <MCard
+                  description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
+                  title="Loyalty Points"
+                  loading={__loading || rewardSettingsQuery.isFetching}
+                  readOnly={__readonly}
+                  status={getPromotionStatus(rewardSettingsQuery)}
+                  icon={LoyaltyIcon}
+                  onOpen={() => {
+                    if (!rewardSettingsQuery.isLoading) {
+                      openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
+                    }
+                  }}
+                />
+              </Grid>
+            )}
             <Grid md={6} lg={4}>
               <MCard
                 description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."

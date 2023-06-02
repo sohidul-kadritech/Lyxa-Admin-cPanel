@@ -2,7 +2,6 @@
 import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-// import StyledBox from '../../StyledCharts/StyledBox';
 
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
@@ -10,7 +9,6 @@ import PriceItem from './PriceItem';
 
 export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
-  // console.log(paymentDetails);
 
   console.log('currentExpandTab', currentExpanedTab);
 
@@ -37,9 +35,7 @@ export default function Payout({ paymentDetails }) {
             VAT inclusivea"
             titleAmount={
               paymentDetails?.orderValue?.productAmount -
-              (paymentDetails?.orderValue?.totalDiscount +
-                // paymentDetails?.orderValue?.totalDoubleMenuItemPrice +
-                paymentDetails?.orderValue?.totalRewardAmount)
+              (paymentDetails?.orderValue?.totalDiscount + paymentDetails?.orderValue?.totalRewardAmount)
             }
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
@@ -81,12 +77,8 @@ export default function Payout({ paymentDetails }) {
             // tooltip="Fee for Lyxa-powered deliveries: 80%
             // Shop-powered deliveries: 10%.
             // VAT inclusive"
-            titleAmount={Math.abs(paymentDetails?.totalDropGet)}
+            titleAmount={Math.abs(paymentDetails?.totalDropGet + paymentDetails?.orderValue?.pointsCashback)}
             titleAmountStatus={paymentDetails?.totalDropGet > 0 ? 'minus' : ''}
-            // isOpen={currentExpanedTab === 1}
-            // onChange={(closed) => {
-            //   seCurrentExpanedTab(closed ? 1 : -1);
-            // }}
           />
 
           {/* total vat */}
@@ -106,9 +98,6 @@ export default function Payout({ paymentDetails }) {
           Shop-powered deliveries: 10%. 
           VAT inclusive"
               titleAmount={paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount}
-              // titleAmountStatus={`${
-              //   paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''
-              // }`}
               titleAmountStatus="minus"
               isOpen={currentExpanedTab === 2}
               onChange={(closed) => {
@@ -119,7 +108,6 @@ export default function Payout({ paymentDetails }) {
                 <PriceItem
                   title="Promotion: free delivery"
                   amount={paymentDetails?.freeDeliveryShopCut}
-                  // amountStatus={`${paymentDetails?.freeDeliveryShopCut < 0 ? 'minus' : ''}`}
                   amountStatus="minus"
                 />
               )}
@@ -129,7 +117,6 @@ export default function Payout({ paymentDetails }) {
                   title="Promotion: featured"
                   amount={paymentDetails?.totalFeaturedAmount}
                   amountStatus="minus"
-                  // amountStatus={`${paymentDetails?.totalFeaturedAmount < 0 ? 'minus' : ''}`}
                 />
               )}
             </DetailsAccordion>
@@ -177,7 +164,7 @@ export default function Payout({ paymentDetails }) {
               sx={{
                 borderBottom: '0',
               }}
-            ></DetailsAccordion>
+            />
           )}
 
           {/* total payout */}

@@ -1,12 +1,14 @@
 // project import
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import Rating from '../../../components/Common/Rating';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
+import { useGlobalContext } from '../../../context';
 
-export default function OrderTable({ orders = [], onRowClick }) {
-  const theme = useTheme();
+export default function OrderTable({ orders = [], onRowClick, onOrderDetail }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol_native;
 
   const columns = [
     {
@@ -23,6 +25,14 @@ export default function OrderTable({ orders = [], onRowClick }) {
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
           name={row?.user?.name}
           subTitle={row?.orderId}
+          subTitleProps={{
+            sx: {
+              color: 'primary.main',
+            },
+            onClick: () => {
+              onOrderDetail(row);
+            },
+          }}
         />
       ),
     },
@@ -78,18 +88,17 @@ export default function OrderTable({ orders = [], onRowClick }) {
       field: 'payout',
       sortable: false,
       flex: 1,
-      renderCell: () => (
+      renderCell: ({ row }) => (
         <Typography
           variant="body4"
           fontWeight={600}
           display="flex"
-          color={theme.palette.primary.main}
           sx={{
             alignItems: 'center',
             gap: 1,
           }}
         >
-          $20
+          {currency} {row?.deliveryBoyFee}
         </Typography>
       ),
     },
