@@ -65,7 +65,7 @@ export default function TopInfo({ rider }) {
           }}
         />
       </Box>
-      <Box>
+      <Stack justifyContent="center">
         <Typography variant="h2" sx={{ fontSize: '30px', fontWeight: 500 }}>
           {rider?.name}
         </Typography>
@@ -79,7 +79,7 @@ export default function TopInfo({ rider }) {
             ({rider?.reviews?.length <= 100 ? `${rider?.reviews?.length}` : `100+`} Reviews)
           </Typography>
         </Stack>
-      </Box>
+      </Stack>
     </Stack>
   );
 }

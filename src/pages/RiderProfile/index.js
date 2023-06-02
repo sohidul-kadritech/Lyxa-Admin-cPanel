@@ -19,7 +19,6 @@ export default function RiderProfile() {
   const [rider, setRider] = useState(location?.state?.rider);
   const params = useParams();
   const [currentTab, setCurrentTab] = useState(Number(searchParams?.get('tabId')) || 0);
-  // console.log(searchParams?.get('tabId'));
 
   return (
     <Box>

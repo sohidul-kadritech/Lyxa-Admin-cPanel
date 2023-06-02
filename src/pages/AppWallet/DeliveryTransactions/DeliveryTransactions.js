@@ -216,9 +216,10 @@ function DeliveryTransactions() {
                           fontWeight: '500',
                         }}
                         onClick={() =>
-                          history.push(`/riders/${item._id}?tabId=1`, {
-                            rider: item,
-                          })
+                          // history.push(`/riders/${item._id}?tabId=1`, {
+                          //   rider: item,
+                          // })
+                          history.push(`/add-wallet/single-delivery-transactions/${item._id}`)
                         }
                       >
                         <Th title="Click to see details">

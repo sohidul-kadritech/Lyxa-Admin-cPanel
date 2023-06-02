@@ -11,6 +11,7 @@ import ConfirmModal from '../../../components/Common/ConfirmModal';
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { downloadFile } from '../../../helpers/downloadFile';
+import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import EditDocument from './EditDocument';
@@ -42,7 +43,14 @@ export default function Documents({ rider }) {
 
   const updateRiderMutation = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {
     onSuccess: (data) => {
-      console.log(data);
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        rider.contractImage = data?.data?.delivery?.contractImage;
+        rider.image = data?.data?.delivery?.image;
+        rider.nationalIdDocument = data?.data?.delivery?.nationalIdDocument;
+        rider.vehicleRegistrationDocument = data?.data?.delivery?.vehicleRegistrationDocument;
+        setEditDocumentOpen(false);
+      }
     },
   });
 
@@ -152,6 +160,7 @@ export default function Documents({ rider }) {
           }}
         >
           <EditDocument
+            loading={updateRiderMutation.isLoading}
             document={currentDocumet}
             onClose={() => setEditDocumentOpen(false)}
             onReplaceDoc={replaceDocument}

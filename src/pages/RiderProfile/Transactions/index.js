@@ -1,17 +1,16 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
-import { Box, Unstable_Grid2 as Grid, Modal, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import TablePagination from '../../../components/Common/TablePagination';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import PriceItem from '../../Financials/Overview/PriceItem';
+import { CardTitle } from '../Timestamp/helper';
 import MakePayment from './MakPayment';
-import MakePayment2 from './MakePayment2';
 import SearchBar from './Searchbar';
 import TransactionsTable from './Table';
 
@@ -35,20 +34,9 @@ const showForToApiMap = {
   },
 };
 
-function TooltipTitle({ title, tooltip }) {
-  return (
-    <Stack direction="row" alignItems="center" gap={2.5}>
-      <Typography variant="body1" fontWeight={600}>
-        {title}
-      </Typography>
-      {tooltip && (
-        <Tooltip title={tooltip}>
-          <InfoIcon />
-        </Tooltip>
-      )}
-    </Stack>
-  );
-}
+const amountSx = {
+  fontSize: '30px!important',
+};
 
 export default function RiderTransactions({ riderId, showFor }) {
   const queryClient = useQueryClient();
@@ -79,17 +67,20 @@ export default function RiderTransactions({ riderId, showFor }) {
         if (data?.status && data?.data?.deliveryBoy?.length) {
           setSummary(data?.data?.deliveryBoy[0]?.summary);
         }
-        // console.log(data);
       },
     }
   );
+
+  useEffect(() => {
+    if (summaryQuery?.data?.status && summaryQuery?.data?.data?.deliveryBoy?.length)
+      setSummary(summaryQuery?.data?.data?.deliveryBoy[0]?.summary);
+  }, []);
 
   const listQuery = useQuery(
     [showForToApiMap[showFor]?.get, queryParams],
     () => AXIOS.get(showForToApiMap[showFor]?.get, { params: queryParams }),
     {
       onSuccess: (data) => {
-        console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
     }
@@ -102,59 +93,64 @@ export default function RiderTransactions({ riderId, showFor }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         onMakePayment={() => setMakePayment(true)}
+        showFor={showFor}
       />
       <Grid container spacing={5} pb={7.5}>
         <InfoCard
-          // title="Lyxa Earning"
-          title={<TooltipTitle title="Lyxa Earning" tooltip="Lyxa Earning" />}
+          title={<CardTitle title="Lyxa Earning" tooltip="Lyxa Earning" />}
           value={(summary?.dropEarning || 0)?.toFixed(2)}
           sm={6}
           md={4}
           lg={2.37}
+          valueSx={amountSx}
         />
         <InfoCard
-          title={<TooltipTitle title="Orders No" tooltip="Orders No" />}
+          title={<CardTitle title="Orders No" tooltip="Orders No" />}
           value={summary?.totalOrder || 0}
           sm={6}
           md={4}
+          valueSx={amountSx}
           lg={2.5}
         />
         <InfoCard
-          title={<TooltipTitle title="Delivery Fees" tooltip="Total Delivery Fee" />}
+          title={<CardTitle title="Delivery Fees" tooltip="Total Delivery Fee" />}
           value={(summary?.totalDeliveyFee || 0)?.toFixed(2)}
           sm={6}
           md={4}
+          valueSx={amountSx}
           lg={2.37}
         />
         <InfoCard
-          title={<TooltipTitle title="Total Profit" tooltip="Total Profit" />}
+          title={<CardTitle title="Total Profit" tooltip="Total Profit" />}
           value={(summary?.totalProfitRider || 0)?.toFixed(2)}
           sm={6}
           md={4}
           lg={2.37}
+          valueSx={amountSx}
           isDropdown
         >
           <Stack gap={3}>
-            <PriceItem title="Paid" amount={summary?.riderEarning} />
-            <PriceItem title="Unpaid" amount={summary?.totalUnSettleAmount} />
+            <PriceItem fontSize="14px!important" title="Paid" amount={summary?.riderEarning} />
+            <PriceItem fontSize="14px!important" title="Unpaid" amount={summary?.totalUnSettleAmount} />
           </Stack>
         </InfoCard>
         {/* setttled + cash in hand */}
         <InfoCard
-          title={<TooltipTitle title="Cash Orders" tooltip="Cash Orders" />}
+          title={<CardTitle title="Cash Orders" tooltip="Cash Orders" />}
           value={(summary?.totalCashInHand + summary?.totalCashReceived || 0)?.toFixed(2)}
           sm={6}
           md={4}
+          valueSx={amountSx}
           lg={2.37}
           isDropdown
         >
           <Stack gap={3}>
-            <PriceItem title="Cash In Hand" amount={summary?.totalCashInHand} />
-            <PriceItem title="Settled Cash" amount={summary?.totalCashReceived} />
+            <PriceItem fontSize="14px!important" title="Cash In Hand" amount={summary?.totalCashInHand} />
+            <PriceItem fontSize="14px!important" title="Settled Cash" amount={summary?.totalCashReceived} />
           </Stack>
         </InfoCard>
       </Grid>
-      <TransactionsTable rows={listQuery?.data?.data?.[showFor]} />
+      <TransactionsTable rows={listQuery?.data?.data?.[showFor]} showFor={showFor} />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
@@ -172,8 +168,10 @@ export default function RiderTransactions({ riderId, showFor }) {
         }}
       >
         <Box>
-          <MakePayment2 userType="rider" id={riderId} unSettleAmount={summary?.totalUnSettleAmount || 0} />
           <MakePayment
+            type="rider"
+            id={riderId}
+            amount={summary?.totalUnSettleAmount || 0}
             onClose={() => {
               setMakePayment(false);
             }}

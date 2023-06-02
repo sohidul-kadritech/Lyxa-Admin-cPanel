@@ -85,7 +85,7 @@ export default function ActivityTable({ rows = [] }) {
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              No activity found
+              No transactions found
             </Stack>
           ),
         }}
