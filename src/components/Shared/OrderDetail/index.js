@@ -10,6 +10,7 @@ import TabPanel from '../../Common/TabPanel';
 import CallUser from './CallUser';
 import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
+import OrderAmountDetails from './OrderAmountDetails';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
 import OrderTimeline from './OrderTimeline';
@@ -93,8 +94,9 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
               },
             }}
           >
-            <Tab label="Order Detail" />
+            <Tab label="Order Details" />
             <Tab label="Review" />
+            {userType === 'admin' && <Tab label="Earning Details" />}
           </Tabs>
         </Box>
         {/* order detail */}
@@ -140,6 +142,18 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           }}
         >
           <Review reviews={order?.reviews} />
+        </TabPanel>
+
+        {/* order details */}
+        <TabPanel
+          index={2}
+          value={currentTab}
+          sx={{
+            paddingTop: 0,
+            paddingBottom: 0,
+          }}
+        >
+          {userType === 'admin' ? <OrderAmountDetails order={order} /> : null}
         </TabPanel>
       </Box>
     </Box>

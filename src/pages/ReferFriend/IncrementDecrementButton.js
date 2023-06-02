@@ -3,13 +3,20 @@ import { isNumber } from 'lodash';
 import React from 'react';
 import StyledFormField from '../../components/Form/StyledFormField';
 
-function IncrementDecrementButton({ currentValue, incrementHandler, decrementHandler, setValue, setTypeValidation }) {
+function IncrementDecrementButton({
+  currentValue = 0,
+  incrementHandler,
+  decrementHandler,
+  setValue,
+  setTypeValidation,
+}) {
   const theme = useTheme();
+  console.log(currentValue, 'current value');
   return (
     <Box
       sx={{
         marginTop: '6px',
-        padding: '20px 0px',
+        padding: '16px 0px',
         borderRadius: '25px',
         background: theme.palette.background.secondary,
         display: 'inline-block',
@@ -32,10 +39,11 @@ function IncrementDecrementButton({ currentValue, incrementHandler, decrementHan
             intputType="text"
             containerProps={{
               sx: {
-                width: `${currentValue.toString().length > 0 ? currentValue.toString().length * 10 : '50'}px`,
+                width: `${currentValue !== null && currentValue ? currentValue.toString().length * 10 : '10'}px`,
                 padding: '0 0',
                 textAlign: 'center',
                 borderRadius: '0px',
+                marginLeft: '0px !important',
               },
             }}
             inputProps={{

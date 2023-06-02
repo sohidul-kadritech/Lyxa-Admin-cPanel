@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import TablePagination from '../../components/Common/TablePagination';
+import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddRider from './AddRider';
@@ -10,11 +11,14 @@ import RiderLocation from './RiderLocation';
 import RidersTable from './RiderTable';
 import SearchBar from './Searchbar';
 import TableSkeleton from './TableSkeleton';
-import { queryParamsInit } from './helper';
+import { getQueryParamsInit } from './helper';
 
-export default function RiderList() {
+export default function RiderList({ viewUserType }) {
   const history = useHistory();
-  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
+
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, shop?._id));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [totalPage, setTotalPage] = useState(1);

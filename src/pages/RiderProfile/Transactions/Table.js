@@ -1,6 +1,9 @@
 // project import
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
+import StyledCheckbox from '../../../components/Styled/StyledCheckbox';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
 export const getTrxType = (type) => {
@@ -26,9 +29,22 @@ export const getTrxType = (type) => {
   return newType;
 };
 
-export default function TransactionsTable({ rows = [], onRowClick }) {
+export default function TransactionssTable({ rows = [], showFor, loading, queryParams }) {
+  const [allSelected, setAllSelected] = useState(false);
+  const [render, setRender] = useState(false);
+
+  useEffect(() => {
+    if (showFor === 'cashOrderList') {
+      setAllSelected(false);
+      rows?.forEach((row) => {
+        row.selected = false;
+      });
+    }
+  }, [queryParams]);
+
   const columns = [
     {
+      showFor: ['transactions', 'cashOrderList'],
       id: 1,
       headerName: 'TRANSACTION ID',
       field: 'autoGenId',
@@ -38,15 +54,17 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
+      showFor: ['transactions', 'cashOrderList'],
       id: 2,
       headerName: 'AMOUNT',
-      field: 'amount',
+      field: showFor === 'transactions' ? 'amount' : 'receivedAmount',
       flex: 1,
       minWidth: 200,
       sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
+      showFor: ['transactions', 'cashOrderList'],
       id: 3,
       headerName: 'TYPE',
       field: 'type',
@@ -56,6 +74,7 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
       renderCell: ({ value }) => <Typography variant="body4">{getTrxType(value)}</Typography>,
     },
     {
+      showFor: ['transactions', 'cashOrderList'],
       id: 4,
       headerName: `DATE`,
       sortable: false,
@@ -73,6 +92,7 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
       ),
     },
     {
+      showFor: ['transactions'],
       id: 5,
       headerName: 'ADMIN',
       field: 'adminBy',
@@ -80,6 +100,62 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
       minWidth: 100,
       sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value?.name}</Typography>,
+    },
+    {
+      showFor: ['cashOrderList'],
+      id: 6,
+      renderHeader: () => (
+        <Stack
+          direction="row"
+          alignItems="center"
+          onClick={() => {
+            if (allSelected) {
+              rows?.forEach((row) => {
+                row.selected = false;
+              });
+              setAllSelected(false);
+            } else {
+              rows?.forEach((row) => {
+                row.selected = true;
+              });
+              setAllSelected(true);
+            }
+          }}
+          sx={{ cursor: 'pointer' }}
+        >
+          <Typography variant="inherit" fontSize="14px" lineHeight="17px" fontWeight={600} color="#737373">
+            {allSelected ? 'UNSELECT' : 'SELECT'}
+          </Typography>
+          <StyledCheckbox
+            checked={allSelected}
+            sx={{
+              '& .MuiSvgIcon-root': {
+                color: '#9f9f9f!important',
+              },
+            }}
+          />
+        </Stack>
+      ),
+      field: 'selected',
+      align: 'right',
+      headerAlign: 'right',
+      flex: 0.7,
+      minWidth: 150,
+      sortable: false,
+      renderCell: ({ row }) => (
+        <StyledCheckbox
+          checked={Boolean(row?.selected)}
+          onChange={() => {
+            row.selected = !row.selected;
+            setRender(!render);
+          }}
+          sx={{
+            '& .MuiSvgIcon-root': {
+              color: '#9f9f9f!important',
+            },
+          }}
+        />
+      ),
     },
   ];
 
@@ -95,16 +171,16 @@ export default function TransactionsTable({ rows = [], onRowClick }) {
         background: '#fff',
       }}
     >
+      {loading && <LoadingOverlay />}
       <StyledTable
-        columns={columns}
+        columns={columns.filter((col) => col.showFor.includes(showFor))}
         rows={rows}
         getRowId={(row) => row?._id}
         rowHeight={71}
-        onRowClick={onRowClick}
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              No transactions found
+              No transactionss found
             </Stack>
           ),
         }}

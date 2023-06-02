@@ -11,6 +11,7 @@ import ConfirmModal from '../../../components/Common/ConfirmModal';
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { downloadFile } from '../../../helpers/downloadFile';
+import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import EditDocument from './EditDocument';
@@ -42,12 +43,23 @@ export default function Documents({ rider }) {
 
   const updateRiderMutation = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {
     onSuccess: (data) => {
-      console.log(data);
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        rider.contractImage = data?.data?.delivery?.contractImage;
+        rider.image = data?.data?.delivery?.image;
+        rider.nationalIdDocument = data?.data?.delivery?.nationalIdDocument;
+        rider.vehicleRegistrationDocument = data?.data?.delivery?.vehicleRegistrationDocument;
+        setEditDocumentOpen(false);
+      }
     },
   });
 
   const replaceDocument = (document) => {
     updateRiderMutation.mutate({ id: rider?._id, [document?.propertyName]: document?.url });
+  };
+
+  const removeDocument = () => {
+    updateRiderMutation.mutate({ id: rider?._id, [currentDocumet?.propertyName]: '' });
   };
 
   const columns = [
@@ -91,6 +103,7 @@ export default function Documents({ rider }) {
             color="primary"
             onClick={() => {
               setConfirmOpen(true);
+              setCurrentDocumet(row);
             }}
           >
             <CloseIcon />
@@ -128,11 +141,14 @@ export default function Documents({ rider }) {
       <ConfirmModal
         message="Are you sure you want to delete this resource?"
         isOpen={confirmOpen}
+        loading={updateRiderMutation?.isLoading}
         onCancel={() => {
-          confirmOpen(false);
+          setConfirmOpen(false);
+          setCurrentDocumet({});
         }}
         onConfirm={() => {
-          confirmOpen(false);
+          setConfirmOpen(false);
+          removeDocument(currentDocumet);
         }}
       />
       <Modal open={editDocumentOpen} onClose={() => setEditDocumentOpen(false)}>
@@ -152,8 +168,12 @@ export default function Documents({ rider }) {
           }}
         >
           <EditDocument
+            loading={updateRiderMutation.isLoading}
             document={currentDocumet}
-            onClose={() => setEditDocumentOpen(false)}
+            onClose={() => {
+              setEditDocumentOpen(false);
+              setCurrentDocumet({});
+            }}
             onReplaceDoc={replaceDocument}
           />
         </Box>
