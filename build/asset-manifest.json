@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.67268934.css",
-    "main.js": "/static/js/main.0d4657ec.js",
+    "main.js": "/static/js/main.e44b77c7.js",
     "static/js/949.35437ae1.chunk.js": "/static/js/949.35437ae1.chunk.js",
     "static/js/332.48dc95f0.chunk.js": "/static/js/332.48dc95f0.chunk.js",
     "static/js/943.3f34dc7f.chunk.js": "/static/js/943.3f34dc7f.chunk.js",
@@ -80,7 +80,9 @@
     "static/media/users.svg": "/static/media/users.5e7ca4852c6a272965b6f053a10c26d9.svg",
     "static/media/team.svg": "/static/media/team.7765914d880068e564f124af50635cd4.svg",
     "static/media/dashboard.svg": "/static/media/dashboard.8da5de238f315b2b25d233a693e2b5fa.svg",
+    "static/media/thumbs-down.svg": "/static/media/thumbs-down.f5faf8cb7aeb7db5d8280c98107badc5.svg",
     "static/media/chat.svg": "/static/media/chat.b6ec59976c35a7ca533200122cc217cd.svg",
+    "static/media/thumbs-up.svg": "/static/media/thumbs-up.fd44f324acac21ec907aad175822be56.svg",
     "static/media/supreme.svg": "/static/media/supreme.5f717bee23063abba5620b8fb5841c98.svg",
     "static/media/cart.svg": "/static/media/cart.3cd8e9dc41c559247171cb28ef31d46a.svg",
     "static/media/upload.svg": "/static/media/upload.f3d0d8cc101bc489475dc935fa5f6364.svg",
@@ -121,6 +123,6 @@
   },
   "entrypoints": [
     "static/css/main.67268934.css",
-    "static/js/main.0d4657ec.js"
+    "static/js/main.e44b77c7.js"
   ]
 }
