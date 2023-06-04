@@ -24,7 +24,7 @@ export default function CameraIconButton({ onFileSelect, sx, ...props }) {
       component="label"
       {...props}
     >
-      <input hidden accept="image/*" type="file" onChange={onFileSelect} />
+      <input hidden accept=".jpg,.jpeg,.png" type="file" onChange={onFileSelect} />
       <CameraIcon />
     </IconButton>
   );
