@@ -33,8 +33,6 @@ export default function TopInfo({ rider }) {
   });
 
   const onDrop = async (acceptedFiles = []) => {
-    console.log('flist', Array.from(acceptedFiles));
-
     const files = Array.from(acceptedFiles).map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
