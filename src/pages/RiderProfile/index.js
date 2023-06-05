@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddRider from '../Riders/AddRider';
@@ -19,6 +20,9 @@ import RiderTransactions from './Transactions';
 
 export default function RiderProfile() {
   const location = useLocation();
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
+
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const [open, setOpen] = useState(false);
   const params = useParams();
@@ -133,6 +137,8 @@ export default function RiderProfile() {
       </Box>
       <Drawer open={open} onClose={() => setOpen(false)} anchor="right">
         <AddRider
+          riderFor={rider?.deliveryBoyType === 'shopRider' ? 'shop' : 'global'}
+          riderShop={rider?.deliveryBoyType === 'shopRider' ? shop : undefined}
           hideDelete
           editRider={rider}
           onClose={() => setOpen(false)}

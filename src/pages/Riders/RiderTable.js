@@ -69,7 +69,7 @@ export default function RidersTable({ rows = [], onEdit, onLocationView, onProfi
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
-      id: 4,
+      id: 5,
       headerName: `STATUS`,
       sortable: false,
       field: 'status',
@@ -94,8 +94,9 @@ export default function RidersTable({ rows = [], onEdit, onLocationView, onProfi
       },
     },
     {
-      id: 4,
+      id: 6,
       headerName: ``,
+      sortable: false,
       flex: 1,
       field: 'action',
       align: 'right',
