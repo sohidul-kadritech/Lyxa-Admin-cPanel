@@ -2,13 +2,11 @@ import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import CloseButton from '../../components/Common/CloseButton';
-import StyledRadioGroup from '../../components/Styled/StyledRadioGroup';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { adminAccountTypes, businessAccountTypes, validateEmail } from './helper';
+import { validateEmail } from './helper';
 
-export default function ForgotPassword({ onClose, loginFor }) {
-  const [accountType, setAccountType] = useState('');
+export default function ForgotPassword({ onClose, accountType }) {
   const [email, setEmail] = useState('');
   const [submitDisabled, setSuttonDisabled] = useState(true);
   const [error, setError] = useState('');
@@ -17,7 +15,7 @@ export default function ForgotPassword({ onClose, loginFor }) {
   useEffect(() => {
     if (accountType && validateEmail(email)) setSuttonDisabled(false);
     else setSuttonDisabled(true);
-  }, [accountType, email]);
+  }, [email]);
 
   const mutation = useMutation(
     () =>
@@ -41,49 +39,35 @@ export default function ForgotPassword({ onClose, loginFor }) {
     <Box
       sx={{
         background: '#fff',
-        width: 'min(600px, 70vw)',
+        width: 'min(650px, 70vw)',
         padding: '14px 20px 20px',
         borderRadius: '8px',
       }}
     >
-      <Stack direction="row" justifyContent="space-between" alignItems="center" pb={2.5}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" pb={5}>
         <Typography variant="inherit" sx={{ fontSize: '18px', fontWeight: 600, lineHeight: '24px' }}>
           Forgot Password
         </Typography>
         <CloseButton size="sm" onClick={onClose} />
       </Stack>
+
       {!success && (
         <Box>
           {error && (
             <Box
               sx={{
                 background: '#e37b8233',
-                padding: '8px 10px',
-                border: `1px solid error.main`,
+                padding: '12px',
+                border: `1px solid`,
+                borderColor: 'error.main',
               }}
             >
-              <Typography variant="inherit" fontSize={12} lineHeight="20px" color="error">
+              <Typography variant="inherit" fontSize={14} lineHeight="20px" color="error">
                 {error}
               </Typography>
             </Box>
           )}
           <Stack gap={5} pt={3}>
-            <StyledRadioGroup
-              color="error"
-              items={loginFor === 'team' ? adminAccountTypes : businessAccountTypes}
-              value={accountType}
-              sx={{
-                flexDirection: 'row',
-                gap: '20px',
-
-                '& .MuiFormControlLabel-root': {
-                  gap: '4px',
-                },
-              }}
-              onChange={(e) => {
-                setAccountType(e.target.value);
-              }}
-            />
             <TextField
               variant="outlined"
               placeholder="Your Email Address"
@@ -127,11 +111,12 @@ export default function ForgotPassword({ onClose, loginFor }) {
           </Stack>
         </Box>
       )}
+
       {success && (
         <Box
           sx={{
             background: '#417c4538',
-            padding: '20px 10px',
+            padding: '20px 12px',
             border: `1px solid`,
             borderColor: 'success.main',
           }}
