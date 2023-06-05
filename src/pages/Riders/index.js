@@ -18,6 +18,8 @@ export default function RiderList({ viewUserType }) {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
+  console.log({ viewUserType });
+
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, shop?._id));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,8 +27,8 @@ export default function RiderList({ viewUserType }) {
   const [currentRider, setCurrentRider] = useState({});
 
   const query = useQuery(
-    [Api.ALL_DELIVERY_MAN, { ...queryParams }],
-    () => AXIOS.get(Api.ALL_DELIVERY_MAN, { params: { ...queryParams } }),
+    [Api.ALL_DELIVERY_MAN, queryParams],
+    () => AXIOS.get(Api.ALL_DELIVERY_MAN, { params: queryParams }),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -46,7 +48,7 @@ export default function RiderList({ viewUserType }) {
         onAdd={() => {
           setSidebarOpen(true);
         }}
-        searchPlaceHolder="Search 24 items"
+        searchPlaceHolder={`Search${` ${query?.data?.data?.deliveryBoys?.length || ''}`} items`}
       />
       {query.isLoading && <TableSkeleton />}
       {!query.isLoading && (
@@ -79,6 +81,8 @@ export default function RiderList({ viewUserType }) {
       )}
       <Drawer open={sidebarOpen} anchor="right">
         <AddRider
+          riderFor={viewUserType}
+          riderShop={viewUserType === 'shop' ? shop : undefined}
           onClose={() => {
             setSidebarOpen(false);
             setCurrentRider({});

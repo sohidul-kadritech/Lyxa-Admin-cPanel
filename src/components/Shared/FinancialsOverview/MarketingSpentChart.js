@@ -1,11 +1,11 @@
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import ChartBox from '../../../components/StyledCharts/ChartBox';
-import StyledAreaChart from '../../../components/StyledCharts/StyledAreaChart';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import ChartBox from '../../StyledCharts/ChartBox';
+import StyledAreaChart from '../../StyledCharts/StyledAreaChart';
 
 const generateData = (data) => {
   const discount = [];

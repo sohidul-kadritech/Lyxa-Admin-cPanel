@@ -1,12 +1,30 @@
 import { Box, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
+import { useQuery } from 'react-query';
 import { ReactComponent as StarIcon } from '../../../assets/icons/star.svg';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
-import { shopsList } from './mock';
+import { useGlobalContext } from '../../../context';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 
 export default function ShopList() {
   const theme = useTheme();
+  const { currentUser } = useGlobalContext();
+  const { seller } = currentUser;
+
+  const query = useQuery(
+    [Api.SELLER_DASHBOARD_SHOP_LIST, { sellerId: seller?._id }],
+    () =>
+      AXIOS.get(Api.SELLER_DASHBOARD_SHOP_LIST, {
+        params: { sellerId: seller?._id },
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
 
   const column = [
     {
@@ -26,10 +44,17 @@ export default function ShopList() {
       sortable: false,
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" gap={5}>
-          <Box sx={{ width: '11px', height: '11px', backgroundColor: 'success.main', borderRadius: '50%' }} />
+          <Box
+            sx={{
+              width: '11px',
+              height: '11px',
+              backgroundColor: row?.liveStatus === 'online' ? 'success.main' : 'error.main',
+              borderRadius: '50%',
+            }}
+          />
           <UserAvatar
             imgAlt="logo"
-            imgUrl={row?.logo}
+            imgUrl={row?.shopLogo}
             imgStyle="circular"
             imgFallbackCharacter={row?.shopName?.charAt(0)}
             name={row?.shopName}
@@ -40,7 +65,7 @@ export default function ShopList() {
     {
       id: 3,
       headerName: 'ORDERS',
-      field: 'orders',
+      field: 'totalOrder',
       flex: 1,
       sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
@@ -48,7 +73,7 @@ export default function ShopList() {
     {
       id: 4,
       headerName: 'AVG.TIME',
-      field: 'avgTime',
+      field: 'avgOrderDeliveryTime',
       flex: 1,
       sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
@@ -73,7 +98,7 @@ export default function ShopList() {
     {
       id: 6,
       headerName: 'PROFIT',
-      field: 'profit',
+      field: 'totalProfit',
       flex: 1,
       align: 'right',
       headerAlign: 'right',
@@ -90,13 +115,18 @@ export default function ShopList() {
         </Typography>
         <StyledTable
           columns={column}
-          rows={shopsList(25)}
+          rows={
+            query?.data?.data?.shopList?.map((s, i) => {
+              s.rowNumber = i + 1;
+              return s;
+            }) || []
+          }
           getRowId={(row) => row?._id}
           rowHeight={71}
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
-                No Items found
+                No Shops found
               </Stack>
             ),
           }}

@@ -24,6 +24,7 @@ export const ADMIN_DASHBOARD_USERS_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/us
 
 export const ADMIN_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/orders`;
 export const SELLER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/orders`;
+export const SELLER_DASHBOARD_SHOP_LIST = `${ADMIN_ENDPOINT}/dashboard/seller/shop-list`;
 
 export const ADMIN_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/earnings`;
 export const SELLER_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/earnings`;
@@ -172,6 +173,7 @@ export const ADD_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/add`;
 export const UPDATE_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/edit`;
 export const ALL_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel`;
 export const SORT_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/sort`;
+export const DELETE_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/delete`;
 
 export const SET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge/add-global-drop-charge`;
 export const GET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge`;

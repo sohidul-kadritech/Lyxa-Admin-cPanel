@@ -2,12 +2,12 @@ import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import Overview from '../../components/Shared/FinancialsOverview';
+import Invoices from '../../components/Shared/Invoices';
 import { useGlobalContext } from '../../context';
 import Banking from './Banking';
-import Invoices from './Invoices';
-import Overview from './Overview';
 
-export default function Financials({ viewUserType = 'shop' }) {
+export default function ShopFinancials() {
   const [currentTab, setCurrentTab] = useState(0);
   const store = useGlobalContext();
   console.log(store);
@@ -23,9 +23,8 @@ export default function Financials({ viewUserType = 'shop' }) {
       >
         <Tab label="Overview" />
         <Tab label="Invoices" />
-        {viewUserType === 'shop' && <Tab label="Banking" />}
+        <Tab label="Banking" />
       </Tabs>
-
       <TabPanel
         index={0}
         value={currentTab}
@@ -33,7 +32,7 @@ export default function Financials({ viewUserType = 'shop' }) {
           padding: 0,
         }}
       >
-        <Overview viewUserType={viewUserType} />
+        <Overview viewUserType="shop" />
       </TabPanel>
 
       <TabPanel
@@ -45,18 +44,15 @@ export default function Financials({ viewUserType = 'shop' }) {
       >
         <Invoices />
       </TabPanel>
-
-      {viewUserType === 'shop' && (
-        <TabPanel
-          index={2}
-          value={currentTab}
-          sx={{
-            paddingTop: 7.5,
-          }}
-        >
-          <Banking />
-        </TabPanel>
-      )}
+      <TabPanel
+        index={2}
+        value={currentTab}
+        sx={{
+          paddingTop: 7.5,
+        }}
+      >
+        <Banking />
+      </TabPanel>
     </Box>
   );
 }

@@ -13,21 +13,21 @@ import PageSkeleton from './PageSkeleton';
 import {
   convertEditRiderData,
   createRiderData,
-  riderInit,
+  getRiderInit,
   riderShiftOptions,
   riderTypeOptions,
   statusOptions,
   validateRider,
 } from './helpers';
 
-export default function AddRider({ onClose, editRider }) {
+export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
-  const [rider, setRider] = useState(editRider?._id ? convertEditRiderData(editRider) : { ...riderInit });
+  const [rider, setRider] = useState(
+    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
+  );
   const [loading, setLoading] = useState(false);
-
   const [searchKeyShop, setSearchKeyShop] = useState('');
   const [searchedShopOptions, setSearchedShopOptions] = useState([]);
-  const [selectedShopOptions, setSelectedShopOptions] = useState(null);
   const [isConfirm, setIsConfirm] = useState(false);
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE));
 
@@ -57,6 +57,8 @@ export default function AddRider({ onClose, editRider }) {
 
         if (data?.status) {
           queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
+
+          if (onUpdateSuccess) onUpdateSuccess(data);
           onClose();
         }
 
@@ -73,7 +75,7 @@ export default function AddRider({ onClose, editRider }) {
 
   //  upload data
   const onSubmit = async () => {
-    const isValid = validateRider(rider, !!editRider?._id);
+    const isValid = validateRider(rider, !!editRider?._id, riderFor);
 
     if (!isValid?.status) {
       successMsg(isValid.msg);
@@ -81,7 +83,7 @@ export default function AddRider({ onClose, editRider }) {
     }
 
     setLoading(true);
-    const riderData = await createRiderData(rider);
+    const riderData = await createRiderData(rider, riderFor);
 
     if (riderData.error) {
       successMsg(riderData.msg);
@@ -238,32 +240,36 @@ export default function AddRider({ onClose, editRider }) {
               }}
             />
             {/* Area Covered */}
-            <StyledFormField
-              label="Area Covered"
-              intputType="select"
-              inputProps={{
-                name: 'zoneId',
-                value: rider.zoneId,
-                items: zonesQuery?.data?.data?.zones || [],
-                getLabel: (option) => option?.zoneName,
-                getValue: (option) => option?._id,
-                getDisplayValue: (currentValue) =>
-                  zonesQuery?.data?.data?.zones?.find((zone) => zone?._id === currentValue)?.zoneName,
-                onChange: commonChangeHandler,
-              }}
-            />
+            {riderFor !== 'shop' && (
+              <StyledFormField
+                label="Area Covered"
+                intputType="select"
+                inputProps={{
+                  name: 'zoneId',
+                  value: rider.zoneId,
+                  items: zonesQuery?.data?.data?.zones || [],
+                  getLabel: (option) => option?.zoneName,
+                  getValue: (option) => option?._id,
+                  getDisplayValue: (currentValue) =>
+                    zonesQuery?.data?.data?.zones?.find((zone) => zone?._id === currentValue)?.zoneName,
+                  onChange: commonChangeHandler,
+                }}
+              />
+            )}
             {/* Rider Type */}
             <StyledFormField
               label="Rider Type"
               intputType="select"
               inputProps={{
                 name: 'deliveryBoyType',
+                // value: riderFor === 'shop' ? 'shopRider' : rider.deliveryBoyType,
                 value: rider.deliveryBoyType,
                 items: riderTypeOptions,
                 onChange: commonChangeHandler,
+                readOnly: Boolean(editRider?._id) || riderFor === 'shop',
               }}
             />
-            {/* name */}
+            {/* shop */}
             {rider.deliveryBoyType === 'shopRider' && (
               <Box position="relative">
                 <StyledFormField
@@ -273,22 +279,19 @@ export default function AddRider({ onClose, editRider }) {
                     multiple: false,
                     maxHeight: '110px',
                     options: searchedShopOptions,
-                    value: selectedShopOptions,
+                    value: rider.shopId,
                     placeholder: 'Choose',
                     noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
                     getOptionLabel: (option) => option?.shopName,
                     isOptionEqualToValue: (option, value) => option?._id === value?._id,
                     onChange: (e, v) => {
                       console.log('value: ', v);
-                      setRider((prev) => {
-                        console.log({ ...prev, shopId: v._id });
-                        return { ...prev, shopId: v._id };
-                      });
-                      setSelectedShopOptions(v);
+                      setRider((prev) => ({ ...prev, shopId: v }));
                     },
                     onInputChange: (e) => {
                       getShops(e?.target?.value);
                     },
+                    readOnly: riderFor === 'shop',
                     sx: {
                       '& .MuiFormControl-root': {
                         minWidth: '200px',
@@ -368,18 +371,20 @@ export default function AddRider({ onClose, editRider }) {
               >
                 Save Item
               </Button>
-              <Button
-                variant="text"
-                disableRipple
-                color="error"
-                startIcon={<Delete />}
-                fullWidth
-                onClick={() => {
-                  setIsConfirm(true);
-                }}
-              >
-                Delete Rider
-              </Button>
+              {editRider?._id && !hideDelete && (
+                <Button
+                  variant="text"
+                  disableRipple
+                  color="error"
+                  startIcon={<Delete />}
+                  fullWidth
+                  onClick={() => {
+                    setIsConfirm(true);
+                  }}
+                >
+                  Delete Rider
+                </Button>
+              )}
             </Stack>
           </Box>
         )}

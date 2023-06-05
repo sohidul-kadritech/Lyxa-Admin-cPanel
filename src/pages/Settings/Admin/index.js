@@ -1,9 +1,11 @@
 // thrid pary
 import { Box } from '@mui/material';
+import { useEffect, useState } from 'react';
 import PageList from '../../../components/Common/PageList';
 import PageTop from '../../../components/Common/PageTop';
+import SearchBar from './Searchbar';
 
-const pagesList = [
+const getpagesList = () => [
   {
     label: 'Marketing',
     to: 'settings/marketing',
@@ -49,6 +51,10 @@ const pagesList = [
     to: '/percentage-setting',
   },
   {
+    label: 'Percentages2',
+    to: '/percentage-setting2',
+  },
+  {
     label: 'App Settings',
     to: '/settings/app-settings',
   },
@@ -62,8 +68,9 @@ const pagesList = [
   },
   {
     label: 'Privacy',
-    to: '#',
+    to: '/privacy',
   },
+
   {
     label: 'Terms & Conditions',
     to: '/terms-and-conditions',
@@ -82,11 +89,29 @@ const pagesList = [
   },
 ];
 
+const filterPages = (searchKey, pages) => {
+  if (searchKey === '') return pages;
+
+  return pages.filter((page) =>
+    page?.label
+      ?.toLowerCase()
+      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase()))
+  );
+};
+
 export default function AdminSettings() {
+  const [list, setList] = useState(getpagesList());
+  const [searchKey, setSearchKey] = useState('');
+
+  useEffect(() => {
+    setList(filterPages(searchKey, getpagesList()));
+  }, [searchKey]);
+
   return (
     <Box pb={10}>
       <PageTop title="Settings" subtitle="Customize admin settings" />
-      <PageList items={pagesList} />
+      <SearchBar setSearchKey={setSearchKey} />
+      <PageList items={list} />
     </Box>
   );
 }

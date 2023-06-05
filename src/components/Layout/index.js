@@ -16,13 +16,13 @@ import { shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
-export const getRouteAndSidebarItems = (userType, adminType, prefix = '') => {
+const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, prefix = '') => {
   let routes = [];
   let menuItems = [];
 
   if (userType === 'shop') {
-    routes = shop_routes(prefix);
-    menuItems = shop_menu_items(prefix);
+    routes = shop_routes(prefix, shopDeliveryType);
+    menuItems = shop_menu_items(prefix, shopDeliveryType);
   }
 
   if (userType === 'seller') {
@@ -47,7 +47,12 @@ export default function Layout() {
   const { currentUser } = useGlobalContext();
   const [sidebar, setSidebar] = useState(false);
   const { routes, menuItems } = useMemo(
-    () => getRouteAndSidebarItems(currentUser?.userType, currentUser?.adminType),
+    () =>
+      getRouteAndSidebarItems(
+        currentUser?.userType,
+        currentUser?.adminType,
+        currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop'
+      ),
     [currentUser?.userType]
   );
 

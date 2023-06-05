@@ -14,35 +14,28 @@ export const validateUser = (data) => {
 
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 
-  console.log(data);
-
-  if (!name) {
-    status.message = 'Please provide your name!';
+  if (!name?.trim()) {
+    status.message = 'Please provide user name!';
     return status;
   }
 
-  if (!password) {
-    status.message = 'Please provide your password!';
-    return status;
-  }
-
-  if (!repeated_password) {
+  if (password?.trim()?.length && !repeated_password?.trim()) {
     status.message = 'Please add repeated password!';
     return status;
   }
 
+  if (repeated_password?.trim() !== password?.trim()) {
+    status.message = 'Passwords do not match!';
+    return status;
+  }
+
   if (!email) {
-    status.message = 'Please provide your email address!';
+    status.message = 'Please provide user email address!';
     return status;
   }
 
   if (!emailRegex.test(email)) {
     status.message = 'Email is not valid!';
-    return status;
-  }
-
-  if (password !== repeated_password) {
-    status.message = 'Passwords do not match!';
     return status;
   }
 

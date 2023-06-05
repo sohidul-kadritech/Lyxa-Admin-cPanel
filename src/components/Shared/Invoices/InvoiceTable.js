@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon.svg';
 // eslint-disable-next-line import/no-named-as-default
-import StyledIconButton from '../../../components/Styled/StyledIconButton';
-import StyledTable from '../../../components/Styled/StyledTable3';
+import StyledIconButton from '../../Styled/StyledIconButton';
+import StyledTable from '../../Styled/StyledTable3';
 
 export default function InvoiceTable({ rows }) {
   const columns = [
