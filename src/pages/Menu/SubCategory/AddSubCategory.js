@@ -6,7 +6,6 @@ import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
-import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -32,7 +31,19 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
 
   // parent categories query
   const categoriesQuery = useQuery(
-    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
+    [
+      Api.GET_ALL_CATEGORY,
+      {
+        page: 1,
+        pageSize: 100,
+        searchKey: '',
+        sortBy: 'desc',
+        status: 'active',
+        type: shop?.shopType,
+        shopId: shop?._id,
+        userType: 'shop',
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
         params: {
@@ -42,11 +53,12 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
           sortBy: 'desc',
           status: 'active',
           type: shop?.shopType,
+          shopId: shop?._id,
           userType: 'shop',
         },
       }),
     {
-      staleTime: minInMiliSec(10),
+      // staleTime: minInMiliSec(10),
       onSuccess: (data) => {
         setCategories(
           (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
@@ -73,7 +85,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
 
       if (data?.status) {
         queryClient.invalidateQueries(['category-wise-products']);
-
+        queryClient.invalidateQueries([Api.GET_ALL_SUB_CATEGORY]);
         onClose();
       }
     },

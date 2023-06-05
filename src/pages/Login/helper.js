@@ -39,31 +39,31 @@ export const credentialsInit = {
 
 export const validateEmail = (email) => email?.match(/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/);
 
-export const validateForm = (data, errors, setErrors) => {
-  console.log('triggered');
+export const validateForm = (data, touched, errors, setErrors) => {
+  let email;
+  let password;
 
   if (!data?.email?.trim()) {
-    setErrors({ password: undefined, email: 'Email is required' });
-    return;
+    email = 'Email is required';
   }
 
-  // eslint-disable-next-line no-useless-escape
-  if (!data?.email?.match(/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/)) {
-    setErrors({ password: undefined, email: 'Invalid email address' });
-    return;
+  if (!data?.email?.match(/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/) && !email) {
+    email = 'Email is not valid';
   }
 
   if (!data?.password?.trim()) {
-    setErrors({ email: undefined, password: 'Password is required' });
-    return;
+    password = 'Password is required';
   }
 
-  if (data?.password?.trim()?.length < 6) {
-    setErrors({ email: undefined, password: 'Password is has to be atleast 6 chars' });
-    return;
+  if (data?.password?.trim()?.length < 6 && !password) {
+    password = 'Password is has to be atleast 6 chars';
   }
 
-  setErrors({ email: undefined, password: undefined });
+  if (!touched.email) email = undefined;
+  if (!touched.password) password = undefined;
+  setErrors({ email, password });
+
+  return email || password;
 };
 
 export const getParentUser = async (credentialUser) => {

@@ -17,9 +17,10 @@ import { validateSubCategory } from '../helpers';
 import PageSkeleton from './PageSkeleton';
 
 export default function EditSubCategory({ onClose, editSubCategory }) {
-  // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
+
+  console.log(editSubCategory);
 
   const queryClient = useQueryClient();
 
@@ -90,6 +91,7 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
 
         if (data?.status) {
           queryClient.invalidateQueries('category-wise-products');
+          queryClient.invalidateQueries([Api.GET_ALL_SUB_CATEGORY]);
           onClose();
         }
       },

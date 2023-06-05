@@ -88,7 +88,7 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
               lineHeight: '18px',
             }}
           >
-            Minimum Order
+            Opening Hours
           </Typography>
           <Typography variant="body4" color="#7E8299">
             12:00 to 23:00

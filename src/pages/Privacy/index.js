@@ -1,5 +1,5 @@
 import { ArrowDownward } from '@mui/icons-material';
-import { Box, Button, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { ContentState, EditorState, convertToRaw } from 'draft-js';
 // import { convertFromHTML } from 'draft-js-import-html';
 import draftToHtml from 'draftjs-to-html';
@@ -11,27 +11,27 @@ import PageTop from '../../components/Common/PageTop';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import TermsAndConditionsSkeleton from './TermsAndConditionsSkeleton';
 
 const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '#',
+    to: '/settings',
   },
   {
-    label: 'Terms & Conditions',
+    label: 'Privacy Settings',
     to: '#',
   },
 ];
 
-const indexToTypeTracker = {
-  0: 'user',
-  1: 'shop',
-  2: 'delivery',
-};
-
-function TermsAndConditions() {
+// const indexToTypeTracker = {
+//   0: 'user',
+//   1: 'shop',
+//   2: 'delivery',
+// };
+function PrivacySettings() {
+  // eslint-disable-next-line no-unused-vars
   const [currentTab, setCurrentTab] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
   // eslint-disable-next-line no-unused-vars
   const [type, setType] = useState('user');
@@ -68,10 +68,10 @@ function TermsAndConditions() {
               console.log('content state: ', contentState);
               const outputEditorState = EditorState.createWithContent(contentState);
               console.log('outputEditor state: ', outputEditorState);
-              setEditorState(outputEditorState);
+              //   setEditorState(outputEditorState);
             }
           } else {
-            setEditorState(EditorState.createEmpty());
+            // setEditorState(EditorState.createEmpty());
           }
           console.log(data);
         } else {
@@ -96,6 +96,7 @@ function TermsAndConditions() {
     },
   });
 
+  // eslint-disable-next-line no-unused-vars
   const handleSubmit = () => {
     termsUpdateQuery.mutate({ type, description: condition });
   };
@@ -115,7 +116,7 @@ function TermsAndConditions() {
         }}
       />
 
-      <Tabs
+      {/* <Tabs
         value={currentTab}
         onChange={(event, newValue) => {
           setCurrentTab(newValue);
@@ -126,8 +127,8 @@ function TermsAndConditions() {
         <Tab label="User App"></Tab>
         <Tab label="Shop App"></Tab>
         <Tab label="Rider App"></Tab>
-      </Tabs>
-      {loading ? (
+      </Tabs> */}
+      {/* {loading ? (
         <TermsAndConditionsSkeleton />
       ) : (
         <Box sx={{ marginTop: '30px' }}>
@@ -146,12 +147,31 @@ function TermsAndConditions() {
             }}
           />
         </Box>
-      )}
+      )} */}
+
+      <Box
+      //   sx={{ marginTop: '30px' }}
+      >
+        <Editor
+          onEditorStateChange={updateDescription}
+          toolbarClassName="toolbarClassName"
+          wrapperClassName="wrapperClassName"
+          editorClassName="editorClassName"
+          editorState={editorState}
+          defaultEditorState={editorState}
+          placeholder="Enter Terms And Conditions"
+          onChange={(e) => console.log(e)}
+          editorStyle={{
+            minHeight: '400px',
+            maxHeight: '400px',
+          }}
+        />
+      </Box>
 
       <Stack flexDirection="row" justifyContent="flex-end" alignContent="flex-end" sx={{ marginTop: '30px' }}>
         <Button
           variant="contained"
-          onClick={handleSubmit}
+          //   onClick={handleSubmit}
           disabled={termsUpdateQuery?.isLoading}
           startIcon={<ArrowDownward />}
         >
@@ -162,4 +182,4 @@ function TermsAndConditions() {
   );
 }
 
-export default TermsAndConditions;
+export default PrivacySettings;

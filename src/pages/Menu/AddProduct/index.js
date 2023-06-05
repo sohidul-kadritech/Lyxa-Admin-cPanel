@@ -43,7 +43,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
   const queryClient = useQueryClient();
-  // const theme = useTheme();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [render, setRender] = useState(false);
@@ -52,15 +51,26 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   const [hasAttribute, setHasAttribute] = useState('no');
   const [product, setProduct] = useState(
-    // eslint-disable-next-line prettier/prettier
-    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory),
+    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
   );
 
   console.log(product);
 
   // addons
   const productsQuery = useQuery(
-    ['ALL_PRODUCT', { shopId: shop?._id }],
+    [
+      'ALL_PRODUCT',
+      {
+        page: 1,
+        pageSize: 100,
+        sortBy: 'desc',
+        searchKey: '',
+        type: 'all',
+        productVisibility: true,
+        shop: shop?._id,
+        status: 'active',
+      },
+    ],
     () =>
       AXIOS.get(Api.ALL_PRODUCT, {
         params: {
@@ -76,20 +86,29 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       staleTime: minInMiliSec(10),
-      // eslint-disable-next-line prettier/prettier
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const adddons = useMemo(
     () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
-    // eslint-disable-next-line prettier/prettier
-    [productsQuery?.data?.data?.products],
+    [productsQuery?.data?.data?.products]
   );
 
   // categories
   const categoriesQuery = useQuery(
-    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
+    [
+      Api.GET_ALL_CATEGORY,
+      {
+        page: 1,
+        pageSize: 100,
+        searchKey: '',
+        sortBy: 'desc',
+        status: 'active',
+        type: shop?.shopType,
+        shopId: shop?._id,
+        userType: 'shop',
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
         params: {
@@ -108,20 +127,17 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       onSuccess: (data) => {
         console.log(data);
         setCategories(
-          // eslint-disable-next-line prettier/prettier
-          (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev,
+          (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
         );
       },
-      // eslint-disable-next-line prettier/prettier
-      // eslint-disable-next-line prettier/prettier
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const subCategoriesQuery = useQuery(
     [
-      'all-sub-categories-by-category-id',
+      Api.GET_ALL_SUB_CATEGORY,
       {
+        status: 'active',
         categoryId: product?.category,
       },
     ],
@@ -131,8 +147,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           status: 'active',
           categoryId: product?.category,
         },
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   useEffect(() => {
@@ -141,7 +156,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         (prev) =>
           categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
           // eslint-disable-next-line prettier/prettier
-          prev,
+          prev
       );
     }
 
@@ -171,7 +186,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     {
       enabled: Boolean(editProduct?._id),
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const productIsAddonMessage = `Product is used as  addon inside ${isProductAddonQuery?.data?.data?.products
@@ -198,7 +213,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     setProduct((prev) => ({
@@ -223,7 +238,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const uploadProduct = async () => {

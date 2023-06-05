@@ -23,7 +23,7 @@ export const riderTypeOptions = [
   },
 ];
 
-export const riderInit = {
+export const getRiderInit = (riderFor, riderShop) => ({
   name: '',
   email: '',
   password: '',
@@ -38,12 +38,12 @@ export const riderInit = {
   vehicleType: '',
   shift: '',
   zoneId: '',
-  deliveryBoyType: '',
-  shopId: '',
+  deliveryBoyType: riderFor === 'shop' ? 'shopRider' : '',
+  shopId: riderFor === 'shop' ? riderShop : null,
   status: 'active',
-};
+});
 
-export const validateRider = (rider, isEditRider) => {
+export const validateRider = (rider, isEditRider, riderFor) => {
   const status = {
     status: false,
     msg: null,
@@ -126,7 +126,7 @@ export const validateRider = (rider, isEditRider) => {
     return status;
   }
 
-  if (!rider?.zoneId) {
+  if (!rider?.zoneId && riderFor !== 'shop') {
     status.msg = 'Rider zoneId cannot be empty!';
     return status;
   }
@@ -177,15 +177,15 @@ export const createRiderData = async (rider) => {
     contractImage,
     vehicleType: rider?.vehicleType?.trim(),
     shift: rider?.shift,
-    zoneId: rider?.zoneId,
+    zoneId: rider?.deliveryBoyType === 'shopRider' ? undefined : rider?.zoneId,
     deliveryBoyType: rider?.deliveryBoyType,
-    shopId: rider?.deliveryBoyType === 'shopRider' ? rider?.shopId : undefined,
+    shopId: rider?.deliveryBoyType === 'shopRider' ? rider?.shopId?._id : undefined,
     status: rider?.status,
     id: rider?._id,
   };
 };
 
-export const convertEditRiderData = (rider) => ({
+export const convertEditRiderData = (rider, riderFor, riderShop) => ({
   ...rider,
   image: [{ preview: rider?.image }],
   contractImage: [{ preview: rider?.contractImage }],
@@ -193,7 +193,7 @@ export const convertEditRiderData = (rider) => ({
   vehicleRegistrationDocument: [{ preview: rider?.vehicleRegistrationDocument }],
   deliveryBoyAddress: rider?.address,
   zoneId: rider?.zone,
-  shopId: rider?.shop,
+  shopId: riderFor === 'shop' ? riderShop : null,
   password: '',
   id: rider?._id,
 });

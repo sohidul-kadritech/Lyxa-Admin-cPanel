@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Modal, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
@@ -10,6 +10,7 @@ import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AccountSelect from './AccountSelect';
+import ForgotPassword from './ForgotPassword';
 import Form from './Form';
 import { adminAccountTypes, businessAccountTypes, getParentUser } from './helper';
 
@@ -19,6 +20,7 @@ export default function Login({ loginFor }) {
   const [accountType, setAccountType] = useState('');
   const [hilightAccountType, setHilightAccountType] = useState(false);
   const [loginError, setLoginError] = useState(null);
+  const [modal, setModal] = useState(false);
 
   const onLoginSuccess = async (data) => {
     if (!data?.status) {
@@ -98,39 +100,55 @@ export default function Login({ loginFor }) {
     });
   };
 
+  const onForgetPassword = () => {
+    if (!accountType) {
+      setHilightAccountType(true);
+      setLoginError('Please select account type');
+      return;
+    }
+
+    setModal(true);
+  };
+
   return (
-    <>
-      {/* <MetaTags>
-        <title>Login | Lyxa</title>
-      </MetaTags> */}
-      <Box
-        sx={{
-          backgroundColor: '#363636',
-          height: '100vh',
-        }}
-      >
-        <Stack pt={6} pl={9}>
-          <AccountSelect
-            options={loginFor === 'team' ? adminAccountTypes : businessAccountTypes}
-            value={accountType}
-            onChange={(event) => {
-              setAccountType(event.target.value);
-              setHilightAccountType(false);
-              setLoginError(null);
-            }}
-            placeholder={loginFor === 'business' ? 'For Business' : 'For Team'}
-            hilightAccountType={hilightAccountType}
-          />
+    <Box
+      sx={{
+        backgroundColor: '#363636',
+        height: '100vh',
+      }}
+    >
+      <Stack pt={6} pl={9}>
+        <AccountSelect
+          options={loginFor === 'team' ? adminAccountTypes : businessAccountTypes}
+          value={accountType}
+          onChange={(event) => {
+            setAccountType(event.target.value);
+            setHilightAccountType(false);
+            setLoginError(null);
+          }}
+          placeholder={loginFor === 'business' ? 'For Business' : 'For Team'}
+          hilightAccountType={hilightAccountType}
+        />
+      </Stack>
+      {/* logo */}
+      <Stack alignItems="center" height="calc(100vh - 47px)" justifyContent="center">
+        <Stack alignItems="center" justifyContent="center" gap={2} pb={17}>
+          <LyxaIcon />
+          <LyxaText />
         </Stack>
-        {/* logo */}
-        <Stack alignItems="center" height="calc(100vh - 47px)" justifyContent="center">
-          <Stack alignItems="center" justifyContent="center" gap={2} pb={17}>
-            <LyxaIcon />
-            <LyxaText />
-          </Stack>
-          <Form onSubmit={onSubmit} loginError={loginError} loading={loginMutation.isLoading} loginFor={loginFor} />
-        </Stack>
-      </Box>
-    </>
+        <Form
+          onSubmit={onSubmit}
+          loginError={loginError}
+          loading={loginMutation.isLoading}
+          loginFor={loginFor}
+          onForgetPassword={onForgetPassword}
+        />
+      </Stack>
+      <Modal open={modal} onClose={() => setModal(false)}>
+        <Box>
+          <ForgotPassword onClose={() => setModal(false)} loginFor={loginFor} accountType={accountType} />
+        </Box>
+      </Modal>
+    </Box>
   );
 }

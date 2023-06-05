@@ -1,14 +1,14 @@
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import ChartBox from '../../../components/StyledCharts/ChartBox';
+import ChartBox from '../../StyledCharts/ChartBox';
 
 // local
-import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import StyledBarChart from '../../StyledCharts/StyledBarChart';
 
 const dateRangeItit = {
   end: moment().format('YYYY-MM-DD'),

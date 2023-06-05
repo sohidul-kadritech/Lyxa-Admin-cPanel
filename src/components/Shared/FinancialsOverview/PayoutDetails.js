@@ -3,7 +3,7 @@ import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 
-import StyledBox from '../../../components/StyledCharts/StyledBox';
+import StyledBox from '../../StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
 import PriceItem from './PriceItem';
 

@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import StyledBox from '../../../components/StyledCharts/StyledBox';
+import StyledBox from '../../StyledCharts/StyledBox';
 import InvoiceTable from './InvoiceTable';
 import { data } from './mock';
 
