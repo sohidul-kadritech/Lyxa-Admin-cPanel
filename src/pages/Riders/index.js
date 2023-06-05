@@ -46,7 +46,7 @@ export default function RiderList({ viewUserType }) {
         onAdd={() => {
           setSidebarOpen(true);
         }}
-        searchPlaceHolder="Search 24 items"
+        searchPlaceHolder={`Search${` ${query?.data?.data?.deliveryBoys?.length || ''}`} items`}
       />
       {query.isLoading && <TableSkeleton />}
       {!query.isLoading && (

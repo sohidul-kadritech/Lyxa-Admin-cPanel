@@ -13,7 +13,6 @@ export default function TopInfo({ rider }) {
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
-  // add rider
   const update = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
@@ -22,7 +21,6 @@ export default function TopInfo({ rider }) {
         queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
         rider.image = data?.data?.delivery?.image;
         setRender((prev) => !prev);
-        console.log(data);
       }
     },
 
